@@ -13231,12 +13231,19 @@
     placeMenu(menu, e, from, opts);
     window.Rux?.menu?.open?.(menu, from ?? null);
   }
-  // The placing alone, which a menu that grows after it opens asks for again.
-  function placeMenu(menu, e, from, { end = false } = {}) {
+  /* The placing alone, which a menu that grows after it opens asks for again.
+     `matchWidth` gives a list of values its trigger's width, as Design's list
+     box gives a dropdown its field's, past Carbon's 18rem cap on a menu. */
+  function placeMenu(menu, e, from, { end = false, matchWidth = false } = {}) {
     const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
     menu.hidden = false;
     menu.style.position = 'absolute';
     pageEl?.appendChild(menu);
+    if (matchWidth && from) {
+      const w = `${Math.round(from.getBoundingClientRect().width)}px`;
+      menu.style.inlineSize = w;
+      menu.style.maxInlineSize = w;
+    }
     let { clientX: px, clientY: py } = e;
     if (!px && !py) {
       const from = e.target.getBoundingClientRect();
@@ -18952,7 +18959,7 @@
         if (!viewDay) return;
         menu.replaceChildren(...items());
         const r = btn.getBoundingClientRect();
-        popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn);
+        popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn, { matchWidth: true });
         btn.setAttribute('aria-expanded', 'true');
         /* A list that scrolls opens on the month in view, the list
            alone moving: focus goes to it once the menu has put it on its first. */

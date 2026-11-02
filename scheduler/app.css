@@ -4595,7 +4595,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
 /* A list that can run past the screen, every bus or driver on the sheet's
-   or every month on a phone's, scrolls inside. */
+   or every month held, scrolls inside. */
 .scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; }
 /* The card's rows join the sheet's own flow and stand above the trip: the
    needs, then the updates. What changes size from trip to trip is all up

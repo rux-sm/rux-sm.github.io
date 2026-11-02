@@ -262,6 +262,13 @@ with Ship from stock as the finished example of both.
   training company, even where it creates master data there.
 - **rux approves each guide after its walk.** Ship from stock is approved;
   the six walked since are drafts.
+- **Ship from stock sets the standard the others are brought to.** Plain
+  words in rux's voice with LN's labels exact; an example only for a value
+  the reader types; a status always a tag, a button always boxed, a code
+  always in code type; a cross-reference to a step, never a task's bare
+  name; no full stop closing a table cell; write-down labels lowercase.
+- **Each guide is read as printed, logged in, after its walk**, and fixed
+  until a read finds nothing, before rux is asked to approve it.
 - **What no walk covers is rewritten freely**: the ideas pages, each session's
   purpose line, and side tasks with no steps. LN's labels stay exact.
 - **The real records and the screenshots wait for the team's page** in
@@ -282,10 +289,16 @@ two processes to compare them; and landings for old page addresses.
 
 ## Questions
 
-None open.
+- Production order: keep the name, or rename it to Make an item or
+  Production order from stock?
 
 ## Tasks
 
+- [ ] Check an item's inventory: bring it to the standard, walk it, read it
+      printed, for rux's approval.
+- [ ] Purchase to receipt: the same.
+- [ ] Warehouse transfer: the same.
+- [ ] Production order: the same, under the name rux picks.
 - [ ] Run order planning for one item: write it to the standard, then walk it.
 - [ ] Demand to shipment via planning: write it to the standard, then walk it.
 - [ ] Create basic test items and defaults: write it to the standard, then

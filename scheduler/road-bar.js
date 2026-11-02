@@ -48,7 +48,7 @@
   'use strict';
 
   const Road = window.SchedulerRoad;
-  const { clockEl, hhmm, fitCrew, routeMark } = window.SchedulerBar;
+  const { clockEl, hhmm, fitCrew, routeMark, glyphTo } = window.SchedulerBar;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -167,10 +167,10 @@
     // A driver Samsara has in the bus is on the trip: their mark reads
     // confirmed while the bus is out, whatever they answered.
     const statusMark = item.querySelector(':scope > .scheduler-crew__mark');
-    const statusUse = statusMark?.classList.contains('scheduler-crew__mark--dot') ? statusMark.querySelector('use') : null;
+    const statusGlyph = statusMark?.classList.contains('scheduler-crew__mark--dot') ? statusMark.querySelector('svg') : null;
     if (statusMark?.dataset.baseClass != null) { statusMark.className = statusMark.dataset.baseClass; delete statusMark.dataset.baseClass; }
-    if (statusUse && statusMark.dataset.baseIcon != null) { statusUse.setAttribute('href', statusMark.dataset.baseIcon); delete statusMark.dataset.baseIcon; }
-    if (statusUse && statusMark.dataset.baseIndicator != null) { statusUse.parentElement.setAttribute('class', statusMark.dataset.baseIndicator); delete statusMark.dataset.baseIndicator; }
+    if (statusGlyph && statusMark.dataset.baseIcon != null) { glyphTo(statusGlyph, statusMark.dataset.baseIcon); delete statusMark.dataset.baseIcon; }
+    if (statusGlyph && statusMark.dataset.baseIndicator != null) { statusGlyph.setAttribute('class', statusMark.dataset.baseIndicator); delete statusMark.dataset.baseIndicator; }
     item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
     delete item.dataset.baseDeclined;
     // A seat's hover label is only where its driver is away; the live tip says the rest.
@@ -192,11 +192,11 @@
     if (statusMark) {
       statusMark.dataset.baseClass = statusMark.className;
       statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|major|normal|error|success)\b/, 'scheduler-crew__mark--success');
-      if (statusUse) {
-        statusMark.dataset.baseIcon = statusUse.getAttribute('href');
-        statusUse.setAttribute('href', CONFIRMED_ICON);
-        statusMark.dataset.baseIndicator = statusUse.parentElement.getAttribute('class') || '';
-        statusUse.parentElement.setAttribute('class', CONFIRMED_STATUS.indicator);
+      if (statusGlyph) {
+        statusMark.dataset.baseIcon = statusGlyph.querySelector('use').getAttribute('href');
+        glyphTo(statusGlyph, CONFIRMED_ICON);
+        statusMark.dataset.baseIndicator = statusGlyph.getAttribute('class') || '';
+        statusGlyph.setAttribute('class', CONFIRMED_STATUS.indicator);
       }
     }
     item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));

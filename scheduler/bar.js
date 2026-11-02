@@ -49,14 +49,26 @@
     if (text != null) n.textContent = text;
     return n;
   };
+  /* An outline icon's solid one, which a bar's mark is drawn in as well, so
+     app.css can turn the mark solid while it lifts. */
+  const SOLID = { '#m-schedule': '#m-schedule-fill', '#m-chat': '#m-chat-fill', '#i-checkmark--outline': '#i-checkmark--filled' };
+  // Draws `href` in an icon's svg, with its solid icon over it where it has one.
+  const glyphTo = (svg, href) => {
+    svg.replaceChildren();
+    for (const [at, cls] of [[href, SOLID[href] && 'scheduler-bar__line'], [SOLID[href], 'scheduler-bar__solid']]) {
+      if (!at) continue;
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', at);
+      if (cls) use.setAttribute('class', cls);
+      svg.appendChild(use);
+    }
+  };
   const svgUse = (href, size, box) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', size); svg.setAttribute('height', size);
     svg.setAttribute('viewBox', box); svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('aria-hidden', 'true');
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', href);
-    svg.appendChild(use);
+    glyphTo(svg, href);
     return svg;
   };
   /* The clock that leads a time row and opens the leg's route tip, data.js's,
@@ -727,7 +739,7 @@
     chat.setAttribute('aria-expanded', 'false');
     chat.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
       .filter(Boolean).join('. '));
-    chat.append(svgUse('#i-chat', '16', '0 0 32 32'));
+    chat.append(svgUse('#m-chat', '16', '0 0 32 32'));
     updateRow.appendChild(runOf(chat, age, news));
     bar.appendChild(updateRow);
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
@@ -780,6 +792,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

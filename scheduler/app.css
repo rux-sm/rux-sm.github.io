@@ -1386,9 +1386,14 @@ button.scheduler-row-head__num::after {
    wide line taking the press meant for the trip. A touch screen has no
    pointer to wait for, so it shows no hover; the open and pressed states
    show on any screen. The "+1" grows to its left, from the end of the crew
-   it stands at. */
+   it stands at. The pointer anywhere on a board's bar lifts all its marks
+   a little, so they read as buttons before one is reached; the compact
+   board's and a static week's bars hold none that open. */
 @media (hover: hover) {
   :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover,
+  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover :is([data-card-opener], [data-crew-overflow]) {
+    transform: scale(1.12);
+  }
   :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
@@ -1400,6 +1405,20 @@ button.scheduler-row-head__num::after {
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):active { transform: none; filter: none; }
 /* The time line lifts as a line does while the route is open, data.js's
+/* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
+   `glyphTo`: the outline fades out as the solid fades in. */
+.scheduler-bar__solid { opacity: 0; }
+:is(.scheduler-bar__line, .scheduler-bar__solid) { transition: opacity 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+@media (hover: hover) {
+  :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
+    :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
+    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock) .scheduler-bar__line { opacity: 0; }
+  :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
+    :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
+    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock) .scheduler-bar__solid { opacity: 1; }
+}
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
    `data-route-open`: from 2px to 4px, and its part still to go from a fifth
    of the ink to half. The ticks keep a pixel past the line either side. */
 @property --scheduler-track { syntax: '<length>'; inherits: true; initial-value: 2px; }
@@ -1408,9 +1427,9 @@ button.scheduler-row-head__num::after {
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-[data-motion="off"] .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+[data-motion="off"] .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+  .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The phone's docked sheet has no driver's tip and no route, so a driver's
    icon and the clock there are drawn plain: they take no press of their

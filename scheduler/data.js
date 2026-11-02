@@ -12683,6 +12683,19 @@
     j.append(svgUse(late ? '#i-warning--alt--filled' : '#i-checkmark--filled', '16', late ? '0 0 32 32' : '0 0 16 16'), late ? `${late} min late` : 'On time');
     return j;
   };
+  /* What a bus out says of a stop with no time of its own: the same green
+     check for one reached, and the bus where it is now, at the stop or on
+     its way to it. */
+  const routeReached = () => {
+    const j = el('span', 'scheduler-route__judged scheduler-route__judged--on-time');
+    j.append(svgUse('#i-checkmark--filled', '16', '0 0 16 16'), 'Reached');
+    return j;
+  };
+  const routeBus = () => {
+    const b = svgUse('#m-directions_bus-fill', '16', '0 0 32 32');
+    b.setAttribute('class', 'scheduler-route__bus');
+    return b;
+  };
   // The leg's points in order, each its key, name, planned and actual times, or what a bus out says of it.
   function routeOf(bar) {
     const trip = bar && heldTrip(bar.dataset.tripId);
@@ -12698,8 +12711,8 @@
     const home = stops.findLastIndex(st => st.type === 'return');
     const said = (row, st, i) => {
       if (row.actual != null || !next) return row;
-      if (i === reached && next.at) row.words = 'Here now';
-      else if (i <= reached) row.words = 'Reached';
+      if (i === reached && next.at) row.here = true;
+      else if (i <= reached) row.reached = true;
       else if (next.stop?.key === st.key && next.arrival != null) row.estimate = next.arrival;
       return row;
     };
@@ -12732,8 +12745,9 @@
       const row = el('div', 'scheduler-tip__row scheduler-route__row');
       const actual = el('span', 'scheduler-route__actual');
       if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
-      else if (r.words) actual.append(r.words);
-      else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--estimate'); actual.append('~', routeClock(r.estimate, route.out)); }
+      else if (r.here) actual.append(routeBus(), 'Here now');
+      else if (r.reached) actual.append(routeReached());
+      else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--estimate'); actual.append(routeBus(), '~', routeClock(r.estimate, route.out)); }
       else actual.append('—');
       row.append(el('span', 'scheduler-route__name', r.name), r.planned != null ? routeClock(r.planned, route.out) : el('span', null, '—'), actual);
       table.append(row);

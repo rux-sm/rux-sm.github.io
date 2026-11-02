@@ -470,6 +470,8 @@ button.scheduler-row-head__num::after {
 .scheduler-route__judged > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-route__judged--on-time > svg { color: var(--rux-support-success-inverse); }
 .scheduler-route__judged--late > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
+/* The bus where it is now, in the info blue, as a stop's own mark stands. */
+.scheduler-route__bus { flex: none; inline-size: 16px; block-size: 16px; align-self: center; color: var(--rux-support-info-inverse); }
 /* Equipment is an icon with its word, so the tip needs no legend. */
 .scheduler-tip__kit { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
 .scheduler-tip__mark { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
@@ -4600,6 +4602,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
 /* A list that can run past the screen, every bus or driver on the sheet's
    or every month on a phone's, scrolls inside. */
 .scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; }

@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "review",
+  "status": "approved",
   "summary": "ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped.",
   "order": 7,
   "sources": [

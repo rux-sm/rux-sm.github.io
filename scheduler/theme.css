@@ -1280,7 +1280,7 @@
    #0a0a0a, in its line, from Design. The open ⋮ and the open week's name
    join the menu and the calendar they open in it, so they take that sheet
    rather than the board's black. */
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) {
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
   --scheduler-region: #0a0a0a;
   --scheduler-region-hover: #1a1a1a;
 }
@@ -1293,8 +1293,12 @@
   [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--scheduler-region-hover); }
 }
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
-   covers the menu's outline under the ⋮, so one line goes round the two. */
+   covers the menu's outline under the ⋮, so one line goes round the two.
+   The menu hangs 1px lower than the ⋮'s foot, so its outline lies on the
+   board's top line, as the shell's panels lie on the header's, and the strip
+   covers that line under the ⋮. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
+[data-theme="rux-100"] .scheduler-view-menu[data-attached] { margin-block-start: 1px; }
 /* Rux 100's toolbar and Carbon's four rule off only the two buttons that
    open a surface joined to them, the week's name with its calendar, closed
    by Today's leading rule, and the ⋮ with its menu, so each reads as the
@@ -1315,10 +1319,11 @@
    list from the month's, as the ⋮'s menu does from the ⋮: the button takes
    the surface's outline and shadow up its sides and over its top, stopping
    at its foot, and stands over the surface's top, so one line goes round the
-   two. The calendar is wider than its button, so its own top line stays,
-   the button covering it where it stands on it, and only its shadow stops
-   there. The open month's ring stands in for the rule on its leading edge,
-   which would otherwise draw a second line beside it. */
+   two. The calendar is wider than its button, so it hangs 1px lower, its
+   own top line lying on the board's top line, and a strip the button's
+   width in the button's surface covers that line under the button; only
+   its shadow stops there. The open month's ring stands in for the rule on
+   its leading edge, which would otherwise draw a second line beside it. */
 /* Rux Dark's calendar floats clear of the week's name, as its menus float
    clear of the ⋮, so the open name keeps the toolbar's own look, as the open
    ⋮ does there, rather than the joined surface. */
@@ -1334,6 +1339,19 @@
 [data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
   clip-path: inset(-1px -6px -6px -6px);
+}
+[data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar-container { margin-block-start: 1px; }
+[data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar-container::after {
+  position: absolute;
+  content: "";
+  inset-block-start: -1px;
+  inset-inline-start: 0;
+  inline-size: var(--rux-layout-size-height-md);
+  block-size: 1px;
+  background-color: var(--scheduler-region);
+}
+@media (hover: hover) {
+  [data-theme="rux-100"] #scheduler-weekrow:has(#scheduler-range:hover) .rux--date-picker__calendar-container::after { background-color: var(--scheduler-region-hover); }
 }
 
 /* The footer's grey and ink outside a bar, and the status colours a

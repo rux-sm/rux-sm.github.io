@@ -4716,7 +4716,14 @@ html[data-scheduler-takeover] {
 @media (min-width: 42rem) {
   /* The roster and the lists' pane hold what is in them at their own width
      whatever their column's, as the side panels do, so a column opening or
-     closing cuts them at its edge and lays nothing in them out again. */
+     closing cuts them at its edge and lays nothing in them out again. The
+     column itself takes no least width from them: a flex item's automatic
+     least width is its content's, which would open it full in its first
+     frame and leave its flex-basis nothing to grow, and a panel opening as
+     another closes would then narrow the week by a whole panel at once. */
+  .scheduler-page:not([data-takeover]) :is(.scheduler-aside, .scheduler-to-do--pane) {
+    min-inline-size: 0;
+  }
   .scheduler-page:not([data-takeover]) :is(.scheduler-aside, .scheduler-to-do--pane) > * {
     min-inline-size: var(--scheduler-pane-w);
   }

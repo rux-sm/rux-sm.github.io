@@ -4469,6 +4469,47 @@ a.scheduler-tip__go { text-decoration: none; }
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
+/* THE SHEET'S TWO ROWS: Call, Text, Route and Open, a quarter of the width
+   each and 64px tall, their 20px icons over a 14px word, on the raised
+   layer and 1px apart as Carbon's button set is; then Itinerary, Forms,
+   Contacts, Move bus and Driver, a fifth each, as the slots have always
+   been. Each row's share is its whole width, so the rows break where they
+   should and never share a line. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big {
+  flex: 1 0 25%;
+  order: 1;
+  box-sizing: border-box;
+  min-block-size: var(--rux-spacing-10, 4rem);
+  gap: var(--rux-spacing-02);
+  background: var(--rux-layer-02);
+  box-shadow: inset 1px 0 0 var(--scheduler-shell-background, var(--rux-background));
+}
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big:hover { background: var(--rux-layer-hover-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-pressed="true"] { background: var(--rux-layer-selected-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-disabled="true"] { color: var(--rux-icon-disabled); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big > .scheduler-bar-shortcut__label {
+  color: var(--rux-text-primary);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-disabled="true"] > .scheduler-bar-shortcut__label { color: var(--rux-text-disabled); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:not(.scheduler-bar-shortcut--big) { flex: 1 0 20%; order: 2; }
+/* The route, Route's, stands where the card stood, on the page's raised
+   surface and in its inks rather than the floating tip's inverse ones. */
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card {
+  flex: 1 0 100%;
+  order: -1;
+  max-block-size: 40dvh;
+  overflow-y: auto;
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  --tip-rule: var(--rux-border-subtle-01);
+}
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
+/* The sheet's lists hold every bus or driver, so they scroll inside. */
+.scheduler-pick-menu { max-block-size: 60dvh; overflow-y: auto; }
 /* The card's rows join the sheet's own flow and stand above the trip: the
    needs, then the updates. What changes size from trip to trip is all up
    there, so the sheet grows upward and the trip and its slots keep one place

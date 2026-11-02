@@ -1624,9 +1624,9 @@
 }
 /* A press row lights with the inverse hover. Carbon's field and buttons inside take the inverse surface's colours: the field the inverse
    hover with an edge of the ink, the ink for words and a ghost button, the inverse focus, the inverse red for Delete, and a button
-   that cannot act yet a faint wash of the ink. */
-[data-theme] .scheduler-tip--card :is(.scheduler-tip__go, .scheduler-tip__update:not([data-editing])):hover { background: var(--rux-background-inverse-hover); }
-[data-theme] .scheduler-tip--card {
+   that cannot act yet a faint wash of the ink. The phone's docked sheet, which shows the route the same way, keeps the page's own. */
+[data-theme] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card :is(.scheduler-tip__go, .scheduler-tip__update:not([data-editing])):hover { background: var(--rux-background-inverse-hover); }
+[data-theme] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card {
   --rux-text-primary: var(--rux-text-inverse);
   --rux-text-placeholder: color-mix(in srgb, var(--rux-text-inverse) 60%, transparent);
   --rux-icon-primary: var(--rux-icon-inverse);

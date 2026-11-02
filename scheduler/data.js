@@ -1474,19 +1474,21 @@
   const overlaps = (aStart, aSpan, bStart, bSpan) =>
     aStart < bStart + bSpan && bStart < aStart + aSpan;
 
-  // Read off the rendered week rather than the data, because the rendered
-  // week is exactly the days being asked about.
-  function targetWarns(track, start, span) {
-    if (track.dataset.unassigned) return false;
+  /* What stands in the way of a trip on these days of a bus's track: a bar
+     that overlaps them or an out-of-service span, or null. Read off the
+     drawn board rather than the data, because what is drawn near the view
+     is exactly the days being asked about. */
+  function inTheWay(track, start, span) {
+    if (track.dataset.unassigned) return null;
     for (const other of track.querySelectorAll('.scheduler-bar')) {
-      if (overlaps(start, span, +other.dataset.start, +other.dataset.span)) return true;
+      if (overlaps(start, span, +other.dataset.start, +other.dataset.span)) return other;
     }
     for (const oos of track.querySelectorAll('.scheduler-oos')) {
       const s = parseFloat(oos.style.getPropertyValue('--scheduler-start'));
       const n = parseFloat(oos.style.getPropertyValue('--scheduler-span'));
-      if (overlaps(start, span, s, n)) return true;
+      if (overlaps(start, span, s, n)) return oos;
     }
-    return false;
+    return null;
   }
 
   /* Timed like a read: a hung write would otherwise leave the copy in its row
@@ -1999,6 +2001,62 @@
     });
   }
 
+  /* MOVES A BAR'S TRIP TO ANOTHER BUS, the drag's drop and the trip sheet's
+     Move to bus alike: its assignment's bus is written, or an empty slot's
+     row is written on the bus. The write starts at once. `hold` draws the
+     bar on its new bus, marked as saving: from then the board is drawn from
+     what is held, so another move or a change of week draws it right, and an
+     empty slot is held under a stand-in row until the database makes the real
+     one; it answers whether the board drew it. `end` waits for the write and
+     draws its answer with the undo, or the bar back where it was. The drag
+     moves its copy between the two. */
+  function startBusMove(bar, toBus) {
+    let assignmentId = bar.dataset.assignmentId;
+    const { tripId, leg, slot } = bar.dataset;
+    const fromBus = bar.dataset.busId || null;
+    const label = busLabel(fromBus);
+    schEl.setAttribute('aria-busy', 'true');
+    // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
+    const slotTrip = panelIndex.trips.get(tripId);
+    const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
+    const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
+    const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
+      .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
+    const heldAs = assignmentId || `saving-${++standIns}`;
+    return {
+      hold() {
+        holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
+          saving: true, standIn: true,
+          row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', route_id: slotRoute,
+                 active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
+        });
+        return drawHeld();
+      },
+      async end() {
+        const { made, failed } = await write;
+        schEl.removeAttribute('aria-busy');
+        if (failed) {
+          /* The bar is drawn back where it was, and the week is read after,
+             because a move that threw may still have landed. */
+          dropMove(tripId, heldAs, fromBus);
+          drawHeld();
+          toast('error', 'Could not move that trip', failed);
+          readAfterMove();
+          return;
+        }
+        recordBusChange(tripId, fromBus, toBus);
+        if (made) { fillStandIn(tripId, heldAs, made); assignmentId = made.id; }
+        const landed = drawBusMove(tripId, assignmentId, toBus, made);
+        refreshEditor(assignmentId);
+        /* An undo is offered only for a bar still on the board: the week may
+           have changed while the move was written, and an undo there would
+           move a trip nobody is looking at. */
+        if (landed) offerUndo(assignmentId, tripId, toBus, fromBus, label);
+        else toast('success', 'Trip moved');
+      },
+    };
+  }
+
   // A move of the trip in the editor rebuilds the editor from the week just
   // read, so its bus is current. Unsaved work is left alone.
   function refreshEditor(assignmentId) {
@@ -2198,54 +2256,16 @@
          sat, while the write is already on its way. Both rows are packed
          first, as the board will draw them, so the copy settles where its bar
          will be and nothing jumps when it is drawn. */
-      let assignmentId = bar.dataset.assignmentId;
-      const { tripId, leg, slot } = bar.dataset;
-      const backTo = fromBus;
-      const label = busLabel(fromBus);
       bar.classList.add('scheduler-bar--leaving');
       const lane = pack(target, true);
       pack(bar.parentElement, false);
-      schEl.setAttribute('aria-busy', 'true');
-      // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
-      const slotTrip = panelIndex.trips.get(tripId);
-      const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
-      const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
-      const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
-        .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
+      const write = startBusMove(bar, toBus);
       await settle(restIn(target), lane);
-      /* The bar is drawn on its new bus now, marked as saving, and the copy
-         comes away over it: from here the board is drawn from what is held,
-         so another move or a change of week draws it right. An empty slot
-         is held under a stand-in row until the database makes the real one. */
-      const heldAs = assignmentId || `saving-${++standIns}`;
-      holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
-        saving: true, standIn: true,
-        row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', route_id: slotRoute,
-               active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
-      });
-      if (!drawHeld()) unpack();
+      // The bar is drawn on its new bus now, and the copy comes away over it.
+      if (!write.hold()) unpack();
       clear();
       putDown();
-      const { made, failed } = await write;
-      schEl.removeAttribute('aria-busy');
-      if (failed) {
-        /* The bar is drawn back where it was, and the week is read after,
-           because a move that threw may still have landed. */
-        dropMove(tripId, heldAs, fromBus);
-        drawHeld();
-        toast('error', 'Could not move that trip', failed);
-        readAfterMove();
-        return;
-      }
-      recordBusChange(tripId, fromBus, toBus);
-      if (made) { fillStandIn(tripId, heldAs, made); assignmentId = made.id; }
-      const landed = drawBusMove(tripId, assignmentId, toBus, made);
-      refreshEditor(assignmentId);
-      /* An undo is offered only for a bar still on the board: the week may
-         have changed while the move was written, and an undo there would
-         move a trip nobody is looking at. */
-      if (landed) offerUndo(assignmentId, tripId, toBus, backTo, label);
-      else toast('success', 'Trip moved');
+      await write.end();
     };
 
     const move = ev => {
@@ -2286,7 +2306,7 @@
       clear();
       target = next;
       if (target && !sameRow) {
-        target.classList.add(targetWarns(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
+        target.classList.add(inTheWay(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
       }
     };
 
@@ -13218,7 +13238,12 @@
      button is the menu's anchor, so a press on it is not a press outside, and
      its own handler closes the menu on a second press. */
   const MENU_SPACING = 8;
-  function popMenuAt(menu, e, from, { end = false } = {}) {
+  function popMenuAt(menu, e, from, opts) {
+    placeMenu(menu, e, from, opts);
+    window.Rux?.menu?.open?.(menu, from ?? null);
+  }
+  // The placing alone, which a menu that grows after it opens asks for again.
+  function placeMenu(menu, e, from, { end = false } = {}) {
     const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
     menu.hidden = false;
     menu.style.position = 'absolute';
@@ -13247,7 +13272,6 @@
     }
     menu.style.insetInlineStart = `${x - page.left}px`;
     menu.style.insetBlockStart = `${y - page.top}px`;
-    window.Rux?.menu?.open?.(menu, from ?? null);
   }
 
   // The empty cell's track under a press, or null for a bar, its shortcuts or
@@ -13443,20 +13467,7 @@
       return;
     }
 
-    if (item.dataset.assignDriver) {
-      await assignDriver(bar, item.dataset.assignDriver);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-assign-remove') {
-      removeDriver(bar);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-assign-more') {
-      openOnFleet(bar);
-      return;
-    }
+    if (await pickDriverItem(item, bar)) return;
 
     if (item.dataset.driverStatus) {
       await setDriverStatus(bar, item.dataset.driverId, item.dataset.crewRole, item.dataset.driverStatus);
@@ -13523,7 +13534,13 @@
       }
     }
     fillCrewItems(bar);
-    fillAssignItems(bar);
+    const seatFor = seatToFill(bar);
+    const assignParent = document.getElementById('scheduler-bar-menu-assign');
+    assignParent.hidden = !seatFor;
+    if (seatFor) {
+      assignParent.querySelector('.rux--menu-item__label').textContent = seatFor.seat?.driver_id ? 'Change driver' : 'Assign driver';
+      fillAssignItems(seatFor, document.getElementById('scheduler-bar-menu-assign-list'));
+    }
     // Only a bus out on its trip is on the map.
     document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId || !bar.dataset.road;
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
@@ -13812,30 +13829,39 @@
     return item;
   }
 
-  /* Fills the Assign driver submenu: the driver on the bus now, checked, then
-     every free driver in rank order, one whose licence or medical card runs
-     out before the leg ends marked with a red alert and a back-to-back one
-     with a warning, then the busy ones, greyed with what they are on, then
-     More drivers. The list says it is looking while the trips around the leg
-     are read. */
-  async function fillAssignItems(bar) {
-    const parent = document.getElementById('scheduler-bar-menu-assign');
-    const list = document.getElementById('scheduler-bar-menu-assign-list');
+  // A pick from a list of drivers, the bar menu's or the trip sheet's: answers whether it was one.
+  async function pickDriverItem(item, bar) {
+    if (item.dataset.assignDriver) await assignDriver(bar, item.dataset.assignDriver);
+    else if (item.hasAttribute('data-assign-remove')) removeDriver(bar);
+    else if (item.hasAttribute('data-assign-more')) openOnFleet(bar);
+    else return false;
+    return true;
+  }
+
+  // The bar's Driver seat, where the board can fill it: a bus on a leg with dates, not the trip open in the editor.
+  const seatToFill = bar => {
     const found = client && !isEditorTrip(bar) ? barSeat(bar) : null;
-    parent.hidden = !found?.range;
-    if (parent.hidden) return;
+    return found?.range ? found : null;
+  };
+  /* Fills a list with the drivers for a seat `seatToFill` found, the bar
+     menu's Assign driver submenu or the trip sheet's Change driver: the
+     driver on the bus now, checked, then every free driver in rank order, one
+     whose licence or medical card runs out before the leg ends marked with a
+     red alert and a back-to-back one with a warning, then the busy ones,
+     greyed with what they are on, then More drivers. The list says it is
+     looking while the trips around the leg are read. */
+  async function fillAssignItems(found, list) {
     const { seat, range, assign } = found;
-    parent.querySelector('.rux--menu-item__label').textContent = seat?.driver_id ? 'Change driver' : 'Assign driver';
     const more = el('li', 'rux--menu-item');
     more.setAttribute('role', 'menuitem');
     more.tabIndex = -1;
-    more.id = 'scheduler-bar-menu-assign-more';
+    more.dataset.assignMore = '';
     more.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'),
       el('div', 'rux--menu-item__label', 'More drivers…'));
     const rule = () => { const r = el('li', 'rux--menu-item-divider'); r.setAttribute('role', 'separator'); return r; };
     const remove = () => {
       const item = assignItem('Remove driver', { icon: '#m-remove' });
-      item.id = 'scheduler-bar-menu-assign-remove';
+      item.dataset.assignRemove = '';
       return item;
     };
     const current = seat?.driver_id != null
@@ -15960,15 +15986,45 @@
     toast('success', 'The file was deleted.');
   });
 
-  /* THE SELECTED TRIP'S SHORTCUTS, the same four on every trip; every other
-     action is on the right-click menu. A slot whose
+  // The booking contact, where the trip has one with a number, whom the sheet's Call and Text reach.
+  const bookerOf = bar => {
+    const c = tripContact(panelIndex.trips.get(bar.dataset.tripId), 0);
+    return c?.phone ? c : null;
+  };
+  const reach = (did, href) => bar => {
+    const c = bookerOf(bar);
+    if (!c) return;
+    window.location.href = href(dial(c.phone));
+    offerUpdate(bar.dataset.tripId, `${did} ${c.name}`);
+  };
+
+  /* THE SELECTED TRIP'S SHORTCUTS, the phone's sheet's, the same on every
+     trip; on a wider board every action is on the right-click menu. A slot whose
      action cannot act on the trip shows disabled, with the reason as its
      label, so the slots keep their places from trip to trip. `short` is the
      word under the slot on the docked sheet, where a phone has no hover to
      show the name. */
   const SHORTCUT_ACTIONS = [
-    { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open',
+    { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open', keeps: true,
       blocked: bar => (isEditorBar(bar) ? 'Already open' : null), run: () => openSelected() },
+    /* Call and Text reach the booking contact, the person the trip is for,
+       and offer to add what was done to the updates, as Contacts does; the
+       drivers are in Contacts. */
+    { id: 'call', label: 'Call the booking contact', icon: '#m-call', short: 'Call', keeps: true,
+      label_for: bar => `Call ${bookerOf(bar).name}`,
+      blocked: bar => (bookerOf(bar) ? null : 'No contact number'), run: reach('Called', n => `tel:${n}`) },
+    { id: 'text', label: 'Text the booking contact', icon: '#m-chat', short: 'Text', keeps: true,
+      label_for: bar => `Text ${bookerOf(bar).name}`,
+      blocked: bar => (bookerOf(bar) ? null : 'No contact number'), run: reach('Texted', n => `sms:${n}`) },
+    // The leg's stops and times in the sheet in place of its card, and the card back.
+    { id: 'route', label: 'Route', icon: '#m-route', short: 'Route', keeps: true,
+      blocked: () => null, run: bar => askCard(bar, !cardSection.startsWith('route:'), 'route:') },
+    // A bus or a driver from a list, since a phone has no drag to spare and no right-click.
+    { id: 'move', label: 'Move to bus', icon: '#m-directions_bus', short: 'Move bus', keeps: true,
+      blocked: () => null, run: (bar, slot) => openPick('bus', bar, slot) },
+    { id: 'driver', label: 'Change driver', icon: '#m-person', short: 'Driver', keeps: true,
+      label_for: bar => (seatToFill(bar).seat?.driver_id ? 'Change driver' : 'Assign driver'),
+      blocked: bar => (seatToFill(bar) ? null : 'No driver seat to fill here'), run: (bar, slot) => openPick('driver', bar, slot) },
     // Opens the itinerary, or uploads one on a trip that has none, as the
     // right-click menu swaps the two.
     { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment', short: 'Itinerary',
@@ -15981,8 +16037,70 @@
     { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
   ];
-  // Contacts closes the row, because every trip has people to reach.
-  const SHORTCUT_ROW = ['open', 'itinerary', 'forms', 'contacts'];
+  /* The phone's sheet, the only place the slots show: the four a trip is
+     most often opened for, large, and the rest in a row under them. */
+  const SHORTCUT_BIG = ['call', 'text', 'route', 'open'];
+  const SHORTCUT_ROW = ['itinerary', 'forms', 'contacts', 'move', 'driver'];
+
+  /* THE SHEET'S LISTS, Move to bus and Change driver: a menu dropped from the
+     slot, holding what the drag and the bar menu's Assign driver hold on a
+     wider board. */
+  const pickMenu = document.getElementById('scheduler-pick-menu');
+  let pickFor = null;
+  function openPick(kind, bar, slot) {
+    if (!pickMenu) return;
+    const filled = kind === 'driver' ? fillAssignItems(seatToFill(bar), pickMenu) : fillBusItems(bar, pickMenu);
+    pickFor = { kind, bar, slot };
+    slot.setAttribute('aria-expanded', 'true');
+    popMenuAt(pickMenu, { target: slot }, slot);
+    // The drivers are read first, so their list is placed again once it holds them.
+    filled?.then(() => { if (pickFor?.slot === slot) placeMenu(pickMenu, { target: slot }, slot); });
+  }
+  pickMenu?.addEventListener('click', async e => {
+    const item = e.target.closest('.rux--menu-item');
+    if (!item || item.getAttribute('aria-disabled') === 'true' || !pickFor) return;
+    const { kind, bar } = pickFor;
+    window.Rux?.menu?.close?.(pickMenu);
+    if (kind === 'driver') { await pickDriverItem(item, bar); return; }
+    const write = startBusMove(bar, item.dataset.moveBus);
+    write.hold();
+    await write.end();
+  });
+  pickMenu?.addEventListener('rux:menu-closed', e => {
+    if (e.target !== pickMenu) return;
+    pickMenu.hidden = true;
+    pickFor?.slot.setAttribute('aria-expanded', 'false');
+    pickFor = null;
+  });
+  /* The buses a trip can move to, in the board's order: the free ones, then
+     those with a trip or a day out of service on its days, greyed with what
+     they are on, as the driver list greys a busy driver. */
+  function fillBusItems(bar, list) {
+    const start = +bar.dataset.start, span = +bar.dataset.span;
+    const rows = stripRows.filter(r => r.bus && r.bus.status === 'active' && String(r.bus.id) !== (bar.dataset.busId || ''));
+    const item = (row, busy) => {
+      const li = el('li', busy ? 'rux--menu-item rux--menu-item--disabled' : 'rux--menu-item');
+      li.setAttribute('role', 'menuitem');
+      li.tabIndex = -1;
+      if (busy) li.setAttribute('aria-disabled', 'true'); else li.dataset.moveBus = row.bus.id;
+      const mark = el('div', 'rux--menu-item__icon');
+      mark.appendChild(svgUse(busy ? '#m-do_not_disturb_on-fill' : '#m-directions_bus', '16', '0 0 32 32'));
+      li.append(el('div', 'rux--menu-item__selection-icon'), mark, el('div', 'rux--menu-item__label', vehicleName(row.bus)));
+      const note = busy ?? (row.bus.capacity ? `${row.bus.capacity} pax` : null);
+      if (note) li.appendChild(el('div', 'rux--menu-item__shortcut', note));
+      return li;
+    };
+    const busyOf = row => {
+      const way = inTheWay(row.track, start, span);
+      return !way ? null : way.classList.contains('scheduler-oos') ? 'Out of service'
+        : panelIndex.trips.get(way.dataset.tripId)?.destination || 'Another trip';
+    };
+    const marked = rows.map(r => [r, busyOf(r)]);
+    const rule = () => { const r = el('li', 'rux--menu-item-divider'); r.setAttribute('role', 'separator'); return r; };
+    const free = marked.filter(([, busy]) => !busy).map(([r]) => item(r, null));
+    const busy = marked.filter(([, b]) => b).map(([r, b]) => item(r, b));
+    list.replaceChildren(...(free.length ? free : [assignItem('No free buses', { disabled: true })]), ...(busy.length ? [rule(), ...busy] : []));
+  }
 
   /* The docked sheet stands on the header's own surface. The header is a theme
      zone of its own in theme.js, g100 under Carbon's four whatever the page
@@ -16236,7 +16354,7 @@
      bar's own menu holds what the slots do. */
   function drawShortcuts(bar) {
     const docked = pageEl?.getAttribute('data-board') === 'compact';
-    const slots = docked ? SHORTCUT_ROW : [];
+    const slots = docked ? [...SHORTCUT_BIG, ...SHORTCUT_ROW] : [];
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
     const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
@@ -16255,7 +16373,8 @@
     const selection = focusQuick ? [active.selectionStart, active.selectionEnd] : null;
     const head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
     barShortcuts.replaceChildren(...(head ? [head] : []), ...slots.map((id, i) => {
-      const btn = el('button', 'scheduler-bar-shortcut');
+      const big = SHORTCUT_BIG.includes(id);
+      const btn = el('button', big ? 'scheduler-bar-shortcut scheduler-bar-shortcut--big' : 'scheduler-bar-shortcut');
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
       const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
@@ -16263,13 +16382,15 @@
       const why = action.blocked(bar);
       const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
       btn.dataset.shortcut = action.id;
+      // Route is pressed while the route stands in the card's place.
+      if (action.id === 'route') btn.setAttribute('aria-pressed', String(cardSection.startsWith('route:')));
       btn.setAttribute('aria-label', label);
       btn.title = label;
       if (why) btn.setAttribute('aria-disabled', 'true');
-      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
+      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, big ? '20' : '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [!docked && cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
+    }), ...(carded ? [cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
       : !docked && cardSection.startsWith('driver:') ? drawDriverTip(trip, bar, cardSection)
       : !bar.dataset.road ? drawCard(trip, bar, cardSection)
       : docked ? drawRoadCard(trip, bar) : roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
@@ -16306,11 +16427,24 @@
 
      It is a Carbon modal centred on the screen, as the Updates window is,
      which Design closes on Escape, a press outside or its close button. */
+  /* The offer, after a call, a text or an email to the customer's people, to
+     add what was done to the trip's updates; ignored, nothing is written.
+     `after` draws whatever shows the updates once one is added. */
+  function offerUpdate(tripId, body, after, title = body, subtitle = 'Add it to the updates?') {
+    toast('info', title, subtitle, {
+      label: 'Add update',
+      onClick: async () => {
+        toast(null);
+        if (await writeUpdate(tripId, { kind: 'update', body, keys: null })) { await after?.(); toast('success', 'Update added', body); }
+        else toast('warning', 'The update was not added.', 'Add it from the card.');
+      },
+    });
+  }
   const contactsModal = document.getElementById('scheduler-contacts-modal');
   const contactsList = document.getElementById('scheduler-contacts-list');
   const contactsMenu = document.getElementById('scheduler-contacts-menu');
   const contactsOptions = document.getElementById('scheduler-contacts-options');
-  const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
+  const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', keeps: true, blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
@@ -16508,17 +16642,7 @@
       if (await setInfoSent(true)) await show();
     };
     // The offer to record a call or text to the customer's people.
-    const offer = (did, name, title, subtitle) => () => {
-      const body = `${did} ${name}`;
-      toast('info', title ?? body, subtitle ?? 'Add it to the updates?', {
-        label: 'Add update',
-        onClick: async () => {
-          toast(null);
-          if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) { await show(); toast('success', 'Update added', body); }
-          else toast('warning', 'The update was not added.', 'Add it from the card.');
-        },
-      });
-    };
+    const offer = (did, name, title, subtitle) => () => offerUpdate(trip.id, `${did} ${name}`, show, title, subtitle);
     const copyText = async text => {
       try { await navigator.clipboard.writeText(text); return true; } catch {
         toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
@@ -17619,11 +17743,13 @@
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = selectedBar();
     if (!bar) return;
-    // A shortcut puts the card away, except Contacts, whose window opens over it
-    // and hands focus back to its slot on closing, and Open, whose editor opens
-    // beside the board.
-    if (btn.dataset.shortcut !== 'contacts' && btn.dataset.shortcut !== 'open') putCardAway(bar);
-    (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
+    /* A shortcut that leaves for a panel or a file puts the card away. One
+       that `keeps` it does not: Contacts, whose window opens over it and
+       hands focus back to its slot on closing, Open, whose editor opens
+       beside the board, and the sheet's calls, route and lists. */
+    const shortcut = FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut);
+    if (!shortcut?.keeps) putCardAway(bar);
+    shortcut?.run(bar, btn);
   });
 
   // The signed-in person's id, or null in a preview with no log-in.

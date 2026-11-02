@@ -14,9 +14,9 @@ is scanned for, and a tap opens the rest in a sheet with its actions in
 thumb reach.
 
 Today the phone shows the strip two days wide, a flick a day, its trips
-three lines beside a narrow bus column, a tap on a trip opening the Mac's
-docked card and a tap on a bus its sheet; the editor opens over the board
-as the Mac's form.
+three lines beside a narrow bus column, a tap on a trip opening its sheet
+and a tap on a bus the bus's; the editor opens over the board as the Mac's
+form.
 
 ## Decisions
 
@@ -34,7 +34,11 @@ as the Mac's form.
 - **The trip's sheet** rises from the foot: Call, Text, Route and Open as
   large buttons; the customer, the contact with the number, the drivers and
   the latest update; and Move to bus and Change driver, so a trip changes
-  bus or driver with no drag. A drag still works.
+  bus or driver with no drag. A drag still works. As rux decided, Call and
+  Text reach the booking contact, Route shows the stops and times in the
+  sheet, Itinerary, Forms and Contacts stand in a smaller row with Move to
+  bus and Change driver, and Move to bus lists the free buses first and the
+  busy ones greyed.
 - **The bus column is about 62px:** the number, running or off with the
   speed, and the fuel; the seats, the sleeper and the lift go to the bus's
   sheet, which a tap on the bus opens.
@@ -61,7 +65,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give the trip's sheet its actions and its lines.
 - [ ] Put the month, Today and search above the board, with the week under
       them.
 - [ ] Add the bar of places at the foot and the + for a new trip.

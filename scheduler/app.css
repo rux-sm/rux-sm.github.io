@@ -220,16 +220,28 @@
    than going blank. */
 .scheduler-grid--busy { opacity: .55; }
 
-/* The day band is the band the roster's header is, and takes the same pair: a
+/* THE DAY BAND holds the days' header cells in one row across the board,
+   stuck to its top as one box and laid out as a grid of its own on the
+   board's day columns, so a change in the rows below never lays the cells
+   out again, whatever the strip's length. */
+.scheduler-corner,
+.scheduler-days {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 4;
+}
+.scheduler-days {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: repeat(var(--scheduler-days), var(--scheduler-day-track));
+}
+/* The band is the band the roster's header is, and takes the same pair: a
    surface, in a theme that separates a header by filling it, or the pane's own
    surface between two rules, in one that separates by a line. Both edges are
    drawn, because this band has the toolbar above it and the grid below. It
    stays opaque either way: bars scroll under it. */
 .scheduler-corner,
 .scheduler-day {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 4;
   background: var(--scheduler-band-surface);
   border-block-start: var(--scheduler-band-rule);
   border-block-end: var(--scheduler-band-rule);
@@ -6476,9 +6488,10 @@ html[data-scheduler-takeover] {
 }
 @media (max-width: 41.98rem) { .scheduler-activity { display: none; } }
 
-/* Today from far off: the strip is drawn a week short of today and glides
-   the rest, and its trips fade up from part way as the dates change under
-   them, so the cut reads as motion; see data.js. */
+/* A move from far off, Today's or a pick's: the strip is put a week short
+   and glides the rest, and its trips fade up from part way as the dates
+   change under them, so the cut reads as motion; see data.js's
+   `scrollToCursor`. */
 @keyframes scheduler-arrive { from { opacity: .3; } }
 .scheduler-week--arrive .scheduler-track { animation: scheduler-arrive .25s ease-out; }
 @media (prefers-reduced-motion: reduce) { .scheduler-week--arrive .scheduler-track { animation: none; } }

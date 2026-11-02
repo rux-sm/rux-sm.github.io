@@ -1,9 +1,11 @@
-// Proves the strip's growth draws what a whole draw draws. Serves the site
-// on a free port, opens the scheduler in headless Chrome with the account
-// and the database stood in by invented trips, scrolls the strip two weeks
-// on and four weeks back so it grows each way, and compares every bar and
-// yard card of the grown strip with a whole draw of the same week: the
-// bar's row, trip, leg, assignment, slot, days, lane, classes and words.
+// Proves the strip draws near the view what a whole draw draws. Serves the
+// site on a free port, opens the scheduler in headless Chrome with the
+// account and the database stood in by invented trips, scrolls the strip
+// two weeks on and four weeks back, and compares every bar and yard card
+// within two weeks of the view with those of the page loaded again and
+// brought to the same day: the bar's row, trip, leg, assignment, slot,
+// days, lane, classes and words, and the out-of-service marks and stripes.
+// Says too where a bar is drawn twice.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
 import { spawn } from 'node:child_process';
@@ -73,7 +75,9 @@ function invented() {
       });
     }
   }
-  return { buses, drivers, trips, contacts: [], customers: [], locations: [], settings: [], bus_out_of_service: [], driver_time_off: [] };
+  // One bus out of service for five days, two weeks back, where the check scrolls to.
+  const out = [{ bus_id: 'b-3', start_date: iso(day(-17)), end_date: iso(day(-13)), reason: 'Brakes' }];
+  return { buses, drivers, trips, contacts: [], customers: [], locations: [], settings: [], bus_out_of_service: out, driver_time_off: [] };
 }
 
 /* The account and database stand-in, run in the page before its scripts:
@@ -101,97 +105,89 @@ const stub = data => `(() => {
   try { localStorage.setItem('scheduler.view', JSON.stringify({ scroll: true })); } catch {}
 })();`;
 
-/* What runs in the page: waits for the strip, scrolls it on by two weeks and
-   back by four, and after each grown strip has a whole draw of the same week
-   to compare with. Returns the differences. */
-const scenario = `(async () => {
+/* What runs in the page, in two parts. The first waits for the strip,
+   scrolls it on by two weeks and back by four, and takes what is drawn; the
+   second, in the page loaded again, picks the week of that day, scrolls to
+   the day itself and takes what is drawn there. Both answer the day in view
+   and every bar and yard card drawn. */
+const common = `
   const sch = document.getElementById('scheduler-week');
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const until = async (test, ms, what) => { const t0 = performance.now(); while (performance.now() - t0 < ms) { if (test()) return true; await wait(50); } throw new Error('timed out waiting for ' + what); };
-  const label = () => document.getElementById('scheduler-range')?.textContent ?? '';
+  const label = () => document.getElementById('scheduler-range-text')?.textContent ?? '';
   const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar').length;
-  // The strip: two weeks before the week in view, the week, and two after.
-  const STRIP = 35;
-  await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length === STRIP, 15000, 'the strip');
+  // The strip runs a year and more, so its day header has more than a year of days.
+  await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length > 365, 15000, 'the strip');
   await wait(800);
   const w = window.Rux.schedule.day();
-  // The week input holds the picker's own format, m/d/yyyy here; a pick is written the same way.
   const toIso = v => { const m = /^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0') : (v || ''); };
-  const fromIso = isoDay => { const [y, m, d] = isoDay.split('-'); return Number(m) + '/' + Number(d) + '/' + y; };
-  const shift = (isoDay, n) => { const d = new Date(isoDay + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
-  const days = (a, b) => Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000);
   const snap = () => ({
-    first: document.querySelector('.scheduler-day').textContent, label: label(), week: toIso(document.getElementById('scheduler-week-date').value),
-    at: Math.round(sch.scrollLeft / w * 100) / 100, stripStart: shift(toIso(document.getElementById('scheduler-week-date').value), -Math.round(sch.scrollLeft / w)),
+    at: Math.round(sch.scrollLeft / w * 100) / 100, week: toIso(document.getElementById('scheduler-week-date').value), inView: Number(sch.dataset.daysInView) || 7,
     bars: [...document.querySelectorAll('.scheduler-track > .scheduler-bar')].map(b => ({
       key: (b.parentElement.dataset.busId ?? 'u') + '|' + b.dataset.tripId + '|' + b.dataset.legKey + '|' + (b.dataset.assignmentId || '') + '|' + b.dataset.slot,
       start: Number(b.dataset.start), span: Number(b.dataset.span), lane: b.style.getPropertyValue('--scheduler-lane'), varStart: b.style.getPropertyValue('--scheduler-start'),
       cls: [...b.classList].filter(c => !/--(road|watched|saving|pressed|open|same-trip|driver|saved)$/.test(c)).sort().join(' '),
       text: b.textContent, folded: b.hasAttribute('data-folded'),
     })),
-    yards: [...document.querySelectorAll('.scheduler-track > .scheduler-yard')].map(y => (y.parentElement.dataset.busId ?? 'u') + '|' + y.dataset.start + '|' + y.style.getPropertyValue('--scheduler-lane') + '|' + y.className + '|' + y.title).sort(),
+    yards: [...document.querySelectorAll('.scheduler-track > .scheduler-yard')].map(y => ({ start: Number(y.dataset.start), key: (y.parentElement.dataset.busId ?? 'u') + '|' + y.dataset.start + '|' + y.style.getPropertyValue('--scheduler-lane') + '|' + y.className + '|' + y.title })),
+    marks: [...document.querySelectorAll('.scheduler-row-head[data-bus-id]')].filter(h => h.querySelector('.scheduler-row-head__oos')).map(h => h.dataset.busId),
+    stripes: [...document.querySelectorAll('.scheduler-track > .scheduler-oos')].map(o => (o.parentElement.dataset.busId ?? 'u') + '|' + o.style.getPropertyValue('--scheduler-start') + '|' + o.style.getPropertyValue('--scheduler-span')),
   });
   const swipe = async (dx, n) => { for (let i = 0; i < n; i++) { sch.dispatchEvent(new WheelEvent('wheel', { deltaX: dx, deltaY: 1, deltaMode: 0, bubbles: true, cancelable: true })); await wait(16); } };
   const settled = async () => { await wait(1800); };
-  const pick = async isoDay => { const was = label(); const input = document.getElementById('scheduler-week-date'); input.value = fromIso(isoDay); input.dispatchEvent(new Event('change', { bubbles: true })); await until(() => label() !== was, 8000, 'the week ' + isoDay); await wait(600); };
-  /* A whole draw with the same days on screen as the grown strip: a week far
-     off is drawn first, so the way back is a draw and not a scroll; the pick
-     lands on the week's first day, so the view is then scrolled on to the
-     grown strip's day, which settles the rows the same way. */
-  const whole = async grown => { await pick(shift(grown.week, 120)); const far = label(); await pick(grown.week); await until(() => label() !== far && bars() > 0, 8000, 'the week back'); await wait(1000);
-    const on = days(toIso(document.getElementById('scheduler-week-date').value), grown.week);
-    if (on) { await swipe(on > 0 ? 30 : -30, Math.round(Math.abs(on) * w / 30)); await settled(); }
-    return snap(); };
-  /* A gesture leaves the week in view on any day; the picker lands on a week's
-     first day, so the whole draw's strip starts up to six days earlier. The
-     two are compared on their common days, the whole draw's day indices moved
-     by the difference, leaving out a bar either strip's edge cuts. */
-  const compare = (name, grown, fresh) => {
-    const delta = days(fresh.stripStart, grown.stripStart);
-    const inside = (start, span) => start >= 1 && start + span <= STRIP - 1;
-    const out = { name, delta, sameDays: grown.week === fresh.week, grownBars: grown.bars.length, freshBars: fresh.bars.length, onEdge: Math.abs(grown.at - Math.round(grown.at)) < 0.01, diffs: [], laneDiffs: 0, compared: 0, unsettled: grown.bars.filter(b => Number(b.varStart) !== b.start).length };
-    const f = new Map(fresh.bars.filter(b => inside(b.start, b.span) && inside(b.start - delta, b.span)).map(b => [b.key, { ...b, start: b.start - delta }]));
-    /* A yard card's mark goes to the bar its next bar shares a lane with, so
-       on a bus where a bar moved lane the mark may move to a neighbour, as
-       the card itself may; the mark is compared only on a bus whose bars all
-       kept their lanes. It is half of its card, so it is compared only where
-       the card is: where its next bar too lies on days both strips hold. A
-       strip's last day cuts a bar short, and the bars after it are not drawn,
-       so there it can take another lane than a strip holding its whole span
-       gives it, and the card and its mark move with it. */
-    const moved = new Set(grown.bars.filter(g => { const b = f.get(g.key); return b && g.lane !== b.lane; }).map(g => g.key.split('|')[0]));
-    const busOf = x => x.key.split('|')[0];
-    const common = x => inside(x.start, x.span) && inside(x.start + delta, x.span);
-    const freshHere = fresh.bars.map(b => ({ ...b, start: b.start - delta }));
-    const cardHeld = (x, list) => { const next = list.find(n => busOf(n) === busOf(x) && n.lane === x.lane && n.start === x.start + x.span); return !!next && common(next); };
-    const cls = (x, list) => moved.has(busOf(x)) || !cardHeld(x, list) ? x.cls.split(' ').filter(c => c !== 'scheduler-bar--yard-end').join(' ') : x.cls;
-    out.marks = 0; out.marksAtEdge = 0;
-    for (const g of grown.bars.filter(common)) { const b = f.get(g.key); if (!b) { out.diffs.push({ key: g.key, only: 'grown' }); continue; } f.delete(g.key); out.compared++;
-      const marked = [[g, grown.bars], [b, freshHere]].filter(([x]) => x.cls.includes('scheduler-bar--yard-end'));
-      if (marked.length && !moved.has(busOf(g))) { if (marked.every(([x, list]) => cardHeld(x, list))) out.marks++; else out.marksAtEdge++; }
-      for (const k of ['start', 'span', 'cls', 'text', 'folded']) if ((k === 'cls' ? cls(g, grown.bars) !== cls(b, freshHere) : g[k] !== b[k])) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
-      if (g.lane !== b.lane) out.laneDiffs++; }
-    for (const key of f.keys()) out.diffs.push({ key, only: 'fresh' });
-    // A card is compared only where both strips hold its day, as a bar is.
-    const yardsOf = (list, move) => list.map(y => { const [track, start, ...rest] = y.split('|'); return [track, Number(start) - move, ...rest]; }).filter(y => y[1] >= 1 && y[1] <= STRIP - 2 && y[1] + move >= 1 && y[1] + move <= STRIP - 2).map(y => y.join('|')).sort();
-    const yg = yardsOf(grown.yards, 0).filter(y => { const i = Number(y.split('|')[1]); return i + delta >= 1 && i + delta <= STRIP - 2; }), yf = yardsOf(fresh.yards, delta);
-    out.yardsSame = JSON.stringify(yg) === JSON.stringify(yf);
-    // A yard card is the pair of bars it stands between; one that only moved lane with its bars is the same card.
-    const noLane = y => y.split('|').filter((_, i) => i !== 2).join('|');
-    out.yardsSameButLane = JSON.stringify(yg.map(noLane).sort()) === JSON.stringify(yf.map(noLane).sort());
-    out.yardDiffs = [...yg.filter(y => !yf.includes(y)).map(y => 'grown ' + y), ...yf.filter(y => !yg.includes(y)).map(y => 'fresh ' + y)].slice(0, 6);
-    return out;
-  };
-  const results = [];
-  const start = snap();
+`;
+const scrolled = `(async () => {${common}
+  const before = snap();
   await swipe(30, 110); await settled();
-  const grownOn = snap();
-  results.push(compare('on by two weeks', grownOn, await whole(grownOn)));
   await swipe(-30, 200); await settled();
-  const grownBack = snap();
-  results.push(compare('back by four weeks', grownBack, await whole(grownBack)));
-  return { startWeek: start.week, startBars: start.bars.length, results };
+  return { ...snap(), marksBefore: before.marks };
 })()`;
+// The day to come back to is the first one's, in days from the strip's first.
+const broughtTo = at => `(async () => {${common}
+  const input = document.getElementById('scheduler-week-date');
+  const was = label();
+  // The strip's first day, from the week in view and how far into the strip it stands.
+  const strip = new Date(toIso(input.value) + 'T12:00:00'); strip.setDate(strip.getDate() - Math.round(sch.scrollLeft / w));
+  const target = new Date(strip); target.setDate(target.getDate() + ${at});
+  // Written back in the input's own format, m/d/yyyy or ISO.
+  const pick = target.toISOString().slice(0, 10);
+  input.value = input.value.includes('/') ? pick.split('-').map(Number).slice(1).join('/') + '/' + pick.slice(0, 4) : pick;
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+  await until(() => label() !== was, 8000, 'the week picked'); await settled();
+  const on = ${at} - Math.round(sch.scrollLeft / w);
+  if (on) { await swipe(on > 0 ? 30 : -30, Math.round(Math.abs(on) * w / 30)); await settled(); }
+  return snap();
+})()`;
+
+/* Compares what the two drew within NEAR days of the first's view, a day
+   inside the two weeks either side where both have drawn every trip; past
+   that, the first may still hold trips it drew on its way, and the second
+   has yet to draw them. */
+const NEAR = 13;
+function compare(name, scrolledTo, whole) {
+  const near = x => x.start + (x.span ?? 0) >= scrolledTo.at - NEAR && x.start <= scrolledTo.at + scrolledTo.inView + NEAR;
+  const out = { name, sameDay: Math.abs(scrolledTo.at - whole.at) < 0.01, onEdge: Math.abs(scrolledTo.at - Math.round(scrolledTo.at)) < 0.01, diffs: [], compared: 0 };
+  const twice = list => list.map(b => b.key).filter((k, i, all) => all.indexOf(k) !== i);
+  out.twice = [...new Set([...twice(scrolledTo.bars), ...twice(whole.bars)])];
+  out.unplaced = scrolledTo.bars.filter(b => Number(b.varStart) !== b.start).length;
+  const f = new Map(whole.bars.filter(near).map(b => [b.key, b]));
+  for (const g of scrolledTo.bars.filter(near)) {
+    const b = f.get(g.key);
+    if (!b) { out.diffs.push({ key: g.key, only: 'scrolled' }); continue; }
+    f.delete(g.key);
+    out.compared++;
+    for (const k of ['start', 'span', 'lane', 'cls', 'text', 'folded']) if (g[k] !== b[k]) out.diffs.push({ key: g.key, field: k, scrolled: String(g[k]).slice(0, 60), whole: String(b[k]).slice(0, 60) });
+  }
+  for (const key of f.keys()) out.diffs.push({ key, only: 'whole' });
+  const yards = list => list.filter(near).map(y => y.key).sort();
+  const ys = yards(scrolledTo.yards), yw = yards(whole.yards);
+  out.yards = ys.length;
+  out.yardDiffs = [...ys.filter(y => !yw.includes(y)).map(y => 'scrolled ' + y), ...yw.filter(y => !ys.includes(y)).map(y => 'whole ' + y)].slice(0, 6);
+  // The out-of-service mark is on the heads whose windows are in view, and only there; the stripes are every window held.
+  out.marks = scrolledTo.marks.join() === whole.marks.join() && scrolledTo.marks.includes('b-3') && !scrolledTo.marksBefore.includes('b-3');
+  out.stripes = scrolledTo.stripes.join() === whole.stripes.join() && scrolledTo.stripes.length > 0;
+  return out;
+}
 
 async function freePort() {
   return new Promise((done, failed) => { const s = createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => done(port)); }); s.on('error', failed); });
@@ -248,23 +244,32 @@ async function main() {
     await page.send('Page.navigate', { url: `http://localhost:${port}/scheduler/` });
     await Promise.race([loaded, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded')), 20000))]);
     if (process.env.STRIP_DEBUG) { await new Promise(r => setTimeout(r, 4000)); const d = await page.send('Runtime.evaluate', { expression: 'JSON.stringify({ href: location.href, title: document.title, week: !!document.getElementById(\'scheduler-week\'), account: !!window.Rux?.account?.staffProfile, status: document.getElementById(\'scheduler-status\')?.textContent?.slice(0, 200), bars: document.querySelectorAll(\'.scheduler-bar\').length, weekValue: document.getElementById(\'scheduler-week-date\')?.value, label: document.getElementById(\'scheduler-range\')?.textContent, body: document.body?.textContent?.replace(/\\s+/g, \' \').slice(0, 300) })', returnByValue: true }); console.log('debug', d.result.value); console.log('errors', errors.slice(0, 8)); }
-    const { result, exceptionDetails } = await page.send('Runtime.evaluate', { expression: scenario, awaitPromise: true, returnByValue: true, timeout: 90000 });
+    const run = async expression => {
+      const { result, exceptionDetails } = await page.send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, timeout: 90000 });
+      if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
+      return result.value;
+    };
+    const first = await run(scrolled);
+    const again = new Promise(r => page.on('Page.loadEventFired', r));
+    await page.send('Page.reload');
+    await Promise.race([again, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded again')), 20000))]);
+    const second = await run(broughtTo(Math.round(first.at)));
     page.close();
-    if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
+    const r = compare('on two weeks and back four', first, second);
     let bad = false;
-    for (const r of result.value.results) {
-      const words = `${r.name}: ${r.compared} bars the same as a whole draw${r.laneDiffs ? `, ${r.laneDiffs} in another lane` : ''}${!r.yardsSame && r.yardsSameButLane ? ', yard cards moved with them' : ''}, ${r.marks} yard marks compared${r.marksAtEdge ? `, ${r.marksAtEdge} by a strip's edge left out` : ''}`;
-      if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
-      if (!r.sameDays) { fail('strip', `${r.name}: the whole draw could not be brought to the same day`); bad = true; }
-      if (r.unsettled) { fail('strip', `${r.name}: ${r.unsettled} bars not where their data-start says`); bad = true; }
-      if (!r.yardsSame && !r.yardsSameButLane) { bad = true; fail('strip', `${r.name}: the yard cards differ from a whole draw`); for (const y of r.yardDiffs) console.log(`          ${y}`); }
-      if (r.diffs.length) { bad = true; fail('strip', `${r.name}: ${r.diffs.length} bars differ from a whole draw`); for (const d of r.diffs.slice(0, 8)) console.log(`          ${JSON.stringify(d)}`); }
-      if (!bad) ok('strip', words);
-    }
+    if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
+    if (!r.sameDay) { fail('strip', `${r.name}: the page loaded again could not be brought to the same day (${first.at}, ${second.at})`); bad = true; }
+    if (r.twice.length) { fail('strip', `${r.name}: ${r.twice.length} bars drawn twice`); for (const k of r.twice.slice(0, 6)) console.log(`          ${k}`); bad = true; }
+    if (r.unplaced) { fail('strip', `${r.name}: ${r.unplaced} bars not where their data-start says`); bad = true; }
+    if (!r.marks) { fail('strip', `${r.name}: the out-of-service mark is not on the heads of the days in view (${first.marksBefore} then ${first.marks}, whole ${second.marks})`); bad = true; }
+    if (!r.stripes) { fail('strip', `${r.name}: the out-of-service stripes differ from a whole draw (${first.stripes} against ${second.stripes})`); bad = true; }
+    if (r.yardDiffs.length) { bad = true; fail('strip', `${r.name}: the yard cards differ from a whole draw`); for (const y of r.yardDiffs) console.log(`          ${y}`); }
+    if (r.diffs.length) { bad = true; fail('strip', `${r.name}: ${r.diffs.length} bars differ from a whole draw`); for (const d of r.diffs.slice(0, 8)) console.log(`          ${JSON.stringify(d)}`); }
+    if (!bad) ok('strip', `${r.name}: ${r.compared} bars and ${r.yards} yard cards near the view the same as a whole draw`);
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }
-    if (!bad && !noise.length) ok('strip', `${result.value.startBars} bars from ${result.value.startWeek}, grown each way in ${seconds}s`);
+    if (!bad && !noise.length) ok('strip', `scrolled and drawn whole in ${seconds}s`);
   } catch (e) {
     fail('strip', e.message);
   } finally {

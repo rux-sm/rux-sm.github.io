@@ -28,19 +28,24 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    with named states (idle, reading, reading-with-newer-ask) and one
    `held` reason, so a path reads as a transition.
 
-2. **Two renderers.** `render` draws the strip whole and `growStrip` moves
-   it along; they must agree on every bar. `tools/check-strip.mjs` now
-   proves they do, on invented trips in headless Chrome, two weeks on and
-   four weeks back, comparing every bar's row, trip, leg, assignment, slot,
-   days, lane, classes, words and fold, and every yard card and yard mark
-   on the days both strips hold; it fails on a growth broken on purpose. It
-   takes twenty seconds and runs in `npm run check`.
+2. **Trips drawn near the view.** The strip's days and rows are drawn
+   once and its trips as they come within two weeks of the view, from a
+   layout of every trip held, and a read that lands is taken in where the
+   board stands, keeping each bar drawn on days that read the same in both.
+   `tools/check-strip.mjs` proves the bars near the view after a scroll are
+   those of the page loaded again at the same day, on invented trips in
+   headless Chrome, two weeks on and four weeks back, comparing every bar's
+   row, trip, leg, assignment, slot, days, lane, classes, words and fold,
+   every yard card and the out-of-service marks and stripes, and fails
+   where a bar is drawn twice. It takes twenty seconds and runs in
+   `npm run check`.
 
-3. **A jump past what is held redraws once.** The board holds seventeen
-   weeks either side of where it last read, so scrolling and arrows never
-   wait, but a date picked further off, Today straight after one, or arrows
-   pressed faster than the strip can follow for more than four weeks are
-   drawn whole: one frame of 120 to 280ms. Fix: none now; it is a jump.
+3. **A jump past what is held waits for its read.** The board holds
+   seventeen weeks either side of where it last read, so scrolling and
+   arrows never wait; a date picked further off is put a week short and
+   glided to, its rows showing the loading skeleton until the read lands,
+   about 0.6s on the office's line. Fix: none; the trips are not known
+   until read.
 
 ### Costs a frame
 
@@ -60,10 +65,17 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    `-lanes` are registered non-inherited, which keeps a change to one
    element; any new per-bar property should be registered the same way.
 
-6. **`bar.js` reads `scrollWidth` while drawing**, so every new bar forces a
-   layout of whatever is dirty; a settle frame's cost is therefore in its
-   count of draws, not its loop time, which is why `OWED_DRAWS_PER_FRAME`
-   is one.
+6. **A new bar costs the browser about 4ms of its frame**, though drawing
+   it is 0.2ms of script: its style, its layout and `bar.js` fitting its
+   crew by `scrollWidth`. A frame's cost is therefore in its count of
+   draws, which is why `OWED_DRAWS_PER_FRAME` is one, and a scroll forward
+   over trips not yet drawn costs more than one back over trips drawn.
+
+7. **The frame a scroll stops in is 50 to 90ms**: the roster drawn for the
+   week in view, the trips more than a month off taken out, and the layout
+   both leave, most after a far move. Nothing moves in it but the rows
+   beginning to fit. Fix: the rows fitted a moment after the browser's
+   `scrollend`, in a frame of their own.
 
 ## Where the file could be cut
 

@@ -218,6 +218,7 @@
 
     const today = iso(new Date());
     let todayCell = null;
+    const band = el('div', 'scheduler-days');
     for (let i = 0; i < DAYS; i++) {
       const d = addDays(start, i);
       const cell = el('div', 'scheduler-day');
@@ -228,8 +229,9 @@
         todayCell = cell;
       }
       cell.append(document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })), el('span', 'scheduler-day__num', String(d.getDate())));
-      gridEl.append(cell);
+      band.append(cell);
     }
+    gridEl.append(band);
 
     // A rule at each inner day boundary, drawn by app.css as the track's
     // background from these stops, as data.js writes them for seven days.

@@ -13,20 +13,22 @@ that come near the view and tidies up once the board has stopped. Every frame
 of a scroll fits the screen's budget, 8.3ms at the Mac's 120Hz, and a panel
 opening beside the week pushes it as Carbon's side panel pushes the page.
 
-Today, under a mouse or a trackpad, `scheduler/data.js` moves the strip
-itself: app.css hides the strip's sideways overflow, and a wheel handler takes
-every trackpad event, scrolls by it, works out the momentum, and runs its own
-glides and landings (`glide`, `landGlide`, a spring for a second press). The
-strip is five or six weeks long and is drawn again around the week in view as
-it nears either end (`growStrip`), and holds stand in for knowing a scroll has
-ended. A touch screen already scrolls the strip natively.
+Today the strip is already one long strip whose trips are drawn near the
+view (`drawNear` in `scheduler/data.js`), but under a mouse or a trackpad
+the page's code moves it: app.css hides its sideways overflow, and a wheel
+handler takes every trackpad event, scrolls by it, works out the momentum,
+and runs its own glides and landings (`glide`, `landGlide`, a spring for a
+second press), and holds stand in for knowing a scroll has ended. A touch
+screen already scrolls the strip natively.
 
 ## Decisions
 
 - **One long strip, every day from January of the first year with trips to
   the end of next year,** as the year list runs: 2026 and 2027 are 730 days,
   127,750px, well inside what a browser scrolls. It is never drawn again
-  around the view, so a scroll never nears an end it has to move.
+  around the view, so a scroll never nears an end it has to move. Its day
+  header is one sticky band laid out on its own, so the browser keeps one
+  sticky box and a row's change never lays out its 735 cells.
 - **The browser scrolls it, both ways,** with `scroll-snap-type` resting
   sideways on a day's edge and up and down on a row's or a stacked trip's
   top, as the script does now. The wheel handler, `glide`, `landGlide`, the
@@ -83,8 +85,9 @@ ended. A touch screen already scrolls the strip natively.
   the week moves at once.
 
 - **The arrows and Today use the browser's own smooth scroll,** as rux
-  decided, so a press moves the strip as a trackpad does; Today from more
-  than a week off is set a week short of today and scrolls the last week.
+  decided, so a press moves the strip as a trackpad does; a move of more
+  than two weeks, Today's or a pick's, is put a week short and scrolls the
+  last week.
 - **The phone's compact week is the same strip,** as rux decided, swiped
   with the iPhone's own fling and resting on a week's first day, so its own
   swipe code goes; paging was kept only because a fling while the strip was
@@ -96,15 +99,14 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the whole strip's days and only the trips near the view, with the
-      loading skeleton for days not yet read.
 - [ ] Hand both directions of scrolling to the browser with CSS snapping, and
-      delete the wheel handling, glides, landings, spring and strip regrowth.
+      delete the wheel handling, glides, landings and spring.
 - [ ] Follow the first day in view on each scroll frame and do the rest at
       `scrollend`, lanes after the rest, and delete the holds.
 - [ ] Move the arrows and Today with the browser's smooth scroll.
 - [ ] Keep the strip's first day as a panel opens and closes.
-- [ ] Rewrite the strip check for the drawn-near-the-view strip.
+- [ ] Have the strip check scroll with trusted wheel events and measure the
+      frames.
 - [ ] Bring the phone's week onto the strip, resting on a week's first day,
       checked in the iPhone simulator.
 - [ ] Add the panel motion.

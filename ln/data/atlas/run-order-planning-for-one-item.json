@@ -10,7 +10,7 @@
     "Sales"
   ],
   "updated": "2026-11-02",
-  "status": "review",
+  "status": "approved",
   "summary": "give one item more demand than its stock covers, run planning on it, and read the orders LN suggests.",
   "order": 3,
   "sources": [

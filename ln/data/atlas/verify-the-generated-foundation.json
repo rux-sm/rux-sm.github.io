@@ -23,7 +23,7 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "review",
+  "status": "approved",
   "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",

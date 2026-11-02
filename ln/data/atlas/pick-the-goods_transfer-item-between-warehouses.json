@@ -22,7 +22,7 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "review",
+  "status": "approved",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",

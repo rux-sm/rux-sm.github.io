@@ -1,9 +1,9 @@
-commit   7b33f9a21b0c53ad8ab19e94354ff9183fa7f966
-date     2026-11-02T07:20:39Z
-subject  feat(tasks): Stamp the horizon task walked again
+commit   b37f60b55c1f7a6fe52cd84a77d3b6536fa8f8f3
+date     2026-11-02T12:18:53Z
+subject  feat(walkthroughs): Approve four walked guides
 contract 24 
 tier     export
-sha256   ce142dab7746c94800250ee35fba5bb804e664e220274ad35fab35b3eb8ac760
+sha256   cabf3f60ccc813fe0ee1deb4e066df7e7efdc0ae613ccc7ff4ca60ab3461837e
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

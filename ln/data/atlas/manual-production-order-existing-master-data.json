@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-02",
-  "status": "review",
+  "status": "approved",
   "summary": "make a finished item on a production order from stock you already hold, and check that on-hand rose by what you made.",
   "order": 6,
   "sources": [

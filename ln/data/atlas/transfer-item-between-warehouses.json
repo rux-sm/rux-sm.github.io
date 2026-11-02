@@ -9,7 +9,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "review",
+  "status": "approved",
   "summary": "move some of one item from one warehouse to another in the same company, and check the stock at both.",
   "order": 8,
   "sources": [

@@ -23,7 +23,7 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "review",
+  "status": "approved",
   "updated": "2026-11-02",
   "route": "Planning ➔ Order Planning ➔ Item Order Plan",
   "session": "Item Order Plan",

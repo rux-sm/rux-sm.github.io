@@ -23,7 +23,7 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "review",
+  "status": "approved",
   "updated": "2026-11-02",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",

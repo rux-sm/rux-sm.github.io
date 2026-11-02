@@ -285,10 +285,7 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": true,
-          "example": [
-            0
-          ]
+          "produces": true
         },
         {
           "cells": [
@@ -547,38 +544,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Shipped Quantity"
-              }
-            ],
-            "text": "Shipped Quantity"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "5"
-              },
-              {
-                "t": "text",
-                "v": " — the whole order"
-              }
-            ],
-            "text": "5 — the whole order"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "9",

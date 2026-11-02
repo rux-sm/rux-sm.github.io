@@ -266,11 +266,7 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": false,
-          "example": [
-            1,
-            2
-          ]
+          "produces": false
         },
         {
           "cells": [
@@ -585,7 +581,7 @@
           "optional": false,
           "produces": true,
           "example": [
-            3
+            1
           ]
         },
         {
@@ -709,58 +705,6 @@
               }
             ],
             "text": "N10 — Standard orders (no ATP)"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Planned Delivery Date"
-              }
-            ],
-            "text": "Planned Delivery Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — left at the order date"
-              }
-            ],
-            "text": "2026-10-24 — left at the order date"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Planned Receipt Date"
-              }
-            ],
-            "text": "Planned Receipt Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — left at the planned delivery date"
-              }
-            ],
-            "text": "2026-10-24 — left at the planned delivery date"
           }
         ]
       },

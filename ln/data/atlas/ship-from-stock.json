@@ -230,60 +230,6 @@
             "tokens": [
               {
                 "t": "field",
-                "v": "Planned Delivery Date"
-              }
-            ],
-            "text": "Planned Delivery Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — left at the order date"
-              }
-            ],
-            "text": "2026-10-24 — left at the order date"
-          }
-        ],
-        "task": "create-and-approve-the-sales-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Planned Receipt Date"
-              }
-            ],
-            "text": "Planned Receipt Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — left at the planned delivery date"
-              }
-            ],
-            "text": "2026-10-24 — left at the planned delivery date"
-          }
-        ],
-        "task": "create-and-approve-the-sales-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
                 "v": "Ordered Quantity"
               }
             ],
@@ -300,60 +246,6 @@
           }
         ],
         "task": "create-and-approve-the-sales-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Upto Release Date"
-              }
-            ],
-            "text": "Upto Release Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — the day of the test run. LN puts in today's date"
-              }
-            ],
-            "text": "2026-10-24 — the day of the test run. LN puts in today's date"
-          }
-        ],
-        "task": "release-to-warehousing"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Shipped Quantity"
-              }
-            ],
-            "text": "Shipped Quantity"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "5"
-              },
-              {
-                "t": "text",
-                "v": " — the whole order"
-              }
-            ],
-            "text": "5 — the whole order"
-          }
-        ],
-        "task": "ship_ship-from-stock"
       }
     ]
   },

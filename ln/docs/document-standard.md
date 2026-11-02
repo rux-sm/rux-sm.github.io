@@ -18,23 +18,21 @@ follows. A guide that misses a part is unfinished; the work to close it is in
 2. **Title and purpose**: one sentence saying what the guide achieves.
 3. **Summary**: one row per task with what you do, its result and its number
    of steps.
-4. **Example values from a test run**: every value the run types, each with
-   the step that uses it.
-5. **Before you start**: what must exist before the first step, such as a
+4. **Before you start**: what must exist before the first step, such as a
    customer, an item with stock and a warehouse that holds it.
-6. **Procedure**, task by task: its result, its session and how to open it,
-   Why LN works this way, the steps, and If something goes wrong.
-7. **Variations**: the cases that change a step or a task.
-8. **Sessions used**: each session with its code and how to open it.
-9. **Check the result**: one row per task, its result as a fact a tester can
+5. **Procedure**, task by task: its result, its session and how to open it,
+   Why LN works this way, the steps, each with the value the test run used
+   where it typed one, and If something goes wrong.
+6. **Variations**: the cases that change a step or a task.
+7. **Sessions used**: each session with its code and how to open it.
+8. **Check the result**: one row per task, its result as a fact a tester can
    tick, and boxes for Pass and Fail.
-10. **Sign-off**: Prepared by a consultant, Reviewed by a key user and
-    Approved by a process owner, each with name, signature and date lines.
-    The owner's own copy fills the Prepared by name, as on the first page.
+9. **Sign-off**: Prepared by a consultant, Reviewed by a key user and
+   Approved by a process owner, each with name, signature and date lines.
+   The owner's own copy fills the Prepared by name, as on the first page.
 
 Every page's footer gives the title, LN Notes, the Updated date and Page N
-of M. The version is the Updated
-date, the day the content last changed. Paper is Letter at 10 point, divided
+of M. The version is the Updated date, the day the content last changed. Paper is Letter at 10 point, divided
 by rules rather than fills. What comes next, Reference and Known gaps stay on
 screen, because a printed copy stands on its own and says only what is known.
 

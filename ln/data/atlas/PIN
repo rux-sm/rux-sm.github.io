@@ -1,9 +1,9 @@
-commit   8dd4913071dcd2ba46b781764a01c718a84e6514
-date     2026-11-02T02:31:08Z
-subject  feat(walks): Approve the reworded Ship from stock
+commit   18d81127a270abde410ca518b3c798db6607cc52
+date     2026-11-02T02:38:13Z
+subject  docs(tasks): Keep only examples a reader types
 contract 24 
 tier     export
-sha256   438d03c1bcb9cd31409e0e81f05d0e1ae63b5f7cd5bf3107b1429d6525c16083
+sha256   3ed8e48b20391bf23a04fc962b8d9e04932bcebd6b6a2ce0c10921a9d328f8da
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -75,7 +75,6 @@
 .ln-proc__facts dt { margin-block-end: .25rem; font-size: .75rem; color: var(--rux-text-secondary); }
 .ln-proc__facts dd { margin: 0; font-size: .875rem; }
 .ln-proc__h2 { margin: 0 0 1rem; padding-block-start: .75rem; border-block-start: 2px solid var(--rux-text-primary); }
-.ln-proc__h4 { margin: 1.25rem 0 .5rem; font-size: .875rem; font-weight: 600; }
 /* A table's own title row reads as the heading above a table, not as a header cell. */
 .ln-proc__table .ln-proc__table-title th { block-size: auto; padding: 1.25rem 0 .5rem; background: none; border: 0; font-size: .875rem; font-weight: 600; color: var(--rux-text-primary); }
 .ln-proc__task + .ln-proc__task { margin-block-start: 2.5rem; }

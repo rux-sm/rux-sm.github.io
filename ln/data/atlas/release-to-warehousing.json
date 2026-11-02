@@ -205,10 +205,7 @@
           ],
           "id": "3",
           "optional": false,
-          "produces": false,
-          "example": [
-            0
-          ]
+          "produces": false
         },
         {
           "cells": [
@@ -446,38 +443,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Upto Release Date"
-              }
-            ],
-            "text": "Upto Release Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — the day of the test run. LN puts in today's date"
-              }
-            ],
-            "text": "2026-10-24 — the day of the test run. LN puts in today's date"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "2",

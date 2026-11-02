@@ -641,7 +641,6 @@ function processPage(s) {
         const name = screen && cards.has(screen.code) ? `<a class="rux--link" href="${hrefScreen(screen.code)}">${esc(n.session)}</a>` : esc(n.session);
         return { quiet: true, cells: ['', `Decision: ${name}`, sentence(tokens(n.does.tokens)), ''] };
       })]);
-    const values = valuesTable(s.values.rows);
     // A task's prerequisite that only names tasks of this process is the
     // process's own order, so only one that reaches outside it is listed.
     const inside = (b) => { const links = b.tokens.filter((x) => x.t === 'link'); return links.length && links.every((x) => K.has(/^(.+)\.md$/.exec(x.href)?.[1])); };
@@ -691,9 +690,7 @@ ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 ${docH2('summary', 'Summary')}
-${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
-<p class="ln-proc__h4">Example values from a test run</p>
-${values}` : ''}
+${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}
 </section>${need.length ? `
 <section>
 ${docH2('before', 'Before you start')}
@@ -902,17 +899,6 @@ const docProse = (t, k) => t.blocks.filter((b) => b.kind === 'prose').map((b) =>
   const c = calloutOf(b.tokens);
   return c ? notice(c, docText(c.rest, t, `Task ${k || ''}`.trim())) : `<p>${docText(b.tokens, t, `Task ${k || ''}`.trim())}</p>`;
 }).join('');
-// The values a process's run uses, or a task was walked with, each naming the step.
-function valuesTable(rows, owner) {
-  if (!rows.length) return '';
-  const stepsOf = (r) => {
-    const t = owner ?? taskById.get(r.task);
-    if (!t) return '';
-    const i = t.example.rows.findIndex((e) => e.cells[0].text === r.cells[0].text);
-    return rowsOf(t).filter((row) => row.example?.includes(i)).map((row) => stepRef(t, row.id, null, 'Step').replace('>Step ', '>')).join(', ');
-  };
-  return docTable([['Field', '30%'], ['Value'], ['Step', '6rem']], rows.map((r) => ({ cells: [docText(r.cells[0].tokens), docText(r.cells[1].tokens), stepsOf(r)] })), 'ln-proc__values');
-}
 // The screens a Document opens, in the order it first opens them.
 function screensTable(ts) {
   const codes = [...new Set(ts.flatMap((t) => [...codesOf(t)]))].filter((c) => cards.has(c));
@@ -962,7 +948,6 @@ function task(s, t) {
       const html = docText(c ? c.rest : b.tokens, t, 'Steps');
       return !html ? '' : c ? notice(c, html) : `<p>${html}</p>`;
     }).join('');
-    const values = valuesTable(t.example.rows, t);
     const wrongHtml = wrongTable(s, t, k);
     const caseRows = cases.map((c) => ({ cells: [c.title, c.body] }));
     const lead = t.why ? docText(t.why.tokens, t, 'Why LN works this way') : '';
@@ -980,10 +965,6 @@ ${unwalked(notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> 
 <section>
 ${docH2('before', 'Before you start')}
 <ul class="ln-proc__list">${need.map((x) => `<li>${x}</li>`).join('')}</ul>
-</section>` : ''}${values ? `
-<section>
-${docH2('values', 'Values')}
-${values}
 </section>` : ''}
 <section>
 ${docH2('steps', 'Steps')}${t.route ? `

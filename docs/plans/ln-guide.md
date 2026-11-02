@@ -218,9 +218,8 @@ tutorial, reference and explanation.
   22, and marks each step row with the example rows whose field it names, so
   the page never matches names itself.
 
-- **A process's values are its tasks' examples, gathered in order** by the
-  emitter, one row per what; a process writes none of its own, because one
-  fact has one home.
+- **A process lists no values of its own.** Each step shows the example it
+  types, so a list at the top would only repeat them.
 
 - **A new area of LN is its tasks and the processes that use them.**
 

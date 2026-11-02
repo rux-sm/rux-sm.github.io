@@ -31,8 +31,7 @@ And a team, after log-in, sees what the public page cannot carry.
 - **The Document's parts, in order:** a title block of the title, its
   purpose, and on screen five facts (status as a grey progress icon and its
   words, module, length, updated, applies to), with a Note when nobody has walked it; then Summary, the tasks
-  with their result and step count and the values the run uses, each naming
-  the step that uses it; Before you start, only what lies outside the
+  with their result and step count; Before you start, only what lies outside the
   procedure; Procedure, each task with its result and session, Why LN works
   this way, its notices, one table of Step · Action · Value · You should see,
   and its own If something goes wrong; then Variations, What comes next,
@@ -117,4 +116,4 @@ And a team, after log-in, sees what the public page cannot carry.
 - [ ] In atlas, send a callout as a block and a step's parts as fields under
       a new contract, and remove the build's pattern matching for them.
 - [ ] Send each walk's real records, the customer, item and warehouse, to the
-      same readers, and show them beside the example values.
+      same readers, and show them beside each step's example.

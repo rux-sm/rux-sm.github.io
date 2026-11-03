@@ -1446,6 +1446,14 @@
 /* The calculator's total bar is the panel's foot, solid since the sections
    scroll under it, in the panel's own colour, the page's in both themes. */
 :is([data-theme="rux-dark"], [data-theme="rux-100"]).scheduler-quote-framed .scheduler-quote-bar { background: var(--rux-background); }
+/* Its fields are dark as the trip editor's are, Geist's: the raised
+   surface inside their own ring, where Carbon's layer-two field grey all
+   but hid the ring. The calculator is its own page, out of reach of the
+   panels' tile rule below. */
+[data-theme="rux-100"].scheduler-quote-framed .scheduler-quote .rux--layer-two {
+  --rux-field: var(--scheduler-raised);
+  --rux-field-hover: var(--scheduler-raised-hover);
+}
 /* Carbon paints a side panel's body, head and foot with layer-01 by name
    rather than through `--rux-layer`, so they are pointed at it here. */
 [data-theme="rux-100"] #scheduler-panel-body .rux--tabs,

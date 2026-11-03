@@ -71,6 +71,28 @@ expect('hour 0 counts no return as the night before', taken(day('00:30', '00:55'
 setLateReturn(undefined);
 expect('with no row saved the hour is 4', taken(away), [['2026-10-16', '2026-10-17', '2026-10-18', 1]]);
 
+// THE EARLY START: a bus that leaves the yard the day before the leg, to be
+// at a far pickup by its spot, takes that day. Each leg is [from, to, starts,
+// ends, the days before its first the bus leaves].
+const early = t => legsOf(t).map(l => [l.from, l.to, l.starts, l.ends, l.outDays]);
+const far2 = (out, spot = '2026-10-16') => ({ start_date: '2026-10-16', end_date: '2026-10-18', trip_stops: [
+  { leg: 'outbound', position: 0, type: 'pickup', depart_prev: '16:39', depart_prev_date: out, spot: '04:45', spot_date: spot },
+  { leg: 'outbound', position: 1, type: 'stop', depart_prev: '05:00', depart_prev_date: '2026-10-16', arrive: '23:30', arrive_date: '2026-10-16' },
+  { leg: 'outbound', position: 2, type: 'return', depart_prev: '13:00', arrive: '13:00' }] });
+expect('a leg whose bus leaves the yard the evening before takes that day, and its bar starts there',
+  [early(far2('2026-10-15')), span(far2('2026-10-15'))], [[['2026-10-15', '2026-10-18', '2026-10-16', '2026-10-18', 1]], [4]]);
+expect('and it leaves at its departure on that day',
+  window.SchedulerWeek.departAt(legsOf(far2('2026-10-15'))[0]), window.SchedulerWeek.officeInstant('2026-10-15', '16:39'));
+expect('a yard departure on the group\'s day takes no day before', early(far2('2026-10-16')), [['2026-10-16', '2026-10-18', '2026-10-16', '2026-10-18', 0]]);
+const noSpot = far2('2026-10-15', null);
+noSpot.trip_stops[0] = { ...noSpot.trip_stops[0], spot: null };
+expect('with no spot the group\'s day is its departure from the pickup', early(noSpot), [['2026-10-15', '2026-10-18', '2026-10-16', '2026-10-18', 1]]);
+expect('an undated yard departure takes no day before',
+  early({ ...far2(null), trip_stops: far2(null).trip_stops.map(s => ({ ...s, depart_prev_date: s.type === 'pickup' ? null : s.depart_prev_date })) }),
+  [['2026-10-16', '2026-10-18', '2026-10-16', '2026-10-18', 0]]);
+expect('the editor\'s own dates keep the days before, so a moved leg moves with them',
+  window.SchedulerWeek.takes('2026-10-23', '2026-10-25', legsOf(far2('2026-10-15'))[0]), { from: '2026-10-22', outDays: 1, to: '2026-10-25', backDays: 0 });
+
 // The same split trip read by its old columns and read with its legs: the same bars, each leg's id and number beside.
 const withRows = { trip_type: 'dropoff_pickup', start_date: '2026-10-13', end_date: '2026-10-13', return_start_date: '2026-10-15',
   return_end_date: '2026-10-15', bus_count: 2, return_bus_count: 1,

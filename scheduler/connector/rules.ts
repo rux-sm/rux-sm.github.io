@@ -1084,9 +1084,20 @@ const window = {};
     return days.at(-1) - days[group];
   };
 
+  /* The days before the group's that the bus leaves the yard: the pickup's
+     yard departure is dated, and the group's day is its spot's, or the
+     departure from the pickup's where it has no spot. Counted between the two
+     saved days, so it holds while the leg's dates move in the editor. */
+  const outDaysOf = (stops, pickup) => {
+    const out = pickup?.depart_prev ? pickup.depart_prev_date : null;
+    const group = pickup?.spot_date || stops[stops.indexOf(pickup) + 1]?.depart_prev_date || null;
+    return out && group && out < group ? daysBetween(parseISO(out), parseISO(group)) : 0;
+  };
+
   /* A leg's times as saved, by its key or its old word: the yard departure,
-     the spot, the trip's end and the yard return, and `nights`, the midnights
-     a one-day leg's return comes after its departure. A leg with no pickup
+     the spot, the trip's end and the yard return, `nights`, the midnights a
+     one-day leg's return comes after its departure, and `outDays`, the days
+     before the leg's first that the bus leaves the yard. A leg with no pickup
      departure takes the trip's time column for the word it mirrors, and a
      leg that mirrors none has no departure. */
   const timesOf = (trip, leg) => {
@@ -1099,6 +1110,7 @@ const window = {};
       spot: pickup?.spot || null,
       end: back?.depart_prev || null,
       nights: midnightsOf(stops, pickup, back, depart),
+      outDays: outDaysOf(stops, pickup),
     };
   };
 
@@ -1127,8 +1139,8 @@ const window = {};
      go back, 1:00 to 1:59 comes twice, and `later` takes the second reading
      where the first is otherwise taken, so a leg leaves at the first and is
      back at the second, and a bus is never thought late or home an hour
-     early. A leg leaves the yard at its departure, or its first day's start
-     with none; it is back at its yard return, on the day after `to` when that
+     early. A leg leaves the yard at its departure on the first day it takes,
+     or that day's start with none; it is back at its yard return, on the day after `to` when that
      is past midnight, or with no return at the late-return hour after its
      last day. */
   // Made once: a draw reads the office's clock about 1,600 times.
@@ -1162,20 +1174,25 @@ const window = {};
      late-return hour, the leg takes the days up to the one before and
      `backDays` says how many days after its last the bus is back, the bar's
      +1; back at or after that hour, it takes the day it is back on. A leg
-     with no yard return takes its own dates. */
+     with no yard return takes its own last day. A bus that leaves the yard
+     before the leg's first day, to be at a far pickup by its spot, takes
+     from the day it leaves, `outDays` before, whatever the hour, since it is
+     out of the yard from then on. */
   const takes = (from, to, times) => {
     const PAST = window.SchedulerPastMidnight;
+    const out = times?.outDays > 0 ? { from: dayFrom(from, -times.outDays), outDays: times.outDays } : { from, outDays: 0 };
     const back = PAST.minutesOf(times?.back);
-    if (back == null) return { to, backDays: 0 };
+    if (back == null) return { ...out, to, backDays: 0 };
     const backOn = dayFrom(to, to > from ? (PAST.after(times.end, times.back) ? 1 : 0) : times.nights ?? 0);
-    return back < lateBefore && backOn > from ? { to: dayFrom(backOn, -1), backDays: 1 } : { to: backOn, backDays: 0 };
+    return { ...out, ...(back < lateBefore && backOn > from ? { to: dayFrom(backOn, -1), backDays: 1 } : { to: backOn, backDays: 0 }) };
   };
 
   // A leg saved with its end before its start is read as its start day, so it
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
-  /* A trip's legs, each with the days it takes, `from` to `to`, `ends`, the
-     last day as saved, and `number`, from 1 in date order. `key` tells the
+  /* A trip's legs, each with the days it takes, `from` to `to`, `starts` and
+     `ends`, the first and last day as saved, and `number`, from 1 in date
+     order. `key` tells the
      legs apart: the leg's id on a trip read with its legs, which gives
      `legId` too, and the old word on one that is not, such as a draft. A
      leg that mirrors an old word carries it in `leg`, which the old columns
@@ -1185,7 +1202,7 @@ const window = {};
     const add = (leg, from, end, count, more = {}) => {
       const times = timesOf(trip, more.key ?? leg);
       const ends = lastDay(from, end);
-      legs.push({ leg, key: leg, number: legs.length + 1, from, ends, count, ...times, ...takes(from, ends, times), ...more });
+      legs.push({ leg, key: leg, number: legs.length + 1, starts: from, ends, count, ...times, ...takes(from, ends, times), ...more });
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {

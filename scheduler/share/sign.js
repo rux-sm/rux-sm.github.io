@@ -7,7 +7,7 @@
    Yes and No, or a choice's options, as big tiles, lines filled in from the
    profile, a line or box a Yes opens, and one pad to sign on with a finger,
    stylus, mouse or touchpad, however many places the form signs. Fixed words
-   are the form's own and are not shown.
+   and the licence copy's box are the office's and are not shown.
 
    get_driver_form hands over the fields and the profile only while the form
    waits for this driver. Sign and send posts the answers and the signature
@@ -310,7 +310,7 @@
     let tile = null, grid = null;
     const section = () => { tile = el('section', 'rux--tile scheduler-sign-section'); page.appendChild(tile); grid = null; };
     for (const field of f.fields) {
-      if (field.type === 'fixed') continue;
+      if (field.type === 'fixed' || field.type === 'licence_copy') continue;
       if (field.type === 'heading' || !tile) section();
       if (field.type === 'heading') { tile.appendChild(both('h2', 'rux--type-productive-heading-03', field)); continue; }
       if (field.type === 'line' || field.type === 'date') {

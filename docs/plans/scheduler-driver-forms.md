@@ -61,7 +61,8 @@ code.
 - **The company's own lines are the form's `fixed` fields:** its name,
   service, office phone and email, Yes to school grounds and Yes to
   fingerprinted under Senate Bill 9, written at signing, so the driver is
-  asked only for their own. The licence copy page is left for the office.
+  asked only for their own. Its last page is a `licence_copy` box, which
+  the office's copy fills with the driver's current Licence copy when it opens.
 - **The background check form's campus and trip date are left blank,**
   because it goes to many schools. Opened from a trip's Forms
   list, at `documents.html?open=<document id>&trip=<trip id>`, the campus and

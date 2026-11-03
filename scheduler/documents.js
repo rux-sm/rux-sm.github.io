@@ -102,20 +102,89 @@
      documents.html?open=<id> is the address a document's row, a customer's
      page and a trip's Forms list link to. It signs a link and goes there, so
      the browser's own viewer shows the file with its download and print
-     buttons, and the address stays good after any one link has run out. */
+     buttons, and the address stays good after any one link has run out.
+
+     A form signed on a driver's link can keep a page for the driver's
+     licence, a `licence_copy` field as driver-form/handler.ts describes it.
+     That copy opens with the driver's current Licence copy drawn into its
+     box, so a renewed licence is in the next one opened and the signed file
+     itself never changes. */
   async function openDocument() {
     const { data, error } = await client.from('company_documents')
-      .select('id,file_path').eq('id', openId).maybeSingle();
+      .select('id,driver_id,file_name,file_path').eq('id', openId).maybeSingle();
     if (error) throw error;
     const url = data ? await linkTo(data.file_path) : '';
-    if (!url) {
-      say('info', data ? "The file didn't open" : 'That document is not in the list',
-        data ? 'Reload the page to try again.' : 'Pick a document from the list below.');
-      history.replaceState(null, '', 'documents.html');
-      await loadList();
-      return;
+    if (!url) return cannotOpen(data ? "The file didn't open" : 'That document is not in the list',
+      data ? 'Reload the page to try again.' : 'Pick a document from the list below.');
+    const box = data.driver_id ? await licenceBox(data.id) : null;
+    if (!box) { location.replace(url); return; }
+    const licence = await licenceOf(data.driver_id);
+    if (!licence) {
+      const name = (await client.from('drivers').select('name').eq('id', data.driver_id).maybeSingle()).data?.name ?? 'This driver';
+      return cannotOpen(`${name} has no licence copy on file`,
+        "This form's last page is a copy of their licence. Upload it on their Documents tab as a Licence copy, then open the form again.");
     }
-    location.replace(url);
+    try {
+      location.replace(await withLicence(url, data.file_name, licence, box));
+    } catch {
+      cannotOpen("The licence copy couldn't be added", 'Reload the page to try again.');
+    }
+  }
+  async function cannotOpen(title, text) {
+    say('info', title, text);
+    history.replaceState(null, '', 'documents.html');
+    await loadList();
+  }
+
+  // The box a signed form keeps for the licence, or null when it keeps none.
+  async function licenceBox(documentId) {
+    const { data: signing } = await client.from('driver_form_signings')
+      .select('form_id').eq('document_id', documentId).maybeSingle();
+    if (!signing) return null;
+    const { data: form } = await client.from('driver_forms').select('fields').eq('id', signing.form_id).maybeSingle();
+    return (form?.fields ?? []).find(f => f.type === 'licence_copy')?.at ?? null;
+  }
+  // The driver's current Licence copy, the kind that sets their licence's
+  // end day, with a link to its file; null when there is none.
+  async function licenceOf(driverId) {
+    const { data: kind } = await client.from('document_kinds').select('id').eq('sets_driver_date', 'license_exp').maybeSingle();
+    if (!kind) return null;
+    const { data: doc } = await client.from('company_documents').select('file_name,file_path')
+      .eq('kind_id', kind.id).eq('driver_id', driverId).is('replaced_at', null)
+      .order('created_at', { ascending: false }).limit(1).maybeSingle();
+    const url = doc ? await linkTo(doc.file_path) : '';
+    return url ? { ...doc, url } : null;
+  }
+
+  // pdf-lib, loaded only when a copy is drawn on, as the page loads
+  // supabase-js: one exact version from jsdelivr, held to its hash.
+  const PDF_LIB = {
+    src: 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+    integrity: 'sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI',
+  };
+  const pdfLib = () => (window.PDFLib ? Promise.resolve(window.PDFLib) : new Promise((done, fail) => {
+    const script = Object.assign(document.createElement('script'), { src: PDF_LIB.src, integrity: PDF_LIB.integrity, crossOrigin: 'anonymous' });
+    script.onload = () => done(window.PDFLib);
+    script.onerror = fail;
+    document.head.appendChild(script);
+  }));
+
+  /* The signed PDF with the licence copy drawn into its box, kept in its own
+     proportions and centred: a photo as it is, a PDF by its first page. */
+  async function withLicence(url, fileName, licence, at) {
+    const bytes = u => fetch(u).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
+    const [{ PDFDocument }, signed, copy] = await Promise.all([pdfLib(), bytes(url), bytes(licence.url)]);
+    const pdf = await PDFDocument.load(signed);
+    const page = pdf.getPage(at.page);
+    const ext = licence.file_name.split('.').pop().toLowerCase();
+    const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
+    const scale = Math.min(at.w / art.width, at.h / art.height);
+    const [width, height] = [art.width * scale, art.height * scale];
+    const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
+    if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
+    // A drawn copy's address names nothing, so its title names the file.
+    pdf.setTitle(fileName.replace(/\.pdf$/i, ''), { showInWindowTitleBar: true });
+    return URL.createObjectURL(new Blob([await pdf.save()], { type: 'application/pdf' }));
   }
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */

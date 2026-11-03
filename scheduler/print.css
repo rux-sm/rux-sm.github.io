@@ -1782,61 +1782,54 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* ── The hub ──────────────────────────────────────────────────────────────
-   A label per group of forms, and a row per form under it: the form's icon
-   and its short name. The rows touch, a rule between each, so a group reads
-   as one list rather than as a stack of separate buttons. */
+   One list of forms, a row each, the form's icon and its short name, each
+   row running edge to edge under a rule, as the board's Tasks pane draws
+   its rows, on the page's own surface. In the panel
+   a row's words stand 32px from its every edge, level with the panel's
+   title; standing alone the page's column already has its inset, so they
+   stand Carbon's 16px in. */
 
 /* [hidden] is a UA rule of the lowest weight, so any display here outranks it
    and the hub would stay on screen behind a form. */
 .scheduler-print__hub[hidden] { display: none; }
 
 .scheduler-print__hub {
+  --scheduler-print-inset: var(--rux-spacing-07);
   display: flex;
   flex-direction: column;
-  gap: var(--rux-spacing-06);
-  padding: var(--rux-spacing-05);
 }
-
-/* Standing alone the page already has its inset, so the rows line up with
-   the title and the column's edges; framed, the panel has none. */
+/* Standing alone, under the page's title rather than a panel's ruled head,
+   the list opens with a rule of its own. */
 [data-rux-standalone] .scheduler-print__hub {
-  padding: 0;
+  --scheduler-print-inset: var(--rux-spacing-05);
   margin-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 
-.scheduler-print__group-name {
-  color: var(--rux-text-secondary);
-  margin: 0 0 var(--rux-spacing-03);
-}
-
-/* One column, the rule between rows a pixel of the surface showing through. */
-.scheduler-print__tiles {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1px;
-}
-
-/* Carbon's tile is a block with a 4rem floor and a 1rem inset all round;
-   a row is a line, so it sets its own. */
-.scheduler-print__hub .rux--tile {
+.scheduler-print__row {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-04);
-  min-block-size: 0;
-  padding: var(--rux-spacing-04) var(--rux-spacing-05);
+  padding: var(--scheduler-print-inset);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  color: var(--rux-text-primary);
   text-decoration: none;
 }
+/* A row that opens a form is the press, the whole row lit on hover, its
+   focus ring inside it. */
+a.scheduler-print__row:hover { background: var(--rux-layer-hover); }
+a.scheduler-print__row:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 
-.scheduler-print__tile-icon {
+.scheduler-print__row-icon {
   flex: none;
   display: block;
   color: var(--rux-icon-primary);
 }
 
-.scheduler-print__tile-name { margin: 0; }
+.scheduler-print__row-name { margin: 0; }
 
 /* Why a form cannot open from here, at the row's far end. */
-.scheduler-print__tile-need {
+.scheduler-print__row-need {
   margin: 0 0 0 auto;
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
@@ -1845,7 +1838,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* How much of a form is printed, there too: the count while copies are
    left, and Printed after a green check once none is. */
-.scheduler-print__tile-done {
+.scheduler-print__row-done {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-02);
@@ -1854,7 +1847,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   line-height: var(--rux-helper-text-01-line-height);
   color: var(--rux-text-secondary);
 }
-.scheduler-print__tile-check { flex: none; color: var(--rux-support-success); }
+.scheduler-print__row-check { flex: none; color: var(--rux-support-success); }
 
 
 /* ── The week schedule ────────────────────────────────────────────────────

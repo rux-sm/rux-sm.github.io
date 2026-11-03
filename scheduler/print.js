@@ -2704,12 +2704,12 @@
   })();
 
   /* A new page in the frame takes the last one's controls out of the panel.
-     The panel clears them when it opens a document, but a tile on the hub
+     The panel clears them when it opens a document, but a row on the hub
      moves the frame on its own, and a form that cannot be drawn has none. */
   host?.setFormControls([]);
   host?.setFormNote('');
   /* The tab the panel's print falls back to opens where this frame is now,
-     not where the panel first pointed it: a tile on the hub moves the frame. */
+     not where the panel first pointed it: a row on the hub moves the frame. */
   host?.setFormLink?.(location.href);
 
   const bar = document.getElementById('scheduler-print-bar');
@@ -3549,9 +3549,6 @@
   }
 
   async function showHub() {
-    // On the panel's surface the tiles are the next layer up, as Carbon puts
-    // what is inside a side panel.
-    hub.classList.toggle('rux--layer-two', framed);
     host?.setToolbarShown?.(false);
     host?.setViewerBack?.(null);
     setPaper(null);
@@ -3574,7 +3571,7 @@
        the form is for, which the short name leaves out. */
     const face = form => {
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      icon.setAttribute('class', 'scheduler-print__tile-icon');
+      icon.setAttribute('class', 'scheduler-print__row-icon');
       icon.setAttribute('width', '20');
       icon.setAttribute('height', '20');
       icon.setAttribute('fill', 'currentColor');
@@ -3582,7 +3579,7 @@
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', form.icon);
       icon.appendChild(use);
-      return [icon, el('h3', 'rux--type-body-compact-01 scheduler-print__tile-name', form.short)];
+      return [icon, el('span', 'rux--type-body-compact-01 scheduler-print__row-name', form.short)];
     };
 
     /* HOW MUCH OF A FORM IS PRINTED, from the ticks its copies carry: a
@@ -3600,8 +3597,8 @@
       const done = ticks.filter(Boolean).length;
       if (!done) return null;
       const all = done === ticks.length;
-      const says = el('p', 'scheduler-print__tile-done', all ? 'Printed' : `${done} of ${ticks.length} printed`);
-      if (all) says.prepend(sprite('#m-check', 'scheduler-print__tile-check'));
+      const says = el('p', 'scheduler-print__row-done', all ? 'Printed' : `${done} of ${ticks.length} printed`);
+      if (all) says.prepend(sprite('#m-check', 'scheduler-print__row-check'));
       return says;
     };
 
@@ -3609,57 +3606,46 @@
        drivers' forms. A trip's list leaves out the week schedule, which is
        the week's and not the trip's: the board's menu prints the week on
        screen, and this page opened on no trip still lists it. It leaves out
-       a form that binds nothing too, which is the office's own. */
+       a form that binds nothing too, which is the office's own. The forms
+       stand in one list in their groups' order, with no group named, since
+       each row's icon and name say what it is. */
     const GROUP_ORDER = ['Customers', 'Drivers', 'Schedule', 'Office'];
-    const groups = new Map(GROUP_ORDER.map(group => [group, []]));
-    for (const form of FORMS) {
-      if (trip && (form.binds === 'week' || form.binds === null)) continue;
-      if (!groups.has(form.group)) groups.set(form.group, []);
-      groups.get(form.group).push(form);
-    }
-    for (const [group, forms] of groups) if (!forms.length) groups.delete(group);
+    const rank = form => (GROUP_ORDER.includes(form.group) ? GROUP_ORDER.indexOf(form.group) : GROUP_ORDER.length);
+    const forms = FORMS.filter(form => !(trip && (form.binds === 'week' || form.binds === null)))
+      .sort((a, b) => rank(a) - rank(b));
 
-    const list = document.createDocumentFragment();
-    for (const [group, forms] of groups) {
-      const section = el('section', 'scheduler-print__group');
-      const heading = el('h2', 'rux--type-label-01 scheduler-print__group-name', group);
-      heading.id = `scheduler-print-group-${group.toLowerCase()}`;
-      section.setAttribute('aria-labelledby', heading.id);
-      const tiles = el('div', 'scheduler-print__tiles');
-      section.append(heading, tiles);
-      list.appendChild(section);
-      for (const form of forms) {
-        /* EVERY FORM IS ONE ROW, AND THE ROW IS THE LINK. From a trip it
-           opens that trip's copy -- the first bus, the way out -- and the
-           form's own list moves to the trip's other buses and legs. A blank
-           one is the Forms page's, opened on no trip. A form that cannot open
-           says what it still wants instead. */
-        let href = null;
-        let need = null;
-        const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&from=forms`;
-        if (form.binds === null || form.binds === 'week') href = `print.html?form=${form.id}&from=forms`;
-        else if (!trip) {
-          if (form.blank) href = `print.html?form=${form.id}&blank=1&from=forms`;
-          else need = 'Open it from a trip on the board.';
-        } else if (found.why) need = found.why;
-        else if (form.binds === 'trip+leg') href = `${tripHref}&leg=${encodeURIComponent(found.legs[0] || 'outbound')}`;
-        else if (form.binds === 'trip') href = tripHref;
-        else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
-        else href = `print.html?form=${form.id}&assignment=${encodeURIComponent(found.buses[0].id)}&trip=${encodeURIComponent(trip)}&from=forms`;
+    const rows = el('div', 'scheduler-print__rows');
+    for (const form of forms) {
+      /* EVERY FORM IS ONE ROW, AND THE ROW IS THE LINK. From a trip it
+         opens that trip's copy -- the first bus, the way out -- and the
+         form's own list moves to the trip's other buses and legs. A blank
+         one is the Forms page's, opened on no trip. A form that cannot open
+         says what it still wants instead. */
+      let href = null;
+      let need = null;
+      const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&from=forms`;
+      if (form.binds === null || form.binds === 'week') href = `print.html?form=${form.id}&from=forms`;
+      else if (!trip) {
+        if (form.blank) href = `print.html?form=${form.id}&blank=1&from=forms`;
+        else need = 'Open it from a trip on the board.';
+      } else if (found.why) need = found.why;
+      else if (form.binds === 'trip+leg') href = `${tripHref}&leg=${encodeURIComponent(found.legs[0] || 'outbound')}`;
+      else if (form.binds === 'trip') href = tripHref;
+      else if (!found.buses.length) need = 'No bus on this trip has a driver yet.';
+      else href = `print.html?form=${form.id}&assignment=${encodeURIComponent(found.buses[0].id)}&trip=${encodeURIComponent(trip)}&from=forms`;
 
-        if (href) {
-          const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
-          tile.href = href;
-          tile.append(...face(form));
-          const printed = printedOf(form);
-          if (printed) tile.appendChild(printed);
-          tiles.appendChild(tile);
-          continue;
-        }
-        const tile = el('div', 'rux--tile');
-        tile.append(...face(form), el('p', 'scheduler-print__tile-need', need));
-        tiles.appendChild(tile);
+      if (href) {
+        const item = el('a', 'scheduler-print__row');
+        item.href = href;
+        item.append(...face(form));
+        const printed = printedOf(form);
+        if (printed) item.appendChild(printed);
+        rows.appendChild(item);
+        continue;
       }
+      const item = el('div', 'scheduler-print__row');
+      item.append(...face(form), el('p', 'scheduler-print__row-need', need));
+      rows.appendChild(item);
     }
 
     /* THE DRIVERS' OWN FORMS, where the trip's customer asks for a kind of
@@ -3673,12 +3659,6 @@
     const client = window.Rux?.account?.client;
     if (found?.trip && client && Facts?.readDriverForms && await Facts.readDriverForms(client).catch(() => false)
       && Facts.formKindsOf(found.trip).length) {
-      const section = el('section', 'scheduler-print__group');
-      const heading = el('h2', 'rux--type-label-01 scheduler-print__group-name', 'Driver forms');
-      heading.id = 'scheduler-print-group-driver-forms';
-      section.setAttribute('aria-labelledby', heading.id);
-      const tiles = el('div', 'scheduler-print__tiles');
-      section.append(heading, tiles);
       const tripId = encodeURIComponent(found.trip.id);
       const split = found.legs.length > 1;
       for (const bus of found.buses) {
@@ -3689,27 +3669,27 @@
           for (const f of forms) {
             const row = { icon: '#m-description', short: `${f.kind}, ${who}` };
             if (f.ok) {
-              const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
-              tile.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
-              tile.target = '_blank';
-              tile.rel = 'noopener';
-              tile.append(...face(row));
-              tiles.appendChild(tile);
+              const item = el('a', 'scheduler-print__row');
+              item.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
+              item.target = '_blank';
+              item.rel = 'noopener';
+              item.append(...face(row));
+              rows.appendChild(item);
               continue;
             }
-            const tile = el('div', 'rux--tile');
-            const need = el('p', 'scheduler-print__tile-need');
+            const item = el('div', 'scheduler-print__row');
+            const need = el('p', 'scheduler-print__row-need');
             const upload = el('a', 'rux--link', f.form ? 'It has ended. Upload a new one' : 'None on file. Upload it');
             upload.href = `documents.html?new&kind=${encodeURIComponent(f.kindId)}&driver=${encodeURIComponent(seat.driver_id)}`;
             upload.target = '_blank';
             upload.rel = 'noopener';
             need.appendChild(upload);
-            tile.append(...face(row), need);
-            tiles.appendChild(tile);
+            item.append(...face(row), need);
+            rows.appendChild(item);
           }
           if (!forms.length || !forms.every(f => f.ok)) continue;
           const mark = { table: 'trip_drivers', rows: [seat], column: 'driver_forms_printed', what: 'form' };
-          const tile = el('div', 'rux--tile');
+          const item = el('div', 'scheduler-print__row');
           const box = el('div', 'rux--form-item rux--checkbox-wrapper');
           const input = el('input', 'rux--checkbox');
           input.type = 'checkbox';
@@ -3721,13 +3701,12 @@
           input.addEventListener('change', () => void markPrinted(mark, input.checked,
             () => { input.checked = isMarked(mark); }));
           box.append(input, label);
-          tile.appendChild(box);
-          tiles.appendChild(tile);
+          item.appendChild(box);
+          rows.appendChild(item);
         }
       }
-      if (tiles.children.length) list.appendChild(section);
     }
-    hub.replaceChildren(list);
+    hub.replaceChildren(rows);
   }
 
   /* Every envelope on the trip, for Print all: each bus on it, outbound then

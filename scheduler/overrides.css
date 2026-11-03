@@ -337,6 +337,13 @@
    head's list from opening. Invisible, it takes nothing. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__collapsed-title-text { pointer-events: none; }
 
+/* The Forms list's title stands 32px in, level with its rows, which run
+   edge to edge as the Tasks pane's do and keep that inset. A form opened
+   from it puts the way back first, at Carbon's 16px. */
+.scheduler-viewer--forms .rux--side-panel .rux--side-panel__header--has-title:not(.rux--side-panel__header--on-detail-step) {
+  padding-inline-start: var(--rux-spacing-07);
+}
+
 /* The title fills the head's height and centres its heading in it, so a
    title that lists can light the whole band as the week button does. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__title {

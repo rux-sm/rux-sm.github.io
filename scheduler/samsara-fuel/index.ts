@@ -1,18 +1,17 @@
-// The Edge Function `samsara-fuel`: each bus's miles per gallon and tank
-// gallons, worked out from Samsara's last 90 days and kept in
-// `bus_fuel_profiles`; what it answers is `handler.ts`. The `samsara-fuel`
-// schedule calls it once a night with SAMSARA_NIGHT_KEY, the key the
-// samsara-night schedule sends samsara-miles, and it reads and saves on the
-// service role, which Supabase gives every function. SAMSARA_API_TOKEN is
-// the read-only key samsara-now uses; the fuel and energy report needs its
-// Fuel & Energy permission.
+// The Edge Function `samsara-fuel`: each bus's miles per gallon, worked out
+// from Samsara's last 90 days and kept in `bus_fuel_profiles`; what it
+// answers is `handler.ts`. The `samsara-fuel` schedule calls it once a night
+// with SAMSARA_NIGHT_KEY, the key the samsara-night schedule sends
+// samsara-miles, and it reads and saves on the service role, which Supabase
+// gives every function. SAMSARA_API_TOKEN is the read-only key samsara-now
+// uses; the fuel and energy report needs its Fuel & Energy permission.
 
 // Each import names one exact version, as check-connector.mjs holds it to;
 // supabase-js is the version the site's pages load.
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Burn, type Point, type Profile, type Vehicle } from './handler.ts'
+import { handle, type Burn, type Profile, type Vehicle } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const NIGHT_KEY = Deno.env.get('SAMSARA_NIGHT_KEY') ?? ''
@@ -51,15 +50,6 @@ Deno.serve(req => {
     async vehicles() {
       const rows = await samsara<Vehicle>('/fleet/vehicles', { limit: '512' })
       return rows.map(v => ({ id: String(v.id), name: String(v.name ?? '') }))
-    },
-    async fuel(vehicleIds, from, to) {
-      const out = new Map<string, Point[]>()
-      if (!vehicleIds.length) return out
-      const rows = await samsara<{ id: string; fuelPercents?: Point[] }>('/fleet/vehicles/stats/history',
-        { vehicleIds: vehicleIds.join(','), types: 'fuelPercents', startTime: from, endTime: to })
-      // A vehicle's history can run across pages, so its points are joined.
-      for (const r of rows) out.set(String(r.id), [...(out.get(String(r.id)) ?? []), ...(r.fuelPercents ?? [])])
-      return out
     },
     async burn(vehicleId, from, to) {
       const rows = await samsara<{ vehicleReports?: Burn[] }>('/fleet/reports/vehicles/fuel-energy',

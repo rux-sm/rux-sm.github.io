@@ -29,21 +29,16 @@ yard, where a fixed 25% low mark says nothing about the job.
   day's miles count, the drive out and the stops dated that day, since the
   driver fills up on the road.
 - **Miles per gallon come from Samsara,** the vehicle fuel and energy report,
-  `/fleet/reports/vehicles/fuel-energy`, averaged over each bus's last 90
-  days, fetched by an Edge Function beside `scheduler/samsara-now/`, since
+  `/fleet/reports/vehicles/fuel-energy`, over each bus's last 90 days, since
   the live stats give only the fuel percent.
-- **Each bus's tank size is worked out from Samsara, never typed:** over a
-  stretch with no fill-up, where the fuel percent only falls, the gallons
-  the fuel and energy report says were burned over the points the percent
-  fell give the tank's gallons, a rise of 3 points or more ending a stretch
-  as a fill-up. The median over the last 90 days' stretches of at least 20
-  points stands, and a bus with fewer than three such stretches draws no
-  tick, since one stretch alone can be a third off. Samsara keeps a fuel
-  percent only where it changes, about 220 a bus in 90 days.
-- **The two figures are kept, not asked for on every load:** each bus's
-  miles per gallon and tank gallons, with when they were worked out, in
-  `bus_fuel_profiles`, which the Edge Function refreshes once a day, since a 90-day history is
-  too slow and too costly to read each minute.
+- **Each bus's tank is `buses.tank_gallons`, from its maker's sheet:** 222
+  on a Prevost H3-45, every active bus; worked out from Samsara's
+  fuel percent it came out between 197 and 417 on the same model, so a tank
+  is never guessed. A bus with none draws no tick.
+- **Miles per gallon are kept, not asked for on every load:** each bus's, with
+  when they were worked out, in `bus_fuel_profiles`, which `samsara-fuel`
+  refreshes once a night, since a 90-day report is too slow to read each
+  minute.
 - **The tick is the bus column's alone;** the trip's Buses tab and its tip
   say the same in words.
 
@@ -55,6 +50,8 @@ None open.
 
 - [ ] Deploy `scheduler/samsara-fuel/`, run it once with `{"write": false}`
   and then to keep, and schedule it each night, each on rux's yes.
+- [ ] A Tank field on the Fleet editor, so a bus of another make gets its
+  `tank_gallons`.
 - [ ] Work out each bus's next leg and its miles where the board loads its
   trips, and the needed share from them.
 - [ ] Draw the tick on the fuel meter in `scheduler/bus-head.js`, amber

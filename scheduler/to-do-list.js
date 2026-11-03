@@ -291,7 +291,7 @@
      row and the whole of it is the press, Design's arrow at its first
      line's end, turning as it opens.
      The panel under it holds what a closed row has no room for: who it is
-     about, its trip, its detail, then the buttons, and on a done row who closed it, and why
+     about, its trip, its detail and its number, then the buttons, and on a done row who closed it, and why
      where it was deleted. What a row has none of, a trip or a thread, is left
      out rather than shown disabled. */
   function storedRow(row, done) {
@@ -305,26 +305,16 @@
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    // The first line is its words, and the second its kind, then its number,
-    // with Task said for a reader, and its due day, with Due said for a
-    // reader, a done row being past its day.
-    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
+    // The first line is its kind and its due day, with Due said for a
+    // reader, a done row being past its day; the second its words.
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(kindTag(row));
-    const facts = el('span', 'scheduler-to-do__facts');
-    if (row.number != null) {
-      const number = el('span', 'scheduler-to-do__number');
-      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
-      facts.appendChild(number);
-    }
     const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
     if (dueWord) {
       const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
       due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
-      if (facts.childNodes.length) facts.append(DOT);
-      facts.appendChild(due);
+      context.appendChild(due);
     }
-    context.appendChild(facts);
     // The one working on it, by face at the line's end, so a row nobody has taken shows none.
     const owner = !done ? staff.get(row.owner_id) : null;
     if (owner) {
@@ -335,7 +325,8 @@
       face.setAttribute('aria-label', face.title);
       context.appendChild(face);
     }
-    title.append(what, context);
+    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
+    title.append(context, what);
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
     heading.append(arrow, title);
@@ -360,6 +351,12 @@
       const notes = el('ul', 'scheduler-to-do__notes');
       for (const line of lines) notes.appendChild(el('li', 'scheduler-to-do__note', line));
       more.appendChild(notes);
+    }
+    // Its number ends what it holds, with Task said for a reader, so a person can name it aloud.
+    if (row.number != null) {
+      const number = el('div', 'scheduler-to-do__meta');
+      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
+      more.appendChild(number);
     }
     const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
 

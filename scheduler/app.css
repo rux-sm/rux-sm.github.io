@@ -6246,34 +6246,31 @@ html[data-scheduler-takeover] {
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
 /* A task's heading and a leg's are each the closed row, two lines laid out
    alike, each ended in an ellipsis where it runs long, so every closed row
-   in a list stands the same height, and Design's arrow at the first line's
-   end, as Geist's accordion keeps its arrow on its title. The first is the
-   row's words in the primary colour, a task's words or a leg's place. The
-   second, 8px under, is quiet and at the label size: a tag, a task's kind in
-   the kind's colour or what a leg has left, so the list reads down its
-   tags; then a number, the task's own or the leg's trip's, so a person can
-   name either aloud, and when, a task's due day, in the error colour once
-   the day is past, or a leg's spot day and time; and the owner's face at
-   the line's end. */
-.scheduler-to-do__what { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+   in a list stands the same height, and Design's arrow alone at the first
+   line's end. The first, quiet and at the label size, is a tag, a task's
+   kind in the kind's colour or what a leg has left, so the list reads down
+   its tags, and beside it when, a task's due day, in the error colour once
+   the day is past, or a leg's spot day and time, with the owner's face at
+   the line's end. The second, 8px under, is the row's words in the primary
+   colour, a task's words or a leg's place, the whole row wide. */
 .scheduler-to-do__context {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-03);
   min-block-size: 1.25rem;
-  margin-block-start: var(--rux-spacing-03);
   color: var(--rux-text-secondary);
   font-size: 0.75rem;
   line-height: 1.33333;
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-to-do__tag { flex: none; margin: 0; }
-.scheduler-to-do__facts { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scheduler-to-do__when { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__when--late { color: var(--rux-text-error); }
 /* The owner's face ends the line, as a step's does on Departures. It is
    1.5rem in the 1.25rem line and overhangs it evenly, so a row with an
    owner stands as tall as one without. */
 .scheduler-to-do__face { flex: none; margin-block: -0.125rem; margin-inline-start: auto; }
+.scheduler-to-do__what { margin-block-start: var(--rux-spacing-03); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Open, who the row is about heads what the panel holds, a task's person or
    a leg's customer, the label in the quiet colour at the notes' size. */
 .scheduler-to-do__who {

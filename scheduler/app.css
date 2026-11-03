@@ -331,34 +331,29 @@
   align-content: start;
   text-align: start;
 }
+/* Its last row takes what the track's height leaves, so a part that spans
+   to the foot, the gauges, reaches the head's own. */
+.scheduler-week:not([data-bar-rows="1"]) .scheduler-row-head { grid-template-rows: repeat(calc(var(--scheduler-bar-rows) - 1), var(--scheduler-row-h)) minmax(var(--scheduler-row-h), 1fr); }
 /* WHAT THE HEAD SHOWS IN HOW MANY ROWS, `data-bar-rows` on the board, which
-   data.js sets with the bar's: the number level with the destination; on
-   six the state over its unit across two rows, then the fuel, a low DEF
-   and the equipment; on five the state on one row, then the fuel, a low DEF
-   and the equipment; four, the state, the fuel and the equipment; three, no
-   equipment; two, no fuel; one, the number and its dot. A bus with no
-   tracker has its inspection in the state's place. */
+   data.js sets with the bar's: the number level with the destination,
+   then the gauges, the state over its fuel as one block, centred between
+   the number and the equipment at the foot. On six the state stands over
+   its unit; on five or fewer it is one row; five and six add a low DEF;
+   three drops the equipment, two the fuel, and one is the number and its
+   dot. A bus with no tracker has its inspection in the state's place. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
-.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp) { grid-column: 1; }
+.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__gauges, .scheduler-row-head__insp) { grid-column: 1; }
 /* The number's row a pixel up, out of the head's 8px, so it stands level
    with the destination, whose line starts 7px down the bar. */
 .scheduler-row-head__top { grid-row: 1; align-self: start; margin-block-start: -1px; }
-.scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
-.scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
-.scheduler-row-head__level[data-tank="D"] { grid-row: 4; }
-/* On six and five the state takes the rows the fuel leaves above it,
-   centred, so the number, the state, the fuel and the equipment stand an
-   even 13 to 16px apart; a low DEF takes a row of the state's, under the
-   fuel. */
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 3; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> [data-tank="D"]) > .scheduler-row-head__dial { grid-row: 2 / span 2; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> [data-tank="D"]) > [data-tank="F"] { grid-row: 4; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> [data-tank="D"]) > [data-tank="D"] { grid-row: 5; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> [data-tank="D"]) > .scheduler-row-head__dial { grid-row: 2; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> [data-tank="D"]) > [data-tank="F"] { grid-row: 3; }
+.scheduler-row-head__insp { grid-row: 2; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__insp { grid-row: 2 / span 3; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__insp { grid-row: 2 / span 2; }
+/* The gauges take every row under the number, less the equipment's 16px
+   and its clear space at the foot where it stands, so they centre between
+   the two. */
+.scheduler-row-head__gauges { grid-row: 2 / -1; display: flex; flex-direction: column; justify-content: center; min-block-size: 0; }
+.scheduler-week:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__gauges { padding-block-end: calc(16px + var(--scheduler-kit-clear)); }
 .scheduler-week[data-bar-rows="3"] .scheduler-row-head__equip,
 .scheduler-week[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__level, .scheduler-row-head__equip),
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip),
@@ -537,7 +532,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
-.scheduler-row-head__gauges { display: contents; }
 /* The bus's kit on its own row: two of Carbon's 16px icons 2px apart, its
    sleeper and its lift, each in one place down the column, in the primary
    ink where the bus has it and the disabled ink where it lacks it. Its seats
@@ -618,33 +612,35 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__reading { display: flex; align-items: center; gap: 3px; color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
 .scheduler-row-head__reading { justify-content: space-between; }
 .scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: 600; }
-/* THE FUEL: the kit row's width, its percent in 10px semibold over a 4px
-   meter filled to the tank's share, centred in its row. A low or critical
-   tank's percent takes its meter's colour. */
+/* THE FUEL, the state's base: 6px under the state a 4px meter the kit
+   row's width, filled to the tank's share, and 3px under it the percent in
+   10px in the secondary ink. A low or critical tank's meter and percent
+   take its colour, the percent in semibold. */
+.scheduler-row-head__level[data-tank="F"] { margin-block-start: 6px; }
 .scheduler-row-head__fuel {
   --scheduler-tank-ink: var(--scheduler-fuel-normal);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   inline-size: var(--scheduler-kit-w);
   margin-inline: auto;
-  color: var(--rux-text-primary);
+  color: var(--rux-text-secondary);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 10px;
   text-align: center;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.scheduler-row-head__fuel[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); color: var(--scheduler-fuel-low); }
-.scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); color: var(--scheduler-fuel-critical); }
+.scheduler-row-head__fuel[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); color: var(--scheduler-fuel-low); font-weight: 600; }
+.scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); color: var(--scheduler-fuel-critical); font-weight: 600; }
 .scheduler-row-head__fuel-meter {
   block-size: 4px;
   border-radius: 2px;
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--scheduler-head-track) 0);
 }
-/* A low DEF is its name and percent on the row under the fuel. */
-.scheduler-row-head__level[data-tank="D"] { justify-self: center; white-space: nowrap; }
+/* A low DEF is its name and percent 4px under the fuel. */
+.scheduler-row-head__level[data-tank="D"] { align-self: center; margin-block-start: 4px; white-space: nowrap; }
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
 /* With no signal the state and a normal fuel fade to their last reading; a
    low tank keeps its strength, since the office still has to act on it. */
@@ -714,7 +710,7 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head .rux--skeleton__text { margin-block-end: 0; }
 .scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; }
 .scheduler-skeleton-dial { inline-size: 24px; block-size: 12px; justify-self: center; align-self: center; }
-.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 16px; margin-inline: auto; }
+.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 17px; margin-inline: auto; }
 /* The kit's two marks in the size of their icons. */
 .scheduler-skeleton-kit { inline-size: 16px; block-size: 16px; }
 /* Placed and sized like a trip bar in the first lane. */

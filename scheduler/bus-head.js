@@ -16,7 +16,7 @@
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
-   The fuel is its percent over a meter filled to the tank's share, grey
+   The fuel is a meter filled to the tank's share over its percent, grey
    until low, orange, or critical, red. Until samsara-now first
    answers, every bus is drawn at rest, Off over an empty fuel meter and a
    dash for its percent, so the column has its shape while it loads.
@@ -111,14 +111,14 @@
     return box;
   }
 
-  // The fuel: its percent over a meter filled to the tank's share, grey
+  // The fuel: a meter filled to the tank's share over its percent, grey
   // until low or critical.
   function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
     box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
-    box.append(el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`), el('span', 'scheduler-row-head__fuel-meter'));
+    box.append(el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
     return box;
   }
 

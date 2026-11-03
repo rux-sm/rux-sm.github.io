@@ -41,8 +41,8 @@ yard, where a fixed 25% low mark says nothing about the job.
   tick, since one stretch alone can be a third off. Samsara keeps a fuel
   percent only where it changes, about 220 a bus in 90 days.
 - **The two figures are kept, not asked for on every load:** each bus's
-  miles per gallon and tank gallons, with when they were worked out, in a
-  table the Edge Function refreshes once a day, since a 90-day history is
+  miles per gallon and tank gallons, with when they were worked out, in
+  `bus_fuel_profiles`, which the Edge Function refreshes once a day, since a 90-day history is
   too slow and too costly to read each minute.
 - **The tick is the bus column's alone;** the trip's Buses tab and its tip
   say the same in words.
@@ -53,8 +53,6 @@ None open.
 
 ## Tasks
 
-- [ ] Add the table for each bus's miles per gallon and tank gallons, as a
-  database change shown to rux and applied on a yes.
 - [ ] A new Edge Function that works both out for every bus and keeps them,
   run once a day.
 - [ ] Work out each bus's next leg and its miles where the board loads its

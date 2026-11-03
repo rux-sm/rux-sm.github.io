@@ -6,22 +6,11 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - For a bus Samsara answers for, in whatever week is shown, its
-     state and fuel under the number as a speedometer on five and six rows:
-     a half ring that fills with the speed to MAX_MPH, the speed, or Idle,
-     Off or a dash, inside it at its foot, mph or how long under it, and
-     the fuel under that, on one panel. On fewer rows, its
-     state in a display under the number, on the rows app.css gives it, so
-     the fuel under it stands at one height down the column.
-     While the engine runs the display is
-     filled: moving, the speed over mph on green, amber over SPEEDING;
-     idling, Idle over how long on grey, amber past IDLE_MS. With the
-     engine off it is the word alone, Off, with no fill or edge, and with no
-     signal a dash over how long since the bus was seen, in a dashed edge.
-     Under it
-     the fuel. DEF is drawn only
-     while it is low, since a normal DEF needs nothing of the office, as a
-     tag at the foot of the state's block, across the dial's open foot while
-     moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
+     state under the number: the speed over mph, green while moving,
+     or Idle, Off or a dash over how long, amber past SPEEDING or IDLE_MS,
+     beside it on one row; then its fuel. DEF is drawn only while it is
+     low, since a normal DEF needs nothing of the office, on the row under
+     the fuel. With no signal the state and fuel fade. Where the bus
      is, when it was last seen and its inspection are the number's
      toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
@@ -63,9 +52,8 @@
   // Each tank's low and critical marks, in percent.
   const FUEL = { low: 25, critical: 10, letter: 'F', word: 'Fuel' };
   const DEF = { low: 15, critical: 5, letter: 'D', word: 'DEF' };
-  // The speed past which a moving bus turns amber, and the speed that fills the speedometer's arc.
+  // The speed past which a moving bus turns amber.
   const SPEEDING = 75;
-  const MAX_MPH = 80;
   const IDLE_MS = 30 * 60e3;
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
@@ -83,7 +71,7 @@
   const idleFor = live => ((live?.engine === 'idle' || live?.engine === 'on') && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
   const noSignal = live => live && live.engine == null;
   const moving = live => live?.mph > 0;
-  // The engine running, moving or not: what fills the state's display.
+  // The engine running, moving or not: what writes the state in the primary ink.
   const running = live => moving(live) || live?.engine === 'idle' || live?.engine === 'on';
 
   // What the bus is doing, as the dial says it; the place is the tip's next line.
@@ -99,18 +87,17 @@
       return { engine: 'idle', dial: 'Idle', under: span, tone: long ? 'warning' : 'quiet',
         words: `Idling${span ? ` ${span}` : ''}${long ? `, past ${IDLE_MS / 60e3} minutes` : ''}` };
     }
-    return { engine: 'off', dial: 'Off', tone: 'quiet', words: 'Engine off' };
+    const off = live.engine_at ? ago(live.engine_at) : null;
+    return { engine: 'off', dial: 'Off', under: off, tone: 'quiet', words: `Engine off${off ? ` ${off}` : ''}` };
   }
 
   // The engine's lamp, which leads its line in the number's toggletip.
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The state's display, one row over the fuel: filled while the
-  // engine runs, in the state's tone, the speed beside mph, Idle alone, its
-  // amber saying it has idled too long and the tip saying how long, since
-  // the word and its time are wider than the column; the word alone with
-  // the engine off, and a dash beside how long with no signal.
+  // The state: its reading over its unit, mph or how long, or beside it on
+  // one row, in the primary ink while the engine runs, green moving, amber
+  // in the warning tone, quiet with the engine off or no signal.
   function dial(live, state) {
     const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? ' scheduler-row-head__dial--running' : ''}`);
     box.setAttribute('role', 'img');
@@ -118,7 +105,7 @@
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
-    const under = figure ? 'mph' : state.engine === 'idle' ? null : state.under;
+    const under = figure ? 'mph' : state.under;
     if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
     box.appendChild(speed);
     return box;
@@ -153,37 +140,6 @@
     reading.append(el('span', null, tank.word), el('span', null, pct == null ? '\u2013' : `${pct}%`));
     g.appendChild(reading);
     return g;
-  }
-
-  // The speedometer's arc, from 9 o'clock over to 3: 34px across, the kit
-  // row's width, in a 3px stroke, its centre on the box's foot.
-  const ARC = 'M1.5 16.5 A15.5 15.5 0 0 1 32.5 16.5';
-
-  // The speedometer: the arc filled with the speed, or whole in the idle
-  // tint while the bus idles, the speed or the state's word in its bowl, mph or how long under it, then the
-  // fuel's box. Its
-  // words are the dial's and the fuel's, which it stands in for on five and
-  // six rows.
-  function speedometer(live, state) {
-    const lv = levelOf(live.fuel, FUEL);
-    const box = el('span', `scheduler-row-head__arc scheduler-row-head__arc--${state.tone}${running(live) ? ' scheduler-row-head__arc--running' : ''}`);
-    if (lv) box.dataset.level = lv;
-    box.setAttribute('role', 'img');
-    box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
-    const bow = el('span', 'scheduler-row-head__arc-bow');
-    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 34, height: 18, viewBox: '0 0 34 18', 'aria-hidden': 'true' });
-    svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-track', pathLength: 100 }));
-    const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
-    if (mph) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-speed', pathLength: 100, 'stroke-dasharray': `${mph} 200` }));
-    else if (running(live)) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-idle' }));
-    const figure = /^\d+$/.test(state.dial);
-    bow.append(svg, el('span', figure ? 'scheduler-row-head__arc-figure' : 'scheduler-row-head__arc-figure scheduler-row-head__arc-figure--word', state.dial));
-    box.appendChild(bow);
-    const under = figure ? 'mph' : state.under;
-    // The unit's line stands even with nothing to say, so the fuel keeps its place.
-    box.appendChild(el('span', 'scheduler-row-head__arc-under', under ?? '\u00a0'));
-    if (live.fuel != null || live.waiting) box.appendChild(fuelReadout(live.fuel));
-    return box;
   }
 
   // The inspection's state, as the Fleet page words it.
@@ -237,7 +193,6 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      gauges.appendChild(speedometer(shown, state));
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
@@ -292,5 +247,5 @@
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, MAX_MPH, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

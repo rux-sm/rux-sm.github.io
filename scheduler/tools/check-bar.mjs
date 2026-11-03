@@ -595,19 +595,19 @@ expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 
 expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
 expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
 expect('a bus standing with its engine on past 30 minutes is as long idle as one Samsara calls idle',
-  [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(h => [...dial(h), text(h, '.scheduler-row-head__arc-under')]),
-  [['Idle', 'warning', true, '45m'], ['Idle', 'warning', true, '45m'], ['Idle', 'quiet', true, '10m']]);
-expect('standing: Idle alone in a filled display, amber past 30 minutes, how long on its label, or Off unfilled; the place left to the tip',
-  [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
+  [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(dial),
+  [['Idle45m', 'warning', true], ['Idle45m', 'warning', true], ['Idle10m', 'quiet', true]]);
+expect('standing: Idle over how long, amber past 30 minutes, or Off over how long the engine has been off; the place left to the tip',
+  [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', engine_at: ago(130), mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })], [busHead({ engine: 'off', mph: 0, fuel: 50 })]]
     .map(([h]) => [...dial(h), h.querySelector('.scheduler-row-head__dial').getAttribute('aria-label'), line(h)]),
-  [['Idle', 'quiet', true, 'Idling 14m', null], ['Idle', 'warning', true, 'Idling 45m, past 30 minutes', null], ['Off', 'quiet', false, 'Engine off', null]]);
+  [['Idle14m', 'quiet', true, 'Idling 14m', null], ['Idle45m', 'warning', true, 'Idling 45m, past 30 minutes', null], ['Off2h', 'quiet', false, 'Engine off 2h', null], ['Off', 'quiet', false, 'Engine off', null]]);
 expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
   [[], [], []]);
 expect('no signal: a dash over how long since it was seen, the gauges faded, and that said on its label',
   (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').getAttribute('aria-label')]; })(),
   ['–3h', true, 'No signal, last seen 3h ago']);
-expect('a bus with its engine running fills the display, moving or idling; one off, or with no signal, is its words alone',
+expect('a bus with its engine running writes its state in the primary ink, moving or idling; one off, or with no signal, is quiet',
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]
     .map(l => has(busHead(l), '.scheduler-row-head__dial--running')),
   [true, true, false, false]);
@@ -619,20 +619,11 @@ expect('no answer for the bus: the inspection alone, amber within 45 days, and n
 expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
-const speedometer = h => {
-  const r = h.querySelector('.scheduler-row-head__arc');
-  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under')?.trim() || null, text(r, '.scheduler-row-head__fuel-pct'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1], r.dataset.level,
-    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null, r.querySelector('.scheduler-row-head__fuel')?.style.getPropertyValue('--scheduler-tank') || null];
-};
-expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it, the fuel\'s percent over its meter',
-  [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55, seen: ago(180) }]
-    .map(l => speedometer(busHead(l))),
-  [['52', 'mph', '68%', 'moving', 'normal', '65', '68%'], ['92', 'mph', '20%', 'warning', 'low', '100', '20%'], ['Idle', '5m', '8%', 'quiet', 'critical', null, '8%'], ['Off', null, '0%', 'quiet', 'critical', null, '0%'], ['–', '3h', '55%', 'quiet', 'normal', null, '55%']]);
-expect('the speedometer says its speed and fuel on its label',
-  busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__arc').getAttribute('aria-label'),
-  'Moving, 52 mph. Fuel 20%, low');
-expect('a bus that reports no fuel has a speedometer with no fuel',
-  speedometer(busHead({ engine: 'on', mph: 30, fuel: null })).slice(0, 3), ['30', 'mph', null]);
+const fuel = h => { const f = h.querySelector('.scheduler-row-head__fuel'); return f ? [text(f, '.scheduler-row-head__fuel-pct'), f.dataset.level ?? null, f.style.getPropertyValue('--scheduler-tank')] : null; };
+expect('the fuel: its percent over a meter filled to it, low at 25% and critical at 10%',
+  [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 52, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }].map(l => fuel(busHead(l))),
+  [['68%', 'normal', '68%'], ['20%', 'low', '20%'], ['8%', 'critical', '8%']]);
+expect('a bus that reports no fuel draws no fuel', fuel(busHead({ engine: 'on', mph: 30, fuel: null })), null);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

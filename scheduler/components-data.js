@@ -341,7 +341,7 @@
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),
         one('Idling a long time', 'Past 30 minutes the bus column\'s Idle turns amber; the bus icon\'s tooltip gives the idle duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
-        one('Engine off', 'The bus column says Off; the bus icon\'s tooltip says Engine off.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
+        one('Engine off', 'The bus column says Off and how long; the bus icon\'s tooltip says Engine off.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
         one('Stopped', 'Engine on with a fresh zero-speed reading: the bus icon\'s tooltip says Engine on.', live('Harbor Tours', { bus: { engine: 'on', mph: 0 }, next: atStop() })),
         one('Running without a speed reading', 'Engine on without a speed reading: the bus icon\'s tooltip says Engine on.', live('Riverbend Seniors', { bus: { engine: 'on', mph: null } })),
         ...Object.entries(window.SchedulerRoadBar.DUTY).map(([duty, { word }]) =>

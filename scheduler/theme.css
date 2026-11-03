@@ -99,35 +99,25 @@
   --scheduler-mark-info: var(--rux-status-blue);
   --scheduler-mark-rest: var(--rux-status-purple);
 }
-/* The bus head's readings, bus-head.js's: white on the theme's grey while
-   normal, the status palette's warning when low and its error when critical,
-   its green while the bus moves and its blue while it idles, so a bus with
-   its engine on is always a colour. */
+/* The bus head's readings, bus-head.js's: the primary ink while normal,
+   the status palette's warning when low or idling too long and its error
+   when critical, and its green for a moving bus's speed. */
 :root,
 [data-theme] {
   --scheduler-head-normal: var(--rux-icon-primary);
   --scheduler-head-low: var(--scheduler-mark-warning);
   --scheduler-head-critical: var(--scheduler-mark-error);
   --scheduler-head-moving: var(--scheduler-mark-success);
-  --scheduler-head-idle: var(--scheduler-mark-info);
 }
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
-   Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, and its
-   blue 70, for the gauges and the words alike. */
+   Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
+   the gauges and the words alike. */
 [data-theme="white"],
 [data-theme="g10"],
 [data-theme="apple-light"] {
   --scheduler-head-low: #8e6a00;
   --scheduler-head-critical: #da1e28;
   --scheduler-head-moving: #198038;
-  --scheduler-head-idle: #0043ce;
-}
-/* On Carbon's dark panes the status blue 50 read 2.8 to 1 on the head's
-   grey, so idling takes its blue 40, the link blue there, which stands as the
-   moving green does, 3.8 to 1 on g90 and 4.9 on g100. */
-[data-theme="g90"],
-[data-theme="g100"] {
-  --scheduler-head-idle: #78a9ff;
 }
 /* On a light pane a low tank's orange takes Carbon's orange 60, which holds
    3 to 1 as a bar where the status colour does not. */
@@ -807,40 +797,18 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* Rux 100's state display takes Geist's own pairs, each 100 fill under its
-   900 ink: green moving, blue idling, amber when speeding or idling too
-   long; its gray 900 writes Off and no signal. */
-[data-theme="rux-100"] .scheduler-row-head {
-  --scheduler-head-moving-fill: oklch(23.09% 0.0716 149.68);
-  --scheduler-head-low-fill: var(--scheduler-amber-bg);
-  --scheduler-head-idle-fill: oklch(22.17% 0.069 259.89);
-  --scheduler-head-quiet-ink: #a1a1a1;
-}
-/* Rux 100's speedometer panel is its panels' raised card: the raised
-   surface and its hover, between a rule at its top and its foot in the
-   board's line. */
-[data-theme="rux-100"] .scheduler-row-head { --scheduler-head-panel: var(--scheduler-raised); --scheduler-head-panel-hover: var(--scheduler-raised-hover); }
-[data-theme="rux-100"] .scheduler-row-head__arc { border-block: 1px solid var(--rux-border-subtle-01); }
-/* Rux 100's state display is 40px wide, Carbon's md control height, the
-   size of the board's buttons and the head's whole width. Its height is
-   the rows it stands on. */
-[data-theme="rux-100"] .scheduler-row-head__dial {
-  justify-self: center;
-  inline-size: var(--rux-layout-size-height-md, 2.5rem);
-}
-/* On one row the state's reading and its unit stand side by side, which
-   takes the head's whole width. */
-[data-theme="rux-100"] .scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__dial { inline-size: auto; justify-self: stretch; }
+/* Rux 100's gray 900 writes Off and no signal. */
+[data-theme="rux-100"] .scheduler-row-head { --scheduler-head-quiet-ink: #a1a1a1; }
 /* A Rux 100 bus head whose tip is open is back at the board's own sheet,
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */
 [data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); }
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
-   dims its icon, dial or speedometer and fuel to 35%, so the buses running are the
+   dims its icon, state and fuel to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it
    names the row, and so does a low tank, since the office has to act on it;
    so does its kit, which the engine does not change. */
-[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__arc:not([data-level="low"], [data-level="critical"]), .scheduler-row-head__level[data-level="normal"]) {
+[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
   opacity: .35;
 }
 /* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the

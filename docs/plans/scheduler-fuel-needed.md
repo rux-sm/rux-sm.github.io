@@ -35,8 +35,11 @@ yard, where a fixed 25% low mark says nothing about the job.
 - **Each bus's tank size is worked out from Samsara, never typed:** over a
   stretch with no fill-up, where the fuel percent only falls, the gallons
   the fuel and energy report says were burned over the points the percent
-  fell give the tank's gallons. The median over the last 90 days' stretches
-  of at least 20 points stands, and a bus with no such stretch draws no tick.
+  fell give the tank's gallons, a rise of 3 points or more ending a stretch
+  as a fill-up. The median over the last 90 days' stretches of at least 20
+  points stands, and a bus with fewer than three such stretches draws no
+  tick, since one stretch alone can be a third off. Samsara keeps a fuel
+  percent only where it changes, about 220 a bus in 90 days.
 - **The two figures are kept, not asked for on every load:** each bus's
   miles per gallon and tank gallons, with when they were worked out, in a
   table the Edge Function refreshes once a day, since a 90-day history is
@@ -50,9 +53,6 @@ None open.
 
 ## Tasks
 
-- [ ] Read one bus's 90 days of fuel percents and its fuel and energy
-  report in the scratchpad, work out its tank and miles per gallon, and
-  check them against its make's published tank and its Samsara dashboard.
 - [ ] Add the table for each bus's miles per gallon and tank gallons, as a
   database change shown to rux and applied on a yes.
 - [ ] A new Edge Function that works both out for every bus and keeps them,

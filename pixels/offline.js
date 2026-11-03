@@ -15,7 +15,7 @@
 const CACHE = 'pixels-1';
 const CORE = [
   './', 'index.html', 'play.html', 'category.html', 'me.html', 'create.html', 'friends.html', 'make.html',
-  'app.js', 'data.js', 'puzzles.js', 'play.js', 'category.js', 'me.js', 'create.js', 'friends.js', 'make.js',
+  'app.js', 'data.js', 'puzzles.js', 'play.js', 'category.js', 'me.js', 'create.js', 'friends.js', 'make.js', 'picture.js',
   'theme.css', 'overrides.css', 'app.css', 'manifest.json', 'brand/favicon.svg', 'brand/icon.svg',
   '/funnel.js', '/account.js', '/switcher.js', '/switcher.json',
   '/design/css/rux.css', '/design/css/rux-theme.css', '/design/css/rux-overrides.css', '/design/css/rux-game.css',

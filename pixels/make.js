@@ -21,6 +21,7 @@
    a saved puzzle keeps the size it has. Exit, the bar's first key,
    goes back to Create, to the view and the rift it came from; a new
    picture and an edit are kept as drafts, so nothing is lost by it.
+   PICTURE, beside Size, draws the board from a picture, as picture.js says.
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
@@ -431,6 +432,18 @@
     clear();
     keepDraft();
   });
+  // PICTURE starts the board from a picture, at the size chosen, with its
+  // colours; picture.js makes them. It is a step Undo takes back.
+  $('pixels-picture').addEventListener('click', () => window.Pixels.fromPicture(side, made => {
+    $('pixels-saved').hidden = true;
+    $('pixels-error').hidden = true;
+    mark();
+    changing();
+    draft = grid(made.squares, side);
+    colours = grid(made.colours, side);
+    setStep('draw');
+    keepDraft();
+  }, () => say('That picture did not open', 'Try a PNG or a JPEG.')));
   name.addEventListener('input', () => { save.disabled = !ready(); keepDraft(); });
   level.addEventListener('change', () => { showWhere(); keepDraft(); render(); });
   day.addEventListener('change', () => { saveNow.disabled = daily() && !day.value; keepDraft(); });

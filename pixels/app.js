@@ -1243,7 +1243,7 @@
     waiting, same,
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
-    daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, relaxed, listen, time, title,
+    daily, today, streak, board, paint, highlight, drag, picture, canvas, tone, HEARTS, HINT, added, buzz, sound, sounds, relaxed, listen, time, title,
     words, art, tile, bar, riftTile, menu, riftBlock, arrive, arrived, turn, how, switcher, chosen, shell,
   });
 })();

@@ -955,7 +955,20 @@ html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
 .pixels-maker :is(.pixels-corner, .pixels-cols, .pixels-rows) { display: none; }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
-.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem; gap: .5rem; }
+.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem auto; gap: .5rem; }
+/* FROM A PICTURE: the square frame the picture is moved in, as big as the
+   window's width and height leave room for, then the drawing and the
+   finished picture it makes, beside how to move it. Carbon's window is at
+   most 72% of the screen high, and the rest of it takes 19rem. */
+.pixels-crop { display: grid; gap: .75rem; justify-items: center; }
+.pixels-crop-frame { display: block; inline-size: min(100%, 24rem, max(12rem, 72dvh - 19rem)); aspect-ratio: 1; cursor: grab; touch-action: none; }
+.pixels-crop-frame:active { cursor: grabbing; }
+.pixels-crop-frame:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.pixels-crop-mode { inline-size: min(100%, 24rem); }
+.pixels-crop-under { display: flex; align-items: center; gap: 1rem; inline-size: min(100%, 24rem); }
+.pixels-crop-under > .pixels-meta { flex: 1; margin: 0; }
+.pixels-crop-result { display: flex; flex: none; gap: .5rem; }
+.pixels-crop-result > .pixels-picture { --px: round(down, calc(4rem / var(--size, 10)), 1px); }
 /* THE STEP AND THE TOOLS, under the board's line, are big switches as the
    game's Fill and X are: Draw and Colour in both steps, and in the colour
    step a row of their own under them, Bucket and Eraser, a half each, as

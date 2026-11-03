@@ -68,6 +68,25 @@ has a next move, and the picture comes out bit by bit.
 6. **Play it the next day.** Play, in a rift's panel on Game, tries it. If you were bored or
    stuck, the players will be too.
 
+## From a picture
+
+Picture, the button beside Size, starts the board from a picture on your
+phone or computer, at the size chosen. The picture stays on your device;
+only the squares and their colours reach the board.
+
+1. Pick the picture. It opens in a square frame with the board's lines over it.
+2. Drag it to move it, and pinch or scroll to zoom, until the frame holds
+   what you want. The two small pictures under the frame are the puzzle and
+   its finished colours, and change as you move.
+3. Choose **Shape** to fill what stands apart from the background, or
+   **Dark parts** to fill the dark lines of a cartoon.
+4. Press **Use**. Undo takes it back.
+
+Simple art works best: one clear shape on a plain background, or a cartoon
+with dark outlines. A busy photo turns to noise at this size. The picture
+almost always needs fixing by hand before the tag goes green: the outlined
+squares are the ones to change.
+
 ## The colour picture
 
 Once the tag is green, Colour paints the picture the player sees at the

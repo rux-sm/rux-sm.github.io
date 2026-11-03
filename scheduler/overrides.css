@@ -337,10 +337,11 @@
    head's list from opening. Invisible, it takes nothing. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__collapsed-title-text { pointer-events: none; }
 
-/* The Forms list's title stands 32px in, level with its rows, which run
-   edge to edge as the Tasks pane's do and keep that inset. A form opened
-   from it puts the way back first, at Carbon's 16px. */
-.scheduler-viewer--forms .rux--side-panel .rux--side-panel__header--has-title:not(.rux--side-panel__header--on-detail-step) {
+/* The Forms list's and the calculator's title stands 32px in, level with
+   their rows and sections, which keep that inset as the Tasks pane's rows
+   do. A form opened from the list puts the way back first, at Carbon's
+   16px. */
+.scheduler-viewer--list .rux--side-panel .rux--side-panel__header--has-title:not(.rux--side-panel__header--on-detail-step) {
   padding-inline-start: var(--rux-spacing-07);
 }
 
@@ -1540,10 +1541,11 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 /* THE CALCULATOR IN THE BOARD'S PANEL IS THE PANEL'S CONTENT, not a page
    standing inside it. quote.js marks the page framed; it then takes the
    panel's own surface and gives up the page's inset, and each tile is a
-   section of that surface: no fill, ring or corner of its own, 16px over its
-   heading, and Carbon's subtle border parting it from the one before, run to
-   the panel's edges as the editor's sections are. Its inline inset is 8px,
-   which with its body's 8px sets its fields 16px in, under the panel's title. */
+   section of that surface: no fill, ring or corner of its own, and Carbon's
+   subtle border parting it from the one before, run to the panel's edges as
+   the Tasks pane's rows are. Its inset is 24px all round, which with its
+   body's 8px sets what it holds 32px from its every edge, as a task's words
+   are, under the panel's title. */
 .scheduler-quote-framed body { background: var(--rux-layer-01); }
 .scheduler-quote-framed .rux--content.scheduler-quote-page,
 .scheduler-quote-framed .scheduler-quote-tabs > .rux--tab-content { padding: 0; }
@@ -1551,8 +1553,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   background: transparent;
   box-shadow: none;
   border-radius: 0;
-  padding-block-start: var(--rux-spacing-03);
-  padding-inline: var(--rux-spacing-03);
+  padding: calc(var(--rux-spacing-07) - var(--rux-spacing-03));
 }
 .scheduler-quote-framed .scheduler-quote > .rux--tile + .rux--tile {
   border-block-start: 1px solid var(--rux-border-subtle-01);

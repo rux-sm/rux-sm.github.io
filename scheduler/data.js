@@ -14596,10 +14596,8 @@
       column.querySelector(`#${prefix}-close`)?.setAttribute('aria-label', `Close ${VIEWER_NAMES[key].toLowerCase()}`);
       // Only a stored file opens larger, so the copies have no expand button.
       column.querySelector(`#${prefix}-expand`)?.remove();
-      // The forms list and the calculator open at the lists' width; see app.css.
+      // The forms list and the calculator open at the lists' width, their title level with what they hold; see app.css and overrides.css.
       column.classList.add('scheduler-viewer--list');
-      // The forms list's title stands level with its rows; see overrides.css.
-      if (key === 'forms') column.classList.add('scheduler-viewer--forms');
     }
     const byId = part => document.getElementById(part ? `${prefix}-${part}` : prefix);
   const viewerEl = byId();

@@ -394,8 +394,10 @@
   background-color: var(--rux-layer);
 }
 /* The Forms list is print.html framed in the document panel, its own page, so
-   it takes the panel's page colour, and its rows stand on it as the panel's. */
-[data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print { background: var(--rux-background); }
+   it takes the panel's page colour, and its rows stand on it as the panel's;
+   the calculator, quote.html framed, takes it too. */
+[data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print,
+[data-theme="rux-dark"].scheduler-quote-framed body { background: var(--rux-background); }
 [data-theme="rux-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   --rux-layer: var(--rux-layer-01);
   --scheduler-band-surface: var(--rux-layer-01);
@@ -1437,8 +1439,13 @@
   border: 1px solid var(--rux-border-subtle-01);
 }
 /* The Forms list is print.html framed in the document panel, its own page,
-   so it takes the panel's sheet, and its rows stand on it as the panel's. */
-[data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print { background: var(--scheduler-region); }
+   so it takes the panel's sheet, and its rows stand on it as the panel's;
+   the calculator, quote.html framed, takes it too. */
+[data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print,
+[data-theme="rux-100"].scheduler-quote-framed body { background: var(--scheduler-region); }
+/* The calculator's total bar is the panel's foot, solid since the sections
+   scroll under it, in the panel's own colour, the page's in both themes. */
+:is([data-theme="rux-dark"], [data-theme="rux-100"]).scheduler-quote-framed .scheduler-quote-bar { background: var(--rux-background); }
 /* Carbon paints a side panel's body, head and foot with layer-01 by name
    rather than through `--rux-layer`, so they are pointed at it here. */
 [data-theme="rux-100"] #scheduler-panel-body .rux--tabs,

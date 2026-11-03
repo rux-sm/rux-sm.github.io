@@ -5329,11 +5329,11 @@ html[data-scheduler-takeover] {
    rule between them, not cards with a gap, so the gap goes; overrides.css
    takes the tiles' own boxes away. The total's bar is then the panel's foot,
    as the editor's buttons are, and its rule runs edge to edge. The bar and
-   the notice keep the sections' 16px inset, since the page's own is gone. */
+   the notice keep the sections' 32px inset, since the page's own is gone. */
 .scheduler-quote-framed .scheduler-quote { --scheduler-quote-gap: 0px; }
-.scheduler-quote-framed .scheduler-quote-bar { padding-inline: var(--rux-spacing-05); }
+.scheduler-quote-framed .scheduler-quote-bar { padding-inline: var(--rux-spacing-07); }
 .scheduler-quote-framed .scheduler-quote-bar::before { inset-inline: 0; }
-.scheduler-quote-framed .scheduler-quote__changed { margin: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
+.scheduler-quote-framed .scheduler-quote__changed { margin: var(--rux-spacing-07) var(--rux-spacing-07) 0; }
 
 /* The Rules tab: what the calculator does and where it follows the
    spreadsheet. A quirk's example is a line a trip, in figures that line up. */

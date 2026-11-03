@@ -12,28 +12,26 @@
    here, where a row is done, edited and deleted.
 
    A row is an item of Design's accordion, one to a row of the list, that
-   opens, as a leg is on Departures. Every row has a number the database gives it when it
-   is added and it keeps, so a person can say "task 112". Closed, a row is
-   three lines, each ended in an ellipsis where it runs long, so every closed
-   row stands the same height: who it is about, with its due day at the
-   line's end in the error colour once the day is past; then its words;
-   then its kind in Design's tag, in the kind's colour, its number, and
-   at the end the face of its owner, the one working on it.
-   A press opens it to those in full, then its trip as a link,
-   its detail as a list, a fact to an item, and one row of buttons: Done,
-   I'm on it, which makes the row mine, or Let it go on a row already mine,
-   Email, Start trip on a website request with no trip yet, and a menu of
-   Edit and Delete. Who added a row is said in its form, under the fields,
-   and not on the row. One row is open at a time. Delete closes the row with
-   the reason Deleted, so it goes to Done today with that said, and nothing
-   is removed.
+   opens, as a leg is on Departures. Every row has a number the database
+   gives it when it is added and it keeps, so a person can say "task 112".
+   Closed, a row is two lines, each ended in an ellipsis where it runs long,
+   so every closed row stands the same height: its kind in Design's tag, in
+   the kind's colour, its due day, in the error colour once the day is past,
+   and the face of its owner, the one working on it; then its words. A
+   press opens it to its words in full, then who it is about, its trip as a
+   link, its detail as a list, a fact to an item, its number, and one row of
+   buttons: Done, I'm on it, which makes the row mine, or Let it go on a row
+   already mine, Email, Start trip on a website request with no trip yet,
+   and a menu of Edit and Delete. Who added a row is said in its form, under
+   the fields, and not on the row. One row is open at a time.
 
    The rows stand in one list in due order, overdue first, then today, this
-   week, later and no date, under no headings, since each row says its day;
-   then Done today: the rows closed today behind one line that says how many
-   and is shut until pressed, each a row struck through, with Undo. Everyone
-   on the staff sees every row. The count on Tasks is its overdue and today
-   rows; the count on Departures is the one departures-panel.js gives.
+   week, later and no date, under no headings, since each row says its day.
+   Only open rows are listed: Done closes a row and Delete closes it with
+   the reason Deleted, removing nothing, and either says so in a toast whose
+   Undo opens it again. Everyone on the staff sees every row. The count on
+   Tasks is its overdue and today rows; the count on Departures is the one
+   departures-panel.js gives.
 
    A change to a row arrives on the `scheduler-to-do` channel and redraws.
 
@@ -131,10 +129,9 @@
   // -- what is known --------------------------------------------------------
   let me = null;            // my staff row, as /account.js gives it
   let staff = new Map();    // profile id -> profile, Ruxbot among them
-  let stored = [];          // `to_dos`: every open row, and the ones closed today
+  let stored = [];          // `to_dos`: every open row
   let editingId = null;     // the row whose form is open
   let openId = null;        // the row that is open, one at a time
-  let doneOpen = false;     // whether Done today is open, shut again when the pane shuts
   const shown = { tasks: false, prep: false };   // which panes are open
   let failure = '';
   // A row's trip, and the trips its Trip choice offers, as to-do-rows.js read them.
@@ -142,10 +139,7 @@
 
   // -- reading --------------------------------------------------------------
   async function readStored() {
-    const midnight = new Date();
-    midnight.setHours(0, 0, 0, 0);
-    stored = await client.from('to_dos').select('*')
-      .or(`closed_at.is.null,closed_at.gte."${midnight.toISOString()}"`).order('created_at').then(unwrap);
+    stored = await client.from('to_dos').select('*').is('closed_at', null).order('created_at').then(unwrap);
   }
 
   async function readStaff() {
@@ -179,15 +173,25 @@
     }
     await loadStored();
   }
-  const tick = (row, done) => write(() => client.from('to_dos')
-    .update({ closed_at: done ? new Date().toISOString() : null }).eq('id', row.id));
   const change = (row, fields) => write(() => client.from('to_dos').update(fields).eq('id', row.id));
-  /* Delete closes the row with the reason Deleted and removes nothing. The
-     row leaves the list as a done one does, History keeps what it asked where
-     it had a trip, and an inbox review still finds the thread's row, so it
-     does not add the same one again. */
-  const remove = row => write(() => client.from('to_dos')
-    .update({ closed_at: new Date().toISOString(), closed_reason: 'Deleted' }).eq('id', row.id));
+  /* Done and Delete each close the row, which leaves the list, and say so in
+     a toast whose Undo opens it again, as Carbon's and Geist's toasts take
+     back what a press just did; a row closed so is not listed, so the toast
+     is the one way back from a press. */
+  async function close(row, fields, said) {
+    await write(() => client.from('to_dos').update({ closed_at: new Date().toISOString(), ...fields }).eq('id', row.id));
+    if (failure) return;
+    const toast = window.SchedulerToast;
+    toast?.toast('success', `Task${row.number != null ? ` #${row.number}` : ''} ${said}`, sentence(row.body), {
+      label: 'Undo',
+      onClick: () => { toast.toast(null); write(() => client.from('to_dos').update({ closed_at: null }).eq('id', row.id)); },
+    });
+  }
+  const tick = row => close(row, {}, 'done');
+  /* Delete closes the row with the reason Deleted and removes nothing:
+     History keeps what it asked where it had a trip, and an inbox review
+     still finds the thread's row, so it does not add the same one again. */
+  const remove = row => close(row, { closed_reason: 'Deleted' }, 'deleted');
 
   /* START TRIP turns a website request into a draft, as Claude's are: the
      request's facts fill the editor, and only the person's Save makes the
@@ -243,7 +247,6 @@
     const sunday = weekEnd();
     const out = new Map(GROUPS.map(g => [g, []]));
     for (const row of stored) {
-      if (row.closed_at) continue;
       out.get(groupOf(row, today, sunday)).push(row);
     }
     const tripDay = id => tripOf(id)?.start_date || '9';
@@ -291,12 +294,12 @@
      row and the whole of it is the press, Design's arrow at its first
      line's end, turning as it opens.
      The panel under it holds what a closed row has no room for: who it is
-     about, its trip, its detail and its number, then the buttons, and on a done row who closed it, and why
-     where it was deleted. What a row has none of, a trip or a thread, is left
-     out rather than shown disabled. */
-  function storedRow(row, done) {
+     about, its trip, its detail and its number, then the buttons. What a
+     row has none of, a trip or a thread, is left out rather than shown
+     disabled. */
+  function storedRow(row) {
     const open = row.id === openId;
-    const li = el('li', `rux--accordion__item scheduler-to-do__item${done ? ' scheduler-to-do__item--done' : ''}${open ? ' rux--accordion__item--active' : ''}`);
+    const li = el('li', `rux--accordion__item scheduler-to-do__item${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.id = row.id;
     const trip = row.trip_id ? tripOf(row.trip_id) : null;
     const lines = String(row.detail || '').split('\n').map(s => s.trim()).filter(Boolean);
@@ -306,17 +309,17 @@
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
     // The first line is its kind and its due day, with Due said for a
-    // reader, a done row being past its day; the second its words.
+    // reader; the second its words.
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(kindTag(row));
-    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
+    const dueWord = row.due_on ? dueWords(row.due_on) : '';
     if (dueWord) {
       const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
       due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
       context.appendChild(due);
     }
     // The one working on it, by face at the line's end, so a row nobody has taken shows none.
-    const owner = !done ? staff.get(row.owner_id) : null;
+    const owner = staff.get(row.owner_id);
     if (owner) {
       const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-to-do__face');
       account.drawAvatar?.(face, { id: owner.id, name: owner.display_name, photoPath: owner.photo_path, colour: owner.avatar_color }, 'sm');
@@ -358,16 +361,15 @@
       number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
       more.appendChild(number);
     }
-    const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
 
-    // Done, or Undo, is the row's one primary action, as Geist's solid button is.
-    const act = button('rux--btn--primary', done ? 'Undo' : 'Done');
-    act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
+    // Done is the row's one primary action, as Geist's solid button is.
+    const act = button('rux--btn--primary', 'Done');
+    act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row); });
     const bar = el('div', 'scheduler-to-do__buttons');
     bar.appendChild(act);
     /* I'm on it makes the row mine, taking it from whoever had it, and on a
        row already mine Let it go gives it back to anyone. */
-    if (!done && me?.id) {
+    if (me?.id) {
       const mine = row.owner_id === me.id;
       const take = button('rux--btn--ghost', mine ? 'Let it go' : 'I’m on it');
       take.addEventListener('click', () => { take.disabled = true; change(row, { owner_id: mine ? null : me.id }); });
@@ -379,62 +381,31 @@
       bar.appendChild(email);
     }
     // A website request with no trip yet starts one where its trip would show.
-    if (!done && !row.trip_id && row.quote_request_id) {
+    if (!row.trip_id && row.quote_request_id) {
       const start = button('rux--btn--ghost', 'Start trip');
       start.addEventListener('click', () => startTrip(row, start));
       bar.appendChild(start);
     }
-    // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
+    // Edit and Delete are the menu's.
     const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger scheduler-to-do__end');
     menuButton.type = 'button';
-    menuButton.disabled = !!done;
     menuButton.setAttribute('aria-label', 'More');
     menuButton.setAttribute('aria-haspopup', 'menu');
     menuButton.setAttribute('data-rux-open', MENU_ID);
     menuButton.appendChild(svgUse('#m-more_vert'));
     bar.appendChild(menuButton);
     more.appendChild(bar);
-    if (closed) more.appendChild(el('div', 'scheduler-to-do__meta', closed));
     wrapper.appendChild(more);
     li.append(heading, wrapper);
     return rowOf(li);
   }
 
-  // A list of rows, each ruled off: a group's rows, or the done rows.
+  // The list of rows, each ruled off.
   const rowList = () => {
     const ul = el('ul', 'scheduler-to-do__rows');
     ul.setAttribute('role', 'list');
     return ul;
   };
-
-  /* Done today: the rows closed today, behind one item of the accordion whose
-     heading is set as a group's is, its name and how many it holds. It is
-     shut until pressed, so the tab opens on what is still owed, and its rows
-     are the rows they are above it. */
-  function doneGroup(rows) {
-    const li = el('li', `rux--accordion__item scheduler-to-do__done-item${doneOpen ? ' rux--accordion__item--active' : ''}`);
-    const heading = el('button', 'rux--accordion__heading');
-    heading.type = 'button';
-    heading.setAttribute('aria-expanded', String(doneOpen));
-    const arrow = svgUse('#m-keyboard_arrow_right');
-    arrow.classList.add('rux--accordion__arrow');
-    const title = el('div', 'rux--accordion__title scheduler-to-do__done-title', 'Done today');
-    title.append(' ', el('span', 'scheduler-to-do__count', String(rows.length)));
-    heading.append(arrow, title);
-    const wrapper = el('div', 'rux--accordion__wrapper');
-    const inside = el('div', 'rux--accordion__content');
-    inside.id = 'scheduler-to-do-done';
-    heading.setAttribute('aria-controls', inside.id);
-    const ul = rowList();
-    for (const r of rows) ul.appendChild(storedRow(r, true));
-    inside.appendChild(ul);
-    wrapper.appendChild(inside);
-    li.append(heading, wrapper);
-    const group = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows scheduler-to-do__done');
-    group.setAttribute('role', 'list');
-    group.appendChild(li);
-    return group;
-  }
 
   let fieldSeq = 0;
   // One labelled field of the edit form, as Design's text input, text area and select are built.
@@ -600,21 +571,14 @@
   }
   const drawPrepCount = () => drawCount('prep', window.SchedulerDeparturesPanel?.summary().due ?? 0);
 
-  // The list: the groups, then Done today.
+  // The list: one list, the groups in their order with no heading between, since each row says its day.
   function listParts() {
     const rows = grouped();
-    const parts = [];
-    // One list, the groups in their order with no heading between, since each row says its day.
     const open = GROUPS.flatMap(g => rows.get(g));
-    if (open.length) {
-      const ul = rowList();
-      for (const row of open) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
-      parts.push(ul);
-    }
-    const done = stored.filter(r => r.closed_at);
-    if (done.length) parts.push(doneGroup(done));
-    if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
-    return parts;
+    if (!open.length) return [el('p', 'scheduler-to-do__none', 'Nothing to do.')];
+    const ul = rowList();
+    for (const row of open) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row));
+    return [ul];
   }
 
   function draw() {
@@ -630,18 +594,14 @@
   // -- behaviour ------------------------------------------------------------
   /* One row open at a time: Design's accordion leaves every opened item
      open, so opening one shuts the rest, and the open row is remembered, as
-     a redraw builds the list again. Done today is not a row: it opens and
-     shuts by itself, around whichever row is open, and is remembered too. */
-  const isDone = item => item.classList.contains('scheduler-to-do__done-item');
+     a redraw builds the list again. */
   list.addEventListener('rux:accordion-opened', e => {
-    if (isDone(e.target)) { doneOpen = true; return; }
     openId = e.target.dataset?.id || null;
     for (const item of list.querySelectorAll('.scheduler-to-do__item.rux--accordion__item--active')) {
       if (item !== e.target) window.Rux.accordion?.close(item);
     }
   });
   list.addEventListener('rux:accordion-closed', e => {
-    if (isDone(e.target)) { doneOpen = false; return; }
     if (e.target.dataset?.id === openId) openId = null;
   });
   // A link to a trip, a task's, a Departures row's or line's, by a plain press.
@@ -675,7 +635,6 @@
     if (name === 'tasks') {
       editingId = null;
       openId = null;
-      doneOpen = false;
       if (on) { loadStored(); Rows?.load(); }
       draw();
     } else {

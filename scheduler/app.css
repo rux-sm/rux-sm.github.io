@@ -572,6 +572,11 @@ button.scheduler-row-head__num::after {
   --scheduler-head-moving-fill: color-mix(in oklab, var(--scheduler-head-moving) 16%, var(--rux-layer));
   --scheduler-head-low-fill: color-mix(in oklab, var(--scheduler-head-low) 16%, var(--rux-layer));
   --scheduler-head-idle-fill: color-mix(in oklab, var(--scheduler-head-idle) 16%, var(--rux-layer));
+  /* The speedometer's panel and the empty part of its arc and of the fuel's
+     meter: the primary ink over the head's own surface, so they stand off
+     it by the same step in every theme. */
+  --scheduler-head-panel: color-mix(in oklab, var(--rux-text-primary) 10%, var(--rux-layer));
+  --scheduler-head-track: color-mix(in oklab, var(--rux-text-primary) 18%, var(--rux-layer));
   /* The idling word and how long, and the quiet ink of Off and no signal. */
   --scheduler-head-idle-ink: var(--scheduler-head-idle);
   --scheduler-head-quiet-ink: var(--rux-text-secondary);
@@ -603,12 +608,13 @@ button.scheduler-row-head__num::after {
   /* At its row's start, so its bar stands 1px clear of the equipment under it. */
   align-self: start;
   gap: 2px;
-  font-size: 11px;
-  line-height: 12px;
+  font-size: 10px;
+  line-height: 10px;
 }
-/* The fuel box fills green, orange when low and red when critical. */
+/* The fuel's meter is the secondary grey until low, orange, or critical,
+   red, so a bus asks nothing of the office unless its tank does. */
 .scheduler-row-head {
-  --scheduler-fuel-normal: var(--scheduler-head-moving);
+  --scheduler-fuel-normal: var(--rux-icon-secondary);
   --scheduler-fuel-low: var(--rux-status-orange);
   --scheduler-fuel-critical: var(--scheduler-head-critical);
 }
@@ -618,38 +624,30 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__reading { display: flex; align-items: center; gap: 3px; color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
 .scheduler-row-head__reading { justify-content: space-between; }
 .scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: 600; }
-/* THE FUEL BOX: the kit row's width and 16px tall, filled from its start
-   to the tank's share over the accent grey of an empty one. Its percent, in
-   10px semibold, is written twice: in the primary ink over the empty part,
-   and in the inverse ink over the fill, which every theme's fill colours
-   hold their text in, cut at the fill's edge. */
+/* THE FUEL: the kit row's width, its percent in 12px semibold over a 4px
+   meter filled to the tank's share, 18px in all, one row's height. A low or
+   critical tank's percent takes its meter's colour. */
 .scheduler-row-head__fuel {
   --scheduler-tank-ink: var(--scheduler-fuel-normal);
-  position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   inline-size: var(--scheduler-kit-w);
-  block-size: 16px;
   margin-inline: auto;
-  border-radius: 2px;
-  overflow: hidden;
-  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-layer-accent-01) 0);
   color: var(--rux-text-primary);
-  font-size: 10px;
+  font-size: var(--rux-label-01-font-size);
   font-weight: 600;
-  line-height: 16px;
+  line-height: 12px;
   text-align: center;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-/* Under the display, centred in its 18px row. */
-.scheduler-row-head__level[data-tank="F"] { padding-block-start: 1px; }
-.scheduler-row-head__fuel[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); }
-.scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); }
-.scheduler-row-head__fuel-on {
-  position: absolute;
-  inset: 0;
-  color: var(--rux-text-inverse);
-  clip-path: inset(0 calc(100% - var(--scheduler-tank)) 0 0);
+.scheduler-row-head__fuel[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); color: var(--scheduler-fuel-low); }
+.scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); color: var(--scheduler-fuel-critical); }
+.scheduler-row-head__fuel-meter {
+  block-size: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--scheduler-head-track) 0);
 }
 /* A low DEF is a tag across the display's foot, on the head's own surface,
    and takes no height of its own. */
@@ -663,7 +661,7 @@ button.scheduler-row-head__num::after {
   z-index: 1;
   padding-inline: 2px;
   background: var(--rux-layer);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 10px;
   white-space: nowrap;
 }
@@ -677,24 +675,26 @@ button.scheduler-row-head__num::after {
    idling blue, or amber past the idle limit, while the bus idles; in its
    bowl, 8px down, the speed or the state's word in the dial's colours;
    under it mph, or how long the bus has idled or been
-   unseen; then the fuel's box. On six rows the
+   unseen; then the fuel. They stand on one panel the column's width, a step
+   off the head's surface, the arc and the fuel 3px in from its sides. On six rows the
    head's four facts stand in the four rows' 72 as four clusters: the
    number, then the arc with its figure and unit 2px under it, then the
    fuel's box, then the kit, 6px between the clusters
    and 2px under the number, which the text's own leading evens out to
    about 7px of air between each and less inside. On five its lines close
-   up to the three rows' 54. A low DEF's tag stands under the fuel's box,
+   up to the three rows' 54. A low DEF's tag stands under the fuel,
    and the tip says its number. Every empty thing on the head, the arc's
-   track and the fuel's box, is the one accent grey. */
+   track and the fuel's meter, is the one track grey. */
 .scheduler-row-head__arc { display: none; }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__arc {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-self: center;
+  justify-self: stretch;
   align-self: start;
   grid-row: 2 / span 3;
-  inline-size: var(--scheduler-kit-w);
+  padding: 4px var(--scheduler-kit-pad);
+  background: var(--scheduler-head-panel);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -706,20 +706,19 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc-bow > * { grid-area: 1 / 1; }
 .scheduler-row-head__arc-svg { display: block; }
 .scheduler-row-head__arc-svg path { fill: none; stroke-width: 3; stroke-linecap: round; }
-.scheduler-row-head__arc-track { stroke: var(--rux-layer-accent-01); }
+.scheduler-row-head__arc-track { stroke: var(--scheduler-head-track); }
 .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--warning .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-low); }
 .scheduler-row-head__arc-idle { stroke: color-mix(in oklab, var(--scheduler-head-idle) 55%, var(--rux-layer)); }
 .scheduler-row-head__arc--warning .scheduler-row-head__arc-idle { stroke: color-mix(in oklab, var(--scheduler-head-low) 55%, var(--rux-layer)); }
-.scheduler-row-head__arc-figure { align-self: start; justify-self: center; margin-block-start: 8px; font-size: 13px; font-weight: 600; line-height: 13px; color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__arc-figure { align-self: start; justify-self: center; margin-block-start: 8px; font-size: var(--rux-label-01-font-size); font-weight: 600; line-height: 12px; color: var(--scheduler-head-quiet-ink); }
 .scheduler-row-head__arc--running .scheduler-row-head__arc-figure { color: var(--scheduler-head-idle-ink); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--moving .scheduler-row-head__arc-figure { color: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--warning .scheduler-row-head__arc-figure { color: var(--scheduler-head-low); }
-.scheduler-row-head__arc-figure--word { font-size: 11px; }
 .scheduler-row-head__arc-under { margin-block-start: 2px; font-size: 10px; line-height: 10px; color: var(--rux-text-secondary); }
-/* The fuel's box 6px under the unit; three rows are 54px, the bowl's 21, a
-   10px unit and the box 2px under it. */
-.scheduler-row-head__arc .scheduler-row-head__fuel { margin-block-start: 6px; }
+/* The fuel 5px under the unit; on five rows the panel closes up, the fuel
+   2px under the unit. */
+.scheduler-row-head__arc .scheduler-row-head__fuel { margin-block-start: 5px; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-under { margin-block-start: 0; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc .scheduler-row-head__fuel { margin-block-start: 2px; }
 /* With no signal the arc is dotted and the speedometer fades, but a low
@@ -788,14 +787,14 @@ button.scheduler-row-head__num::after {
 .scheduler-skeleton-label { inline-size: 2.5rem; block-size: 1rem; }
 /* A bus head's skeleton stands in the head's own classes, which size and
    place it; these give each grey block the size of what it stands for:
-   the number's line, and the fuel's box. The display takes
+   the number's line, and the fuel. The display takes
    the head's width, or the square a theme sets it to, and the height of the
    rows the head gives it, not the placeholder's own 100px. */
 .scheduler-row-head .rux--skeleton__text { margin-block-end: 0; }
 .scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; }
 .scheduler-skeleton-dial { inline-size: auto; block-size: auto; }
-.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 16px; margin-inline: auto; }
-.scheduler-skeleton-arc-fuel { margin-block-start: 6px; }
+.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 18px; margin-inline: auto; }
+.scheduler-skeleton-arc-fuel { margin-block-start: 5px; }
 /* The kit's two marks in the size of their icons. */
 .scheduler-skeleton-kit { inline-size: 16px; block-size: 16px; }
 /* Placed and sized like a trip bar in the first lane. */

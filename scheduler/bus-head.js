@@ -9,7 +9,7 @@
      state and fuel under the number as a speedometer on five and six rows:
      a half ring that fills with the speed to MAX_MPH, the speed, or Idle,
      Off or a dash, inside it at its foot, mph or how long under it, and
-     the fuel's box under that. On fewer rows, its
+     the fuel under that, on one panel. On fewer rows, its
      state in a display under the number, on the rows app.css gives it, so
      the fuel under it stands at one height down the column.
      While the engine runs the display is
@@ -18,7 +18,7 @@
      engine off it is the word alone, Off, with no fill or edge, and with no
      signal a dash over how long since the bus was seen, in a dashed edge.
      Under it
-     the fuel's box. DEF is drawn only
+     the fuel. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
      moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
@@ -27,9 +27,9 @@
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
-   The fuel is a box filled to the tank's share, green, orange when low,
-   red when critical, with its percent across it. Until samsara-now first
-   answers, every bus is drawn at rest, Off over an empty fuel box and a
+   The fuel is its percent over a meter filled to the tank's share, grey
+   until low, orange, or critical, red. Until samsara-now first
+   answers, every bus is drawn at rest, Off over an empty fuel meter and a
    dash for its percent, so the column has its shape while it loads.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
@@ -106,7 +106,7 @@
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The state's display, one row beside the fuel's box: filled while the
+  // The state's display, one row over the fuel: filled while the
   // engine runs, in the state's tone, the speed beside mph, Idle alone, its
   // amber saying it has idled too long and the tip saying how long, since
   // the word and its time are wider than the column; the word alone with
@@ -124,23 +124,18 @@
     return box;
   }
 
-  // The fuel: a box filled to the tank's share in its level's colour, the
-  // percent written across it twice, the light copy over the empty part
-  // and the dark one over the fill, cut at the fill's edge, so every figure
-  // reads wherever the fill ends.
-  function fuelBox(pct) {
+  // The fuel: its percent over a meter filled to the tank's share, grey
+  // until low or critical.
+  function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
     box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
-    const words = pct == null ? '\u2013' : `${pct}%`;
-    const on = el('span', 'scheduler-row-head__fuel-on', words);
-    on.setAttribute('aria-hidden', 'true');
-    box.append(el('span', null, words), on);
+    box.append(el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`), el('span', 'scheduler-row-head__fuel-meter'));
     return box;
   }
 
-  // One tank. Fuel: its box. DEF, drawn only while low: its name and
+  // One tank. Fuel: its percent and meter. DEF, drawn only while low: its name and
   // percent as a tag.
   function level(pct, tank) {
     const lv = levelOf(pct, tank);
@@ -151,7 +146,7 @@
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
     if (tank === FUEL) {
-      g.appendChild(fuelBox(pct));
+      g.appendChild(fuelReadout(pct));
       return g;
     }
     const reading = el('span', 'scheduler-row-head__reading');
@@ -187,7 +182,7 @@
     const under = figure ? 'mph' : state.under;
     // The unit's line stands even with nothing to say, so the fuel keeps its place.
     box.appendChild(el('span', 'scheduler-row-head__arc-under', under ?? '\u00a0'));
-    if (live.fuel != null || live.waiting) box.appendChild(fuelBox(live.fuel));
+    if (live.fuel != null || live.waiting) box.appendChild(fuelReadout(live.fuel));
     return box;
   }
 

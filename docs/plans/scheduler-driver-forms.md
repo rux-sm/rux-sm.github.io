@@ -98,13 +98,10 @@ code.
 
 ## Tasks
 
-- [ ] Set up the affidavit from the PDF rux names: upload the blank to
-      `driver-forms`, add its `driver_forms` row with every field's place and
-      Spanish, and sign it as a test driver to check every field lands.
-- [ ] Check the whole round in Chrome on :8641 with a test driver: the card,
-      the form in both languages, the signature, the PDF on the profile, a
-      second signing replacing the first, a flagged answer and Mark as read,
-      and Send; then delete the test driver, its signings and its files.
+- [ ] Check in Chrome on :8641 with a test driver what the first round left:
+      the form on a Spanish link, a second signing replacing the first as the
+      current copy, and Send's Copy the text; then delete the test driver,
+      its signings and its files.
 - [ ] Set up the background check form from the PDF rux names, its campus
       and date left blank, and sign it as a test driver.
 - [ ] Write the campus and the trip date onto the background check form's

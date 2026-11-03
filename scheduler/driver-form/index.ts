@@ -8,17 +8,14 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { PDFDocument, StandardFonts, rgb } from 'npm:pdf-lib@1.17.1'
 import { handle, type Form, type Op } from './handler.ts'
+import { signedCopy } from './pdf.ts'
 
 const admin = createClient(
   Deno.env.get('SUPABASE_URL')!,
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   { auth: { persistSession: false, autoRefreshToken: false } },
 )
-
-// Ink the colour of a pen, so a printed copy reads as filled in.
-const INK = rgb(0.04, 0.12, 0.4)
 
 // "Alex Moreno" as "alex-moreno", as file-names.js names a file's parts.
 const slug = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
@@ -47,37 +44,7 @@ Deno.serve(req => handle(req, {
   async fill(blankPath, ops: Op[], signature) {
     const { data, error } = await admin.storage.from('driver-forms').download(blankPath)
     if (error) throw error
-    const pdf = await PDFDocument.load(await data.arrayBuffer())
-    const font = await pdf.embedFont(StandardFonts.Helvetica)
-    const sig = await pdf.embedPng(signature)
-    const pages = pdf.getPages()
-    for (const op of ops) {
-      const page = pages[op.page]
-      if (!page) continue
-      if (op.kind === 'signature') {
-        // The drawn signature kept in its own proportions, inside its box,
-        // sitting on the line.
-        const scale = Math.min(op.w / sig.width, op.h / sig.height)
-        page.drawImage(sig, { x: op.x, y: op.y, width: sig.width * scale, height: sig.height * scale })
-        continue
-      }
-      // A box wraps its words to its width and stops at its height.
-      const lines: string[] = []
-      for (const para of op.text.split('\n')) {
-        if (!op.w) { lines.push(para); continue }
-        let line = ''
-        for (const word of para.split(/\s+/)) {
-          const next = line ? `${line} ${word}` : word
-          if (line && font.widthOfTextAtSize(next, op.size) > op.w) { lines.push(line); line = word } else line = next
-        }
-        lines.push(line)
-      }
-      const lead = op.size * 1.25
-      const fit = op.h ? Math.max(1, Math.floor(op.h / lead)) : lines.length
-      lines.slice(0, fit).forEach((text, i) =>
-        page.drawText(text, { x: op.x, y: op.y - i * lead, size: op.size, font, color: INK }))
-    }
-    return await pdf.save()
+    return await signedCopy(new Uint8Array(await data.arrayBuffer()), ops, signature)
   },
 
   async save(s) {

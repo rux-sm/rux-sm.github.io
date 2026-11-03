@@ -50,10 +50,10 @@
      wider bus number widens the column rather than clipping. The strip
      fixes it; see `.scheduler-week--scroll`. */
   --scheduler-head-w: max-content;
-  /* The kit row's three 12px tiles and their 1px gaps, which set the bus
-     column: the row 1px clear of the head's sides, and its 1px rule. */
-  --scheduler-kit-w: calc(3 * 12px + 2 * 1px);
-  --scheduler-kit-pad: 1px;
+  /* The kit row's two 16px icons and their 2px gap, which set the bus
+     column: the row 3px clear of the head's sides, and its 1px rule. */
+  --scheduler-kit-w: calc(2 * 16px + 2px);
+  --scheduler-kit-pad: 3px;
   /* The bus column's least width, which the corner holds it to: 40px, the
      calendar button's width above it, so the column's rule stands under the
      rule beside that button, and its 1px rule. */
@@ -279,7 +279,7 @@
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
      by their row and add nothing, so their gauges never widen it. Its floor,
-     41px, holds the 40px kit row and the 38px speedometer within it; app.js
+     41px, holds the 34px kit row and the 38px speedometer within it; app.js
      measures this cell, so its arithmetic includes it. */
   min-inline-size: var(--scheduler-head-min);
   justify-content: center;
@@ -532,18 +532,13 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's kit on its own row: three 12px cells 1px apart, its seats, its
-   sleeper and its lift, each in one place down the column. The seats are a
-   number in 10px regular type, whose two figures fill the cell's 12px, the
-   icons 12px, in the primary ink where the bus has it and the disabled
-   ink where it lacks it. At its row's start, which on six rows is 6px under
-   the percent and the 16px to the row rule's 8px; centred like the
-   speedometer, since the column takes the days' spare pixels and can stand
-   wider inside. Presses go through to the number, whose tip and title name
-   them. */
+/* The bus's kit on its own row: two of Carbon's 16px icons 2px apart, its
+   sleeper and its lift, each in one place down the column, in the primary
+   ink where the bus has it and the disabled ink where it lacks it. Its seats
+   are in the number's tip and title, where presses go through to. */
 /* The kit stands in the head's foot, centred, as far above the row's rule as
    it is from the head's sides, so its two outer tiles sit evenly in the
-   corners: 1px at the column's 41px floor, and half of the even number of
+   corners: 3px at the column's 41px floor, and half of the even number of
    pixels the days leave the column on each side and below. Placed on the head's own box,
    not a grid row, so a taller row keeps it in the corner. */
 .scheduler-row-head__equip {
@@ -553,18 +548,15 @@ button.scheduler-row-head__num::after {
   margin-inline: auto;
   inline-size: max-content;
   display: grid;
-  grid-template-columns: repeat(3, 12px);
-  column-gap: 1px;
+  grid-template-columns: repeat(2, 16px);
+  column-gap: 2px;
   pointer-events: none;
 }
 .scheduler-row-head__tile {
   display: grid;
   place-items: center;
-  block-size: 12px;
+  block-size: 16px;
   color: var(--rux-text-primary);
-  font-size: 10px;
-  line-height: 12px;
-  font-variant-numeric: tabular-nums;
 }
 .scheduler-row-head__tile[data-on="0"] { color: var(--rux-icon-disabled); }
 .scheduler-row-head__equip svg { display: block; }

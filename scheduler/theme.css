@@ -98,6 +98,8 @@
   --scheduler-mark-warning: var(--rux-status-yellow);
   --scheduler-mark-info: var(--rux-status-blue);
   --scheduler-mark-rest: var(--rux-status-purple);
+  /* A rest meter's fill, the rest colour unless a theme softens it. */
+  --scheduler-rest-fill: var(--scheduler-mark-rest);
 }
 /* The bus head's readings, bus-head.js's: the primary ink while normal,
    the status palette's warning when low or idling too long and its error
@@ -811,21 +813,29 @@
 [data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
   opacity: .35;
 }
-/* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the
-   update and the drivers with the times, is written in the trip's own
-   Geist 900 on its 100, so a trip reads as one shape; the destination, the
-   line that names the trip, takes its 1000, as a Geist banner's action
-   does, and the drivers' names are white, below. The destination stays bold. A trip the office colours does the same in its
-   own Geist pair; one with no colour, a grey, keeps Geist's grey 900 for
-   these lines. A mark with its own colour inside them, a driver away or
-   short on hours, keeps it. */
+/* A RUX 100 TRIP READS IN LAYERS: the destination, the line that names
+   the trip, in its Geist 1000 and bold, as a Geist banner's action is; the
+   customer and the contact quiet in Geist's grey 900, #a1a1a1, whatever the
+   trip's colour; and what is happening, the times, the update and the
+   drivers, in the trip's own Geist 900 on its 100, the drivers' names
+   white, below. A trip with no colour, a grey, keeps the grey 900 for every
+   line. A mark with its own colour inside them, a driver away or short on
+   hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   opacity: 1;
   color: #adadad;
 }
-[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
+[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__update, .scheduler-bar__drivers) {
   color: var(--scheduler-fg);
 }
+[data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact) { color: #a1a1a1; }
+/* Its rest meter is the rest purple at 38% over the seat's footer, so a
+   driver's rest reads without the board's loudest block of colour, and its
+   reading is the footer's own ink across the whole meter. */
+[data-theme="rux-100"] {
+  --scheduler-rest-fill: color-mix(in oklab, var(--scheduler-mark-rest) 38%, transparent);
+}
+[data-theme="rux-100"] .scheduler-crew--seat:has(> .scheduler-crew__rest) { --scheduler-seat-ink: var(--scheduler-footer-fg); }
 /* Its drivers' names are Geist's white, its gray 1000, as every other
    theme writes them near-white on its footer, so who drives reads first
    down the bars. A driver in another bus keeps the red. */

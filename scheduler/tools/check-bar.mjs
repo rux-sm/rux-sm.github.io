@@ -586,9 +586,9 @@ const dayIn = n => {
   d.setDate(d.getDate() + n);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
-expect('moving: the speed over mph in a filled green display, the fuel\'s figure with no sign, alone while DEF is normal, no line under them, no marks',
-  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__pct'), line(h), marks(h)]; })(),
-  [['64mph', 'moving', true], [['F', 'normal']], '72', null, []]);
+expect('moving: the speed over mph in a filled green display, the fuel\'s box and its percent, alone while DEF is normal, no line under them, no marks',
+  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__fuel-on'), line(h), marks(h)]; })(),
+  [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);
 expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
@@ -621,17 +621,17 @@ expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
 const speedometer = h => {
   const r = h.querySelector('.scheduler-row-head__arc');
-  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under')?.trim() || null, text(r, '.scheduler-row-head__arc-pct'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1], r.dataset.level,
-    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null, r.querySelector('.scheduler-row-head__arc-fuel')?.style.getPropertyValue('--scheduler-tank') || null];
+  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under')?.trim() || null, text(r, '.scheduler-row-head__fuel-on'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1], r.dataset.level,
+    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null, r.querySelector('.scheduler-row-head__fuel')?.style.getPropertyValue('--scheduler-tank') || null];
 };
-expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it, the fuel\'s bar over F and the percent',
+expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it, the fuel\'s box filled to its percent',
   [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55, seen: ago(180) }]
     .map(l => speedometer(busHead(l))),
-  [['52', 'mph', 'F68%', 'moving', 'normal', '65', '68%'], ['92', 'mph', 'F20%', 'warning', 'low', '100', '20%'], ['Idle', '5m', 'F8%', 'quiet', 'critical', null, '8%'], ['Off', null, 'F0%', 'quiet', 'critical', null, '0%'], ['–', '3h', 'F55%', 'quiet', 'normal', null, '55%']]);
+  [['52', 'mph', '68%', 'moving', 'normal', '65', '68%'], ['92', 'mph', '20%', 'warning', 'low', '100', '20%'], ['Idle', '5m', '8%', 'quiet', 'critical', null, '8%'], ['Off', null, '0%', 'quiet', 'critical', null, '0%'], ['–', '3h', '55%', 'quiet', 'normal', null, '55%']]);
 expect('the speedometer says its speed and fuel on its label',
   busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__arc').getAttribute('aria-label'),
   'Moving, 52 mph. Fuel 20%, low');
-expect('a bus that reports no fuel has a speedometer with no bar or percent',
+expect('a bus that reports no fuel has a speedometer with no fuel box',
   speedometer(busHead({ engine: 'on', mph: 30, fuel: null })).slice(0, 3), ['30', 'mph', null]);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]

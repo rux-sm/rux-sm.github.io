@@ -9,7 +9,7 @@
      state and fuel under the number as a speedometer on five and six rows:
      a half ring that fills with the speed to MAX_MPH, the speed, or Idle,
      Off or a dash, inside it at its foot, mph or how long under it, and
-     the fuel as a round bar over F and its percent. On fewer rows, its
+     the fuel's box under that. On fewer rows, its
      state in a display under the number, on the rows app.css gives it, so
      the fuel under it stands at one height down the column.
      While the engine runs the display is
@@ -18,8 +18,7 @@
      engine off it is the word alone, Off, with no fill or edge, and with no
      signal a dash over how long since the bus was seen, in a dashed edge.
      Under it
-     the fuel: Carbon's 16px pump and its percent as a 12px figure with no
-     sign, over a bar filled to it. DEF is drawn only
+     the fuel's box. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
      moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
@@ -28,9 +27,9 @@
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
-   The fuel bar is a neutral grey until low or critical, running or not,
-   so a bus asks nothing unless its tank does. Until samsara-now first
-   answers, every bus is drawn at rest, Off over an empty fuel bar and a
+   The fuel is a box filled to the tank's share, green, orange when low,
+   red when critical, with its percent across it. Until samsara-now first
+   answers, every bus is drawn at rest, Off over an empty fuel box and a
    dash for its percent, so the column has its shape while it loads.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
@@ -122,26 +121,39 @@
     return box;
   }
 
-  // One tank. Fuel: a pump and its figure, over a bar filled to its share.
-  // DEF, drawn only while low: its name and percent as a tag, no bar.
+  // The fuel: a box filled to the tank's share in its level's colour, the
+  // percent written across it twice, the light copy over the empty part
+  // and the dark one over the fill, cut at the fill's edge, so every figure
+  // reads wherever the fill ends.
+  function fuelBox(pct) {
+    const box = el('span', 'scheduler-row-head__fuel');
+    const lv = levelOf(pct, FUEL);
+    if (lv) box.dataset.level = lv;
+    box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
+    const words = pct == null ? '\u2013' : `${pct}%`;
+    const on = el('span', 'scheduler-row-head__fuel-on', words);
+    on.setAttribute('aria-hidden', 'true');
+    box.append(el('span', null, words), on);
+    return box;
+  }
+
+  // One tank. Fuel: its box. DEF, drawn only while low: its name and
+  // percent as a tag.
   function level(pct, tank) {
     const lv = levelOf(pct, tank);
     const g = el('span', 'scheduler-row-head__level');
     if (lv) g.dataset.level = lv;
     g.dataset.tank = tank.letter;
-    g.style.setProperty('--scheduler-tank', `${pct ?? 0}%`);
     const words = pct == null ? `${tank.word} not read yet` : `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
+    if (tank === FUEL) {
+      g.appendChild(fuelBox(pct));
+      return g;
+    }
     const reading = el('span', 'scheduler-row-head__reading');
-    if (tank === FUEL) reading.appendChild(svgUse('#i-gas-station', '16', '0 0 32 32'));
-    else reading.appendChild(el('span', null, tank.word));
-    // Fuel's figure stands beside its pump with no sign, the bar and the
-    // pump saying what it counts, which leaves Carbon's 16px pump and 12px
-    // figure room in the display's 40px; DEF's tag keeps its sign.
-    reading.appendChild(el('span', 'scheduler-row-head__pct', pct == null ? '\u2013' : tank === FUEL ? String(pct) : `${pct}%`));
+    reading.append(el('span', null, tank.word), el('span', null, pct == null ? '\u2013' : `${pct}%`));
     g.appendChild(reading);
-    if (tank === FUEL) g.appendChild(el('span', 'scheduler-row-head__tank'));
     return g;
   }
 
@@ -151,7 +163,7 @@
 
   // The speedometer: the arc filled with the speed, the speed or the
   // state's word inside at its foot, mph or how long under it, then the
-  // fuel as a round bar filled to its share over F and the percent. Its
+  // fuel's box. Its
   // words are the dial's and the fuel's, which it stands in for on five and
   // six rows.
   function speedometer(live, state) {
@@ -171,13 +183,7 @@
     const under = figure ? 'mph' : state.under;
     // The unit's line stands even with nothing to say, so the fuel keeps its place.
     box.appendChild(el('span', 'scheduler-row-head__arc-under', under ?? '\u00a0'));
-    if (live.fuel != null || live.waiting) {
-      const bar = el('span', 'scheduler-row-head__arc-fuel');
-      bar.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, live.fuel ?? 0))}%`);
-      const pct = el('span', 'scheduler-row-head__arc-pct');
-      pct.append(el('span', 'scheduler-row-head__arc-f', 'F'), el('span', null, live.fuel == null ? '\u2013' : `${live.fuel}%`));
-      box.append(bar, pct);
-    }
+    if (live.fuel != null || live.waiting) box.appendChild(fuelBox(live.fuel));
     return box;
   }
 

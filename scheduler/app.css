@@ -6363,10 +6363,8 @@ html[data-scheduler-takeover] {
    acts on the row first, and from the one marked as the end's, at the far
    end. They stand half a step apart, since a ghost button keeps room around
    its own words, and a row with no room wraps, where the pane would cut it
-   off. An
-   open task's stand a step apart, since its Done is ringed. */
+   off. */
 .scheduler-to-do__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02); }
-.scheduler-to-do__more > .scheduler-to-do__buttons { gap: var(--rux-spacing-03); }
 .scheduler-to-do__end { margin-inline-start: auto; }
 
 /* ══ Departures ═══════════════════════════════════════════════════════════

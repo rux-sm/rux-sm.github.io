@@ -1767,4 +1767,9 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    them 254px beside the week, so each ends as far from its words as it
    begins, which is Carbon's own measure for a ghost button. */
 .scheduler-to-do__buttons :is(.rux--btn--primary, .rux--btn--tertiary) { padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) - 0.0625rem); }
+/* An open row's worded ghost buttons keep 8px either side of their words,
+   not Carbon's 15px, so Done, I'm on it, Email or Start trip, and the More
+   menu stand on the one line the row's 254px holds, where Carbon's measure
+   put the menu on a line of its own. */
+.scheduler-to-do__more > .scheduler-to-do__buttons .rux--btn--ghost:not(.rux--btn--icon-only) { padding-inline: var(--rux-spacing-03); }
 

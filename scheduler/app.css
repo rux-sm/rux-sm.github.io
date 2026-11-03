@@ -730,6 +730,14 @@ button.scheduler-row-head__num::after {
    stays marked while its tip is open. */
 .scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
 .scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
+/* A head showing the speedometer's panel lights the panel instead, so the
+   bus reads as one card under the pointer and while its tip is open; the
+   whole head stays the target. */
+.scheduler-row-head { --scheduler-head-panel-hover: color-mix(in oklab, var(--rux-text-primary) 14%, var(--rux-layer)); }
+.scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head:has(.scheduler-row-head__arc):is(:hover, :has(.rux--popover--open)) {
+  --scheduler-head-panel: var(--scheduler-head-panel-hover);
+  background: var(--rux-layer);
+}
 
 /* THE UNASSIGNED ROW SITS LOWER THAN THE BUS ROWS: its head and track are the
    pane's surface mixed 25% toward black, in every theme, so a trip bar on it

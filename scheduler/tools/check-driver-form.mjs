@@ -62,7 +62,10 @@ async function ask({ body = {}, share = SHARE, form = FORM, method = 'POST' } = 
 expect('every answer given, nothing is wrong', problems(FIELDS, GOOD), []);
 expect('an unanswered question and an empty line are wrong', problems(FIELDS, { q2: 'no', dob: '03/14/1985' }), ['q1', 'name']);
 expect('a box shown by a Yes must be filled', problems(FIELDS, { ...GOOD, q2: 'yes' }), ['facts']);
-expect('a date must be MM/DD/YYYY', problems(FIELDS, { ...GOOD, dob: '1985-03-14' }), ['dob']);
+expect('a date is month, day and year', problems(FIELDS, { ...GOOD, dob: '1985-03-14' }), ['dob']);
+expect('a date is taken as people type it', ['3/14/1985', '3-14-1985', '03.14.1985', '03141985'].map(dob => problems(FIELDS, { ...GOOD, dob })), [[], [], [], []]);
+expect('a date must be a day on the calendar', problems(FIELDS, { ...GOOD, dob: '02/30/1985' }), ['dob']);
+expect('a typed date is written MM/DD/YYYY', ops(FIELDS, { ...GOOD, dob: '3-4-1985' }, '2026-11-02').find(o => o.x === 300 && o.y === 100)?.text, '03/04/1985');
 expect('an answer that is neither Yes nor No is wrong', problems(FIELDS, { ...GOOD, q1: 'maybe' }), ['q1']);
 
 const drawn = ops(FIELDS, { ...GOOD, q2: 'yes', facts: 'It said ‘no’ — then left' }, '2026-11-02');

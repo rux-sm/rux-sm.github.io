@@ -14,7 +14,7 @@
 //                   `flag: 'yes'` flags the signing to the office on a Yes
 //   line            a line of text, `prefill` naming what the profile holds
 //   box             a box of text, `at` with `w` and `h`
-//   date            a date, MM/DD/YYYY
+//   date            a date, typed as `typedDate` takes it, written MM/DD/YYYY
 //   signature       the drawn signature, `at` with `w` and `h`
 //   signed_on       the day of signing, written in, nothing asked
 // A field with `when: { any: [ids], is: 'yes' }` is shown and asked only while
@@ -67,7 +67,17 @@ export function shown(field: Field, answers: Record<string, unknown>): boolean {
   return field.when.any.some(id => answers[id] === field.when!.is)
 }
 
-const DATE = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/
+// A date as people type it, month, day and year parted by slashes, dashes, dots
+// or spaces, or as MMDDYYYY on a number pad, as MM/DD/YYYY; null when it is no
+// day on the calendar.
+export function typedDate(s: string): string | null {
+  const m = /^(\d{1,2})[/.\- ]+(\d{1,2})[/.\- ]+(\d{4})$/.exec(s) ?? /^(\d{2})(\d{2})(\d{4})$/.exec(s)
+  if (!m) return null
+  const [month, day, year] = [Number(m[1]), Number(m[2]), Number(m[3])]
+  const t = new Date(Date.UTC(year, month - 1, day))
+  if (year < 1900 || year > 2099 || t.getUTCMonth() !== month - 1 || t.getUTCDate() !== day) return null
+  return `${m[1].padStart(2, '0')}/${m[2].padStart(2, '0')}/${year}`
+}
 
 // Every field id the answers leave wrong: missing, not Yes or No, not a date,
 // or too long. A field not shown is never asked.
@@ -80,7 +90,7 @@ export function problems(fields: Field[], answers: Record<string, unknown>): str
     if (f.type === 'yes_no') { if (v !== 'yes' && v !== 'no') out.push(f.id!); continue }
     if (!text) { if (!f.optional) out.push(f.id!); continue }
     if (text.length > MAX_TEXT) out.push(f.id!)
-    else if (f.type === 'date' && !DATE.test(text)) out.push(f.id!)
+    else if (f.type === 'date' && !typedDate(text)) out.push(f.id!)
   }
   return out
 }
@@ -112,7 +122,8 @@ export function ops(fields: Field[], answers: Record<string, unknown>, signedOn:
     } else if (f.type === 'signed_on' && f.at) {
       out.push({ kind: 'text', page: f.at.page, x: f.at.x, y: f.at.y, size: f.at.size ?? 11, text: usDate(signedOn) })
     } else if (asks(f) && f.at && shown(f, answers)) {
-      const text = plain(String(answers[f.id!] ?? '').trim())
+      const typed = String(answers[f.id!] ?? '').trim()
+      const text = plain(f.type === 'date' ? typedDate(typed) ?? typed : typed)
       if (text) out.push({ kind: 'text', page: f.at.page, x: f.at.x, y: f.at.y, size: f.at.size ?? 11, text, w: f.at.w, h: f.at.h })
     }
   }

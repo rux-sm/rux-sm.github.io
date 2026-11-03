@@ -145,7 +145,17 @@
     outer.append(field, error);
     item.append(labelWrap, outer);
     const mark = bad => { field.toggleAttribute('data-invalid', bad); input.classList.toggle('rux--text-input--invalid', bad); };
-    input.addEventListener('input', () => mark(false));
+    input.addEventListener('input', e => {
+      mark(false);
+      // A phone's number pad has no slash, so a digit typed at the end of a
+      // date takes its slashes as MM/DD/YYYY; a date the driver parts
+      // themselves another way, as 3/5/1980, is left as typed.
+      const typedAtEnd = /^\d+$/.test(e.data ?? '') && input.selectionStart === input.value.length;
+      if (f.type === 'date' && typedAtEnd && /^[\d/]*$/.test(input.value) && [...input.value].every((c, i) => c !== '/' || i === 2 || i === 5)) {
+        const d = input.value.replace(/\//g, '').slice(0, 8);
+        input.value = [d.slice(0, 2), d.slice(2, 4), d.slice(4)].filter(Boolean).join('/');
+      }
+    });
     inputs.set(f.id, { read: () => input.value, mark, node: item });
     return item;
   }

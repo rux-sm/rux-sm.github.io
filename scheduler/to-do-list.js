@@ -290,8 +290,8 @@
      accordion, whose script opens and shuts it. The heading is the closed
      row and the whole of it is the press, Design's arrow at its first
      line's end, turning as it opens.
-     The panel under it holds what a closed row has no room for: its trip,
-     its detail, then the buttons, and on a done row who closed it, and why
+     The panel under it holds what a closed row has no room for: who it is
+     about, its trip, its detail, then the buttons, and on a done row who closed it, and why
      where it was deleted. What a row has none of, a trip or a thread, is left
      out rather than shown disabled. */
   function storedRow(row, done) {
@@ -305,14 +305,26 @@
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    // The first line is its kind and its number, with Task said for a reader.
+    // The first line is its words, and the second its kind, then its number,
+    // with Task said for a reader, and its due day, with Due said for a
+    // reader, a done row being past its day.
+    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(kindTag(row));
+    const facts = el('span', 'scheduler-to-do__facts');
     if (row.number != null) {
       const number = el('span', 'scheduler-to-do__number');
       number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
-      context.appendChild(number);
+      facts.appendChild(number);
     }
+    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
+    if (dueWord) {
+      const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
+      due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
+      if (facts.childNodes.length) facts.append(DOT);
+      facts.appendChild(due);
+    }
+    context.appendChild(facts);
     // The one working on it, by face at the line's end, so a row nobody has taken shows none.
     const owner = !done ? staff.get(row.owner_id) : null;
     if (owner) {
@@ -323,18 +335,7 @@
       face.setAttribute('aria-label', face.title);
       context.appendChild(face);
     }
-    // Then its due day at the line's end, with Due said for a reader; a done row is past its day.
-    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
-    if (dueWord) {
-      const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
-      due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
-      context.appendChild(due);
-    }
-    // The second is who the row is about, kept when it is about nobody so
-    // every closed row stands the same height, and the third its words.
-    const who = el('div', 'scheduler-to-do__who', row.who || '');
-    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
-    title.append(context, who, what);
+    title.append(what, context);
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
     heading.append(arrow, title);
@@ -343,8 +344,10 @@
     const more = el('div', 'rux--accordion__content scheduler-to-do__more');
     more.id = `scheduler-to-do-more-${row.id}`;
     heading.setAttribute('aria-controls', more.id);
-    /* Its trip comes first, a link the pane offers to the board to open in
-       place, so it stands in the same place however long the detail under it. */
+    // Who it is about comes first, the label over what the panel holds.
+    if (row.who) more.appendChild(el('div', 'scheduler-to-do__who', row.who));
+    /* Then its trip, a link the pane offers to the board to open in place,
+       so it stands in the same place however long the detail under it. */
     if (trip) {
       const link = el('a', 'scheduler-to-do__trip');
       link.href = tripHref(trip);

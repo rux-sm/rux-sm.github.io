@@ -6246,55 +6246,38 @@ html[data-scheduler-takeover] {
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
 /* A task's heading and a leg's are each the closed row, three lines laid
    out alike, each ended in an ellipsis where it runs long, so every closed
-   row in a list stands the same height. The first two are Geist's
-   description, a label over its value, set apart by colour rather than
-   weight. The first is who the row is about, a task's person or a leg's
-   customer, in the quiet colour, with when at the line's end, quiet and
-   smaller: a task's due day, in the error colour once the day is past, or a
-   leg's spot day and time. The second is the row's words in the primary
-   colour, a task's words or a leg's place. The third is a tag, a task's kind in the kind's
-   colour or what a leg has left, then a number in the quiet colour, the
-   task's own or the leg's trip's, so a person can name either aloud. */
-.scheduler-to-do__top { display: flex; align-items: baseline; gap: var(--rux-spacing-04); }
-.scheduler-to-do__what { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scheduler-to-do__number {
-  flex: none;
-  color: var(--rux-text-secondary);
-  font-size: 0.75rem;
-  line-height: 1.33333;
-  font-variant-numeric: tabular-nums;
-}
+   row in a list stands the same height, and Design's arrow at the first
+   line's end. The first is a tag, a task's kind in the kind's colour or
+   what a leg has left, so the list reads down its tags; then a number, the
+   task's own or the leg's trip's, so a person can name either aloud; then
+   at the line's end when, a task's due day, in the error colour once the
+   day is past, or a leg's spot day and time; the line in the quiet colour
+   at the label size. The second and third are Geist's description, a label
+   over its value, set apart by colour rather than weight: who the row is
+   about, a task's person or a leg's customer, in the quiet colour, 8px
+   under, then 4px under it the row's words in the primary colour, a task's
+   words or a leg's place. */
 .scheduler-to-do__context {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--rux-spacing-03);
-  margin-block-start: var(--rux-spacing-02);
+  min-block-size: 1.25rem;
   color: var(--rux-text-secondary);
   font-size: 0.75rem;
   line-height: 1.33333;
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-to-do__tag { flex: none; margin: 0; }
-/* The owner's face ends the tag's line, as a step's does on Departures. It is
-   1.5rem in a 1.25rem line and overhangs it evenly, so a row with an owner
-   stands as tall as one without. */
+.scheduler-to-do__number { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* The owner's face stands before the day, as a step's does on Departures.
+   It is 1.5rem in the 1.25rem line and overhangs it evenly, so a row with
+   an owner stands as tall as one without. */
 .scheduler-to-do__face { flex: none; margin-block: -0.125rem; margin-inline-start: auto; }
-.scheduler-to-do__who { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; color: var(--rux-text-secondary); text-overflow: ellipsis; white-space: nowrap; }
-.scheduler-to-do__when { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-03); color: var(--rux-text-secondary); }
+.scheduler-to-do__when { flex: none; margin-inline-start: auto; white-space: nowrap; }
+.scheduler-to-do__face + .scheduler-to-do__when { margin-inline-start: 0; }
 .scheduler-to-do__when--late { color: var(--rux-text-error); }
-/* The first line is the title's own size, so its person reads as the row's
-   head and its time takes the quiet line's size, its colour the shared
-   rule's so a late day stays red; the line stands one line tall when a task
-   is about nobody. The words follow 4px under, and the tag's line 8px,
-   the tag standing on the number's middle. */
-:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__top { min-block-size: 1.125rem; }
-:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__when {
-  font-size: 0.75rem;
-  line-height: 1.33333;
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
-:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__what { margin-block-start: var(--rux-spacing-02); }
-:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__context { align-items: center; margin-block-start: var(--rux-spacing-03); }
+.scheduler-to-do__who { min-block-size: 1.25rem; margin-block-start: var(--rux-spacing-03); overflow: hidden; color: var(--rux-text-secondary); text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-to-do__what { margin-block-start: var(--rux-spacing-02); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* A ready leg reads quiet, as a done task does, so the legs still to prep
    stand out; its tag keeps its green, which is what says it is ready. */
 .scheduler-departures__leg--ready :is(.scheduler-to-do__who, .scheduler-to-do__what) { color: var(--rux-text-secondary); }

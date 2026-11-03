@@ -1723,8 +1723,8 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    Carbon rules each item off from the next, insets the title 1rem and the
    open content up to a quarter of its width, for reading down a page; here
    the row draws the rule, and the heading fills the row, its lines the
-   pane's 32px from the row's every edge, with no arrow, since the row says
-   it opens. The open content keeps the same 32px.
+   pane's 32px from the row's every edge, and Design's arrow standing on
+   the first line's middle at its end. The open content keeps the same 32px.
    A title that may not shrink would push its long line past the row instead
    of ending it in an ellipsis. */
 .scheduler-to-do .rux--accordion__item { border-block: 0; }
@@ -1734,6 +1734,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   padding: var(--scheduler-list-inset);
 }
 .scheduler-to-do .rux--accordion__title { min-inline-size: 0; padding-inline-start: 0; }
+.scheduler-to-do .rux--accordion__heading > .rux--accordion__arrow { margin-block-start: 0.125rem; }
 .scheduler-to-do .rux--accordion__content { padding-inline: var(--scheduler-list-inset); }
 /* Open, the heading keeps 8px under its lines and the content 8px over its
    own, so the two stand 16px apart and the heading's focus ring stands 8px
@@ -1762,11 +1763,11 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 .scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__heading > .rux--accordion__arrow { margin-block-start: 0; }
 .scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__wrapper > .rux--accordion__content { padding-inline: 0; }
 .scheduler-to-do .scheduler-to-do__done-item.rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0; }
-/* Carbon keeps 4rem at the end of a primary or tertiary button for an icon it
-   may carry. A task's Done and its form's Save carry none, and a row leaves
+/* Carbon keeps 4rem at the end of a primary button for an icon it may
+   carry. A task's Done and its form's Save carry none, and a row leaves
    them 254px beside the week, so each ends as far from its words as it
    begins, which is Carbon's own measure for a ghost button. */
-.scheduler-to-do__buttons :is(.rux--btn--primary, .rux--btn--tertiary) { padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) - 0.0625rem); }
+.scheduler-to-do__buttons .rux--btn--primary { padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) - 0.0625rem); }
 /* An open row's worded ghost buttons keep 8px either side of their words,
    not Carbon's 15px, so Done, I'm on it, Email or Start trip, and the More
    menu stand on the one line the row's 254px holds, where Carbon's measure

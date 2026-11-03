@@ -489,11 +489,10 @@
 
   /* A leg, as a row of the list around an item of Design's accordion, whose
      script opens and shuts it. The heading is the closed leg, three lines
-     with no arrow, since the row says it opens, laid out as a task's are:
-     its customer, and on a split trip which leg, with at the line's end its
-     spot day and time, Tomorrow 9:00a, with Spot said for a reader; then its
-     place; then what is left in its tag, and the
-     trip's number, with Trip said for a reader. A ready leg reads quiet, so
+     and Design's arrow, laid out as a task's are: what is left in its tag,
+     the trip's number, with Trip said for a reader, and at the line's end
+     its spot day and time, Tomorrow 9:00a, with Spot said for a reader;
+     then its customer, and on a split trip which leg; then its place. A ready leg reads quiet, so
      the legs still to prep stand out. */
   function legItem(page) {
     const key = keyOf(page);
@@ -505,16 +504,6 @@
     heading.dataset.hold = `leg:${key}`;
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    const top = el('div', 'scheduler-to-do__top');
-    top.appendChild(el('span', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT)));
-    const at = leavesAt(page);
-    if (at) {
-      const [h, m] = at.time.split(':').map(Number);
-      const when = el('span', 'scheduler-to-do__when');
-      when.append(el('span', 'rux--visually-hidden', 'Spot '), `${dayWord(at.day)} ${clock(h, m)}`);
-      top.appendChild(when);
-    }
-    const what = el('div', 'scheduler-to-do__what', placeName(page.trip.destination));
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(leftTag(page.left));
     if (page.trip.trip_ref) {
@@ -522,8 +511,19 @@
       number.append(el('span', 'rux--visually-hidden', 'Trip '), `#${page.trip.trip_ref}`);
       context.appendChild(number);
     }
-    title.append(top, what, context);
-    heading.appendChild(title);
+    const at = leavesAt(page);
+    if (at) {
+      const [h, m] = at.time.split(':').map(Number);
+      const when = el('span', 'scheduler-to-do__when');
+      when.append(el('span', 'rux--visually-hidden', 'Spot '), `${dayWord(at.day)} ${clock(h, m)}`);
+      context.appendChild(when);
+    }
+    const who = el('div', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT));
+    const what = el('div', 'scheduler-to-do__what', placeName(page.trip.destination));
+    title.append(context, who, what);
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('rux--accordion__arrow');
+    heading.append(arrow, title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
     const content = el('div', 'rux--accordion__content scheduler-departures__page');

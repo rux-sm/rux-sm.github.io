@@ -288,8 +288,8 @@
 
   /* A stored row, as a row of the list around an item of Design's
      accordion, whose script opens and shuts it. The heading is the closed
-     row and the whole of it is the press; it carries no arrow, since the
-     row says it opens.
+     row and the whole of it is the press, Design's arrow at its first
+     line's end, turning as it opens.
      The panel under it holds what a closed row has no room for: its trip,
      its detail, then the buttons, and on a done row who closed it, and why
      where it was deleted. What a row has none of, a trip or a thread, is left
@@ -305,20 +305,7 @@
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    // The first line is who the row is about, and its due day at the end,
-    // with Due said for a reader; a done row is past its day. A row about
-    // nobody keeps the line, so every closed row stands the same height.
-    const top = el('div', 'scheduler-to-do__top');
-    top.appendChild(el('span', 'scheduler-to-do__who', row.who || ''));
-    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
-    if (dueWord) {
-      const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
-      due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
-      top.appendChild(due);
-    }
-    // The second is the row's words, and the third its kind and its number,
-    // with Task said for a reader.
-    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
+    // The first line is its kind and its number, with Task said for a reader.
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(kindTag(row));
     if (row.number != null) {
@@ -336,8 +323,21 @@
       face.setAttribute('aria-label', face.title);
       context.appendChild(face);
     }
-    title.append(top, what, context);
-    heading.appendChild(title);
+    // Then its due day at the line's end, with Due said for a reader; a done row is past its day.
+    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
+    if (dueWord) {
+      const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
+      due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
+      context.appendChild(due);
+    }
+    // The second is who the row is about, kept when it is about nobody so
+    // every closed row stands the same height, and the third its words.
+    const who = el('div', 'scheduler-to-do__who', row.who || '');
+    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
+    title.append(context, who, what);
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('rux--accordion__arrow');
+    heading.append(arrow, title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
     const more = el('div', 'rux--accordion__content scheduler-to-do__more');
@@ -360,7 +360,8 @@
     }
     const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
 
-    const act = button('rux--btn--tertiary', done ? 'Undo' : 'Done');
+    // Done, or Undo, is the row's one primary action, as Geist's solid button is.
+    const act = button('rux--btn--primary', done ? 'Undo' : 'Done');
     act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
     const bar = el('div', 'scheduler-to-do__buttons');
     bar.appendChild(act);

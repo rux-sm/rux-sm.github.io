@@ -24,8 +24,12 @@
 //   signature       the drawn signature, `at` with `w` and `h`
 //   signed_on       the day of signing, written in, nothing asked
 //   licence_copy    the box the driver's Licence copy fills, `at` with `w`
-//                   and `h`; never written at signing: documents.js draws
-//                   the current copy in when the office opens the PDF
+//                   and `h`
+//   trip_customer   the trip's customer, the campus a school form asks for
+//   trip_dates      the trip's days
+// The last three are the office's: never written at signing, they are
+// filled in by documents.js on the copy the office opens, the licence always
+// and the trip's when it is opened from a trip's Forms list.
 // `flag` on a yes_no or choice flags the signing to the office on that answer.
 // A field with `when: { any: [ids], is: 'yes' }` is shown and asked only while
 // one of those fields is answered that way.
@@ -33,7 +37,7 @@
 export type At = { page: number; x: number; y: number; w?: number; h?: number; size?: number; part?: 'last4' }
 export type Field = {
   id?: string
-  type: 'heading' | 'text' | 'read' | 'yes_no' | 'choice' | 'line' | 'box' | 'date' | 'fixed' | 'signature' | 'signed_on' | 'licence_copy'
+  type: 'heading' | 'text' | 'read' | 'yes_no' | 'choice' | 'line' | 'box' | 'date' | 'fixed' | 'signature' | 'signed_on' | 'licence_copy' | 'trip_customer' | 'trip_dates'
   en?: string
   es?: string
   prefill?: string

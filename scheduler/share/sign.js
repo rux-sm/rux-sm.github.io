@@ -7,7 +7,7 @@
    Yes and No, or a choice's options, as big tiles, lines filled in from the
    profile, a line or box a Yes opens, and one pad to sign on with a finger,
    stylus, mouse or touchpad, however many places the form signs. Fixed words
-   and the licence copy's box are the office's and are not shown.
+   and the places the office fills in are not shown.
 
    get_driver_form hands over the fields and the profile only while the form
    waits for this driver. Sign and send posts the answers and the signature
@@ -98,6 +98,8 @@
   };
 
   // -- drawing the form -------------------------------------------------------
+  // Fields the form writes or the office fills in, never shown to the driver.
+  const OFFICE = ['fixed', 'licence_copy', 'trip_customer', 'trip_dates'];
   let form = null;
   const inputs = new Map();     // field id -> { read(), mark(bad), node }
   const whens = [];             // [node, field] shown while its `when` holds
@@ -310,7 +312,7 @@
     let tile = null, grid = null;
     const section = () => { tile = el('section', 'rux--tile scheduler-sign-section'); page.appendChild(tile); grid = null; };
     for (const field of f.fields) {
-      if (field.type === 'fixed' || field.type === 'licence_copy') continue;
+      if (OFFICE.includes(field.type)) continue;
       if (field.type === 'heading' || !tile) section();
       if (field.type === 'heading') { tile.appendChild(both('h2', 'rux--type-productive-heading-03', field)); continue; }
       if (field.type === 'line' || field.type === 'date') {

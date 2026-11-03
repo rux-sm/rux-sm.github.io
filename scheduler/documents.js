@@ -104,11 +104,13 @@
      the browser's own viewer shows the file with its download and print
      buttons, and the address stays good after any one link has run out.
 
-     A form signed on a driver's link can keep a page for the driver's
-     licence, a `licence_copy` field as driver-form/handler.ts describes it.
-     That copy opens with the driver's current Licence copy drawn into its
-     box, so a renewed licence is in the next one opened and the signed file
-     itself never changes. */
+     A form signed on a driver's link can keep places for the office, as
+     driver-form/handler.ts describes them: a `licence_copy` box, which opens
+     with the driver's current Licence copy drawn in, and `trip_customer` and
+     `trip_dates`, which are written in when the form is opened from a trip's
+     Forms list, at documents.html?open=<id>&trip=<trip id>. The signed file
+     itself never changes, so a renewed licence or another trip is in the
+     next copy opened. */
   async function openDocument() {
     const { data, error } = await client.from('company_documents')
       .select('id,driver_id,file_name,file_path').eq('id', openId).maybeSingle();
@@ -116,18 +118,25 @@
     const url = data ? await linkTo(data.file_path) : '';
     if (!url) return cannotOpen(data ? "The file didn't open" : 'That document is not in the list',
       data ? 'Reload the page to try again.' : 'Pick a document from the list below.');
-    const box = data.driver_id ? await licenceBox(data.id) : null;
-    if (!box) { location.replace(url); return; }
-    const licence = await licenceOf(data.driver_id);
-    if (!licence) {
+    const fields = data.driver_id ? await officeFields(data.id) : [];
+    const box = fields.find(f => f.type === 'licence_copy')?.at ?? null;
+    const tripId = params.get('trip');
+    const trip = tripId && fields.some(f => f.type === 'trip_customer' || f.type === 'trip_dates') ? await tripWords(tripId) : null;
+    if (!box && !trip) { location.replace(url); return; }
+    const licence = box ? await licenceOf(data.driver_id) : null;
+    if (box && !licence) {
       const name = (await client.from('drivers').select('name').eq('id', data.driver_id).maybeSingle()).data?.name ?? 'This driver';
       return cannotOpen(`${name} has no licence copy on file`,
         "This form's last page is a copy of their licence. Upload it on their Documents tab as a Licence copy, then open the form again.");
     }
+    const words = !trip ? [] : fields.flatMap(f => {
+      const text = f.type === 'trip_customer' ? trip.customer : f.type === 'trip_dates' ? trip.dates : '';
+      return text ? [].concat(f.at ?? []).map(at => ({ at, text })) : [];
+    });
     try {
-      location.replace(await withLicence(url, data.file_name, licence, box));
+      location.replace(await drawnCopy(url, data.file_name, licence && { ...licence, at: box }, words));
     } catch {
-      cannotOpen("The licence copy couldn't be added", 'Reload the page to try again.');
+      cannotOpen("The form couldn't be filled in", 'Reload the page to try again.');
     }
   }
   async function cannotOpen(title, text) {
@@ -136,13 +145,15 @@
     await loadList();
   }
 
-  // The box a signed form keeps for the licence, or null when it keeps none.
-  async function licenceBox(documentId) {
+  // The places a signed form keeps for the office, or none for a document
+  // that is not a signed form.
+  const OFFICE = ['licence_copy', 'trip_customer', 'trip_dates'];
+  async function officeFields(documentId) {
     const { data: signing } = await client.from('driver_form_signings')
       .select('form_id').eq('document_id', documentId).maybeSingle();
-    if (!signing) return null;
+    if (!signing) return [];
     const { data: form } = await client.from('driver_forms').select('fields').eq('id', signing.form_id).maybeSingle();
-    return (form?.fields ?? []).find(f => f.type === 'licence_copy')?.at ?? null;
+    return (form?.fields ?? []).filter(f => OFFICE.includes(f.type) && f.at);
   }
   // The driver's current Licence copy, the kind that sets their licence's
   // end day, with a link to its file; null when there is none.
@@ -154,6 +165,24 @@
       .order('created_at', { ascending: false }).limit(1).maybeSingle();
     const url = doc ? await linkTo(doc.file_path) : '';
     return url ? { ...doc, url } : null;
+  }
+  /* A trip as a form names it: its customer, the campus a school form asks
+     for, and its days from the first leg's start to the last leg's end, as
+     May 27, 2027, May 27-29, 2027 or May 30 - Jun 2, 2027. */
+  async function tripWords(tripId) {
+    const { data: trip } = await client.from('trips')
+      .select('customer,customer_id,trip_legs(id,leg,kind,start_date,end_date,created_at)').eq('id', tripId).maybeSingle();
+    if (!trip) return null;
+    const named = trip.customer_id
+      ? (await client.from('customers').select('name').eq('id', trip.customer_id).maybeSingle()).data?.name : null;
+    const days = window.SchedulerTripShape.daysOf(trip);
+    const md = d => parseISO(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const y = d => d.slice(0, 4);
+    const dates = !days ? '' : days.first === days.last ? longDay(days.first)
+      : y(days.first) !== y(days.last) ? `${longDay(days.first)} - ${longDay(days.last)}`
+      : days.first.slice(0, 7) === days.last.slice(0, 7) ? `${md(days.first)}-${days.last.slice(8, 10).replace(/^0/, '')}, ${y(days.last)}`
+      : `${md(days.first)} - ${md(days.last)}, ${y(days.last)}`;
+    return { customer: named || clean(trip.customer) || '', dates };
   }
 
   // pdf-lib, loaded only when a copy is drawn on, as the page loads
@@ -169,19 +198,29 @@
     document.head.appendChild(script);
   }));
 
-  /* The signed PDF with the licence copy drawn into its box, kept in its own
-     proportions and centred: a photo as it is, a PDF by its first page. */
-  async function withLicence(url, fileName, licence, at) {
+  /* The signed PDF with the office's part written in: the licence copy drawn
+     into its box, kept in its own proportions and centred, a photo as it is
+     and a PDF by its first page; and each of `words` on its line, in the
+     ink the driver's answers are written in. */
+  async function drawnCopy(url, fileName, licence, words) {
     const bytes = u => fetch(u).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
-    const [{ PDFDocument }, signed, copy] = await Promise.all([pdfLib(), bytes(url), bytes(licence.url)]);
+    const [{ PDFDocument, StandardFonts, rgb }, signed, copy] = await Promise.all([pdfLib(), bytes(url), licence ? bytes(licence.url) : null]);
     const pdf = await PDFDocument.load(signed);
-    const page = pdf.getPage(at.page);
-    const ext = licence.file_name.split('.').pop().toLowerCase();
-    const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
-    const scale = Math.min(at.w / art.width, at.h / art.height);
-    const [width, height] = [art.width * scale, art.height * scale];
-    const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
-    if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
+    if (licence) {
+      const at = licence.at;
+      const page = pdf.getPage(at.page);
+      const ext = licence.file_name.split('.').pop().toLowerCase();
+      const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
+      const scale = Math.min(at.w / art.width, at.h / art.height);
+      const [width, height] = [art.width * scale, art.height * scale];
+      const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
+      if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
+    }
+    if (words.length) {
+      const font = await pdf.embedFont(StandardFonts.Helvetica);
+      // driver-form/pdf.ts's ink, the colour of a pen.
+      for (const { at, text } of words) pdf.getPage(at.page).drawText(text, { x: at.x, y: at.y, size: at.size ?? 11, font, color: rgb(0.04, 0.12, 0.4) });
+    }
     // A drawn copy's address names nothing, so its title names the file.
     pdf.setTitle(fileName.replace(/\.pdf$/i, ''), { showInWindowTitleBar: true });
     return URL.createObjectURL(new Blob([await pdf.save()], { type: 'application/pdf' }));

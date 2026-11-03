@@ -61,16 +61,14 @@ code.
 - **The company's own lines are the form's `fixed` fields:** its name,
   service, office phone and email, Yes to school grounds and Yes to
   fingerprinted under Senate Bill 9, written at signing, so the driver is
-  asked only for their own. Its last page is a `licence_copy` box, which
-  the office's copy fills with the driver's current Licence copy when it opens.
+  asked only for their own. Its last page is a `licence_copy` box, and its
+  campus and event dates are `trip_customer` and `trip_dates`, which the
+  office's copy fills in when it opens.
 - **The background check form's campus and trip date are left blank,**
   because it goes to many schools. Opened from a trip's Forms
   list, at `documents.html?open=<document id>&trip=<trip id>`, the campus and
   the trip date are written onto a copy shown in the browser's viewer, the
   campus being the trip's customer's name; the stored file never changes.
-  `documents.js` reads only `open` so far, and writing on the copy loads
-  pdf-lib as the pages load supabase-js, from jsdelivr at a pinned version
-  with its hash.
 - **The driver's link lists what waits for them,** in a card at the top of
   `share/driver.html`, and each opens `share/sign.html?s=<token>&form=<id>`,
   drawn from the form's fields. A driver with no trips sent still has a link,
@@ -113,6 +111,3 @@ code.
       the form on a Spanish link, a second signing replacing the first as the
       current copy, and Send's Copy the text; then delete the test driver,
       its signings and its files.
-- [ ] Write the campus and the trip date onto the background check form's
-      copy in `documents.js` when `open` comes with `trip`, and check it in
-      Chrome on :8641 with an invented PDF shaped like the real one.

@@ -43,17 +43,16 @@ keeps working and takes the new colours on its own.
   a tool writes `pixels/theme.css`'s inks, the maker's list and
   `pixels/art/source/pixels.gpl` from it. The board sets a square's colour
   from its character, so `pixels/app.css` loses its 60 ink rules.
+- **A colour is picked in two taps:** a row of the 18 colours, then the
+  chosen colour's seven shades under it, all on one screen, because 18
+  columns of every shade are too small to tap at phone width. The shade
+  last picked in each colour is kept, so a colour already in use is one tap.
 - **The database takes the new letters by one change to its two checks,**
   on `pixels_puzzles.colours` and `pixels_players.picture_colours`, applied
   on rux's yes before the site that writes them is pushed.
 
 ## Questions
 
-- **How are 126 inks picked on a phone?** Eighteen columns at phone width
-  are too small to tap. Either a row of the 18 colours, with the chosen
-  one's seven shades under it, two taps for a colour but all on one
-  screen; or every ink at once in two blocks of nine colours, one tap for
-  a colour but a taller list to scroll past.
 - **Are these 17 colours the right ones,** as the picture of the palette
   shows them, or should any be swapped for another?
 
@@ -64,7 +63,8 @@ keeps working and takes the new colours on its own.
   fails where they differ from the table.
 - [ ] Grow `CHARS` in `pixels/app.js` to 126, set `--ink` from the character
   wherever a square is painted, and drop the 60 rules from `app.css`.
-- [ ] Lay out the maker's inks as the first question decides.
+- [ ] Lay out the maker's inks as a row of colours and a row of the
+  chosen colour's shades.
 - [ ] Show rux the SQL that widens the two checks, and apply it on a yes.
 - [ ] Correct the inks' description in `pixels/README.md`,
   `pixels/docs/making-puzzles.md` and `pixels/docs/drawing-the-art.md`.

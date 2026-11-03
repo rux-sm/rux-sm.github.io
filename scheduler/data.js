@@ -12301,9 +12301,11 @@
      move every trip bar a little each frame and the bars' repaint cost more
      than a frame at 120Hz: 3 to 5 of a push's 26 frames came late, against
      none for the editor, whose push moves no bar. The board takes its new
-     shape at once, and what the frame holds, the toolbar and the week, is
-     put back where it stood by a transform and slid to its place over the
-     push's 240ms on its curve, which the compositor alone draws. Opening,
+     shape at once, and the week is put back where it stood by a transform
+     and slid to its place over the push's 240ms on its curve, which the
+     compositor alone draws. The toolbar's right end is where it was, so only
+     its left edge moves, by its start margin over the same 240ms on the same
+     curve: its buttons on the right hold still, and it holds no bar. Opening,
      the panel's column is full at once, under the frame, which paints over
      it and is cut only at its own right edge, so the panel is uncovered as
      the week moves off it, the week held at the width it had so no gap opens
@@ -12385,10 +12387,13 @@
     put(frameEl, 'z-index', '2');
     put(frameEl, 'clip-path', 'inset(0 0 0 -100vw)');
     const sliding = [];
+    const growing = [];
     [...frameEl.children].forEach((child, i) => {
+      if (child.classList.contains('scheduler-toolbar')) { growing.push(child); return; }
       if (opens.length) put(child, 'inline-size', `${widths[i]}px`);
       sliding.push([child, dx]);
     });
+    for (const el of growing) put(el, 'margin-inline-start', `${dx}px`);
     for (const [c, d] of moved) {
       put(c, 'position', 'relative');
       put(c, 'z-index', '1');
@@ -12406,6 +12411,10 @@
       for (const [el] of sliding) {
         put(el, 'transition', `transform ${SLIDE_MS}ms ${SLIDE_EASE}`);
         el.style.setProperty('transform', 'translateX(0)');
+      }
+      for (const el of growing) {
+        put(el, 'transition', `margin-inline-start ${SLIDE_MS}ms ${SLIDE_EASE}`);
+        el.style.setProperty('margin-inline-start', '0px');
       }
       setTimeout(() => { if (slide === run) endSlide(); }, SLIDE_MS + 20);
     });

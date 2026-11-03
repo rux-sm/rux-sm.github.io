@@ -6,8 +6,8 @@
    whether a player can solve it by logic alone, and how hard that is, how
    much the first look decides and how much of the board is filled; squares
    that would need a guess are outlined. COLOUR:
-   Bucket and Eraser, a row under Draw and Colour, and the sixty inks stand
-   open under the board; pick an ink and paint any
+   Bucket and Eraser, a row under Draw and Colour, and the 126 inks stand
+   open under the board, a colour and then its shade; pick an ink and paint any
    square, filled or not; that is the picture the puzzle finishes as. Colour paints the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
@@ -66,7 +66,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, firstLook, grade, board, drag, face, worn, piece, figure } = window.Pixels;
+  const { data, owner, SIZES, CHARS, RAMPS, INK, grid, squaresOf, unreached, rounds, firstLook, grade, board, drag, face, worn, piece, figure } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), stats = $('pixels-stats'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
@@ -99,23 +99,6 @@
   // Twenty a side is the course's alone: a player's own rifts stop at
   // fifteen, which the database holds them to.
   if (personal || mine) size.querySelector('option[value="20"]').remove();
-  // The inks, a colour at a time, pale to dark, and last the greys from
-  // white to black. Each is the character a picture stores, then its name.
-  // app.css lays them out a colour to a row, or to a column on a phone.
-  const INKS = [
-    ['A', 'Pale red'], ['c', 'Light red'], ['2', 'Red'], ['K', 'Deep red'], ['m', 'Dark red'],
-    ['B', 'Pale orange'], ['d', 'Light orange'], ['3', 'Orange'], ['L', 'Deep orange'], ['n', 'Dark orange'],
-    ['C', 'Pale yellow'], ['e', 'Light yellow'], ['4', 'Yellow'], ['M', 'Deep yellow'], ['o', 'Dark yellow'],
-    ['D', 'Pale green'], ['f', 'Light green'], ['5', 'Green'], ['N', 'Deep green'], ['p', 'Dark green'],
-    ['E', 'Pale blue'], ['g', 'Light blue'], ['6', 'Blue'], ['O', 'Deep blue'], ['q', 'Dark blue'],
-    ['F', 'Pale purple'], ['j', 'Light purple'], ['9', 'Purple'], ['P', 'Deep purple'], ['t', 'Dark purple'],
-    ['G', 'Pale pink'], ['i', 'Light pink'], ['8', 'Pink'], ['Q', 'Deep pink'], ['s', 'Dark pink'],
-    ['H', 'Pale brown'], ['h', 'Light brown'], ['7', 'Brown'], ['R', 'Deep brown'], ['r', 'Dark brown'],
-    ['x', 'Pale skin'], ['U', 'Light skin'], ['V', 'Skin'], ['W', 'Deep skin'], ['X', 'Dark skin'],
-    ['I', 'Pale teal'], ['k', 'Light teal'], ['a', 'Teal'], ['S', 'Deep teal'], ['u', 'Dark teal'],
-    ['J', 'Pale sky blue'], ['l', 'Light sky blue'], ['b', 'Sky blue'], ['T', 'Deep sky blue'], ['v', 'Dark sky blue'],
-    ['1', 'White'], ['w', 'Pale grey'], ['y', 'Grey'], ['z', 'Dark grey'], ['0', 'Black'],
-  ];
   // A category shows fifteen, five rows of three on a phone; any more are off.
   const PER_LEVEL = 15;
 
@@ -284,28 +267,47 @@
     if (!e.repeat) setStep(other());
   });
   addEventListener('keyup', e => { if (spaced(e)) e.preventDefault(); });
-  const swatch = ([id, label]) => {
+  /* THE INKS: a row of the eighteen colours, each shown in its base, and
+     under it the chosen colour's seven shades, palest to darkest. A colour
+     tapped picks the shade last picked in it, its base at first, so a
+     colour already in use is one tap; a shade tapped picks itself. The
+     chosen colour and shade are ringed. */
+  const colourRow = $('pixels-colours'), shadeRow = $('pixels-shades');
+  const rampOf = c => RAMPS.findIndex(([, shades]) => shades.some(([id]) => id === c));
+  const kept = RAMPS.map(([, shades]) => shades[3][0]);
+  let ramp = 0;
+  const swatch = (id, label) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'pixels-ink';
     b.setAttribute('role', 'radio');
-    b.setAttribute('aria-checked', CHARS.indexOf(id) === ink);
     b.setAttribute('aria-label', label);
     b.title = label;
     b.dataset.ink = id;
     return b;
   };
-  inks.replaceChildren(...INKS.map(swatch));
-  // The colour in hand, ringed among the inks, which stand open under the
-  // board so a colour is one tap.
+  colourRow.replaceChildren(...RAMPS.map(([name, shades], r) => {
+    const b = swatch(shades[3][0], name);
+    b.dataset.ramp = r;
+    return b;
+  }));
+  // The colour in hand, ringed in both rows.
   const setInk = to => {
     ink = to;
     const id = CHARS[ink];
-    inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
+    ramp = rampOf(id);
+    kept[ramp] = id;
+    colourRow.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', +b.dataset.ramp === ramp));
+    shadeRow.replaceChildren(...RAMPS[ramp][1].map(([c, name]) => swatch(c, name)));
+    shadeRow.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
   };
   setInk(ink);
   inks.hidden = true;
-  inks.addEventListener('click', e => {
+  colourRow.addEventListener('click', e => {
+    const picked = e.target.closest('.pixels-ink');
+    if (picked) setInk(CHARS.indexOf(kept[+picked.dataset.ramp]));
+  });
+  shadeRow.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
     if (picked) setInk(CHARS.indexOf(picked.dataset.ink));
   });

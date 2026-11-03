@@ -5,77 +5,140 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
-/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from these
-   sixty: eleven colours, each pale, light, middle, deep and dark, and five
-   greys from white to black. Red, orange, yellow, green, blue, purple, pink
-   and teal are Ant Design's, its levels 2, 4, 6, 8 and 10, with purple's and
-   pink's middle raised to the others' strength; brown, skin, sky blue and the
-   greys are made to sit with them, each shade leaning warm as it lightens
-   and cool as it darkens. A picture stores one character a square, a
-   digit or a letter of either case, and each names its ink here. Saved
-   pictures hold these characters, so one never changes its colour. They sit
-   on :root and in no [data-theme] block because a picture is the same
-   colours whatever theme the person keeps; they are the colours of a thing,
-   not of the interface. */
+/* THE PICTURES' OWN INKS, 126 of them: seventeen colours and the greys,
+   seven shades each from palest to darkest. tools/build-inks.mjs writes
+   them from their one table, tools/lib/inks.mjs, which says how each shade
+   is drawn. A picture stores one character a square, and app.css says
+   which of these each character is. They sit on :root and in no
+   [data-theme] block because a picture is the same colours whatever theme
+   the person keeps; they are the colours of a thing, not of the interface. */
+/* INKS:BEGIN */
 :root {
-  --pixels-ink-0: #151423;
-  --pixels-ink-1: #ffffff;
-  --pixels-ink-2: #f5222d;
-  --pixels-ink-3: #fa8c16;
-  --pixels-ink-4: #fadb14;
-  --pixels-ink-5: #52c41a;
-  --pixels-ink-6: #1677ff;
-  --pixels-ink-7: #ae6626;
-  --pixels-ink-8: #f11b97;
-  --pixels-ink-9: #7615e0;
-  --pixels-ink-a: #13c2c2;
-  --pixels-ink-b: #1bbdfb;
-  --pixels-ink-c: #ff7875;
-  --pixels-ink-d: #ffc069;
-  --pixels-ink-e: #fff566;
-  --pixels-ink-f: #95de64;
-  --pixels-ink-g: #69b1ff;
-  --pixels-ink-h: #d9a167;
-  --pixels-ink-i: #ff85c0;
-  --pixels-ink-j: #b37feb;
-  --pixels-ink-k: #5cdbd3;
-  --pixels-ink-l: #84ddfe;
-  --pixels-ink-m: #5c0011;
-  --pixels-ink-n: #612500;
-  --pixels-ink-o: #614700;
-  --pixels-ink-p: #092b00;
-  --pixels-ink-q: #001d66;
-  --pixels-ink-r: #4a1f12;
-  --pixels-ink-s: #520339;
-  --pixels-ink-t: #120338;
-  --pixels-ink-u: #002329;
-  --pixels-ink-v: #01294f;
-  --pixels-ink-w: #dbdee6;
-  --pixels-ink-y: #888b99;
-  --pixels-ink-z: #444658;
-  --pixels-ink-A: #ffccc7;
-  --pixels-ink-B: #ffe7ba;
-  --pixels-ink-C: #ffffb8;
-  --pixels-ink-D: #d9f7be;
-  --pixels-ink-E: #bae0ff;
-  --pixels-ink-F: #efdbff;
-  --pixels-ink-G: #ffd6e7;
-  --pixels-ink-H: #fae0c1;
-  --pixels-ink-I: #b5f5ec;
-  --pixels-ink-J: #daf6ff;
-  --pixels-ink-K: #a8071a;
-  --pixels-ink-L: #ad4e00;
-  --pixels-ink-M: #ad8b00;
-  --pixels-ink-N: #237804;
-  --pixels-ink-O: #003eb3;
-  --pixels-ink-P: #391085;
-  --pixels-ink-Q: #9e1068;
-  --pixels-ink-R: #81411d;
-  --pixels-ink-S: #006d75;
-  --pixels-ink-T: #0b6ea5;
-  --pixels-ink-x: #fbe3cc;
-  --pixels-ink-U: #e4bb9a;
-  --pixels-ink-V: #c8906b;
-  --pixels-ink-W: #99624a;
-  --pixels-ink-X: #643b32;
+  --pixels-ink-red-1: #ffebe5;
+  --pixels-ink-red-2: #ffb09d;
+  --pixels-ink-red-3: #fe7561;
+  --pixels-ink-red-4: #f5222d;
+  --pixels-ink-red-5: #b30132;
+  --pixels-ink-red-6: #74042c;
+  --pixels-ink-red-7: #44011e;
+  --pixels-ink-orange-1: #ffedd9;
+  --pixels-ink-orange-2: #fecb97;
+  --pixels-ink-orange-3: #feab5c;
+  --pixels-ink-orange-4: #fa8c16;
+  --pixels-ink-orange-5: #bb5802;
+  --pixels-ink-orange-6: #7e2d01;
+  --pixels-ink-orange-7: #4c0c00;
+  --pixels-ink-gold-1: #ffeecf;
+  --pixels-ink-gold-2: #ffd78a;
+  --pixels-ink-gold-3: #fbc351;
+  --pixels-ink-gold-4: #f5b006;
+  --pixels-ink-gold-5: #b97006;
+  --pixels-ink-gold-6: #7d3d04;
+  --pixels-ink-gold-7: #491800;
+  --pixels-ink-yellow-1: #fff7d9;
+  --pixels-ink-yellow-2: #fff1b8;
+  --pixels-ink-yellow-3: #ffe67e;
+  --pixels-ink-yellow-4: #fadb14;
+  --pixels-ink-yellow-5: #dea812;
+  --pixels-ink-yellow-6: #a56d0a;
+  --pixels-ink-yellow-7: #693b01;
+  --pixels-ink-lime-1: #f0f6bc;
+  --pixels-ink-lime-2: #d7e886;
+  --pixels-ink-lime-3: #bddd50;
+  --pixels-ink-lime-4: #a1d206;
+  --pixels-ink-lime-5: #58970d;
+  --pixels-ink-lime-6: #146202;
+  --pixels-ink-lime-7: #013412;
+  --pixels-ink-green-1: #e2fbbf;
+  --pixels-ink-green-2: #b5e685;
+  --pixels-ink-green-3: #87d550;
+  --pixels-ink-green-4: #52c41a;
+  --pixels-ink-green-5: #038c2f;
+  --pixels-ink-green-6: #06572f;
+  --pixels-ink-green-7: #012f1e;
+  --pixels-ink-sea-green-1: #d4fcde;
+  --pixels-ink-sea-green-2: #9ae1b6;
+  --pixels-ink-sea-green-3: #5dca98;
+  --pixels-ink-sea-green-4: #0cb382;
+  --pixels-ink-sea-green-5: #0a7d65;
+  --pixels-ink-sea-green-6: #004f46;
+  --pixels-ink-sea-green-7: #012b29;
+  --pixels-ink-teal-1: #cefbf3;
+  --pixels-ink-teal-2: #99e6dd;
+  --pixels-ink-teal-3: #62d4ce;
+  --pixels-ink-teal-4: #13c2c2;
+  --pixels-ink-teal-5: #09878f;
+  --pixels-ink-teal-6: #005460;
+  --pixels-ink-teal-7: #012c37;
+  --pixels-ink-sky-blue-1: #daf6ff;
+  --pixels-ink-sky-blue-2: #9ae3ff;
+  --pixels-ink-sky-blue-3: #60d1ff;
+  --pixels-ink-sky-blue-4: #1bbdfb;
+  --pixels-ink-sky-blue-5: #0c81bd;
+  --pixels-ink-sky-blue-6: #054e83;
+  --pixels-ink-sky-blue-7: #012653;
+  --pixels-ink-blue-1: #e5f2ff;
+  --pixels-ink-blue-2: #98c9fe;
+  --pixels-ink-blue-3: #59a2fd;
+  --pixels-ink-blue-4: #1677ff;
+  --pixels-ink-blue-5: #2848cd;
+  --pixels-ink-blue-6: #282293;
+  --pixels-ink-blue-7: #1f065e;
+  --pixels-ink-indigo-1: #efeeff;
+  --pixels-ink-indigo-2: #b0aefe;
+  --pixels-ink-indigo-3: #7b77f7;
+  --pixels-ink-indigo-4: #4d46dc;
+  --pixels-ink-indigo-5: #471cb0;
+  --pixels-ink-indigo-6: #300482;
+  --pixels-ink-indigo-7: #1d0156;
+  --pixels-ink-purple-1: #f5ecff;
+  --pixels-ink-purple-2: #caa1fd;
+  --pixels-ink-purple-3: #a060f8;
+  --pixels-ink-purple-4: #7615e0;
+  --pixels-ink-purple-5: #4c05b5;
+  --pixels-ink-purple-6: #300183;
+  --pixels-ink-purple-7: #1d0057;
+  --pixels-ink-pink-1: #ffeaee;
+  --pixels-ink-pink-2: #ffadc4;
+  --pixels-ink-pink-3: #fd70a9;
+  --pixels-ink-pink-4: #f11b97;
+  --pixels-ink-pink-5: #aa0b7b;
+  --pixels-ink-pink-6: #6d035b;
+  --pixels-ink-pink-7: #3d013c;
+  --pixels-ink-brown-1: #ffedd9;
+  --pixels-ink-brown-2: #e3b98f;
+  --pixels-ink-brown-3: #c98e58;
+  --pixels-ink-brown-4: #ae6626;
+  --pixels-ink-brown-5: #88400c;
+  --pixels-ink-brown-6: #5f2307;
+  --pixels-ink-brown-7: #3c0e05;
+  --pixels-ink-skin-1: #ffeddb;
+  --pixels-ink-skin-2: #eac9ae;
+  --pixels-ink-skin-3: #d9ab89;
+  --pixels-ink-skin-4: #c8906b;
+  --pixels-ink-skin-5: #966045;
+  --pixels-ink-skin-6: #65382a;
+  --pixels-ink-skin-7: #3b1a15;
+  --pixels-ink-olive-1: #f7f1d4;
+  --pixels-ink-olive-2: #ccc698;
+  --pixels-ink-olive-3: #a7a465;
+  --pixels-ink-olive-4: #848538;
+  --pixels-ink-olive-5: #57621a;
+  --pixels-ink-olive-6: #30420b;
+  --pixels-ink-olive-7: #142705;
+  --pixels-ink-slate-1: #e6f2fc;
+  --pixels-ink-slate-2: #b2c4d5;
+  --pixels-ink-slate-3: #899fb6;
+  --pixels-ink-slate-4: #677c98;
+  --pixels-ink-slate-5: #495772;
+  --pixels-ink-slate-6: #31374e;
+  --pixels-ink-slate-7: #1d1f2f;
+  --pixels-ink-grey-1: #ffffff;
+  --pixels-ink-grey-2: #dbdee6;
+  --pixels-ink-grey-3: #b3b6c2;
+  --pixels-ink-grey-4: #888b99;
+  --pixels-ink-grey-5: #66697a;
+  --pixels-ink-grey-6: #444658;
+  --pixels-ink-grey-7: #151423;
 }
+/* INKS:END */

@@ -80,7 +80,7 @@ hold them to five rifts, and so do the owner's own at `make.html?own`, which hav
 player's picture, and `?wear=helmet` the helmet of the owner's character. It checks as you draw whether
 the numbers alone can solve the picture and how hard that is, outlines each square that would need a
 guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15 a side, 20 in
-the course, and Picture beside it draws one from a picture, as `docs/making-puzzles.md` says. Its Colour step paints the picture the puzzle finishes as, from sixty inks, and Save asks
+the course, and Picture beside it draws one from a picture, as `docs/making-puzzles.md` says. Its Colour step paints the picture the puzzle finishes as, from 126 inks, a colour then its shade, and Save asks
 which rift it goes in, the last one saved to first; a rift shows fifteen, the list counts how many of
 each one's are on, and a puzzle saved into one with fifteen on is saved off. A rift just started is named
 there and hidden until it is published. A new puzzle in a rift already published waits, off: the owner's
@@ -107,7 +107,7 @@ selection. Create is wider on desktop. `manage.html` redirects to Game.
 | `data.js`, `offline.js` | who is playing, the door a guest meets, and where puzzles and results are kept, a copy of them and of every file too, for offline play |
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `picture.js`, `create.js`, `game.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour; `game.js` is Create's Game view, and `picture.js` the Pixelator's From a picture |
 | `app.css` | the board, the picture, the tiles and Create, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
-| `theme.css` | the sixty inks a colour picture is painted from |
+| `theme.css` | the 126 inks a colour picture is painted from, which `tools/build-inks.mjs` writes from `tools/lib/inks.mjs` |
 | `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 
 ## Data

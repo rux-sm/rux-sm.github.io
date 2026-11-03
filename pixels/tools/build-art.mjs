@@ -2,7 +2,7 @@
 //
 // THE PICTURES rux DRAWS, between Aseprite and the game. Each picture has an
 // Aseprite file in pixels/art/source/, the size it is drawn at and painted
-// from the game's sixty inks alone, since the file is indexed to them.
+// from the game's inks alone, since the file is indexed to them.
 //
 //   node pixels/tools/build-art.mjs templates   writes the Aseprite files that are not there
 //   node pixels/tools/build-art.mjs             puts every Aseprite file into the game
@@ -29,19 +29,19 @@
 // clear, and a rift's world as `rift-01.png` and on once anything is drawn
 // on it.
 //
-// THE PALETTE is the inks in the Pixelator's order, read from make.js, in
-// the colours theme.css gives them, and last one clear colour, which is no
-// ink, so Aseprite shows the inks five to a row, a colour to a row. A file
-// says the clear colour is its see-through one, and a pixel is the place
-// in the palette, so the palette is never reordered in a drawing.
-// `templates` also writes it as art/source/pixels.gpl, which Aseprite loads
-// as a palette for a new file.
+// THE PALETTE is the inks in the Pixelator's order, from tools/lib/inks.mjs,
+// and last one clear colour, which is no ink, so Aseprite shows the inks
+// seven to a row, a colour to a row. A file says the clear colour is its
+// see-through one, and a pixel is the place in the palette, so the palette
+// is never reordered in a drawing. build-inks.mjs writes it as
+// art/source/pixels.gpl, which Aseprite loads as a palette for a new file.
 //
 import { existsSync, mkdirSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { luaPalette } from './lib/inks.mjs';
 
 const PIXELS = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ART = join(PIXELS, 'art'), SOURCE = join(ART, 'source');
@@ -51,12 +51,6 @@ const MAPS = 6, RIFTS = 12, PORTAL = 15;
 
 const fail = text => { console.error(`  ${text}`); process.exit(1); };
 if (!existsSync(ASEPRITE)) fail(`Aseprite is not at ${ASEPRITE}; set ASEPRITE to where it is.`);
-
-// The inks, in the Pixelator's order, and each one's colour.
-const make = readFileSync(join(PIXELS, 'make.js'), 'utf8'), theme = readFileSync(join(PIXELS, 'theme.css'), 'utf8');
-const INKS = [...(make.match(/const INKS = \[([\s\S]*?)\n {2}\];/) || fail('make.js has no INKS'))[1].matchAll(/\['(\w)', '[^']*'\]/g)].map(m => m[1]);
-const HEX = Object.fromEntries([...theme.matchAll(/--pixels-ink-(\w): #([0-9a-f]{6});/g)].map(m => [m[1], m[2]]));
-if (!INKS.length || INKS.length !== Object.keys(HEX).length || INKS.some(id => !HEX[id])) fail('make.js and theme.css do not agree on the inks.');
 
 // The character's layers from the foot of Aseprite's list up, which is the
 // order app.js draws them in; each is the layer's name and its key in HERO.
@@ -80,16 +74,11 @@ const written = (squares, side) => `[${Array.from({ length: side }, (_, y) => `'
 
 // A Lua string, and the Lua that runs it in Aseprite with no window.
 const lua = s => JSON.stringify(s);
-const PALETTE = `local CLEAR = ${INKS.length}
-local pal = Palette(CLEAR + 1)
-local ids = ${lua(INKS.join(''))}
-${INKS.map((id, n) => `pal:setColor(${n}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
-pal:setColor(CLEAR, Color{ r = 0, g = 0, b = 0, a = 0 })
-local function ink(id) if id == '.' then return CLEAR end local at = ids:find(id, 1, true) return at and at - 1 end
+const PALETTE = `${luaPalette()}
 local function blank(spr) local img = Image(spr.spec) img:clear(CLEAR) return img end
 local function paint(img, squares, w)
-  for i = 1, #squares do
-    local n = ink(squares:sub(i, i))
+  for i, c in ipairs(chars(squares)) do
+    local n = ink(c)
     if n and n ~= CLEAR then img:drawPixel((i - 1) % w, (i - 1) // w, n) end
   end
 end`;
@@ -166,11 +155,6 @@ const pad = n => String(n).padStart(2, '0');
 
 if (process.argv[2] === 'templates') {
   mkdirSync(SOURCE, { recursive: true });
-  writeFileSync(join(SOURCE, 'pixels.gpl'), `GIMP Palette\nName: Pixels\nColumns: 5\n#\n${INKS.map(id => {
-    const [r, g, b] = [0, 2, 4].map(i => parseInt(HEX[id].slice(i, i + 2), 16));
-    return `${String(r).padStart(3)} ${String(g).padStart(3)} ${String(b).padStart(3)}\t${id}`;
-  }).join('\n')}\n`);
-  console.log('  written  art/source/pixels.gpl');
   const jobs = [];
   const job = (name, script) => {
     const file = join(SOURCE, name);
@@ -236,7 +220,7 @@ const READ = `local function read(file)
       for px in cel.image:pixels() do
         local x, y = px.x + cel.position.x, px.y + cel.position.y
         local n = px()
-        if n ~= CLEAR and n < CLEAR and x >= 0 and y >= 0 and x < spr.width and y < spr.height then out[y * spr.width + x + 1] = ids:sub(n + 1, n + 1) end
+        if n ~= CLEAR and n < CLEAR and x >= 0 and y >= 0 and x < spr.width and y < spr.height then out[y * spr.width + x + 1] = ids[n] end
       end
     end
     print(json.encode{ file = file, layer = layer.name, w = spr.width, h = spr.height, squares = table.concat(out) })

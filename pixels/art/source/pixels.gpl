@@ -1,64 +1,130 @@
 GIMP Palette
 Name: Pixels
-Columns: 5
+Columns: 7
 #
-255 204 199	A
-255 120 117	c
-245  34  45	2
-168   7  26	K
- 92   0  17	m
-255 231 186	B
-255 192 105	d
-250 140  22	3
-173  78   0	L
- 97  37   0	n
-255 255 184	C
-255 245 102	e
-250 219  20	4
-173 139   0	M
- 97  71   0	o
-217 247 190	D
-149 222 100	f
- 82 196  26	5
- 35 120   4	N
-  9  43   0	p
-186 224 255	E
-105 177 255	g
- 22 119 255	6
-  0  62 179	O
-  0  29 102	q
-239 219 255	F
-179 127 235	j
-118  21 224	9
- 57  16 133	P
- 18   3  56	t
-255 214 231	G
-255 133 192	i
-241  27 151	8
-158  16 104	Q
- 82   3  57	s
-250 224 193	H
-217 161 103	h
-174 102  38	7
-129  65  29	R
- 74  31  18	r
-251 227 204	x
-228 187 154	U
-200 144 107	V
-153  98  74	W
-100  59  50	X
-181 245 236	I
- 92 219 211	k
- 19 194 194	a
-  0 109 117	S
-  0  35  41	u
-218 246 255	J
-132 221 254	l
- 27 189 251	b
- 11 110 165	T
-  1  41  79	v
-255 255 255	1
-219 222 230	w
-136 139 153	y
- 68  70  88	z
- 21  20  35	0
+255 235 229	Palest red
+255 176 157	Pale red
+254 117  97	Light red
+245  34  45	Red
+179   1  50	Deep red
+116   4  44	Dark red
+ 68   1  30	Darkest red
+255 237 217	Palest orange
+254 203 151	Pale orange
+254 171  92	Light orange
+250 140  22	Orange
+187  88   2	Deep orange
+126  45   1	Dark orange
+ 76  12   0	Darkest orange
+255 238 207	Palest gold
+255 215 138	Pale gold
+251 195  81	Light gold
+245 176   6	Gold
+185 112   6	Deep gold
+125  61   4	Dark gold
+ 73  24   0	Darkest gold
+255 247 217	Palest yellow
+255 241 184	Pale yellow
+255 230 126	Light yellow
+250 219  20	Yellow
+222 168  18	Deep yellow
+165 109  10	Dark yellow
+105  59   1	Darkest yellow
+240 246 188	Palest lime
+215 232 134	Pale lime
+189 221  80	Light lime
+161 210   6	Lime
+ 88 151  13	Deep lime
+ 20  98   2	Dark lime
+  1  52  18	Darkest lime
+226 251 191	Palest green
+181 230 133	Pale green
+135 213  80	Light green
+ 82 196  26	Green
+  3 140  47	Deep green
+  6  87  47	Dark green
+  1  47  30	Darkest green
+212 252 222	Palest sea green
+154 225 182	Pale sea green
+ 93 202 152	Light sea green
+ 12 179 130	Sea green
+ 10 125 101	Deep sea green
+  0  79  70	Dark sea green
+  1  43  41	Darkest sea green
+206 251 243	Palest teal
+153 230 221	Pale teal
+ 98 212 206	Light teal
+ 19 194 194	Teal
+  9 135 143	Deep teal
+  0  84  96	Dark teal
+  1  44  55	Darkest teal
+218 246 255	Palest sky blue
+154 227 255	Pale sky blue
+ 96 209 255	Light sky blue
+ 27 189 251	Sky blue
+ 12 129 189	Deep sky blue
+  5  78 131	Dark sky blue
+  1  38  83	Darkest sky blue
+229 242 255	Palest blue
+152 201 254	Pale blue
+ 89 162 253	Light blue
+ 22 119 255	Blue
+ 40  72 205	Deep blue
+ 40  34 147	Dark blue
+ 31   6  94	Darkest blue
+239 238 255	Palest indigo
+176 174 254	Pale indigo
+123 119 247	Light indigo
+ 77  70 220	Indigo
+ 71  28 176	Deep indigo
+ 48   4 130	Dark indigo
+ 29   1  86	Darkest indigo
+245 236 255	Palest purple
+202 161 253	Pale purple
+160  96 248	Light purple
+118  21 224	Purple
+ 76   5 181	Deep purple
+ 48   1 131	Dark purple
+ 29   0  87	Darkest purple
+255 234 238	Palest pink
+255 173 196	Pale pink
+253 112 169	Light pink
+241  27 151	Pink
+170  11 123	Deep pink
+109   3  91	Dark pink
+ 61   1  60	Darkest pink
+255 237 217	Palest brown
+227 185 143	Pale brown
+201 142  88	Light brown
+174 102  38	Brown
+136  64  12	Deep brown
+ 95  35   7	Dark brown
+ 60  14   5	Darkest brown
+255 237 219	Palest skin
+234 201 174	Pale skin
+217 171 137	Light skin
+200 144 107	Skin
+150  96  69	Deep skin
+101  56  42	Dark skin
+ 59  26  21	Darkest skin
+247 241 212	Palest olive
+204 198 152	Pale olive
+167 164 101	Light olive
+132 133  56	Olive
+ 87  98  26	Deep olive
+ 48  66  11	Dark olive
+ 20  39   5	Darkest olive
+230 242 252	Palest slate
+178 196 213	Pale slate
+137 159 182	Light slate
+103 124 152	Slate
+ 73  87 114	Deep slate
+ 49  55  78	Dark slate
+ 29  31  47	Darkest slate
+255 255 255	White
+219 222 230	Pale grey
+179 182 194	Light grey
+136 139 153	Grey
+102 105 122	Deep grey
+ 68  70  88	Dark grey
+ 21  20  35	Black

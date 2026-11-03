@@ -41,8 +41,36 @@
   const WORLD = false;
 
   // The characters a square is stored as, in the order of their numbers: a
-  // digit, then a letter of either case. A picture's inks are named by them.
-  const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  // digit, a letter of either case, then the letters the 126 inks added. A
+  // picture's inks are named by them. tools/build-inks.mjs writes these from
+  // tools/lib/inks.mjs.
+  /* INKS:BEGIN */
+  const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįĴĵĶķĸĹĺĻļĽľŁłŃńŅ';
+  // Each ramp: its name, then each shade's character, palest to darkest,
+  // its name and its variable in theme.css.
+  const RAMPS = [
+    ['Red', [['Y', 'Palest red', '--pixels-ink-red-1'], ['A', 'Pale red', '--pixels-ink-red-2'], ['c', 'Light red', '--pixels-ink-red-3'], ['2', 'Red', '--pixels-ink-red-4'], ['K', 'Deep red', '--pixels-ink-red-5'], ['Z', 'Dark red', '--pixels-ink-red-6'], ['m', 'Darkest red', '--pixels-ink-red-7']]],
+    ['Orange', [['B', 'Palest orange', '--pixels-ink-orange-1'], ['d', 'Pale orange', '--pixels-ink-orange-2'], ['Ā', 'Light orange', '--pixels-ink-orange-3'], ['3', 'Orange', '--pixels-ink-orange-4'], ['L', 'Deep orange', '--pixels-ink-orange-5'], ['n', 'Dark orange', '--pixels-ink-orange-6'], ['ā', 'Darkest orange', '--pixels-ink-orange-7']]],
+    ['Gold', [['Ă', 'Palest gold', '--pixels-ink-gold-1'], ['ă', 'Pale gold', '--pixels-ink-gold-2'], ['Ą', 'Light gold', '--pixels-ink-gold-3'], ['ą', 'Gold', '--pixels-ink-gold-4'], ['Ć', 'Deep gold', '--pixels-ink-gold-5'], ['ć', 'Dark gold', '--pixels-ink-gold-6'], ['Ĉ', 'Darkest gold', '--pixels-ink-gold-7']]],
+    ['Yellow', [['ĉ', 'Palest yellow', '--pixels-ink-yellow-1'], ['C', 'Pale yellow', '--pixels-ink-yellow-2'], ['e', 'Light yellow', '--pixels-ink-yellow-3'], ['4', 'Yellow', '--pixels-ink-yellow-4'], ['Ċ', 'Deep yellow', '--pixels-ink-yellow-5'], ['M', 'Dark yellow', '--pixels-ink-yellow-6'], ['o', 'Darkest yellow', '--pixels-ink-yellow-7']]],
+    ['Lime', [['ċ', 'Palest lime', '--pixels-ink-lime-1'], ['Č', 'Pale lime', '--pixels-ink-lime-2'], ['č', 'Light lime', '--pixels-ink-lime-3'], ['Ď', 'Lime', '--pixels-ink-lime-4'], ['ď', 'Deep lime', '--pixels-ink-lime-5'], ['Đ', 'Dark lime', '--pixels-ink-lime-6'], ['đ', 'Darkest lime', '--pixels-ink-lime-7']]],
+    ['Green', [['D', 'Palest green', '--pixels-ink-green-1'], ['Ē', 'Pale green', '--pixels-ink-green-2'], ['f', 'Light green', '--pixels-ink-green-3'], ['5', 'Green', '--pixels-ink-green-4'], ['N', 'Deep green', '--pixels-ink-green-5'], ['ē', 'Dark green', '--pixels-ink-green-6'], ['p', 'Darkest green', '--pixels-ink-green-7']]],
+    ['Sea green', [['Ĕ', 'Palest sea green', '--pixels-ink-sea-green-1'], ['ĕ', 'Pale sea green', '--pixels-ink-sea-green-2'], ['Ė', 'Light sea green', '--pixels-ink-sea-green-3'], ['ė', 'Sea green', '--pixels-ink-sea-green-4'], ['Ę', 'Deep sea green', '--pixels-ink-sea-green-5'], ['ę', 'Dark sea green', '--pixels-ink-sea-green-6'], ['Ě', 'Darkest sea green', '--pixels-ink-sea-green-7']]],
+    ['Teal', [['I', 'Palest teal', '--pixels-ink-teal-1'], ['ě', 'Pale teal', '--pixels-ink-teal-2'], ['k', 'Light teal', '--pixels-ink-teal-3'], ['a', 'Teal', '--pixels-ink-teal-4'], ['Ĝ', 'Deep teal', '--pixels-ink-teal-5'], ['S', 'Dark teal', '--pixels-ink-teal-6'], ['u', 'Darkest teal', '--pixels-ink-teal-7']]],
+    ['Sky blue', [['J', 'Palest sky blue', '--pixels-ink-sky-blue-1'], ['l', 'Pale sky blue', '--pixels-ink-sky-blue-2'], ['ĝ', 'Light sky blue', '--pixels-ink-sky-blue-3'], ['b', 'Sky blue', '--pixels-ink-sky-blue-4'], ['T', 'Deep sky blue', '--pixels-ink-sky-blue-5'], ['Ğ', 'Dark sky blue', '--pixels-ink-sky-blue-6'], ['v', 'Darkest sky blue', '--pixels-ink-sky-blue-7']]],
+    ['Blue', [['E', 'Palest blue', '--pixels-ink-blue-1'], ['ğ', 'Pale blue', '--pixels-ink-blue-2'], ['g', 'Light blue', '--pixels-ink-blue-3'], ['6', 'Blue', '--pixels-ink-blue-4'], ['O', 'Deep blue', '--pixels-ink-blue-5'], ['Ġ', 'Dark blue', '--pixels-ink-blue-6'], ['q', 'Darkest blue', '--pixels-ink-blue-7']]],
+    ['Indigo', [['ġ', 'Palest indigo', '--pixels-ink-indigo-1'], ['Ģ', 'Pale indigo', '--pixels-ink-indigo-2'], ['ģ', 'Light indigo', '--pixels-ink-indigo-3'], ['Ĥ', 'Indigo', '--pixels-ink-indigo-4'], ['ĥ', 'Deep indigo', '--pixels-ink-indigo-5'], ['Ħ', 'Dark indigo', '--pixels-ink-indigo-6'], ['ħ', 'Darkest indigo', '--pixels-ink-indigo-7']]],
+    ['Purple', [['F', 'Palest purple', '--pixels-ink-purple-1'], ['Ĩ', 'Pale purple', '--pixels-ink-purple-2'], ['j', 'Light purple', '--pixels-ink-purple-3'], ['9', 'Purple', '--pixels-ink-purple-4'], ['ĩ', 'Deep purple', '--pixels-ink-purple-5'], ['P', 'Dark purple', '--pixels-ink-purple-6'], ['t', 'Darkest purple', '--pixels-ink-purple-7']]],
+    ['Pink', [['G', 'Palest pink', '--pixels-ink-pink-1'], ['Ī', 'Pale pink', '--pixels-ink-pink-2'], ['i', 'Light pink', '--pixels-ink-pink-3'], ['8', 'Pink', '--pixels-ink-pink-4'], ['Q', 'Deep pink', '--pixels-ink-pink-5'], ['ī', 'Dark pink', '--pixels-ink-pink-6'], ['s', 'Darkest pink', '--pixels-ink-pink-7']]],
+    ['Brown', [['H', 'Palest brown', '--pixels-ink-brown-1'], ['Ĭ', 'Pale brown', '--pixels-ink-brown-2'], ['h', 'Light brown', '--pixels-ink-brown-3'], ['7', 'Brown', '--pixels-ink-brown-4'], ['R', 'Deep brown', '--pixels-ink-brown-5'], ['r', 'Dark brown', '--pixels-ink-brown-6'], ['ĭ', 'Darkest brown', '--pixels-ink-brown-7']]],
+    ['Skin', [['x', 'Palest skin', '--pixels-ink-skin-1'], ['U', 'Pale skin', '--pixels-ink-skin-2'], ['Į', 'Light skin', '--pixels-ink-skin-3'], ['V', 'Skin', '--pixels-ink-skin-4'], ['W', 'Deep skin', '--pixels-ink-skin-5'], ['X', 'Dark skin', '--pixels-ink-skin-6'], ['į', 'Darkest skin', '--pixels-ink-skin-7']]],
+    ['Olive', [['Ĵ', 'Palest olive', '--pixels-ink-olive-1'], ['ĵ', 'Pale olive', '--pixels-ink-olive-2'], ['Ķ', 'Light olive', '--pixels-ink-olive-3'], ['ķ', 'Olive', '--pixels-ink-olive-4'], ['ĸ', 'Deep olive', '--pixels-ink-olive-5'], ['Ĺ', 'Dark olive', '--pixels-ink-olive-6'], ['ĺ', 'Darkest olive', '--pixels-ink-olive-7']]],
+    ['Slate', [['Ļ', 'Palest slate', '--pixels-ink-slate-1'], ['ļ', 'Pale slate', '--pixels-ink-slate-2'], ['Ľ', 'Light slate', '--pixels-ink-slate-3'], ['ľ', 'Slate', '--pixels-ink-slate-4'], ['Ł', 'Deep slate', '--pixels-ink-slate-5'], ['ł', 'Dark slate', '--pixels-ink-slate-6'], ['Ń', 'Darkest slate', '--pixels-ink-slate-7']]],
+    ['Grey', [['1', 'White', '--pixels-ink-grey-1'], ['w', 'Pale grey', '--pixels-ink-grey-2'], ['ń', 'Light grey', '--pixels-ink-grey-3'], ['y', 'Grey', '--pixels-ink-grey-4'], ['Ņ', 'Deep grey', '--pixels-ink-grey-5'], ['z', 'Dark grey', '--pixels-ink-grey-6'], ['0', 'Black', '--pixels-ink-grey-7']]],
+  ];
+  /* INKS:END */
+  // Each ink by its character: its name and its variable in theme.css.
+  const INK = new Map(RAMPS.flatMap(([, shades]) => shades.map(([c, name, variable]) => [c, { name, variable }])));
   // Rows of numbers from a string of them, one character a square, and the
   // string again; a square puzzle unless told its width.
   const grid = (squares, width = Math.sqrt(squares.length)) =>
@@ -309,7 +337,7 @@
   const worn = found => (found >= 5 ? ['helmet'] : []);
   const piece = name => HERO[name];
   const layers = (wear = [], gear) => {
-    const tone = (name, ink) => (/^[0-9a-zA-Z]$/.test(ink || '') ? HERO[name].replace(/[^.]/g, ink) : HERO[name]);
+    const tone = (name, ink) => (INK.has(ink) ? HERO[name].replace(/[^.]/g, ink) : HERO[name]);
     // A drawing counts only where it is the piece's own squares and no other.
     const own = name => (gear?.[name]?.length === 225 && [...gear[name]].every((s, i) => (s === '.') === (HERO[name][i] === '.')) ? gear[name] : HERO[name]);
     const head = wear.includes('helmet') ? 'helmet' : 'hair';
@@ -878,7 +906,7 @@
   const tone = name => {
     if (!tones) {
       const page = getComputedStyle(document.documentElement);
-      tones = Object.fromEntries(['--rux-layer-01', '--rux-text-primary', ...[...CHARS].map(c => `--pixels-ink-${c}`)].map(k => [k, page.getPropertyValue(k).trim()]));
+      tones = Object.fromEntries(['--rux-layer-01', '--rux-text-primary', ...[...INK.values()].map(ink => ink.variable)].map(k => [k, page.getPropertyValue(k).trim()]));
     }
     return tones[name];
   };
@@ -891,7 +919,7 @@
     ctx.fillRect(0, 0, n, n);
     [...squares].forEach((c, i) => {
       if (!colours && c !== '1') return;
-      ctx.fillStyle = colours ? tone(`--pixels-ink-${colours[i]}`) : tone('--rux-text-primary');
+      ctx.fillStyle = colours ? tone(INK.get(colours[i])?.variable) : tone('--rux-text-primary');
       ctx.fillRect(i % n, Math.floor(i / n), 1, 1);
     });
     return el;
@@ -1242,7 +1270,7 @@
   window.Pixels = Object.assign(window.Pixels || {}, {
     waiting, same,
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
-    SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
+    SIZES, DAILY, BOARD, WORLD, CHARS, RAMPS, INK, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, canvas, tone, HEARTS, HINT, added, buzz, sound, sounds, relaxed, listen, time, title,
     words, art, tile, bar, riftTile, menu, riftBlock, arrive, arrived, turn, how, switcher, chosen, shell,
   });

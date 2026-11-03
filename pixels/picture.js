@@ -21,14 +21,14 @@
    cartoon's lines; a clear dot is never filled.
 
    THE COLOURS. Every dot takes its nearest ink, by OKLab, from theme.css's
-   sixty, and a square takes the ink most of its dots on its own side take;
+   126, and a square takes the ink most of its dots on its own side take;
    a clear dot is white. The picture never leaves the browser: only the
    squares and their inks reach the board.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { CHARS, canvas, tone } = window.Pixels;
+  const { INK, canvas, tone } = window.Pixels;
   const $ = id => document.getElementById(id);
   const modal = $('pixels-picture-modal'), frame = $('pixels-crop'), result = $('pixels-crop-result'), use = $('pixels-crop-use');
   const file = $('pixels-picture-file');
@@ -57,8 +57,8 @@
   const far = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]);
   // The inks theme.css draws, each as its character and its OKLab.
   let inks = null;
-  const inkList = () => inks ||= [...CHARS].flatMap(c => {
-    const hex = tone(`--pixels-ink-${c}`);
+  const inkList = () => inks ||= [...INK].flatMap(([c, { variable }]) => {
+    const hex = tone(variable);
     if (!/^#[0-9a-f]{6}$/i.test(hex || '')) return [];
     const n = parseInt(hex.slice(1), 16);
     return [{ c, lab: oklab(n >> 16, (n >> 8) & 255, n & 255) }];

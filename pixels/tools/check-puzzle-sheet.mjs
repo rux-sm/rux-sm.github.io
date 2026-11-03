@@ -29,6 +29,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { luaPalette } from './lib/inks.mjs';
 import { pixels } from './lib/pixels-solver.mjs';
 
 const PIXELS = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -44,28 +45,24 @@ if (!existsSync(SHEET)) fail('art/source/puzzles.aseprite is not there; run buil
 const course = JSON.parse(readFileSync(args[0], 'utf8'));
 const P = pixels();
 
-// The inks, in the palette's order after its clear colour.
-const make = readFileSync(join(PIXELS, 'make.js'), 'utf8');
-const INKS = [...make.match(/const INKS = \[([\s\S]*?)\n {2}\];/)[1].matchAll(/\['(\w)', '[^']*'\]/g)].map(m => m[1]);
-
 // Every cell of the sheet: its slice's id and the two layers under it, an
 // ink or a dot a square.
 const dir = mkdtempSync(join(tmpdir(), 'pixels-sheet-'));
 writeFileSync(join(dir, 'run.lua'), `
 local s = Sprite{ fromFile = ${JSON.stringify(SHEET)} }
-local ids = ${JSON.stringify(INKS.join(''))}
+${luaPalette()}
 local layer = {}
 for _, l in ipairs(s.layers) do layer[l.name] = l end
 local function read(l, r)
   local out = {}
   local c = l and l:cel(1)
   for y = r.y, r.y + r.height - 1 do for x = r.x, r.x + r.width - 1 do
-    local n = ${INKS.length}
+    local n = CLEAR
     if c then
       local ix, iy = x - c.position.x, y - c.position.y
       if ix >= 0 and iy >= 0 and ix < c.image.width and iy < c.image.height then n = c.image:getPixel(ix, iy) end
     end
-    out[#out + 1] = n < ${INKS.length} and ids:sub(n + 1, n + 1) or '.'
+    out[#out + 1] = n < CLEAR and ids[n] or '.'
   end end
   return table.concat(out)
 end

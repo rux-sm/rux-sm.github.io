@@ -27,6 +27,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { INKS, luaPalette } from './lib/inks.mjs';
 
 const PIXELS = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = join(PIXELS, 'art', 'source', 'puzzles.aseprite');
@@ -36,11 +37,6 @@ const fail = text => { console.error(`  ${text}`); process.exit(1); };
 if (!process.argv[2]) fail('Name the course: build-puzzle-sheet.mjs <course.json>');
 if (existsSync(SHEET)) { console.log('  kept     art/source/puzzles.aseprite'); process.exit(0); }
 const course = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-
-// The inks, in the palette's order after its clear colour.
-const make = readFileSync(join(PIXELS, 'make.js'), 'utf8'), theme = readFileSync(join(PIXELS, 'theme.css'), 'utf8');
-const INKS = [...make.match(/const INKS = \[([\s\S]*?)\n {2}\];/)[1].matchAll(/\['(\w)', '[^']*'\]/g)].map(m => m[1]);
-const HEX = Object.fromEntries([...theme.matchAll(/--pixels-ink-(\w): #([0-9a-f]{6});/g)].map(m => [m[1], m[2]]));
 
 // Small capitals, three squares wide and five tall, for the rows' names.
 const FONT = {
@@ -75,12 +71,11 @@ for (const [n, rift] of course.rifts.entries()) {
 const height = y - GAP + EDGE;
 
 const lua = s => JSON.stringify(s);
-const ink = id => INKS.indexOf(id), CLEAR = INKS.length;
+// An ink's place in the palette, and the clear colour's after them.
+const ink = id => INKS.findIndex(k => k.c === id), CLEAR = INKS.length;
 const script = `
 local spr = Sprite(${width}, ${height}, ColorMode.INDEXED)
-local pal = Palette(${CLEAR + 1})
-${INKS.map((id, n) => `pal:setColor(${n}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
-pal:setColor(${CLEAR}, Color{ r = 0, g = 0, b = 0, a = 0 })
+${luaPalette()}
 spr:setPalette(pal)
 spr.transparentColor = ${CLEAR}
 spr.gridBounds = Rectangle(0, 0, 5, 5)

@@ -193,8 +193,11 @@
               <button type="button" aria-pressed="false" data-tool="fill"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg><span>Bucket</span></button>
               <button type="button" aria-pressed="false" data-tool="erase"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg><span>Eraser</span></button>
             </div>
-            <!-- The inks, open under the tools for the colour step and hidden while drawing; make.js fills them. -->
-            <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></div>
+            <!-- The inks, open under the tools for the colour step and hidden while drawing: the eighteen colours, then the chosen one's seven shades. make.js fills them. -->
+            <div class="pixels-inks" id="pixels-inks">
+              <div class="pixels-colours" id="pixels-colours" role="radiogroup" aria-label="Colour"></div>
+              <div class="pixels-shades" id="pixels-shades" role="radiogroup" aria-label="Shade"></div>
+            </div>
             <!-- The bar along the foot, Design's as the game's: Exit to Create, Undo, Redo, Clear, Delete for a saved puzzle, and Save. -->
             <div class="game-keys game-keys--bar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
               <a class="game-key" id="pixels-exit" href="create.html" aria-label="Exit to Create" title="Exit to Create"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Exit</a>

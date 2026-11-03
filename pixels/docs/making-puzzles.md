@@ -90,9 +90,17 @@ squares are the ones to change.
 ## The colour picture
 
 Once the tag is green, Colour paints the picture the player sees at the
-finish. Pick one of the sixty inks under the board and paint any square,
-filled or empty. The inks are ten colours and a row of skin, each in five
-tones from pale to dark, then five greys from white to black.
+finish. Pick an ink under the board and paint any square, filled or empty.
+The inks are seventeen colours and the greys, each in seven shades from
+palest to darkest. Tap a colour in the two rows of colours, then a shade
+in the row under them. A colour remembers the shade last picked in it, so
+going back to a colour in use is one tap.
+
+- **Shade with one colour's row.** Its light, base and deep shades are the
+  lit side, the middle and the shadow; the deep and dark shades turn toward
+  blue-purple, so a shadow stays colourful.
+- **Runs of two or three squares read better than a checkerboard,** which
+  is noise at this size.
 
 - **The bar along the foot** holds Exit, Undo, Redo, Clear and Save, with
   Delete for a saved puzzle, each its icon over its word, as the game's.

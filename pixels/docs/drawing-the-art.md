@@ -5,10 +5,10 @@ type: how-to
 # Drawing the art
 
 Every puzzle of the course is drawn in Aseprite on one sheet,
-`pixels/art/source/puzzles.aseprite`, below. It holds only the game's sixty
+`pixels/art/source/puzzles.aseprite`, below. It holds only the game's 126
 inks, so a colour from anywhere else cannot be painted.
 
-The palette is the sixty inks, five to a row, a colour to a row, and last
+The palette is the 126 inks, seven to a row, a colour to a row, and last
 the clear colour. **Never drag a colour to a new place in it.** A pixel
 remembers its place in the palette, not its colour, so a moved colour
 repaints every pixel that used that place.

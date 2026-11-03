@@ -64,6 +64,7 @@ step('account panel', process.execPath, ['design/tools/inline-account.mjs', '--c
 step('sprite', process.execPath, ['tools/inline-sprite.mjs', '--check']);
 step('app icons', process.execPath, ['tools/build-app-icons.mjs', '--check']);
 step('pixels solver', process.execPath, ['pixels/tools/check-solver.mjs']);
+step('pixels inks', process.execPath, ['pixels/tools/build-inks.mjs', '--check']);
 
 // THE PARSE RULE. Every tracked script, and every script written into a page,
 // parses the way it is loaded; the flag lets Node parse a module unrun.

@@ -701,11 +701,10 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
 }
-/* The panels' tiles are solid too, the Tasks and Departures cards, the
-   editor's and the Forms list's, parted from the panel by their fill alone:
+/* The panels' tiles are solid too, the editor's and the Forms list's, parted from the panel by their fill alone:
    Design rings a tile inside a layer, and here the panel is the page's
    colour, which the tile's step already clears. */
-[data-theme="rux-dark"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile,
+[data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--tile,
 [data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print .rux--tile { box-shadow: none; }
 /* The live card's tiles keep their 16px all round: the 4px past that 12px
    at the sides and over the foot the panel scrolls under, and the whole
@@ -1502,23 +1501,27 @@
 @media (prefers-reduced-motion: reduce) {
   [data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
 }
-/* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
-   editor or the document panel, and a form in the Forms list, is the raised
-   surface inside the board's line with the same hover, and a field in it is
-   dark as Geist's are, the same surface inside its own ring, which holds 3
-   to 1 where the fill alone would not. Menus keep their own grey and edge,
+/* A PANEL'S TILES ARE THE SAME CARD: a tile in the trip editor or the
+   document panel, and a form in the Forms list, is the raised
+   surface inside the board's line with the same hover, and a field in it,
+   or in a task's form, is dark as Geist's are, the same surface inside its
+   own ring, which holds 3 to 1 where the fill alone would not. Menus keep their own grey and edge,
    so one that opens over a tile still stands off it. */
-[data-theme="rux-100"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile,
+[data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--tile,
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print .rux--tile {
   --rux-layer: var(--scheduler-raised);
   --rux-layer-hover: var(--scheduler-raised-hover);
   background-color: var(--rux-layer);
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
-[data-theme="rux-100"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile .rux--layer-three {
+[data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--tile .rux--layer-three,
+[data-theme="rux-100"] .scheduler-to-do--pane .rux--layer-three {
   --rux-field: var(--scheduler-raised);
   --rux-field-hover: var(--scheduler-raised-hover);
 }
+/* The open task or leg is the same raised surface, as a Geist card is on
+   its page, rather than the pane's selected grey. */
+[data-theme="rux-100"] .scheduler-to-do__row:has(> .rux--accordion > .rux--accordion__item--active) { background: var(--scheduler-raised); }
 /* RUX 100'S AMBER IS DRAWN AS GEIST DRAWS A WARNING: its amber 100 for the
    surface and its amber 900 for the words and marks, 7.7 to 1, hovering to
    its amber 200, where the 900 holds 7.2. The placeholder trip and a short

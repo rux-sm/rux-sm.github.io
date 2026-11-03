@@ -6,7 +6,7 @@
 
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
-   Monday. Each leg is a tile that opens: Design's tile around an item of its
+   Monday. Each leg is a row of the list that opens: an item of Design's
    accordion. Closed, as every leg is until it is pressed, it is three
    lines, as a task is on Tasks: its customer and its spot time; its place;
    then how many lines it has left or Ready in a tag, and the trip's number.
@@ -17,7 +17,7 @@
 
    The legs stand in one list under no heading, each saying its day with its
    spot time, Tomorrow 9:00a or Saturday 7:00a, so the weekend's three days
-   read as one list. With nothing leaving a tile says so where the legs
+   read as one list. With nothing leaving a line says so where the legs
    would be. What a trip leaving on another day still needs is on its card
    and the Trips page, not here, and the list goes to no other day.
 
@@ -264,7 +264,7 @@
   };
 
   // -- the frame ------------------------------------------------------------
-  const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-departures');
+  const body = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-departures');
   body.hidden = true;
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
@@ -487,12 +487,12 @@
     return block;
   }
 
-  /* A leg, as one of Design's tiles around an item of its accordion, whose
+  /* A leg, as a row of the list around an item of Design's accordion, whose
      script opens and shuts it. The heading is the closed leg, three lines
-     with no arrow, since the tile says it opens, laid out as a task's are:
+     with no arrow, since the row says it opens, laid out as a task's are:
      its customer, and on a split trip which leg, with at the line's end its
      spot day and time, Tomorrow 9:00a, with Spot said for a reader; then its
-     place in bold; then what is left in its tag, and the
+     place; then what is left in its tag, and the
      trip's number, with Trip said for a reader. A ready leg reads quiet, so
      the legs still to prep stand out. */
   function legItem(page) {
@@ -533,25 +533,25 @@
     if (page.missing) content.appendChild(missingBlock(page));
     wrapper.appendChild(content);
     li.append(heading, wrapper);
-    const rows = el('ul', 'rux--accordion rux--accordion--end');
-    rows.appendChild(li);
-    const tile = el('li', 'rux--tile scheduler-to-do__tile');
-    tile.dataset.leg = key;
-    tile.appendChild(rows);
-    return tile;
+    const items = el('ul', 'rux--accordion rux--accordion--end');
+    items.appendChild(li);
+    const row = el('li', 'scheduler-to-do__row');
+    row.dataset.leg = key;
+    row.appendChild(items);
+    return row;
   }
 
-  // One day's legs as a list of tiles.
+  // One day's legs as a list of rows.
   const legList = rows => {
-    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
+    const ul = el('ul', 'scheduler-to-do__rows');
     ul.setAttribute('role', 'list');
     for (const page of rows) ul.appendChild(legItem(page));
     return ul;
   };
   const focusHeld = hold => [...list.querySelectorAll('[data-hold]')].find(n => n.dataset.hold === hold)?.focus();
 
-  // A day with nothing leaving: a tile saying so, where its legs would be.
-  const none = words => el('p', 'rux--tile scheduler-to-do__none', words);
+  // A day with nothing leaving: a line saying so, where its legs would be.
+  const none = words => el('p', 'scheduler-to-do__none', words);
   const nothing = alone => none(reading ? 'Loading…' : alone ? 'No trips leaving tomorrow.' : 'No trips leaving this weekend or Monday.');
 
   /* What each leg on screen was drawn from, by its key in list order, so a
@@ -563,7 +563,7 @@
   const stepLeg = id => String(id ?? '').split('|')[0];
 
   /* A node brought to what `to` draws, in place: what differs changes and
-     the rest stays, so a tick swaps its mark and its words and the tile
+     the rest stays, so a tick swaps its mark and its words and the row
      around it neither flashes nor shifts. A face of the same person is kept
      as it is. Design's accordion keeps its state in a class and an
      attribute, which are the drawn ones, so an open leg stays open. */
@@ -583,15 +583,15 @@
     });
     while (from.childNodes.length > want.length) from.lastChild.remove();
   }
-  /* The list's tiles brought to `fresh` by their legs: a leg still listed is
+  /* The list's rows brought to `fresh` by their legs: a leg still listed is
      patched where it stands and moved to its turn, a new one goes in and a
      gone one comes out. */
-  function patchTiles(current, fresh) {
-    const old = new Map([...current.children].map(t => [t.dataset.leg, t]));
-    [...fresh.children].forEach((tile, i) => {
-      const was = old.get(tile.dataset.leg);
-      if (was) { old.delete(tile.dataset.leg); morph(was, tile); }
-      const node = was ?? tile;
+  function patchRows(current, fresh) {
+    const old = new Map([...current.children].map(r => [r.dataset.leg, r]));
+    [...fresh.children].forEach((row, i) => {
+      const was = old.get(row.dataset.leg);
+      if (was) { old.delete(row.dataset.leg); morph(was, row); }
+      const node = was ?? row;
       if (current.children[i] !== node) current.insertBefore(node, current.children[i] ?? null);
     });
     for (const gone of old.values()) gone.remove();
@@ -605,12 +605,12 @@
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     steps.clear();
     /* One list, the days' legs in order with no heading between, since each
-       leg says its day; with nothing leaving a tile says so, and while the
+       leg says its day; with nothing leaving a line says so, and while the
        read fails the error above stands alone. */
     const legs = listed();
     const fresh = legs.length ? legList(legs) : null;
-    const current = list.querySelector(':scope > .scheduler-to-do__tiles');
-    if (fresh && current) patchTiles(current, fresh);
+    const current = list.querySelector(':scope > .scheduler-to-do__rows');
+    if (fresh && current) patchRows(current, fresh);
     else list.replaceChildren(fresh ?? (failure ? '' : nothing(days.length === 1)));
     drawn = new Map(legs.map(p => [keyOf(p), printOf(p)]));
     if (asking && !steps.has(asking)) asking = null;
@@ -623,7 +623,7 @@
   function drawLeg(key) {
     const page = pages.find(p => keyOf(p) === key);
     const old = [...list.querySelectorAll('.scheduler-departures__leg')]
-      .find(n => n.dataset.key === key)?.closest('.scheduler-to-do__tile');
+      .find(n => n.dataset.key === key)?.closest('.scheduler-to-do__row');
     if (!page || !old) { draw(); return; }
     const held = old.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     for (const id of [...steps.keys()]) if (stepLeg(id) === key) steps.delete(id);

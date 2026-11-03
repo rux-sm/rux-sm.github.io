@@ -1992,10 +1992,9 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__live-warn--error > svg { color: var(--rux-support-error); }
 .scheduler-card__live-warn--warning > svg { color: var(--scheduler-mark-warning); }
 .scheduler-card__live-why { grid-column: 2; color: var(--card-ink); }
-/* THE LIVE CARD IS A STACK OF TILES, as the Departures panel is: each warning,
-   the map with where the bus is, the stops, the drivers and the engine
-   lamp, a step apart. As the Departures panel's and the trip editor's tiles,
-   each is 16px from the card's sides and holds its words 16px in; the tabs
+/* THE LIVE CARD IS A STACK OF TILES: each warning, the map with where the
+   bus is, the stops, the drivers and the engine lamp, a step apart. As the
+   trip editor's tiles, each is 16px from the card's sides and holds its words 16px in; the tabs
    on a docked sheet are 16px over the first, and the panel scrolls under a
    16px foot, so the edge is the one 16px all round. A theme that already holds the card 12px
    from its edge gives the 4px more in theme.css. */
@@ -6181,11 +6180,10 @@ html[data-scheduler-takeover] {
 /* ══ Tasks and Departures ══════════════════════════════════════════════
    The pane of the board's two lists, beside the week, `--scheduler-list-w`
    wide. to-do-list.js shows it and fills Tasks, and
-   departures-panel.js fills Departures. Every row of either list is a tile. What
-   opens in place, a task as a leg on Departures is, is Design's tile around an
-   item of its accordion, holding Design's tag, buttons and menu, and a
-   task's form is a tile too. A trip on Departures with a gap, which leaves for its
-   trip, is Design's clickable tile, one link. */
+   departures-panel.js fills Departures. Every row of either list runs edge
+   to edge under a rule, and what opens in place, a task as a leg on
+   Departures is, is an item of Design's accordion, holding Design's tag,
+   buttons and menu; a task's form stands in its row. */
 /* The pane is a column that does not scroll: its head keeps its place, and
    the list under it scrolls in what is left. */
 .scheduler-to-do { display: flex; flex-direction: column; overflow: hidden; }
@@ -6208,14 +6206,19 @@ html[data-scheduler-takeover] {
    it takes the height app.js gives it. */
 .scheduler-to-do--pane {
   --scheduler-pane-w: var(--scheduler-list-w);
+  /* The pane's inset, the list's and the title's alike. */
+  --scheduler-list-inset: var(--rux-spacing-07);
   flex: 0 0 var(--scheduler-list-w);
   inline-size: var(--scheduler-list-w);
   background: var(--rux-layer);
 }
-/* Each list keeps 16px of the pane around it. */
-.scheduler-to-do--pane > .rux--stack-vertical { padding: var(--rux-spacing-05); }
+/* Each list runs edge to edge under its head, a rule under every row, and
+   its words stand 32px in from the pane's sides, level with the head's
+   title. */
+.scheduler-to-do--pane > .rux--stack-vertical { padding: 0; }
+.scheduler-to-do--pane > .scheduler-aside__head { padding-inline-start: var(--scheduler-list-inset); }
 .scheduler-to-do__body { color: var(--rux-text-primary); }
-.scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
+.scheduler-to-do__error { margin: 0; padding: var(--rux-spacing-05) var(--scheduler-list-inset) 0; color: var(--rux-text-error); font-size: 0.875rem; }
 .scheduler-to-do__error[hidden] { display: none; }
 /* Done today's words sit in an h3, whose letters Design sets for a heading
    twice this size, so they take a label's spacing with a label's size; the
@@ -6233,36 +6236,27 @@ html[data-scheduler-takeover] {
    at the panel's edge instead. */
 .scheduler-to-do__list { min-inline-size: 0; }
 .scheduler-to-do__rows { list-style: none; margin: 0; padding: 0; }
-/* Done today's words stand a group's step under the tiles above it: 16px,
-   and the half of its 32px press its words leave above them. Its list is one
-   of the rows' lists, so its step comes after their margin, which would take
-   it back. */
-.scheduler-to-do__done { margin-block-start: var(--rux-spacing-05); }
-.scheduler-to-do__done:first-child { margin-block-start: 0; }
-/* The tiles stand a step apart. A tile keeps no padding of its own: its
-   heading fills it to the edge, so a press anywhere on the closed tile opens
-   it and the hover is the whole tile's, cut to the tile's corners. */
-.scheduler-to-do__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
-.scheduler-to-do__tile { min-block-size: 0; padding: 0; overflow: hidden; }
-/* The open tile is ringed in the strong border, inside its edge, so the one
-   row open stands out of the list. It is an outline, so a theme's own ring
-   or lift on the tile stays under it. */
-.scheduler-to-do__tile:has(> .rux--accordion > .rux--accordion__item--active) {
-  outline: 1px solid var(--rux-border-strong-01);
-  outline-offset: -1px;
-}
+/* A row keeps no padding of its own: its heading fills it to the edge, so a
+   press anywhere on the closed row opens it and the hover is the whole
+   row's. */
+.scheduler-to-do__row { border-block-end: 1px solid var(--rux-border-subtle-01); }
+/* The open row takes the selected fill, so the one row open stands out of
+   the list. */
+.scheduler-to-do__row:has(> .rux--accordion > .rux--accordion__item--active) { background: var(--rux-layer-selected); }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
 /* A task's heading and a leg's are each the closed row, three lines laid
    out alike, each ended in an ellipsis where it runs long, so every closed
-   row in a list stands the same height. The first is who the row is about,
-   a task's person or a leg's customer, with when at the line's end, quiet
-   and smaller: a task's due day, in the error colour once the day is past,
-   or a leg's spot day and time. The second is the row's words in bold, a task's
-   words or a leg's place. The third is a tag, a task's kind in the kind's
+   row in a list stands the same height. The first two are Geist's
+   description, a label over its value, set apart by colour rather than
+   weight. The first is who the row is about, a task's person or a leg's
+   customer, in the quiet colour, with when at the line's end, quiet and
+   smaller: a task's due day, in the error colour once the day is past, or a
+   leg's spot day and time. The second is the row's words in the primary
+   colour, a task's words or a leg's place. The third is a tag, a task's kind in the kind's
    colour or what a leg has left, then a number in the quiet colour, the
    task's own or the leg's trip's, so a person can name either aloud. */
 .scheduler-to-do__top { display: flex; align-items: baseline; gap: var(--rux-spacing-04); }
-.scheduler-to-do__what { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-to-do__what { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__number {
   flex: none;
   color: var(--rux-text-secondary);
@@ -6285,13 +6279,13 @@ html[data-scheduler-takeover] {
    1.5rem in a 1.25rem line and overhangs it evenly, so a row with an owner
    stands as tall as one without. */
 .scheduler-to-do__face { flex: none; margin-block: -0.125rem; margin-inline-start: auto; }
-.scheduler-to-do__who { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-to-do__who { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; color: var(--rux-text-secondary); text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__when { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-03); color: var(--rux-text-secondary); }
 .scheduler-to-do__when--late { color: var(--rux-text-error); }
 /* The first line is the title's own size, so its person reads as the row's
    head and its time takes the quiet line's size, its colour the shared
    rule's so a late day stays red; the line stands one line tall when a task
-   is about nobody. The words follow a step under, and the tag's line two,
+   is about nobody. The words follow 4px under, and the tag's line 8px,
    the tag standing on the number's middle. */
 :is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__top { min-block-size: 1.125rem; }
 :is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__when {
@@ -6299,12 +6293,12 @@ html[data-scheduler-takeover] {
   line-height: 1.33333;
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__what { margin-block-start: var(--rux-spacing-01); }
+:is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__what { margin-block-start: var(--rux-spacing-02); }
 :is(.scheduler-to-do__item, .scheduler-departures__leg) .scheduler-to-do__context { align-items: center; margin-block-start: var(--rux-spacing-03); }
 /* A ready leg reads quiet, as a done task does, so the legs still to prep
    stand out; its tag keeps its green, which is what says it is ready. */
 .scheduler-departures__leg--ready :is(.scheduler-to-do__who, .scheduler-to-do__what) { color: var(--rux-text-secondary); }
-/* Open, both lines say all they hold, wrapping at the tile's width. Only the
+/* Open, both lines say all they hold, wrapping at the row's width. Only the
    open row's own lines do: Done today is an open item around its rows, and
    they keep their closed lines until one of them is opened. */
 .scheduler-to-do .rux--accordion__item--active > .rux--accordion__heading :is(.scheduler-to-do__what, .scheduler-to-do__who) { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
@@ -6337,37 +6331,39 @@ html[data-scheduler-takeover] {
   border-radius: 50%;
   background: var(--rux-border-strong-01);
 }
-/* A task's trip is one line that opens it, on the layer above the tile: the
-   bus, its place, its customer in the quiet colour, and an arrow, rounded
-   as the trip's bar is on the board. */
+/* A task's trip is one line that opens it, ringed in the subtle border
+   and filled only on hover, so it stands on the open row's fill: the bus,
+   its place, its customer in the quiet colour, and an arrow, rounded as the
+   trip's bar is on the board. */
 .scheduler-to-do__trip {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-03);
   padding: var(--rux-spacing-03) 0.625rem;
   border-radius: var(--scheduler-bar-radius, 0);
-  background: var(--rux-layer-03);
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
   color: var(--rux-text-primary);
   font-size: 0.875rem;
   line-height: 1.42857;
   letter-spacing: var(--rux-body-01-letter-spacing);
   text-decoration: none;
 }
-.scheduler-to-do__trip:hover { background: var(--rux-layer-hover-03); }
+.scheduler-to-do__trip:hover { background: var(--rux-layer-hover); }
 .scheduler-to-do__trip:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-to-do__trip > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-to-do__trip-words { flex: 1 1 auto; min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-to-do__trip-customer { color: var(--rux-text-secondary); }
-/* An empty list or day is a tile of its own where its rows would be, its
-   one line in the quiet colour, as tall as its words and the tile's 16px. */
-.scheduler-to-do__none.rux--tile { min-block-size: 0; margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
-/* A row's form stands in the row's tile, which keeps its 16px around it. */
-.scheduler-to-do__tile--editing { padding: var(--rux-spacing-05); }
+/* An empty list or day is one line where its rows would be, in the quiet
+   colour, inset as a row's words are. */
+.scheduler-to-do__none { margin: 0; padding: var(--scheduler-list-inset); color: var(--rux-text-secondary); font-size: 0.875rem; }
+/* A row's form stands in the row, inset as a row's words are. */
+.scheduler-to-do__row--editing { padding: var(--scheduler-list-inset); }
 .scheduler-to-do__form .rux--form-item { margin: 0; }
-/* A row of buttons, in a tile 254px wide beside the week: what acts on the
-   row first, and from the one marked as the end's, at the far end. They
-   stand half a step apart, since a ghost button keeps room around its own
-   words, and a row with no room wraps, where the tile would cut it off. An
+/* A row of buttons, 254px wide inside a row's 32px beside the week: what
+   acts on the row first, and from the one marked as the end's, at the far
+   end. They stand half a step apart, since a ghost button keeps room around
+   its own words, and a row with no room wraps, where the pane would cut it
+   off. An
    open task's stand a step apart, since its Done is ringed. */
 .scheduler-to-do__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02); }
 .scheduler-to-do__more > .scheduler-to-do__buttons { gap: var(--rux-spacing-03); }
@@ -6375,8 +6371,8 @@ html[data-scheduler-takeover] {
 
 /* ══ Departures ═══════════════════════════════════════════════════════════
    The Departures list, drawn by departures-panel.js: the legs leaving on the days
-   to prep for, each a tile that opens, Design's tile around an item of its
-   accordion, in one list. Closed, a leg is three lines, as a task is,
+   to prep for, each a row that opens, an item of Design's accordion, in one
+   list. Closed, a leg is three lines, as a task is,
    drawn by the same rules above; open, it holds a block
    for the trip and one for each bus. Every status is one line, its mark on
    the left and its time, its face or its action on the right. */
@@ -6530,8 +6526,8 @@ html[data-scheduler-takeover] {
 }
 /* Leaflet sets its own face on the map; the pins take the page's. */
 .scheduler-live__map.leaflet-container { font: inherit; }
-/* The panel stands on the page's own surface, so its tiles stand out on it as
-   the Tasks pane's do, with 16px of panel around them and its own scroll. */
+/* The panel stands on the page's own surface, so its tiles stand out on it,
+   with 16px of panel around them and its own scroll. */
 .scheduler-live__panel {
   min-block-size: 0;
   overflow: auto;

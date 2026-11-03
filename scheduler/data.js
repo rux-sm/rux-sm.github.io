@@ -17117,7 +17117,7 @@
   function drawLiveCard(trip, bar) {
     const card = el('div', 'scheduler-card scheduler-card--live');
     card.dataset.tripId = trip.id;
-    // Each part of the live card is a tile of its own, as the Departures panel's are.
+    // Each part of the live card is a tile of its own.
     const tile = cls => el('div', `rux--tile scheduler-card__live-tile ${cls}`);
     const bus = roadBusOf(bar);
     if (!bus) { card.appendChild(el('p', 'scheduler-card__row scheduler-card__live-none', 'Samsara has no reading for this bus now.')); return card; }

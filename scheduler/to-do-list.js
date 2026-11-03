@@ -11,27 +11,27 @@
    session adds a row through the connector, made by Ruxbot; nobody adds one
    here, where a row is done, edited and deleted.
 
-   A row is a tile that opens, Design's tile around an item of its accordion,
-   as a leg is on Departures. Every row has a number the database gives it when it
+   A row is an item of Design's accordion, one to a row of the list, that
+   opens, as a leg is on Departures. Every row has a number the database gives it when it
    is added and it keeps, so a person can say "task 112". Closed, a row is
    three lines, each ended in an ellipsis where it runs long, so every closed
    row stands the same height: who it is about, with its due day at the
-   line's end in the error colour once the day is past; then its words in
-   bold; then its kind in Design's tag, in the kind's colour, its number, and
+   line's end in the error colour once the day is past; then its words;
+   then its kind in Design's tag, in the kind's colour, its number, and
    at the end the face of its owner, the one working on it.
    A press opens it to those in full, then its trip as a link,
    its detail as a list, a fact to an item, and one row of buttons: Done,
    I'm on it, which makes the row mine, or Let it go on a row already mine,
    Email, Start trip on a website request with no trip yet, and a menu of
    Edit and Delete. Who added a row is said in its form, under the fields,
-   and not on its tile. One row is open at a time. Delete closes the row with
+   and not on the row. One row is open at a time. Delete closes the row with
    the reason Deleted, so it goes to Done today with that said, and nothing
    is removed.
 
    The rows stand in one list in due order, overdue first, then today, this
    week, later and no date, under no headings, since each row says its day;
    then Done today: the rows closed today behind one line that says how many
-   and is shut until pressed, each a tile struck through, with Undo. Everyone
+   and is shut until pressed, each a row struck through, with Undo. Everyone
    on the staff sees every row. The count on Tasks is its overdue and today
    rows; the count on Departures is the one departures-panel.js gives.
 
@@ -275,19 +275,21 @@
       row.created_at ? shortDay.format(new Date(row.created_at)) : null].filter(Boolean).join(DOT);
   };
 
-  /* A tile around a one-item accordion, as a leg's is on Departures: the item's
-     heading fills the tile, so the whole closed tile is the press. */
-  const tileOf = item => {
-    const rows = el('ul', 'rux--accordion rux--accordion--end');
-    rows.appendChild(item);
-    const tile = el('li', 'rux--tile scheduler-to-do__tile');
-    tile.appendChild(rows);
-    return tile;
+  /* A row of the list around a one-item accordion, as a leg's is on
+     Departures: the item's heading fills the row, so the whole closed row is
+     the press. */
+  const rowOf = item => {
+    const items = el('ul', 'rux--accordion rux--accordion--end');
+    items.appendChild(item);
+    const row = el('li', 'scheduler-to-do__row');
+    row.appendChild(items);
+    return row;
   };
 
-  /* A stored row, as a tile around an item of Design's accordion, whose
-     script opens and shuts it. The heading is the closed row and the whole
-     of it is the press; it carries no arrow, since the tile says it opens.
+  /* A stored row, as a row of the list around an item of Design's
+     accordion, whose script opens and shuts it. The heading is the closed
+     row and the whole of it is the press; it carries no arrow, since the
+     row says it opens.
      The panel under it holds what a closed row has no room for: its trip,
      its detail, then the buttons, and on a done row who closed it, and why
      where it was deleted. What a row has none of, a trip or a thread, is left
@@ -394,20 +396,20 @@
     if (closed) more.appendChild(el('div', 'scheduler-to-do__meta', closed));
     wrapper.appendChild(more);
     li.append(heading, wrapper);
-    return tileOf(li);
+    return rowOf(li);
   }
 
-  // A list of tiles, a step apart: a group's rows, or the done rows.
-  const tileList = () => {
-    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
+  // A list of rows, each ruled off: a group's rows, or the done rows.
+  const rowList = () => {
+    const ul = el('ul', 'scheduler-to-do__rows');
     ul.setAttribute('role', 'list');
     return ul;
   };
 
   /* Done today: the rows closed today, behind one item of the accordion whose
-     heading is set as a group's is, its name and how many it holds. It is no
-     tile, shut until pressed, so the tab opens on what is still owed, and its
-     rows are the tiles they are above it. */
+     heading is set as a group's is, its name and how many it holds. It is
+     shut until pressed, so the tab opens on what is still owed, and its rows
+     are the rows they are above it. */
   function doneGroup(rows) {
     const li = el('li', `rux--accordion__item scheduler-to-do__done-item${doneOpen ? ' rux--accordion__item--active' : ''}`);
     const heading = el('button', 'rux--accordion__heading');
@@ -422,7 +424,7 @@
     const inside = el('div', 'rux--accordion__content');
     inside.id = 'scheduler-to-do-done';
     heading.setAttribute('aria-controls', inside.id);
-    const ul = tileList();
+    const ul = rowList();
     for (const r of rows) ul.appendChild(storedRow(r, true));
     inside.appendChild(ul);
     wrapper.appendChild(inside);
@@ -483,10 +485,10 @@
     return b;
   };
 
-  /* A row's form, in the row's tile. The fields are a layer over the tile,
-     which is itself a layer over the pane. */
+  /* A row's form, in the row. The list is the pane's own surface, and the
+     fields are Design's third layer, as every panel's fields are. */
   function editForm(row) {
-    const li = el('li', 'rux--tile scheduler-to-do__tile scheduler-to-do__tile--editing');
+    const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--editing');
     const form = el('form', 'scheduler-to-do__form rux--layer-three rux--stack-vertical rux--stack-scale-4');
     const kind = el('select', 'rux--select-input');
     kind.append(option('', 'To do', !row.kind),
@@ -525,7 +527,7 @@
     const save = button('rux--btn--primary', 'Save');
     save.type = 'submit';
     bar.append(del, cancel, save);
-    // Who added the row, and when: its tile does not say.
+    // Who added the row, and when: the closed row does not say.
     const added = madeBy(row);
     form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
       field('Due', due), field('Owner', owner, true), field('Trip', trip, true),
@@ -553,8 +555,9 @@
   }
 
   /* The frame, built once: a line for what went wrong, and the list under
-     it. */
-  const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
+     it, on the pane's own surface, so a row's hover and the open row's fill
+     are the pane's. */
+  const body = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
@@ -603,13 +606,13 @@
     // One list, the groups in their order with no heading between, since each row says its day.
     const open = GROUPS.flatMap(g => rows.get(g));
     if (open.length) {
-      const ul = tileList();
+      const ul = rowList();
       for (const row of open) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
       parts.push(ul);
     }
     const done = stored.filter(r => r.closed_at);
     if (done.length) parts.push(doneGroup(done));
-    if (!parts.length) parts.push(el('p', 'rux--tile scheduler-to-do__none', 'Nothing to do.'));
+    if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
     return parts;
   }
 

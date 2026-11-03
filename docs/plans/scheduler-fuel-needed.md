@@ -53,8 +53,8 @@ None open.
 
 ## Tasks
 
-- [ ] A new Edge Function that works both out for every bus and keeps them,
-  run once a day.
+- [ ] Deploy `scheduler/samsara-fuel/`, run it once with `{"write": false}`
+  and then to keep, and schedule it each night, each on rux's yes.
 - [ ] Work out each bus's next leg and its miles where the board loads its
   trips, and the needed share from them.
 - [ ] Draw the tick on the fuel meter in `scheduler/bus-head.js`, amber

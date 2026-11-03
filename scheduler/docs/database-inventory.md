@@ -138,6 +138,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Document links | the `trip-document-link` Edge Function (§5), for the document link page; `get_trip_document` is staff only and nothing calls it |
 | Website requests | the `quote-request` Edge Function (§6), for the company website's quote form; `quote_request_add`, which only the service role runs, is its one write |
 | Samsara miles | the `samsara-miles` Edge Function (§7), for the Billing tab's Get from Samsara; it writes nothing |
+| Samsara fuel | the `samsara-fuel` Edge Function (§11), each night; it writes `bus_fuel_profiles` |
 | Samsara now | the `samsara-now` Edge Function (§8), for the board's line while a bus is out and the Live map; it writes nothing |
 | Maintenance status | the `maintenance-status` Edge Function (§9), for a bar's details on the maintenance pages; it writes nothing |
 | History | `record_trip_history`, which every trip entry is written through; `search_history` and `history_people`, the History page's read of trip and record entries together and its names; `get_trip_history`, which nothing calls. All staff only. `record_row_history` and `record_line_history` are the trigger functions, with `history_actor` and `history_text` under them, and nobody calls those four. |
@@ -339,3 +340,15 @@ signature onto the blank from bucket `driver-forms` with pdf-lib, files the PDF 
 on for a yearly form, and records the signing in `driver_form_signings` with the caller's IP
 address and browser. It is deployed with Verify JWT off, as §5 is, and answers the site and the
 log-in preview. `scheduler/tools/check-driver-form.mjs` runs it against an invented form.
+
+## 11. Samsara fuel
+
+`samsara-fuel`, source in `scheduler/samsara-fuel/`, works out each active bus's miles per gallon
+and tank gallons from Samsara's last 90 days and upserts them into `bus_fuel_profiles`, for the
+bus column's fuel-needed tick. The miles per gallon are the fuel and energy report's miles over
+its gallons; the tank is the median, over the last eight stretches where the fuel percent fell 20
+points or more with no rise of 3, of the gallons burned over the share it fell, and none under
+three such stretches. It needs `SAMSARA_API_TOKEN`'s Fuel & Energy permission. Like the nightly
+run of §7 it answers only `x-night-key` matching `SAMSARA_NIGHT_KEY`, reads and saves on the
+service role, takes `{"write": false}` to work it out and keep nothing, and is deployed with
+Verify JWT off. `scheduler/tools/check-samsara-fuel.mjs` runs it against invented readings.

@@ -1759,12 +1759,12 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    ring's top and bottom lines half outside the heading, where the bottom
    half would lie on the open row's first line. */
 .scheduler-to-do .rux--accordion__heading:focus-visible { box-shadow: inset 0 0 0 2px var(--rux-focus); }
-/* Done today is a row of its own, its words where a row's words start and
-   its arrow where they end, its rule under it and its rows under that,
-   edge to edge. */
+/* Done today is a row of its own, the pane's 32px from its every edge as
+   every row's words are, open or shut, its arrow where theirs end, its rule
+   under it and its rows under that, edge to edge. */
 .scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__heading {
   align-items: center;
-  padding-block: var(--rux-spacing-04);
+  padding-block: var(--scheduler-list-inset);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 .scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__heading > .rux--accordion__arrow { margin-block-start: 0; }

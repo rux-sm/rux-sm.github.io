@@ -10,6 +10,7 @@
 //   npm run build
 //
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,9 +24,10 @@ run('npm', ['run', 'build', '--silent'], join(ROOT, 'design'));
 run('npm', ['run', 'generate', '--silent'], join(ROOT, 'design'));
 run(process.execPath, ['tools/build-views.mjs'], join(ROOT, 'ln'));
 // The account panel Design writes, into every page outside Design that carries
-// its markers, before the sprite, which follows the icons a page names.
+// its markers, before the sprite, which follows the icons a page names. A
+// tracked page the views build just deleted is left out.
 const pages = spawnSync('git', ['ls-files', '*.html'], { cwd: ROOT, encoding: 'utf8' }).stdout.split('\n')
-  .filter(p => p && !p.startsWith('design/'));
+  .filter(p => p && !p.startsWith('design/') && existsSync(join(ROOT, p)));
 run(process.execPath, ['design/tools/inline-account.mjs', ...pages], ROOT);
 run(process.execPath, ['tools/inline-sprite.mjs'], ROOT);
 run(process.execPath, ['tools/build-app-icons.mjs'], ROOT);

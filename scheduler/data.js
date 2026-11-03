@@ -1351,21 +1351,19 @@
       const windows = windowsOf(r);
       if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
 
-      /* The bus's kit on the head's last row: its sleeper and its lift, so
-         each stands in one place down the column, drawn on every head and
-         dimmed where the bus lacks one. The number's tip and title name
-         them, and the seats, for the reader. */
+      /* The bus's kit on the head's last row: its sleeper and its lift,
+         each in its own place down the column, and an empty place where the
+         bus lacks one, so the lifts stand in one line. The number's tip and
+         title name them, and the seats, for the reader. */
       if (r.bus) {
         const equip = el('div', 'scheduler-row-head__equip');
-        const tile = (on, label) => {
-          const t = el('span', 'scheduler-row-head__tile');
-          t.dataset.on = on ? '1' : '0';
-          if (on) { t.setAttribute('role', 'img'); t.setAttribute('aria-label', label); } else t.setAttribute('aria-hidden', 'true');
-          return t;
-        };
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
-          const t = tile(on, label);
-          t.appendChild(svgUse(href, '16', '0 0 32 32'));
+          const t = el('span', 'scheduler-row-head__tile');
+          if (on) {
+            t.setAttribute('role', 'img');
+            t.setAttribute('aria-label', label);
+            t.appendChild(svgUse(href, '16', '0 0 32 32'));
+          }
           equip.appendChild(t);
         }
         head.appendChild(equip);

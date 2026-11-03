@@ -534,7 +534,7 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 /* The bus's kit on its own row: two of Carbon's 16px icons 2px apart, its
    sleeper and its lift, each in one place down the column, in the primary
-   ink where the bus has it and the disabled ink where it lacks it. Its seats
+   ink where the bus has it and an empty place where it lacks it. Its seats
    are in the number's tip and title, where presses go through to. */
 /* The kit stands in the head's foot, centred, as far above the row's rule as
    it is from the head's sides, so its two outer tiles sit evenly in the
@@ -558,7 +558,6 @@ button.scheduler-row-head__num::after {
   block-size: 16px;
   color: var(--rux-text-primary);
 }
-.scheduler-row-head__tile[data-on="0"] { color: var(--rux-icon-disabled); }
 .scheduler-row-head__equip svg { display: block; }
 /* THE STATE, quiet as the rest of the head: its reading in 12px semibold
    over its unit in 10px, or beside it on one row, in the primary ink. A

@@ -25,14 +25,20 @@ yard, where a fixed 25% low mark says nothing about the job.
   `/fleet/reports/vehicles/fuel-energy`, averaged over each bus's last 90
   days, fetched by an Edge Function beside `scheduler/samsara-now/`, since
   the live stats give only the fuel percent.
+- **Each bus's tank size is worked out from Samsara, never typed:** over a
+  stretch with no fill-up, where the fuel percent only falls, the gallons
+  the fuel and energy report says were burned over the points the percent
+  fell give the tank's gallons. The median over the last 90 days' stretches
+  of at least 20 points stands, and a bus with no such stretch draws no tick.
+- **The two figures are kept, not asked for on every load:** each bus's
+  miles per gallon and tank gallons, with when they were worked out, in a
+  table the Edge Function refreshes once a day, since a 90-day history is
+  too slow and too costly to read each minute.
 - **The tick is the bus column's alone;** the trip's Buses tab and its tip
   say the same in words.
 
 ## Questions
 
-- Where does each bus's tank size come from: typed once per bus on the
-  Fleet page, a new `buses.tank_gallons`, or worked out from Samsara's fuel
-  used against the fall in its fuel percent between fill-ups?
 - Which trip is next: the bus's next leg that has not left the yard, or only
   one that leaves within the next 24 hours?
 - Does a trip with a fuel card count only to its first day's end, since the
@@ -42,11 +48,13 @@ yard, where a fixed 25% low mark says nothing about the job.
 
 ## Tasks
 
-- [ ] Fetch each bus's 90-day miles per gallon from Samsara's fuel and
-  energy report in a new Edge Function, and check it against one bus's
-  report in Samsara's dashboard.
-- [ ] Add the tank size the answered question chooses, as a database change
-  shown to rux and applied on a yes.
+- [ ] Read one bus's 90 days of fuel percents and its fuel and energy
+  report in the scratchpad, work out its tank and miles per gallon, and
+  check them against its make's published tank and its Samsara dashboard.
+- [ ] Add the table for each bus's miles per gallon and tank gallons, as a
+  database change shown to rux and applied on a yes.
+- [ ] A new Edge Function that works both out for every bus and keeps them,
+  run once a day.
 - [ ] Work out each bus's next leg and its miles where the board loads its
   trips, and the needed share from them.
 - [ ] Draw the tick on the fuel meter in `scheduler/bus-head.js`, amber

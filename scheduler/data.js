@@ -1369,7 +1369,7 @@
         equip.appendChild(seats);
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
           const t = tile(on, label);
-          t.appendChild(svgUse(href, '16', '0 0 32 32'));
+          t.appendChild(svgUse(href, '12', '0 0 32 32'));
           equip.appendChild(t);
         }
         head.appendChild(equip);

@@ -145,9 +145,9 @@
     return g;
   }
 
-  // The speedometer's arc, from 9 o'clock over to 3: 48px across, Carbon's
+  // The speedometer's arc, from 9 o'clock over to 3: 38px across, Carbon's
   // 4px stroke, its centre on the box's foot.
-  const ARC = 'M2 26 A22 22 0 0 1 46 26';
+  const ARC = 'M2 21 A17 17 0 0 1 36 21';
 
   // The speedometer: the arc filled with the speed, the speed or the
   // state's word inside at its foot, mph or how long under it, then the
@@ -161,7 +161,7 @@
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
     const bow = el('span', 'scheduler-row-head__arc-bow');
-    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 48, height: 28, viewBox: '0 0 48 28', 'aria-hidden': 'true' });
+    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 38, height: 23, viewBox: '0 0 38 23', 'aria-hidden': 'true' });
     svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-track', pathLength: 100 }));
     const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
     if (mph) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-speed', pathLength: 100, 'stroke-dasharray': `${mph} 200` }));

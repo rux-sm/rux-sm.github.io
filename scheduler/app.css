@@ -50,14 +50,13 @@
      wider bus number widens the column rather than clipping. The strip
      fixes it; see `.scheduler-week--scroll`. */
   --scheduler-head-w: max-content;
-  /* The kit row's three 16px tiles and their 2px gaps, which set the bus
-     column: the row, at least 8px clear of the head's sides and foot, and
-     its 1px rule. */
-  --scheduler-kit-w: calc(3 * 16px + 2 * var(--rux-spacing-01));
-  --scheduler-kit-pad: var(--rux-spacing-03);
-  /* The bus column's least width, which the corner holds it to: the kit row
-     8px clear either side and its 1px rule, 69px. A compact board's is its
-     state's display instead. */
+  /* The kit row's three 12px tiles and their 1px gaps, which set the bus
+     column: the row 1px clear of the head's sides, and its 1px rule. */
+  --scheduler-kit-w: calc(3 * 12px + 2 * 1px);
+  --scheduler-kit-pad: 1px;
+  /* The bus column's least width, which the corner holds it to: 40px, the
+     calendar button's width above it, so the column's rule stands under the
+     rule beside that button, and its 1px rule. */
   --scheduler-head-min: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px);
   --scheduler-kit-clear: calc((var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px - var(--scheduler-kit-w)) / 2);
   /* The narrowest a day column gets; past it the grid scrolls rather than
@@ -172,15 +171,12 @@
      trip running on into the days in view. Under the band and at the foot
      a row's own 8px clear space is that edge already. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN 77PX, whatever the window
+  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN 41PX, whatever the window
      or the panels beside the week, so a change of width shows more of the
-     strip or less and moves no trip. With the 4px edges they fill the 1312px
-     frame's 1310px inside exactly, 77 + 4 + 7 × 175 + 4, so seven days fill
-     the board with nothing open. The column is the kit 12px clear of its
-     sides, and its 1px rule. */
+     strip or less and moves no trip. */
   --scheduler-day-w: 175px;
   --scheduler-day-track: var(--scheduler-day-w);
-  --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--rux-spacing-04) + 1px + var(--scheduler-edge));
+  --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
 }
 /* `scroll-snap-align` names the block axis first: a day snaps sideways only,
    and a row or a trip up and down only, a lane's top its trip's top less the
@@ -283,7 +279,7 @@
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
      by their row and add nothing, so their gauges never widen it. Its floor,
-     69px, holds the 52px kit row and the 48px speedometer within it; app.js
+     41px, holds the 40px kit row and the 38px speedometer within it; app.js
      measures this cell, so its arithmetic includes it. */
   min-inline-size: var(--scheduler-head-min);
   justify-content: center;
@@ -315,12 +311,12 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 8px at the sides, and at the top 1px under where the bar's lines start,
+  /* None at the sides, so the state's display fills the column, and at the top 1px under where the bar's lines start,
      its clear space and its own padding, so the number stands level with the
      destination; the last row's foot lands over the row rule by the track's
      own gap, so no padding is needed below, and none is set, or the head
      would stand taller than its track. */
-  padding: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 1px) var(--rux-spacing-03) 0;
+  padding: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 1px) 0 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -536,10 +532,10 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's kit on its own row: three 16px cells 2px apart across the
-   head's 52px, its seats, its sleeper and its lift, each in one place down
-   the column. The seats are a number in 12px regular type, the icons
-   Carbon's 16px, in the primary ink where the bus has it and the disabled
+/* The bus's kit on its own row: three 12px cells 1px apart, its seats, its
+   sleeper and its lift, each in one place down the column. The seats are a
+   number in 10px regular type, whose two figures fill the cell's 12px, the
+   icons 12px, in the primary ink where the bus has it and the disabled
    ink where it lacks it. At its row's start, which on six rows is 6px under
    the percent and the 16px to the row rule's 8px; centred like the
    speedometer, since the column takes the days' spare pixels and can stand
@@ -547,7 +543,7 @@ button.scheduler-row-head__num::after {
    them. */
 /* The kit stands in the head's foot, centred, as far above the row's rule as
    it is from the head's sides, so its two outer tiles sit evenly in the
-   corners: 8px at the column's 69px floor, and half of the even number of
+   corners: 1px at the column's 41px floor, and half of the even number of
    pixels the days leave the column on each side and below. Placed on the head's own box,
    not a grid row, so a taller row keeps it in the corner. */
 .scheduler-row-head__equip {
@@ -557,17 +553,17 @@ button.scheduler-row-head__num::after {
   margin-inline: auto;
   inline-size: max-content;
   display: grid;
-  grid-template-columns: repeat(3, 16px);
-  column-gap: var(--rux-spacing-01);
+  grid-template-columns: repeat(3, 12px);
+  column-gap: 1px;
   pointer-events: none;
 }
 .scheduler-row-head__tile {
   display: grid;
   place-items: center;
-  block-size: 16px;
+  block-size: 12px;
   color: var(--rux-text-primary);
-  font-size: var(--rux-label-01-font-size);
-  line-height: 16px;
+  font-size: 10px;
+  line-height: 12px;
   font-variant-numeric: tabular-nums;
 }
 .scheduler-row-head__tile[data-on="0"] { color: var(--rux-icon-disabled); }
@@ -665,7 +661,7 @@ button.scheduler-row-head__num::after {
 /* A low tank keeps its strength, since the office still has to act on it. */
 .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
 /* THE SPEEDOMETER, on five and six rows in the dial's and the fuel's place:
-   a half ring, 48px across, filled with the speed to 80 mph, green or amber
+   a half ring, 38px across, filled with the speed to 80 mph, green or amber
    over 75; inside it at its foot the speed or the state's word in the
    dial's colours; under it mph, or how long the bus has idled or been
    unseen; then the fuel, a round 4px bar filled to its share over F and the
@@ -687,7 +683,7 @@ button.scheduler-row-head__num::after {
   justify-self: center;
   align-self: start;
   grid-row: 2 / span 3;
-  inline-size: 48px;
+  inline-size: 38px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -4243,14 +4239,6 @@ a.scheduler-tip__go { text-decoration: none; }
    `placeRoom` in data.js turns it on from the whole board's width, panels
    and all, not from the room they leave the week, so opening a panel never
    turns it on. */
-/* ITS BUS COLUMN IS NARROW: the number, the engine's state and the fuel on
-   the bar's three rows, the state's 40px display 8px clear of the column's
-   sides and its 1px rule; the seats, the sleeper and the lift are the bus's
-   sheet's. */
-.scheduler-page[data-board="compact"] :is(.scheduler-week--scroll, .scheduler-components__board) {
-  --scheduler-head-min: calc(2.5rem + 2 * var(--rux-spacing-03) + 1px);
-  --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge, 0px));
-}
 /* ITS TOP IS THE MONTH, TODAY AND SEARCH, as rux decided, with no arrows,
    a swipe being the step: the calendar's button gives way, and the month is
    written in full. */

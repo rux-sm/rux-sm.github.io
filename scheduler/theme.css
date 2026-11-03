@@ -817,7 +817,7 @@
   --scheduler-head-quiet-ink: #a1a1a1;
 }
 /* Rux 100's state display is 40px wide, Carbon's md control height, the
-   size of the board's buttons, centred in the head's 48px. Its height is
+   size of the board's buttons and the head's whole width. Its height is
    the rows it stands on. */
 [data-theme="rux-100"] .scheduler-row-head__dial {
   justify-self: center;

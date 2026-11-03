@@ -1,0 +1,643 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "enter-the-business-partner",
+  "title": "Enter the business partner",
+  "process": {
+    "id": "create-a-business-partner",
+    "title": "Create a business partner",
+    "n": 0,
+    "of": 2
+  },
+  "previous": null,
+  "next": {
+    "id": "add-the-invoice-and-payment-roles",
+    "title": "Add the invoice and payment roles"
+  },
+  "module": "Common · Procurement · Sales",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Master Data ➔ Business Partners ➔ Easy Entry Business Partner",
+  "session": "Easy Entry Business Partner",
+  "sessionCode": "tccom4201m000",
+  "walked": "2026-11-02",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The partner is saved with its address and its ordering roles."
+      }
+    ],
+    "text": "The partner is saved with its address and its ordering roles."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A business partner is anyone you buy from or sell to. Its roles say which: a supplier buys from you through a buy-from role and ships from a ship-from role, and a customer through sold-to and ship-to. Easy Entry makes the partner, its first address and those two roles in one go, from a defaults template."
+      }
+    ],
+    "text": "A business partner is anyone you buy from or sell to. Its roles say which: a supplier buys from you through a buy-from role and ships from a ship-from role, and a customer through sold-to and ship-to. Easy Entry makes the partner, its first address and those two roles in one go, from a defaults template."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the lookup on "
+                },
+                {
+                  "t": "field",
+                  "v": "Business Partner Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose "
+                },
+                {
+                  "t": "literal",
+                  "v": "200"
+                },
+                {
+                  "t": "text",
+                  "v": " Suppliers for a supplier, or "
+                },
+                {
+                  "t": "literal",
+                  "v": "100"
+                },
+                {
+                  "t": "text",
+                  "v": " Customer for a customer"
+                }
+              ],
+              "text": "Open the lookup on Business Partner Defaults and choose 200 Suppliers for a supplier, or 100 Customer for a customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Business Partner Role"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Supplier"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "literal",
+                  "v": "Customer"
+                }
+              ],
+              "text": "Set Business Partner Role to Supplier or Customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create Roles"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Buy-from"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-from"
+                },
+                {
+                  "t": "text",
+                  "v": " are ticked for a supplier, or "
+                },
+                {
+                  "t": "field",
+                  "v": "Sold-to"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-to"
+                },
+                {
+                  "t": "text",
+                  "v": " for a customer"
+                }
+              ],
+              "text": "Under Create Roles, Buy-from and Ship-from are ticked for a supplier, or Sold-to and Ship-to for a customer"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Country"
+                }
+              ],
+              "text": "Set Country"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false,
+          "example": [
+            0
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Leave "
+                },
+                {
+                  "t": "field",
+                  "v": "Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " as LN fills it in"
+                }
+              ],
+              "text": "Leave Business Partner as LN fills it in"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN numbers the partner when it's made"
+                }
+              ],
+              "text": "LN numbers the partner when it's made"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the partner's "
+                },
+                {
+                  "t": "field",
+                  "v": "Name"
+                }
+              ],
+              "text": "Enter the partner's Name"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Address"
+                },
+                {
+                  "t": "text",
+                  "v": ", check the "
+                },
+                {
+                  "t": "field",
+                  "v": "Name"
+                }
+              ],
+              "text": "Under Address, check the Name"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It's the partner's name"
+                }
+              ],
+              "text": "It's the partner's name"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the "
+                },
+                {
+                  "t": "field",
+                  "v": "ZIP Code/Postal Code"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
+                }
+              ],
+              "text": "Enter the ZIP Code/Postal Code and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "State/Province"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "City"
+                },
+                {
+                  "t": "text",
+                  "v": " fill in"
+                }
+              ],
+              "text": "State/Province and City fill in"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the "
+                },
+                {
+                  "t": "field",
+                  "v": "City"
+                }
+              ],
+              "text": "Check the City"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the "
+                },
+                {
+                  "t": "field",
+                  "v": "Street"
+                }
+              ],
+              "text": "Enter the Street"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "CREATE"
+                }
+              ],
+              "text": "Click CREATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The status bar says the partner is created, with its number — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "business partner"
+                }
+              ],
+              "text": "The status bar says the partner is created, with its number — business partner"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Country"
+              }
+            ],
+            "text": "Country"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "USA"
+              }
+            ],
+            "text": "USA"
+          }
+        ]
+      }
+    ]
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The roles under "
+              },
+              {
+                "t": "chip",
+                "v": "Create Roles"
+              },
+              {
+                "t": "text",
+                "v": " don't match the template"
+              }
+            ],
+            "text": "The roles under Create Roles don't match the template"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Change "
+              },
+              {
+                "t": "field",
+                "v": "Business Partner Role"
+              },
+              {
+                "t": "text",
+                "v": ". The template only takes effect then. See step 2"
+              }
+            ],
+            "text": "Change Business Partner Role. The template only takes effect then. See step 2"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

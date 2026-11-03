@@ -12,7 +12,7 @@
   "updated": "2026-11-01",
   "status": "review",
   "summary": "buy materials on a purchase order, receive them into a warehouse, and check that on-hand went up by what you received.",
-  "order": 5,
+  "order": 7,
   "sources": [
     "tccom4120s000",
     "tccom4520m000",

@@ -15,7 +15,7 @@
   "updated": "2026-10-22",
   "status": "draft",
   "summary": "take a sales order stock cannot cover through planning, buying and building to a confirmed shipment.",
-  "order": 9,
+  "order": 11,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",

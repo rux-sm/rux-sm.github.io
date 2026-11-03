@@ -1,0 +1,700 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "add-the-costing-rows",
+  "title": "Add the costing rows",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 8,
+    "of": 10
+  },
+  "previous": {
+    "id": "build-the-job-shop-routing",
+    "title": "Build the routing"
+  },
+  "next": {
+    "id": "confirm-costing-data",
+    "title": "Read the standard costs"
+  },
+  "module": "Common · Manufacturing",
+  "modules": [
+    "Common",
+    "Manufacturing"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Master Data ➔ Items ➔ Items",
+  "session": "Items",
+  "sessionCode": "tcibd0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost."
+      }
+    ],
+    "text": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 15 of "
+        },
+        {
+          "t": "link",
+          "v": "Build the routing",
+          "href": "build-the-job-shop-routing.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 15 of Build the routing."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A standard cost belongs to an enterprise unit, the part of the company that keeps the books for your site. A new item has no row for it, so it has no standard cost at all, and "
+      },
+      {
+        "t": "strong",
+        "v": "Item - Costing"
+      },
+      {
+        "t": "text",
+        "v": " doesn't list it. The made item's cost adds up its materials and its routing, so it goes last."
+      }
+    ],
+    "text": "A standard cost belongs to an enterprise unit, the part of the company that keeps the books for your site. A new item has no row for it, so it has no standard cost at all, and Item - Costing doesn't list it. The made item's cost adds up its materials and its routing, so it goes last."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Filter the list on the first bought item and open it"
+                }
+              ],
+              "text": "Filter the list on the first bought item and open it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Item (tcibd0501m100) opens"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Enterprise Units"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open the Enterprise Units tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No rows"
+                }
+              ],
+              "text": "No rows"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Enterprise Units"
+                },
+                {
+                  "t": "text",
+                  "v": " grid, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "On the Enterprise Units grid, click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ticpr0107m000",
+                  "name": "Item - Costing"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the item, empty"
+                }
+              ],
+              "text": "Item - Costing (ticpr0107m000) opens for the item, empty"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Costing Type"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Standard Costs Base"
+                }
+              ],
+              "text": "Check Costing Type and Standard Costs Base"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Logistics"
+                },
+                {
+                  "t": "text",
+                  "v": ", and ticked"
+                }
+              ],
+              "text": "Logistics, and ticked"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the enterprise unit your warehouses belong to, shown on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehouses"
+                },
+                {
+                  "t": "text",
+                  "v": ", in "
+                },
+                {
+                  "t": "field",
+                  "v": "Enterprise Unit"
+                }
+              ],
+              "text": "Enter the enterprise unit your warehouses belong to, shown on Warehouses, in Enterprise Unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its name and financial company appear"
+                }
+              ],
+              "text": "Its name and financial company appear"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " from its lookup"
+                }
+              ],
+              "text": "Choose Warehouse from its lookup"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lookup offers the item's own warehouse"
+                }
+              ],
+              "text": "The lookup offers the item's own warehouse"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "field",
+                  "v": "Scheme"
+                },
+                {
+                  "t": "text",
+                  "v": " from its lookup: the scheme an existing item uses"
+                }
+              ],
+              "text": "Choose Scheme from its lookup: the scheme an existing item uses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Costing Source"
+                },
+                {
+                  "t": "text",
+                  "v": " fills in: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " for a bought item, "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": " for a made one"
+                }
+              ],
+              "text": "Costing Source fills in: Purchase for a bought item, Job Shop for a made one"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The cost components appear, with their costs"
+                }
+              ],
+              "text": "The cost components appear, with their costs"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Calculate and Actualize Standard Costs..."
+                }
+              ],
+              "text": "Actions ➔ Calculate and Actualize Standard Costs..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Last Actualization Date"
+                },
+                {
+                  "t": "text",
+                  "v": " fills in"
+                }
+              ],
+              "text": "Last Actualization Date fills in"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item - Costing"
+                }
+              ],
+              "text": "Close Item - Costing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The row is on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Enterprise Units"
+                },
+                {
+                  "t": "text",
+                  "v": " grid"
+                }
+              ],
+              "text": "The row is on the Enterprise Units grid"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 1 to 10 for the second bought item"
+                }
+              ],
+              "text": "Do steps 1 to 10 for the second bought item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 1 to 10 for the made item"
+                }
+              ],
+              "text": "Do steps 1 to 10 for the made item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Costing Source"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "field",
+                  "v": "Operation Costs"
+                },
+                {
+                  "t": "text",
+                  "v": " come from the routing"
+                }
+              ],
+              "text": "Costing Source is Job Shop, and Operation Costs come from the routing"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item isn't in "
+              },
+              {
+                "t": "chip",
+                "v": "Item - Costing"
+              }
+            ],
+            "text": "The item isn't in Item - Costing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It has no costing row, see step 3. Or the list was opened before the row was made: close it and open it again"
+              }
+            ],
+            "text": "It has no costing row, see step 3. Or the list was opened before the row was made: close it and open it again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The made item's cost leaves out its materials"
+              }
+            ],
+            "text": "The made item's cost leaves out its materials"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Its materials need their rows first, see step 11. A bought item reads 0 until it has a purchase price"
+              }
+            ],
+            "text": "Its materials need their rows first, see step 11. A bought item reads 0 until it has a purchase price"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

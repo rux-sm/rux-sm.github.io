@@ -8,15 +8,15 @@
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 5,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "verify-site-creation-control",
-    "title": "Verify site creation control"
+    "title": "Check the site follows the defaults"
   },
   "next": {
     "id": "build-the-job-shop-bill-of-material",
-    "title": "Build the job shop bill of material"
+    "title": "Build the bill of material"
   },
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Master Data ➔ Items ➔ Items",
   "session": "Items",
   "sessionCode": "tcibd0501m000",
@@ -35,153 +35,49 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Each item inherits its group's defaults and its site row shows the intended role."
+        "v": "The three items are saved, and each site row shows the supply source and item data its group gives."
       }
     ],
-    "text": "Each item inherits its group's defaults and its site row shows the intended role."
+    "text": "The three items are saved, and each site row shows the supply source and item data its group gives."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 2 of "
+          "v": "You need step 6 of "
         },
         {
           "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
+          "v": "Check the site follows the defaults",
+          "href": "verify-site-creation-control.md"
         },
         {
           "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 2 of Confirm the test design."
+      "text": "You need step 6 of Check the site follows the defaults."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove "
+        "v": "When you save, LN gives the item its group's supply source, units and item data. If "
       },
       {
-        "t": "link",
-        "v": "Configure the purchased group",
-        "href": "configure-the-purchased-group.md"
-      },
-      {
-        "t": "text",
-        "v": " to "
-      },
-      {
-        "t": "link",
-        "v": "Verify site creation control",
-        "href": "verify-site-creation-control.md"
+        "t": "strong",
+        "v": "Sites"
       },
       {
         "t": "text",
-        "v": ", which is why nothing inheritable is typed here."
+        "v": " was ticked in the defaults, it adds a site row too. The site row is where you check the defaults worked. That's why you don't type what LN fills in: a value you type would hide a mistake in the defaults."
       }
     ],
-    "text": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove Configure the purchased group to Verify site creation control, which is why nothing inheritable is typed here."
+    "text": "When you save, LN gives the item its group's supply source, units and item data. If Sites was ticked in the defaults, it adds a site row too. The site row is where you check the defaults worked. That's why you don't type what LN fills in: a value you type would hide a mistake in the defaults."
   },
   "blocks": [
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Note"
-        },
-        {
-          "t": "text",
-          "v": " > Create the two purchased items first and the pair last, and do not create the pair until "
-        },
-        {
-          "t": "link",
-          "v": "Configure the made group",
-          "href": "configure-the-made-group.md"
-        },
-        {
-          "t": "text",
-          "v": " has approved Production and Sales defaults."
-        }
-      ],
-      "text": "> Note > Create the two purchased items first and the pair last, and do not create the pair until Configure the made group has approved Production and Sales defaults."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Note"
-        },
-        {
-          "t": "text",
-          "v": " > The Item identifier has separate "
-        },
-        {
-          "t": "field",
-          "v": "Project"
-        },
-        {
-          "t": "text",
-          "v": " and "
-        },
-        {
-          "t": "field",
-          "v": "Item"
-        },
-        {
-          "t": "text",
-          "v": " portions. These are standard test items: leave "
-        },
-        {
-          "t": "field",
-          "v": "Project"
-        },
-        {
-          "t": "text",
-          "v": " blank and enter the "
-        },
-        {
-          "t": "literal",
-          "v": "BAM-*"
-        },
-        {
-          "t": "text",
-          "v": " code in the "
-        },
-        {
-          "t": "field",
-          "v": "Item"
-        },
-        {
-          "t": "text",
-          "v": " portion. If "
-        },
-        {
-          "t": "session",
-          "code": "tcmcs0152s000",
-          "name": "General Projects"
-        },
-        {
-          "t": "text",
-          "v": " opens from the Project lookup, close it without creating a project."
-        }
-      ],
-      "text": "> Note > The Item identifier has separate Project and Item portions. These are standard test items: leave Project blank and enter the BAM-* code in the Item portion. If General Projects (tcmcs0152s000) opens from the Project lookup, close it without creating a project."
-    },
     {
       "kind": "steps",
       "columns": [
@@ -205,24 +101,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Click "
                 },
                 {
-                  "t": "session",
-                  "code": "tcibd0501m000",
-                  "name": "Items"
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Open Items (tcibd0501m000)"
+              "text": "Click New"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
                   "t": "text",
-                  "v": "The global item overview opens"
+                  "v": " opens, empty. It can take half a minute"
                 }
               ],
-              "text": "The global item overview opens"
+              "text": "Item (tcibd0501m100) opens, empty. It can take half a minute"
             }
           ],
           "id": "1",
@@ -243,69 +143,15 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Select "
-                },
-                {
-                  "t": "button",
-                  "label": "New"
-                }
-              ],
-              "text": "Select New"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "A blank Item record opens"
-                }
-              ],
-              "text": "A blank Item record opens"
-            }
-          ],
-          "id": "2",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "3"
-                }
-              ],
-              "text": "3"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "With "
-                },
-                {
-                  "t": "field",
-                  "v": "Project"
-                },
-                {
-                  "t": "text",
-                  "v": " blank, enter the item's code in the "
-                },
-                {
                   "t": "field",
                   "v": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " portion and its "
-                },
-                {
-                  "t": "field",
-                  "v": "Description"
+                  "v": " has two boxes. Leave the first, for a project, empty. Type the first bought item's code in the second"
                 }
               ],
-              "text": "With Project blank, enter the item's code in the Item portion and its Description"
+              "text": "Item has two boxes. Leave the first, for a project, empty. Type the first bought item's code in the second"
             },
             {
               "tokens": [
@@ -324,9 +170,57 @@
               "text": "item code"
             }
           ],
+          "id": "2",
+          "optional": false,
+          "produces": true,
+          "example": [
+            0
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click into "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter one"
+                }
+              ],
+              "text": "Click into Description and enter one"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -343,57 +237,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
                   "v": "Item Type"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Product"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Item Group"
-                },
-                {
-                  "t": "text",
-                  "v": " to the item's group from "
-                },
-                {
-                  "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Set Item Type to Product and Item Group to the item's group from Create two item groups"
+              "text": "Check Item Type"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Supply source, Unit Set, and Inventory Unit default from "
-                },
-                {
-                  "t": "link",
-                  "v": "Configure the purchased group",
-                  "href": "configure-the-purchased-group.md"
-                },
-                {
-                  "t": "text",
-                  "v": " or 3"
+                  "t": "literal",
+                  "v": "Product"
                 }
               ],
-              "text": "Supply source, Unit Set, and Inventory Unit default from Configure the purchased group or 3"
+              "text": "Product"
             }
           ],
           "id": "4",
@@ -415,31 +275,49 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Complete any remaining field the screen marks required, using the family values"
+                  "v": "Click into "
+                },
+                {
+                  "t": "field",
+                  "v": "Item Group"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the item's group from "
+                },
+                {
+                  "t": "link",
+                  "v": "Create two item groups",
+                  "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Complete any remaining field the screen marks required, using the family values"
+              "text": "Click into Item Group and enter the item's group from Create two item groups"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "field",
+                  "v": "Unit Set"
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " and "
                 },
                 {
-                  "t": "value",
-                  "v": "item Grade, if the screen requires one"
+                  "t": "field",
+                  "v": "Unit"
+                },
+                {
+                  "t": "text",
+                  "v": " fill in"
                 }
               ],
-              "text": "item Grade, if the screen requires one"
+              "text": "Unit Set and Unit fill in"
             }
           ],
           "id": "5",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -456,27 +334,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the item header before working in the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Sites"
-                },
-                {
-                  "t": "text",
-                  "v": " grid"
+                  "v": "Fill in any other field the screen says is needed"
                 }
               ],
-              "text": "Save the item header before working in the Sites grid"
+              "text": "Fill in any other field the screen says is needed"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item header is saved"
+                  "v": "—"
                 }
               ],
-              "text": "The item header is saved"
+              "text": "—"
             }
           ],
           "id": "6",
@@ -498,68 +368,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Sites"
-                },
-                {
-                  "t": "text",
-                  "v": " grid, ignore the editable filter row marked with "
-                },
-                {
-                  "t": "literal",
-                  "v": "="
-                },
-                {
-                  "t": "text",
-                  "v": ". If no saved row begins with the site from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", run "
-                },
-                {
-                  "t": "chip",
-                  "v": "Create Items by Site"
-                },
-                {
-                  "t": "text",
-                  "v": " from the tab's appropriate menu; if that produces nothing, select "
+                  "v": "Click "
                 },
                 {
                   "t": "button",
-                  "label": "New"
-                },
-                {
-                  "t": "text",
-                  "v": " on the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Sites"
-                },
-                {
-                  "t": "text",
-                  "v": " toolbar, select that site, and save the record"
+                  "label": "Save"
                 }
               ],
-              "text": "In the Sites grid, ignore the editable filter row marked with =. If no saved row begins with the site from step 2 of Confirm the test design, run Create Items by Site from the tab's appropriate menu; if that produces nothing, select New on the Sites toolbar, select that site, and save the record"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A saved site line beginning with the actual site code exists"
+                  "v": "The item is saved, and the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Subentities"
+                },
+                {
+                  "t": "text",
+                  "v": " indicators of its group turn green"
                 }
               ],
-              "text": "A saved site line beginning with the actual site code exists"
+              "text": "The item is saved, and the Subentities indicators of its group turn green"
             }
           ],
           "id": "7",
@@ -581,23 +414,43 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the saved site line and open it with the row-arrow button"
+                  "v": "Look at the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": " grid"
                 }
               ],
-              "text": "Select the saved site line and open it with the row-arrow button"
+              "text": "Look at the Sites grid"
             },
             {
               "tokens": [
                 {
-                  "t": "chip",
-                  "v": "Items by Site"
+                  "t": "text",
+                  "v": "A row for your site, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Default Supply Source"
                 },
                 {
                   "t": "text",
-                  "v": " opens for this item and site"
+                  "v": " filled in. The top row, marked "
+                },
+                {
+                  "t": "literal",
+                  "v": "="
+                },
+                {
+                  "t": "text",
+                  "v": ", is a filter, not a site"
                 }
               ],
-              "text": "Items by Site opens for this item and site"
+              "text": "A row for your site, with Default Supply Source filled in. The top row, marked =, is a filter, not a site"
             }
           ],
           "id": "8",
@@ -619,55 +472,40 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Verify "
+                  "v": "If there's no row for your site, choose "
                 },
                 {
-                  "t": "field",
-                  "v": "Default Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " matches the item's role — "
-                },
-                {
-                  "t": "literal",
-                  "v": "Purchase"
+                  "t": "chip",
+                  "v": "Create Items by Site"
                 },
                 {
                   "t": "text",
-                  "v": " for the rod and the sleeve, "
+                  "v": " from the "
                 },
                 {
-                  "t": "literal",
-                  "v": "Job Shop"
+                  "t": "chip",
+                  "v": "Sites"
                 },
                 {
                   "t": "text",
-                  "v": " for the pair"
+                  "v": " tab's menu"
                 }
               ],
-              "text": "Verify Default Supply Source matches the item's role — Purchase for the rod and the sleeve, Job Shop for the pair"
+              "text": "If there's no row for your site, choose Create Items by Site from the Sites tab's menu"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "site supply source"
+                  "v": "A row for your site"
                 }
               ],
-              "text": "site supply source"
+              "text": "A row for your site"
             }
           ],
           "id": "9",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -684,31 +522,29 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair"
+                  "v": "Open your site's row with the arrow at its start"
                 }
               ],
-              "text": "Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair"
+              "text": "Open your site's row with the arrow at its start"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "session",
+                  "code": "tcibd1550m000",
+                  "name": "Items by Site"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "site subentities"
+                  "v": " opens for this item and site"
                 }
               ],
-              "text": "site subentities"
+              "text": "Items by Site (tcibd1550m000) opens for this item and site"
             }
           ],
           "id": "10",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -725,22 +561,106 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 2–10 for the remaining items, each with its own group"
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Default Supply Source"
                 }
               ],
-              "text": "Repeat steps 2–10 for the remaining items, each with its own group"
+              "text": "Check Default Supply Source"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " for a bought item, "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": " for a made one"
+                }
+              ],
+              "text": "Purchase for a bought item, Job Shop for a made one"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "All three items and their site rows match the family sheet §1"
+                  "v": "Check which kinds of item data are on"
                 }
               ],
-              "text": "All three items and their site rows match the family sheet §1"
+              "text": "Check which kinds of item data are on"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ordering, Purchase and Warehousing for a bought item. Ordering, Production, Warehousing and Sales for a made one"
+                }
+              ],
+              "text": "Ordering, Purchase and Warehousing for a bought item. Ordering, Production, Warehousing and Sales for a made one"
             }
           ],
-          "id": "11",
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 1 to 12 for the second bought item, then for the made item"
+                }
+              ],
+              "text": "Do steps 1 to 12 for the second bought item, then for the made item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each item's site row matches its group"
+                }
+              ],
+              "text": "Each item's site row matches its group"
+            }
+          ],
+          "id": "13",
           "optional": false,
           "produces": false
         }
@@ -749,8 +669,72 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE, then BAM-CHOP-PAIR"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Description"
+              }
+            ],
+            "text": "Description"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Bamboo Rod, then Paper Sleeve, then Bamboo Chopstick Pair"
+              }
+            ],
+            "text": "Bamboo Rod, then Paper Sleeve, then Bamboo Chopstick Pair"
+          }
+        ]
+      }
+    ]
   },
   "screenshot": null,
   "problems": {
@@ -766,19 +750,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The item code is rejected"
+                "v": "LN won't take the item code"
               }
             ],
-            "text": "The item code is rejected"
+            "text": "LN won't take the item code"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Follow the current item-code segmentation; do not modify segmentation for the experiment"
+                "v": "Choose a code that follows your company's pattern for item codes. Don't change the pattern for a test"
               }
             ],
-            "text": "Follow the current item-code segmentation; do not modify segmentation for the experiment"
+            "text": "Choose a code that follows your company's pattern for item codes. Don't change the pattern for a test"
           }
         ]
       },
@@ -788,27 +772,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The save is refused for a field this task does not name"
+                "v": "The code goes into the project box, or "
+              },
+              {
+                "t": "chip",
+                "v": "General Projects"
+              },
+              {
+                "t": "text",
+                "v": " opens"
               }
             ],
-            "text": "The save is refused for a field this task does not name"
+            "text": "The code goes into the project box, or General Projects opens"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Record the field label and the message. Do not clear another value to force the save. "
-              },
-              {
-                "t": "field",
-                "v": "Grade"
-              },
-              {
-                "t": "text",
-                "v": " was found this way "
+                "v": "Close it without making a project. Clear both boxes and type the code in the second"
               }
             ],
-            "text": "Record the field label and the message. Do not clear another value to force the save. Grade was found this way"
+            "text": "Close it without making a project. Clear both boxes and type the code in the second"
           }
         ]
       },
@@ -818,38 +802,102 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A subentity is missing after save"
+                "v": "The save is refused for a field this guide doesn't name"
               }
             ],
-            "text": "A subentity is missing after save"
+            "text": "The save is refused for a field this guide doesn't name"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Recheck "
+                "v": "Write down the field and the message, then fill it in. Don't clear another field to make it save "
+              }
+            ],
+            "text": "Write down the field and the message, then fill it in. Don't clear another field to make it save"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Create Items by Site"
+              },
+              {
+                "t": "text",
+                "v": " makes no row"
+              }
+            ],
+            "text": "Create Items by Site makes no row"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Click "
+              },
+              {
+                "t": "button",
+                "label": "New"
+              },
+              {
+                "t": "text",
+                "v": " on the "
+              },
+              {
+                "t": "chip",
+                "v": "Sites"
+              },
+              {
+                "t": "text",
+                "v": " toolbar, choose your site, and save"
+              }
+            ],
+            "text": "Click New on the Sites toolbar, choose your site, and save"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A kind of item data is missing after you save"
+              }
+            ],
+            "text": "A kind of item data is missing after you save"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check the defaults: "
               },
               {
                 "t": "link",
-                "v": "Configure the purchased group",
+                "v": "Set the defaults for bought items",
                 "href": "configure-the-purchased-group.md"
               },
               {
                 "t": "text",
-                "v": " for a purchased item, "
+                "v": " for a bought item, "
               },
               {
                 "t": "link",
-                "v": "Configure the made group",
+                "v": "Set the defaults for made items",
                 "href": "configure-the-made-group.md"
               },
               {
                 "t": "text",
-                "v": " for the pair, and "
+                "v": " for the made one, and "
               },
               {
                 "t": "link",
-                "v": "Verify site creation control",
+                "v": "Check the site follows the defaults",
                 "href": "verify-site-creation-control.md"
               },
               {
@@ -857,7 +905,7 @@
                 "v": " for both"
               }
             ],
-            "text": "Recheck Configure the purchased group for a purchased item, Configure the made group for the pair, and Verify site creation control for both"
+            "text": "Check the defaults: Set the defaults for bought items for a bought item, Set the defaults for made items for the made one, and Check the site follows the defaults for both"
           }
         ]
       },
@@ -867,19 +915,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Actual supply differs from the default"
+                "v": "The supply source isn't the one the group gives"
               }
             ],
-            "text": "Actual supply differs from the default"
+            "text": "The supply source isn't the one the group gives"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Check for item-level overrides and date-effective supply source before changing the default"
+                "v": "The item or the site may have its own value, or one that starts on a later date. Check those before you change the defaults"
               }
             ],
-            "text": "Check for item-level overrides and date-effective supply source before changing the default"
+            "text": "The item or the site may have its own value, or one that starts on a later date. Check those before you change the defaults"
           }
         ]
       }
@@ -907,28 +955,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop after this task. The family exists as master data but cannot be produced; "
-              },
-              {
-                "t": "link",
-                "v": "Build the job shop bill of material",
-                "href": "build-the-job-shop-bill-of-material.md"
-              },
-              {
-                "t": "text",
-                "v": " to "
-              },
-              {
-                "t": "link",
-                "v": "Qualify the training case",
-                "href": "qualify-the-training-case.md"
-              },
-              {
-                "t": "text",
-                "v": " are what make it runnable"
+                "v": "Stop after this task. The items exist but can't be made yet. The next two tasks give the made item its BOM and routing"
               }
             ],
-            "text": "Stop after this task. The family exists as master data but cannot be produced; Build the job shop bill of material to Qualify the training case are what make it runnable"
+            "text": "Stop after this task. The items exist but can't be made yet. The next two tasks give the made item its BOM and routing"
           }
         ]
       }

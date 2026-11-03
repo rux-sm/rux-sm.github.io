@@ -11,7 +11,7 @@
   "updated": "2026-11-01",
   "status": "approved",
   "summary": "move some of one item from one warehouse to another in the same company, and check the stock at both.",
-  "order": 8,
+  "order": 10,
   "sources": [
     "cppat1210m000",
     "whinh0100m000",

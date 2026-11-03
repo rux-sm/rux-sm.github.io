@@ -3,20 +3,20 @@
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-routing",
-  "title": "Build the job shop routing",
+  "title": "Build the routing",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 7,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "build-the-job-shop-bill-of-material",
-    "title": "Build the job shop bill of material"
+    "title": "Build the bill of material"
   },
   "next": {
-    "id": "confirm-costing-data",
-    "title": "Confirm costing data"
+    "id": "add-the-costing-rows",
+    "title": "Add the costing rows"
   },
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -26,57 +26,39 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings",
   "session": "Job Shop Routings",
   "sessionCode": "tirou4100m000",
-  "walked": "2026-08-18",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The pair has an Approved routing with an operation at a work center."
+        "v": "The made item has an "
+      },
+      {
+        "t": "status",
+        "v": "Approved"
+      },
+      {
+        "t": "text",
+        "v": " routing with one operation at a work center, used for planning and for costing."
       }
     ],
-    "text": "The pair has an Approved routing with an operation at a work center."
+    "text": "The made item has an Approved routing with one operation at a work center, used for planning and for costing."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 2 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "You need step 2 of Confirm the test design."
-    },
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "An existing work center and an existing reference operation for the site. "
-        },
-        {
-          "t": "strong",
-          "v": "This task does not create work centers, machines, or reference operations."
-        },
-        {
-          "t": "text",
-          "v": " Look them up first — "
+          "v": "You need a work center and a reference operation at your site. This guide doesn't make them. Find them in "
         },
         {
           "t": "session",
           "code": "tirou0101m000",
-          "name": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers"
+          "name": "Work Centers"
         },
         {
           "t": "text",
@@ -85,24 +67,40 @@
         {
           "t": "session",
           "code": "tirou4150m000",
-          "name": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations"
+          "name": "Reference Operations"
         },
         {
           "t": "text",
-          "v": " — and if neither has a usable entry for the site, stop and obtain one."
+          "v": ". If there are none, ask whoever set up the plant."
         }
       ],
-      "text": "An existing work center and an existing reference operation for the site. This task does not create work centers, machines, or reference operations. Look them up first — Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers (tirou0101m000) and Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations (tirou4150m000) — and if neither has a usable entry for the site, stop and obtain one."
+      "text": "You need a work center and a reference operation at your site. This guide doesn't make them. Find them in Work Centers (tirou0101m000) and Reference Operations (tirou4150m000). If there are none, ask whoever set up the plant."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The routing gives the production order operations to report complete; without one there are no estimated production costs and nothing triggers the finished-goods receipt. A reference operation is a template that carries its own times into the operation line, and the routing quantity is what makes those times the times for one pair."
+        "v": "The routing gives a production order the operations you report as done. Without one, the order has no estimated production costs and nothing to report. A reference operation is a template that brings its own times. "
+      },
+      {
+        "t": "field",
+        "v": "Routing Quantity"
+      },
+      {
+        "t": "text",
+        "v": " "
+      },
+      {
+        "t": "literal",
+        "v": "1"
+      },
+      {
+        "t": "text",
+        "v": " makes those the times for one item."
       }
     ],
-    "text": "The routing gives the production order operations to report complete; without one there are no estimated production costs and nothing triggers the finished-goods receipt. A reference operation is a template that carries its own times into the operation line, and the routing quantity is what makes those times the times for one pair."
+    "text": "The routing gives a production order the operations you report as done. Without one, the order has no estimated production costs and nothing to report. A reference operation is a template that brings its own times. Routing Quantity 1 makes those the times for one item."
   },
   "blocks": [
     {
@@ -128,24 +126,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Check "
                 },
                 {
-                  "t": "session",
-                  "code": "tirou4100m000",
-                  "name": "Job Shop Routings"
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top is the site from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Open Job Shop Routings (tirou4100m000)"
+              "text": "Check Site at the top is the site from step 1 of Choose the site, warehouses and units"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The routing overview opens"
+                  "v": "Only that site's routings are listed"
                 }
               ],
-              "text": "The routing overview opens"
+              "text": "Only that site's routings are listed"
             }
           ],
           "id": "1",
@@ -166,33 +172,24 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Confirm "
-                },
-                {
                   "t": "field",
-                  "v": "Site"
+                  "v": "Product"
                 },
                 {
                   "t": "text",
-                  "v": " is the site from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": " has two filter boxes. Filter the second, for the item, on the made item"
                 }
               ],
-              "text": "Confirm Site is the site from step 2 of Confirm the test design"
+              "text": "Product has two filter boxes. Filter the second, for the item, on the made item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Only that site's routings are listed"
+                  "v": "No routing for it yet"
                 }
               ],
-              "text": "Only that site's routings are listed"
+              "text": "No routing for it yet"
             }
           ],
           "id": "2",
@@ -214,32 +211,84 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Filter "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Product"
-                },
-                {
-                  "t": "text",
-                  "v": " for the finished item from "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the three items",
-                  "href": "create-the-three-items.md"
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Filter Product for the finished item from Create the three items"
+              "text": "Click New"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tirou4600m000",
+                  "name": "Job Shop Routing"
+                },
+                {
                   "t": "text",
-                  "v": "No routing exists yet for the chopstick pair"
+                  "v": " opens, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Routing"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", today's "
+                },
+                {
+                  "t": "field",
+                  "v": "Effective Date"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Routing Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " filled in"
                 }
               ],
-              "text": "No routing exists yet for the chopstick pair"
+              "text": "Job Shop Routing (tirou4600m000) opens, with Routing 0, Status = New, today's Effective Date and Routing Quantity 1 filled in"
             }
           ],
           "id": "3",
@@ -260,33 +309,24 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Select "
-                },
-                {
-                  "t": "button",
-                  "label": "New"
+                  "t": "field",
+                  "v": "Product"
                 },
                 {
                   "t": "text",
-                  "v": " and open "
-                },
-                {
-                  "t": "session",
-                  "code": "tirou4600m000",
-                  "name": "Job Shop Routing"
+                  "v": " has two boxes. Leave the first, for a project, empty, and choose the made item from the lookup on the second"
                 }
               ],
-              "text": "Select New and open Job Shop Routing (tirou4600m000)"
+              "text": "Product has two boxes. Leave the first, for a project, empty, and choose the made item from the lookup on the second"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A blank routing header opens"
+                  "v": "Its description appears"
                 }
               ],
-              "text": "A blank routing header opens"
+              "text": "Its description appears"
             }
           ],
           "id": "4",
@@ -308,31 +348,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
-                  "v": "Product"
+                  "v": "Effective Date"
                 },
                 {
                   "t": "text",
-                  "v": " to the finished item"
+                  "v": " is not after the BOM's, at step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the bill of material",
+                  "href": "build-the-job-shop-bill-of-material.md"
                 }
               ],
-              "text": "Set Product to the finished item"
+              "text": "Check Effective Date is not after the BOM's, at step 6 of Build the bill of material"
             },
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "BAM-CHOP-PAIR"
-                },
-                {
                   "t": "text",
-                  "v": " is selected"
+                  "v": "—"
                 }
               ],
-              "text": "BAM-CHOP-PAIR is selected"
+              "text": "—"
             }
           ],
           "id": "5",
@@ -354,7 +395,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the "
+                  "v": "Leave "
                 },
                 {
                   "t": "field",
@@ -362,35 +403,51 @@
                 },
                 {
                   "t": "text",
-                  "v": " code and confirm the "
+                  "v": ", "
                 },
                 {
                   "t": "field",
-                  "v": "Revision"
+                  "v": "Routing Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Minimum Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Maximum Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Calculate"
+                },
+                {
+                  "t": "text",
+                  "v": " and the lead time fields as LN fills them in"
                 }
               ],
-              "text": "Enter the Routing code and confirm the Revision"
+              "text": "Leave Routing, Routing Quantity, Minimum Quantity, Maximum Quantity, Calculate and the lead time fields as LN fills them in"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The routing is identified; "
-                },
-                {
-                  "t": "field",
-                  "v": "Status"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "status",
-                  "v": "New"
+                  "v": "—"
                 }
               ],
-              "text": "The routing is identified; Status = New"
+              "text": "—"
             }
           ],
           "id": "6",
@@ -412,27 +469,59 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "On the "
                 },
                 {
-                  "t": "field",
-                  "v": "Effective Date"
+                  "t": "chip",
+                  "v": "Operations"
                 },
                 {
                   "t": "text",
-                  "v": " on or before the date of the production order you intend to run"
+                  "v": " grid, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Set Effective Date on or before the date of the production order you intend to run"
+              "text": "On the Operations grid, click New"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The revision will be valid on that order's reference date"
+                  "v": "LN saves the header, "
+                },
+                {
+                  "t": "field",
+                  "v": "Revision"
+                },
+                {
+                  "t": "text",
+                  "v": " reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "000001"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a new operation line has "
+                },
+                {
+                  "t": "field",
+                  "v": "Operation"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
                 }
               ],
-              "text": "The revision will be valid on that order's reference date"
+              "text": "LN saves the header, Revision reads 000001, and a new operation line has Operation 10"
             }
           ],
           "id": "7",
@@ -454,32 +543,55 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Press Tab and enter a reference operation you found for the prerequisite in "
                 },
                 {
                   "t": "field",
-                  "v": "Routing Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " to 1"
+                  "v": "Reference Operation"
                 }
               ],
-              "text": "Set Routing Quantity to 1"
+              "text": "Press Tab and enter a reference operation you found for the prerequisite in Reference Operation"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Operation times entered below are the times for one pair"
+                  "v": "Its description, "
+                },
+                {
+                  "t": "field",
+                  "v": "Work Center"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Machine Type"
+                },
+                {
+                  "t": "text",
+                  "v": " fill in — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "work center"
                 }
               ],
-              "text": "Operation times entered below are the times for one pair"
+              "text": "Its description, Work Center and Machine Type fill in — work center"
             }
           ],
           "id": "8",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -496,31 +608,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Retain the proposed "
-                },
-                {
-                  "t": "field",
-                  "v": "Minimum Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Maximum Quantity"
+                  "v": "Scroll the grid right and check the times the reference operation filled in. Don't change them"
                 }
               ],
-              "text": "Retain the proposed Minimum Quantity and Maximum Quantity"
+              "text": "Scroll the grid right and check the times the reference operation filled in. Don't change them"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The routing is not restricted to a quantity band the test did not choose"
+                  "v": "—"
                 }
               ],
-              "text": "The routing is not restricted to a quantity band the test did not choose"
+              "text": "—"
             }
           ],
           "id": "9",
@@ -542,27 +642,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Leave "
+                  "v": "If "
                 },
                 {
                   "t": "field",
-                  "v": "Calculate"
+                  "v": "Cycle Time (min)"
                 },
                 {
                   "t": "text",
-                  "v": " and the lead-time fields at their proposed values"
+                  "v": " is 0, enter how many minutes one made item takes"
                 }
               ],
-              "text": "Leave Calculate and the lead-time fields at their proposed values"
+              "text": "If Cycle Time (min) is 0, enter how many minutes one made item takes"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Production Rate"
+                },
+                {
                   "t": "text",
-                  "v": "No invented lead time enters the test data"
+                  "v": " fills in, per hour"
                 }
               ],
-              "text": "No invented lead time enters the test data"
+              "text": "Production Rate fills in, per hour"
             }
           ],
           "id": "10",
@@ -584,31 +688,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Operations"
-                },
-                {
-                  "t": "text",
-                  "v": " grid, select "
+                  "v": "Click "
                 },
                 {
                   "t": "button",
-                  "label": "New"
+                  "label": "Save"
                 }
               ],
-              "text": "On the Operations grid, select New"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Lead Time"
+                },
+                {
                   "t": "text",
-                  "v": "A blank operation line opens"
+                  "v": " fills in"
                 }
               ],
-              "text": "A blank operation line opens"
+              "text": "Lead Time fills in"
             }
           ],
           "id": "11",
@@ -630,31 +730,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter "
+                  "v": "Go back to "
                 },
                 {
-                  "t": "field",
-                  "v": "Operation"
+                  "t": "chip",
+                  "v": "Job Shop Routings"
                 },
                 {
                   "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "literal",
-                  "v": "10"
+                  "v": ", filter on the made item and tick its row"
                 }
               ],
-              "text": "Enter Operation = 10"
+              "text": "Go back to Job Shop Routings, filter on the made item and tick its row"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pair has a first operation"
+                  "v": "—"
                 }
               ],
-              "text": "The pair has a first operation"
+              "text": "—"
             }
           ],
           "id": "12",
@@ -676,47 +772,40 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Reference Operation"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Work Center"
-                },
-                {
-                  "t": "text",
-                  "v": " to existing values from the prerequisite lookups"
+                  "t": "button",
+                  "label": "Approve Revisions"
                 }
               ],
-              "text": "Set Reference Operation and Work Center to existing values from the prerequisite lookups"
+              "text": "Click Approve Revisions"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "text",
+                  "v": "LN says the revision was approved, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Status"
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = "
                 },
                 {
-                  "t": "value",
-                  "v": "routing operation and work center"
+                  "t": "status",
+                  "v": "Approved"
                 }
               ],
-              "text": "routing operation and work center"
+              "text": "LN says the revision was approved, and Status = Approved"
             }
           ],
           "id": "13",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -732,20 +821,20 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Check what the reference operation brought with it"
+                  "t": "command",
+                  "route": "Actions ➔ Use ➔ Use for Planning"
                 }
               ],
-              "text": "Check what the reference operation brought with it"
+              "text": "Actions ➔ Use ➔ Use for Planning"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A reference operation carries its own times; do not overwrite them with an invented value"
+                  "v": "—"
                 }
               ],
-              "text": "A reference operation carries its own times; do not overwrite them with an invented value"
+              "text": "—"
             }
           ],
           "id": "14",
@@ -766,167 +855,17 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Enter "
-                },
-                {
-                  "t": "field",
-                  "v": "Cycle Time (min)"
-                },
-                {
-                  "t": "text",
-                  "v": " only if it is still blank"
+                  "t": "command",
+                  "route": "Actions ➔ Use ➔ Use for Costing"
                 }
               ],
-              "text": "Enter Cycle Time (min) only if it is still blank"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
-            }
-          ],
-          "id": "15",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "16"
-                }
-              ],
-              "text": "16"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm "
-                },
-                {
-                  "t": "field",
-                  "v": "Production Rate"
-                },
-                {
-                  "t": "text",
-                  "v": " is filled. Where "
-                },
-                {
-                  "t": "field",
-                  "v": "Use Production Rates"
-                },
-                {
-                  "t": "text",
-                  "v": " is selected in the current parameter set, that is the value LN uses for the operation time"
-                }
-              ],
-              "text": "Confirm Production Rate is filled. Where Use Production Rates is selected in the current parameter set, that is the value LN uses for the operation time"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The production rate is expressed per hour here"
-                }
-              ],
-              "text": "The production rate is expressed per hour here"
-            }
-          ],
-          "id": "16",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "17"
-                }
-              ],
-              "text": "17"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Save the operation line"
-                }
-              ],
-              "text": "Save the operation line"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The operation is stored against the routing revision"
-                }
-              ],
-              "text": "The operation is stored against the routing revision"
-            }
-          ],
-          "id": "17",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "18"
-                }
-              ],
-              "text": "18"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Select the routing and approve the revision from the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Actions"
-                },
-                {
-                  "t": "text",
-                  "v": " menu"
-                }
-              ],
-              "text": "Select the routing and approve the revision from the Actions menu"
+              "text": "Actions ➔ Use ➔ Use for Costing"
             },
             {
               "tokens": [
                 {
                   "t": "field",
-                  "v": "Status"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "status",
-                  "v": "Approved"
-                },
-                {
-                  "t": "text",
-                  "v": "; "
-                },
-                {
-                  "t": "field",
-                  "v": "Approved By"
+                  "v": "Use for Planning"
                 },
                 {
                   "t": "text",
@@ -934,164 +873,19 @@
                 },
                 {
                   "t": "field",
-                  "v": "Approved On"
-                },
-                {
-                  "t": "text",
-                  "v": " are filled"
-                }
-              ],
-              "text": "Status = Approved; Approved By and Approved On are filled"
-            }
-          ],
-          "id": "18",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "19"
-                }
-              ],
-              "text": "19"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Set "
-                },
-                {
-                  "t": "field",
-                  "v": "Use for Planning"
-                },
-                {
-                  "t": "text",
-                  "v": " on the routing"
-                }
-              ],
-              "text": "Set Use for Planning on the routing"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "field",
-                  "v": "Use for Planning"
-                },
-                {
-                  "t": "text",
-                  "v": " is selected"
-                }
-              ],
-              "text": "Use for Planning is selected"
-            }
-          ],
-          "id": "19",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "20"
-                }
-              ],
-              "text": "20"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Set "
-                },
-                {
-                  "t": "field",
                   "v": "Use for Costing"
                 },
                 {
                   "t": "text",
-                  "v": " on the routing"
+                  "v": " have green ticks"
                 }
               ],
-              "text": "Set Use for Costing on the routing"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "field",
-                  "v": "Use for Costing"
-                },
-                {
-                  "t": "text",
-                  "v": " is selected"
-                }
-              ],
-              "text": "Use for Costing is selected"
+              "text": "Use for Planning and Use for Costing have green ticks"
             }
           ],
-          "id": "20",
+          "id": "15",
           "optional": false,
           "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "21"
-                }
-              ],
-              "text": "21"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Close and reopen the routing"
-                }
-              ],
-              "text": "Close and reopen the routing"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "routing and revision"
-                },
-                {
-                  "t": "text",
-                  "v": " — "
-                },
-                {
-                  "t": "status",
-                  "v": "Approved"
-                },
-                {
-                  "t": "text",
-                  "v": ", indicators set, operation present"
-                }
-              ],
-              "text": "routing and revision — Approved, indicators set, operation present"
-            }
-          ],
-          "id": "21",
-          "optional": false,
-          "produces": true
         }
       ]
     }
@@ -1114,6 +908,10 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "LN refuses the "
+              },
+              {
                 "t": "field",
                 "v": "Work Center"
               },
@@ -1124,22 +922,18 @@
               {
                 "t": "field",
                 "v": "Reference Operation"
-              },
-              {
-                "t": "text",
-                "v": " is rejected"
               }
             ],
-            "text": "Work Center or Reference Operation is rejected"
+            "text": "LN refuses the Work Center or Reference Operation"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Use an existing approved value. Do not create a work center, task, or machine here"
+                "v": "Use one that already exists at your site. Don't make a work center, task or machine here"
               }
             ],
-            "text": "Use an existing approved value. Do not create a work center, task, or machine here"
+            "text": "Use one that already exists at your site. Don't make a work center, task or machine here"
           }
         ]
       },
@@ -1149,16 +943,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The operation line will not save"
+                "v": "The operation line won't save"
               }
             ],
-            "text": "The operation line will not save"
+            "text": "The operation line won't save"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Every column the screen marks required must be filled — "
+                "v": "Fill in every column the screen marks as needed: at least "
               },
               {
                 "t": "field",
@@ -1174,18 +968,44 @@
               },
               {
                 "t": "text",
-                "v": ", and "
+                "v": " and "
               },
               {
                 "t": "field",
                 "v": "Work Center"
+              }
+            ],
+            "text": "Fill in every column the screen marks as needed: at least Operation, Reference Operation and Work Center"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order has no operations"
+              }
+            ],
+            "text": "The production order has no operations"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Its date is before the routing's "
+              },
+              {
+                "t": "field",
+                "v": "Effective Date"
               },
               {
                 "t": "text",
-                "v": " at minimum"
+                "v": ". See step 5"
               }
             ],
-            "text": "Every column the screen marks required must be filled — Operation, Reference Operation, and Work Center at minimum"
+            "text": "Its date is before the routing's Effective Date. See step 5"
           }
         ]
       }

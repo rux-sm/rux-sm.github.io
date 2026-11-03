@@ -3,20 +3,20 @@
   "tier": "export",
   "kind": "task",
   "id": "configure-the-made-group",
-  "title": "Configure the made group",
+  "title": "Set the defaults for made items",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 3,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "configure-the-purchased-group",
-    "title": "Configure the purchased group"
+    "title": "Set the defaults for bought items"
   },
   "next": {
     "id": "verify-site-creation-control",
-    "title": "Verify site creation control"
+    "title": "Check the site follows the defaults"
   },
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -26,48 +26,34 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",
   "session": "Item Defaults",
   "sessionCode": "tcibd0102m000",
-  "walked": "2026-08-16",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
-        "t": "literal",
-        "v": "BAM-FG"
+        "t": "text",
+        "v": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with "
+      },
+      {
+        "t": "strong",
+        "v": "Create"
       },
       {
         "t": "text",
-        "v": " can create Ordering, Production, Warehousing, and Sales data."
+        "v": " ticked."
       }
     ],
-    "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data."
+    "text": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with Create ticked."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Configure the purchased group",
-          "href": "configure-the-purchased-group.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 12 of "
-        },
-        {
-          "t": "link",
-          "v": "Configure the purchased group",
-          "href": "configure-the-purchased-group.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 6 of "
+          "v": "You need step 7 of "
         },
         {
           "t": "link",
@@ -76,84 +62,22 @@
         },
         {
           "t": "text",
-          "v": "; step 6 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 16 of "
-        },
-        {
-          "t": "link",
-          "v": "Configure the purchased group",
-          "href": "configure-the-purchased-group.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 20 of "
-        },
-        {
-          "t": "link",
-          "v": "Configure the purchased group",
-          "href": "configure-the-purchased-group.md"
-        },
-        {
-          "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 1 of Configure the purchased group; step 12 of Configure the purchased group; step 6 of Create two item groups; step 6 of Confirm the test design; step 16 of Configure the purchased group; step 20 of Configure the purchased group."
+      "text": "You need step 7 of Create two item groups."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The same mechanism as "
-      },
-      {
-        "t": "link",
-        "v": "Configure the purchased group",
-        "href": "configure-the-purchased-group.md"
-      },
-      {
-        "t": "text",
-        "v": " with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined."
+        "v": "It works like the defaults for bought items, with a different supply source and two more kinds of data, Production and Sales. Job Shop means you make the item in your own plant. Changing Sales defaults offers to update existing items too. Your group is new, so you answer No."
       }
     ],
-    "text": "The same mechanism as Configure the purchased group with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined."
+    "text": "It works like the defaults for bought items, with a different supply source and two more kinds of data, Production and Sales. Job Shop means you make the item in your own plant. Changing Sales defaults offers to update existing items too. Your group is new, so you answer No."
   },
   "blocks": [
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Warning"
-        },
-        {
-          "t": "text",
-          "v": " > The values in the family sheet combine an approved Product/Job Shop reference, the existing "
-        },
-        {
-          "t": "literal",
-          "v": "M010"
-        },
-        {
-          "t": "text",
-          "v": " finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. "
-        }
-      ],
-      "text": "> Warning > The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks."
-    },
     {
       "kind": "steps",
       "columns": [
@@ -177,16 +101,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat for the made group, with the changes below. Follow steps 1–15 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Configure the purchased group",
-                  "href": "configure-the-purchased-group.md"
-                },
-                {
-                  "t": "text",
-                  "v": "; the made group is the one from step 6 of "
+                  "v": "Filter on your group for made items from step 7 of "
                 },
                 {
                   "t": "link",
@@ -194,16 +109,16 @@
                   "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Repeat for the made group, with the changes below. Follow steps 1–15 of Configure the purchased group; the made group is the one from step 6 of Create two item groups"
+              "text": "Filter on your group for made items from step 7 of Create two item groups"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "No row yet"
                 }
               ],
-              "text": "—"
+              "text": "No row yet"
             }
           ],
           "id": "1",
@@ -225,31 +140,40 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Default Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Job Shop"
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Set Default Supply Source to Job Shop"
+              "text": "Click New"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tcibd0502m000",
+                  "name": "Item Defaults"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens, empty, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Item Type"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "Product"
                 }
               ],
-              "text": "—"
+              "text": "Item Defaults (tcibd0502m000) opens, empty, with Item Type Product"
             }
           ],
           "id": "2",
@@ -271,32 +195,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the site row, set "
+                  "v": "Click into "
                 },
                 {
                   "t": "field",
-                  "v": "Warehouse"
+                  "v": "Item Group"
                 },
                 {
                   "t": "text",
-                  "v": " to the finished warehouse. It is the one from step 6 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": " and enter your group for made items"
                 }
               ],
-              "text": "On the site row, set Warehouse to the finished warehouse. It is the one from step 6 of Confirm the test design"
+              "text": "Click into Item Group and enter your group for made items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Its description appears beside it"
                 }
               ],
-              "text": "—"
+              "text": "Its description appears beside it"
             }
           ],
           "id": "3",
@@ -318,55 +237,29 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the site row, set "
+                  "v": "Do steps 4 to 9 of "
                 },
                 {
-                  "t": "field",
-                  "v": "Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Job Shop"
+                  "t": "link",
+                  "v": "Set the defaults for bought items",
+                  "href": "configure-the-purchased-group.md"
                 }
               ],
-              "text": "On the site row, set Supply Source to Job Shop"
+              "text": "Do steps 4 to 9 of Set the defaults for bought items"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "made default supply source"
-                },
-                {
-                  "t": "text",
-                  "v": " — the Product/"
-                },
-                {
-                  "t": "literal",
-                  "v": "BAM-FG"
-                },
-                {
-                  "t": "text",
-                  "v": " combination exists with its site row"
+                  "v": "The site row"
                 }
               ],
-              "text": "made default supply source — the Product/BAM-FG combination exists with its site row"
+              "text": "The site row"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -383,40 +276,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat for "
-                },
-                {
-                  "t": "chip",
-                  "v": "Ordering"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "chip",
-                  "v": "Warehousing"
-                },
-                {
-                  "t": "text",
-                  "v": ". Follow steps 16–21 of "
+                  "v": "Enter the finished-goods warehouse from step 3 of "
                 },
                 {
                   "t": "link",
-                  "v": "Configure the purchased group",
-                  "href": "configure-the-purchased-group.md"
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
                 }
               ],
-              "text": "Repeat for Ordering and Warehousing. Follow steps 16–21 of Configure the purchased group"
+              "text": "Enter the finished-goods warehouse from step 3 of Choose the site, warehouses and units in Warehouse"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Its name appears"
                 }
               ],
-              "text": "—"
+              "text": "Its name appears"
             }
           ],
           "id": "5",
@@ -438,19 +323,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare each with an approved finished Product/Job Shop reference"
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Supply Source"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
                 }
               ],
-              "text": "Compare each with an approved finished Product/Job Shop reference"
+              "text": "Set Supply Source to Job Shop"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both indicators active, both Create boxes selected, no unapproved planning value introduced"
+                  "v": "—"
                 }
               ],
-              "text": "Both indicators active, both Create boxes selected, no unapproved planning value introduced"
+              "text": "—"
             }
           ],
           "id": "6",
@@ -472,32 +369,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the blue "
+                  "v": "Click "
                 },
                 {
                   "t": "button",
-                  "label": "Production"
-                },
-                {
-                  "t": "text",
-                  "v": " link"
+                  "label": "Save"
                 }
               ],
-              "text": "Open the blue Production link"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "tiipd0102m100",
-                  "name": "Item - Production Defaults"
-                },
-                {
                   "t": "text",
-                  "v": " opens"
+                  "v": "The site row stays"
                 }
               ],
-              "text": "Item - Production Defaults (tiipd0102m100) opens"
+              "text": "The site row stays"
             }
           ],
           "id": "7",
@@ -519,19 +407,48 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare every visible field with the family sheet. Its made-group Production values are in §4"
+                  "v": "Do steps 13 to 15 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Set the defaults for bought items",
+                  "href": "configure-the-purchased-group.md"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", then for "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing"
                 }
               ],
-              "text": "Compare every visible field with the family sheet. Its made-group Production values are in §4"
+              "text": "Do steps 13 to 15 of Set the defaults for bought items for Ordering, then for Warehousing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Both indicators on, and both "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " boxes ticked"
                 }
               ],
-              "text": "—"
+              "text": "Both indicators on, and both Create boxes ticked"
             }
           ],
           "id": "8",
@@ -553,23 +470,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select "
+                  "v": "Click the blue "
                 },
                 {
-                  "t": "button",
-                  "label": "OK"
+                  "t": "chip",
+                  "v": "Production"
+                },
+                {
+                  "t": "text",
+                  "v": " link"
                 }
               ],
-              "text": "Select OK"
+              "text": "Click the blue Production link"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tiipd0102m100",
+                  "name": "Item Production Defaults"
+                },
+                {
                   "t": "text",
-                  "v": "The Production defaults close without an error"
+                  "v": " opens"
                 }
               ],
-              "text": "The Production defaults close without an error"
+              "text": "Item Production Defaults (tiipd0102m100) opens"
             }
           ],
           "id": "9",
@@ -591,23 +517,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the Production indicator is active and select the Create check box beside "
+                  "v": "Leave the fields as LN fills them in, and click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Production"
+                  "t": "button",
+                  "label": "OK"
                 }
               ],
-              "text": "Confirm the Production indicator is active and select the Create check box beside Production"
+              "text": "Leave the fields as LN fills them in, and click OK"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "New items are marked to receive Production data"
+                  "v": "The screen closes with no error, and the indicator beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production"
+                },
+                {
+                  "t": "text",
+                  "v": " is on"
                 }
               ],
-              "text": "New items are marked to receive Production data"
+              "text": "The screen closes with no error, and the indicator beside Production is on"
             }
           ],
           "id": "10",
@@ -629,32 +563,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the blue "
+                  "v": "Tick "
                 },
                 {
-                  "t": "button",
-                  "label": "Sales"
+                  "t": "chip",
+                  "v": "Create"
                 },
                 {
                   "t": "text",
-                  "v": " link"
+                  "v": " beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production"
                 }
               ],
-              "text": "Open the blue Sales link"
+              "text": "Tick Create beside Production"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "tdisa0102s000",
-                  "name": "Item - Sales Defaults"
-                },
-                {
                   "t": "text",
-                  "v": " opens"
+                  "v": "—"
                 }
               ],
-              "text": "Item - Sales Defaults (tdisa0102s000) opens"
+              "text": "—"
             }
           ],
           "id": "11",
@@ -676,43 +609,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Complete the "
+                  "v": "Click the blue "
                 },
                 {
                   "t": "chip",
-                  "v": "Ordering"
+                  "v": "Sales"
                 },
                 {
                   "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "chip",
-                  "v": "Price"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "chip",
-                  "v": "Delivery"
-                },
-                {
-                  "t": "text",
-                  "v": " tabs from the family sheet. Its made-group Sales values are in §4"
+                  "v": " link"
                 }
               ],
-              "text": "Complete the Ordering, Price and Delivery tabs from the family sheet. Its made-group Sales values are in §4"
+              "text": "Click the blue Sales link"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tdisa0102s000",
+                  "name": "Item Sales Defaults"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens"
                 }
               ],
-              "text": "—"
+              "text": "Item Sales Defaults (tdisa0102s000) opens"
             }
           ],
           "id": "12",
@@ -734,23 +656,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select "
+                  "v": "On the "
                 },
                 {
-                  "t": "button",
-                  "label": "OK"
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, fill in "
+                },
+                {
+                  "t": "field",
+                  "v": "Sales Unit"
                 }
               ],
-              "text": "Select OK"
+              "text": "On the Ordering tab, fill in Sales Unit"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Sales defaults are saved"
+                  "v": "—"
                 }
               ],
-              "text": "The Sales defaults are saved"
+              "text": "—"
             }
           ],
           "id": "13",
@@ -772,56 +702,67 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If asked "
+                  "v": "On the "
                 },
                 {
                   "t": "chip",
-                  "v": "Perform Global Update of Sales Items with New Defaults?"
+                  "v": "Price"
                 },
                 {
                   "t": "text",
-                  "v": ", select "
+                  "v": " tab, check "
                 },
                 {
-                  "t": "button",
-                  "label": "No"
-                },
-                {
-                  "t": "text",
-                  "v": ". If "
-                },
-                {
-                  "t": "session",
-                  "code": "tdisa0202m000",
-                  "name": "Global Update of Item with Defaults"
+                  "t": "field",
+                  "v": "Sales Currency"
                 },
                 {
                   "t": "text",
-                  "v": " opens, do not select "
+                  "v": " is your company's currency, and fill in "
                 },
                 {
-                  "t": "chip",
-                  "v": "Update"
+                  "t": "field",
+                  "v": "Sales Price Unit"
                 },
                 {
                   "t": "text",
-                  "v": "; select "
+                  "v": ", "
                 },
                 {
-                  "t": "button",
-                  "label": "Close"
+                  "t": "field",
+                  "v": "Sales Price Group"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Sales Statistics Group"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Tax Code"
+                },
+                {
+                  "t": "text",
+                  "v": " as an existing group for finished items has them"
                 }
               ],
-              "text": "If asked Perform Global Update of Sales Items with New Defaults?, select No. If Global Update of Item with Defaults (tdisa0202m000) opens, do not select Update; select Close"
+              "text": "On the Price tab, check Sales Currency is your company's currency, and fill in Sales Price Unit, Sales Price Group, Sales Statistics Group and Tax Code as an existing group for finished items has them"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Existing Sales items are not changed"
+                  "v": "—"
                 }
               ],
-              "text": "Existing Sales items are not changed"
+              "text": "—"
             }
           ],
           "id": "14",
@@ -843,23 +784,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the Sales indicator is active and select the Create check box beside "
+                  "v": "Click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Sales"
+                  "t": "button",
+                  "label": "OK"
                 }
               ],
-              "text": "Confirm the Sales indicator is active and select the Create check box beside Sales"
+              "text": "Click OK"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "New items are marked to receive Sales data"
+                  "v": "The indicator beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales"
+                },
+                {
+                  "t": "text",
+                  "v": " is on"
                 }
               ],
-              "text": "New items are marked to receive Sales data"
+              "text": "The indicator beside Sales is on"
             }
           ],
           "id": "15",
@@ -881,24 +830,56 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save "
+                  "v": "If LN asks "
+                },
+                {
+                  "t": "chip",
+                  "v": "Perform Global Update of Sales Items with New Defaults?"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "No"
+                },
+                {
+                  "t": "text",
+                  "v": ". If "
                 },
                 {
                   "t": "session",
-                  "code": "tcibd0502m000",
-                  "name": "Item Defaults"
+                  "code": "tdisa0202m000",
+                  "name": "Global Update of Item with Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, click "
+                },
+                {
+                  "t": "button",
+                  "label": "Close"
+                },
+                {
+                  "t": "text",
+                  "v": ", not "
+                },
+                {
+                  "t": "chip",
+                  "v": "Update"
                 }
               ],
-              "text": "Save Item Defaults (tcibd0502m000)"
+              "text": "If LN asks Perform Global Update of Sales Items with New Defaults?, click No. If Global Update of Item with Defaults (tdisa0202m000) opens, click Close, not Update"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Existing items stay as they are"
                 }
               ],
-              "text": "—"
+              "text": "Existing items stay as they are"
             }
           ],
           "id": "16",
@@ -920,18 +901,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Close and reopen the Product/"
+                  "v": "Tick "
                 },
                 {
-                  "t": "literal",
-                  "v": "BAM-FG"
+                  "t": "chip",
+                  "v": "Create"
                 },
                 {
                   "t": "text",
-                  "v": " default"
+                  "v": " beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales"
                 }
               ],
-              "text": "Close and reopen the Product/BAM-FG default"
+              "text": "Tick Create beside Sales"
             },
             {
               "tokens": [
@@ -962,71 +947,98 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Reopen Sales ➔ "
+                  "v": "Under "
                 },
                 {
                   "t": "chip",
-                  "v": "Price"
+                  "v": "Create Satellites Automatically"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
                 }
               ],
-              "text": "Reopen Sales ➔ Price"
+              "text": "Under Create Satellites Automatically, tick Sites"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "made global subentities"
-                },
-                {
-                  "t": "text",
-                  "v": " — four active indicators, and "
-                },
-                {
-                  "t": "literal",
-                  "v": "USD"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "ea"
-                },
-                {
-                  "t": "text",
-                  "v": ", both "
-                },
-                {
-                  "t": "literal",
-                  "v": "S10.10"
-                },
-                {
-                  "t": "text",
-                  "v": " groups and "
-                },
-                {
-                  "t": "literal",
-                  "v": "NOTAX"
-                },
-                {
-                  "t": "text",
-                  "v": " return"
+                  "v": "—"
                 }
               ],
-              "text": "made global subentities — four active indicators, and USD, ea, both S10.10 groups and NOTAX return"
+              "text": "—"
             }
           ],
           "id": "18",
           "optional": false,
-          "produces": true
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "19"
+                }
+              ],
+              "text": "19"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
+                }
+              ],
+              "text": "Click Save, then Refresh"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Four indicators on, four "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " boxes ticked, and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": " ticked"
+                }
+              ],
+              "text": "Four indicators on, four Create boxes ticked, and Sites ticked"
+            }
+          ],
+          "id": "19",
+          "optional": false,
+          "produces": false
         }
       ]
     }
@@ -1039,8 +1051,68 @@
   "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The "
+              },
+              {
+                "t": "chip",
+                "v": "Production"
+              },
+              {
+                "t": "text",
+                "v": " link doesn't open"
+              }
+            ],
+            "text": "The Production link doesn't open"
+          },
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Job Shop by Site"
+              },
+              {
+                "t": "text",
+                "v": " may be switched off in your company. Ask whoever set it up"
+              }
+            ],
+            "text": "Job Shop by Site may be switched off in your company. Ask whoever set it up"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The finished-goods group you copy from shows another currency"
+              }
+            ],
+            "text": "The finished-goods group you copy from shows another currency"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Use your company's currency. Sales takes its currency from the company"
+              }
+            ],
+            "text": "Use your company's currency. Sales takes its currency from the company"
+          }
+        ]
+      }
+    ]
   },
   "variants": {
     "kind": "variants",

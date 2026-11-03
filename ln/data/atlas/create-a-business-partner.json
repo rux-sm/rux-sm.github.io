@@ -1,0 +1,356 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "process",
+  "id": "create-a-business-partner",
+  "title": "Create a business partner",
+  "module": "Common · Procurement · Sales",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Sales"
+  ],
+  "updated": "2026-11-02",
+  "status": "draft",
+  "summary": "make a supplier you can buy from, or a customer you can sell to.",
+  "order": 5,
+  "sources": [
+    "tccom4201m000",
+    "tccom4101m000",
+    "tccom4500m000",
+    "tccom4100s000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need a training company you're allowed to add business partners to."
+        }
+      ],
+      "text": "You need a training company you're allowed to add business partners to."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "enter-the-business-partner",
+      "n": 0,
+      "title": "Enter the business partner",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The partner is saved with its address and its ordering roles."
+          }
+        ],
+        "text": "The partner is saved with its address and its ordering roles."
+      },
+      "steps": 10,
+      "walked": "2026-11-02"
+    },
+    {
+      "id": "add-the-invoice-and-payment-roles",
+      "n": 1,
+      "title": "Add the invoice and payment roles",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The partner has all four roles a supplier or a customer needs."
+          }
+        ],
+        "text": "The partner has all four roles a supplier or a customer needs."
+      },
+      "steps": 17,
+      "walked": null
+    }
+  ],
+  "values": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Country"
+              }
+            ],
+            "text": "Country"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "USA"
+              }
+            ],
+            "text": "USA"
+          }
+        ],
+        "task": "enter-the-business-partner"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " make a supplier you can buy from, or a customer you can sell to."
+        }
+      ],
+      "text": "Objective: make a supplier you can buy from, or a customer you can sell to."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need a training company you're allowed to add business partners to."
+        }
+      ],
+      "text": "> Prerequisite > You need a training company you're allowed to add business partners to."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Note"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "One guide for both."
+        },
+        {
+          "t": "text",
+          "v": " A supplier and a customer are both business partners. They differ in their roles, and each step says which to choose."
+        }
+      ],
+      "text": "> Note > One guide for both. A supplier and a customer are both business partners. They differ in their roles, and each step says which to choose."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Task",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Enter the business partner",
+                  "href": "enter-the-business-partner.md"
+                }
+              ],
+              "text": "Enter the business partner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Easy Entry Business Partner"
+                }
+              ],
+              "text": "Easy Entry Business Partner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The partner is saved with its address and its ordering roles"
+                }
+              ],
+              "text": "The partner is saved with its address and its ordering roles"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Add the invoice and payment roles",
+                  "href": "add-the-invoice-and-payment-roles.md"
+                }
+              ],
+              "text": "Add the invoice and payment roles"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Business Partner, in the financial company"
+                }
+              ],
+              "text": "Business Partner, in the financial company"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The partner has all four roles a supplier or a customer needs"
+                }
+              ],
+              "text": "The partner has all four roles a supplier or a customer needs"
+            }
+          ]
+        }
+      ],
+      "under": "At a glance"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Why this order."
+        },
+        {
+          "t": "text",
+          "v": " A role belongs to a partner, so the partner comes first."
+        }
+      ],
+      "text": "Why this order. A role belongs to a partner, so the partner comes first.",
+      "under": "At a glance"
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next walkthrough",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The supplier has its four roles"
+                }
+              ],
+              "text": "The supplier has its four roles"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Buy from it with "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                }
+              ],
+              "text": "Buy from it with Purchase to receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
+                }
+              ],
+              "text": "Read the baseline"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The customer has its four roles"
+                }
+              ],
+              "text": "The customer has its four roles"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sell to it with "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                }
+              ],
+              "text": "Sell to it with Ship from stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Confirm there is stock",
+                  "href": "confirm-there-is-stock.md"
+                }
+              ],
+              "text": "Confirm there is stock"
+            }
+          ]
+        }
+      ],
+      "under": "Downstream actions"
+    }
+  ],
+  "verification": "Warning Partly verified. Phase 0 has been performed against a live system and confirmed. Phase 1 has not. Follow that one as a plan, not as a record.",
+  "openIssues": 1
+}

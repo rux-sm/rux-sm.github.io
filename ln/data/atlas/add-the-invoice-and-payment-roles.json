@@ -1,0 +1,935 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "add-the-invoice-and-payment-roles",
+  "title": "Add the invoice and payment roles",
+  "process": {
+    "id": "create-a-business-partner",
+    "title": "Create a business partner",
+    "n": 1,
+    "of": 2
+  },
+  "previous": {
+    "id": "enter-the-business-partner",
+    "title": "Enter the business partner"
+  },
+  "next": null,
+  "module": "Common · Procurement · Sales",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Master Data ➔ Business Partners ➔ Business Partners",
+  "session": "Business Partners",
+  "sessionCode": "tccom4500m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The partner has all four roles a supplier or a customer needs."
+      }
+    ],
+    "text": "The partner has all four roles a supplier or a customer needs."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 10 of "
+        },
+        {
+          "t": "link",
+          "v": "Enter the business partner",
+          "href": "enter-the-business-partner.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 10 of Enter the business partner."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Invoices use a third role, invoice-from for a supplier or invoice-to for a customer, and payments a fourth, pay-to or pay-by. Those belong to a financial company. If you work in a company that does only logistics, LN won't make them there, so you change to the financial company first and back afterwards."
+      }
+    ],
+    "text": "Invoices use a third role, invoice-from for a supplier or invoice-to for a customer, and payments a fourth, pay-to or pay-by. Those belong to a financial company. If you work in a company that does only logistics, LN won't make them there, so you change to the financial company first and back afterwards."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Options ➔ Change Company"
+                }
+              ],
+              "text": "Open Options ➔ Change Company"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Change Company"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, with your company in "
+                },
+                {
+                  "t": "field",
+                  "v": "Selected Company"
+                }
+              ],
+              "text": "Change Company opens, with your company in Selected Company"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter your financial company in "
+                },
+                {
+                  "t": "field",
+                  "v": "Selected Company"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
+                }
+              ],
+              "text": "Enter your financial company in Selected Company and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its name appears beside it"
+                }
+              ],
+              "text": "Its name appears beside it"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Master Data ➔ Business Partners ➔ Business Partners"
+                }
+              ],
+              "text": "Open Master Data ➔ Business Partners ➔ Business Partners"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The status bar shows the financial company"
+                }
+              ],
+              "text": "The status bar shows the financial company"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Filter the list on the partner from step 10 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Enter the business partner",
+                  "href": "enter-the-business-partner.md"
+                }
+              ],
+              "text": "Filter the list on the partner from step 10 of Enter the business partner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its row"
+                }
+              ],
+              "text": "Its row"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open its row"
+                }
+              ],
+              "text": "Open its row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " opens. Under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Roles"
+                },
+                {
+                  "t": "text",
+                  "v": ", two have a green tick"
+                }
+              ],
+              "text": "Business Partner opens. Under Roles, two have a green tick"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Invoice-from"
+                },
+                {
+                  "t": "text",
+                  "v": " for a supplier, or "
+                },
+                {
+                  "t": "chip",
+                  "v": "Invoice-to"
+                },
+                {
+                  "t": "text",
+                  "v": " for a customer"
+                }
+              ],
+              "text": "Click Invoice-from for a supplier, or Invoice-to for a customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The role opens, with the partner's address filled in"
+                }
+              ],
+              "text": "The role opens, with the partner's address filled in"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Invoicing"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, choose the financial group from the lookup on "
+                },
+                {
+                  "t": "field",
+                  "v": "Financial Supplier Group"
+                },
+                {
+                  "t": "text",
+                  "v": ", or "
+                },
+                {
+                  "t": "field",
+                  "v": "Financial Customer Group"
+                },
+                {
+                  "t": "text",
+                  "v": " for a customer"
+                }
+              ],
+              "text": "On the Invoicing tab, choose the financial group from the lookup on Financial Supplier Group, or Financial Customer Group for a customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a customer, choose "
+                },
+                {
+                  "t": "field",
+                  "v": "Invoicing Method"
+                },
+                {
+                  "t": "text",
+                  "v": " from its lookup"
+                }
+              ],
+              "text": "For a customer, choose Invoicing Method from its lookup"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a customer, on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Credit Control"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, choose a "
+                },
+                {
+                  "t": "field",
+                  "v": "Credit Rating"
+                },
+                {
+                  "t": "text",
+                  "v": " whose action is Never Hold (Credit)"
+                }
+              ],
+              "text": "For a customer, on the Credit Control tab, choose a Credit Rating whose action is Never Hold (Credit)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Paying"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, choose "
+                },
+                {
+                  "t": "field",
+                  "v": "Payment Terms"
+                },
+                {
+                  "t": "text",
+                  "v": " from its lookup"
+                }
+              ],
+              "text": "On the Paying tab, choose Payment Terms from its lookup"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The status bar says Modify"
+                }
+              ],
+              "text": "The status bar says Modify"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the role"
+                }
+              ],
+              "text": "Close the role"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Pay-to"
+                },
+                {
+                  "t": "text",
+                  "v": " for a supplier, or "
+                },
+                {
+                  "t": "chip",
+                  "v": "Pay-by"
+                },
+                {
+                  "t": "text",
+                  "v": " for a customer"
+                }
+              ],
+              "text": "Click Pay-to for a supplier, or Pay-by for a customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The role opens, with the address filled in"
+                }
+              ],
+              "text": "The role opens, with the address filled in"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The status bar says Modify"
+                }
+              ],
+              "text": "The status bar says Modify"
+            }
+          ],
+          "id": "15",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "16"
+                }
+              ],
+              "text": "16"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the role and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
+                }
+              ],
+              "text": "Close the role and click Refresh"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Four roles have a green tick"
+                }
+              ],
+              "text": "Four roles have a green tick"
+            }
+          ],
+          "id": "16",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "17"
+                }
+              ],
+              "text": "17"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 1 to 3 again with your own company"
+                }
+              ],
+              "text": "Do steps 1 to 3 again with your own company"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "17",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN says the role can't be made in a logistic only company"
+              }
+            ],
+            "text": "LN says the role can't be made in a logistic only company"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "You're still in the logistic company. Change company, then open the list again. See steps 1 to 4"
+              }
+            ],
+            "text": "You're still in the logistic company. Change company, then open the list again. See steps 1 to 4"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN says "
+              },
+              {
+                "t": "field",
+                "v": "Payment Terms"
+              },
+              {
+                "t": "text",
+                "v": " is needed"
+              }
+            ],
+            "text": "LN says Payment Terms is needed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "See step 11"
+              }
+            ],
+            "text": "See step 11"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN says "
+              },
+              {
+                "t": "field",
+                "v": "Credit Rating"
+              },
+              {
+                "t": "text",
+                "v": " is needed"
+              }
+            ],
+            "text": "LN says Credit Rating is needed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "See step 10"
+              }
+            ],
+            "text": "See step 10"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A role won't open or save"
+              }
+            ],
+            "text": "A role won't open or save"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Your user may not be allowed to make roles. Ask whoever manages LN users"
+              }
+            ],
+            "text": "Your user may not be allowed to make roles. Ask whoever manages LN users"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

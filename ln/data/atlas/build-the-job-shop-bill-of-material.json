@@ -3,12 +3,12 @@
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-bill-of-material",
-  "title": "Build the job shop bill of material",
+  "title": "Build the bill of material",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 6,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "create-the-three-items",
@@ -16,7 +16,7 @@
   },
   "next": {
     "id": "build-the-job-shop-routing",
-    "title": "Build the job shop routing"
+    "title": "Build the routing"
   },
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -26,50 +26,35 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material",
   "session": "Job Shop Bills of Material",
   "sessionCode": "tibom3100m000",
-  "walked": "2026-08-18",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The pair has an Approved BOM carrying both components."
+        "v": "The made item has an "
+      },
+      {
+        "t": "status",
+        "v": "Approved"
+      },
+      {
+        "t": "text",
+        "v": " BOM with both materials, used for planning and for costing."
       }
     ],
-    "text": "The pair has an Approved BOM carrying both components."
+    "text": "The made item has an Approved BOM with both materials, used for planning and for costing."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 2 of "
+          "v": "You need step 13 of "
         },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 5 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "You need step 2 of Confirm the test design; step 5 of Confirm the test design."
-    },
-    {
-      "tokens": [
         {
           "t": "link",
           "v": "Create the three items",
@@ -77,70 +62,20 @@
         },
         {
           "t": "text",
-          "v": " complete: all three items exist and each site row shows its intended "
-        },
-        {
-          "t": "field",
-          "v": "Default Supply Source"
-        },
-        {
-          "t": "text",
-          "v": ". "
-        },
-        {
-          "t": "strong",
-          "v": "Job Shop by Site"
-        },
-        {
-          "t": "text",
-          "v": " must be "
-        },
-        {
-          "t": "strong",
-          "v": "Active"
-        },
-        {
-          "t": "text",
-          "v": " or "
-        },
-        {
-          "t": "strong",
-          "v": "In Preparation"
-        },
-        {
-          "t": "text",
-          "v": " in "
-        },
-        {
-          "t": "session",
-          "code": "tcemm4600m000",
-          "name": "Concept Activation"
-        },
-        {
-          "t": "text",
-          "v": " — the same setting "
-        },
-        {
-          "t": "link",
-          "v": "Configure the made group",
-          "href": "configure-the-made-group.md"
-        },
-        {
-          "t": "text",
-          "v": "'s Production defaults depend on."
+          "v": "."
         }
       ],
-      "text": "Create the three items complete: all three items exist and each site row shows its intended Default Supply Source. Job Shop by Site must be Active or In Preparation in Concept Activation (tcemm4600m000) — the same setting Configure the made group's Production defaults depend on."
+      "text": "You need step 13 of Create the three items."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A bill of material is written against the item, per site, and cannot be used for manufacture until its revision is approved; approval and the two use indicators, for planning and for costing, are three separate actions. The material lines carry the issuing warehouse, and the revision's effective date decides whether a production order's reference date selects it."
+        "v": "A BOM lists what one item is made from, at one site. LN only makes items from an approved BOM. Approving it, using it for planning and using it for costing are three separate actions. Each material line says which warehouse the material comes from."
       }
     ],
-    "text": "A bill of material is written against the item, per site, and cannot be used for manufacture until its revision is approved; approval and the two use indicators, for planning and for costing, are three separate actions. The material lines carry the issuing warehouse, and the revision's effective date decides whether a production order's reference date selects it."
+    "text": "A BOM lists what one item is made from, at one site. LN only makes items from an approved BOM. Approving it, using it for planning and using it for costing are three separate actions. Each material line says which warehouse the material comes from."
   },
   "blocks": [
     {
@@ -166,24 +101,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Check "
                 },
                 {
-                  "t": "session",
-                  "code": "tibom3100m000",
-                  "name": "Job Shop Bills of Material"
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top is the site from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Open Job Shop Bills of Material (tibom3100m000)"
+              "text": "Check Site at the top is the site from step 1 of Choose the site, warehouses and units"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The BOM overview opens for one site"
+                  "v": "Only that site's BOMs are listed"
                 }
               ],
-              "text": "The BOM overview opens for one site"
+              "text": "Only that site's BOMs are listed"
             }
           ],
           "id": "1",
@@ -205,32 +148,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm "
+                  "v": "Filter "
                 },
                 {
                   "t": "field",
-                  "v": "Site"
+                  "v": "Product"
                 },
                 {
                   "t": "text",
-                  "v": " is the site from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": " on the made item"
                 }
               ],
-              "text": "Confirm Site is the site from step 2 of Confirm the test design"
+              "text": "Filter Product on the made item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Only that site's bills of material are listed"
+                  "v": "No BOM for it yet"
                 }
               ],
-              "text": "Only that site's bills of material are listed"
+              "text": "No BOM for it yet"
             }
           ],
           "id": "2",
@@ -252,32 +190,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Filter "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Product"
-                },
-                {
-                  "t": "text",
-                  "v": " for the finished item from "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the three items",
-                  "href": "create-the-three-items.md"
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Filter Product for the finished item from Create the three items"
+              "text": "Click New"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tibom3600m000",
+                  "name": "Job Shop Bill of Material"
+                },
+                {
                   "t": "text",
-                  "v": "No bill of material exists yet for the chopstick pair"
+                  "v": " opens, empty"
                 }
               ],
-              "text": "No bill of material exists yet for the chopstick pair"
+              "text": "Job Shop Bill of Material (tibom3600m000) opens, empty"
             }
           ],
           "id": "3",
@@ -299,23 +233,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select "
+                  "v": "Set "
                 },
                 {
-                  "t": "button",
-                  "label": "New"
+                  "t": "field",
+                  "v": "Product"
+                },
+                {
+                  "t": "text",
+                  "v": " to the made item"
                 }
               ],
-              "text": "Select New"
+              "text": "Set Product to the made item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A blank BOM header opens"
+                  "v": "—"
                 }
               ],
-              "text": "A blank BOM header opens"
+              "text": "—"
             }
           ],
           "id": "4",
@@ -341,27 +279,27 @@
                 },
                 {
                   "t": "field",
-                  "v": "Product"
+                  "v": "BOM Quantity"
                 },
                 {
                   "t": "text",
-                  "v": " to the finished item"
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
                 }
               ],
-              "text": "Set Product to the finished item"
+              "text": "Set BOM Quantity to 1"
             },
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "BAM-CHOP-PAIR"
-                },
-                {
                   "t": "text",
-                  "v": " is selected"
+                  "v": "—"
                 }
               ],
-              "text": "BAM-CHOP-PAIR is selected"
+              "text": "—"
             }
           ],
           "id": "5",
@@ -387,28 +325,31 @@
                 },
                 {
                   "t": "field",
-                  "v": "BOM Quantity"
+                  "v": "Effective Date"
                 },
                 {
                   "t": "text",
-                  "v": " to 1"
+                  "v": " to the day of your production order, or earlier"
                 }
               ],
-              "text": "Set BOM Quantity to 1"
+              "text": "Set Effective Date to the day of your production order, or earlier"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The material quantities below are the quantities for one pair"
+                  "v": "—"
                 }
               ],
-              "text": "The material quantities below are the quantities for one pair"
+              "text": "—"
             }
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -425,27 +366,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Leave "
                 },
                 {
                   "t": "field",
-                  "v": "Effective Date"
+                  "v": "Routing"
                 },
                 {
                   "t": "text",
-                  "v": " on or before the date of the production order you intend to run"
+                  "v": " empty"
                 }
               ],
-              "text": "Set Effective Date on or before the date of the production order you intend to run"
+              "text": "Leave Routing empty"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The revision will be valid on that order's reference date"
+                  "v": "—"
                 }
               ],
-              "text": "The revision will be valid on that order's reference date"
+              "text": "—"
             }
           ],
           "id": "7",
@@ -467,32 +408,51 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Leave "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Routing"
-                },
-                {
-                  "t": "text",
-                  "v": " blank"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Leave Routing blank"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
                   "t": "text",
-                  "v": "The BOM stays usable with any routing"
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "BOM and revision"
                 }
               ],
-              "text": "The BOM stays usable with any routing"
+              "text": "Status = New — BOM and revision"
             }
           ],
           "id": "8",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -509,47 +469,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the header"
+                  "v": "In a new line of the materials grid below the header, enter the first bought item in "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
                 }
               ],
-              "text": "Save the header"
+              "text": "In a new line of the materials grid below the header, enter the first bought item in Item"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "BOM and revision"
-                },
-                {
-                  "t": "text",
-                  "v": "; "
-                },
-                {
-                  "t": "field",
-                  "v": "Status"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "status",
-                  "v": "New"
+                  "v": "—"
                 }
               ],
-              "text": "BOM and revision; Status = New"
+              "text": "—"
             }
           ],
           "id": "9",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -566,29 +510,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the saved BOM and go to its material lines"
+                  "v": "Enter how many go into one made item in "
+                },
+                {
+                  "t": "field",
+                  "v": "Net Quantity"
                 }
               ],
-              "text": "Open the saved BOM and go to its material lines"
+              "text": "Enter how many go into one made item in Net Quantity"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "tibom3110m000",
-                  "name": "Job Shop List of Materials"
-                },
-                {
                   "t": "text",
-                  "v": " opens for this BOM and revision"
+                  "v": "—"
                 }
               ],
-              "text": "Job Shop List of Materials (tibom3110m000) opens for this BOM and revision"
+              "text": "—"
             }
           ],
           "id": "10",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            2
+          ]
         },
         {
           "cells": [
@@ -605,35 +551,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a line: "
+                  "v": "Check the line's "
                 },
                 {
                   "t": "field",
-                  "v": "Item"
-                },
-                {
-                  "t": "text",
-                  "v": " = the bamboo rod, "
-                },
-                {
-                  "t": "field",
-                  "v": "Net Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " = 2"
+                  "v": "Warehouse"
                 }
               ],
-              "text": "Add a line: Item = the bamboo rod, Net Quantity = 2"
+              "text": "Check the line's Warehouse"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Two rods per pair"
+                  "v": "The raw-material warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Two rods per pair"
+              "text": "The raw-material warehouse from step 2 of Choose the site, warehouses and units"
             }
           ],
           "id": "11",
@@ -655,35 +594,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a line: "
-                },
-                {
-                  "t": "field",
-                  "v": "Item"
-                },
-                {
-                  "t": "text",
-                  "v": " = the paper sleeve, "
-                },
-                {
-                  "t": "field",
-                  "v": "Net Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " = 1"
+                  "v": "Do steps 9 to 11 for the second bought item"
                 }
               ],
-              "text": "Add a line: Item = the paper sleeve, Net Quantity = 1"
+              "text": "Do steps 9 to 11 for the second bought item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One sleeve per pair"
+                  "v": "Two lines"
                 }
               ],
-              "text": "One sleeve per pair"
+              "text": "Two lines"
             }
           ],
           "id": "12",
@@ -705,41 +628,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On both lines, set "
+                  "v": "Leave "
                 },
                 {
                   "t": "field",
-                  "v": "Warehouse"
+                  "v": "Scrap Percentage"
                 },
                 {
                   "t": "text",
-                  "v": " to the raw-material warehouse. It is the one from step 5 of "
+                  "v": " and "
                 },
                 {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "t": "field",
+                  "v": "Scrap Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " at 0"
                 }
               ],
-              "text": "On both lines, set Warehouse to the raw-material warehouse. It is the one from step 5 of Confirm the test design"
+              "text": "Leave Scrap Percentage and Scrap Quantity at 0"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each material will be issued from the warehouse "
-                },
-                {
-                  "t": "link",
-                  "v": "Stock the components",
-                  "href": "stock-the-components.md"
-                },
-                {
-                  "t": "text",
-                  "v": " stocks"
+                  "v": "—"
                 }
               ],
-              "text": "Each material will be issued from the warehouse Stock the components stocks"
+              "text": "—"
             }
           ],
           "id": "13",
@@ -761,35 +678,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Leave "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Scrap Percentage"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Scrap Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " at zero"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Leave Scrap Percentage and Scrap Quantity at zero"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "No material loss is modelled in this test"
+                  "v": "Both lines are saved"
                 }
               ],
-              "text": "No material loss is modelled in this test"
+              "text": "Both lines are saved"
             }
           ],
           "id": "14",
@@ -811,35 +716,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the material lines"
+                  "v": "Go back to "
+                },
+                {
+                  "t": "chip",
+                  "v": "Job Shop Bills of Material"
+                },
+                {
+                  "t": "text",
+                  "v": " and tick your BOM's row"
                 }
               ],
-              "text": "Save the material lines"
+              "text": "Go back to Job Shop Bills of Material and tick your BOM's row"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "BOM materials stored"
-                },
-                {
-                  "t": "text",
-                  "v": " — both lines belong to this BOM revision"
+                  "v": "—"
                 }
               ],
-              "text": "BOM materials stored — both lines belong to this BOM revision"
+              "text": "—"
             }
           ],
           "id": "15",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -855,52 +757,20 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Select the BOM row and run "
-                },
-                {
                   "t": "command",
-                  "route": "Actions ➔ Approve Revision"
+                  "route": "Actions ➔ Revision ➔ Approve Revision"
                 }
               ],
-              "text": "Select the BOM row and run Actions ➔ Approve Revision"
+              "text": "Actions ➔ Revision ➔ Approve Revision"
             },
             {
               "tokens": [
                 {
-                  "t": "field",
-                  "v": "Status"
-                },
-                {
                   "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "status",
-                  "v": "Approved"
-                },
-                {
-                  "t": "text",
-                  "v": "; "
-                },
-                {
-                  "t": "field",
-                  "v": "Approved By"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Approved On"
-                },
-                {
-                  "t": "text",
-                  "v": " are filled"
+                  "v": "LN says the revision was approved"
                 }
               ],
-              "text": "Status = Approved; Approved By and Approved On are filled"
+              "text": "LN says the revision was approved"
             }
           ],
           "id": "16",
@@ -921,28 +791,20 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "With the same row selected, run "
-                },
-                {
                   "t": "command",
-                  "route": "Actions ➔ Use for Planning Indicator"
+                  "route": "Actions ➔ Use ➔ Use for Planning"
                 }
               ],
-              "text": "With the same row selected, run Actions ➔ Use for Planning Indicator"
+              "text": "Actions ➔ Use ➔ Use for Planning"
             },
             {
               "tokens": [
                 {
-                  "t": "field",
-                  "v": "Use for Planning"
-                },
-                {
                   "t": "text",
-                  "v": " is selected on the row"
+                  "v": "—"
                 }
               ],
-              "text": "Use for Planning is selected on the row"
+              "text": "—"
             }
           ],
           "id": "17",
@@ -963,94 +825,147 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "With the same row selected, run "
-                },
-                {
                   "t": "command",
-                  "route": "Actions ➔ Use for Costing Indicator"
+                  "route": "Actions ➔ Use ➔ Use for Costing"
                 }
               ],
-              "text": "With the same row selected, run Actions ➔ Use for Costing Indicator"
+              "text": "Actions ➔ Use ➔ Use for Costing"
             },
             {
               "tokens": [
+                {
+                  "t": "field",
+                  "v": "Use for Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
                 {
                   "t": "field",
                   "v": "Use for Costing"
                 },
                 {
                   "t": "text",
-                  "v": " is selected on the row"
+                  "v": " have green ticks"
                 }
               ],
-              "text": "Use for Costing is selected on the row"
+              "text": "Use for Planning and Use for Costing have green ticks"
             }
           ],
           "id": "18",
           "optional": false,
           "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "19"
-                }
-              ],
-              "text": "19"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Close and reopen the BOM"
-                }
-              ],
-              "text": "Close and reopen the BOM"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "BOM approved and in use"
-                },
-                {
-                  "t": "text",
-                  "v": " — "
-                },
-                {
-                  "t": "status",
-                  "v": "Approved"
-                },
-                {
-                  "t": "text",
-                  "v": ", both indicators set, both material lines present"
-                }
-              ],
-              "text": "BOM approved and in use — Approved, both indicators set, both material lines present"
-            }
-          ],
-          "id": "19",
-          "optional": false,
-          "produces": true
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Effective Date"
+              }
+            ],
+            "text": "Effective Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "today"
+              }
+            ],
+            "text": "today"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Net Quantity"
+              }
+            ],
+            "text": "Net Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "2 for BAM-ROD, 1 for BAM-SLEEVE"
+          }
+        ]
+      }
+    ]
   },
   "screenshot": null,
   "problems": {
@@ -1066,16 +981,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The BOM header will not save"
+                "v": "The BOM won't save"
               }
             ],
-            "text": "The BOM header will not save"
+            "text": "The BOM won't save"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Confirm "
+                "v": "Check "
               },
               {
                 "t": "field",
@@ -1099,7 +1014,7 @@
               },
               {
                 "t": "text",
-                "v": ", and "
+                "v": " and "
               },
               {
                 "t": "field",
@@ -1107,10 +1022,10 @@
               },
               {
                 "t": "text",
-                "v": ". Do not clear a proposed required value to make the save pass"
+                "v": ". Don't clear a value LN filled in to make it save"
               }
             ],
-            "text": "Confirm Site, Product, BOM Quantity, and Effective Date. Do not clear a proposed required value to make the save pass"
+            "text": "Check Site, Product, BOM Quantity and Effective Date. Don't clear a value LN filled in to make it save"
           }
         ]
       },
@@ -1120,31 +1035,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The BOM stays at "
+                "v": "The BOM stays "
               },
               {
                 "t": "status",
                 "v": "New"
               }
             ],
-            "text": "The BOM stays at New"
+            "text": "The BOM stays New"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Only Approved bills of material can be used for manufacture. Run "
+                "v": "LN only makes items from an approved BOM. Tick its row and choose "
               },
               {
                 "t": "command",
-                "route": "Actions ➔ Approve Revision"
-              },
-              {
-                "t": "text",
-                "v": " on the selected row"
+                "route": "Actions ➔ Revision ➔ Approve Revision"
               }
             ],
-            "text": "Only Approved bills of material can be used for manufacture. Run Actions ➔ Approve Revision on the selected row"
+            "text": "LN only makes items from an approved BOM. Tick its row and choose Actions ➔ Revision ➔ Approve Revision"
           }
         ]
       },
@@ -1153,24 +1064,54 @@
           {
             "tokens": [
               {
-                "t": "chip",
-                "v": "Use for Planning"
+                "t": "text",
+                "v": "LN refuses "
               },
               {
-                "t": "text",
-                "v": " is refused"
+                "t": "chip",
+                "v": "Use for Planning"
               }
             ],
-            "text": "Use for Planning is refused"
+            "text": "LN refuses Use for Planning"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Another BOM already holds it for this item and site — one per item and site for planning, one per product for costing"
+                "v": "Another BOM already has it. Only one BOM per item and site can be used for planning, and one per item for costing"
               }
             ],
-            "text": "Another BOM already holds it for this item and site — one per item and site for planning, one per product for costing"
+            "text": "Another BOM already has it. Only one BOM per item and site can be used for planning, and one per item for costing"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order has no materials"
+              }
+            ],
+            "text": "The production order has no materials"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Its date is before the BOM's "
+              },
+              {
+                "t": "field",
+                "v": "Effective Date"
+              },
+              {
+                "t": "text",
+                "v": ". See step 6"
+              }
+            ],
+            "text": "Its date is before the BOM's Effective Date. See step 6"
           }
         ]
       }

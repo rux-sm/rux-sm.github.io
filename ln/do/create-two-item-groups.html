@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Create two item groups · LN Notes · Updated 21 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Create two item groups · LN Notes · Updated 2 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -101,13 +101,15 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/use-the-ai-commands.html"><span class="rux--side-nav__link-text">Use the AI commands</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-a-warehouse.html"><span class="rux--side-nav__link-text">Create a warehouse</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-a-business-partner.html"><span class="rux--side-nav__link-text">Create a business partner</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../screens/index.html"><span class="rux--side-nav__link-text">Sessions</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../ideas/index.html"><span class="rux--side-nav__link-text">Ideas</span></a></li>
     </ul>
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b37f60b55c1f7a6fe52cd84a77d3b6536fa8f8f3">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -118,26 +120,27 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Create two item groups</h1>
-<p class="rux--type-body-long-01">Purchase and Job Shop defaults remain isolated from each other.</p>
+<p class="rux--type-body-long-01">There are two new item groups, one for bought items and one for made items.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>21 Oct 2026</dd></div></dl>
-<p class="ln-strip">Task 2 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a></p>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Nov 2026</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>2 Nov 2026</dd></div></dl>
+<p class="ln-strip">Task 2 of 10 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/configure-the-purchased-group.html">Set the defaults for bought items</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Item Classification</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Groups</span></span> (<span class="ln-t-exact ln-t-word">tcmcs0123m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> attaches defaults to it.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN keeps item defaults for each item type and item group. Bought and made items need different defaults, so each gets a group of its own. A new group is only a code, a description and a currency until the next tasks give it defaults.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>2.1</b></td><td data-k="Action">Search for the proposed purchased-group code</td><td data-k="You should see">No existing row uses it</td></tr>
-<tr id="step-2"><td data-k="Step"><b>2.2</b></td><td data-k="Action">Select <span class="ln-t-press">New</span></td><td data-k="You should see">A blank item-group row opens</td></tr>
-<tr id="step-3"><td data-k="Step"><b>2.3</b></td><td data-k="Action">Enter <span class="ln-t-named">Item Group</span> and <span class="ln-t-named">Description</span> for the purchased group</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">purchased-supply item group</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-4"><td data-k="Step"><b>2.4</b></td><td data-k="Action">Set <span class="ln-t-named">Currency</span> to the approved company currency</td><td data-k="You should see">The currency is populated</td></tr>
-<tr id="step-5"><td data-k="Step"><b>2.5</b></td><td data-k="Action">Save the purchased group</td><td data-k="You should see">The purchased group is available for defaults</td></tr>
-<tr id="step-6"><td data-k="Step"><b>2.6</b></td><td data-k="Action">Repeat <a class="rux--link" href="#step-1">steps 2.1–2.5</a> for the made group</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made-supply item group</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">both dedicated groups are available for defaults</span></span></td></tr>
+<tr id="step-1"><td data-k="Step"><b>2.1</b></td><td data-k="Action">Search for the group code you plan to use for bought items</td><td data-k="You should see">No group has that code</td></tr>
+<tr id="step-2"><td data-k="Step"><b>2.2</b></td><td data-k="Action">Click <span class="ln-t-press">New</span></td><td data-k="You should see">A new row</td></tr>
+<tr id="step-3"><td data-k="Step"><b>2.3</b></td><td data-k="Action">Enter the code in <span class="ln-t-named">Item Group</span><span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Item Group</span> <span class="ln-t-exact ln-t-word">BAM-RM</span> for bought items, <span class="ln-t-exact ln-t-word">BAM-FG</span> for made items</span></span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">group for bought items</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>2.4</b></td><td data-k="Action">Enter a <span class="ln-t-named">Description</span><span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Description</span> Bamboo Raw Materials, Bamboo Finished Goods</span></span></td><td data-k="You should see"></td></tr>
+<tr id="step-5"><td data-k="Step"><b>2.5</b></td><td data-k="Action">Set <span class="ln-t-named">Currency</span> to your company's currency</td><td data-k="You should see"></td></tr>
+<tr id="step-6"><td data-k="Step"><b>2.6</b></td><td data-k="Action">Click <span class="ln-t-press">Save</span></td><td data-k="You should see">The group is listed</td></tr>
+<tr id="step-7"><td data-k="Step"><b>2.7</b></td><td data-k="Action">Do <a class="rux--link" href="#step-1">steps 2.1 to 2.6</a> again for made items</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">group for made items</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -148,7 +151,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">Either item-group code already exists</td><td data-k="What to do">Use new dedicated group codes rather than changing an existing group</td></tr>
+<tr><td data-k="Symptom">A group code is already used</td><td data-k="What to do">Choose another code. Don't change a group someone else uses</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -167,7 +170,7 @@
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
   <li><b>Session</b><p><a class="rux--link" href="../screens/tcmcs0123m000.html"><span class="ln-t-named">Item Groups</span></a> (<span class="ln-t-exact ln-t-word">tcmcs0123m000</span>)<br><span class="ln-quiet">Defines item groups. Item group and item type together pick which item defaults a new item gets.</span></p></li>
-  <li><b>Next task</b><p><a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> in Create test items</p></li>
+  <li><b>Next task</b><p><a class="rux--link" href="../do/configure-the-purchased-group.html">Set the defaults for bought items</a> in Create test items</p></li>
 </ul>
 </section>
 <section class="ln-paper-only">
@@ -176,7 +179,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>2</b></td><td data-k="Expected result">Purchase and Job Shop defaults remain isolated from each other</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>2</b></td><td data-k="Expected result">There are two new item groups, one for bought items and one for made items</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -205,38 +208,39 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Item Classification</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Groups</span></span> (<span class="ln-t-exact ln-t-word">tcmcs0123m000</span>)</p><h1 class="ln-step__do">Search for the proposed purchased-group code</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No existing row uses it</p></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Item Classification</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Groups</span></span> (<span class="ln-t-exact ln-t-word">tcmcs0123m000</span>)</p><h1 class="ln-step__do">Search for the group code you plan to use for bought items</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No group has that code</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-press">New</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank item-group row opens</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">New</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new row</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Enter <span class="ln-t-named">Item Group</span> and <span class="ln-t-named">Description</span> for the purchased group</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Enter the code in <span class="ln-t-named">Item Group</span></h1><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Item Group</span> <span class="ln-copy"><code class="ln-task__code">BAM-RM</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-RM" aria-label="Copy BAM-RM"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span> for bought items, <span class="ln-copy"><code class="ln-task__code">BAM-FG</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-FG" aria-label="Copy BAM-FG"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span> for made items</div></div></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-56">Purchased-supply item group</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-55">Group for bought items</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-56" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/0" data-at="2.3" data-label="Purchased-supply item group">
+        <input id="write-55" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/0" data-at="2.3" data-label="Group for bought items">
       </div></div>
     </div></div></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Currency</span> to the approved company currency</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The currency is populated</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Enter a <span class="ln-t-named">Description</span></h1><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Description</span> Bamboo Raw Materials, Bamboo Finished Goods</div></div></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Save the purchased group</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The purchased group is available for defaults</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Currency</span> to your company's currency</h1></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 1–5 for the made group</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The group is listed</p></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Do steps 1 to 6 again for made items</h1></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-57">Made-supply item group</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-56">Group for made items</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-57" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="6/0" data-at="2.6" data-label="Made-supply item group">
+        <input id="write-56" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="7/0" data-at="2.7" data-label="Group for made items">
       </div></div>
-      <div class="rux--form__helper-text">both dedicated groups are available for defaults</div>
     </div></div></div>
   </li>
 </ol>
@@ -254,7 +258,7 @@
       <div class="rux--accordion__title">Stuck? · 1</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>Either item-group code already exists</b><p>Use new dedicated group codes rather than changing an existing group</p></li>
+  <li><b>A group code is already used</b><p>Choose another code. Don't change a group someone else uses</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -262,7 +266,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> attaches defaults to it.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>LN keeps item defaults for each item type and item group. Bought and made items need different defaults, so each gets a group of its own. A new group is only a code, a description and a currency until the next tasks give it defaults.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

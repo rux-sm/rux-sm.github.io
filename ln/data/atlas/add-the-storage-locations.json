@@ -1,0 +1,898 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "add-the-storage-locations",
+  "title": "Add the locations",
+  "process": {
+    "id": "create-a-warehouse",
+    "title": "Create a warehouse",
+    "n": 1,
+    "of": 3
+  },
+  "previous": {
+    "id": "create-the-warehouse",
+    "title": "Create the warehouse"
+  },
+  "next": {
+    "id": "turn-on-locations",
+    "title": "Turn on locations"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouse - Locations",
+  "session": "Warehouse - Locations",
+  "sessionCode": "whwmd3500m000",
+  "walked": "2026-11-02",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick."
+      }
+    ],
+    "text": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 7 of "
+        },
+        {
+          "t": "link",
+          "v": "Create the warehouse",
+          "href": "create-the-warehouse.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 7 of Create the warehouse."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A location is a place in the warehouse, and its type says what it's for. Goods arrive on the receiving location, are put away on a bulk or pick location, and wait to ship on the staging location. Blocked goods go to quarantine. Bulk and pick locations can hold several items each once "
+      },
+      {
+        "t": "field",
+        "v": "Multi-Item Locations"
+      },
+      {
+        "t": "text",
+        "v": " is ticked."
+      }
+    ],
+    "text": "A location is a place in the warehouse, and its type says what it's for. Goods arrive on the receiving location, are put away on a bulk or pick location, and wait to ship on the staging location. Blocked goods go to quarantine. Bulk and pick locations can hold several items each once Multi-Item Locations is ticked."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehouses"
+                },
+                {
+                  "t": "text",
+                  "v": ", with your warehouse open, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Locations"
+                }
+              ],
+              "text": "On Warehouses, with your warehouse open, choose References ➔ Locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Warehouse - Locations"
+                },
+                {
+                  "t": "text",
+                  "v": ", with your warehouse at the top and no locations"
+                }
+              ],
+              "text": "Warehouse - Locations, with your warehouse at the top and no locations"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd3100s000",
+                  "name": "Warehouse - Location"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, empty"
+                }
+              ],
+              "text": "Warehouse - Location (whwmd3100s000) opens, empty"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "REC"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Location"
+                }
+              ],
+              "text": "Type REC in Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click in "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                },
+                {
+                  "t": "text",
+                  "v": " and type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Receiving"
+                }
+              ],
+              "text": "Click in Description and type Receiving"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Search Key"
+                },
+                {
+                  "t": "text",
+                  "v": " fills in"
+                }
+              ],
+              "text": "Search Key fills in"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Location Type"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Receiving"
+                }
+              ],
+              "text": "Set Location Type to Receiving"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Multi-Item Locations"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Multi-Lot by Item"
+                },
+                {
+                  "t": "text",
+                  "v": " tick themselves"
+                }
+              ],
+              "text": "Multi-Item Locations and Multi-Lot by Item tick themselves"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 2 to 6 for "
+                },
+                {
+                  "t": "literal",
+                  "v": "STG"
+                },
+                {
+                  "t": "text",
+                  "v": " Staging, then "
+                },
+                {
+                  "t": "literal",
+                  "v": "QUA"
+                },
+                {
+                  "t": "text",
+                  "v": " Quarantine"
+                }
+              ],
+              "text": "Do steps 2 to 6 for STG Staging, then QUA Quarantine"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An empty location"
+                }
+              ],
+              "text": "An empty location"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "BULK"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Location"
+                }
+              ],
+              "text": "Type BULK in Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click in "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                },
+                {
+                  "t": "text",
+                  "v": " and type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Bulk"
+                }
+              ],
+              "text": "Click in Description and type Bulk"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Location Type"
+                },
+                {
+                  "t": "text",
+                  "v": " is already "
+                },
+                {
+                  "t": "literal",
+                  "v": "Bulk"
+                }
+              ],
+              "text": "Location Type is already Bulk"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick "
+                },
+                {
+                  "t": "field",
+                  "v": "Multi-Item Locations"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Multi-Lot by Item"
+                }
+              ],
+              "text": "Tick Multi-Item Locations and Multi-Lot by Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transactions"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open the Transactions tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Inbound"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Outbound"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Transfer (Receipt)"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Transfer (Issue)"
+                },
+                {
+                  "t": "text",
+                  "v": " are ticked"
+                }
+              ],
+              "text": "Inbound, Outbound, Transfer (Receipt) and Transfer (Issue) are ticked"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 8 to 13 for "
+                },
+                {
+                  "t": "literal",
+                  "v": "PICK"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "literal",
+                  "v": "Pick"
+                },
+                {
+                  "t": "text",
+                  "v": " as "
+                },
+                {
+                  "t": "field",
+                  "v": "Location Type"
+                }
+              ],
+              "text": "Do steps 8 to 13 for PICK, with Pick as Location Type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the location and click the first-row arrow above the list"
+                }
+              ],
+              "text": "Close the location and click the first-row arrow above the list"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "BULK, PICK, QUA, REC and STG"
+                }
+              ],
+              "text": "BULK, PICK, QUA, REC and STG"
+            }
+          ],
+          "id": "15",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The location saved before you set its type"
+              }
+            ],
+            "text": "The location saved before you set its type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Open it from the list, set "
+              },
+              {
+                "t": "field",
+                "v": "Location Type"
+              },
+              {
+                "t": "text",
+                "v": " and save again. See step 4"
+              }
+            ],
+            "text": "Open it from the list, set Location Type and save again. See step 4"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A location you made isn't in the list"
+              }
+            ],
+            "text": "A location you made isn't in the list"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The list may start past it. See step 15"
+              }
+            ],
+            "text": "The list may start past it. See step 15"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Goods won't go onto a location"
+              }
+            ],
+            "text": "Goods won't go onto a location"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A movement may be clear, or blocked, on its Transactions tab. See step 12"
+              }
+            ],
+            "text": "A movement may be clear, or blocked, on its Transactions tab. See step 12"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

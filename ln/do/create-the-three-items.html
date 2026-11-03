@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Create the three items · LN Notes · Updated 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Create the three items · LN Notes · Updated 2 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -102,13 +102,15 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/use-the-ai-commands.html"><span class="rux--side-nav__link-text">Use the AI commands</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-a-warehouse.html"><span class="rux--side-nav__link-text">Create a warehouse</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-a-business-partner.html"><span class="rux--side-nav__link-text">Create a business partner</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../screens/index.html"><span class="rux--side-nav__link-text">Sessions</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../ideas/index.html"><span class="rux--side-nav__link-text">Ideas</span></a></li>
     </ul>
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b37f60b55c1f7a6fe52cd84a77d3b6536fa8f8f3">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -119,10 +121,10 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Create the three items</h1>
-<p class="rux--type-body-long-01">Each item inherits its group's defaults and its site row shows the intended role.</p>
+<p class="rux--type-body-long-01">The three items are saved, and each site row shows the supply source and item data its group gives.</p>
 </div>
-<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>11 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div></dl>
-<p class="ln-strip">Task 6 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a></p>
+<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>13 steps</dd></div><div><dt>Updated</dt><dd>2 Nov 2026</dd></div></dl>
+<p class="ln-strip">Task 6 of 10 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the bill of material</a></p>
 <div class="ln-unwalked"><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
@@ -135,44 +137,30 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
-<ul class="ln-proc__list"><li>You need <a class="rux--link" href="../do/confirm-the-test-design.html#step-2">step 1.2</a> (Confirm the test design).</li></ul>
+<ul class="ln-proc__list"><li>You need <a class="rux--link" href="../do/verify-site-creation-control.html#step-6">step 5.6</a> (Check the site follows the defaults).</li></ul>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items</span></span> (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> to <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a>, which is why nothing inheritable is typed here.</p>
-<div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">Create the two purchased items first and the pair last, and do not create the pair until <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> has approved Production and Sales defaults.</div>
-    </div>
-  </div>
-</div><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">The Item identifier has separate <span class="ln-t-named">Project</span> and <span class="ln-t-named">Item</span> portions. These are standard test items: leave <span class="ln-t-named">Project</span> blank and enter the <span class="ln-t-exact ln-t-word">BAM-*</span> code in the <span class="ln-t-named">Item</span> portion. If <a class="rux--link" href="../screens/tcmcs0152s000.html"><span class="ln-t-named">General Projects</span></a> (<span class="ln-t-exact ln-t-word">tcmcs0152s000</span>) opens from the Project lookup, close it without creating a project.</div>
-    </div>
-  </div>
-</div>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> When you save, LN gives the item its group's supply source, units and item data. If <strong>Sites</strong> was ticked in the defaults, it adds a site row too. The site row is where you check the defaults worked. That's why you don't type what LN fills in: a value you type would hide a mistake in the defaults.</p>
+
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>6.1</b></td><td data-k="Action">Open <a class="rux--link" href="../screens/tcibd0501m000.html"><span class="ln-t-named">Items</span></a> (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>)</td><td data-k="You should see">The global item overview opens</td></tr>
-<tr id="step-2"><td data-k="Step"><b>6.2</b></td><td data-k="Action">Select <span class="ln-t-press">New</span></td><td data-k="You should see">A blank Item record opens</td></tr>
-<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">With <span class="ln-t-named">Project</span> blank, enter the item's code in the <span class="ln-t-named">Item</span> portion and its <span class="ln-t-named">Description</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item code</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact ln-t-word">Product</span> and <span class="ln-t-named">Item Group</span> to the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></td><td data-k="You should see">Supply source, Unit Set, and Inventory Unit default from <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> or 3</td></tr>
-<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Complete any remaining field the screen marks required, using the family values</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item Grade, if the screen requires one</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-6"><td data-k="Step"><b>6.6</b></td><td data-k="Action">Save the item header before working in the <span class="ln-t-named">Sites</span> grid</td><td data-k="You should see">The item header is saved</td></tr>
-<tr id="step-7"><td data-k="Step"><b>6.7</b></td><td data-k="Action">In the <span class="ln-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="ln-t-exact ln-t-word">=</span>. If no saved row begins with the site from <a class="rux--link" href="../do/confirm-the-test-design.html#step-2">step 1.2</a> (Confirm the test design), run <span class="ln-t-named">Create Items by Site</span> from the tab's appropriate menu; if that produces nothing, select <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, select that site, and save the record</td><td data-k="You should see">A saved site line beginning with the actual site code exists</td></tr>
-<tr id="step-8"><td data-k="Step"><b>6.8</b></td><td data-k="Action">Select the saved site line and open it with the row-arrow button</td><td data-k="You should see"><span class="ln-t-named">Items by Site</span> opens for this item and site</td></tr>
-<tr id="step-9"><td data-k="Step"><b>6.9</b></td><td data-k="Action">Verify <span class="ln-t-named">Default Supply Source</span> matches the item's role — <span class="ln-t-exact ln-t-word">Purchase</span> for the rod and the sleeve, <span class="ln-t-exact">Job Shop</span> for the pair</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site supply source</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-10"><td data-k="Step"><b>6.10</b></td><td data-k="Action">Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site subentities</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-11"><td data-k="Step"><b>6.11</b></td><td data-k="Action">Repeat <a class="rux--link" href="#step-2">steps 6.2–6.10</a> for the remaining items, each with its own group</td><td data-k="You should see">All three items and their site rows match the family sheet §1</td></tr>
+<tr id="step-1"><td data-k="Step"><b>6.1</b></td><td data-k="Action">Click <span class="ln-t-press">New</span></td><td data-k="You should see"><a class="rux--link" href="../screens/tcibd0501m100.html"><span class="ln-t-named">Item</span></a> (<span class="ln-t-exact ln-t-word">tcibd0501m100</span>) opens, empty. It can take half a minute</td></tr>
+<tr id="step-2"><td data-k="Step"><b>6.2</b></td><td data-k="Action"><span class="ln-t-named">Item</span> has two boxes. Leave the first, for a project, empty. Type the first bought item's code in the second<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Item</span> <span class="ln-t-exact ln-t-word">BAM-ROD</span>, then <span class="ln-t-exact ln-t-word">BAM-SLEEVE</span>, then <span class="ln-t-exact ln-t-word">BAM-CHOP-PAIR</span></span></span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item code</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">Click into <span class="ln-t-named">Description</span> and enter one<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Description</span> Bamboo Rod, then Paper Sleeve, then Bamboo Chopstick Pair</span></span></td><td data-k="You should see"></td></tr>
+<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Check <span class="ln-t-named">Item Type</span></td><td data-k="You should see"><span class="ln-t-exact ln-t-word">Product</span></td></tr>
+<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Click into <span class="ln-t-named">Item Group</span> and enter the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></td><td data-k="You should see"><span class="ln-t-named">Unit Set</span> and <span class="ln-t-named">Unit</span> fill in</td></tr>
+<tr id="step-6"><td data-k="Step"><b>6.6</b></td><td data-k="Action">Fill in any other field the screen says is needed</td><td data-k="You should see"></td></tr>
+<tr id="step-7"><td data-k="Step"><b>6.7</b></td><td data-k="Action">Click <span class="ln-t-press">Save</span></td><td data-k="You should see">The item is saved, and the <span class="ln-t-named">Subentities</span> indicators of its group turn green</td></tr>
+<tr id="step-8"><td data-k="Step"><b>6.8</b></td><td data-k="Action">Look at the <span class="ln-t-named">Sites</span> grid</td><td data-k="You should see">A row for your site, with <span class="ln-t-named">Default Supply Source</span> filled in. The top row, marked <span class="ln-t-exact ln-t-word">=</span>, is a filter, not a site</td></tr>
+<tr id="step-9"><td data-k="Step"><b>6.9</b></td><td data-k="Action">If there's no row for your site, choose <span class="ln-t-named">Create Items by Site</span> from the <span class="ln-t-named">Sites</span> tab's menu</td><td data-k="You should see">A row for your site</td></tr>
+<tr id="step-10"><td data-k="Step"><b>6.10</b></td><td data-k="Action">Open your site's row with the arrow at its start</td><td data-k="You should see"><a class="rux--link" href="../screens/tcibd1550m000.html"><span class="ln-t-named">Items by Site</span></a> (<span class="ln-t-exact ln-t-word">tcibd1550m000</span>) opens for this item and site</td></tr>
+<tr id="step-11"><td data-k="Step"><b>6.11</b></td><td data-k="Action">Check <span class="ln-t-named">Default Supply Source</span></td><td data-k="You should see"><span class="ln-t-exact ln-t-word">Purchase</span> for a bought item, <span class="ln-t-exact">Job Shop</span> for a made one</td></tr>
+<tr id="step-12"><td data-k="Step"><b>6.12</b></td><td data-k="Action">Check which kinds of item data are on</td><td data-k="You should see">Ordering, Purchase and Warehousing for a bought item. Ordering, Production, Warehousing and Sales for a made one</td></tr>
+<tr id="step-13"><td data-k="Step"><b>6.13</b></td><td data-k="Action">Do <a class="rux--link" href="#step-1">steps 6.1 to 6.12</a> for the second bought item, then for the made item</td><td data-k="You should see">Each item's site row matches its group</td></tr>
 </tbody>
 </table></div>
 
@@ -183,10 +171,12 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">The item code is rejected</td><td data-k="What to do">Follow the current item-code segmentation; do not modify segmentation for the experiment</td></tr>
-<tr><td data-k="Symptom">The save is refused for a field this task does not name</td><td data-k="What to do">Record the field label and the message. Do not clear another value to force the save. <span class="ln-t-named">Grade</span> was found this way</td></tr>
-<tr><td data-k="Symptom">A subentity is missing after save</td><td data-k="What to do">Recheck <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> for a purchased item, <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> for the pair, and <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> for both</td></tr>
-<tr><td data-k="Symptom">Actual supply differs from the default</td><td data-k="What to do">Check for item-level overrides and date-effective supply source before changing the default</td></tr>
+<tr><td data-k="Symptom">LN won't take the item code</td><td data-k="What to do">Choose a code that follows your company's pattern for item codes. Don't change the pattern for a test</td></tr>
+<tr><td data-k="Symptom">The code goes into the project box, or <span class="ln-t-named">General Projects</span> opens</td><td data-k="What to do">Close it without making a project. Clear both boxes and type the code in the second</td></tr>
+<tr><td data-k="Symptom">The save is refused for a field this guide doesn't name</td><td data-k="What to do">Write down the field and the message, then fill it in. Don't clear another field to make it save</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-named">Create Items by Site</span> makes no row</td><td data-k="What to do">Click <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, choose your site, and save</td></tr>
+<tr><td data-k="Symptom">A kind of item data is missing after you save</td><td data-k="What to do">Check the defaults: <a class="rux--link" href="../do/configure-the-purchased-group.html">Set the defaults for bought items</a> for a bought item, <a class="rux--link" href="../do/configure-the-made-group.html">Set the defaults for made items</a> for the made one, and <a class="rux--link" href="../do/verify-site-creation-control.html">Check the site follows the defaults</a> for both</td></tr>
+<tr><td data-k="Symptom">The supply source isn't the one the group gives</td><td data-k="What to do">The item or the site may have its own value, or one that starts on a later date. Check those before you change the defaults</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -196,7 +186,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Variations</th></tr><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Case"><span class="ln-t-named">Items only</span></td><td data-k="What changes"><p>Stop after this task. The family exists as master data but cannot be produced; <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> to <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a> are what make it runnable</p></td></tr>
+<tr><td data-k="Case"><span class="ln-t-named">Items only</span></td><td data-k="What changes"><p>Stop after this task. The items exist but can't be made yet. The next two tasks give the made item its BOM and routing</p></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -208,7 +198,7 @@
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0501m000.html">Items</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcibd0501m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items</span></span></td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tcmcs0152s000.html">General Projects</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcmcs0152s000</span></td><td data-k="How to open it">The Project lookup on the Item identifier</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0501m100.html">Item</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcibd0501m100</span></td><td data-k="How to open it">Tick a row in Items (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>) and <span class="ln-t-press">Drill In</span></td></tr>
 <tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd1550m000.html">Items by Site</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcibd1550m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items by Site</span></span></td></tr>
 </tbody>
 </table></div>
@@ -218,7 +208,7 @@
 <ul class="ln-list">
   <li><b>Session</b><p><a class="rux--link" href="../screens/tcibd0501m000.html"><span class="ln-t-named">Items</span></a> (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>)<br><span class="ln-quiet">Holds the company-wide item record and the data that belongs to it.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/session.html">Session</a> · <a class="rux--link" href="../ideas/site-and-warehouse.html">Site and warehouse</a></p></li>
-  <li><b>Next task</b><p><a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> in Create test items</p></li>
+  <li><b>Next task</b><p><a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the bill of material</a> in Create test items</p></li>
 </ul>
 </section>
 <section class="ln-paper-only">
@@ -227,7 +217,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">Each item inherits its group's defaults and its site row shows the intended role</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">The three items are saved, and each site row shows the supply source and item data its group gives</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -256,85 +246,59 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__prose"><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">Create the two purchased items first and the pair last, and do not create the pair until <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> has approved Production and Sales defaults.</div>
-    </div>
-  </div>
-</div><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">The Item identifier has separate <span class="ln-t-named">Project</span> and <span class="ln-t-named">Item</span> portions. These are standard test items: leave <span class="ln-t-named">Project</span> blank and enter the <span class="ln-t-exact ln-t-word">BAM-*</span> code in the <span class="ln-t-named">Item</span> portion. If <a class="rux--link" href="../screens/tcmcs0152s000.html"><span class="ln-t-named">General Projects</span></a> (<span class="ln-t-exact ln-t-word">tcmcs0152s000</span>) opens from the Project lookup, close it without creating a project.</div>
-    </div>
-  </div>
-</div></div>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items</span></span> (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>)</p><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/tcibd0501m000.html"><span class="ln-t-named">Items</span></a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The global item overview opens</p></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items</span></span> (<span class="ln-t-exact ln-t-word">tcibd0501m000</span>)</p><h1 class="ln-step__do">Click <span class="ln-t-press">New</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tcibd0501m100.html"><span class="ln-t-named">Item</span></a> (<span class="ln-t-exact ln-t-word">tcibd0501m100</span>) opens, empty. It can take half a minute</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-press">New</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank Item record opens</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do"><span class="ln-t-named">Item</span> has two boxes</h1><p class="ln-step__note">Leave the first, for a project, empty. Type the first bought item's code in the second</p><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Item</span> <span class="ln-copy"><code class="ln-task__code">BAM-ROD</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-ROD" aria-label="Copy BAM-ROD"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span>, then <span class="ln-copy"><code class="ln-task__code">BAM-SLEEVE</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-SLEEVE" aria-label="Copy BAM-SLEEVE"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span>, then <span class="ln-copy"><code class="ln-task__code">BAM-CHOP-PAIR</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-CHOP-PAIR" aria-label="Copy BAM-CHOP-PAIR"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span></div></div></div>
+    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-57">Item code</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-57" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="2/0" data-at="6.2" data-label="Item code">
+      </div></div>
+    </div></div></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">With <span class="ln-t-named">Project</span> blank, enter the item's code in the <span class="ln-t-named">Item</span> portion and its <span class="ln-t-named">Description</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-62">Item code</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-62" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/0" data-at="6.3" data-label="Item code">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click into <span class="ln-t-named">Description</span> and enter one</h1><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Description</span> Bamboo Rod, then Paper Sleeve, then Bamboo Chopstick Pair</div></div></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact ln-t-word">Product</span> and <span class="ln-t-named">Item Group</span> to the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Supply source, Unit Set, and Inventory Unit default from <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> or 3</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Item Type</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-exact ln-t-word">Product</span></p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Complete any remaining field the screen marks required, using the family values</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-63">Item Grade, if the screen requires one</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-63" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="5/0" data-at="6.5" data-label="Item Grade, if the screen requires one">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click into <span class="ln-t-named">Item Group</span> and enter the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Unit Set</span> and <span class="ln-t-named">Unit</span> fill in</p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Save the item header before working in the <span class="ln-t-named">Sites</span> grid</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item header is saved</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Fill in any other field the screen says is needed</h1></div>
   </li>
   <li data-k="7" data-ref="7" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">In the <span class="ln-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="ln-t-exact ln-t-word">=</span></h1><p class="ln-step__note">If no saved row begins with the site from step 2 of <a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>, run <span class="ln-t-named">Create Items by Site</span> from the tab's appropriate menu; if that produces nothing, select <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, select that site, and save the record</p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A saved site line beginning with the actual site code exists</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item is saved, and the <span class="ln-t-named">Subentities</span> indicators of its group turn green</p></div>
   </li>
   <li data-k="8" data-ref="8" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Select the saved site line and open it with the row-arrow button</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Items by Site</span> opens for this item and site</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Look at the <span class="ln-t-named">Sites</span> grid</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A row for your site, with <span class="ln-t-named">Default Supply Source</span> filled in. The top row, marked <span class="ln-t-exact ln-t-word">=</span>, is a filter, not a site</p></div>
   </li>
   <li data-k="9" data-ref="9" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Verify <span class="ln-t-named">Default Supply Source</span> matches the item's role</h1><p class="ln-step__note"><span class="ln-t-exact ln-t-word">Purchase</span> for the rod and the sleeve, <span class="ln-t-exact">Job Shop</span> for the pair</p></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-64">Site supply source</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-64" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="9/0" data-at="6.9" data-label="Site supply source">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">If there's no row for your site, choose <span class="ln-t-named">Create Items by Site</span> from the <span class="ln-t-named">Sites</span> tab's menu</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A row for your site</p></div>
   </li>
   <li data-k="10" data-ref="10" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Verify the site subentity indicators</h1><p class="ln-step__note">Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair</p></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-65">Site subentities</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-65" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="10/0" data-at="6.10" data-label="Site subentities">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open your site's row with the arrow at its start</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tcibd1550m000.html"><span class="ln-t-named">Items by Site</span></a> (<span class="ln-t-exact ln-t-word">tcibd1550m000</span>) opens for this item and site</p></div>
   </li>
   <li data-k="11" data-ref="11" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 2–10 for the remaining items, each with its own group</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>All three items and their site rows match the family sheet §1</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Default Supply Source</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-exact ln-t-word">Purchase</span> for a bought item, <span class="ln-t-exact">Job Shop</span> for a made one</p></div>
+  </li>
+  <li data-k="12" data-ref="12" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check which kinds of item data are on</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Ordering, Purchase and Warehousing for a bought item. Ordering, Production, Warehousing and Sales for a made one</p></div>
+  </li>
+  <li data-k="13" data-ref="13" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Do steps 1 to 12 for the second bought item, then for the made item</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each item's site row matches its group</p></div>
   </li>
 </ol>
 <div class="ln-confirm" data-confirm="create-the-three-items">
@@ -345,9 +309,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-2">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-4">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-2" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-4" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -365,13 +329,15 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 4</div>
+      <div class="rux--accordion__title">Stuck? · 6</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The item code is rejected</b><p>Follow the current item-code segmentation; do not modify segmentation for the experiment</p></li>
-  <li><b>The save is refused for a field this task does not name</b><p>Record the field label and the message. Do not clear another value to force the save. <span class="ln-t-named">Grade</span> was found this way </p></li>
-  <li><b>A subentity is missing after save</b><p>Recheck <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> for a purchased item, <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> for the pair, and <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> for both</p></li>
-  <li><b>Actual supply differs from the default</b><p>Check for item-level overrides and date-effective supply source before changing the default</p></li>
+  <li><b>LN won't take the item code</b><p>Choose a code that follows your company's pattern for item codes. Don't change the pattern for a test</p></li>
+  <li><b>The code goes into the project box, or <span class="ln-t-named">General Projects</span> opens</b><p>Close it without making a project. Clear both boxes and type the code in the second</p></li>
+  <li><b>The save is refused for a field this guide doesn't name</b><p>Write down the field and the message, then fill it in. Don't clear another field to make it save </p></li>
+  <li><b><span class="ln-t-named">Create Items by Site</span> makes no row</b><p>Click <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, choose your site, and save</p></li>
+  <li><b>A kind of item data is missing after you save</b><p>Check the defaults: <a class="rux--link" href="../do/configure-the-purchased-group.html">Set the defaults for bought items</a> for a bought item, <a class="rux--link" href="../do/configure-the-made-group.html">Set the defaults for made items</a> for the made one, and <a class="rux--link" href="../do/verify-site-creation-control.html">Check the site follows the defaults</a> for both</p></li>
+  <li><b>The supply source isn't the one the group gives</b><p>The item or the site may have its own value, or one that starts on a later date. Check those before you change the defaults</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -379,7 +345,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> to <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a>, which is why nothing inheritable is typed here.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>When you save, LN gives the item its group's supply source, units and item data. If <strong>Sites</strong> was ticked in the defaults, it adds a site row too. The site row is where you check the defaults worked. That's why you don't type what LN fills in: a value you type would hide a mistake in the defaults.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

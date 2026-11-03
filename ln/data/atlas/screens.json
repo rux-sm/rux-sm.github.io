@@ -104,10 +104,22 @@
       "route": "Master Data ➔ Enterprise Model ➔ Company Data ➔ Implemented Software Components"
     },
     {
+      "code": "tccom4100s000",
+      "name": "tccom4100s000"
+    },
+    {
+      "code": "tccom4101m000",
+      "name": "tccom4101m000"
+    },
+    {
       "code": "tccom4120s000",
       "name": "Buy-from Business Partner",
       "purpose": "Enters or changes one buy-from business partner.",
       "route": "double-click a record, or New, in Buy-from Business Partners (tccom4520m000)"
+    },
+    {
+      "code": "tccom4201m000",
+      "name": "tccom4201m000"
     },
     {
       "code": "tccom4500m000",
@@ -1056,6 +1068,14 @@
       "name": "Warehouse - Item Inventory",
       "purpose": "Lists one row for each warehouse that holds or expects an item, where you choose a warehouse to ship from.",
       "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory"
+    },
+    {
+      "code": "whwmd3100s000",
+      "name": "whwmd3100s000"
+    },
+    {
+      "code": "whwmd3500m000",
+      "name": "whwmd3500m000"
     },
     {
       "code": "whwmd4100m100",

@@ -1,0 +1,594 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "turn-on-locations",
+  "title": "Turn on locations",
+  "process": {
+    "id": "create-a-warehouse",
+    "title": "Create a warehouse",
+    "n": 2,
+    "of": 3
+  },
+  "previous": {
+    "id": "add-the-storage-locations",
+    "title": "Add the locations"
+  },
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",
+  "session": "Warehouses",
+  "sessionCode": "whwmd2500m000",
+  "walked": "2026-11-02",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The warehouse uses locations, and names its receiving, staging and quarantine locations."
+      }
+    ],
+    "text": "The warehouse uses locations, and names its receiving, staging and quarantine locations."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 15 of "
+        },
+        {
+          "t": "link",
+          "v": "Add the locations",
+          "href": "add-the-storage-locations.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 15 of Add the locations."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "With "
+      },
+      {
+        "t": "field",
+        "v": "Locations"
+      },
+      {
+        "t": "text",
+        "v": " ticked, every item in the warehouse has a place, and LN must know where goods land and where they wait to ship. Those three must already exist as locations, or LN won't take them."
+      }
+    ],
+    "text": "With Locations ticked, every item in the warehouse has a place, and LN must know where goods land and where they wait to ship. Those three must already exist as locations, or LN won't take them."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Go back to your warehouse on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehouses"
+                },
+                {
+                  "t": "text",
+                  "v": " and open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Go back to your warehouse on Warehouses and open the General tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick "
+                },
+                {
+                  "t": "field",
+                  "v": "Locations"
+                }
+              ],
+              "text": "Tick Locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Locations"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open the Locations tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Receiving Location"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Staging Location"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Quarantine Location"
+                },
+                {
+                  "t": "text",
+                  "v": ", each marked as needed"
+                }
+              ],
+              "text": "Receiving Location, Staging Location and Quarantine Location, each marked as needed"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick "
+                },
+                {
+                  "t": "field",
+                  "v": "Multi-Item Locations"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Multi-Lot by Item Locations"
+                }
+              ],
+              "text": "Tick Multi-Item Locations and Multi-Lot by Item Locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter "
+                },
+                {
+                  "t": "literal",
+                  "v": "REC"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Receiving Location"
+                }
+              ],
+              "text": "Enter REC in Receiving Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Receiving appears beside it"
+                }
+              ],
+              "text": "Receiving appears beside it"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter "
+                },
+                {
+                  "t": "literal",
+                  "v": "STG"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Staging Location"
+                }
+              ],
+              "text": "Enter STG in Staging Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Staging appears beside it"
+                }
+              ],
+              "text": "Staging appears beside it"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter "
+                },
+                {
+                  "t": "literal",
+                  "v": "QUA"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Quarantine Location"
+                }
+              ],
+              "text": "Enter QUA in Quarantine Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Quarantine appears beside it"
+                }
+              ],
+              "text": "Quarantine appears beside it"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Refresh and open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Refresh and open the General tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Locations"
+                },
+                {
+                  "t": "text",
+                  "v": " is ticked"
+                }
+              ],
+              "text": "Locations is ticked"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN says the location is not found in the warehouse"
+              }
+            ],
+            "text": "LN says the location is not found in the warehouse"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Make it first in "
+              },
+              {
+                "t": "link",
+                "v": "Add the locations",
+                "href": "add-the-storage-locations.md"
+              }
+            ],
+            "text": "Make it first in Add the locations"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Locations"
+              },
+              {
+                "t": "text",
+                "v": " is greyed"
+              }
+            ],
+            "text": "Locations is greyed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Save the warehouse first, at step 7 of "
+              },
+              {
+                "t": "link",
+                "v": "Create the warehouse",
+                "href": "create-the-warehouse.md"
+              },
+              {
+                "t": "text",
+                "v": ", and check "
+              },
+              {
+                "t": "field",
+                "v": "Use Site Settings"
+              },
+              {
+                "t": "text",
+                "v": " is clear"
+              }
+            ],
+            "text": "Save the warehouse first, at step 7 of Create the warehouse, and check Use Site Settings is clear"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

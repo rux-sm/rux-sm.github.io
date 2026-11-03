@@ -11,7 +11,7 @@
   "updated": "2026-11-01",
   "status": "approved",
   "summary": "find out how much of one item you have, where it is, and how much other orders already took.",
-  "order": 4,
+  "order": 6,
   "sources": [
     "whwmd2515m000",
     "whwmd4300m000"

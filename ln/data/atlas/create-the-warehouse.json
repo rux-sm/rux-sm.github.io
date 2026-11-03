@@ -1,0 +1,478 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-the-warehouse",
+  "title": "Create the warehouse",
+  "process": {
+    "id": "create-a-warehouse",
+    "title": "Create a warehouse",
+    "n": 0,
+    "of": 3
+  },
+  "previous": null,
+  "next": {
+    "id": "add-the-storage-locations",
+    "title": "Add the locations"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-11-02",
+  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",
+  "session": "Warehouses",
+  "sessionCode": "whwmd2500m000",
+  "walked": "2026-11-02",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The warehouse is saved at your site, with its own settings."
+      }
+    ],
+    "text": "The warehouse is saved at your site, with its own settings."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A warehouse belongs to one site. When you choose the site, LN fills in the enterprise unit and the address, and ticks "
+      },
+      {
+        "t": "field",
+        "v": "Use Site Settings"
+      },
+      {
+        "t": "text",
+        "v": ", so the site decides most of the warehouse's settings. Clear it to set them here, as this guide does. "
+      },
+      {
+        "t": "field",
+        "v": "Locations"
+      },
+      {
+        "t": "text",
+        "v": " can't be ticked until the warehouse is saved and has its locations."
+      }
+    ],
+    "text": "A warehouse belongs to one site. When you choose the site, LN fills in the enterprise unit and the address, and ticks Use Site Settings, so the site decides most of the warehouse's settings. Clear it to set them here, as this guide does. Locations can't be ticked until the warehouse is saved and has its locations."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An empty warehouse"
+                }
+              ],
+              "text": "An empty warehouse"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a code in "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                }
+              ],
+              "text": "Enter a code in Warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "warehouse"
+                }
+              ],
+              "text": "warehouse"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true,
+          "example": [
+            0
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a description beside it"
+                }
+              ],
+              "text": "Enter a description beside it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter your site in "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
+                }
+              ],
+              "text": "Enter your site in Site and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Enterprise Unit"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Address"
+                },
+                {
+                  "t": "text",
+                  "v": " fill in, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Use Site Settings"
+                },
+                {
+                  "t": "text",
+                  "v": " is ticked"
+                }
+              ],
+              "text": "Enterprise Unit and Address fill in, and Use Site Settings is ticked"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Clear "
+                },
+                {
+                  "t": "field",
+                  "v": "Use Site Settings"
+                }
+              ],
+              "text": "Clear Use Site Settings"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The General tab's boxes turn on, apart from "
+                },
+                {
+                  "t": "field",
+                  "v": "Locations"
+                }
+              ],
+              "text": "The General tab's boxes turn on, apart from Locations"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse Type"
+                }
+              ],
+              "text": "Check Warehouse Type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Normal"
+                }
+              ],
+              "text": "Normal"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse is listed on the left"
+                }
+              ],
+              "text": "The warehouse is listed on the left"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Warehouse"
+              }
+            ],
+            "text": "Warehouse"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a short code, like the company's own"
+              }
+            ],
+            "text": "a short code, like the company's own"
+          }
+        ]
+      }
+    ]
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A field won't take a value"
+              }
+            ],
+            "text": "A field won't take a value"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Use Site Settings"
+              },
+              {
+                "t": "text",
+                "v": " is ticked, so the site sets it. See step 5"
+              }
+            ],
+            "text": "Use Site Settings is ticked, so the site sets it. See step 5"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Locations"
+              },
+              {
+                "t": "text",
+                "v": " is greyed"
+              }
+            ],
+            "text": "Locations is greyed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It turns on once the warehouse is saved. Tick it in "
+              },
+              {
+                "t": "link",
+                "v": "Turn on locations",
+                "href": "turn-on-locations.md"
+              }
+            ],
+            "text": "It turns on once the warehouse is saved. Tick it in Turn on locations"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

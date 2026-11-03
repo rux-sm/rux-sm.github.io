@@ -3,16 +3,16 @@
   "tier": "export",
   "kind": "task",
   "id": "verify-site-creation-control",
-  "title": "Verify site creation control",
+  "title": "Check the site follows the defaults",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 4,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "configure-the-made-group",
-    "title": "Configure the made group"
+    "title": "Set the defaults for made items"
   },
   "next": {
     "id": "create-the-three-items",
@@ -26,63 +26,54 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Control and Defaults by Site",
   "session": "Item Control and Defaults by Site",
   "sessionCode": "tcibd1552m000",
-  "walked": "2026-10-23",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Site-level creation agrees with the company defaults."
+        "v": "At your site, each group creates the same kinds of item data as its defaults."
       }
     ],
-    "text": "Site-level creation agrees with the company defaults."
+    "text": "At your site, each group creates the same kinds of item data as its defaults."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 2 of "
+          "v": "You need step 22 of "
         },
         {
           "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
+          "v": "Set the defaults for bought items",
+          "href": "configure-the-purchased-group.md"
         },
         {
           "t": "text",
-          "v": "; step 3 of "
+          "v": " and step 28 of "
         },
         {
           "t": "link",
-          "v": "Create two item groups",
-          "href": "create-two-item-groups.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 6 of "
-        },
-        {
-          "t": "link",
-          "v": "Create two item groups",
-          "href": "create-two-item-groups.md"
+          "v": "Set the defaults for made items",
+          "href": "configure-the-made-group.md"
         },
         {
           "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 2 of Confirm the test design; step 3 of Create two item groups; step 6 of Create two item groups."
+      "text": "You need step 22 of Set the defaults for bought items and step 28 of Set the defaults for made items."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The Create controls can be governed at the site instead of the company. When "
+        "v": "A site can decide for itself which item data a new item gets. When "
       },
       {
         "t": "field",
@@ -90,10 +81,10 @@
       },
       {
         "t": "text",
-        "v": " is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site's own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause."
+        "v": " is ticked, the site copies the company defaults and the boxes here are greyed. When it's clear, the boxes here decide. If they don't match the defaults, a new item comes out missing data and LN doesn't say why."
       }
     ],
-    "text": "The Create controls can be governed at the site instead of the company. When Centrally Managed is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site's own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause."
+    "text": "A site can decide for itself which item data a new item gets. When Centrally Managed is ticked, the site copies the company defaults and the boxes here are greyed. When it's clear, the boxes here decide. If they don't match the defaults, a new item comes out missing data and LN doesn't say why."
   },
   "blocks": [
     {
@@ -119,41 +110,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the row for the site, "
+                  "v": "Open the row for your site, "
                 },
                 {
-                  "t": "field",
+                  "t": "literal",
                   "v": "Product"
                 },
                 {
                   "t": "text",
-                  "v": " and the purchased group. The site is from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", and the group from step 3 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
+                  "v": " and your group for bought items"
                 }
               ],
-              "text": "Open the row for the site, Product and the purchased group. The site is from step 2 of Confirm the test design, and the group from step 3 of Create two item groups"
+              "text": "Open the row for your site, Product and your group for bought items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The purchased site-control row opens"
+                  "v": "The row opens"
                 }
               ],
-              "text": "The purchased site-control row opens"
+              "text": "The row opens"
             }
           ],
           "id": "1",
@@ -175,23 +152,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "Look at "
                 },
                 {
                   "t": "field",
                   "v": "Centrally Managed"
                 }
               ],
-              "text": "Read Centrally Managed"
+              "text": "Look at Centrally Managed"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The source of the Create controls is visible"
+                  "v": "It's ticked or clear"
                 }
               ],
-              "text": "The source of the Create controls is visible"
+              "text": "It's ticked or clear"
             }
           ],
           "id": "2",
@@ -213,24 +190,39 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If centrally managed, check the subentities are disabled locally. Ordering, Purchase and Warehousing mirror "
+                  "v": "If it's ticked, check "
                 },
                 {
-                  "t": "link",
-                  "v": "Configure the purchased group",
-                  "href": "configure-the-purchased-group.md"
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing"
                 }
               ],
-              "text": "If centrally managed, check the subentities are disabled locally. Ordering, Purchase and Warehousing mirror Configure the purchased group"
+              "text": "If it's ticked, check Ordering, Purchase and Warehousing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "All three are ticked and greyed"
                 }
               ],
-              "text": "—"
+              "text": "All three are ticked and greyed"
             }
           ],
           "id": "3",
@@ -252,19 +244,39 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If not, select them and save"
+                  "v": "If it's clear, tick "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing"
                 }
               ],
-              "text": "If not, select them and save"
+              "text": "If it's clear, tick Ordering, Purchase and Warehousing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The purchased site is marked to create those subentities"
+                  "v": "—"
                 }
               ],
-              "text": "The purchased site is marked to create those subentities"
+              "text": "—"
             }
           ],
           "id": "4",
@@ -286,27 +298,88 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 1–4 for the made group. Use Ordering, Production, Warehousing and Sales; the made group is the one from step 6 of "
+                  "v": "If you ticked them, click "
                 },
                 {
-                  "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Repeat steps 1–4 for the made group. Use Ordering, Production, Warehousing and Sales; the made group is the one from step 6 of Create two item groups"
+              "text": "If you ticked them, click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The made site is marked to create those subentities"
+                  "v": "—"
                 }
               ],
-              "text": "The made site is marked to create those subentities"
+              "text": "—"
             }
           ],
           "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do steps 1 to 5 for your group for made items, with "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales"
+                }
+              ],
+              "text": "Do steps 1 to 5 for your group for made items, with Ordering, Production, Warehousing and Sales"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "All four are ticked"
+                }
+              ],
+              "text": "All four are ticked"
+            }
+          ],
+          "id": "6",
           "optional": false,
           "produces": false
         }
@@ -332,35 +405,36 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Site Create controls are disabled"
+                "v": "A box is greyed and you need to change it"
               }
             ],
-            "text": "Site Create controls are disabled"
+            "text": "A box is greyed and you need to change it"
           },
           {
             "tokens": [
-              {
-                "t": "text",
-                "v": "Read "
-              },
               {
                 "t": "field",
                 "v": "Centrally Managed"
               },
               {
                 "t": "text",
-                "v": "; when selected, correct the governing "
+                "v": " is ticked, so the site copies the defaults. Change "
               },
               {
-                "t": "session",
-                "code": "tcibd0502m000"
+                "t": "chip",
+                "v": "Create"
               },
               {
                 "t": "text",
-                "v": " control instead of the site row"
+                "v": " in the defaults instead, at step 19 of "
+              },
+              {
+                "t": "link",
+                "v": "Set the defaults for bought items",
+                "href": "configure-the-purchased-group.md"
               }
             ],
-            "text": "Read Centrally Managed; when selected, correct the governing tcibd0502m000 control instead of the site row"
+            "text": "Centrally Managed is ticked, so the site copies the defaults. Change Create in the defaults instead, at step 19 of Set the defaults for bought items"
           }
         ]
       }

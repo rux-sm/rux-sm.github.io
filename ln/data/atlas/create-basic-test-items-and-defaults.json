@@ -11,9 +11,9 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "status": "draft",
-  "summary": "create a small item family, purchased components and one manufactured item, ready for a production order.",
+  "summary": "create two bought items and one made item, with the defaults, bill of material and routing a production order needs.",
   "order": 2,
   "sources": [
     "tccom0100s000",
@@ -73,23 +73,33 @@
     "whwmd4300m000",
     "whwmd4600m000"
   ],
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need a training company you're allowed to add item groups and defaults to."
+        }
+      ],
+      "text": "You need a training company you're allowed to add item groups and defaults to."
+    }
+  ],
   "tasks": [
     {
       "id": "confirm-the-test-design",
       "n": 0,
-      "title": "Confirm the test design",
+      "title": "Choose the site, warehouses and units",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "Site, warehouses, units, and unused item codes are known."
+            "v": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units."
           }
         ],
-        "text": "Site, warehouses, units, and unused item codes are known."
+        "text": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units."
       },
-      "steps": 10,
-      "walked": "2026-08-15"
+      "steps": 7,
+      "walked": null
     },
     {
       "id": "create-two-item-groups",
@@ -99,69 +109,77 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Purchase and Job Shop defaults remain isolated from each other."
+            "v": "There are two new item groups, one for bought items and one for made items."
           }
         ],
-        "text": "Purchase and Job Shop defaults remain isolated from each other."
+        "text": "There are two new item groups, one for bought items and one for made items."
       },
-      "steps": 6,
-      "walked": "2026-08-15"
+      "steps": 7,
+      "walked": "2026-11-02"
     },
     {
       "id": "configure-the-purchased-group",
       "n": 2,
-      "title": "Configure the purchased group",
+      "title": "Set the defaults for bought items",
       "achieves": {
         "tokens": [
           {
-            "t": "literal",
-            "v": "BAM-RM"
+            "t": "text",
+            "v": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with "
+          },
+          {
+            "t": "strong",
+            "v": "Create"
           },
           {
             "t": "text",
-            "v": " can create Ordering, Purchase, and Warehousing data."
+            "v": " ticked."
           }
         ],
-        "text": "BAM-RM can create Ordering, Purchase, and Warehousing data."
+        "text": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with Create ticked."
       },
-      "steps": 23,
+      "steps": 21,
       "walked": null
     },
     {
       "id": "configure-the-made-group",
       "n": 3,
-      "title": "Configure the made group",
+      "title": "Set the defaults for made items",
       "achieves": {
         "tokens": [
           {
-            "t": "literal",
-            "v": "BAM-FG"
+            "t": "text",
+            "v": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with "
+          },
+          {
+            "t": "strong",
+            "v": "Create"
           },
           {
             "t": "text",
-            "v": " can create Ordering, Production, Warehousing, and Sales data."
+            "v": " ticked."
           }
         ],
-        "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data."
+        "text": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with Create ticked."
       },
-      "steps": 18,
-      "walked": "2026-08-16"
+      "steps": 19,
+      "walked": null
     },
     {
       "id": "verify-site-creation-control",
       "n": 4,
-      "title": "Verify site creation control",
+      "title": "Check the site follows the defaults",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "Site-level creation agrees with the company defaults."
+            "v": "At your site, each group creates the same kinds of item data as its defaults."
           }
         ],
-        "text": "Site-level creation agrees with the company defaults."
+        "text": "At your site, each group creates the same kinds of item data as its defaults."
       },
-      "steps": 5,
-      "walked": "2026-10-23"
+      "steps": 6,
+      "walked": "2026-11-02"
     },
     {
       "id": "create-the-three-items",
@@ -171,99 +189,270 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Each item inherits its group's defaults and its site row shows the intended role."
+            "v": "The three items are saved, and each site row shows the supply source and item data its group gives."
           }
         ],
-        "text": "Each item inherits its group's defaults and its site row shows the intended role."
+        "text": "The three items are saved, and each site row shows the supply source and item data its group gives."
       },
-      "steps": 11,
+      "steps": 13,
       "walked": null
     },
     {
       "id": "build-the-job-shop-bill-of-material",
       "n": 6,
-      "title": "Build the job shop bill of material",
+      "title": "Build the bill of material",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The pair has an Approved BOM carrying both components."
+            "v": "The made item has an "
+          },
+          {
+            "t": "status",
+            "v": "Approved"
+          },
+          {
+            "t": "text",
+            "v": " BOM with both materials, used for planning and for costing."
           }
         ],
-        "text": "The pair has an Approved BOM carrying both components."
+        "text": "The made item has an Approved BOM with both materials, used for planning and for costing."
       },
-      "steps": 19,
-      "walked": "2026-08-18"
+      "steps": 18,
+      "walked": null
     },
     {
       "id": "build-the-job-shop-routing",
       "n": 7,
-      "title": "Build the job shop routing",
+      "title": "Build the routing",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The pair has an Approved routing with an operation at a work center."
+            "v": "The made item has an "
+          },
+          {
+            "t": "status",
+            "v": "Approved"
+          },
+          {
+            "t": "text",
+            "v": " routing with one operation at a work center, used for planning and for costing."
           }
         ],
-        "text": "The pair has an Approved routing with an operation at a work center."
+        "text": "The made item has an Approved routing with one operation at a work center, used for planning and for costing."
       },
-      "steps": 21,
-      "walked": "2026-08-18"
+      "steps": 15,
+      "walked": null
+    },
+    {
+      "id": "add-the-costing-rows",
+      "n": 8,
+      "title": "Add the costing rows",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost."
+          }
+        ],
+        "text": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost."
+      },
+      "steps": 12,
+      "walked": null
     },
     {
       "id": "confirm-costing-data",
-      "n": 8,
-      "title": "Confirm costing data",
+      "n": 9,
+      "title": "Read the standard costs",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "Every item in the family carries the standard cost the estimate calculation reads."
+            "v": "You've written down each item's material cost and total cost."
           }
         ],
-        "text": "Every item in the family carries the standard cost the estimate calculation reads."
+        "text": "You've written down each item's material cost and total cost."
       },
       "steps": 6,
-      "walked": "2026-10-23"
-    },
-    {
-      "id": "stock-the-components",
-      "n": 9,
-      "title": "Stock the components",
-      "achieves": {
-        "tokens": [
-          {
-            "t": "text",
-            "v": "The rod and sleeve are on hand at the raw-material warehouse."
-          }
-        ],
-        "text": "The rod and sleeve are on hand at the raw-material warehouse."
-      },
-      "steps": 12,
-      "walked": null
-    },
-    {
-      "id": "qualify-the-training-case",
-      "n": 10,
-      "title": "Qualify the training case",
-      "achieves": {
-        "tokens": [
-          {
-            "t": "text",
-            "v": "The family is qualified to start Production order from stock."
-          }
-        ],
-        "text": "The family is qualified to start Production order from stock."
-      },
-      "steps": 12,
-      "walked": null
+      "walked": "2026-11-02"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item Group"
+              }
+            ],
+            "text": "Item Group"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-RM"
+              },
+              {
+                "t": "text",
+                "v": " for bought items, "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-FG"
+              },
+              {
+                "t": "text",
+                "v": " for made items"
+              }
+            ],
+            "text": "BAM-RM for bought items, BAM-FG for made items"
+          }
+        ],
+        "task": "create-two-item-groups"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Description"
+              }
+            ],
+            "text": "Description"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Bamboo Raw Materials, Bamboo Finished Goods"
+              }
+            ],
+            "text": "Bamboo Raw Materials, Bamboo Finished Goods"
+          }
+        ],
+        "task": "create-two-item-groups"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE, then BAM-CHOP-PAIR"
+          }
+        ],
+        "task": "create-the-three-items"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Effective Date"
+              }
+            ],
+            "text": "Effective Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "today"
+              }
+            ],
+            "text": "today"
+          }
+        ],
+        "task": "build-the-job-shop-bill-of-material"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Net Quantity"
+              }
+            ],
+            "text": "Net Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "2 for BAM-ROD, 1 for BAM-SLEEVE"
+          }
+        ],
+        "task": "build-the-job-shop-bill-of-material"
+      }
+    ]
   },
   "sections": [
     {
@@ -275,72 +464,54 @@
         },
         {
           "t": "text",
-          "v": " create a small item family, purchased components and one manufactured item, ready for a production order."
+          "v": " create two bought items and one made item, with the defaults, bill of material and routing a production order needs."
         }
       ],
-      "text": "Objective: create a small item family, purchased components and one manufactured item, ready for a production order."
+      "text": "Objective: create two bought items and one made item, with the defaults, bill of material and routing a production order needs."
     },
     {
       "kind": "prose",
       "tokens": [
         {
-          "t": "strong",
-          "v": "Scope note:"
-        },
-        {
           "t": "text",
-          "v": " this walkthrough "
+          "v": "> "
         },
         {
           "t": "strong",
-          "v": "builds and qualifies the training case; it does not run the production order."
+          "v": "Prerequisite"
         },
         {
           "t": "text",
-          "v": " The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is "
-        },
-        {
-          "t": "link",
-          "v": "Production order from stock",
-          "href": "manual-production-order-existing-master-data.md"
-        },
-        {
-          "t": "text",
-          "v": ", which "
-        },
-        {
-          "t": "link",
-          "v": "Qualify the training case",
-          "href": "qualify-the-training-case.md"
-        },
-        {
-          "t": "text",
-          "v": " hands off to. Do not restate its steps here."
+          "v": " > You need a training company you're allowed to add item groups and defaults to."
         }
       ],
-      "text": "Scope note: this walkthrough builds and qualifies the training case; it does not run the production order. The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is Production order from stock, which Qualify the training case hands off to. Do not restate its steps here."
+      "text": "> Prerequisite > You need a training company you're allowed to add item groups and defaults to."
     },
     {
       "kind": "prose",
       "tokens": [
         {
-          "t": "strong",
-          "v": "The family this walkthrough builds is "
-        },
-        {
           "t": "text",
-          "v": "bamboo-test-item-family.md"
+          "v": "> "
         },
         {
           "t": "strong",
-          "v": ":"
+          "v": "Warning"
         },
         {
           "t": "text",
-          "v": " three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This walkthrough says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it."
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide ends when the items, the BOM and the routing are ready."
+        },
+        {
+          "t": "text",
+          "v": " It doesn't buy stock or run a production order. Item groups and defaults are shared, so make new ones and never change one someone else uses."
         }
       ],
-      "text": "The family this walkthrough builds is bamboo-test-item-family.md: three Product items in two dedicated item groups, two purchased and one made, with the baseline, the group defaults and every observed value recorded there once. This walkthrough says how to build it; that sheet says what it is. The codes are examples, not reserved values; confirm each is valid and unused before creating it."
+      "text": "> Warning > This guide ends when the items, the BOM and the routing are ready. It doesn't buy stock or run a production order. Item groups and defaults are shared, so make new ones and never change one someone else uses."
     },
     {
       "kind": "glance",
@@ -366,29 +537,29 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm the test design",
+                  "v": "Choose the site, warehouses and units",
                   "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Confirm the test design"
+              "text": "Choose the site, warehouses and units"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Warehouses; Items"
+                  "v": "Warehouses"
                 }
               ],
-              "text": "Warehouses; Items"
+              "text": "Warehouses"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Site, warehouses, units, and unused item codes are known"
+                  "v": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units"
                 }
               ],
-              "text": "Site, warehouses, units, and unused item codes are known"
+              "text": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units"
             }
           ]
         },
@@ -426,10 +597,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Purchase and Job Shop defaults remain isolated from each other"
+                  "v": "There are two new item groups, one for bought items and one for made items"
                 }
               ],
-              "text": "Purchase and Job Shop defaults remain isolated from each other"
+              "text": "There are two new item groups, one for bought items and one for made items"
             }
           ]
         },
@@ -448,33 +619,37 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Configure the purchased group",
+                  "v": "Set the defaults for bought items",
                   "href": "configure-the-purchased-group.md"
                 }
               ],
-              "text": "Configure the purchased group"
+              "text": "Set the defaults for bought items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Item Defaults and linked package defaults"
+                  "v": "Item Defaults"
                 }
               ],
-              "text": "Item Defaults and linked package defaults"
+              "text": "Item Defaults"
             },
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "BAM-RM"
+                  "t": "text",
+                  "v": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
                 },
                 {
                   "t": "text",
-                  "v": " can create Ordering, Purchase, and Warehousing data"
+                  "v": " ticked"
                 }
               ],
-              "text": "BAM-RM can create Ordering, Purchase, and Warehousing data"
+              "text": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with Create ticked"
             }
           ]
         },
@@ -493,33 +668,37 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Configure the made group",
+                  "v": "Set the defaults for made items",
                   "href": "configure-the-made-group.md"
                 }
               ],
-              "text": "Configure the made group"
+              "text": "Set the defaults for made items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Item Defaults and linked package defaults"
+                  "v": "Item Defaults"
                 }
               ],
-              "text": "Item Defaults and linked package defaults"
+              "text": "Item Defaults"
             },
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "BAM-FG"
+                  "t": "text",
+                  "v": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
                 },
                 {
                   "t": "text",
-                  "v": " can create Ordering, Production, Warehousing, and Sales data"
+                  "v": " ticked"
                 }
               ],
-              "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data"
+              "text": "Your group for made items has Ordering, Production, Warehousing and Sales defaults, each with Create ticked"
             }
           ]
         },
@@ -538,11 +717,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Verify site creation control",
+                  "v": "Check the site follows the defaults",
                   "href": "verify-site-creation-control.md"
                 }
               ],
-              "text": "Verify site creation control"
+              "text": "Check the site follows the defaults"
             },
             {
               "tokens": [
@@ -557,10 +736,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Site-level creation agrees with the company defaults"
+                  "v": "At your site, each group creates the same kinds of item data as its defaults"
                 }
               ],
-              "text": "Site-level creation agrees with the company defaults"
+              "text": "At your site, each group creates the same kinds of item data as its defaults"
             }
           ]
         },
@@ -589,19 +768,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Items; Items by Site"
+                  "v": "Items"
                 }
               ],
-              "text": "Items; Items by Site"
+              "text": "Items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each item inherits its group's defaults and its site row shows the intended role"
+                  "v": "The three items are saved, and each site row shows the supply source and item data its group gives"
                 }
               ],
-              "text": "Each item inherits its group's defaults and its site row shows the intended role"
+              "text": "The three items are saved, and each site row shows the supply source and item data its group gives"
             }
           ]
         },
@@ -620,11 +799,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Build the job shop bill of material",
+                  "v": "Build the bill of material",
                   "href": "build-the-job-shop-bill-of-material.md"
                 }
               ],
-              "text": "Build the job shop bill of material"
+              "text": "Build the bill of material"
             },
             {
               "tokens": [
@@ -639,10 +818,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pair has an Approved BOM carrying both components"
+                  "v": "The made item has an "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": " BOM with both materials, used for planning and for costing"
                 }
               ],
-              "text": "The pair has an Approved BOM carrying both components"
+              "text": "The made item has an Approved BOM with both materials, used for planning and for costing"
             }
           ]
         },
@@ -661,11 +848,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Build the job shop routing",
+                  "v": "Build the routing",
                   "href": "build-the-job-shop-routing.md"
                 }
               ],
-              "text": "Build the job shop routing"
+              "text": "Build the routing"
             },
             {
               "tokens": [
@@ -680,10 +867,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pair has an Approved routing with an operation at a work center"
+                  "v": "The made item has an "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": " routing with one operation at a work center, used for planning and for costing"
                 }
               ],
-              "text": "The pair has an Approved routing with an operation at a work center"
+              "text": "The made item has an Approved routing with one operation at a work center, used for planning and for costing"
             }
           ]
         },
@@ -702,11 +897,52 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm costing data",
+                  "v": "Add the costing rows",
+                  "href": "add-the-costing-rows.md"
+                }
+              ],
+              "text": "Add the costing rows"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item"
+                }
+              ],
+              "text": "Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost"
+                }
+              ],
+              "text": "Each item has a costing row for your enterprise unit, and LN has worked out its standard cost"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Read the standard costs",
                   "href": "confirm-costing-data.md"
                 }
               ],
-              "text": "Confirm costing data"
+              "text": "Read the standard costs"
             },
             {
               "tokens": [
@@ -721,101 +957,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Every item in the family carries the standard cost the estimate calculation reads"
+                  "v": "You've written down each item's material cost and total cost"
                 }
               ],
-              "text": "Every item in the family carries the standard cost the estimate calculation reads"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "☐"
-                }
-              ],
-              "text": "☐"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "link",
-                  "v": "Stock the components",
-                  "href": "stock-the-components.md"
-                }
-              ],
-              "text": "Stock the components"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Inventory 360; Purchase Order Intake Workbench"
-                }
-              ],
-              "text": "Inventory 360; Purchase Order Intake Workbench"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The rod and sleeve are on hand at the raw-material warehouse"
-                }
-              ],
-              "text": "The rod and sleeve are on hand at the raw-material warehouse"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "☐"
-                }
-              ],
-              "text": "☐"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "link",
-                  "v": "Qualify the training case",
-                  "href": "qualify-the-training-case.md"
-                }
-              ],
-              "text": "Qualify the training case"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The handoff table below"
-                }
-              ],
-              "text": "The handoff table below"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The family satisfies "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": " of the production-order walkthrough"
-                }
-              ],
-              "text": "The family satisfies Confirm the test design of the production-order walkthrough"
+              "text": "You've written down each item's material cost and total cost"
             }
           ]
         }
@@ -831,80 +976,16 @@
         },
         {
           "t": "text",
-          "v": " Each phase makes what the next one needs. Item Defaults is keyed by item group, so groups come before defaults; an item inherits its subentities from the defaults, so defaults come before items; a BOM and a routing are written against an item, a cost is calculated from them, and stock is booked for a component that already has purchase data. Nothing here is alphabetical and nothing walks the menu."
+          "v": " Each task makes what the next one needs. Defaults belong to an item group, so the groups come first. A new item takes its data from the defaults, so the defaults come before the items. A BOM and a routing belong to an item, so the items come before them. The made item's standard cost adds up its BOM and routing, so the costing rows come after those."
         }
       ],
-      "text": "Why this order. Each phase makes what the next one needs. Item Defaults is keyed by item group, so groups come before defaults; an item inherits its subentities from the defaults, so defaults come before items; a BOM and a routing are written against an item, a cost is calculated from them, and stock is booked for a component that already has purchase data. Nothing here is alphabetical and nothing walks the menu.",
-      "under": "At a glance"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Best progress indicator:"
-        },
-        {
-          "t": "text",
-          "v": " phases 0–5 — on the saved item, confirm the intended "
-        },
-        {
-          "t": "field",
-          "v": "Default Supply Source"
-        },
-        {
-          "t": "text",
-          "v": "; on its site row, confirm the expected subentity indicators. Phases 6–10 — the family is ready when the BOM and the routing are both "
-        },
-        {
-          "t": "strong",
-          "v": "Approved"
-        },
-        {
-          "t": "text",
-          "v": " and used for planning and costing, and both components are on hand at the raw-material warehouse."
-        }
-      ],
-      "text": "Best progress indicator: phases 0–5 — on the saved item, confirm the intended Default Supply Source; on its site row, confirm the expected subentity indicators. Phases 6–10 — the family is ready when the BOM and the routing are both Approved and used for planning and costing, and both components are on hand at the raw-material warehouse.",
-      "under": "At a glance"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Where this walkthrough stops."
-        },
-        {
-          "t": "text",
-          "v": " "
-        },
-        {
-          "t": "link",
-          "v": "Qualify the training case",
-          "href": "qualify-the-training-case.md"
-        },
-        {
-          "t": "text",
-          "v": " hands a qualified training case to "
-        },
-        {
-          "t": "link",
-          "v": "Production order from stock",
-          "href": "manual-production-order-existing-master-data.md"
-        },
-        {
-          "t": "text",
-          "v": ". Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here."
-        }
-      ],
-      "text": "Where this walkthrough stops. Qualify the training case hands a qualified training case to Production order from stock. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.",
+      "text": "Why this order. Each task makes what the next one needs. Defaults belong to an item group, so the groups come first. A new item takes its data from the defaults, so the defaults come before the items. A BOM and a routing belong to an item, so the items come before them. The made item's standard cost adds up its BOM and routing, so the costing rows come after those.",
       "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
       "columns": [
-        "Phase",
+        "Task",
         "Symptom",
         "What to check or do"
       ],
@@ -915,28 +996,50 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2–4"
+                  "v": "3–5"
                 }
               ],
-              "text": "2–4"
+              "text": "3–5"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A package indicator is active but the item subentity is not created"
+                  "v": "An indicator is on, but a new item doesn't get that data"
                 }
               ],
-              "text": "A package indicator is active but the item subentity is not created"
+              "text": "An indicator is on, but a new item doesn't get that data"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Verify the separate Create Item control at the governing global or site level"
+                  "v": "Check "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " in the defaults and at the site. See step 19 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Set the defaults for bought items",
+                  "href": "configure-the-purchased-group.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "link",
+                  "v": "Check the site follows the defaults",
+                  "href": "verify-site-creation-control.md"
                 }
               ],
-              "text": "Verify the separate Create Item control at the governing global or site level"
+              "text": "Check Create in the defaults and at the site. See step 19 of Set the defaults for bought items and Check the site follows the defaults"
             }
           ]
         }
@@ -956,19 +1059,19 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Minimum two-item test"
+                  "v": "Two items instead of three"
                 }
               ],
-              "text": "Minimum two-item test"
+              "text": "Two items instead of three"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class"
+                  "v": "Make one bought item and one made item. It shows both kinds of supply, but the BOM has only one material"
                 }
               ],
-              "text": "Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class"
+              "text": "Make one bought item and one made item. It shows both kinds of supply, but the BOM has only one material"
             }
           ]
         },
@@ -978,19 +1081,19 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Recommended three-item test"
+                  "v": "A made item with two levels"
                 }
               ],
-              "text": "Recommended three-item test"
+              "text": "A made item with two levels"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Use this whole process: two purchased inputs and one Job Shop finished product"
+                  "v": "Add a part-made item only after the single-level case works. It needs its own item, BOM, routing and costs, and a second production order"
                 }
               ],
-              "text": "Use this whole process: two purchased inputs and one Job Shop finished product"
+              "text": "Add a part-made item only after the single-level case works. It needs its own item, BOM, routing and costs, and a second production order"
             }
           ]
         },
@@ -1000,67 +1103,35 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Four-item multilevel test"
+                  "v": "A bought finished item"
                 }
               ],
-              "text": "Four-item multilevel test"
+              "text": "A bought finished item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order"
-                }
-              ],
-              "text": "Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "chip",
-                  "v": "Purchased finished goods"
-                }
-              ],
-              "text": "Purchased finished goods"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Use another dedicated Product group with "
+                  "v": "Use another new group whose "
                 },
                 {
                   "t": "field",
-                  "v": "Default Supply Source = Purchase"
+                  "v": "Default Supply Source"
                 },
                 {
                   "t": "text",
-                  "v": "; no Job Shop Production defaults are required, and "
+                  "v": " is "
                 },
                 {
-                  "t": "link",
-                  "v": "Build the job shop bill of material",
-                  "href": "build-the-job-shop-bill-of-material.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "link",
-                  "v": "Build the job shop routing",
-                  "href": "build-the-job-shop-routing.md"
+                  "t": "literal",
+                  "v": "Purchase"
                 },
                 {
                   "t": "text",
-                  "v": " do not apply"
+                  "v": ". It needs no Production defaults, and no BOM or routing"
                 }
               ],
-              "text": "Use another dedicated Product group with Default Supply Source = Purchase; no Job Shop Production defaults are required, and Build the job shop bill of material and Build the job shop routing do not apply"
+              "text": "Use another new group whose Default Supply Source is Purchase. It needs no Production defaults, and no BOM or routing"
             }
           ]
         }
@@ -1081,66 +1152,78 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand"
+                  "v": "The items, the BOM and the routing are ready"
                 }
               ],
-              "text": "The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand"
+              "text": "The items, the BOM and the routing are ready"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "Buy the bought items in with "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                }
+              ],
+              "text": "Buy the bought items in with Purchase to receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
+                }
+              ],
+              "text": "Read the baseline"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The bought items are in stock"
+                }
+              ],
+              "text": "The bought items are in stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make the item with "
+                },
                 {
                   "t": "link",
                   "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 }
               ],
-              "text": "Production order from stock"
+              "text": "Make the item with Production order from stock"
             },
             {
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", using the handoff table in "
-                },
-                {
-                  "t": "link",
-                  "v": "Qualify the training case",
-                  "href": "qualify-the-training-case.md"
+                  "v": "Read the items and their stock",
+                  "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "Confirm the test design, using the handoff table in Qualify the training case"
+              "text": "Read the items and their stock"
             }
           ]
         }
       ],
       "under": "Downstream actions"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "The handoff table in "
-        },
-        {
-          "t": "link",
-          "v": "Qualify the training case",
-          "href": "qualify-the-training-case.md"
-        },
-        {
-          "t": "text",
-          "v": " is the detail: it maps each value this walkthrough records to the step that consumes it."
-        }
-      ],
-      "text": "The handoff table in Qualify the training case is the detail: it maps each value this walkthrough records to the step that consumes it.",
-      "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 0, 1, 3, 4, 6, 7, 8 have been performed against a live system and confirmed. Phases 2, 5, 9, 10 have not. Follow those as a plan, not as a record.",
+  "verification": "Warning Partly verified. Phases 1, 4, 9 have been performed against a live system and confirmed. Phases 0, 2, 3, 5, 6, 7, 8 have not. Follow those as a plan, not as a record.",
   "openIssues": 1
 }

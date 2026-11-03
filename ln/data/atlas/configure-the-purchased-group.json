@@ -3,12 +3,12 @@
   "tier": "export",
   "kind": "task",
   "id": "configure-the-purchased-group",
-  "title": "Configure the purchased group",
+  "title": "Set the defaults for bought items",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 2,
-    "of": 11
+    "of": 10
   },
   "previous": {
     "id": "create-two-item-groups",
@@ -16,7 +16,7 @@
   },
   "next": {
     "id": "configure-the-made-group",
-    "title": "Configure the made group"
+    "title": "Set the defaults for made items"
   },
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",
   "session": "Item Defaults",
   "sessionCode": "tcibd0102m000",
@@ -34,15 +34,19 @@
   "achieves": {
     "tokens": [
       {
-        "t": "literal",
-        "v": "BAM-RM"
+        "t": "text",
+        "v": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with "
+      },
+      {
+        "t": "strong",
+        "v": "Create"
       },
       {
         "t": "text",
-        "v": " can create Ordering, Purchase, and Warehousing data."
+        "v": " ticked."
       }
     ],
-    "text": "BAM-RM can create Ordering, Purchase, and Warehousing data."
+    "text": "Your group for bought items has Ordering, Purchase and Warehousing defaults, each with Create ticked."
   },
   "before": [
     {
@@ -58,56 +62,44 @@
         },
         {
           "t": "text",
-          "v": "; step 8 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 9 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 2 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 5 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
-        },
-        {
-          "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 3 of Create two item groups; step 8 of Confirm the test design; step 9 of Confirm the test design; step 2 of Confirm the test design; step 5 of Confirm the test design."
+      "text": "You need step 3 of Create two item groups."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A default combination records, per package, two separate things: whether default data exists for the subentity, shown by the indicator, and whether a new item should receive it, set by the Create check box. A green indicator with the box cleared gives a new item nothing. The Sites check box decides whether new items get a site row automatically."
+        "v": "Each kind of item data has two settings here. The indicator shows that default data exists, and the "
+      },
+      {
+        "t": "strong",
+        "v": "Create"
+      },
+      {
+        "t": "text",
+        "v": " box decides whether a new item gets it. An indicator that's on with "
+      },
+      {
+        "t": "strong",
+        "v": "Create"
+      },
+      {
+        "t": "text",
+        "v": " clear gives a new item nothing. The "
+      },
+      {
+        "t": "strong",
+        "v": "Sites"
+      },
+      {
+        "t": "text",
+        "v": " box decides whether a new item gets a site row by itself."
       }
     ],
-    "text": "A default combination records, per package, two separate things: whether default data exists for the subentity, shown by the indicator, and whether a new item should receive it, set by the Create check box. A green indicator with the box cleared gives a new item nothing. The Sites check box decides whether new items get a site row automatically."
+    "text": "Each kind of item data has two settings here. The indicator shows that default data exists, and the Create box decides whether a new item gets it. An indicator that's on with Create clear gives a new item nothing. The Sites box decides whether a new item gets a site row by itself."
   },
   "blocks": [
     {
@@ -133,24 +125,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Filter on your group for bought items from step 3 of "
                 },
                 {
-                  "t": "session",
-                  "code": "tcibd0102m000",
-                  "name": "Item Defaults"
+                  "t": "link",
+                  "v": "Create two item groups",
+                  "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Open Item Defaults (tcibd0102m000)"
+              "text": "Filter on your group for bought items from step 3 of Create two item groups"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The company-level default combinations open"
+                  "v": "No row yet"
                 }
               ],
-              "text": "The company-level default combinations open"
+              "text": "No row yet"
             }
           ],
           "id": "1",
@@ -172,7 +164,25 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Filter for "
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0502m000",
+                  "name": "Item Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, empty, with "
                 },
                 {
                   "t": "field",
@@ -180,32 +190,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " "
                 },
                 {
                   "t": "literal",
                   "v": "Product"
-                },
-                {
-                  "t": "text",
-                  "v": " and the purchased group from step 3 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Filter for Item Type = Product and the purchased group from step 3 of Create two item groups"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The current test row appears if already saved; otherwise no row appears"
-                }
-              ],
-              "text": "The current test row appears if already saved; otherwise no row appears"
+              "text": "Item Defaults (tcibd0502m000) opens, empty, with Item Type Product"
             }
           ],
           "id": "2",
@@ -227,23 +219,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If the test row is absent, select "
+                  "v": "Click into "
                 },
                 {
-                  "t": "button",
-                  "label": "New"
+                  "t": "field",
+                  "v": "Item Group"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter your group for bought items"
                 }
               ],
-              "text": "If the test row is absent, select New"
+              "text": "Click into Item Group and enter your group for bought items"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A blank item-default record opens"
+                  "v": "Its description appears beside it"
                 }
               ],
-              "text": "A blank item-default record opens"
+              "text": "Its description appears beside it"
             }
           ],
           "id": "3",
@@ -265,22 +261,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Choose "
                 },
                 {
                   "t": "field",
-                  "v": "Item Type"
+                  "v": "Unit Set"
                 },
                 {
                   "t": "text",
-                  "v": " to "
+                  "v": " from its lookup: the unit set from step 6 of "
                 },
                 {
-                  "t": "literal",
-                  "v": "Product"
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Set Item Type to Product"
+              "text": "Choose Unit Set from its lookup: the unit set from step 6 of Choose the site, warehouses and units"
             },
             {
               "tokens": [
@@ -311,23 +308,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Choose "
                 },
                 {
                   "t": "field",
-                  "v": "Item Group"
+                  "v": "Inventory Unit"
                 },
                 {
                   "t": "text",
-                  "v": " to the purchased group. It is the one from step 3 of "
+                  "v": " from its lookup: the unit from step 6 of "
                 },
                 {
                   "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "Set Item Group to the purchased group. It is the one from step 3 of Create two item groups"
+              "text": "Choose Inventory Unit from its lookup: the unit from step 6 of Choose the site, warehouses and units"
             },
             {
               "tokens": [
@@ -358,43 +355,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
-                },
-                {
-                  "t": "field",
-                  "v": "Default Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Purchase"
+                  "v": "Leave the other fields as LN fills them in"
                 }
               ],
-              "text": "Set Default Supply Source to Purchase"
+              "text": "Leave the other fields as LN fills them in"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "purchased default supply source"
+                  "v": "—"
                 }
               ],
-              "text": "purchased default supply source"
+              "text": "—"
             }
           ],
           "id": "6",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -411,32 +389,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Click "
                 },
                 {
-                  "t": "field",
-                  "v": "Unit Set"
-                },
-                {
-                  "t": "text",
-                  "v": " to the value recorded at step 8 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Set Unit Set to the value recorded at step 8 of Confirm the test design"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The status bar says Modify"
                 }
               ],
-              "text": "—"
+              "text": "The status bar says Modify"
             }
           ],
           "id": "7",
@@ -458,32 +427,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Open the "
                 },
                 {
-                  "t": "field",
-                  "v": "Inventory Unit"
+                  "t": "chip",
+                  "v": "Sites"
                 },
                 {
                   "t": "text",
-                  "v": " to the value recorded at step 9 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": " tab"
                 }
               ],
-              "text": "Set Inventory Unit to the value recorded at step 9 of Confirm the test design"
+              "text": "Open the Sites tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "No rows"
                 }
               ],
-              "text": "—"
+              "text": "No rows"
             }
           ],
           "id": "8",
@@ -505,19 +469,44 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Leave special-purpose typology and traceability controls at their proposed values"
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": " grid, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the site from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Leave special-purpose typology and traceability controls at their proposed values"
+              "text": "On the Sites grid, click New, enter the site from step 1 of Choose the site, warehouses and units and press Tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "No new configuration, lot, or serial behaviour is introduced"
+                  "v": "The site's name and city appear"
                 }
               ],
-              "text": "No new configuration, lot, or serial behaviour is introduced"
+              "text": "The site's name and city appear"
             }
           ],
           "id": "9",
@@ -539,27 +528,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the global default"
+                  "v": "Enter the raw-material warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Choose the site, warehouses and units",
+                  "href": "confirm-the-test-design.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
                 }
               ],
-              "text": "Save the global default"
+              "text": "Enter the raw-material warehouse from step 2 of Choose the site, warehouses and units in Warehouse"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Product/"
-                },
-                {
-                  "t": "literal",
-                  "v": "BAM-RM"
-                },
-                {
-                  "t": "text",
-                  "v": " combination exists"
+                  "v": "Its name appears"
                 }
               ],
-              "text": "The Product/BAM-RM combination exists"
+              "text": "Its name appears"
             }
           ],
           "id": "10",
@@ -581,24 +575,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Continue in the automatically opened "
+                  "v": "Check "
                 },
                 {
-                  "t": "session",
-                  "code": "tcibd0502m000",
-                  "name": "Item Defaults"
+                  "t": "field",
+                  "v": "Supply Source"
                 }
               ],
-              "text": "Continue in the automatically opened Item Defaults (tcibd0502m000)"
+              "text": "Check Supply Source"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "The multisite follow-on is active"
+                  "t": "literal",
+                  "v": "Purchase"
                 }
               ],
-              "text": "The multisite follow-on is active"
+              "text": "Purchase"
             }
           ],
           "id": "11",
@@ -620,32 +613,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the "
+                  "v": "Click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Sites"
-                },
-                {
-                  "t": "text",
-                  "v": " tab, add the site. It is the one from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "On the Sites tab, add the site. It is the one from step 2 of Confirm the test design"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The site row stays"
                 }
               ],
-              "text": "—"
+              "text": "The site row stays"
             }
           ],
           "id": "12",
@@ -667,32 +651,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set its "
+                  "v": "Click the blue "
                 },
                 {
-                  "t": "field",
-                  "v": "Warehouse"
+                  "t": "chip",
+                  "v": "Ordering"
                 },
                 {
                   "t": "text",
-                  "v": " to the purchased warehouse. It is the one from step 5 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": " link"
                 }
               ],
-              "text": "Set its Warehouse to the purchased warehouse. It is the one from step 5 of Confirm the test design"
+              "text": "Click the blue Ordering link"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tcibd2101m000",
+                  "name": "Item Ordering Defaults"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens"
                 }
               ],
-              "text": "—"
+              "text": "Item Ordering Defaults (tcibd2101m000) opens"
             }
           ],
           "id": "13",
@@ -714,31 +698,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set its "
+                  "v": "Leave the fields as LN fills them in, and click "
                 },
                 {
-                  "t": "field",
-                  "v": "Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Purchase"
+                  "t": "button",
+                  "label": "OK"
                 }
               ],
-              "text": "Set its Supply Source to Purchase"
+              "text": "Leave the fields as LN fills them in, and click OK"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The screen closes with no error, and the indicator beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " is on"
                 }
               ],
-              "text": "—"
+              "text": "The screen closes with no error, and the indicator beside Ordering is on"
             }
           ],
           "id": "14",
@@ -760,23 +744,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Click "
+                  "v": "Tick "
                 },
                 {
-                  "t": "button",
-                  "label": "Save"
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
                 }
               ],
-              "text": "Click Save"
+              "text": "Tick Create beside Ordering"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The site row remains stored"
+                  "v": "—"
                 }
               ],
-              "text": "The site row remains stored"
+              "text": "—"
             }
           ],
           "id": "15",
@@ -798,15 +790,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "For "
-                },
-                {
-                  "t": "chip",
-                  "v": "Ordering"
-                },
-                {
-                  "t": "text",
-                  "v": ", then "
+                  "v": "Click the blue "
                 },
                 {
                   "t": "chip",
@@ -814,34 +798,13 @@
                 },
                 {
                   "t": "text",
-                  "v": ", then "
-                },
-                {
-                  "t": "chip",
-                  "v": "Warehousing"
-                },
-                {
-                  "t": "text",
-                  "v": ": open the blue link beside it"
+                  "v": " link"
                 }
               ],
-              "text": "For Ordering, then Purchase, then Warehousing: open the blue link beside it"
+              "text": "Click the blue Purchase link"
             },
             {
               "tokens": [
-                {
-                  "t": "text",
-                  "v": "Its defaults session opens — "
-                },
-                {
-                  "t": "session",
-                  "code": "tcibd2101m000",
-                  "name": "Item Ordering Defaults"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
                 {
                   "t": "session",
                   "code": "tdipu0102m000",
@@ -849,15 +812,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "session",
-                  "code": "whwmd4101s000",
-                  "name": "Items - Warehousing Defaults"
+                  "v": " opens"
                 }
               ],
-              "text": "Its defaults session opens — Item Ordering Defaults (tcibd2101m000), Items - Purchase Defaults (tdipu0102m000), Items - Warehousing Defaults (whwmd4101s000)"
+              "text": "Items - Purchase Defaults (tdipu0102m000) opens"
             }
           ],
           "id": "16",
@@ -879,10 +837,50 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare every tab with the family sheet. Its purchased-group values are in §4"
+                  "v": "Fill in "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Unit"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Price Unit"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Currency"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Price Group"
+                },
+                {
+                  "t": "text",
+                  "v": ", and on the second tab "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Statistics Group"
+                },
+                {
+                  "t": "text",
+                  "v": ", as an existing group for bought items has them"
                 }
               ],
-              "text": "Compare every tab with the family sheet. Its purchased-group values are in §4"
+              "text": "Fill in Purchase Unit, Purchase Price Unit, Purchase Currency and Purchase Price Group, and on the second tab Purchase Statistics Group, as an existing group for bought items has them"
             },
             {
               "tokens": [
@@ -913,19 +911,47 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Complete what the screen requires"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                },
+                {
+                  "t": "text",
+                  "v": " and tick "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase"
                 }
               ],
-              "text": "Complete what the screen requires"
+              "text": "Click OK and tick Create beside Purchase"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The indicator beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " is on"
                 }
               ],
-              "text": "—"
+              "text": "The indicator beside Purchase is on"
             }
           ],
           "id": "18",
@@ -947,23 +973,36 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select "
+                  "v": "Do steps 13 to 15 for "
                 },
                 {
-                  "t": "button",
-                  "label": "OK"
+                  "t": "chip",
+                  "v": "Warehousing"
                 }
               ],
-              "text": "Select OK"
+              "text": "Do steps 13 to 15 for Warehousing"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "whwmd4101s000",
+                  "name": "Items - Warehousing Defaults"
+                },
+                {
                   "t": "text",
-                  "v": "The defaults close without an error"
+                  "v": " opens, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Location Controlled"
+                },
+                {
+                  "t": "text",
+                  "v": " ticked"
                 }
               ],
-              "text": "The defaults close without an error"
+              "text": "Items - Warehousing Defaults (whwmd4101s000) opens, with Location Controlled ticked"
             }
           ],
           "id": "19",
@@ -985,19 +1024,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the subentity indicator beside the link is active"
+                  "v": "Under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create Satellites Automatically"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
                 }
               ],
-              "text": "Confirm the subentity indicator beside the link is active"
+              "text": "Under Create Satellites Automatically, tick Sites"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Default data exists"
+                  "v": "—"
                 }
               ],
-              "text": "Default data exists"
+              "text": "—"
             }
           ],
           "id": "20",
@@ -1019,116 +1070,52 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the Create check box beside it"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
                 }
               ],
-              "text": "Select the Create check box beside it"
+              "text": "Click Save, then Refresh"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "New items are marked to receive it"
+                  "v": "Three indicators on, three "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": " boxes ticked, and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": " ticked"
                 }
               ],
-              "text": "New items are marked to receive it"
+              "text": "Three indicators on, three Create boxes ticked, and Sites ticked"
             }
           ],
           "id": "21",
           "optional": false,
           "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "22"
-                }
-              ],
-              "text": "22"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "After the third subentity, save "
-                },
-                {
-                  "t": "session",
-                  "code": "tcibd0502m000",
-                  "name": "Item Defaults"
-                }
-              ],
-              "text": "After the third subentity, save Item Defaults (tcibd0502m000)"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The site row and Create controls remain stored"
-                }
-              ],
-              "text": "The site row and Create controls remain stored"
-            }
-          ],
-          "id": "22",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "23"
-                }
-              ],
-              "text": "23"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Close and reopen the Product/"
-                },
-                {
-                  "t": "literal",
-                  "v": "BAM-RM"
-                },
-                {
-                  "t": "text",
-                  "v": " default"
-                }
-              ],
-              "text": "Close and reopen the Product/BAM-RM default"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "purchased global subentities"
-                },
-                {
-                  "t": "text",
-                  "v": " — three active indicators, three Create controls"
-                }
-              ],
-              "text": "purchased global subentities — three active indicators, three Create controls"
-            }
-          ],
-          "id": "23",
-          "optional": false,
-          "produces": true
         }
       ]
     }
@@ -1156,49 +1143,27 @@
               },
               {
                 "t": "text",
-                "v": " is unavailable"
-              }
-            ],
-            "text": "Product is unavailable"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Confirm the environment's Product-active setting; do not substitute Purchased or Manufactured without approval"
-              }
-            ],
-            "text": "Confirm the environment's Product-active setting; do not substitute Purchased or Manufactured without approval"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Ordering defaults appear to require a Warehouse, but no Warehouse field is displayed"
-              }
-            ],
-            "text": "Ordering defaults appear to require a Warehouse, but no Warehouse field is displayed"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Verify the warehouse on the parent "
+                "v": " isn't in the "
               },
               {
-                "t": "session",
-                "code": "tcibd0502m000"
+                "t": "field",
+                "v": "Item Type"
               },
               {
                 "t": "text",
-                "v": " Sites row"
+                "v": " list"
               }
             ],
-            "text": "Verify the warehouse on the parent tcibd0502m000 Sites row"
+            "text": "Product isn't in the Item Type list"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Product items may be switched off in your company. Ask whoever set it up. Don't use Purchased or Manufactured instead"
+              }
+            ],
+            "text": "Product items may be switched off in your company. Ask whoever set it up. Don't use Purchased or Manufactured instead"
           }
         ]
       },
@@ -1208,19 +1173,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Ordering defaults will not save"
+                "v": "Ordering defaults seem to need a warehouse, but there's no "
+              },
+              {
+                "t": "field",
+                "v": "Warehouse"
+              },
+              {
+                "t": "text",
+                "v": " field"
               }
             ],
-            "text": "Ordering defaults will not save"
+            "text": "Ordering defaults seem to need a warehouse, but there's no Warehouse field"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Confirm every visible required value and retain the proposed Economic Order Quantity"
+                "v": "The warehouse comes from the site row. Check it at step 10"
               }
             ],
-            "text": "Confirm every visible required value and retain the proposed Economic Order Quantity"
+            "text": "The warehouse comes from the site row. Check it at step 10"
           }
         ]
       },
@@ -1230,19 +1203,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Purchase defaults will not save"
+                "v": "Ordering defaults won't save"
               }
             ],
-            "text": "Purchase defaults will not save"
+            "text": "Ordering defaults won't save"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Confirm the units, currency, price group and statistics group in the family sheet §4"
+                "v": "Fill in every field the screen says is needed, and leave "
+              },
+              {
+                "t": "field",
+                "v": "Economic Order Quantity"
+              },
+              {
+                "t": "text",
+                "v": " as LN filled it in"
               }
             ],
-            "text": "Confirm the units, currency, price group and statistics group in the family sheet §4"
+            "text": "Fill in every field the screen says is needed, and leave Economic Order Quantity as LN filled it in"
           }
         ]
       },
@@ -1252,19 +1233,41 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Warehousing defaults show an unknown required policy value"
+                "v": "Purchase defaults won't save"
               }
             ],
-            "text": "Warehousing defaults show an unknown required policy value"
+            "text": "Purchase defaults won't save"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop and obtain the approved value; do not invent valuation, ownership, location, lot/serial, or handling-unit policy"
+                "v": "Check the units, the currency, the price group and the statistics group"
               }
             ],
-            "text": "Stop and obtain the approved value; do not invent valuation, ownership, location, lot/serial, or handling-unit policy"
+            "text": "Check the units, the currency, the price group and the statistics group"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Warehousing defaults ask for a value you don't know"
+              }
+            ],
+            "text": "Warehousing defaults ask for a value you don't know"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Stop and ask whoever owns the warehouse setup. Don't make up a value"
+              }
+            ],
+            "text": "Stop and ask whoever owns the warehouse setup. Don't make up a value"
           }
         ]
       }

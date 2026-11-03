@@ -3,21 +3,18 @@
   "tier": "export",
   "kind": "task",
   "id": "confirm-costing-data",
-  "title": "Confirm costing data",
+  "title": "Read the standard costs",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
-    "n": 8,
-    "of": 11
+    "n": 9,
+    "of": 10
   },
   "previous": {
-    "id": "build-the-job-shop-routing",
-    "title": "Build the job shop routing"
+    "id": "add-the-costing-rows",
+    "title": "Add the costing rows"
   },
-  "next": {
-    "id": "stock-the-components",
-    "title": "Stock the components"
-  },
+  "next": null,
   "module": "Common · Procurement · Manufacturing · Warehousing",
   "modules": [
     "Common",
@@ -26,38 +23,48 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing",
   "session": "Item - Costing",
   "sessionCode": "ticpr0107m000",
-  "walked": "2026-10-23",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Every item in the family carries the standard cost the estimate calculation reads."
+        "v": "You've written down each item's material cost and total cost."
       }
     ],
-    "text": "Every item in the family carries the standard cost the estimate calculation reads."
+    "text": "You've written down each item's material cost and total cost."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 12 of "
+        },
+        {
+          "t": "link",
+          "v": "Add the costing rows",
+          "href": "add-the-costing-rows.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 12 of Add the costing rows."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A production order's estimate reads each material's standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until "
-      },
-      {
-        "t": "link",
-        "v": "Stock the components",
-        "href": "stock-the-components.md"
-      },
-      {
-        "t": "text",
-        "v": " buys them in."
+        "v": "A production order's cost estimate reads each material's standard cost. A setting decides whether a missing cost stops the estimate or only makes it too low. A bought item gets its standard cost from purchase prices, so a new one usually reads 0."
       }
     ],
-    "text": "A production order's estimate reads each material's standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until Stock the components buys them in."
+    "text": "A production order's cost estimate reads each material's standard cost. A setting decides whether a missing cost stops the estimate or only makes it too low. A bought item gets its standard cost from purchase prices, so a new one usually reads 0."
   },
   "blocks": [
     {
@@ -83,28 +90,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
-                },
-                {
-                  "t": "session",
-                  "code": "ticpr0107m000",
-                  "name": "Item - Costing"
-                },
-                {
-                  "t": "text",
-                  "v": " for the bamboo rod"
+                  "v": "Open the record for the first bought item"
                 }
               ],
-              "text": "Open Item - Costing (ticpr0107m000) for the bamboo rod"
+              "text": "Open the record for the first bought item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item's costing record opens for an enterprise unit"
+                  "v": "Its costing record, for an enterprise unit"
                 }
               ],
-              "text": "The item's costing record opens for an enterprise unit"
+              "text": "Its costing record, for an enterprise unit"
             }
           ],
           "id": "1",
@@ -131,58 +129,23 @@
                 {
                   "t": "field",
                   "v": "Costing Source"
-                },
-                {
-                  "t": "text",
-                  "v": ", then on the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Standard Cost"
-                },
-                {
-                  "t": "text",
-                  "v": " tab "
-                },
-                {
-                  "t": "field",
-                  "v": "Material Costs"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Total Costs"
                 }
               ],
-              "text": "Read Costing Source, then on the Standard Cost tab Material Costs and Total Costs"
+              "text": "Read Costing Source"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "component standard costs"
-                },
-                {
-                  "t": "text",
-                  "v": " — the rod's figures"
+                  "t": "literal",
+                  "v": "Purchase"
                 }
               ],
-              "text": "component standard costs — the rod's figures"
+              "text": "Purchase"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -199,35 +162,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat for the paper sleeve"
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Standard Cost"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Repeat for the paper sleeve"
+              "text": "Open the Standard Cost tab"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "component standard costs"
-                },
-                {
-                  "t": "text",
-                  "v": " — the sleeve's figures"
+                  "v": "—"
                 }
               ],
-              "text": "component standard costs — the sleeve's figures"
+              "text": "—"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -244,10 +204,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the record for the finished item"
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Material Costs"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Total Costs"
                 }
               ],
-              "text": "Open the record for the finished item"
+              "text": "Read Material Costs and Total Costs"
             },
             {
               "tokens": [
@@ -260,10 +232,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "finished-item standard cost"
+                  "v": "first bought item's costs"
                 }
               ],
-              "text": "finished-item standard cost"
+              "text": "first bought item's costs"
             }
           ],
           "id": "4",
@@ -285,33 +257,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
-                },
-                {
-                  "t": "session",
-                  "code": "ticpr3501m000",
-                  "name": "Item Standard Costs"
-                },
-                {
-                  "t": "text",
-                  "v": " for each item whose cost is missing or unexpected. Use the item's effective date"
+                  "v": "Do steps 1 to 4 for the second bought item"
                 }
               ],
-              "text": "Open Item Standard Costs (ticpr3501m000) for each item whose cost is missing or unexpected. Use the item's effective date"
+              "text": "Do steps 1 to 4 for the second bought item"
             },
             {
               "tokens": [
                 {
+                  "t": "pencil"
+                },
+                {
                   "t": "text",
-                  "v": "The actual and historical standard cost structure is shown, or confirms none exists"
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "second bought item's costs"
                 }
               ],
-              "text": "The actual and historical standard cost structure is shown, or confirms none exists"
+              "text": "second bought item's costs"
             }
           ],
           "id": "5",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -328,24 +298,47 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If an item still has no standard cost, stop. Obtain the approved cost route before continuing"
+                  "v": "Do steps 1 to 4 for the made item"
                 }
               ],
-              "text": "If an item still has no standard cost, stop. Obtain the approved cost route before continuing"
+              "text": "Do steps 1 to 4 for the made item"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Costing Source"
+                },
+                {
                   "t": "text",
-                  "v": "The estimate calculation is not left to run against missing material costs"
+                  "v": " is "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "made item's costs"
                 }
               ],
-              "text": "The estimate calculation is not left to run against missing material costs"
+              "text": "Costing Source is Job Shop — made item's costs"
             }
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": true
         }
       ]
     }
@@ -369,19 +362,72 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A purchased component has no standard cost"
+                "v": "A bought item's cost is 0"
               }
             ],
-            "text": "A purchased component has no standard cost"
+            "text": "A bought item's cost is 0"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one"
+                "v": "That's usual for a new item. Its cost comes from purchase prices, which it doesn't have until you buy it"
               }
             ],
-            "text": "Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one"
+            "text": "That's usual for a new item. Its cost comes from purchase prices, which it doesn't have until you buy it"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order's cost estimate stops with an error"
+              }
+            ],
+            "text": "The production order's cost estimate stops with an error"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A material may have no standard cost, and a setting makes the estimate stop when one is missing"
+              }
+            ],
+            "text": "A material may have no standard cost, and a setting makes the estimate stop when one is missing"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A cost isn't the one you expected"
+              }
+            ],
+            "text": "A cost isn't the one you expected"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Open "
+              },
+              {
+                "t": "session",
+                "code": "ticpr3501m000",
+                "name": "Item Standard Costs"
+              },
+              {
+                "t": "text",
+                "v": " for the item, on its effective date, to see where the cost came from"
+              }
+            ],
+            "text": "Open Item Standard Costs (ticpr3501m000) for the item, on its effective date, to see where the cost came from"
           }
         ]
       }

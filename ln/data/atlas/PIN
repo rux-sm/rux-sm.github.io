@@ -1,9 +1,9 @@
-commit   b37f60b55c1f7a6fe52cd84a77d3b6536fa8f8f3
-date     2026-11-02T12:18:53Z
-subject  feat(walkthroughs): Approve four walked guides
+commit   526182d88c9d999aa7e14126c49022d4306bbd88
+date     2026-11-03T05:05:36Z
+subject  docs(plans): Fold the re-walk into the new parts
 contract 24 
 tier     export
-sha256   cabf3f60ccc813fe0ee1deb4e066df7e7efdc0ae613ccc7ff4ca60ab3461837e
+sha256   bf5b481c7f73f67fe5f14fc1c09527667ec56af7d8eb8522d445e052e31f8c0b
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

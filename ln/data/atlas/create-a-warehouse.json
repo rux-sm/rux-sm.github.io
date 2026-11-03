@@ -1,0 +1,453 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "process",
+  "id": "create-a-warehouse",
+  "title": "Create a warehouse",
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "updated": "2026-11-02",
+  "status": "draft",
+  "summary": "make a warehouse at your site that keeps its stock on locations, ready to receive, store and ship.",
+  "order": 4,
+  "sources": [
+    "whwmd2500m000",
+    "whwmd3500m000",
+    "whwmd3100s000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need a site, and a training company you're allowed to add a warehouse to."
+        }
+      ],
+      "text": "You need a site, and a training company you're allowed to add a warehouse to."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "create-the-warehouse",
+      "n": 0,
+      "title": "Create the warehouse",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The warehouse is saved at your site, with its own settings."
+          }
+        ],
+        "text": "The warehouse is saved at your site, with its own settings."
+      },
+      "steps": 7,
+      "walked": "2026-11-02"
+    },
+    {
+      "id": "add-the-storage-locations",
+      "n": 1,
+      "title": "Add the locations",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick."
+          }
+        ],
+        "text": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick."
+      },
+      "steps": 15,
+      "walked": "2026-11-02"
+    },
+    {
+      "id": "turn-on-locations",
+      "n": 2,
+      "title": "Turn on locations",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The warehouse uses locations, and names its receiving, staging and quarantine locations."
+          }
+        ],
+        "text": "The warehouse uses locations, and names its receiving, staging and quarantine locations."
+      },
+      "steps": 9,
+      "walked": "2026-11-02"
+    }
+  ],
+  "values": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Warehouse"
+              }
+            ],
+            "text": "Warehouse"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a short code, like the company's own"
+              }
+            ],
+            "text": "a short code, like the company's own"
+          }
+        ],
+        "task": "create-the-warehouse"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " make a warehouse at your site that keeps its stock on locations, ready to receive, store and ship."
+        }
+      ],
+      "text": "Objective: make a warehouse at your site that keeps its stock on locations, ready to receive, store and ship."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need a site, and a training company you're allowed to add a warehouse to."
+        }
+      ],
+      "text": "> Prerequisite > You need a site, and a training company you're allowed to add a warehouse to."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide ends when the warehouse has its locations."
+        },
+        {
+          "t": "text",
+          "v": " Items get their data for the warehouse later, when an order or a default first uses them."
+        }
+      ],
+      "text": "> Warning > This guide ends when the warehouse has its locations. Items get their data for the warehouse later, when an order or a default first uses them."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Task",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Create the warehouse",
+                  "href": "create-the-warehouse.md"
+                }
+              ],
+              "text": "Create the warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouses"
+                }
+              ],
+              "text": "Warehouses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse is saved at your site, with its own settings"
+                }
+              ],
+              "text": "The warehouse is saved at your site, with its own settings"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Add the locations",
+                  "href": "add-the-storage-locations.md"
+                }
+              ],
+              "text": "Add the locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse - Locations"
+                }
+              ],
+              "text": "Warehouse - Locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick"
+                }
+              ],
+              "text": "The warehouse has five locations: receiving, staging, quarantine, bulk and pick"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Turn on locations",
+                  "href": "turn-on-locations.md"
+                }
+              ],
+              "text": "Turn on locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouses"
+                }
+              ],
+              "text": "Warehouses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse uses locations, and names its receiving, staging and quarantine locations"
+                }
+              ],
+              "text": "The warehouse uses locations, and names its receiving, staging and quarantine locations"
+            }
+          ]
+        }
+      ],
+      "under": "At a glance"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Why this order."
+        },
+        {
+          "t": "text",
+          "v": " A location belongs to a warehouse, so the warehouse is saved first. The warehouse can only name locations that exist, so it turns locations on last."
+        }
+      ],
+      "text": "Why this order. A location belongs to a warehouse, so the warehouse is saved first. The warehouse can only name locations that exist, so it turns locations on last.",
+      "under": "At a glance"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "A warehouse without locations"
+                }
+              ],
+              "text": "A warehouse without locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stop after "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the warehouse",
+                  "href": "create-the-warehouse.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". Stock then has no place inside the warehouse, so there's no put-away or picking"
+                }
+              ],
+              "text": "Stop after Create the warehouse. Stock then has no place inside the warehouse, so there's no put-away or picking"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Zones"
+                }
+              ],
+              "text": "Zones"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Locations can be grouped into zones in "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd3510m000",
+                  "name": "Warehouse - Storage Zones"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouse - Storage Zones"
+                },
+                {
+                  "t": "text",
+                  "v": ". They're optional, and this guide doesn't use them"
+                }
+              ],
+              "text": "Locations can be grouped into zones in Warehouse - Storage Zones (whwmd3510m000), Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouse - Storage Zones. They're optional, and this guide doesn't use them"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next walkthrough",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse has its locations"
+                }
+              ],
+              "text": "The warehouse has its locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Put stock in it with "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                }
+              ],
+              "text": "Put stock in it with Purchase to receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
+                }
+              ],
+              "text": "Read the baseline"
+            }
+          ]
+        }
+      ],
+      "under": "Downstream actions"
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 1
+}

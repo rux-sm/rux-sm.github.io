@@ -12,7 +12,7 @@
   "updated": "2026-11-02",
   "status": "approved",
   "summary": "make a finished item on a production order from stock you already hold, and check that on-hand rose by what you made.",
-  "order": 6,
+  "order": 8,
   "sources": [
     "ticst0101m000",
     "ticst0101m100",

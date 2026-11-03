@@ -3,12 +3,12 @@
   "tier": "export",
   "kind": "task",
   "id": "confirm-the-test-design",
-  "title": "Confirm the test design",
+  "title": "Choose the site, warehouses and units",
   "process": {
     "id": "create-basic-test-items-and-defaults",
     "title": "Create test items",
     "n": 0,
-    "of": 11
+    "of": 10
   },
   "previous": null,
   "next": {
@@ -23,29 +23,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-02",
   "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",
   "session": "Warehouses",
   "sessionCode": "whwmd2500m000",
-  "walked": "2026-08-15",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Site, warehouses, units, and unused item codes are known."
+        "v": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units."
       }
     ],
-    "text": "Site, warehouses, units, and unused item codes are known."
+    "text": "You've written down the site, a warehouse for bought materials, a warehouse for finished items, and the units."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing yet. Every later task reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. Where every physical item is of type Product, as on the walked run, buying or making is a supply-source decision rather than an item-type one."
+        "v": "Nothing changes yet. The later tasks use what you write down here. Check each warehouse's type: you can't receive goods into a Shop Floor warehouse, and the name doesn't tell you the type."
       }
     ],
-    "text": "Nothing yet. Every later task reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. Where every physical item is of type Product, as on the walked run, buying or making is a supply-source decision rather than an item-type one."
+    "text": "Nothing changes yet. The later tasks use what you write down here. Check each warehouse's type: you can't receive goods into a Shop Floor warehouse, and the name doesn't tell you the type."
   },
   "blocks": [
     {
@@ -71,13 +71,17 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the approved training company"
+                  "v": "Filter the list to the site that will buy, make and sell the test items"
                 }
               ],
-              "text": "Confirm the approved training company"
+              "text": "Filter the list to the site that will buy, make and sell the test items"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouses at that site — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -87,10 +91,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "training company"
+                  "v": "site"
                 }
               ],
-              "text": "training company"
+              "text": "The warehouses at that site — site"
             }
           ],
           "id": "1",
@@ -112,10 +116,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the site that will buy, store, make, and sell the test family"
+                  "v": "Find a warehouse for bought materials whose "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse Type"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "literal",
+                  "v": "Normal"
                 }
               ],
-              "text": "Select the site that will buy, store, make, and sell the test family"
+              "text": "Find a warehouse for bought materials whose Warehouse Type is Normal"
             },
             {
               "tokens": [
@@ -128,10 +144,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "site"
+                  "v": "raw-material warehouse"
                 }
               ],
-              "text": "site"
+              "text": "raw-material warehouse"
             }
           ],
           "id": "2",
@@ -153,29 +169,43 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Find a warehouse for finished items whose "
                 },
                 {
-                  "t": "session",
-                  "code": "whwmd2500m000",
-                  "name": "Warehouses"
+                  "t": "field",
+                  "v": "Warehouse Type"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "literal",
+                  "v": "Normal"
                 }
               ],
-              "text": "Open Warehouses (whwmd2500m000)"
+              "text": "Find a warehouse for finished items whose Warehouse Type is Normal"
             },
             {
               "tokens": [
                 {
+                  "t": "pencil"
+                },
+                {
                   "t": "text",
-                  "v": "The warehouse master list opens"
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished-goods warehouse"
                 }
               ],
-              "text": "The warehouse master list opens"
+              "text": "finished-goods warehouse"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -192,19 +222,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Filter the warehouse list to the site from step 2"
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Master Data ➔ Items ➔ Items"
                 }
               ],
-              "text": "Filter the warehouse list to the site from step 2"
+              "text": "Open Master Data ➔ Items ➔ Items"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tcibd0501m000",
+                  "name": "Items"
+                },
+                {
                   "t": "text",
-                  "v": "Only candidate warehouses for that site remain"
+                  "v": " opens"
                 }
               ],
-              "text": "Only candidate warehouses for that site remain"
+              "text": "Items (tcibd0501m000) opens"
             }
           ],
           "id": "4",
@@ -226,31 +265,29 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record the approved Normal warehouse for purchased production materials"
+                  "v": "Open an existing physical item that's counted the same way as your test items will be"
                 }
               ],
-              "text": "Record the approved Normal warehouse for purchased production materials"
+              "text": "Open an existing physical item that's counted the same way as your test items will be"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "purchased-item warehouse"
+                  "v": " opens"
                 }
               ],
-              "text": "purchased-item warehouse"
+              "text": "Item (tcibd0501m100) opens"
             }
           ],
           "id": "5",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -267,10 +304,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record the approved Normal warehouse for finished products"
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Unit Set"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Unit"
                 }
               ],
-              "text": "Record the approved Normal warehouse for finished products"
+              "text": "Read Unit Set and Unit"
             },
             {
               "tokens": [
@@ -283,10 +332,25 @@
                 },
                 {
                   "t": "value",
-                  "v": "finished-item warehouse"
+                  "v": "unit set"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "unit"
                 }
               ],
-              "text": "finished-item warehouse"
+              "text": "unit set, unit"
             }
           ],
           "id": "6",
@@ -308,154 +372,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open one approved physical Product item that uses the same counting basis"
+                  "v": "Search the list for each item code you plan to use"
                 }
               ],
-              "text": "Open one approved physical Product item that uses the same counting basis"
+              "text": "Search the list for each item code you plan to use"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Its global item data opens"
+                  "v": "No item has any of your codes"
                 }
               ],
-              "text": "Its global item data opens"
+              "text": "No item has any of your codes"
             }
           ],
           "id": "7",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "8"
-                }
-              ],
-              "text": "8"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Record its "
-                },
-                {
-                  "t": "field",
-                  "v": "Unit Set"
-                }
-              ],
-              "text": "Record its Unit Set"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "Unit Set"
-                }
-              ],
-              "text": "Unit Set"
-            }
-          ],
-          "id": "8",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "9"
-                }
-              ],
-              "text": "9"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Record its "
-                },
-                {
-                  "t": "field",
-                  "v": "Inventory Unit"
-                }
-              ],
-              "text": "Record its Inventory Unit"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "Inventory Unit"
-                }
-              ],
-              "text": "Inventory Unit"
-            }
-          ],
-          "id": "9",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "10"
-                }
-              ],
-              "text": "10"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Search "
-                },
-                {
-                  "t": "chip",
-                  "v": "Items"
-                },
-                {
-                  "t": "text",
-                  "v": " for each proposed example code"
-                }
-              ],
-              "text": "Search Items for each proposed example code"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "No existing item uses any proposed code"
-                }
-              ],
-              "text": "No existing item uses any proposed code"
-            }
-          ],
-          "id": "10",
           "optional": false,
           "produces": false
         }
@@ -481,19 +413,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "An example item code already exists"
+                "v": "An item code you planned is already used"
               }
             ],
-            "text": "An example item code already exists"
+            "text": "An item code you planned is already used"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Choose another unused code; do not reuse or repurpose an existing item"
+                "v": "Choose another code. Don't change or reuse an existing item"
               }
             ],
-            "text": "Choose another unused code; do not reuse or repurpose an existing item"
+            "text": "Choose another code. Don't change or reuse an existing item"
           }
         ]
       },
@@ -503,19 +435,31 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A candidate “raw material” warehouse is Shop Floor"
+                "v": "The warehouse for materials is a Shop Floor warehouse"
               }
             ],
-            "text": "A candidate “raw material” warehouse is Shop Floor"
+            "text": "The warehouse for materials is a Shop Floor warehouse"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Select an approved Normal warehouse; do not rely on description alone"
+                "v": "You can't receive into it. Choose one whose "
+              },
+              {
+                "t": "field",
+                "v": "Warehouse Type"
+              },
+              {
+                "t": "text",
+                "v": " is "
+              },
+              {
+                "t": "literal",
+                "v": "Normal"
               }
             ],
-            "text": "Select an approved Normal warehouse; do not rely on description alone"
+            "text": "You can't receive into it. Choose one whose Warehouse Type is Normal"
           }
         ]
       }

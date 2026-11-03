@@ -346,7 +346,9 @@ log-in preview. `scheduler/tools/check-driver-form.mjs` runs it against an inven
 `samsara-fuel`, source in `scheduler/samsara-fuel/`, works out each active bus's miles per gallon
 from Samsara's last 90 days, the fuel and energy report's miles over its gallons, and upserts them
 into `bus_fuel_profiles`, for the bus column's fuel-needed tick; the tank is the bus's own
-`tank_gallons`. It needs `SAMSARA_API_TOKEN`'s Fuel & Energy permission. Like the nightly run of §7
-it answers only `x-night-key` matching `SAMSARA_NIGHT_KEY`, reads and saves on the service role,
+`tank_gallons`. It needs `SAMSARA_API_TOKEN`'s Fuel & Energy permission. Each night at 10:50 UTC
+the database's `samsara-fuel` schedule, through `pg_net`, calls it with the vault's
+`samsara_night_key`, as §7's `samsara-night` does twenty minutes before; it answers only
+`x-night-key` matching `SAMSARA_NIGHT_KEY`, reads and saves on the service role,
 takes `{"write": false}` to work it out and keep nothing, and is deployed with Verify JWT off.
 `scheduler/tools/check-samsara-fuel.mjs` runs it against invented readings.

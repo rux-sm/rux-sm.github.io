@@ -48,8 +48,6 @@ None open.
 
 ## Tasks
 
-- [ ] Deploy `scheduler/samsara-fuel/`, run it once with `{"write": false}`
-  and then to keep, and schedule it each night, each on rux's yes.
 - [ ] A Tank field on the Fleet editor, so a bus of another make gets its
   `tank_gallons`.
 - [ ] Work out each bus's next leg and its miles where the board loads its

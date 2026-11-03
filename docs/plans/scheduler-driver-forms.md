@@ -58,24 +58,10 @@ code.
   notes taken off, which leaves PSJA's pages as issued. It is yearly and filed
   as `PSJA background check`, the kind PSJA T-STEM requires, renamed from
   `Driver background check` so another district's packet can be its own form.
-- **The company's own lines are printed on the blank before it is uploaded:**
-  its name, service, office phone and email, Yes to school grounds, Yes to
-  fingerprinted under Senate Bill 9, and the agency's name. The driver is
-  asked only for their own.
-- **The driver types their full Social Security number once,** and page 1
-  gets its last four. Like every answer it is kept only in the signed PDF,
-  never in a table or a log.
-- **The licence copy page is left for the office,** which adds the copy
-  before the packet goes to PSJA.
-- **A Yes on any TB question flags the signing,** since one Yes means a skin
-  test.
-- **The packet needs what a field cannot yet say:** an answer written in
-  several places, as the name is on every page, by `at` taking a list; a
-  place that takes only the last four digits; a choice of more than Yes or
-  No, as Sex and the TB questions' Don't know, by a `choice` field whose
-  `marks` name each option; and prefills for the name's parts, the address's
-  parts and the licence's state and number. A signature and the day are
-  already written in as many places as a form has them.
+- **The company's own lines are the form's `fixed` fields:** its name,
+  service, office phone and email, Yes to school grounds and Yes to
+  fingerprinted under Senate Bill 9, written at signing, so the driver is
+  asked only for their own. The licence copy page is left for the office.
 - **The background check form's campus and trip date are left blank,**
   because it goes to many schools. Opened from a trip's Forms
   list, at `documents.html?open=<document id>&trip=<trip id>`, the campus and
@@ -126,13 +112,6 @@ code.
       the form on a Spanish link, a second signing replacing the first as the
       current copy, and Send's Copy the text; then delete the test driver,
       its signings and its files.
-- [ ] Teach `handler.ts`, `sign.js`, `get_driver_form` and
-      `check-driver-form.mjs` an answer in several places, the last-four
-      place, the `choice` field and the new prefills, checked against an
-      invented form.
-- [ ] Print the company's lines on PSJA's blank, write the packet's fields,
-      places and Spanish, rename the kind, upload the blank and add the row
-      by SQL on rux's yes, and sign it as a test driver, checking every page.
 - [ ] Write the campus and the trip date onto the background check form's
       copy in `documents.js` when `open` comes with `trip`, and check it in
       Chrome on :8641 with an invented PDF shaped like the real one.

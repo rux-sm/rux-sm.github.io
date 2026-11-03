@@ -18943,7 +18943,14 @@
     const months = () => {
       const now = new Date().getFullYear(), at = viewDay.getFullYear();
       const items = [];
-      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 2, at); y++) {
+      const from = Math.min(FIRST_YEAR, at);
+      for (let y = from; y <= Math.max(now + 2, at); y++) {
+        // Carbon's divider parts one year from the next, so the turn of the year shows.
+        if (y > from) {
+          const rule = el('li', 'rux--menu-item-divider');
+          rule.setAttribute('role', 'separator');
+          items.push(rule);
+        }
         for (let m = 0; m < 12; m++) {
           items.push(choice(new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long' }), y, y * 12 + m, y === at && m === viewDay.getMonth()));
         }

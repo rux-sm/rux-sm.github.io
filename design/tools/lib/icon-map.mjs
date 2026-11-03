@@ -129,6 +129,7 @@ export const ICONS = {
   'health-cross': { material: 'medical_services', rux: null },  // The cross on a medical bag, so it is not read as `add`.
   'hotel': { material: 'airline_seat_flat', rux: null },  // Carbon's hotel is a bed, which is what a sleeper coach is.
   'idea': { material: 'lightbulb', rux: null },
+  'image': { material: 'image', rux: null },
   'in-progress': { material: 'progress_activity', rux: null },  // `pending` is taken by pending--filled.
   'incomplete': { material: 'incomplete_circle', rux: null },
   'information': { material: 'info', rux: null },

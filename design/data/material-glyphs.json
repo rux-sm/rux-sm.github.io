@@ -946,6 +946,22 @@
         "path|d=M422.5-103.5Q399-127 399-161h162q0 34-23.5 57.5T480-80q-34 0-57.5-23.5ZM318-223v-60h324v60H318Zm5-121q-66-43-104.5-107.5T180-597q0-122 89-211t211-89q122 0 211 89t89 211q0 81-38 145.5T637-344H323Z"
       ]
     },
+    "image@960": {
+      "name": "image",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/image.svg",
+      "geometry": [
+        "path|d=M236-277h489L578-473 446-302l-93-127-117 152ZM120-120v-720h720v720H120Zm60-60h600v-600H180v600Zm0 0v-600 600Z"
+      ]
+    },
+    "image-fill@960": {
+      "name": "image-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/image-fill.svg",
+      "geometry": [
+        "path|d=M236-277h489L578-473 446-302l-93-127-117 152ZM120-120v-720h720v720H120Z"
+      ]
+    },
     "progress_activity@960": {
       "name": "progress_activity",
       "size": "960",

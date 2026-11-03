@@ -595,12 +595,12 @@ expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 
 expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
 expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
 expect('a bus standing with its engine on past 30 minutes is as long idle as one Samsara calls idle',
-  [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(dial),
-  [['Idle45m', 'warning', true], ['Idle45m', 'warning', true], ['Idle10m', 'quiet', true]]);
-expect('standing: Idle over how long in a filled display, amber past 30 minutes, or Off unfilled; the place left to the tip',
+  [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(h => [...dial(h), text(h, '.scheduler-row-head__arc-under')]),
+  [['Idle', 'warning', true, '45m'], ['Idle', 'warning', true, '45m'], ['Idle', 'quiet', true, '10m']]);
+expect('standing: Idle alone in a filled display, amber past 30 minutes, how long on its label, or Off unfilled; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
-    .map(([h]) => [...dial(h), line(h)]),
-  [['Idle14m', 'quiet', true, null], ['Idle45m', 'warning', true, null], ['Off', 'quiet', false, null]]);
+    .map(([h]) => [...dial(h), h.querySelector('.scheduler-row-head__dial').getAttribute('aria-label'), line(h)]),
+  [['Idle', 'quiet', true, 'Idling 14m', null], ['Idle', 'warning', true, 'Idling 45m, past 30 minutes', null], ['Off', 'quiet', false, 'Engine off', null]]);
 expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
   [[], [], []]);

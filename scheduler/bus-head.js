@@ -106,8 +106,11 @@
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The state's display: filled while the engine runs, in the state's tone,
-  // the reading over its unit or how long; the word alone with it off.
+  // The state's display, one row beside the fuel's box: filled while the
+  // engine runs, in the state's tone, the speed beside mph, Idle alone, its
+  // amber saying it has idled too long and the tip saying how long, since
+  // the word and its time are wider than the column; the word alone with
+  // the engine off, and a dash beside how long with no signal.
   function dial(live, state) {
     const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? ' scheduler-row-head__dial--running' : ''}`);
     box.setAttribute('role', 'img');
@@ -115,7 +118,7 @@
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
-    const under = figure ? 'mph' : state.under;
+    const under = figure ? 'mph' : state.engine === 'idle' ? null : state.under;
     if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
     box.appendChild(speed);
     return box;

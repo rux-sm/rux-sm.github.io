@@ -18866,17 +18866,21 @@
     }
   }
 
+  /* Moves the board so `start` is the first day in view: a month's pick, its
+     first day. The same view is not drawn again; a strip's is the one
+     scrolled to. */
+  function goToDay(start) {
+    stopStripScroll();
+    if (shown && iso(start) === iso(stripStart ? cursor : shown)) return;
+    toast(null);
+    cursor = start;
+    show();
+  }
   /* Moves the board to the week containing `day`, which `firstDayOf` finds
      from the week-start preference, or to the day on a phone, as
-     `cursorFor` says: the calendar's pick, a month's or a year's. The same
-     week is not drawn again; a strip's week is the one scrolled to. */
+     `cursorFor` says: the calendar's pick. */
   function goToWeekOf(day) {
-    stopStripScroll();
-    const next = cursorFor(day);
-    if (shown && iso(next) === iso(stripStart ? cursor : shown)) return;
-    toast(null);
-    cursor = next;
-    show();
+    goToDay(cursorFor(day));
   }
 
   /* ── The week picker ───────────────────────────────────────────────────────
@@ -18919,9 +18923,9 @@
 
     /* THE MONTH, one list beside the calendar of every month of every year
        held, each with its year in the item's shortcut column so the years
-       stand in a line. A pick moves to the week holding the month's first
-       day, so the board starts on the week's first day as the arrows leave
-       it; the day header names the month's first day. The years run from
+       stand in a line. A pick moves the board to the month's first day
+       itself, the first day in view, whatever weekday it falls on; the
+       arrows step a week on from it. The years run from
        the first the scheduler holds trips in to two years ahead, and an item's
        value counts months, so it finds its day alone. */
     const monthMenu = document.getElementById('scheduler-month-menu');
@@ -18957,17 +18961,19 @@
         const r = btn.getBoundingClientRect();
         popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn, { matchWidth: true });
         btn.setAttribute('aria-expanded', 'true');
-        /* A list that scrolls opens on the month in view, the list
-           alone moving: focus goes to it once the menu has put it on its first. */
+        /* The list opens with the month in view at its top, the months
+           before it a scroll up and those after it below, the list alone
+           moving: focus goes to it once the menu has put it on its first. */
         const on = menu.querySelector('[aria-checked="true"]');
         if (on) queueMicrotask(() => {
           on.focus({ preventScroll: true });
-          menu.scrollTop = on.offsetTop - (menu.clientHeight - on.offsetHeight) / 2;
+          menu.scrollTop = on.offsetTop - parseFloat(getComputedStyle(menu).paddingBlockStart);
         });
       });
+      // The month in view picked again goes to its first day too.
       menu.addEventListener('click', e => {
         const item = e.target.closest('[role="menuitemradio"]');
-        if (item && item.getAttribute('aria-checked') !== 'true') goToWeekOf(dayOf(Number(item.dataset.value)));
+        if (item) goToDay(dayOf(Number(item.dataset.value)));
       });
       menu.addEventListener('rux:menu-closed', () => {
         menu.hidden = true;

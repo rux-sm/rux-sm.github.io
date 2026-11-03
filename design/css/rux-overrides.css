@@ -3745,6 +3745,16 @@
 [data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
   box-shadow: 0 0 0 1px var(--rux-border-subtle), 0 2px 6px var(--rux-shadow);
 }
+/* A menu's chosen choice stands on that selected colour, as a dropdown's
+   chosen option does, where Carbon's menu marks it with its check alone,
+   which a long list scrolls past unseen. A switch, a checkbox item, keeps
+   the check alone, since any number of them may be on. */
+[data-theme="rux-100"] .rux--menu-item[role="menuitemradio"][aria-checked="true"] {
+  background-color: var(--rux-layer-selected);
+}
+[data-theme="rux-100"] .rux--menu-item[role="menuitemradio"][aria-checked="true"]:hover {
+  background-color: var(--rux-layer-selected-hover);
+}
 
 /* RUX 100'S FIELDS ARE RINGED AS GEIST'S ARE. Carbon underlines every field
    with the strong border; here the line goes all the way round, a 1px ring

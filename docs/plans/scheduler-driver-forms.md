@@ -51,8 +51,33 @@ code.
   the form's kind, as `scheduler-driver-documents.md` keeps every driver
   paper, so a trip's Forms list and the checklist flag a driver without one
   as they already do.
-- **The background check form is a yearly form whose campus and trip date are
-  left blank,** because it goes to many schools. Opened from a trip's Forms
+- **The background check form is PSJA's vendor packet,** six pages: the
+  request, TASB's criminal history request, DPS's CCH verification, the TB
+  questionnaire, the confidentiality statement and a page for the licence
+  copy, revised 6/2026. Its blank is rux's 2026-2027 template with the typed
+  notes taken off, which leaves PSJA's pages as issued. It is yearly and filed
+  as `PSJA background check`, the kind PSJA T-STEM requires, renamed from
+  `Driver background check` so another district's packet can be its own form.
+- **The company's own lines are printed on the blank before it is uploaded:**
+  its name, service, office phone and email, Yes to school grounds, Yes to
+  fingerprinted under Senate Bill 9, and the agency's name. The driver is
+  asked only for their own.
+- **The driver types their full Social Security number once,** and page 1
+  gets its last four. Like every answer it is kept only in the signed PDF,
+  never in a table or a log.
+- **The licence copy page is left for the office,** which adds the copy
+  before the packet goes to PSJA.
+- **A Yes on any TB question flags the signing,** since one Yes means a skin
+  test.
+- **The packet needs what a field cannot yet say:** an answer written in
+  several places, as the name is on every page, by `at` taking a list; a
+  place that takes only the last four digits; a choice of more than Yes or
+  No, as Sex and the TB questions' Don't know, by a `choice` field whose
+  `marks` name each option; and prefills for the name's parts, the address's
+  parts and the licence's state and number. A signature and the day are
+  already written in as many places as a form has them.
+- **The background check form's campus and trip date are left blank,**
+  because it goes to many schools. Opened from a trip's Forms
   list, at `documents.html?open=<document id>&trip=<trip id>`, the campus and
   the trip date are written onto a copy shown in the browser's viewer, the
   campus being the trip's customer's name; the stored file never changes.
@@ -92,7 +117,6 @@ code.
 
 ## Questions
 
-- Which background check PDF may a session read, by its file name?
 - TEA publishes its own Spanish affidavit. Should the Spanish under each
   question be TEA's wording rather than ours?
 
@@ -102,8 +126,13 @@ code.
       the form on a Spanish link, a second signing replacing the first as the
       current copy, and Send's Copy the text; then delete the test driver,
       its signings and its files.
-- [ ] Set up the background check form from the PDF rux names, its campus
-      and date left blank, and sign it as a test driver.
+- [ ] Teach `handler.ts`, `sign.js`, `get_driver_form` and
+      `check-driver-form.mjs` an answer in several places, the last-four
+      place, the `choice` field and the new prefills, checked against an
+      invented form.
+- [ ] Print the company's lines on PSJA's blank, write the packet's fields,
+      places and Spanish, rename the kind, upload the blank and add the row
+      by SQL on rux's yes, and sign it as a test driver, checking every page.
 - [ ] Write the campus and the trip date onto the background check form's
       copy in `documents.js` when `open` comes with `trip`, and check it in
       Chrome on :8641 with an invented PDF shaped like the real one.

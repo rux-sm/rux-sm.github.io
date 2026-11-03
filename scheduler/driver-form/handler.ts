@@ -7,31 +7,42 @@
 //
 // A FIELD is one of these, in the order the page shows them. `en` and `es` are
 // its words; `at` is where on the PDF it is written, in points from the page's
-// bottom left, page 0 first.
+// bottom left, page 0 first, or a list of places when the form asks for the
+// same thing on several pages. A place with `part: 'last4'` takes only the
+// answer's last four digits.
 //   heading, text   words shown, nothing asked
 //   read            a policy shown in full, signed for as a whole
-//   yes_no          Yes or No; `marks.yes` and `marks.no` say where the X goes;
-//                   `flag: 'yes'` flags the signing to the office on a Yes
-//   line            a line of text, `prefill` naming what the profile holds
+//   yes_no          Yes or No; `marks.yes` and `marks.no` say where the X goes
+//   choice          one of `options`, each `{ value, en, es }`; `marks` says
+//                   where the X goes for each value
+//   line            a line of text, `prefill` naming what the profile holds,
+//                   `digits` the number of digits it must hold
 //   box             a box of text, `at` with `w` and `h`
 //   date            a date, typed as `typedDate` takes it, written MM/DD/YYYY
+//   fixed           written in, nothing shown or asked: `value`, or the
+//                   answers to the fields `of` names, joined by spaces
 //   signature       the drawn signature, `at` with `w` and `h`
 //   signed_on       the day of signing, written in, nothing asked
+// `flag` on a yes_no or choice flags the signing to the office on that answer.
 // A field with `when: { any: [ids], is: 'yes' }` is shown and asked only while
 // one of those fields is answered that way.
 
-export type At = { page: number; x: number; y: number; w?: number; h?: number; size?: number }
+export type At = { page: number; x: number; y: number; w?: number; h?: number; size?: number; part?: 'last4' }
 export type Field = {
   id?: string
-  type: 'heading' | 'text' | 'read' | 'yes_no' | 'line' | 'box' | 'date' | 'signature' | 'signed_on'
+  type: 'heading' | 'text' | 'read' | 'yes_no' | 'choice' | 'line' | 'box' | 'date' | 'fixed' | 'signature' | 'signed_on'
   en?: string
   es?: string
   prefill?: string
   optional?: boolean
-  flag?: 'yes' | 'no'
+  digits?: number
+  flag?: string
   when?: { any: string[]; is: string }
-  marks?: { yes: At; no: At }
-  at?: At
+  options?: { value: string; en: string; es?: string }[]
+  marks?: Record<string, At>
+  value?: string
+  of?: string[]
+  at?: At | At[]
 }
 export type Form = { id: string; kind_id: string; title: string; version: string; blank_path: string; yearly: boolean; fields: Field[] }
 export type Share = { id: string; driver_id: string; driver_name: string }
@@ -61,7 +72,11 @@ export const MAX_TEXT = 4000
 export const MAX_SIGNATURE = 400_000
 
 // The fields asked of the driver, given the answers so far.
-export const asks = (f: Field) => !!f.id && ['yes_no', 'line', 'box', 'date'].includes(f.type)
+export const asks = (f: Field) => !!f.id && ['yes_no', 'choice', 'line', 'box', 'date'].includes(f.type)
+// The values a Yes or No, or a choice, takes.
+const values = (f: Field) => (f.type === 'yes_no' ? ['yes', 'no'] : (f.options ?? []).map(o => o.value))
+// Every place a field is written.
+export const places = (f: Field): At[] => (Array.isArray(f.at) ? f.at : f.at ? [f.at] : [])
 export function shown(field: Field, answers: Record<string, unknown>): boolean {
   if (!field.when) return true
   return field.when.any.some(id => answers[id] === field.when!.is)
@@ -79,25 +94,27 @@ export function typedDate(s: string): string | null {
   return `${m[1].padStart(2, '0')}/${m[2].padStart(2, '0')}/${year}`
 }
 
-// Every field id the answers leave wrong: missing, not Yes or No, not a date,
-// or too long. A field not shown is never asked.
+// Every field id the answers leave wrong: missing, not one of its choices, not
+// a date, not its number of digits, or too long. A field not shown is never
+// asked.
 export function problems(fields: Field[], answers: Record<string, unknown>): string[] {
   const out: string[] = []
   for (const f of fields) {
     if (!asks(f) || !shown(f, answers)) continue
     const v = answers[f.id!]
     const text = typeof v === 'string' ? v.trim() : ''
-    if (f.type === 'yes_no') { if (v !== 'yes' && v !== 'no') out.push(f.id!); continue }
+    if (f.type === 'yes_no' || f.type === 'choice') { if (!values(f).includes(v as string)) out.push(f.id!); continue }
     if (!text) { if (!f.optional) out.push(f.id!); continue }
     if (text.length > MAX_TEXT) out.push(f.id!)
     else if (f.type === 'date' && !typedDate(text)) out.push(f.id!)
+    else if (f.digits && text.replace(/\D/g, '').length !== f.digits) out.push(f.id!)
   }
   return out
 }
 
 // Whether an answer flags the signing to the office.
 export const flagged = (fields: Field[], answers: Record<string, unknown>) =>
-  fields.some(f => f.type === 'yes_no' && f.flag && answers[f.id!] === f.flag)
+  fields.some(f => (f.type === 'yes_no' || f.type === 'choice') && f.flag && answers[f.id!] === f.flag)
 
 // The standard PDF fonts write Windows-1252 only, so a phone's curly quotes
 // and dashes become their plain forms and anything else outside it a '?'.
@@ -110,21 +127,34 @@ export function plain(s: string): string {
 // "11/02/2026" from "2026-11-02".
 export const usDate = (iso: string) => `${iso.slice(5, 7)}/${iso.slice(8, 10)}/${iso.slice(0, 4)}`
 
+// An answer as a field writes it: a date as MM/DD/YYYY, the rest as typed.
+function answer(f: Field | undefined, answers: Record<string, unknown>): string {
+  if (!f || !shown(f, answers)) return ''
+  const typed = String(answers[f.id!] ?? '').trim()
+  return f.type === 'date' ? typedDate(typed) ?? typed : typed
+}
+
 // What is written where: each answer, the day, and the signature.
 export function ops(fields: Field[], answers: Record<string, unknown>, signedOn: string): Op[] {
   const out: Op[] = []
+  const write = (at: At, text: string) => {
+    const t = plain(at.part === 'last4' ? text.replace(/\D/g, '').slice(-4) : text)
+    if (t) out.push({ kind: 'text', page: at.page, x: at.x, y: at.y, size: at.size ?? 11, text: t, w: at.w, h: at.h })
+  }
   for (const f of fields) {
-    if (f.type === 'yes_no') {
-      const at = f.marks?.[answers[f.id!] as 'yes' | 'no']
+    if (f.type === 'yes_no' || f.type === 'choice') {
+      const at = shown(f, answers) ? f.marks?.[answers[f.id!] as string] : undefined
       if (at) out.push({ kind: 'text', page: at.page, x: at.x, y: at.y, size: at.size ?? 14, text: 'X' })
-    } else if (f.type === 'signature' && f.at) {
-      out.push({ kind: 'signature', page: f.at.page, x: f.at.x, y: f.at.y, w: f.at.w ?? 180, h: f.at.h ?? 36 })
-    } else if (f.type === 'signed_on' && f.at) {
-      out.push({ kind: 'text', page: f.at.page, x: f.at.x, y: f.at.y, size: f.at.size ?? 11, text: usDate(signedOn) })
-    } else if (asks(f) && f.at && shown(f, answers)) {
-      const typed = String(answers[f.id!] ?? '').trim()
-      const text = plain(f.type === 'date' ? typedDate(typed) ?? typed : typed)
-      if (text) out.push({ kind: 'text', page: f.at.page, x: f.at.x, y: f.at.y, size: f.at.size ?? 11, text, w: f.at.w, h: f.at.h })
+    } else if (f.type === 'signature') {
+      for (const at of places(f)) out.push({ kind: 'signature', page: at.page, x: at.x, y: at.y, w: at.w ?? 180, h: at.h ?? 36 })
+    } else if (f.type === 'signed_on') {
+      for (const at of places(f)) write(at, usDate(signedOn))
+    } else if (f.type === 'fixed') {
+      const text = f.of ? f.of.map(id => answer(fields.find(x => x.id === id), answers)).filter(Boolean).join(' ') : f.value ?? ''
+      for (const at of places(f)) write(at, text)
+    } else if (asks(f)) {
+      const text = answer(f, answers)
+      for (const at of places(f)) write(at, text)
     }
   }
   return out

@@ -5145,8 +5145,8 @@ html[data-scheduler-takeover] {
 .scheduler-sign-note { margin: 0; color: var(--rux-text-secondary); font-style: italic; }
 /* The Spanish under each English line. */
 .scheduler-sign-es { display: block; margin-block-start: var(--rux-spacing-02); color: var(--rux-text-secondary); font-style: normal; }
-/* Yes and No, two big tiles side by side. */
-.scheduler-sign-choices { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
+/* Yes and No, or a choice's options, big tiles side by side. */
+.scheduler-sign-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: var(--rux-spacing-03); }
 .scheduler-sign-choices .rux--tile { min-block-size: 3.5rem; display: flex; align-items: center; }
 .scheduler-sign-question--invalid .rux--tile { outline: 2px solid var(--rux-support-error); outline-offset: -2px; }
 .scheduler-sign-error { margin: 0; color: var(--rux-text-error); }

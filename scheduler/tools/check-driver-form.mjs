@@ -15,7 +15,7 @@ const source = readFileSync(new URL('../driver-form/handler.ts', import.meta.url
 const scratch = mkdtempSync(join(tmpdir(), 'check-driver-form-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, problems, ops, plain, yearAfter, png } = await import(pathToFileURL(file).href);
+const { handle, problems, flagged, ops, plain, yearAfter, png } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -77,6 +77,35 @@ expect('a box not shown is not written', ops(FIELDS, { ...GOOD, facts: 'left ove
 expect('a character the PDF font lacks becomes a ?', plain('ok 🚌 ñ'), 'ok ? ñ');
 expect('a yearly copy ends a year on', yearAfter('2028-02-29'), '2029-03-01');
 expect('a signature that is not a PNG is refused', png('data:image/gif;base64,R0lGODlh'), null);
+
+// A second invented form: a choice, a number of digits, one answer on two
+// pages and its last four on a third, a line a Yes opens, and fixed words.
+const MORE = [
+  { id: 'first', type: 'line', en: 'First', at: { page: 1, x: 300, y: 500 } },
+  { id: 'last', type: 'line', en: 'Last', at: { page: 1, x: 100, y: 500 } },
+  { id: 'id9', type: 'line', en: 'Nine digits', digits: 9, at: [{ page: 1, x: 400, y: 450 }, { page: 0, x: 280, y: 490, part: 'last4' }] },
+  { id: 'pick', type: 'choice', en: 'Pick', flag: 'maybe', options: [{ value: 'yes', en: 'Yes' }, { value: 'no', en: 'No' }, { value: 'maybe', en: 'Maybe' }],
+    marks: { yes: { page: 3, x: 466, y: 432 }, no: { page: 3, x: 502, y: 432 }, maybe: { page: 3, x: 538, y: 432 } } },
+  { id: 'where', type: 'line', en: 'Where?', when: { any: ['pick'], is: 'yes' }, at: { page: 3, x: 236, y: 346 } },
+  { type: 'fixed', value: 'Invented Buses', at: { page: 0, x: 222, y: 634 } },
+  { type: 'fixed', of: ['first', 'last'], at: [{ page: 0, x: 222, y: 656 }, { page: 2, x: 179, y: 665 }] },
+  { type: 'signature', at: [{ page: 1, x: 62, y: 266, w: 180, h: 30 }, { page: 2, x: 60, y: 340, w: 180, h: 30 }] },
+  { type: 'signed_on', at: [{ page: 1, x: 100, y: 216 }, { page: 3, x: 83, y: 703 }] },
+];
+const MORE_GOOD = { first: 'Alex', last: 'Example', id9: '123-45-6789', pick: 'no' };
+expect('a choice must be one of its options', problems(MORE, { ...MORE_GOOD, pick: 'perhaps' }), ['pick']);
+expect('a number must have its digits, however they are parted', [problems(MORE, MORE_GOOD), problems(MORE, { ...MORE_GOOD, id9: '12345678' })], [[], ['id9']]);
+expect('a line a Yes opens is asked once it is open', problems(MORE, { ...MORE_GOOD, pick: 'yes' }), ['where']);
+expect('a flagged choice flags the signing', [flagged(MORE, MORE_GOOD), flagged(MORE, { ...MORE_GOOD, pick: 'maybe' })], [false, true]);
+const more = ops(MORE, MORE_GOOD, '2026-11-02');
+expect('an answer is written in each of its places, a last-four place with only its last four',
+  more.filter(o => o.kind === 'text' && /\d{4}/.test(o.text) && !o.text.includes('/')).map(o => [o.page, o.text]), [[1, '123-45-6789'], [0, '6789']]);
+expect('a choice is an X in the box of its answer', more.filter(o => o.text === 'X').map(o => [o.x, o.y]), [[502, 432]]);
+expect('fixed words are written as they are, or as the answers they join',
+  more.filter(o => o.page !== 1 && /[a-z]/.test(o.text ?? '')).map(o => [o.page, o.text]), [[0, 'Invented Buses'], [0, 'Alex Example'], [2, 'Alex Example']]);
+expect('the signature and the day go in each of their places',
+  [more.filter(o => o.kind === 'signature').map(o => o.page), more.filter(o => o.text === '11/02/2026').map(o => o.page)], [[1, 2], [1, 3]]);
+expect('a line not shown is not written', ops(MORE, { ...MORE_GOOD, where: 'left over' }, '2026-11-02').some(o => o.text === 'left over'), false);
 
 let r = await ask();
 expect('a good signing is filed', [r.status, r.json], [200, { signed: '2026-11-02' }]);

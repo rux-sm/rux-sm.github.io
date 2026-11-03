@@ -4,8 +4,10 @@
    sign.html?s=<token>&form=<form id> shows a driver, without a log-in, one
    form that waits for them, drawn from its fields as
    scheduler/driver-form/handler.ts describes them: a tile for each heading,
-   Yes and No as two big tiles, lines filled in from the profile, a box a Yes
-   opens, and a pad to sign on with a finger, stylus, mouse or touchpad.
+   Yes and No, or a choice's options, as big tiles, lines filled in from the
+   profile, a line or box a Yes opens, and one pad to sign on with a finger,
+   stylus, mouse or touchpad, however many places the form signs. Fixed words
+   are the form's own and are not shown.
 
    get_driver_form hands over the fields and the profile only while the form
    waits for this driver. Sign and send posts the answers and the signature
@@ -75,14 +77,25 @@
   }
 
   // -- what the profile already holds, by the name a field's prefill gives --
-  const prefill = d => ({
-    name: d.name,
-    dateOfBirth: /^\d{4}-\d{2}-\d{2}/.test(d.dateOfBirth ?? '') ? `${d.dateOfBirth.slice(5, 7)}/${d.dateOfBirth.slice(8, 10)}/${d.dateOfBirth.slice(0, 4)}` : '',
-    street: d.address,
-    cityStateZip: [d.city, [d.state, d.zip].filter(Boolean).join(' ')].filter(Boolean).join(', '),
-    phone: d.phone,
-    licenseNumber: d.licenseNumber,
-  });
+  const prefill = d => {
+    // The profile keeps one name: its first word, its last, and what is between.
+    const words = String(d.name ?? '').trim().split(/\s+/).filter(Boolean);
+    return {
+      name: d.name,
+      firstName: words[0] ?? '',
+      middleName: words.slice(1, -1).join(' '),
+      lastName: words.length > 1 ? words.at(-1) : '',
+      dateOfBirth: /^\d{4}-\d{2}-\d{2}/.test(d.dateOfBirth ?? '') ? `${d.dateOfBirth.slice(5, 7)}/${d.dateOfBirth.slice(8, 10)}/${d.dateOfBirth.slice(0, 4)}` : '',
+      street: d.address,
+      cityStateZip: [d.city, [d.state, d.zip].filter(Boolean).join(' ')].filter(Boolean).join(', '),
+      city: d.city,
+      state: d.state,
+      zip: d.zip,
+      phone: d.phone,
+      licenseNumber: d.licenseNumber,
+      license: [d.licenseState, d.licenseNumber].filter(Boolean).join(' '),
+    };
+  };
 
   // -- drawing the form -------------------------------------------------------
   let form = null;
@@ -100,7 +113,8 @@
     for (const [node, f] of whens) node.hidden = !f.when.any.some(id => a[id] === f.when.is);
   }
 
-  function yesNo(f) {
+  // Yes and No, or a choice's own options, each a tile.
+  function choice(f) {
     const set = el('fieldset', 'scheduler-sign-question rux--layer-two');
     set.appendChild(both('legend', 'rux--type-body-01', f));
     if (f.list?.length) {
@@ -110,20 +124,24 @@
     }
     if (f.note) set.appendChild(both('p', 'rux--type-body-compact-01 scheduler-sign-note', f.note));
     const choices = el('div', 'scheduler-sign-choices');
-    for (const value of ['yes', 'no']) {
+    const options = f.type === 'choice'
+      ? f.options.map(o => ({ value: o.value, label: lang === 'es' && o.es ? o.es : o.en }))
+      : ['yes', 'no'].map(value => ({ value, label: w[value] }));
+    for (const { value, label: words } of options) {
       const wrap = el('div');
       const input = Object.assign(el('input', 'rux--tile-input'), { type: 'radio', name: `f-${f.id}`, id: `f-${f.id}-${value}`, value });
       const label = el('label', 'rux--tile rux--tile--selectable rux--tile--radio');
       label.htmlFor = input.id;
       const check = el('span', 'rux--tile__checkmark');
       check.appendChild(icon('#i-checkmark--filled'));
-      label.append(check, el('span', 'rux--tile-content rux--type-heading-compact-02', w[value]));
+      label.append(check, el('span', 'rux--tile-content rux--type-heading-compact-02', words));
       wrap.append(input, label);
       choices.appendChild(wrap);
     }
-    const error = el('p', 'scheduler-sign-error rux--type-body-compact-01', w.chooseYesNo);
+    const error = el('p', 'scheduler-sign-error rux--type-body-compact-01', f.type === 'choice' ? w.chooseOne : w.chooseYesNo);
     error.hidden = true;
     set.append(choices, error);
+    if (f.when) whens.push([set, f]);
     set.addEventListener('change', () => { mark(false); showWhens(); });
     const mark = bad => { set.classList.toggle('scheduler-sign-question--invalid', bad); error.hidden = !bad; };
     inputs.set(f.id, { read: () => set.querySelector('input:checked')?.value ?? null, mark, node: set });
@@ -140,7 +158,8 @@
     const field = el('div', 'rux--text-input__field-wrapper');
     const input = Object.assign(el('input', 'rux--text-input'), { id: `f-${f.id}`, type: 'text', autocomplete: 'off', value: values[f.prefill] ?? '' });
     if (f.type === 'date') { input.inputMode = 'numeric'; input.placeholder = w.dateFormat; }
-    const error = el('div', 'rux--form-requirement', f.type === 'date' ? w.badDate : w.fillIn);
+    if (f.digits) input.inputMode = 'numeric';
+    const error = el('div', 'rux--form-requirement', f.type === 'date' ? w.badDate : f.digits ? w.badDigits(f.digits) : w.fillIn);
     field.appendChild(input);
     outer.append(field, error);
     item.append(labelWrap, outer);
@@ -157,6 +176,7 @@
       }
     });
     inputs.set(f.id, { read: () => input.value, mark, node: item });
+    if (f.when) whens.push([item, f]);
     return item;
   }
 
@@ -290,6 +310,7 @@
     let tile = null, grid = null;
     const section = () => { tile = el('section', 'rux--tile scheduler-sign-section'); page.appendChild(tile); grid = null; };
     for (const field of f.fields) {
+      if (field.type === 'fixed') continue;
       if (field.type === 'heading' || !tile) section();
       if (field.type === 'heading') { tile.appendChild(both('h2', 'rux--type-productive-heading-03', field)); continue; }
       if (field.type === 'line' || field.type === 'date') {
@@ -303,7 +324,7 @@
       }
       grid = null;
       if (field.type === 'text' || field.type === 'read') tile.appendChild(both('p', 'rux--type-body-compact-01', field));
-      else if (field.type === 'yes_no') tile.appendChild(yesNo(field));
+      else if (field.type === 'yes_no' || field.type === 'choice') tile.appendChild(choice(field));
       else if (field.type === 'box') tile.appendChild(box(field));
       else if (field.type === 'signature') tile.appendChild(signature(f.fields.some(x => x.type === 'signed_on')));
     }

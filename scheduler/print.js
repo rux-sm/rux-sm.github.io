@@ -3567,9 +3567,10 @@
     // A tab of its own names the trip; the board's panel says Forms, and its trip number beside it says which trip.
     if (found?.destination) title.textContent = `Forms — ${found.destination}`;
 
-    /* A row is the form's icon and its short name, under the heading of who
-       the form is for, which the short name leaves out. */
-    const face = form => {
+    /* A row is the form's icon and its short name, and under the name, as
+       Carbon puts helper text under a field's label, why the form cannot
+       open where it cannot. */
+    const face = (form, need) => {
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       icon.setAttribute('class', 'scheduler-print__row-icon');
       icon.setAttribute('width', '20');
@@ -3579,7 +3580,10 @@
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', form.icon);
       icon.appendChild(use);
-      return [icon, el('span', 'rux--type-body-compact-01 scheduler-print__row-name', form.short)];
+      const words = el('div', 'scheduler-print__row-words');
+      words.appendChild(el('span', 'rux--type-body-compact-01 scheduler-print__row-name', form.short));
+      if (need) words.appendChild(need);
+      return [icon, words];
     };
 
     /* HOW MUCH OF A FORM IS PRINTED, from the ticks its copies carry: a
@@ -3644,7 +3648,7 @@
         continue;
       }
       const item = el('div', 'scheduler-print__row');
-      item.append(...face(form), el('p', 'scheduler-print__row-need', need));
+      item.append(...face(form, el('p', 'scheduler-print__row-need', need)));
       rows.appendChild(item);
     }
 
@@ -3684,7 +3688,7 @@
             upload.target = '_blank';
             upload.rel = 'noopener';
             need.appendChild(upload);
-            item.append(...face(row), need);
+            item.append(...face(row, need));
             rows.appendChild(item);
           }
           if (!forms.length || !forms.every(f => f.ok)) continue;

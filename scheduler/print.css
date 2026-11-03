@@ -1808,7 +1808,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-print__row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--rux-spacing-04);
   padding: var(--scheduler-print-inset);
   border-block-end: 1px solid var(--rux-border-subtle-01);
@@ -1820,21 +1820,28 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 a.scheduler-print__row:hover { background: var(--rux-layer-hover); }
 a.scheduler-print__row:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 
+/* The icon stands on the name's line, the 20px mark over its 18px line. */
 .scheduler-print__row-icon {
   flex: none;
   display: block;
+  margin-block: -0.0625rem;
   color: var(--rux-icon-primary);
 }
 
 .scheduler-print__row-name { margin: 0; }
 
-/* Why a form cannot open from here, at the row's far end. */
+/* The name, and under it why a form cannot open from here, 4px apart, in
+   the room the row leaves beside its icon and its printed count. */
+.scheduler-print__row-words { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-print__row-need {
-  margin: 0 0 0 auto;
+  margin: 0;
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
   color: var(--rux-text-helper);
 }
+/* A form that cannot open reads quiet, its icon and name in the quiet
+   colour, so the rows that open stand out of the list. */
+.scheduler-print__row:has(.scheduler-print__row-need) :is(.scheduler-print__row-icon, .scheduler-print__row-name) { color: var(--rux-text-secondary); }
 
 /* How much of a form is printed, there too: the count while copies are
    left, and Printed after a green check once none is. */

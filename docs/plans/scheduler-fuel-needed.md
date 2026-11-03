@@ -23,7 +23,9 @@ yard, where a fixed 25% low mark says nothing about the job.
 - **A leg's miles are the ones the quote already reads,** its route's stop
   miles with the drive out and back, or the trip's estimated miles on a trip
   of one leg; a leg with no miles draws no tick. 300 of the 410 trips with a
-  bus and a route have miles.
+  bus and a route have miles. On a trip with a fuel card only the first
+  day's miles count, the drive out and the stops dated that day, since the
+  driver fills up on the road.
 - **Miles per gallon come from Samsara,** the vehicle fuel and energy report,
   `/fleet/reports/vehicles/fuel-energy`, averaged over each bus's last 90
   days, fetched by an Edge Function beside `scheduler/samsara-now/`, since
@@ -42,8 +44,6 @@ yard, where a fixed 25% low mark says nothing about the job.
 
 ## Questions
 
-- Does a trip with a fuel card count only to its first day's end, since the
-  driver fills up on the road, or the whole leg like any other?
 - How much spare should the tank keep past the trip: none, or a reserve such
   as 15% of the tank?
 

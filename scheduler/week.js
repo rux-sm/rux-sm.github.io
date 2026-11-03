@@ -177,6 +177,9 @@
      before the leg's first day, to be at a far pickup by its spot, takes
      from the day it leaves, `outDays` before, whatever the hour, since it is
      out of the yard from then on. */
+  /* The most days before its first that a leg's bus leaves the yard, so a
+     read of the trips on a range of days reaches this far past its last. */
+  const AHEAD_DAYS = 2;
   const takes = (from, to, times) => {
     const PAST = window.SchedulerPastMidnight;
     const out = times?.outDays > 0 ? { from: dayFrom(from, -times.outDays), outDays: times.outDays } : { from, outDays: 0 };
@@ -262,6 +265,6 @@
   window.SchedulerWeek = {
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor,
     stopsOfLeg, stopsOfKey, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
-    officeInstant, departAt, backAt,
+    officeInstant, departAt, backAt, AHEAD_DAYS,
   };
 })();

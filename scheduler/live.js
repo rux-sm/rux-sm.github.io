@@ -64,10 +64,11 @@
 
   /* Each bus's legs from yesterday to tomorrow, with when it counts as out
      on each, so a bus is matched to the leg it is out on now: a trip that
-     starts by tomorrow with a leg that ends, or with no end starts, since
-     two days ago. A leg is named by its key, week.js's. */
+     starts by tomorrow, or as many days on as a bus can leave the yard
+     before its leg, with a leg that ends, or with no end starts, since two
+     days ago. A leg is named by its key, week.js's. */
   async function readTrips() {
-    const from = dayFrom(-2), to = dayFrom(1);
+    const from = dayFrom(-2), to = dayFrom(Math.max(1, window.SchedulerWeek.AHEAD_DAYS));
     const { data, error } = await client.from('trips').select(TRIP_COLUMNS)
       .is('cancelled_at', null)
       .lte('start_date', to)

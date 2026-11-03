@@ -405,15 +405,16 @@ Deno.serve(
               .eq('status', 'active').order('sort_order')
             if (vehicle_type) busQuery = busQuery.eq('type', vehicle_type)
 
-            // A leg that ended the day before may take the first day asked, or be back on it past midnight.
-            const since = dayFrom(from, -1)
+            // A leg that ended the day before may take the first day asked, or be back on it past midnight,
+            // and one that starts after the last day asked may leave the yard on it.
+            const since = dayFrom(from, -1), ahead = dayFrom(until, Week.AHEAD_DAYS)
             const [buses, drivers, trips, offRoad, timeOff, late] = await Promise.all([
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
               // A trip with a leg that ends, or with no end starts, on or after the day before, by `ends`.
-              supabase.from('trips').select(`id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, departure_time, return_time, vehicle_type, trip_reqs, ${TRIP_LEGS}, trip_stops(leg, route_id, position, type, depart_prev, arrive, spot), ends:trip_legs!inner()`)
-                .is('cancelled_at', null).lte('start_date', until)
+              supabase.from('trips').select(`id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, departure_time, return_time, vehicle_type, trip_reqs, ${TRIP_LEGS}, trip_stops(leg, route_id, position, type, depart_prev, depart_prev_date, arrive, spot, spot_date), ends:trip_legs!inner()`)
+                .is('cancelled_at', null).lte('start_date', ahead)
                 .or(`end_date.gte.${since},start_date.gte.${since}`, { referencedTable: 'ends' }).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),
               supabase.from('driver_time_off').select('driver_id, start_date, end_date, reason').then(orThrow),

@@ -3809,7 +3809,7 @@
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
     'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    'trip_stops(leg,route_id,position,type,depart_prev,spot,arrive,miles)',
+    'trip_stops(leg,route_id,position,type,depart_prev,depart_prev_date,spot,spot_date,arrive,miles)',
     'trip_assignments(id,bus_id,position,leg,route_id,active_roles,trip_drivers(id,role,pay,drivers(name,short_name)))',
     'trip_payments(position,amount,method,date,ref)',
     'trip_pos(position,ref,amount)',
@@ -3826,9 +3826,10 @@
     const to = plusDays(first, 7 * (WEEKS_AFTER + 1) - 1);
     const [buses, trips] = await Promise.all([
       client.from('buses').select('id,number,status,sort_order').order('sort_order', { ascending: true, nullsFirst: false }),
-      // A trip with a leg that ends, or with no end starts, by the first day, by `ends`, an embed that returns nothing.
+      // A trip with a leg that ends, or with no end starts, by the first day, by `ends`, an embed that returns
+      // nothing, and one starting after the last day whose bus may leave the yard on it.
       client.from('trips').select(`${WEEK_TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
-        .lte('start_date', isoDay(to))
+        .lte('start_date', isoDay(plusDays(to, WEEK.AHEAD_DAYS)))
         .or(`end_date.gte.${isoDay(from)},start_date.gte.${isoDay(from)}`, { referencedTable: 'ends' }),
       readRequirementNames(client).catch(() => {}),
       // The late-return hour, which says the days each leg takes.

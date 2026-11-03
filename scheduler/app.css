@@ -279,7 +279,7 @@
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
      by their row and add nothing, so their gauges never widen it. Its floor,
-     41px, holds the 34px kit row and the 38px speedometer within it; app.js
+     41px, holds the 34px kit row, fuel and speedometer within it; app.js
      measures this cell, so its arithmetic includes it. */
   min-inline-size: var(--scheduler-head-min);
   justify-content: center;
@@ -672,9 +672,11 @@ button.scheduler-row-head__num::after {
 /* A low tank keeps its strength, since the office still has to act on it. */
 .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
 /* THE SPEEDOMETER, on five and six rows in the dial's and the fuel's place:
-   a half ring, 38px across, filled with the speed to 80 mph, green or amber
-   over 75; inside it at its foot the speed or the state's word in the
-   dial's colours; under it mph, or how long the bus has idled or been
+   a half ring the kit row's 34px across in a 3px stroke, filled with the
+   speed to 80 mph, green or amber over 75, and whole in a tint of the
+   idling blue, or amber past the idle limit, while the bus idles; in its
+   bowl, 8px down, the speed or the state's word in the dial's colours;
+   under it mph, or how long the bus has idled or been
    unseen; then the fuel's box. On six rows the
    head's four facts stand in the four rows' 72 as four clusters: the
    number, then the arc with its figure and unit 2px under it, then the
@@ -692,7 +694,7 @@ button.scheduler-row-head__num::after {
   justify-self: center;
   align-self: start;
   grid-row: 2 / span 3;
-  inline-size: 38px;
+  inline-size: var(--scheduler-kit-w);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -703,24 +705,26 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc-bow { display: grid; }
 .scheduler-row-head__arc-bow > * { grid-area: 1 / 1; }
 .scheduler-row-head__arc-svg { display: block; }
-.scheduler-row-head__arc-svg path { fill: none; stroke-width: 4; stroke-linecap: round; }
+.scheduler-row-head__arc-svg path { fill: none; stroke-width: 3; stroke-linecap: round; }
 .scheduler-row-head__arc-track { stroke: var(--rux-layer-accent-01); }
 .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--warning .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-low); }
-.scheduler-row-head__arc-figure { align-self: end; justify-self: center; font-size: 15px; font-weight: 600; line-height: 16px; color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__arc-idle { stroke: color-mix(in oklab, var(--scheduler-head-idle) 55%, var(--rux-layer)); }
+.scheduler-row-head__arc--warning .scheduler-row-head__arc-idle { stroke: color-mix(in oklab, var(--scheduler-head-low) 55%, var(--rux-layer)); }
+.scheduler-row-head__arc-figure { align-self: start; justify-self: center; margin-block-start: 8px; font-size: 13px; font-weight: 600; line-height: 13px; color: var(--scheduler-head-quiet-ink); }
 .scheduler-row-head__arc--running .scheduler-row-head__arc-figure { color: var(--scheduler-head-idle-ink); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--moving .scheduler-row-head__arc-figure { color: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--warning .scheduler-row-head__arc-figure { color: var(--scheduler-head-low); }
-.scheduler-row-head__arc-figure--word { font-size: var(--rux-label-01-font-size); }
+.scheduler-row-head__arc-figure--word { font-size: 11px; }
 .scheduler-row-head__arc-under { margin-block-start: 2px; font-size: 10px; line-height: 10px; color: var(--rux-text-secondary); }
-/* The fuel's box 6px under the unit; three rows are 54px, the arc's 23, a
+/* The fuel's box 6px under the unit; three rows are 54px, the bowl's 21, a
    10px unit and the box 2px under it. */
 .scheduler-row-head__arc .scheduler-row-head__fuel { margin-block-start: 6px; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-under { margin-block-start: 0; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc .scheduler-row-head__fuel { margin-block-start: 2px; }
 /* With no signal the arc is dotted and the speedometer fades, but a low
    tank keeps its strength. */
-.scheduler-row-head[data-signal-lost] .scheduler-row-head__arc-track { stroke-dasharray: 3 6; stroke-linecap: butt; }
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__arc-track { stroke-dasharray: 3 5; stroke-linecap: butt; }
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__arc:not([data-level="low"], [data-level="critical"]) { opacity: .45; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and

@@ -157,12 +157,12 @@
     return g;
   }
 
-  // The speedometer's arc, from 9 o'clock over to 3: 38px across, Carbon's
-  // 4px stroke, its centre on the box's foot.
-  const ARC = 'M2 21 A17 17 0 0 1 36 21';
+  // The speedometer's arc, from 9 o'clock over to 3: 34px across, the kit
+  // row's width, in a 3px stroke, its centre on the box's foot.
+  const ARC = 'M1.5 16.5 A15.5 15.5 0 0 1 32.5 16.5';
 
-  // The speedometer: the arc filled with the speed, the speed or the
-  // state's word inside at its foot, mph or how long under it, then the
+  // The speedometer: the arc filled with the speed, or whole in the idle
+  // tint while the bus idles, the speed or the state's word in its bowl, mph or how long under it, then the
   // fuel's box. Its
   // words are the dial's and the fuel's, which it stands in for on five and
   // six rows.
@@ -173,10 +173,11 @@
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
     const bow = el('span', 'scheduler-row-head__arc-bow');
-    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 38, height: 23, viewBox: '0 0 38 23', 'aria-hidden': 'true' });
+    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 34, height: 18, viewBox: '0 0 34 18', 'aria-hidden': 'true' });
     svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-track', pathLength: 100 }));
     const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
     if (mph) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-speed', pathLength: 100, 'stroke-dasharray': `${mph} 200` }));
+    else if (running(live)) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-idle' }));
     const figure = /^\d+$/.test(state.dial);
     bow.append(svg, el('span', figure ? 'scheduler-row-head__arc-figure' : 'scheduler-row-head__arc-figure scheduler-row-head__arc-figure--word', state.dial));
     box.appendChild(bow);

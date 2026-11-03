@@ -68,29 +68,6 @@
   --scheduler-road-scan: var(--rux-text-secondary);
 }
 
-/* RUX 100'S STATUS COLOURS ARE GEIST'S 900 STEPS, the hue Geist keeps for
-   coloured text and icons on its dark pages, read from its Colors page in
-   OKLCH, so every alert, tick, gauge and mark the scheduler draws in a
-   status colour takes it, a driver not yet sent or told in its gray 900.
-   Geist has no yellow: its amber 900 is both the warning and the caution. */
-[data-theme="rux-100"] {
-  --rux-status-red: oklch(69.96% 0.2136 22.03);
-  --rux-status-orange: oklch(77.21% 0.1991 64.28);
-  --rux-status-orange-outline: oklch(77.21% 0.1991 64.28);
-  --rux-status-yellow: oklch(77.21% 0.1991 64.28);
-  --rux-status-yellow-outline: oklch(77.21% 0.1991 64.28);
-  --rux-status-green: oklch(73.1% 0.2158 148.29);
-  --rux-status-blue: oklch(71.7% 0.1648 250.794);
-  --rux-status-purple: oklch(69.87% 0.2037 309.51);
-  --rux-status-gray: #a1a1a1;
-  --rux-support-error: oklch(69.96% 0.2136 22.03);
-  --rux-support-warning: oklch(77.21% 0.1991 64.28);
-  --rux-support-caution-major: oklch(77.21% 0.1991 64.28);
-  --rux-support-caution-minor: oklch(77.21% 0.1991 64.28);
-  --rux-support-success: oklch(73.1% 0.2158 148.29);
-  --rux-support-info: oklch(71.7% 0.1648 250.794);
-  --rux-text-error: oklch(69.96% 0.2136 22.03);
-}
 /* Duties, assignments and alerts share Design's status palette. */
 [data-theme] {
   --scheduler-mark-success: var(--rux-status-green);
@@ -210,11 +187,15 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
-[data-theme="rux-100"],
 [data-theme="spotify-dark"] {
   --scheduler-age-new: #6fdc8c;
   --scheduler-age-week: var(--rux-support-warning);
   --scheduler-age-old: #ffb3b8;
+}
+[data-theme="rux-100"] {
+  --scheduler-age-new: var(--geist-green-900);
+  --scheduler-age-week: var(--rux-support-warning);
+  --scheduler-age-old: var(--geist-red-900);
 }
 [data-theme="apple-light"] {
   --scheduler-age-new: color-mix(in srgb, #008932 80%, #000);
@@ -783,7 +764,7 @@
    stays quiet; a short rest is the same blue with its hours in the warning
    yellow, and a shorter one the same blue with them in a light red, the error
    red lifted enough to read on the blue. Rux 100 draws its own marks below. */
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) {
+[data-theme="rux-dark"] {
   --scheduler-rest-tone: #d2a106;
 }
 [data-theme="rux-dark"] .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--rux-tag-background-blue); color: var(--rux-support-warning); }
@@ -795,13 +776,14 @@
   border-color: transparent;
   background: var(--rux-layer-03);
 }
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short {
+[data-theme="rux-dark"] .scheduler-yard--short {
   background: var(--scheduler-rest-tone);
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* Rux 100's gray 900 writes Off and no signal. */
-[data-theme="rux-100"] .scheduler-row-head { --scheduler-head-quiet-ink: #a1a1a1; }
+/* Rux 100's fuel meter lies on Geist's default border, gray 400, rather than a wash of its ink. */
+[data-theme="rux-100"] .scheduler-row-head { --scheduler-head-track: var(--geist-gray-400); }
+[data-theme="rux-100"] .scheduler-bus-sheet { box-shadow: 0 -2px 8px var(--rux-shadow); }
 /* A Rux 100 bus head whose tip is open is back at the board's own sheet,
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */
@@ -816,7 +798,7 @@
 }
 /* A RUX 100 TRIP READS IN LAYERS: the destination, the line that names
    the trip, in its Geist 1000 and bold, as a Geist banner's action is; the
-   customer and the contact quiet in Geist's grey 900, #a1a1a1, whatever the
+   customer and the contact quiet in Geist's gray 900, whatever the
    trip's colour; and what is happening, the times, the update and the
    drivers, in the trip's own Geist 900 on its 100, the drivers' names
    white, below. A trip with no colour, a grey, keeps the grey 900 for every
@@ -824,28 +806,38 @@
    hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   opacity: 1;
-  color: #adadad;
+  color: var(--geist-gray-900);
 }
 [data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__update, .scheduler-bar__drivers) {
   color: var(--scheduler-fg);
 }
-[data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact) { color: #a1a1a1; }
-/* Its rest meter is the rest purple at 38% over the seat's footer, so a
+/* Its rest meter is Geist's purple 400, the step its edges take, so a
    driver's rest reads without the board's loudest block of colour, and its
-   reading is the footer's own ink across the whole meter. */
+   reading is the footer's own ink across the whole meter, 4.6 to 1 on a
+   blue trip. */
 [data-theme="rux-100"] {
-  --scheduler-rest-fill: color-mix(in oklab, var(--scheduler-mark-rest) 38%, transparent);
+  --scheduler-rest-fill: var(--geist-purple-400);
+}
+/* WHAT A TRIP'S LINES STAND ON ARE ITS GEIST STEPS, not a wash of its ink:
+   the time track and a driver's meters lie on the trip's 400, its edge, and
+   a stop not yet reached is its 600, between the edge and the ink. A grey
+   trip, and a meter outside a trip, take the grey's. */
+[data-theme="rux-100"],
+[data-theme="rux-100"] .scheduler-bar {
+  --scheduler-track-base: var(--scheduler-border, var(--geist-gray-400));
+  --scheduler-meter-base: var(--scheduler-border, var(--geist-gray-400));
+  --scheduler-stop-ahead: var(--scheduler-dim, var(--geist-gray-600));
 }
 [data-theme="rux-100"] .scheduler-crew--seat:has(> .scheduler-crew__rest) { --scheduler-seat-ink: var(--scheduler-footer-fg); }
 /* Its drivers' names are Geist's white, its gray 1000, as every other
    theme writes them near-white on its footer, so who drives reads first
    down the bars. A driver in another bus keeps the red. */
-[data-theme="rux-100"] .scheduler-bar .scheduler-crew:not(.scheduler-crew--away) > .scheduler-crew__name { color: #ededed; }
+[data-theme="rux-100"] .scheduler-bar .scheduler-crew:not(.scheduler-crew--away) > .scheduler-crew__name { color: var(--geist-gray-1000); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* The count of a leg's buses is Geist's gray 900 on every trip, a figure
    beside the destination rather than part of its name. */
-[data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: #a1a1a1; }
+[data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: var(--geist-gray-900); }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
    pane's sheet, every row parted by the board's one line. A mark is small
    and carries no words but a rest's hours, so it is Geist's solid badge,
@@ -865,13 +857,13 @@
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
-  --scheduler-avail-fill: oklch(51.51% 0.2307 257.85);
-  color: #fff;
+  --scheduler-avail-fill: var(--geist-blue-800);
+  color: var(--geist-white);
 }
 [data-theme="rux-100"] .scheduler-avail__cell--rest > span { font-weight: 400; }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
-  --scheduler-avail-fill: oklch(58.01% 0.227 25.12);
-  color: #fff;
+  --scheduler-avail-fill: var(--geist-red-800);
+  color: var(--geist-white);
 }
 /* A roster mark carries no drawing: the blue mark already says booked and
    the red one away, and a drawing on the first day of every bar filled the
@@ -967,6 +959,8 @@
   --scheduler-shortcut-radius: 8px;
 }
 [data-theme="apple-light"] { --scheduler-lift: 0 8px 24px rgb(0 0 0 / .16); }
+/* Rux 100's lift is its own shadow token, Geist's backdrop black. */
+[data-theme="rux-100"] { --scheduler-lift: 0 10px 28px var(--rux-shadow); }
 /* The trip editor and the document panel are regions of this board like the
    schedule and the roster, so they are told apart the same way: Design gives
    every side panel in this theme a line, for a panel that slides over a page
@@ -1257,8 +1251,8 @@
    join the menu and the calendar they open in it, so they take that sheet
    rather than the board's black. */
 [data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
-  --scheduler-region: #0a0a0a;
-  --scheduler-region-hover: #1a1a1a;
+  --scheduler-region: var(--geist-background-100);
+  --scheduler-region-hover: var(--geist-gray-100);
 }
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] {
   --rux-layer: var(--scheduler-region);
@@ -1284,12 +1278,12 @@
 :is([data-theme="rux-100"], [data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"]) .scheduler-page #scheduler-today.rux--btn--ghost:not(:focus-visible) { border-inline-end-color: transparent; }
 :is([data-theme="rux-100"], [data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
 /* A form's open pick cell does the same with its menu, in the menu's own
-   surface and line, #0a0a0a and #2e2e2e, which Design gives every Rux 100
+   surface and line, Background 1 and gray 400, which Design gives every Rux 100
    menu, on the form's page and in the board's panel alike. */
 [data-theme="rux-100"] .scheduler-print__pick[data-attached] {
-  --rux-layer: #0a0a0a;
-  --rux-layer-hover: #1a1a1a;
-  box-shadow: 0 0 0 1px #2e2e2e, 0 2px 6px var(--rux-shadow);
+  --rux-layer: var(--geist-background-100);
+  --rux-layer-hover: var(--geist-gray-100);
+  box-shadow: 0 0 0 1px var(--geist-gray-400), 0 2px 6px var(--rux-shadow);
 }
 /* The week's calendar hangs from the calendar's button and the month's
    list from the month's, as the ⋮'s menu does from the ⋮: the button takes
@@ -1400,11 +1394,11 @@
    to the frame's own line, so the four sides match. */
 [data-theme="rux-100"] :is(.rux--header, .scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
-  --rux-border-subtle-01: #2e2e2e;
-  --scheduler-region: #000;
-  --scheduler-region-hover: #1a1a1a;
+  --rux-border-subtle-01: var(--geist-gray-400);
+  --scheduler-region: var(--geist-background-200);
+  --scheduler-region-hover: var(--geist-gray-100);
 }
-[data-theme="rux-100"] #scheduler-view-menu { --scheduler-region: #0a0a0a; }
+[data-theme="rux-100"] #scheduler-view-menu { --scheduler-region: var(--geist-background-100); }
 /* The header's menu and account panel open on the same sheet, as the ⋮'s
    menu does: its layer, its hover and its one grey line, round the panel,
    its open button and the rules inside it. */
@@ -1465,21 +1459,22 @@
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
 /* The raised surface a panel's tiles and fields take: Geist's Background
-   1, #0a0a0a, the card Geist sets on its black page, told from the page by
-   its line more than its fill, and its gray 100, #1a1a1a, on hover. */
+   1, the card Geist sets on its black page, told from the page by
+   its line more than its fill, and its gray 100 on hover. */
 [data-theme="rux-100"] {
-  --scheduler-raised: #0a0a0a;
-  --scheduler-raised-hover: #1a1a1a;
+  --scheduler-raised: var(--geist-background-100);
+  --scheduler-raised-hover: var(--geist-gray-100);
 }
 /* RUX 100'S CONFIRMED TRIP IS BLUE, drawn as Geist draws its blue: blue 100
    for the surface, blue 900 for the times, 6.9 to 1, blue 1000 for the
    destination, blue 200 on hover and blue 400 for its edge. */
 [data-theme="rux-100"] .scheduler-bar--blue {
-  --scheduler-bg: oklch(22.17% 0.069 259.89);
-  --scheduler-fg: oklch(71.7% 0.1648 250.794);
-  --scheduler-hover: oklch(25.45% 0.0811 255.8);
-  --scheduler-border: oklch(34.1% 0.121 254.74);
-  --scheduler-strong: oklch(96.75% 0.0179 242.423);
+  --scheduler-dim: var(--geist-blue-600);
+  --scheduler-bg: var(--geist-blue-100);
+  --scheduler-fg: var(--geist-blue-900);
+  --scheduler-hover: var(--geist-blue-200);
+  --scheduler-border: var(--geist-blue-400);
+  --scheduler-strong: var(--geist-blue-1000);
 }
 /* A TRIP IN A GEIST PAIR HAS ITS 400 FOR AN EDGE, as Geist's banners and
    notes draw one: a 1px line inside the bar, so it costs none of its
@@ -1489,7 +1484,7 @@
   outline: 1px solid var(--scheduler-border);
   outline-offset: -1px;
 }
-[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-border: oklch(35.53% 0.0903 66.2971); --scheduler-strong: oklch(96.7% 0.0418 84.59); }
+[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-dim: var(--geist-amber-600); --scheduler-border: var(--geist-amber-400); --scheduler-strong: var(--geist-amber-1000); }
 /* The destination in the trip's 1000; a grey trip keeps its own ink. */
 [data-theme="rux-100"] .scheduler-bar > .scheduler-bar__dest { color: var(--scheduler-strong, inherit); }
 /* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its drivers' duty marks
@@ -1533,10 +1528,10 @@
    its amber 200, where the 900 holds 7.2. The placeholder trip and a short
    rest at the yard take it. */
 [data-theme="rux-100"] {
-  --scheduler-amber-bg: oklch(22.46% 0.0538 76.04);
-  --scheduler-amber-fg: oklch(77.21% 0.1991 64.28);
-  --scheduler-amber-hover: oklch(24.95% 0.0642 64.78);
-  --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
+  --scheduler-amber-bg: var(--geist-amber-100);
+  --scheduler-amber-fg: var(--geist-amber-900);
+  --scheduler-amber-hover: var(--geist-amber-200);
+  --scheduler-amber-border: var(--geist-amber-900);
   --scheduler-amber-hover-ring: none;
 }
 [data-theme="rux-100"] .scheduler-yard--short {
@@ -1547,50 +1542,55 @@
    the surface and its red 900 for the words, 5.7 to 1, hovering to its red
    200, where the 900 holds 5.1, and its red 400 for the edge. */
 [data-theme="rux-100"] .scheduler-bar--red {
-  --scheduler-bg: oklch(22.1% 0.0657 15.11);
-  --scheduler-fg: oklch(69.96% 0.2136 22.03);
-  --scheduler-hover: oklch(25.93% 0.0834 19.02);
-  --scheduler-border: oklch(35.27% 0.1273 21.23);
-  --scheduler-strong: oklch(95.6% 0.0293 6.61);
+  --scheduler-dim: var(--geist-red-600);
+  --scheduler-bg: var(--geist-red-100);
+  --scheduler-fg: var(--geist-red-900);
+  --scheduler-hover: var(--geist-red-200);
+  --scheduler-border: var(--geist-red-400);
+  --scheduler-strong: var(--geist-red-1000);
 }
 /* THE COLOURS THE OFFICE PICKS ARE GEIST'S OWN PAIRS, as the status
    colours are: each hue's 100 for the surface, its 900 for the words and
-   marks, its 1000 for the destination, its 200 on hover and its 400 for the edge. Magenta takes Geist's pink, its nearest hue. A
+   marks, its 1000 for the destination, its 200 on hover, its 400 for the edge and its 600 for a stop ahead. Magenta takes Geist's pink, its nearest hue. A
    trip stored as cyan paints as teal, week.js's retired name. */
 [data-theme="rux-100"] .scheduler-bar--magenta {
-  --scheduler-bg: oklch(22.67% 0.0628 354.73);
-  --scheduler-fg: oklch(69.36% 0.2223 3.91);
-  --scheduler-hover: oklch(26.2% 0.0859 356.68);
-  --scheduler-border: oklch(32.13% 0.1174 356.71);
-  --scheduler-strong: oklch(95.74% 0.0326 350.08);
+  --scheduler-dim: var(--geist-pink-600);
+  --scheduler-bg: var(--geist-pink-100);
+  --scheduler-fg: var(--geist-pink-900);
+  --scheduler-hover: var(--geist-pink-200);
+  --scheduler-border: var(--geist-pink-400);
+  --scheduler-strong: var(--geist-pink-1000);
 }
 [data-theme="rux-100"] .scheduler-bar--purple {
-  --scheduler-bg: oklch(22.34% 0.0779 316.87);
-  --scheduler-fg: oklch(69.87% 0.2037 309.51);
-  --scheduler-hover: oklch(25.91% 0.0921 314.41);
-  --scheduler-border: oklch(35.93% 0.1504 309.78);
-  --scheduler-strong: oklch(96.1% 0.0304 316.46);
+  --scheduler-dim: var(--geist-purple-600);
+  --scheduler-bg: var(--geist-purple-100);
+  --scheduler-fg: var(--geist-purple-900);
+  --scheduler-hover: var(--geist-purple-200);
+  --scheduler-border: var(--geist-purple-400);
+  --scheduler-strong: var(--geist-purple-1000);
 }
 /* Rux 100's open slot in the roster is drawn as its green trip is: Geist's
    green 100 for the fill, 400 for the edge and 900 for the check. */
 [data-theme="rux-100"] {
-  --scheduler-free-fill: oklch(23.09% 0.0716 149.68);
-  --scheduler-free-edge: oklch(34.39% 0.1039 147.78);
-  --scheduler-free-ink: oklch(73.1% 0.2158 148.29);
+  --scheduler-free-fill: var(--geist-green-100);
+  --scheduler-free-edge: var(--geist-green-400);
+  --scheduler-free-ink: var(--geist-green-900);
 }
 [data-theme="rux-100"] .scheduler-bar--green {
-  --scheduler-bg: oklch(23.09% 0.0716 149.68);
-  --scheduler-fg: oklch(73.1% 0.2158 148.29);
-  --scheduler-hover: oklch(27.12% 0.0895 150.09);
-  --scheduler-border: oklch(34.39% 0.1039 147.78);
-  --scheduler-strong: oklch(96.76% 0.056 154.18);
+  --scheduler-dim: var(--geist-green-600);
+  --scheduler-bg: var(--geist-green-100);
+  --scheduler-fg: var(--geist-green-900);
+  --scheduler-hover: var(--geist-green-200);
+  --scheduler-border: var(--geist-green-400);
+  --scheduler-strong: var(--geist-green-1000);
 }
 [data-theme="rux-100"] .scheduler-bar--teal {
-  --scheduler-bg: oklch(22.1% 0.0544 178.74);
-  --scheduler-fg: oklch(74.56% 0.1765 182.8);
-  --scheduler-hover: oklch(25.06% 0.062 178.76);
-  --scheduler-border: oklch(32.43% 0.0763 180.13);
-  --scheduler-strong: oklch(96.46% 0.056 180.29);
+  --scheduler-dim: var(--geist-teal-600);
+  --scheduler-bg: var(--geist-teal-100);
+  --scheduler-fg: var(--geist-teal-900);
+  --scheduler-hover: var(--geist-teal-200);
+  --scheduler-border: var(--geist-teal-400);
+  --scheduler-strong: var(--geist-teal-1000);
 }
 
 /* THE FLOATING CARD IS ON THE MENUS' SURFACE IN EVERY THEME: the surface, hover, rule and shadow of Carbon's menu, so a context menu and the
@@ -1614,10 +1614,10 @@
    board's sheet, #0a0a0a, inside its line, #2e2e2e, which also parts the
    card's rows, with Geist's Color 1 on hover, under rux-dark's deep shadow. */
 [data-theme="rux-100"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
-  --card-surface: #0a0a0a;
-  --card-hover: #1a1a1a;
-  --card-rule: #2e2e2e;
-  box-shadow: 0 0 0 1px #2e2e2e, 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
+  --card-surface: var(--geist-background-100);
+  --card-hover: var(--geist-gray-100);
+  --card-rule: var(--geist-gray-400);
+  box-shadow: 0 0 0 1px var(--geist-gray-400), 0 2px 6px var(--rux-shadow);
 }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02); }
 [data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px rgb(0 0 0 / .16); }

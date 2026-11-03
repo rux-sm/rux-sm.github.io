@@ -7,8 +7,8 @@
 // Design's panel between markers, the sprite currency rule for the pages that paste the
 // sprite by hand, the same rule for the home screen icons drawn from a
 // favicon, the parse rule for every script, the names sweep over every text
-// file in the repository, the switcher rule, the lock rule, the print rule and
-// the selector rule.
+// file in the repository, the switcher rule, the lock rule, the print rule, the
+// selector rule and the Rux 100 rule.
 // `--full` adds Design's `npm run verify` and LN Guide's paper check, which
 // prints every Document and warns of a near-empty last page. Exits 1 on any failure. The
 // pre-commit hook runs the fast form; CI runs --full.
@@ -180,6 +180,29 @@ for (const p of sheets) {
 }
 console.log(`  ${fragments ? 'FAIL' : ' ok '}  sheets  ${sheets.length} files${fragments ? '' : ', every selector names its classes'}`);
 if (fragments) failed.push('selectors');
+
+// THE RUX 100 RULE. Every colour Rux 100 paints is one of Geist's dark tokens:
+// Design's Rux 100 block declares them as `--geist-*`, and every other
+// declaration in a rule that names the theme reads a token, never a literal
+// colour or a mix, which would be a colour Geist does not have.
+console.log('\n── rux 100');
+const LITERAL = /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab|lab|lch|hwb|color|color-mix)\(/i;
+let literals = 0, rux100 = 0;
+for (const p of text.filter(f => f.endsWith('.css'))) {
+  const s = readFileSync(join(ROOT, p), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const [, sel, body] of s.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!sel.includes('[data-theme="rux-100"]')) continue;
+    rux100++;
+    for (const d of body.split(';')) {
+      const [prop, ...v] = d.split(':');
+      if (!v.length || prop.trim().startsWith('--geist-') || !LITERAL.test(v.join(':'))) continue;
+      literals++;
+      console.log(`  FAIL  ${p}: ${sel.trim().replace(/\s+/g, ' ').slice(0, 70)} sets ${prop.trim()} to a colour that is not a Geist token; read a --geist-* or a --rux-* token`);
+    }
+  }
+}
+console.log(`  ${literals ? 'FAIL' : ' ok '}  rules   ${rux100} rules name Rux 100${literals ? '' : ', every colour in them a Geist token'}`);
+if (literals) failed.push('rux 100');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
 if (FULL) step('paper', process.execPath, ['ln/tools/check-paper.mjs']);

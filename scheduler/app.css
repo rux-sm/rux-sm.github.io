@@ -1382,7 +1382,7 @@ button.scheduler-row-head__num::after {
   font-size: 0;
   background:
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
-    color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent);
+    var(--scheduler-track-base, color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent));
 }
 /* A stop's tick, 2px wide across the line at its time and 1px over it
    each side, 4px tall on the 2px line: in the
@@ -1399,7 +1399,7 @@ button.scheduler-row-head__num::after {
   block-size: calc(var(--scheduler-track) + 2px);
   background: var(--scheduler-strong, currentColor);
 }
-.scheduler-bar__stop--ahead { background: color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent)); }
+.scheduler-bar__stop--ahead { background: var(--scheduler-stop-ahead, color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent))); }
 /* The stop a bus out on the leg is heading for wears a ring in the line's
    ink, 2px out from its tick. */
 .scheduler-bar__stop--next {
@@ -2519,7 +2519,7 @@ a.scheduler-tip__go { text-decoration: none; }
   overflow: visible;
   background:
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
-    color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent);
+    var(--scheduler-track-base, color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent));
 }
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__say--error { color: var(--scheduler-age-old); font-weight: 600; }
@@ -2553,10 +2553,10 @@ a.scheduler-tip__go { text-decoration: none; }
   inset-block-end: 0;
   block-size: 2px;
   border-radius: 1px;
-  background: linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent);
+  background: linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent));
 }
 .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { inset-block-end: 3px; }
-.scheduler-crew__rest { background: linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
+.scheduler-crew__rest { background: linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent)); }
 .scheduler-crew__rest--unknown { background: repeating-linear-gradient(to right, var(--rux-status-gray) 0 2px, transparent 2px 4px); }
 /* A SPLIT REST IS ONE FILL IN TWO PARTS: the earlier sleeper period and this
    one in the same colour, parted by a 1px gap in what the meter stands on,
@@ -2567,9 +2567,9 @@ a.scheduler-tip__go { text-decoration: none; }
   background:
     linear-gradient(var(--scheduler-rest-gap), var(--scheduler-rest-gap)) var(--scheduler-rest-split) 0 / 1px 100% no-repeat,
     linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat,
-    color-mix(in srgb, currentColor 20%, transparent);
+    var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent));
 }
-.scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
+.scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent)); }
 .scheduler-crew__left--away { background: var(--scheduler-mark-error); }
 .scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }

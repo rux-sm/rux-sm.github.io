@@ -290,18 +290,33 @@
    `text-inverse`: dark initials on a dark fill, as low as 1.8 to 1. These are
    Carbon's dark set, copied, and they read at 5.4 to 1 or better under each
    dark theme's `text-inverse`. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+/* Rux 100's avatars are Geist's: each hue's 900 for the first six and its
+   1000 for the second, as Carbon's second six are its lighter, under the
+   dark text-inverse. */
+[data-theme="rux-100"] .rux--user-avatar--order-1-cyan { background-color: var(--geist-blue-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-2-gray { background-color: var(--geist-gray-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-3-green { background-color: var(--geist-green-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-4-magenta { background-color: var(--geist-pink-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-5-purple { background-color: var(--geist-purple-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-6-teal { background-color: var(--geist-teal-900); }
+[data-theme="rux-100"] .rux--user-avatar--order-7-cyan { background-color: var(--geist-blue-1000); }
+[data-theme="rux-100"] .rux--user-avatar--order-8-gray { background-color: var(--geist-gray-1000); }
+[data-theme="rux-100"] .rux--user-avatar--order-9-green { background-color: var(--geist-green-1000); }
+[data-theme="rux-100"] .rux--user-avatar--order-10-magenta { background-color: var(--geist-pink-1000); }
+[data-theme="rux-100"] .rux--user-avatar--order-11-purple { background-color: var(--geist-purple-1000); }
+[data-theme="rux-100"] .rux--user-avatar--order-12-teal { background-color: var(--geist-teal-1000); }
 /* rux-dark's avatars are its palette: the first six take each hue's ink,
    0.75, and the second six its hover step,
    0.82, Carbon's two sets in the same order. The greys are its neutral grey at
@@ -463,10 +478,10 @@
    hover and active fills so the white holds 4.5:1 in every state. Each is named here rather
    than the token moving, because moving it would blacken nothing and whiten
    four things that are right. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:focus-visible:not(:disabled):not(.rux--btn--disabled) {
-  color: var(--rux-text-primary, #161616);
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) .rux--btn--secondary:focus-visible:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary);
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--danger:not(:disabled):not(.rux--btn--disabled),
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--danger:hover:not(:disabled):not(.rux--btn--disabled),
@@ -485,9 +500,10 @@
    secondary button and leaves it transparent, so only its colour is named.
    Disabled is excluded from both, as it is for the ghost above: Carbon's
    disabled rule names one class and would lose to these, leaving a button that
-   cannot be pressed looking like one that can. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
-  border-color: var(--rux-border-subtle-02, #e0e0e0);
+   cannot be pressed looking like one that can. Rux 100 draws its secondary
+   as Geist does too, Background 1 inside the gray 400 ring. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
+  border-color: var(--rux-border-subtle-02);
 }
 /* rux-dark rings its outlined buttons, Secondary and Tertiary, as it rings a
    field, in border-strong-01, 4.1 to 1 on the page, because the ring is the
@@ -501,7 +517,7 @@
 /* Under keyboard focus the border is the focus colour again, as Carbon has it:
    the border is the outer half of its 2px ring, and the rule above outranks
    Carbon's own, which left this button a 1px ring beside every other's 2px. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled):focus-visible {
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled):focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus));
 }
 /* THE TERTIARY BUTTON IS THAT SAME OUTLINE. Carbon rings it in the brand
@@ -513,7 +529,7 @@
    Carbon's inset ring and gives up its fill, which would put the label's own
    colour behind it. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled) {
-  border-color: var(--rux-border-subtle-02, #e0e0e0);
+  border-color: var(--rux-border-subtle-02);
   color: var(--rux-text-primary, #161616);
 }
 [data-theme="rux-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled) {
@@ -527,7 +543,7 @@
   background-color: transparent;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):active {
-  border-color: var(--rux-border-subtle-02, #e0e0e0);
+  border-color: var(--rux-border-subtle-02);
   background-color: var(--rux-button-secondary-active);
 }
 [data-theme="rux-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):active {
@@ -542,7 +558,7 @@
    that button. The content switcher keeps the bright ring: it is a control
    that says which of several views is showing, and the line is what says it. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--tag--selectable {
-  border-color: var(--rux-border-subtle-02, #e0e0e0);
+  border-color: var(--rux-border-subtle-02);
 }
 
 /* The option at each end of a list takes the menu's curve. A selected or
@@ -3730,13 +3746,13 @@
    Color 2, #1f1f1f, and a selected one under the pointer its Color 3,
    #292929. An open overflow trigger joins its menu in it. */
 [data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar, .rux--overflow-menu.rux--overflow-menu--open) {
-  --rux-layer: #0a0a0a;
-  --rux-layer-hover: #1a1a1a;
-  --rux-layer-active: #1f1f1f;
-  --rux-layer-selected: #1f1f1f;
-  --rux-layer-selected-hover: #292929;
-  --rux-layer-accent: #1f1f1f;
-  --rux-border-subtle: #2e2e2e;
+  --rux-layer: var(--geist-background-100);
+  --rux-layer-hover: var(--geist-gray-100);
+  --rux-layer-active: var(--geist-gray-200);
+  --rux-layer-selected: var(--geist-gray-200);
+  --rux-layer-selected-hover: var(--geist-gray-300);
+  --rux-layer-accent: var(--geist-gray-200);
+  --rux-border-subtle: var(--geist-gray-400);
 }
 /* Each wears a 1px outline in that border, the edge Geist gives every
    floating surface, so a menu still stands off the near-black it opens
@@ -3773,10 +3789,10 @@
    left to the list box it stands in, and a fluid text area's to the wrapper
    that holds its label. */
 [data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--time-picker__input-field):not(.rux--list-box *, .rux--text-area--fluid *) {
-  box-shadow: inset 0 0 0 1px #2e2e2e;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-400);
 }
 [data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--time-picker__input-field):not(.rux--list-box *, .rux--text-area--fluid *):hover {
-  box-shadow: inset 0 0 0 1px #454545;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-500);
 }
 /* A field built of parts, a dropdown or combo box, a number with its
    steppers and a fluid text area with its label, wears one ring over the
@@ -3788,11 +3804,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 0 1px #2e2e2e;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-400);
   pointer-events: none;
 }
 [data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper, .rux--text-area--fluid .rux--text-area__wrapper):hover::after {
-  box-shadow: inset 0 0 0 1px #454545;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-500);
 }
 [data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper, .rux--text-area--fluid .rux--text-area__wrapper):is(:focus-within, [data-invalid], :has([data-invalid]))::after {
   box-shadow: none;
@@ -3807,10 +3823,10 @@
    at every seam, where two rings would make two. The ring's line is the
    divider, so Carbon's own divider goes. */
 [data-theme="rux-100"] .rux--time-picker--fluid__wrapper > * :is(.rux--text-input, .rux--select-input) {
-  box-shadow: inset 0 1px #2e2e2e, inset -1px 0 #2e2e2e, inset 0 -1px #2e2e2e;
+  box-shadow: inset 0 1px var(--geist-gray-400), inset -1px 0 var(--geist-gray-400), inset 0 -1px var(--geist-gray-400);
 }
 [data-theme="rux-100"] .rux--time-picker--fluid__wrapper > :first-child :is(.rux--text-input, .rux--select-input) {
-  box-shadow: inset 0 0 0 1px #2e2e2e;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-400);
 }
 [data-theme="rux-100"] .rux--time-picker--fluid .rux--time-picker--fluid__wrapper > * .rux--select-input__wrapper::before { display: none; }
 /* A disabled field is its fill alone, as Carbon's loses its line. */
@@ -3823,7 +3839,13 @@
 [data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--date-picker__input):not(.rux--list-box *):is([readonly], [readonly]:hover),
 [data-theme="rux-100"] .rux--select--readonly .rux--select-input:is(*, :hover),
 [data-theme="rux-100"] :is(.rux--dropdown--readonly, .rux--combo-box--readonly, .rux--multi-select--readonly, .rux--number--readonly .rux--number__input-wrapper):is(*, :hover)::after {
-  box-shadow: inset 0 0 0 1px #2e2e2e;
+  box-shadow: inset 0 0 0 1px var(--geist-gray-400);
+}
+
+/* A Rux 100 toast's shadow is the theme's shadow token, Geist's backdrop
+   black, where Carbon names a black of its own. */
+[data-theme="rux-100"] .rux--toast-notification {
+  box-shadow: 0 2px 6px 0 var(--rux-shadow);
 }
 
 /* RUX 100'S ACCENT IS WHITE, so what Carbon writes in on-colour white over

@@ -17,6 +17,9 @@ yard, where a fixed 25% low mark says nothing about the job.
   miles over the bus's miles per gallon, over its tank's gallons. The meter
   stays grey at or past the tick and turns amber short of it; red stays the
   fixed critical mark at 10%.
+- **The trip measured is the bus's next leg leaving the yard within 24
+  hours;** a bus with none draws no tick, since a tank filled before a later
+  trip says nothing yet.
 - **A leg's miles are the ones the quote already reads,** its route's stop
   miles with the drive out and back, or the trip's estimated miles on a trip
   of one leg; a leg with no miles draws no tick. 300 of the 410 trips with a
@@ -39,8 +42,6 @@ yard, where a fixed 25% low mark says nothing about the job.
 
 ## Questions
 
-- Which trip is next: the bus's next leg that has not left the yard, or only
-  one that leaves within the next 24 hours?
 - Does a trip with a fuel card count only to its first day's end, since the
   driver fills up on the road, or the whole leg like any other?
 - How much spare should the tank keep past the trip: none, or a reserve such

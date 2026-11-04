@@ -3022,13 +3022,10 @@ a.scheduler-tip__go { text-decoration: none; }
    rule between the two, the month's leading one, would stand on the joined
    surface; it comes off while they are joined. */
 #scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
-/* Under the pointer the open button takes the menu's own hover, solid, as an
-   open header button does, and the strip at its foot takes it with it, so no
-   band of the menu's grey shows across the button's bottom. */
-@media (hover: hover) {
-  :is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached]:hover { background-color: var(--rux-layer-hover); }
-  :is(.scheduler-view-menu, .scheduler-long-menu)[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
-}
+/* Under the pointer the open button holds its layer, as Carbon's open overflow
+   trigger does, so the button and its menu stay one surface and only the
+   menu's rows answer the pointer. */
+:is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached]:hover { background-color: var(--rux-layer); }
 :is(.scheduler-view-menu, .scheduler-long-menu)[data-attached]::before {
   position: absolute;
   content: "";

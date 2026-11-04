@@ -12706,15 +12706,9 @@
   }
   function partMenu(menu, trigger) {
     delete menu.dataset.attached;
-    delete menu.dataset.hover;
     delete trigger.dataset.attached;
     menu.classList.remove('rux--layer-two');
     trigger.classList.remove('rux--layer-two');
-  }
-  // The menu's strip takes the button's hover with it while they are joined.
-  function joinHover(menu, trigger) {
-    trigger.addEventListener('pointerenter', () => { if (menu.dataset.attached != null) menu.dataset.hover = ''; });
-    trigger.addEventListener('pointerleave', () => { delete menu.dataset.hover; });
   }
 
   viewTrigger?.addEventListener('click', () => {
@@ -12759,7 +12753,6 @@
     // The view's toggles are drawing only and need no fetch.
     applyView();
   });
-  if (viewMenu && viewTrigger) joinHover(viewMenu, viewTrigger);
 
   /* THE ROUTE TIP: a press on the route mark leading a bar's time row shows the
      leg's whole route in a tip beside the trip, as the trip's other tips
@@ -19166,7 +19159,6 @@
         btn.setAttribute('aria-expanded', 'false');
         partMenu(menu, btn);
       });
-      joinHover(menu, btn);
     }
 
     window.Rux?.datePicker?.init?.(weekRow);

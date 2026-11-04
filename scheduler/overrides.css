@@ -1027,13 +1027,10 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   block-size: 5px;
   background-color: var(--rux-layer);
 }
-/* Under the pointer the open cell takes the menu's own hover, and the strip
-   at its foot takes it with it. */
-@media (hover: hover) {
-  .scheduler-print__pick[data-attached]:hover,
-  .scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer-hover); }
-  .scheduler-print__menu[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
-}
+/* Under the pointer the open cell holds its layer, as Carbon's open overflow
+   trigger does. */
+.scheduler-print__pick[data-attached]:hover,
+.scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer); }
 
 /* One that does something on a press is a button, so it takes a pointer, a
    hover and the focus ring every other control on the page takes. */

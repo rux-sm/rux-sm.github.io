@@ -1252,16 +1252,9 @@
    rather than the board's black. */
 [data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
   --scheduler-region: var(--geist-background-100);
-  --scheduler-region-hover: var(--geist-gray-100);
 }
-[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] {
-  --rux-layer: var(--scheduler-region);
-  --rux-layer-hover: var(--scheduler-region-hover);
-}
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) { --rux-layer: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
-@media (hover: hover) {
-  [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--scheduler-region-hover); }
-}
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two.
    The menu hangs 1px lower than the ⋮'s foot, so its outline lies on the
@@ -1289,7 +1282,6 @@
    menu, on the form's page and in the board's panel alike. */
 [data-theme="rux-100"] .scheduler-print__pick[data-attached] {
   --rux-layer: var(--geist-background-100);
-  --rux-layer-hover: var(--geist-gray-100);
   box-shadow: 0 0 0 1px var(--geist-gray-400), 0 2px 6px var(--rux-shadow);
 }
 /* The week's calendar hangs from the calendar's button and the month's
@@ -1319,9 +1311,6 @@
   inline-size: var(--rux-layout-size-height-md);
   block-size: 1px;
   background-color: var(--scheduler-region);
-}
-@media (hover: hover) {
-  [data-theme="rux-100"] #scheduler-weekrow:has(#scheduler-range:hover) .rux--date-picker__calendar-container::after { background-color: var(--scheduler-region-hover); }
 }
 
 /* The footer's grey and ink outside a bar, and the status colours a

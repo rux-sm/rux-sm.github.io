@@ -3385,13 +3385,9 @@
       menu.classList.add('rux--layer-two');
       cell.classList.add('rux--layer-two');
     });
-    // The menu's caret takes the cell's hover with it while they are attached.
-    cell.addEventListener('pointerenter', () => { if (menu.dataset.attached != null) menu.dataset.hover = ''; });
-    cell.addEventListener('pointerleave', () => { delete menu.dataset.hover; });
     menu.addEventListener('rux:menu-closed', () => {
       delete menu.dataset.attached;
       delete cell.dataset.attached;
-      delete menu.dataset.hover;
       menu.classList.remove('rux--layer-two');
       cell.classList.remove('rux--layer-two');
       if (picked == null || picked === chosen) return;

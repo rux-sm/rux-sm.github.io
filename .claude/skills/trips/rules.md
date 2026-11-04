@@ -55,6 +55,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - A trip is confirmed by a signed contract, a PO or a payment; until then an update says what it is waiting on.
 - "Bus (52 passengers)" on a PO or signed quote repeats the office's own quote line, the bus's size, so it is never entered as Passengers; only a count of the people riding is.
+- When an itinerary gives no headcount, the last count the customer gave stands as Passengers, because it is still their word and a blank only keeps the board flagging it.
 - When the booking contact is away, an update names who to reach instead, with their email.
 - The email thread is linked to the trip while reviewing it, so the next review opens it directly.
 - A customer's request that has not been answered in the thread, such as driver information or documents, goes in the report.
@@ -82,5 +83,4 @@ in its section above, and its question is deleted.
 
 - Does every quoted trip get a bus assigned to hold it, or only when rux says so?
 - Is a bus held for a trip The Charter Bus offers before Hector has chosen it?
-- When an itinerary gives no headcount, does the last count the customer gave stand, or does Passengers stay blank? Asking the customer is ruled out (`emails.md`).
 - When a save offers to add new contact details to the lists, which are added? Until rux says, the answer is Not now.

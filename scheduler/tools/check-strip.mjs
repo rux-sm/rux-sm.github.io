@@ -119,7 +119,7 @@ const helpers = `window.__strip = (() => {
   const w = () => window.Rux.schedule.day();
   const toIso = v => { const m = /^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0') : (v || ''); };
   const snap = () => ({
-    at: Math.round(sch.scrollLeft / w() * 100) / 100, week: toIso(document.getElementById('scheduler-week-date').value), inView: Number(sch.dataset.daysInView) || 7,
+    at: Math.round(sch.scrollLeft / w() * 100) / 100, left: sch.scrollLeft, week: toIso(document.getElementById('scheduler-week-date').value), inView: Number(sch.dataset.daysInView) || 7,
     bars: [...document.querySelectorAll('.scheduler-track > .scheduler-bar')].map(b => ({
       key: (b.parentElement.dataset.busId ?? 'u') + '|' + b.dataset.tripId + '|' + b.dataset.legKey + '|' + (b.dataset.assignmentId || '') + '|' + b.dataset.slot,
       start: Number(b.dataset.start), span: Number(b.dataset.span), lane: b.style.getPropertyValue('--scheduler-lane'), varStart: b.style.getPropertyValue('--scheduler-start'),
@@ -147,7 +147,9 @@ const helpers = `window.__strip = (() => {
       return { x: Math.round(box.left + Math.min(box.width, innerWidth - box.left) / 2), y: Math.round(box.top + 120), w: w() };
     },
     snap, rest,
-    // Picks the week of a day, as many days from the strip's first, and answers how many days on it still is.
+    // How many pixels short of a place the strip stands.
+    short: left => left - sch.scrollLeft,
+    // Picks the week of a day, as many days from the strip's first.
     pick: async at => {
       const input = document.getElementById('scheduler-week-date');
       const was = label();
@@ -159,7 +161,6 @@ const helpers = `window.__strip = (() => {
       input.dispatchEvent(new Event('change', { bubbles: true }));
       await until(() => label() !== was, 8000, 'the week picked');
       await rest();
-      return at - Math.round(sch.scrollLeft / w());
     },
     framesOn: () => { frames = []; on = true; requestAnimationFrame(tick); },
     framesOff: () => { on = false; const f = [...frames].sort((a, b) => a - b); const q = p => Math.round(f[Math.min(f.length - 1, Math.floor(p * f.length))] * 10) / 10; return { n: f.length, p50: q(0.5), p90: q(0.9), max: q(1) }; },
@@ -173,7 +174,7 @@ const helpers = `window.__strip = (() => {
 const NEAR = 13;
 function compare(name, scrolledTo, whole) {
   const near = x => x.start + (x.span ?? 0) >= scrolledTo.at - NEAR && x.start <= scrolledTo.at + scrolledTo.inView + NEAR;
-  const out = { name, sameDay: Math.abs(scrolledTo.at - whole.at) < 0.01, onEdge: Math.abs(scrolledTo.at - Math.round(scrolledTo.at)) < 0.01, diffs: [], compared: 0 };
+  const out = { name, samePlace: Math.abs(scrolledTo.left - whole.left) < 1, diffs: [], compared: 0 };
   const twice = list => list.map(b => b.key).filter((k, i, all) => all.indexOf(k) !== i);
   out.twice = [...new Set([...twice(scrolledTo.bars), ...twice(whole.bars)])];
   out.unplaced = scrolledTo.bars.filter(b => Number(b.varStart) !== b.start).length;
@@ -259,9 +260,9 @@ async function main() {
       return result.value;
     };
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    // A trackpad's swipe sideways: steps of the browser's own wheel, which it scrolls and snaps itself.
-    const swipe = async (at, dx, steps) => {
-      for (let i = 0; i < steps; i++) { await page.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: at.x, y: at.y, deltaX: dx, deltaY: 0 }); await sleep(16); }
+    // A trackpad's swipe sideways: steps of the browser's own wheel, which it scrolls itself, and a last step of what is left over.
+    const swipe = async (at, dx, steps, last = 0) => {
+      for (const d of [...Array(steps).fill(dx), ...(last ? [last] : [])]) { await page.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: at.x, y: at.y, deltaX: d, deltaY: 0 }); await sleep(16); }
       await run('window.__strip.rest()');
     };
     await run(helpers);
@@ -277,8 +278,10 @@ async function main() {
     await Promise.race([again, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded again')), 20000))]);
     await run(helpers);
     const there = await run('window.__strip.ready()');
-    const on = await run(`window.__strip.pick(${Math.round(first.at)})`);
-    if (on) await swipe(there, Math.sign(on) * 25, Math.round(Math.abs(on) * there.w / 25));
+    // The week of the day it stood on, then the wheel the rest of the way, to the pixel, as the strip stops wherever a swipe leaves it.
+    await run(`window.__strip.pick(${Math.floor(first.at)})`);
+    const off = await run(`window.__strip.short(${first.left})`);
+    if (Math.abs(off) >= 1) await swipe(there, Math.sign(off) * 25, Math.floor(Math.abs(off) / 25), Math.sign(off) * (Math.abs(off) % 25));
     const second = await run('window.__strip.snap()');
     page.close();
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
@@ -286,8 +289,7 @@ async function main() {
     let bad = false;
     // Two weeks on and four back leave it two weeks back; a wheel that moved nothing would compare a page with itself.
     if (Math.abs(first.at - before.at) < 7) { fail('strip', `the browser's wheel did not scroll the strip (${before.at} to ${first.at})`); bad = true; }
-    if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
-    if (!r.sameDay) { fail('strip', `${r.name}: the page loaded again could not be brought to the same day (${first.at}, ${second.at})`); bad = true; }
+    if (!r.samePlace) { fail('strip', `${r.name}: the page loaded again could not be brought to the same place (${first.left}px, ${second.left}px)`); bad = true; }
     if (r.twice.length) { fail('strip', `${r.name}: ${r.twice.length} bars drawn twice`); for (const k of r.twice.slice(0, 6)) console.log(`          ${k}`); bad = true; }
     if (r.unplaced) { fail('strip', `${r.name}: ${r.unplaced} bars not where their data-start says`); bad = true; }
     if (!r.marks) { fail('strip', `${r.name}: the out-of-service mark is not on the heads of the days in view (${first.marksBefore} then ${first.marks}, whole ${second.marks})`); bad = true; }

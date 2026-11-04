@@ -10207,8 +10207,8 @@
 
   /* Scrolls the board across just far enough to show a bar whole, clear of
      the sticky bus column, or its start when it is wider than the board; on
-     the strip by the fewest whole days that do, so it still stands on a
-     day's edge, where its snap would leave it. It measures against the week
+     the strip by the fewest whole days that do, so a strip on a day's edge
+     stays on one. It measures against the week
      as wide as it will be once the panels beside it have opened, which
      app.css's push reaches over 240ms, and scrolls as the week narrows. It
      answers where it scrolls to, or null where the bar is in view. */
@@ -19463,8 +19463,7 @@
   /* ── Scrolling the strip ──
      The browser scrolls the strip both ways, a trackpad's gesture with its
      own momentum and an arrow's or a pick's by its own smooth scroll, and
-     app.css's snapping brings it to rest on a day's edge and on a row's or a
-     stacked trip's top. A scroll sideways holds the board still, through
+     it stops where the hand leaves it, as app.css says. A scroll sideways holds the board still, through
      `weekMotion`: no read draws and no live change redraws
      until the browser says it has stopped, `scrollend`. While it runs the
      trips near the view are drawn and the label follows the week in view;

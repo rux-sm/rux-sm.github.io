@@ -194,7 +194,7 @@
   /* A trip's bar, its crew and its alerts, and the times as they say them:
      bar.js, which the components page draws its samples with too. */
   const Bar = window.SchedulerBar;
-  const { alertsOf, crewEl, crewName, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
+  const { alertsOf, crewName, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
 
@@ -13456,10 +13456,10 @@
     gridEl.addEventListener('pointercancel', up);
   });
 
-  /* The bar's own menu: Open trip, Take off this bus, Color and Cancel trip.
-     Take off this bus makes the same write as a drop on the Unassigned row. It
-     is hidden where it cannot act, on a slot with no assignment or bus, and on
-     the trip in the editor, whose bars are locked. */
+  /* The bar's own menu, in the groups index.html lays out. Take off this bus
+     makes the same write as a drop on the Unassigned row. It is hidden where
+     it cannot act, on a slot with no assignment or bus, and on the trip in the
+     editor, whose bars are locked. */
   gridEl.addEventListener('contextmenu', e => {
     const bar = e.target.closest('.scheduler-bar');
     if (!bar || !bar.dataset.tripId) return;
@@ -13721,11 +13721,11 @@
   }
 
   /* One item per driver on the bar, after Call or text and Assign driver: the
-     driver's role icon in their status's tone, their name and status, and a
-     submenu of the five statuses with theirs checked. The Driver seat's
-     submenu ends with Change driver, moved in from beside Call or text, so a
-     driver's status and who drives are one item. A role nobody fills has no
-     status. */
+     icon of their status, the one the bar and the editor draw, their name and
+     status, and a submenu of the five statuses, each with its icon and theirs
+     checked. The Driver seat's submenu ends with Change driver, moved in from
+     beside Call or text, so a driver's status and who drives are one item. A
+     role nobody fills has no status. */
   function fillCrewItems(bar) {
     // Assign driver goes back beside Call or text before the old items go,
     // since it may sit inside one of them.
@@ -13743,7 +13743,7 @@
       item.setAttribute('aria-expanded', 'false');
       item.dataset.crewPart = '';
       const icon = el('div', 'rux--menu-item__icon');
-      icon.appendChild(crewEl(c).firstChild);
+      icon.appendChild(statusIcon(c.status.value));
       const caret = el('div', 'rux--menu-item__shortcut');
       caret.appendChild(svgUse('#m-arrow_right', '16', '0 0 32 32'));
       const sub = el('ul', 'rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items');
@@ -13767,7 +13767,7 @@
         const check = el('div', 'rux--menu-item__selection-icon');
         if (on) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
         const mark = el('div', 'rux--menu-item__icon');
-        mark.appendChild(crewEl({ ...c, status: st }).firstChild);
+        mark.appendChild(statusIcon(st.value));
         opt.append(check, mark, el('div', 'rux--menu-item__label', st.label));
         group.appendChild(opt);
       }

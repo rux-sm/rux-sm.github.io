@@ -2685,8 +2685,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
 /* Neutral workflow states stay gray; missing assignment takes the warning yellow. */
 .scheduler-crew__mark--off { color: var(--scheduler-driver-neutral); }
-/* In the bar menu the disc is the size of a menu icon. */
-.rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning
    colour, while a driver on the bus is to be told of a change. */
 .scheduler-bar-menu__due { color: var(--scheduler-mark-warning); }

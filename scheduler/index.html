@@ -1072,28 +1072,23 @@
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
-    <!-- Four groups, parted by rules, each one job: what to open about the
-         trip, the people on it, what to record on it, and taking it away.
-         Every item carries the icon its shortcut carries, so the two read
-         alike. data.js hides what cannot act on the bar, and a rule left with
-         nothing between it and the next. -->
+    <!-- Five groups, parted by rules, the most used first: the everyday
+         four (the trip, an update, its email thread and its itinerary),
+         the people on it, what the office marks on it, what opens
+         elsewhere, and taking it away. Every item carries the icon its
+         shortcut carries, so the two read alike. data.js hides what cannot
+         act on the bar, and a rule left with nothing between it and the
+         next. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-open">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></div>
       <div class="rux--menu-item__label">Open trip</div>
     </li>
-    <!-- Hidden by data.js on a trip without an itinerary. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-itinerary">
+    <!-- Opens the trip's Updates window, to read them or add one. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-update">
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-attachment"/></svg></div>
-      <div class="rux--menu-item__label">Open itinerary</div>
-    </li>
-    <!-- Shown by data.js in place of Open itinerary, on a trip without one:
-         it opens the file dialog and files the PDF as the trip's itinerary. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-upload" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
-      <div class="rux--menu-item__label">Upload itinerary</div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add_comment"/></svg></div>
+      <div class="rux--menu-item__label">Add update</div>
     </li>
     <!-- Shown by data.js on a trip with an email thread linked: it opens the
          thread in Missive, in the window the editor's Email thread link uses. -->
@@ -1109,33 +1104,18 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
       <div class="rux--menu-item__label">Add email thread</div>
     </li>
-    <!-- Opens the team chat with this trip, and its email thread when it has
-         one, as links above the box; team-chat.js. Hidden while the chat is
-         not on the page. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-chat" hidden>
+    <!-- Hidden by data.js on a trip without an itinerary. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-itinerary">
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-chat"/></svg></div>
-      <div class="rux--menu-item__label">Send to chat</div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-attachment"/></svg></div>
+      <div class="rux--menu-item__label">Open itinerary</div>
     </li>
-    <!-- Forms opens the trip's list of forms in the document panel beside the
-         board, where each form is one row; the list is the one way in, so the
-         menu stays one item long. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-forms">
+    <!-- Shown by data.js in place of Open itinerary, on a trip without one:
+         it opens the file dialog and files the PDF as the trip's itinerary. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-upload" hidden>
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
-      <div class="rux--menu-item__label">Forms</div>
-    </li>
-    <!-- Opens the Live map on this bar's bus. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-map">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
-      <div class="rux--menu-item__label">Show on map</div>
-    </li>
-    <!-- Opens the History page on this trip's changes alone. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-history">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-history"/></svg></div>
-      <div class="rux--menu-item__label">History</div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
+      <div class="rux--menu-item__label">Upload itinerary</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- Opens the Contacts window: everyone to call or text about this bar.
@@ -1159,22 +1139,14 @@
       <ul class="rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items" role="menu" aria-label="Drivers" tabindex="-1" id="scheduler-bar-menu-assign-list"></ul>
     </li>
     <!-- Each driver: data.js adds one item per driver on the bar here, named
-         with their status, whose submenu is a radio group of the five
-         statuses. A pick saves at once. -->
+         with their status and wearing its icon, whose submenu is a radio
+         group of the five statuses. A pick saves at once. -->
     <li class="rux--menu-item-divider" role="separator"></li>
-    <!-- Opens the trip's Updates window, to read them or add one. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-update">
+    <!-- Opens the trip in the editor, with the quote calculator beside it. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-calculator">
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add_comment"/></svg></div>
-      <div class="rux--menu-item__label">Add update</div>
-    </li>
-    <!-- Shown by data.js on a trip that needs a hotel, and hidden for the trip
-         open in the editor, as Color is. Its label says which way it marks the
-         bar's leg. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-hotel" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg></div>
-      <div class="rux--menu-item__label">Mark hotel booked</div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
+      <div class="rux--menu-item__label">Quote calculator</div>
     </li>
     <!-- Whether the trip is in QuickBooks, checked by data.js: the estimate,
          which a press marks or unmarks, or once the Billing tab records an
@@ -1183,6 +1155,14 @@
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
       <div class="rux--menu-item__label">Estimate in QuickBooks</div>
+    </li>
+    <!-- Shown by data.js on a trip that needs a hotel, and hidden for the trip
+         open in the editor, as Color is. Its label says which way it marks the
+         bar's leg. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-hotel" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg></div>
+      <div class="rux--menu-item__label">Mark hotel booked</div>
     </li>
     <!-- The trip's colour: one Color item whose submenu is Carbon's menu radio
          group, so the menu stays short. A pick saves at once. data.js
@@ -1231,11 +1211,34 @@
         </li>
       </ul>
     </li>
-    <!-- Opens the trip in the editor, with the quote calculator beside it. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-calculator">
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <!-- Forms opens the trip's list of forms in the document panel beside the
+         board, where each form is one row; the list is the one way in, so the
+         menu stays one item long. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-forms">
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
-      <div class="rux--menu-item__label">Quote calculator</div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
+      <div class="rux--menu-item__label">Forms</div>
+    </li>
+    <!-- Opens the team chat with this trip, and its email thread when it has
+         one, as links above the box; team-chat.js. Hidden while the chat is
+         not on the page. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-chat" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-chat"/></svg></div>
+      <div class="rux--menu-item__label">Send to chat</div>
+    </li>
+    <!-- Opens the Live map on this bar's bus. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-map">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
+      <div class="rux--menu-item__label">Show on map</div>
+    </li>
+    <!-- Opens the History page on this trip's changes alone. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-history">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-history"/></svg></div>
+      <div class="rux--menu-item__label">History</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-unassign">

@@ -270,6 +270,31 @@
   .rux--header__action--active:hover { background-color: var(--rux-layer-hover); }
 }
 .rux--header__menu-toggle { align-self: flex-start; }
+/* A MENU THE HEADER OPENS CASTS A MENU'S SHADOW. Above a phone's width it is
+   as tall as its rows, a menu under its button rather than Carbon's drawer
+   the window's height (see below), so it floats over the page as every
+   other menu does, in Carbon's menu shadow, and its open button joins it as
+   an open overflow button joins its menu: the same shadow, stopping at the
+   button's foot, and the button stands over the panel, which the header
+   otherwise paints above it, so the panel's shadow does not fall across the
+   button's foot. Carbon's menus draw no line, so the panel's edges and the
+   button's open side go, kept in colour only so nothing moves; Rux 100's
+   menus carry Geist's line, so its panel and button keep theirs. A theme
+   whose menus float clear sets its own below. */
+@media (min-width: 42rem) {
+  :is(.rux--side-nav.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel.rux--header-panel--expanded) {
+    box-shadow: 0 2px 6px var(--rux-shadow);
+  }
+  :is(.rux--side-nav.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel.rux--header-panel--expanded):not([data-theme="rux-100"] *) {
+    border-color: transparent;
+  }
+  .rux--header__action.rux--header__action--active {
+    z-index: 8001;
+    box-shadow: 0 2px 6px var(--rux-shadow);
+    clip-path: inset(-6px -6px 0 -6px);
+  }
+  .rux--header__action.rux--header__action--active:not([data-theme="rux-100"] *) { background-image: none; }
+}
 
 /* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates
    options with a line on each one's top edge and takes it off
@@ -3709,8 +3734,13 @@
   }
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: 0.5rem; }
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel { inset-inline-end: 0.5rem; }
-  /* A panel that floats clear of its button keeps no line on the button. */
-  :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header__action--active { background-image: none; }
+  /* A panel that floats clear of its button keeps no line or shadow on the
+     button. */
+  :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header__action.rux--header__action--active {
+    background-image: none;
+    box-shadow: none;
+    clip-path: none;
+  }
 }
 @media (min-width: 76.25rem) {
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :where(:root:not([data-frame="wide"])) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: calc((100% - 76.25rem) / 2 + 0.5rem); }

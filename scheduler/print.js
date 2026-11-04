@@ -3369,9 +3369,11 @@
       if (row) picked = Number(row.dataset.pick);
     });
     /* Hung flush under the cell, the two are one surface, as the board's ⋮
-       and its menu are: both are marked, and the menu is told where the cell
-       stands over it, unrounded, for the strip that covers its edge there.
-       Where the menu has to open elsewhere it floats. */
+       and its menu are: both are marked and raised to Layer 02, a layer above
+       the bar the cell stands in, as Carbon's table toolbar opens its menus,
+       and the menu is told where the cell stands over it, unrounded, for the
+       strip that covers its edge there. Where the menu has to open elsewhere
+       it floats, in the layer of the page it floats over. */
     menu.addEventListener('rux:menu-opened', () => {
       const c = cell.getBoundingClientRect();
       const m = menu.getBoundingClientRect();
@@ -3380,6 +3382,8 @@
       menu.style.setProperty('--scheduler-attach-w', `${c.width}px`);
       menu.dataset.attached = '';
       cell.dataset.attached = '';
+      menu.classList.add('rux--layer-two');
+      cell.classList.add('rux--layer-two');
     });
     // The menu's caret takes the cell's hover with it while they are attached.
     cell.addEventListener('pointerenter', () => { if (menu.dataset.attached != null) menu.dataset.hover = ''; });
@@ -3388,6 +3392,8 @@
       delete menu.dataset.attached;
       delete cell.dataset.attached;
       delete menu.dataset.hover;
+      menu.classList.remove('rux--layer-two');
+      cell.classList.remove('rux--layer-two');
       if (picked == null || picked === chosen) return;
       choose(picked);
       doc.querySelector(`[data-rux-open="${id}"]`)?.focus();

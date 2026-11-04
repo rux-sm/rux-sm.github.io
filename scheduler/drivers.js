@@ -2,9 +2,9 @@
    drivers.js — THE DRIVERS PAGE
    --------------------------------------------------------------------------
    drivers.html lists every driver. drivers.html?id=<driver id> edits one and
-   drivers.html?new makes one. Both read and write the tables
-   `drivers` and `driver_time_off`, and the `driver-photos` bucket, so both
-   pages show the same driver. A photo is read through a link signed for ten
+   drivers.html?new makes one. Both read and write the tables `drivers`,
+   `driver_time_off` and `driver_kept_apart`, and the `driver-photos` bucket,
+   so both pages show the same driver. A photo is read through a link signed for ten
    minutes, since the bucket is closed to all but staff.
 
    The list sorts itself rather than through js/data-table.js, because the
@@ -312,6 +312,9 @@
   let loaded = null;        // the driver row as the page read it
   let loadedOff = [];       // its time off, as the database holds it
   let off = [];             // the time off on the page, saved with the form
+  let loadedApart = [];     // who they are kept apart from, as the database holds it
+  let apart = [];           // who they are kept apart from on the page, saved with the form
+  let everyone = new Map(); // every driver by id, for the names and the dialog's list
   // A new driver's id, made once, so a Save sent again cannot insert it twice.
   const newId = crypto.randomUUID();
   let baseline = '';        // the form as loaded, to tell whether it changed
@@ -369,7 +372,7 @@
      written in, so the conflict check compares what is held. */
   const offHeld = list => JSON.stringify(list.map(r => [r.position ?? null, ...offRow(r)]).sort((a, b) =>
     JSON.stringify(a).localeCompare(JSON.stringify(b))));
-  const snapshot = () => comparable(readForm()) + offKey(off);
+  const snapshot = () => comparable(readForm()) + offKey(off) + apartKey(apart);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
   function fillForm(d) {
@@ -579,6 +582,24 @@
     item.appendChild(box);
     return item;
   }
+  function textField(id, label, value) {
+    const item = el('div', 'rux--form-item rux--text-input-wrapper');
+    const lw = el('div', 'rux--text-input__label-wrapper');
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    lw.appendChild(lab);
+    const outer = el('div', 'rux--text-input__field-outer-wrapper');
+    const wrap = el('div', 'rux--text-input__field-wrapper');
+    const input = el('input', 'rux--text-input');
+    input.type = 'text';
+    input.id = id;
+    input.autocomplete = 'off';
+    input.value = value || '';
+    wrap.appendChild(input);
+    outer.appendChild(wrap);
+    item.append(lw, outer);
+    return item;
+  }
 
   let offEditing = null;
   function openOff(index, trigger) {
@@ -595,25 +616,10 @@
     error.hidden = true;
     error.setAttribute('role', 'alert');
 
-    const notesItem = el('div', 'rux--form-item rux--text-input-wrapper');
-    const lw = el('div', 'rux--text-input__label-wrapper');
-    const lab = el('label', 'rux--label', 'Notes');
-    lab.setAttribute('for', 'scheduler-off-notes');
-    lw.appendChild(lab);
-    const outer = el('div', 'rux--text-input__field-outer-wrapper');
-    const wrap = el('div', 'rux--text-input__field-wrapper');
-    const input = el('input', 'rux--text-input');
-    input.type = 'text';
-    input.id = 'scheduler-off-notes';
-    input.autocomplete = 'off';
-    input.value = r.notes || '';
-    wrap.appendChild(input);
-    outer.appendChild(wrap);
-    notesItem.append(lw, outer);
-
     const host = $('scheduler-off-fields');
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    stack.append(rangeItem, error, selectField('scheduler-off-reason', 'Reason', r.reason || 'other', REASONS), notesItem);
+    stack.append(rangeItem, error, selectField('scheduler-off-reason', 'Reason', r.reason || 'other', REASONS),
+      textField('scheduler-off-notes', 'Notes', r.notes));
     host.replaceChildren(stack);
     window.Rux?.datePicker?.init?.(host);
     window.Rux?.modal?.open?.('scheduler-off-modal', trigger);
@@ -644,6 +650,128 @@
     drawOff();
     changed();
   });
+
+  // ── kept apart ──
+  /* A pair is stored once, the smaller id first, so this driver is on
+     either side of it; the page holds each as the other driver and the note. */
+  const apartOf = (rows, id) => (rows || []).map(r => ({
+    id: r.id, other: String(String(r.driver_id) === String(id) ? r.other_driver_id : r.driver_id), note: r.note || null,
+  }));
+  const readApart = id => client.from('driver_kept_apart').select('id,driver_id,other_driver_id,note')
+    .or(`driver_id.eq.${id},other_driver_id.eq.${id}`);
+  const nameOf = id => everyone.get(String(id))?.name || 'A driver';
+  const sortApart = list => list.sort((a, b) => nameOf(a.other).localeCompare(nameOf(b.other)));
+  const apartKey = list => JSON.stringify(list.map(r => [r.other, r.note || null]).sort((a, b) => a[0].localeCompare(b[0])));
+
+  function drawApart() {
+    const list = $('scheduler-driver-apart');
+    list.replaceChildren();
+    if (!apart.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note',
+        'No one. The board warns when two drivers kept apart are on one trip.'));
+      list.appendChild(li);
+      return;
+    }
+    apart.forEach((r, i) => {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--with-action');
+      const body = el('div', 'rux--contained-list-item__content scheduler-pair-item');
+      body.appendChild(el('span', 'scheduler-pair-item__main', nameOf(r.other)));
+      const inactive = everyone.get(r.other)?.status === 'inactive' ? 'Inactive' : '';
+      body.appendChild(el('span', 'scheduler-pair-item__detail', [r.note, inactive].filter(Boolean).join(' · ')));
+      const actions = el('div', 'rux--contained-list-item__action');
+      const edit = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Edit');
+      edit.type = 'button';
+      edit.setAttribute('aria-label', `Edit kept apart from ${nameOf(r.other)}`);
+      edit.addEventListener('click', () => openApart(i, edit));
+      const remove = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Remove');
+      remove.type = 'button';
+      remove.setAttribute('aria-label', `Remove kept apart from ${nameOf(r.other)}`);
+      remove.addEventListener('click', () => {
+        apart.splice(i, 1);
+        drawApart();
+        changed();
+        $('scheduler-driver-apart-add').focus();
+      });
+      actions.append(edit, remove);
+      li.append(body, actions);
+      list.appendChild(li);
+    });
+  }
+
+  /* The dialog offers every active driver not already on the list and not
+     this one, and the one being edited whatever their status. */
+  let apartEditing = null;
+  function openApart(index, trigger) {
+    apartEditing = index;
+    const r = index === null ? { other: null, note: null } : apart[index];
+    $('scheduler-apart-h').textContent = index === null ? 'Keep apart from' : `Kept apart from ${nameOf(r.other)}`;
+    const self = String(loaded?.id ?? newId);
+    const listed = new Set(apart.map(a => a.other));
+    const options = [...everyone.entries()]
+      .filter(([id, d]) => id === r.other || (id !== self && !listed.has(id) && d.status !== 'inactive'))
+      .map(([id, d]) => [id, d.name || 'Unnamed driver'])
+      .sort((a, b) => a[1].localeCompare(b[1]));
+    const error = el('div', 'rux--form__helper-text scheduler-off-error');
+    error.id = 'scheduler-apart-error';
+    error.hidden = true;
+    error.setAttribute('role', 'alert');
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    if (options.length) stack.append(selectField('scheduler-apart-driver', 'Driver', r.other ?? options[0][0], options), error);
+    else stack.append(el('p', null, 'Every other active driver is on the list already.'));
+    stack.append(textField('scheduler-apart-note', 'Note', r.note));
+    $('scheduler-apart-fields').replaceChildren(stack);
+    $('scheduler-apart-done').disabled = !options.length;
+    window.Rux?.modal?.open?.('scheduler-apart-modal', trigger);
+  }
+
+  $('scheduler-driver-apart-add')?.addEventListener('click', e => openApart(null, e.currentTarget));
+  $('scheduler-apart-done')?.addEventListener('click', () => {
+    const other = $('scheduler-apart-driver')?.value;
+    if (!other) {
+      const error = $('scheduler-apart-error');
+      error.textContent = 'Pick a driver.';
+      error.hidden = false;
+      return;
+    }
+    const row = { other: String(other), note: $('scheduler-apart-note').value.trim() || null };
+    if (apartEditing === null) apart.push(row);
+    else apart[apartEditing] = { ...apart[apartEditing], ...row };
+    sortApart(apart);
+    window.Rux?.modal?.close?.('scheduler-apart-modal');
+    drawApart();
+    changed();
+  });
+
+  /* Makes the pairs match the page: removed ones deleted, a changed note
+     updated, then new ones inserted, in that order because a pair is one row
+     and a driver taken off and put back in one Save is the same pair. Each
+     write that lands is kept as the saved state; an insert sent again after a
+     lost answer finds its pair there and is left. */
+  async function syncApart(id) {
+    const want = new Map(apart.map(r => [r.other, r]));
+    const have = new Map(loadedApart.map(r => [r.other, r]));
+    const sure = r => { if (r.error) throw r.error; return r.data; };
+    const gone = loadedApart.filter(r => !want.has(r.other));
+    if (gone.length) {
+      sure(await client.from('driver_kept_apart').delete().in('id', gone.map(r => r.id)));
+      loadedApart = loadedApart.filter(r => want.has(r.other));
+    }
+    for (const r of apart) {
+      const was = have.get(r.other);
+      if (!was || (was.note || null) === (r.note || null)) continue;
+      sure(await client.from('driver_kept_apart').update({ note: r.note || null }).eq('id', was.id));
+      was.note = r.note || null;
+    }
+    const fresh = apart.filter(r => !have.has(r.other));
+    if (fresh.length) {
+      sure(await client.from('driver_kept_apart').upsert(fresh.map(r => {
+        const [a, b] = [String(id), r.other].sort();
+        return { driver_id: a, other_driver_id: b, note: r.note || null };
+      }), { onConflict: 'driver_id,other_driver_id', ignoreDuplicates: true }));
+      loadedApart = apartOf(sure(await readApart(id)), id);
+    }
+  }
 
   // ── schedule link and trips, read only ──
   async function drawLink() {
@@ -834,21 +962,29 @@
       loaded = null;
       loadedOff = [];
       off = [];
+      loadedApart = [];
+      apart = [];
       fillForm({ status: 'active', employment_type: 'full-time', priority: 3 });
+      await readEveryone();
     } else {
-      const [row, times] = await Promise.all([
+      const [row, times, pairs] = await Promise.all([
         client.from('drivers').select(DRIVER_COLUMNS).eq('id', driverId).maybeSingle(),
         client.from('driver_time_off').select('id,start_date,end_date,reason,notes,position').eq('driver_id', driverId).order('position'),
+        readApart(driverId),
+        readEveryone(),
       ]);
-      if (row.error || times.error) throw row.error || times.error;
+      if (row.error || times.error || pairs.error) throw row.error || times.error || pairs.error;
       if (!row.data) return false;
       loaded = row.data;
       loadedOff = (times.data || []).map(r => ({ ...r, start_date: String(r.start_date).slice(0, 10), end_date: String(r.end_date).slice(0, 10) }));
       off = loadedOff.map(r => ({ ...r })).sort((a, b) => a.start_date.localeCompare(b.start_date));
+      loadedApart = apartOf(pairs.data, driverId);
+      apart = sortApart(loadedApart.map(r => ({ ...r })));
       fillForm(loaded);
     }
     drawTitle();
     drawOff();
+    drawApart();
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
     legs = null;
@@ -865,13 +1001,20 @@
   function changed() {
     drawExpiry();
   }
+  // Every driver's name and status, for the kept-apart list and its dialog.
+  async function readEveryone() {
+    const { data, error } = await client.from('drivers').select('id,name,status').order('name');
+    if (error) throw error;
+    everyone = new Map((data || []).map(d => [String(d.id), d]));
+  }
   form?.addEventListener('input', changed);
   form?.addEventListener('change', changed);
 
-  /* Writes the driver, then their time off if it changed. Each write that
-     lands is kept as the page's saved state, so a Save that stops partway
-     says what did not save, and the next Save sends only that, with no false
-     conflict and no second copy of anything. */
+  /* Writes the driver, then their time off and who they are kept apart from
+     if either changed. Each write that lands is kept as the page's saved
+     state, so a Save that stops partway says what did not save, and the next
+     Save sends only that, with no false conflict and no second copy of
+     anything. */
   async function save(force = false) {
     if (!validate()) return false;
     const row = readForm();
@@ -881,13 +1024,15 @@
     try {
       const id = loaded?.id ?? newId;
       if (loaded && !force) {
-        const [now, times] = await Promise.all([
+        const [now, times, pairs] = await Promise.all([
           client.from('drivers').select(DRIVER_COLUMNS).eq('id', id).maybeSingle(),
           client.from('driver_time_off').select('start_date,end_date,reason,notes,position').eq('driver_id', id),
+          readApart(id),
         ]);
-        if (now.error || times.error) throw now.error || times.error;
+        if (now.error || times.error || pairs.error) throw now.error || times.error || pairs.error;
         const theirs = (times.data || []).map(r => ({ ...r, start_date: String(r.start_date).slice(0, 10), end_date: String(r.end_date).slice(0, 10) }));
-        if (!now.data || comparable(now.data) !== comparable(loaded) || offHeld(theirs) !== offHeld(loadedOff)) {
+        if (!now.data || comparable(now.data) !== comparable(loaded) || offHeld(theirs) !== offHeld(loadedOff)
+          || apartKey(apartOf(pairs.data, id)) !== apartKey(loadedApart)) {
           guard.conflict();
           return false;
         }
@@ -906,6 +1051,9 @@
                                    reason: r.reason || null, notes: r.notes || null }),
         landed: rows => { loadedOff = rows; },
       });
+
+      part = 'who they are kept apart from';
+      await syncApart(id);
 
       part = 'the read-back';
       await reload(id);
@@ -930,13 +1078,17 @@
   async function reload(id = currentId) {
     const { data: row, error } = await client.from('drivers').select(DRIVER_COLUMNS).eq('id', id).maybeSingle();
     const times = await client.from('driver_time_off').select('id,start_date,end_date,reason,notes,position').eq('driver_id', id).order('position');
-    if (error || times.error || !row) throw error || times.error || new Error('Driver not found');
+    const pairs = await readApart(id);
+    if (error || times.error || pairs.error || !row) throw error || times.error || pairs.error || new Error('Driver not found');
     loaded = row;
     loadedOff = (times.data || []).map(r => ({ ...r, start_date: String(r.start_date).slice(0, 10), end_date: String(r.end_date).slice(0, 10) }));
     off = loadedOff.map(r => ({ ...r }));
+    loadedApart = apartOf(pairs.data, id);
+    apart = sortApart(loadedApart.map(r => ({ ...r })));
     fillForm(loaded);
     drawTitle();
     drawOff();
+    drawApart();
     baseline = snapshot();
     drawLink();
     readTrips().then(drawTrips);

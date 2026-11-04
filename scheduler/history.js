@@ -76,7 +76,7 @@
         cdl_class: 'CDL class', license_state: 'Issuing state', license_number: 'Licence number',
         license_exp: 'Licence expires', med_card_expiry: 'Medical card expires', endorsements: 'Endorsements',
         status: 'Status', employment_type: 'Employment type', priority: 'Priority', hire_date: 'Hire date',
-        notes: 'Notes', time_off: 'Time off',
+        notes: 'Notes', time_off: 'Time off', kept_apart: 'Kept apart from',
       },
     },
     bus: {

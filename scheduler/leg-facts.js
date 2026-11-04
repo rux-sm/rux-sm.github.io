@@ -269,10 +269,12 @@
      `forms` reads the driver forms too, as Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    // The pairs kept apart, where clashes.js is loaded to read them.
+    const apart = window.SchedulerClashes ? `,${window.SchedulerClashes.APART_COLUMNS}` : '';
     const [buses, drivers, settings] = await Promise.all([
       client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
       // The names, status and card dates, for what stands in a driver's way.
-      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
+      client.from('drivers').select(`id,name,short_name,employment_type,status,license_exp,med_card_expiry${apart}`).then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));

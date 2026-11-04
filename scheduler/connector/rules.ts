@@ -309,10 +309,12 @@ const window = {};
      `forms` reads the driver forms too, as Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    // The pairs kept apart, where clashes.js is loaded to read them.
+    const apart = window.SchedulerClashes ? `,${window.SchedulerClashes.APART_COLUMNS}` : '';
     const [buses, drivers, settings] = await Promise.all([
       client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
       // The names, status and card dates, for what stands in a driver's way.
-      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
+      client.from('drivers').select(`id,name,short_name,employment_type,status,license_exp,med_card_expiry${apart}`).then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));
@@ -1898,11 +1900,18 @@ const window = {};
 
    THE STANDING RULE: `standing(trip, leg, nearby, read)` is what stands in
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
-   days out, a driver's time off, a driver set Inactive, or a card that runs
-   out before the leg ends. The leg is named by its key, week.js's, or by
-   the old word a page still names it by. The bar, the checklist, Departures and
+   days out, a driver's time off, a driver set Inactive, a card that runs
+   out before the leg ends, or a driver kept apart from another on the trip.
+   The leg is named by its key, week.js's, or by the old word a page still
+   names it by. The bar, the checklist, Departures and
    the Trips page all read it, so they cannot disagree. A placeholder raises
    nothing on itself, though it still stands in another trip's way.
+
+   KEPT APART: two drivers the office does not put on one trip, on one bus
+   or two. A driver row read with APART_COLUMNS carries its pairs from both
+   sides, and `apartWords` names who on a crew a driver is kept apart from.
+   It warns and never rules a driver out, but an automatic pick never takes
+   one.
 
    Nothing here reads the page. The one read is `readNearby`, handed the
    page's client, so every page reads the same trips, time off and days out
@@ -1921,6 +1930,22 @@ const window = {};
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
   // The days a leg's yard return comes after its last day, the bar's +1.
   const daysBack = leg => leg.backDays ?? 0;
+
+  /* The embeds a `drivers` select adds to carry a driver's pairs: a pair is
+     one row, the smaller id first, so a driver is on either side of it. */
+  const APART_COLUMNS = 'apart_with:driver_kept_apart!driver_id(other_driver_id),apart_by:driver_kept_apart!other_driver_id(driver_id)';
+  const apartFrom = d => new Set([
+    ...(d?.apart_with ?? []).map(r => String(r.other_driver_id)),
+    ...(d?.apart_by ?? []).map(r => String(r.driver_id)),
+  ]);
+  const shortName = d => d?.short_name || d?.name || 'a driver';
+  /* Who on `crew`, a list of driver rows, the driver is kept apart from, in
+     words, or ''. The driver on the crew themself is passed over. */
+  function apartWords(d, crew) {
+    const away = apartFrom(d);
+    const names = (crew ?? []).filter(c => c && String(c.id) !== String(d?.id) && away.has(String(c.id))).map(shortName);
+    return names.length ? `Kept apart from ${[...new Set(names)].join(', ')}` : '';
+  }
 
   // How far back a driver's days are counted, to spread work within a priority.
   const RECENT_DAYS = 28;
@@ -2056,9 +2081,11 @@ const window = {};
      then one back-to-back with enough rest, then one without, then whoever
      drove the fewest days lately, so the work spreads. This is the order a
      person picks from, each with `lapse`, a licence or medical card that runs
-     out before the leg ends, in words. `fit` is null until it is read, and
-     then only priority and name order. */
-  function rankDrivers(drivers, fit) {
+     out before the leg ends, in words. A driver kept apart from one on
+     `crew`, the driver rows in the trip's other seats, comes after every
+     free driver who is not, with `apart` in words. `fit` is null until it is
+     read, and then only priority and name order. */
+  function rankDrivers(drivers, fit, crew = []) {
     const text = (map, id) => (map?.get(id) ?? []).join(' · ');
     return drivers.map(d => {
       const days = fit?.worked.get(d.id)?.size ?? 0;
@@ -2066,9 +2093,10 @@ const window = {};
       const near = text(fit?.near, d.id);
       const tight = !!fit?.tight.has(d.id);
       const lapse = fit?.range ? cardLapse(d, fit.range) : '';
+      const apart = apartWords(d, crew);
       return {
-        d, days, busy, near, tight, lapse,
-        rank: [busy ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
+        d, days, busy, near, tight, lapse, apart,
+        rank: [busy ? 1 : 0, apart ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
         detail: [
           d.status && d.status !== 'active' ? 'Inactive' : '',
           d.priority != null ? `Priority ${d.priority}` : '',
@@ -2082,11 +2110,13 @@ const window = {};
   /* The order an automatic pick takes, from a ranked list: every free driver
      with no back-to-back trip, whatever their priority, before a back-to-back
      one, who is a last resort and only with REST_HOURS of rest. A driver
-     whose card runs out before the leg ends is never picked automatically; a
-     person can still pick them, told why, since the date on file may be old. */
+     whose card runs out before the leg ends, or who is kept apart from one on
+     the trip, is never picked automatically; a person can still pick them,
+     told why, since the date on file may be old and the office may have no
+     one else. */
   const autoPicks = ranked => [
-    ...ranked.filter(r => !r.busy && !r.lapse && !r.near),
-    ...ranked.filter(r => !r.busy && !r.lapse && r.near && !r.tight),
+    ...ranked.filter(r => !r.busy && !r.lapse && !r.apart && !r.near),
+    ...ranked.filter(r => !r.busy && !r.lapse && !r.apart && r.near && !r.tight),
   ];
 
   /* What runs out before the leg ends, on its last day as saved, the licence
@@ -2101,15 +2131,28 @@ const window = {};
       .join(' · ');
   }
 
+  /* The drivers in a trip's seats that are on, on the legs whose days
+     overlap `range`, each with the vehicle it is in: the crew a driver on
+     that leg works beside, on their bus or another. */
+  function tripCrew(trip, range) {
+    const keys = new Set(legsOf(trip).filter(l => datesOverlap(range, l)).map(l => l.key));
+    return (trip.trip_assignments || []).filter(a => keys.has(legKeyOfVehicle(trip, a))).flatMap(a => {
+      const on = activeRolesOf(a);
+      return (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'))
+        .map(d => ({ assignmentId: a.id, role: d.role || 'driver', driverId: d.driver_id }));
+    });
+  }
+
   /* What stands in a saved leg's way, one entry for each thing: the
      assignment and the driver it is on, `what` it is, and `words`, the bus's
      number or the driver's name before it. `read` holds the page's
-     `driversById` and `busesById`. */
+     `driversById`, read with APART_COLUMNS, and `busesById`. */
   function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map() } = {}) {
     if (!trip || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return [];
     const range = legByKey(trip, leg);
     if (!range) return [];
     const fit = fitFor(nearby, range, { tripId: trip.id });
+    const crew = tripCrew(trip, range).map(c => driversById.get(c.driverId)).filter(Boolean);
     const out = [];
     const put = (a, driverId, subject, what) => {
       if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
@@ -2130,6 +2173,8 @@ const window = {};
         if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
         const lapse = who ? cardLapse(who, range) : '';
         if (lapse) put(a, d.driver_id, name, lapse);
+        const apart = who ? apartWords(who, crew) : '';
+        if (apart) put(a, d.driver_id, name, apart);
       }
     }
     return out;
@@ -2163,7 +2208,10 @@ const window = {};
     return { trips, off, oos };
   }
 
-  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, standing, readNearby };
+  window.SchedulerClashes = {
+    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse,
+    apartWords, tripCrew, standing, readNearby,
+  };
 })();
 
 // ── to-do.js

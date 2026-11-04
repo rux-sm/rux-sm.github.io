@@ -96,7 +96,7 @@
 
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
-  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse } = window.SchedulerClashes;
+  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, apartWords, tripCrew } = window.SchedulerClashes;
   // A rest under this many hours, overlap included, is the roster's danger mark; under REST_HOURS it is the warning one.
   const REST_SHORT_HOURS = 8;
 
@@ -639,8 +639,9 @@
     // `status`, so the Buses tab offers active drivers; `priority`, so the
     // roster lists them in the order they are called on; `employment_type`,
     // because a part-time driver needs an hours-of-service record; the
-    // licence and medical card dates, so the bar menu flags an expired one.
-    drivers: () => client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language,photo_path').then(rowsOf),
+    // licence and medical card dates, so the bar menu flags an expired one;
+    // and the drivers each is kept apart from, so a pick warns of them.
+    drivers: () => client.from('drivers').select(`id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language,photo_path,${window.SchedulerClashes.APART_COLUMNS}`).then(rowsOf),
     // Every contact, for the contact search rather than a read on each keystroke.
     contacts: () => client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(rowsOf),
     // The customers and the saved places, for the Customer field, the fill
@@ -3190,6 +3191,24 @@
   }
 
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
+  /* The drivers in the editor's seats that are on, on the legs whose days
+     overlap `leg`'s as the form holds them, the seat `except` left out: the
+     crew a driver in that seat works beside, on their bus or another. */
+  function fleetCrew(leg, except = null) {
+    const range = fleetLegDates(leg);
+    if (!range) return [];
+    return fleetLegs().filter(l => { const r = fleetLegDates(l); return r && datesOverlap(range, r); })
+      .flatMap(l => (editing?.fleet?.[l] ?? []).flatMap(b => ROLES
+        .map(r => (r.role === 'driver' || b.seats[r.role].on ? b.seats[r.role] : null))
+        .filter(s => s && s !== except && s.driverId != null)
+        .map(s => panelIndex.driversById.get(s.driverId))))
+      .filter(Boolean);
+  }
+  // Who on the trip a seated driver is kept apart from, in words.
+  const seatApart = (leg, seat) => {
+    const who = seat.driverId == null ? null : panelIndex.driversById.get(seat.driverId);
+    return who ? apartWords(who, fleetCrew(leg, seat)) : '';
+  };
   // A seated driver's licence or medical card that runs out before the leg ends, in words.
   const seatLapse = (leg, id) => {
     const range = fleetClashes?.[leg]?.range;
@@ -3290,11 +3309,12 @@
     return out;
   };
 
-  const fleetDriverOptions = (leg, currentId) => rankDrivers([...panelIndex.driversById.values()]
-    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId)), fleetClashes?.[leg] ?? null)
+  const fleetDriverOptions = (leg, seat) => rankDrivers([...panelIndex.driversById.values()]
+    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(seat.driverId)), fleetClashes?.[leg] ?? null,
+  fleetCrew(leg, seat))
     .map(r => ({
       id: r.d.id, name: r.d.name || r.d.short_name || 'Unnamed driver',
-      detail: r.detail, clash: [r.busy, r.lapse, r.near].filter(Boolean).join(' · '),
+      detail: r.detail, clash: [r.busy, r.lapse, r.apart, r.near].filter(Boolean).join(' · '),
     }));
 
   // The editor and bar share Carbon's icon and semantic status class.
@@ -3343,10 +3363,10 @@
     const dup = seat.driverId && dups.has(`${leg}:${seat.driverId}`);
     const picker = fleetPicker({
       id, label: SEAT_LABEL[role], placeholder: 'Choose a driver',
-      options: fleetDriverOptions(leg, seat.driverId),
+      options: fleetDriverOptions(leg, seat),
       current: seat.driverId,
       error: dup ? 'This driver is in another seat on this leg' : '',
-      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
+      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
       warnIcon: false,
     });
     picker.dataset.fleetLeg = leg;
@@ -3436,7 +3456,7 @@
     line.append(mark, who);
     const dup = seat.driverId != null && dups.has(`${leg}:${seat.driverId}`);
     const warn = dup ? 'In another seat on this leg'
-      : [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
+      : [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
     if (warn) line.appendChild(fleetWarn(warn));
     return line;
   }
@@ -3627,14 +3647,18 @@
     const taken = new Set((editing.fleet[leg] ?? []).flatMap(b => ROLES
       .filter(r => r.role === 'driver' || b.seats[r.role].on)
       .map(r => b.seats[r.role].driverId).filter(id => id != null).map(String)));
+    // The crew grows with each pick, so no two picks are a pair kept apart.
+    const crew = fleetCrew(leg);
     const free = autoPicks(rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => !d.status || d.status === 'active'), fit))
+      .filter(d => !d.status || d.status === 'active'), fit, crew))
       .filter(r => !taken.has(String(r.d.id)));
     let filled = 0;
     for (const seat of seats) {
-      const next = free.shift();
-      if (!next) break;
+      const at = free.findIndex(r => !apartWords(r.d, crew));
+      if (at < 0) break;
+      const [next] = free.splice(at, 1);
       Object.assign(seat, { driverId: next.d.id, status: 'off', statusDirty: false });
+      crew.push(next.d);
       filled++;
     }
     drawFleet(`scheduler-fleet-${leg}-best`);
@@ -13792,6 +13816,12 @@
     return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
   const driverById = id => [...panelIndex.driversById.values()].find(d => String(d.id) === String(id));
+  /* The drivers on the trip a seat `barSeat` found works beside, on its bus
+     or another on the days of its leg, the seat itself left out: whom a
+     driver put in it may be kept apart from. */
+  const seatCrew = found => tripCrew(found.trip, found.range)
+    .filter(c => !(String(c.assignmentId) === String(found.assign.id) && c.role === (found.role || 'driver')))
+    .map(c => panelIndex.driversById.get(c.driverId)).filter(Boolean);
 
   /* What a seat's row holds besides who sits in it: the pay, the report time
      and note, the miles its driver drove, and the five steps its driver has
@@ -13864,7 +13894,8 @@
      menu's Assign driver submenu or the trip sheet's Change driver: the
      driver on the bus now, checked, then every free driver in rank order, one
      whose licence or medical card runs out before the leg ends marked with a
-     red alert and a back-to-back one with a warning, then the busy ones,
+     red alert, and one kept apart from a driver on the trip or back-to-back
+     with a warning, then the busy ones,
      greyed with what they are on, then More drivers. The list says it is
      looking while the trips around the leg are read. */
   async function fillAssignItems(found, list) {
@@ -13898,15 +13929,15 @@
     // Anyone already in a seat on this bus is left out, so one driver never takes two.
     const onBus = new Set((assign.trip_drivers || []).map(d => String(d.driver_id)));
     const ranked = rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit);
+      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit, seatCrew(found));
     // A busy driver is shown but cannot be picked, so the menu never double-books.
     const pick = r => {
       const lapse = r.lapse;
       return assignItem(r.d.name || r.d.short_name || 'Unnamed driver', {
         id: r.busy ? null : String(r.d.id),
-        icon: r.busy ? '#m-do_not_disturb_on-fill' : lapse ? lapseIcon() : r.near ? '#m-warning-fill' : '#m-person-fill',
+        icon: r.busy ? '#m-do_not_disturb_on-fill' : lapse ? lapseIcon() : r.apart || r.near ? '#m-warning-fill' : '#m-person-fill',
         note: [r.d.priority != null ? `P${r.d.priority}` : '', `${r.days}d`].filter(Boolean).join(' · '),
-        title: [r.busy, lapse, r.detail, r.near].filter(Boolean).join(' · '),
+        title: [r.busy, lapse, r.apart, r.detail, r.near].filter(Boolean).join(' · '),
         disabled: !!r.busy,
       });
     };
@@ -14115,8 +14146,9 @@
      `role` of its bus, so it is held to the menu's list: a driver already in
      a seat on this bus is not seated, nor one on another trip or away on the
      leg's days, and the notice says which. A card that lapses before the leg
-     ends or a back-to-back trip, which the menu marks beside a name, is said
-     as the driver is seated. `from` is the bar a driver was carried off, as
+     ends, a driver on the trip they are kept apart from, or a back-to-back
+     trip, which the menu marks beside a name, is said as the driver is
+     seated. `from` is the bar a driver was carried off, as
      `barRef` gives it, with the `role` of the seat they were in: that seat
      is not in their way, and they leave it for this one, which on their own
      bus is a change of seats.
@@ -14168,7 +14200,7 @@
     } catch (err) {
       return refuse('error', `The driver was not assigned. ${err.message}`);
     }
-    const [ranked] = rankDrivers([driver], fit);
+    const [ranked] = rankDrivers([driver], fit, seatCrew(found));
     if (ranked.busy) return refuse('warning', `${name} is not free for this trip.`, ranked.busy);
     /* What the driver in a seat has been told, in the box's words, or null:
        of the driver in this seat now, and of the carried driver in the seat
@@ -14196,7 +14228,7 @@
       window.Rux?.modal?.open?.(unassignModal);
       return 'asked';
     }
-    const caution = [cardLapse(driver, found.range), ranked.near].filter(Boolean).join(' · ');
+    const caution = [cardLapse(driver, found.range), ranked.apart, ranked.near].filter(Boolean).join(' · ');
     const seated = await seatDriver(found, driver, { left, caution, dropped: true });
     decided();
     ringBar(ref, seated ? 'scheduler-bar--saved' : 'scheduler-bar--refused');
@@ -14265,7 +14297,12 @@
       const fit = fitFor(withStand(suggest.nearby, stand), row.leg, { assignmentId: row.assign.id });
       // Never the driver there now, nor one already in another seat on this bus.
       const skip = new Set((row.assign.trip_drivers || []).map(d => String(d.driver_id)));
-      row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit).filter(r => !r.busy);
+      // The trip's crew beside this Driver seat, each ticked suggestion on it in its seat.
+      const [planned] = withStand({ trips: [row.trip] }, stand).trips;
+      const crew = tripCrew(planned, row.leg)
+        .filter(c => !(String(c.assignmentId) === String(row.assign.id) && c.role === 'driver'))
+        .map(c => panelIndex.driversById.get(c.driverId)).filter(Boolean);
+      row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit, crew).filter(r => !r.busy);
       if (row.choice != null && !row.options.some(r => String(r.d.id) === row.choice)) row.choice = null;
       // A pick by hand stands; otherwise the automatic order, which may find no one rested.
       row.pick = (row.choice != null ? row.options.find(r => String(r.d.id) === row.choice) : autoPicks(row.options)[0]) ?? null;
@@ -14298,7 +14335,7 @@
         const pick = selectField(`${id}-driver`, 'Suggested driver', row.pick ? String(row.pick.d.id) : '', [
           ...(row.pick ? [] : [['', 'No rested driver: choose one']]),
           ...row.options.map(r => [String(r.d.id),
-            [r.d.name || r.d.short_name || 'Unnamed driver', r.lapse, r.detail, r.near].filter(Boolean).join(' · ')]),
+            [r.d.name || r.d.short_name || 'Unnamed driver', r.lapse, r.apart, r.detail, r.near].filter(Boolean).join(' · ')]),
         ]);
         pick.querySelector('select').dataset.suggestPick = row.key;
         body.appendChild(pick);
@@ -18469,7 +18506,7 @@
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses',
-    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts'];
+    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart'];
 
   /* The to-do list and Departures hear their changes on this channel too,
      rather than each opening one of its own: every change is handed to them
@@ -18489,7 +18526,8 @@
   let liveFull = false, liveWindows = false, liveListsAsked = false;
   const liveTrips = new Set();
   const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
-  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings' };
+  // A pair kept apart is read with the drivers, so its change owes their list.
+  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings', driver_kept_apart: 'drivers' };
   // The tables embedded in a trip whose rows carry `trip_id`.
   const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines',
     'trip_documents', 'trip_contacts', 'trip_legs'];

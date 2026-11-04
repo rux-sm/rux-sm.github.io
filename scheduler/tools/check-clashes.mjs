@@ -1,7 +1,8 @@
 // Runs clashes.js, what stands in a bus's or a driver's way on a leg,
 // against invented trips: a trip on the same days, time off, days out, a
 // trip the day before or after and the rest between, the order drivers are
-// asked in and picked in, and a licence or medical card that runs out.
+// asked in and picked in, a licence or medical card that runs out, and two
+// drivers kept apart on one trip.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -153,6 +154,38 @@ expect('a leg read with its legs says the same by its id or its old word, its ve
   [standing(shaped(saved), `l-${saved.id}`, shapedAround, read).map(c => c.words), standing(shaped(saved), 'outbound', shapedAround, read).length],
   [['Bus 897: On trip Lunch', 'Rigo: Time off', 'Rigo: Licence expired Oct 10, 2026', 'Ana Ruiz: Inactive'], 4]);
 expect('a leg the trip does not have stands in nothing\'s way', standing(shaped(saved), 'l-none', shapedAround, read), []);
+
+// ── kept apart ──────────────────────────────────────────────────────────────
+// A pair is one row, the smaller id first: k1 and k2 are kept apart, read from both sides.
+const K = (id, priority, extra = {}) => D(id, priority, { apart_with: [], apart_by: [], ...extra });
+const k1 = K('k1', 1, { short_name: 'Kiko', apart_with: [{ other_driver_id: 'k2' }] });
+const k2 = K('k2', 1, { name: 'Karla', apart_by: [{ driver_id: 'k1' }] });
+const apartRanked = rankDrivers([k2, K('k3', 2)], fit([], mine), [k1]);
+expect('a driver kept apart from one on the crew comes after every free driver who is not, said in words',
+  apartRanked.map(r => [r.d.id, r.apart]), [['k3', ''], ['k2', 'Kept apart from Kiko']]);
+expect('and is never picked automatically', autoPicks(apartRanked).map(r => r.d.id), ['k3']);
+expect('the pair works both ways', rankDrivers([k1], null, [k2])[0].apart, 'Kept apart from Karla');
+expect('with nobody kept apart on the crew nothing is said', rankDrivers([k1], null, [K('k3', 2)])[0].apart, '');
+const apartRead = { busesById: new Map(), driversById: new Map([k1, k2, K('k3', 2)].map(d => [d.id, d])) };
+const twoBuses = trip({ from: '2026-10-14', dest: 'Pair', buses: [['p1', 'b1', 'k1'], ['p2', 'b2', 'k2', 'k3']] });
+expect('on two buses of one trip, each of the pair\'s seats says it',
+  standing(twoBuses, 'outbound', { trips: [twoBuses], off: [], oos: [] }, apartRead).map(c => [c.assignmentId, c.words]),
+  [['p1', 'Kiko: Kept apart from Karla'], ['p2', 'Karla: Kept apart from Kiko']]);
+// A split: the drop-off one way on the 14th, the pickup on the 17th, days apart.
+const split = {
+  ...trip({ from: '2026-10-14', to: '2026-10-17', dest: 'Split' }),
+  trip_legs: [
+    { id: 'l-out', leg: 'outbound', kind: 'one_way', start_date: '2026-10-14', end_date: '2026-10-14', bus_count: 1, trip_routes: [{ id: 'r-out', position: 1 }] },
+    { id: 'l-back', leg: 'return', kind: 'round_trip', start_date: '2026-10-17', end_date: '2026-10-17', bus_count: 1, trip_routes: [{ id: 'r-back', position: 1 }] },
+  ],
+  trip_stops: [],
+  trip_assignments: [
+    { id: 'o1', bus_id: 'b1', leg: 'outbound', route_id: 'r-out', active_roles: null, trip_drivers: [{ driver_id: 'k1', role: 'driver' }] },
+    { id: 'o2', bus_id: 'b1', leg: 'return', route_id: 'r-back', active_roles: null, trip_drivers: [{ driver_id: 'k2', role: 'driver' }] },
+  ],
+};
+expect('legs of one trip days apart never meet, so they warn of nothing',
+  standing(split, 'l-out', { trips: [split], off: [], oos: [] }, apartRead).map(c => c.words), []);
 
 console.log(failed ? `\n  ${failed} fault(s) in clashes` : '\n  clashes: every case passed');
 process.exit(failed ? 1 : 0);

@@ -728,6 +728,21 @@
             </div>
           </section>
 
+          <!-- The drivers this one is not put on a trip with, both ways: the
+               board warns when two of them are on one trip. Saves with the
+               form, each edited in the dialog below. -->
+          <section class="rux--stack-vertical rux--stack-scale-5 scheduler-pair-group" aria-labelledby="scheduler-driver-apart-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-driver-apart-h">Kept apart from</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-driver-apart"></ul>
+            </div>
+            <div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-driver-apart-add">Add driver
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+              </button>
+            </div>
+          </section>
+
           <!-- The button set and its order are form-page.html's. -->
           <div class="rux--btn-set scheduler-pair-buttons">
             <a class="rux--btn rux--btn--secondary" href="drivers.html" id="scheduler-driver-cancel">Cancel</a>
@@ -802,6 +817,25 @@
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
         <button type="button" class="rux--btn rux--btn--primary" id="scheduler-off-done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- One driver kept apart. Done keeps it on the page; Save writes it. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-apart-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-apart-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-apart-h">Keep apart from</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content" id="scheduler-apart-fields"></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-apart-done">Done</button>
       </div>
     </div>
   </div>

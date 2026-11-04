@@ -1922,9 +1922,11 @@ const window = {};
 
    KEPT APART: two drivers the office does not put on one trip, on one bus
    or two. A driver row read with APART_COLUMNS carries its pairs from both
-   sides, and `apartWords` names who on a crew a driver is kept apart from.
-   It warns and never rules a driver out, but an automatic pick never takes
-   one.
+   sides, each with its note and the trips it is allowed on; `apartPairs`
+   lists who on a crew a driver is kept apart from and `apartWords` names
+   them. A pair allowed on a trip, as the office says when it assigns one
+   anyway, raises nothing there. It warns and never rules a driver out, but
+   an automatic pick never takes one.
 
    Nothing here reads the page. The one read is `readNearby`, handed the
    page's client, so every page reads the same trips, time off and days out
@@ -1947,20 +1949,32 @@ const window = {};
   const departDay = leg => addDays(parseISO(leg.from), -(leg.departDays ?? 0));
 
   /* The embeds a `drivers` select adds to carry a driver's pairs: a pair is
-     one row, the smaller id first, so a driver is on either side of it. */
-  const APART_COLUMNS = 'apart_with:driver_kept_apart!driver_id(other_driver_id),apart_by:driver_kept_apart!other_driver_id(driver_id)';
-  const apartFrom = d => new Set([
-    ...(d?.apart_with ?? []).map(r => String(r.other_driver_id)),
-    ...(d?.apart_by ?? []).map(r => String(r.driver_id)),
-  ]);
+     one row, the smaller id first, so a driver is on either side of it. Each
+     comes with its note and the trips it is allowed on. */
+  const PAIR = 'id,note,allowed:driver_kept_apart_allowed(trip_id)';
+  const APART_COLUMNS = `apart_with:driver_kept_apart!driver_id(other_driver_id,${PAIR}),apart_by:driver_kept_apart!other_driver_id(driver_id,${PAIR})`;
+  const pairsOf = d => [
+    ...(d?.apart_with ?? []).map(r => ({ ...r, otherId: String(r.other_driver_id) })),
+    ...(d?.apart_by ?? []).map(r => ({ ...r, otherId: String(r.driver_id) })),
+  ];
   const shortName = d => d?.short_name || d?.name || 'a driver';
-  /* Who on `crew`, a list of driver rows, the driver is kept apart from, in
-     words, or ''. The driver on the crew themself is passed over. */
-  function apartWords(d, crew) {
-    const away = apartFrom(d);
-    const names = (crew ?? []).filter(c => c && String(c.id) !== String(d?.id) && away.has(String(c.id))).map(shortName);
-    return names.length ? `Kept apart from ${[...new Set(names)].join(', ')}` : '';
+  /* Each driver on `crew`, a list of driver rows, the driver is kept apart
+     from: `{ pairId, other, note }`. The driver on the crew themself is passed
+     over, and so is a pair allowed on the trip `tripId` or among the pair ids
+     in `allowed`, which the editor holds until its save. */
+  function apartPairs(d, crew, tripId = null, allowed = null) {
+    const out = [];
+    for (const p of pairsOf(d)) {
+      if (allowed?.has(String(p.id))) continue;
+      if (tripId != null && (p.allowed ?? []).some(a => String(a.trip_id) === String(tripId))) continue;
+      const other = (crew ?? []).find(c => c && String(c.id) !== String(d?.id) && String(c.id) === p.otherId);
+      if (other && !out.some(o => o.pairId === String(p.id))) out.push({ pairId: String(p.id), other, note: p.note || '' });
+    }
+    return out;
   }
+  // The pairs `apartPairs` lists, in words, or ''.
+  const pairWords = pairs => (pairs.length ? `Kept apart from ${pairs.map(p => shortName(p.other)).join(', ')}` : '');
+  const apartWords = (d, crew, tripId = null, allowed = null) => pairWords(apartPairs(d, crew, tripId, allowed));
 
   // How far back a driver's days are counted, to spread work within a priority.
   const RECENT_DAYS = 28;
@@ -2100,9 +2114,10 @@ const window = {};
      person picks from, each with `lapse`, a licence or medical card that runs
      out before the leg ends, in words. A driver kept apart from one on
      `crew`, the driver rows in the trip's other seats, comes after every
-     free driver who is not, with `apart` in words. `fit` is null until it is
-     read, and then only priority and name order. */
-  function rankDrivers(drivers, fit, crew = []) {
+     free driver who is not, with `apart` in words, unless the pair is allowed
+     on the trip `tripId` or among `allowed`. `fit` is null until it is read,
+     and then only priority and name order. */
+  function rankDrivers(drivers, fit, crew = [], tripId = null, allowed = null) {
     const text = (map, id) => (map?.get(id) ?? []).join(' · ');
     return drivers.map(d => {
       const days = fit?.worked.get(d.id)?.size ?? 0;
@@ -2110,7 +2125,7 @@ const window = {};
       const near = text(fit?.near, d.id);
       const tight = !!fit?.tight.has(d.id);
       const lapse = fit?.range ? cardLapse(d, fit.range) : '';
-      const apart = apartWords(d, crew);
+      const apart = apartWords(d, crew, tripId, allowed);
       return {
         d, days, busy, near, tight, lapse, apart,
         rank: [busy ? 1 : 0, apart ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
@@ -2190,7 +2205,7 @@ const window = {};
         if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
         const lapse = who ? cardLapse(who, range) : '';
         if (lapse) put(a, d.driver_id, name, lapse);
-        const apart = who ? apartWords(who, crew) : '';
+        const apart = who ? apartWords(who, crew, trip.id) : '';
         if (apart) put(a, d.driver_id, name, apart);
       }
     }
@@ -2228,7 +2243,7 @@ const window = {};
 
   window.SchedulerClashes = {
     REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse,
-    apartWords, tripCrew, standing, readNearby,
+    apartPairs, pairWords, apartWords, tripCrew, standing, readNearby,
   };
 })();
 

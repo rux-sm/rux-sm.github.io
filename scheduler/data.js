@@ -96,7 +96,7 @@
 
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
-  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, apartWords, tripCrew } = window.SchedulerClashes;
+  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, apartPairs, pairWords, tripCrew } = window.SchedulerClashes;
   // A rest under this many hours, overlap included, is the roster's danger mark; under REST_HOURS it is the warning one.
   const REST_SHORT_HOURS = 8;
 
@@ -3085,10 +3085,11 @@
 
   /* Whether the Buses tab holds changes someone made. A new trip's fleet is all
      work to Save, which writes its count and its cell's bus however untouched,
-     so for one the question is whether the tab moved from how it opened. */
+     so for one the question is whether the tab moved from how it opened. A
+     pair allowed and not yet saved is a change too. */
   const fleetChanged = () => (editing?.creating
     ? JSON.stringify(editing.fleet) !== JSON.stringify(editing.fleetBefore)
-    : !!fleetWork()?.work);
+    : !!fleetWork()?.work) || allowedHeld().length > 0;
   // Whether it changes who or what goes, which a seat's miles alone does not.
   const fleetMoved = () => {
     const work = fleetWork();
@@ -3148,6 +3149,26 @@
     await write('its driver statuses', client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list }));
   }
 
+  /* The pairs allowed while the editor was open whose two drivers are both
+     still in its seats, as `askApart` lists them: what Save writes, and
+     unsaved work while there are any. */
+  function allowedHeld() {
+    const held = editing?.apartAllowed;
+    if (!held?.size) return [];
+    const seated = new Set(fleetLegs().flatMap(l => (editing.fleet[l] ?? []).flatMap(b => ROLES
+      .filter(r => seatFilled(b.seats[r.role])).map(r => String(b.seats[r.role].driverId)))));
+    const crew = [...seated].map(driverById).filter(Boolean);
+    return crew.map(driver => ({ driver, pairs: apartPairs(driver, crew, editing.id).filter(p => held.has(p.pairId)) }))
+      .filter(x => x.pairs.length);
+  }
+
+  // Writes the pairs `allowedHeld` lists, after the fleet.
+  async function saveAllowed(tripId, write) {
+    const picks = allowedHeld();
+    if (picks.length) await allowPairs(tripId, picks, write);
+    if (editing) editing.apartAllowed = null;
+  }
+
   /* ── What clashes ──
      Read when the tab is built and again when it is chosen, for the trip's
      dates as the Details tab holds them, so a picker can say which buses and
@@ -3193,22 +3214,33 @@
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
   /* The drivers in the editor's seats that are on, on the legs whose days
      overlap `leg`'s as the form holds them, the seat `except` left out: the
-     crew a driver in that seat works beside, on their bus or another. */
+     crew a driver in that seat works beside, on their bus or another. While
+     the vehicle window is open its copy stands in for the bus it edits. */
   function fleetCrew(leg, except = null) {
     const range = fleetLegDates(leg);
     if (!range) return [];
+    const busesOn = l => {
+      const list = [...(editing?.fleet?.[l] ?? [])];
+      if (vehicleEdit && vehicleEdit.leg === l) {
+        if (vehicleEdit.index === null) list.push(vehicleEdit.bus);
+        else list[vehicleEdit.index] = vehicleEdit.bus;
+      }
+      return list;
+    };
     return fleetLegs().filter(l => { const r = fleetLegDates(l); return r && datesOverlap(range, r); })
-      .flatMap(l => (editing?.fleet?.[l] ?? []).flatMap(b => ROLES
+      .flatMap(l => busesOn(l).flatMap(b => ROLES
         .map(r => (r.role === 'driver' || b.seats[r.role].on ? b.seats[r.role] : null))
         .filter(s => s && s !== except && s.driverId != null)
         .map(s => panelIndex.driversById.get(s.driverId))))
       .filter(Boolean);
   }
+  /* Who on the trip a driver in `seat` is kept apart from, `apartPairs`'s
+     list: a pair allowed on the trip, or allowed since the editor opened and
+     held until its save in `editing.apartAllowed`, is left out. */
+  const fleetApart = (leg, seat, who) => (who ? apartPairs(who, fleetCrew(leg, seat), editing?.id, editing?.apartAllowed) : []);
   // Who on the trip a seated driver is kept apart from, in words.
-  const seatApart = (leg, seat) => {
-    const who = seat.driverId == null ? null : panelIndex.driversById.get(seat.driverId);
-    return who ? apartWords(who, fleetCrew(leg, seat)) : '';
-  };
+  const seatApart = (leg, seat) => pairWords(fleetApart(leg, seat,
+    seat.driverId == null ? null : panelIndex.driversById.get(seat.driverId)));
   // A seated driver's licence or medical card that runs out before the leg ends, in words.
   const seatLapse = (leg, id) => {
     const range = fleetClashes?.[leg]?.range;
@@ -3311,7 +3343,7 @@
 
   const fleetDriverOptions = (leg, seat) => rankDrivers([...panelIndex.driversById.values()]
     .filter(d => !d.status || d.status === 'active' || String(d.id) === String(seat.driverId)), fleetClashes?.[leg] ?? null,
-  fleetCrew(leg, seat))
+  fleetCrew(leg, seat), editing?.id, editing?.apartAllowed)
     .map(r => ({
       id: r.d.id, name: r.d.name || r.d.short_name || 'Unnamed driver',
       detail: r.detail, clash: [r.busy, r.lapse, r.apart, r.near].filter(Boolean).join(' · '),
@@ -3650,11 +3682,11 @@
     // The crew grows with each pick, so no two picks are a pair kept apart.
     const crew = fleetCrew(leg);
     const free = autoPicks(rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => !d.status || d.status === 'active'), fit, crew))
+      .filter(d => !d.status || d.status === 'active'), fit, crew, editing.id, editing.apartAllowed))
       .filter(r => !taken.has(String(r.d.id)));
     let filled = 0;
     for (const seat of seats) {
-      const at = free.findIndex(r => !apartWords(r.d, crew));
+      const at = free.findIndex(r => !apartPairs(r.d, crew, editing.id, editing.apartAllowed).length);
       if (at < 0) break;
       const [next] = free.splice(at, 1);
       Object.assign(seat, { driverId: next.d.id, status: 'off', statusDirty: false });
@@ -3777,9 +3809,9 @@
   /* A pick sets the bus or the driver; a new driver starts at Not sent.
      Typing over a pick drops it with no option, and that is left to focusout
      below: redrawing here would replace the field under the first key typed. */
-  vehicleHost?.addEventListener('rux:listbox-selected', e => {
+  vehicleHost?.addEventListener('rux:listbox-selected', async e => {
     const wrap = e.target.closest?.('.rux--list-box__wrapper');
-    const { bus } = fleetBus(wrap);
+    const { leg, bus } = fleetBus(wrap);
     if (!bus) return;
     const picked = e.detail?.option?.dataset.fleetId ?? null;
     if (picked == null) return;
@@ -3790,6 +3822,15 @@
       const seat = bus.seats[role];
       const next = find(panelIndex.driversById, picked);
       if (same(next, seat.driverId)) return;
+      /* A driver kept apart from one on the trip asks first; Assign anyway
+         holds the pair as allowed until the save writes it, and Cancel puts
+         the field back. */
+      const pairs = fleetApart(leg, seat, panelIndex.driversById.get(next));
+      if (pairs.length) {
+        if (!(await askApart([{ driver: panelIndex.driversById.get(next), pairs }], input))) { drawFleet(input?.id); return; }
+        editing.apartAllowed ??= new Set();
+        for (const p of pairs) editing.apartAllowed.add(p.pairId);
+      }
       seat.driverId = next;
       // The miles were the last driver's.
       seat.miles = null;
@@ -11861,16 +11902,21 @@
      button, Escape and a press outside resolve false. One question at a time:
      a second one answers the first with no. `field` is one line to type with
      the yes, such as the fuel card in an envelope just printed; it starts
-     empty, and the asker reads it once the answer is yes. */
+     empty, and the asker reads it once the answer is yes. `yes` and `no`
+     name the two buttons where Yes and No would not say what they do, and
+     `from` is the control in an open window that asked, which keeps that
+     window open under the question. */
   const askModal = document.getElementById('scheduler-ask-modal');
   const askField = document.getElementById('scheduler-ask-field');
   let askDone = null;
-  function ask(question, hint = '', field = null) {
+  function ask(question, hint = '', field = null, { yes = 'Yes', no = 'No', from = null } = {}) {
     if (!askModal || !window.Rux?.modal?.open) return Promise.resolve(window.confirm(question));
     return new Promise(resolve => {
       askDone?.(false);
       askDone = resolve;
       document.getElementById('scheduler-ask-h').textContent = question;
+      document.getElementById('scheduler-ask-yes').textContent = yes;
+      document.getElementById('scheduler-ask-no').textContent = no;
       const line = document.getElementById('scheduler-ask-note');
       line.textContent = hint;
       line.parentElement.hidden = !hint;
@@ -11881,7 +11927,7 @@
         askField.placeholder = field?.placeholder || '';
         document.getElementById('scheduler-ask-field-label').textContent = field?.label || '';
       }
-      window.Rux.modal.open(askModal);
+      window.Rux.modal.open(askModal, from);
     });
   }
   document.getElementById('scheduler-ask-yes')?.addEventListener('click', () => {
@@ -11891,6 +11937,47 @@
     done?.(true);
   });
   askModal?.addEventListener('rux:modal-closed', () => { const done = askDone; askDone = null; done?.(false); });
+
+  /* KEPT APART, ASKED: a driver put on a trip beside one they are kept
+     apart from asks first, naming each pair and its note. Assign anyway
+     answers true and Cancel false. `picks` is a list of `{ driver, pairs }`,
+     each `pairs` as `apartPairs` gives it, and `from` the control that
+     asked, as `ask` takes it. */
+  const calledBy = d => d?.short_name || d?.name || 'A driver';
+  function askApart(picks, from = null) {
+    const seen = new Set();
+    const lines = picks.flatMap(({ driver, pairs }) => pairs.filter(p => !seen.has(p.pairId) && seen.add(p.pairId))
+      .map(p => `${calledBy(driver)} and ${calledBy(p.other)} are kept apart${p.note ? `: ${p.note.trim().replace(/\.+$/, '')}` : ''}.`));
+    const [one] = picks;
+    const question = picks.length === 1 ? `Assign ${calledBy(one.driver)} with ${one.pairs.map(p => calledBy(p.other)).join(' and ')}?`
+      : 'Assign drivers kept apart?';
+    return ask(question, `${lines.join(' ')} Assigning anyway allows them together on this trip, and its alert goes.`, null,
+      { yes: 'Assign anyway', no: 'Cancel', from });
+  }
+
+  /* Allows each pair of `picks`, as `askApart` takes them, on the trip
+     `tripId`, once, and says so in the trip's History. `write` is the
+     editor's save's writer where it runs in one; otherwise a failed write
+     throws. */
+  async function allowPairs(tripId, picks, write = null) {
+    const rows = [];
+    const said = [];
+    for (const { driver, pairs } of picks) {
+      for (const p of pairs) {
+        if (rows.some(r => r.pair_id === p.pairId)) continue;
+        rows.push({ pair_id: p.pairId, trip_id: tripId });
+        said.push(`${calledBy(driver)} with ${calledBy(p.other)}`);
+      }
+    }
+    if (!rows.length) return;
+    const query = client.from('driver_kept_apart_allowed').upsert(rows, { onConflict: 'pair_id,trip_id', ignoreDuplicates: true });
+    if (write) await write('the drivers allowed together', query);
+    else {
+      const { error } = await withTimeout(query.then(r => r));
+      if (error) throw new Error(error.message);
+    }
+    recordHistory(tripId, 'assignment_changed', [{ field: 'kept_apart', label: 'Kept apart', before: null, after: `Allowed together: ${said.join(', ')}` }]);
+  }
 
   const conflictModal = document.getElementById('scheduler-conflict-modal');
   let conflictAfter = null;
@@ -13161,6 +13248,7 @@
       }
 
       if (fleet?.work) await saveFleet(tripId, write, fleet);
+      await saveAllowed(tripId, write);
       /* Last, because writing the trip's rows takes off the Done marks their
          changes affect, and a Done pressed after those changes still stands. */
       if (Object.keys(doneRow).length) await write('its Done marks', client.from('trips').update(doneRow).eq('id', tripId));
@@ -13929,7 +14017,7 @@
     // Anyone already in a seat on this bus is left out, so one driver never takes two.
     const onBus = new Set((assign.trip_drivers || []).map(d => String(d.driver_id)));
     const ranked = rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit, seatCrew(found));
+      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit, seatCrew(found), found.trip.id);
     // A busy driver is shown but cannot be picked, so the menu never double-books.
     const pick = r => {
       const lapse = r.lapse;
@@ -14032,9 +14120,15 @@
      A driver carried here, `dropped`, can be undone wherever that took a
      seat from anyone, since a drop is easier to make by accident than a
      pick: the driver the seat held goes back in it, and the carried one
-     back to the seat they left. Answers whether the driver was seated. */
+     back to the seat they left.
+
+     A driver kept apart from one on the trip asks first, and Assign anyway
+     allows the pair on the trip once the seat is saved, so its alert goes.
+     Answers whether the driver was seated. */
   async function seatDriver(found, driver, { left = null, caution = '', dropped = false } = {}) {
     const name = driver.name || 'The driver';
+    const pairs = apartPairs(driver, seatCrew(found), found.trip.id);
+    if (pairs.length && !(await askApart([{ driver, pairs }]))) return false;
     const was = found.seat?.driver_id != null ? heldIn(found) : null;
     const had = left ? heldIn(left) : null;
     const take = { assign: found.assign, role: found.role, driver };
@@ -14047,6 +14141,10 @@
       else {
         await saveSeats(found.trip, [take]);
         [row] = await saveSeats(left.trip, [leave]);
+      }
+      if (pairs.length) {
+        caution = await allowPairs(found.trip.id, [{ driver, pairs }])
+          .then(() => caution, err => [caution, `The pair was not allowed on this trip: ${err.message}`].filter(Boolean).join(' · '));
       }
       assignRead = null;
       await show();
@@ -14200,7 +14298,7 @@
     } catch (err) {
       return refuse('error', `The driver was not assigned. ${err.message}`);
     }
-    const [ranked] = rankDrivers([driver], fit, seatCrew(found));
+    const [ranked] = rankDrivers([driver], fit, seatCrew(found), found.trip.id);
     if (ranked.busy) return refuse('warning', `${name} is not free for this trip.`, ranked.busy);
     /* What the driver in a seat has been told, in the box's words, or null:
        of the driver in this seat now, and of the carried driver in the seat
@@ -14228,7 +14326,8 @@
       window.Rux?.modal?.open?.(unassignModal);
       return 'asked';
     }
-    const caution = [cardLapse(driver, found.range), ranked.apart, ranked.near].filter(Boolean).join(' · ');
+    // A pair kept apart is asked of as the driver is seated.
+    const caution = [cardLapse(driver, found.range), ranked.near].filter(Boolean).join(' · ');
     const seated = await seatDriver(found, driver, { left, caution, dropped: true });
     decided();
     ringBar(ref, seated ? 'scheduler-bar--saved' : 'scheduler-bar--refused');
@@ -14299,10 +14398,10 @@
       const skip = new Set((row.assign.trip_drivers || []).map(d => String(d.driver_id)));
       // The trip's crew beside this Driver seat, each ticked suggestion on it in its seat.
       const [planned] = withStand({ trips: [row.trip] }, stand).trips;
-      const crew = tripCrew(planned, row.leg)
+      row.crew = tripCrew(planned, row.leg)
         .filter(c => !(String(c.assignmentId) === String(row.assign.id) && c.role === 'driver'))
         .map(c => panelIndex.driversById.get(c.driverId)).filter(Boolean);
-      row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit, crew).filter(r => !r.busy);
+      row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit, row.crew, row.trip.id).filter(r => !r.busy);
       if (row.choice != null && !row.options.some(r => String(r.d.id) === row.choice)) row.choice = null;
       // A pick by hand stands; otherwise the automatic order, which may find no one rested.
       row.pick = (row.choice != null ? row.options.find(r => String(r.d.id) === row.choice) : autoPicks(row.options)[0]) ?? null;
@@ -14418,6 +14517,10 @@
   suggestApply?.addEventListener('click', async () => {
     const todo = suggest?.rows.filter(r => r.ticked && r.pick) ?? [];
     if (!todo.length) return;
+    /* A driver chosen beside one they are kept apart from asks first, for
+       every such pick at once; Assign anyway allows each pair on its trip. */
+    const apart = todo.map(r => ({ row: r, driver: r.pick.d, pairs: apartPairs(r.pick.d, r.crew, r.trip.id) })).filter(x => x.pairs.length);
+    if (apart.length && !(await askApart(apart, suggestApply))) return;
     suggestApply.disabled = true;
     const byTrip = new Map();
     for (const r of todo) {
@@ -14431,6 +14534,8 @@
       try {
         await saveSeats(trip, rows.map(r => ({ assign: r.assign, driver: r.pick.d })));
         saved += rows.length;
+        await allowPairs(trip.id, apart.filter(x => x.row.trip === trip))
+          .catch(err => toast('warning', 'A pair kept apart was not allowed on its trip', err.message));
       } catch (err) {
         for (const r of rows) failed.set(r.key, { error: err.message, choice: String(r.pick.d.id), ticked: true });
       }
@@ -18506,7 +18611,7 @@
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses',
-    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart'];
+    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart', 'driver_kept_apart_allowed'];
 
   /* The to-do list and Departures hear their changes on this channel too,
      rather than each opening one of its own: every change is handed to them
@@ -18526,8 +18631,8 @@
   let liveFull = false, liveWindows = false, liveListsAsked = false;
   const liveTrips = new Set();
   const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
-  // A pair kept apart is read with the drivers, so its change owes their list.
-  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings', driver_kept_apart: 'drivers' };
+  // A pair kept apart, and the trips it is allowed on, are read with the drivers, so a change owes their list.
+  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings', driver_kept_apart: 'drivers', driver_kept_apart_allowed: 'drivers' };
   // The tables embedded in a trip whose rows carry `trip_id`.
   const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines',
     'trip_documents', 'trip_contacts', 'trip_legs'];

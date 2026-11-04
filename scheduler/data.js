@@ -4918,12 +4918,14 @@
   /* The calendar body, shared by both variants: `date-picker.js` claims any
      `--next` root holding a `__calendar-container` and fills the days, so
      range and single differ only in variant class and inputs. */
-  function calendarBody() {
-    /* `rux--layer-two` raises `--rux-layer` for the calendar, which otherwise
-       paints the same layer as the side panel it opens in and shows no edge.
-       The class travels with the element, which `date-picker.js` detaches on
-       claim and re-inserts on open. */
-    const cc = el('div', 'rux--date-picker__calendar-container rux--layer-two');
+  function calendarBody(raised = true) {
+    /* `rux--layer-two` raises `--rux-layer` for a field's calendar, which
+       otherwise paints the same layer as the side panel it opens in and shows
+       no edge. The week's calendar is not raised: it hangs from the toolbar
+       as the toolbar's menus do, in their layer and shadow. The class travels
+       with the element, which `date-picker.js` detaches on claim and
+       re-inserts on open. */
+    const cc = el('div', raised ? 'rux--date-picker__calendar-container rux--layer-two' : 'rux--date-picker__calendar-container');
     cc.hidden = true;
     const cal = el('div', 'rux--date-picker__calendar');
     cal.setAttribute('role', 'grid');
@@ -12567,10 +12569,34 @@
     window.Rux?.schedule?.fit?.();
   }
 
-  /* The menu hangs under its ⋮ and, opened there, is attached to it as
-     Carbon's overflow menu is to its trigger: the ⋮ takes the menu's layer and
-     shadow, and a strip the ⋮'s width in the menu's layer covers the menu's
-     shadow where the two meet. Where it had to open elsewhere it floats. */
+  /* A TOOLBAR MENU HUNG FLUSH UNDER ITS BUTTON IS ONE SURFACE WITH IT, as
+     Carbon's overflow menu is with its trigger: the button takes the menu's
+     layer and shadow, and a strip the button's width in the menu's layer
+     covers the menu's shadow where the two meet. Both are marked, and the menu
+     is told where the button stands over it, unrounded, so the strip lands on
+     the button wherever the menu's width puts its edge. A menu that had to
+     open elsewhere, or that a theme floats clear by its gap, stays apart. The
+     ⋮ and the month's list are joined this way. */
+  function joinMenu(menu, trigger) {
+    const r = trigger.getBoundingClientRect();
+    const m = menu.getBoundingClientRect();
+    if (Math.abs(m.top - r.bottom) >= 1) return;
+    menu.style.setProperty('--scheduler-attach-x', `${r.left - m.left}px`);
+    menu.style.setProperty('--scheduler-attach-w', `${r.width}px`);
+    menu.dataset.attached = '';
+    trigger.dataset.attached = '';
+  }
+  function partMenu(menu, trigger) {
+    delete menu.dataset.attached;
+    delete menu.dataset.hover;
+    delete trigger.dataset.attached;
+  }
+  // The menu's strip takes the button's hover with it while they are joined.
+  function joinHover(menu, trigger) {
+    trigger.addEventListener('pointerenter', () => { if (menu.dataset.attached != null) menu.dataset.hover = ''; });
+    trigger.addEventListener('pointerleave', () => { delete menu.dataset.hover; });
+  }
+
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
     // A second press closes it, as every overflow button's does.
@@ -12578,14 +12604,7 @@
     const r = viewTrigger.getBoundingClientRect();
     popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom }, viewTrigger, { end: true });
     viewTrigger.setAttribute('aria-expanded', 'true');
-    const m = viewMenu.getBoundingClientRect();
-    if (Math.abs(m.top - r.bottom) < 1) {
-      // Unrounded, so the strip lands on the ⋮ wherever the menu's width puts its edge.
-      viewMenu.style.setProperty('--scheduler-attach-x', `${r.left - m.left}px`);
-      viewMenu.style.setProperty('--scheduler-attach-w', `${r.width}px`);
-      viewMenu.dataset.attached = '';
-      viewTrigger.dataset.attached = '';
-    }
+    joinMenu(viewMenu, viewTrigger);
   });
 
   viewMenu?.addEventListener('click', e => {
@@ -12620,9 +12639,7 @@
     // The view's toggles are drawing only and need no fetch.
     applyView();
   });
-  // The menu's caret takes the ⋮'s hover with it while they are attached.
-  viewTrigger?.addEventListener('pointerenter', () => { if (viewMenu?.dataset.attached != null) viewMenu.dataset.hover = ''; });
-  viewTrigger?.addEventListener('pointerleave', () => { if (viewMenu) delete viewMenu.dataset.hover; });
+  if (viewMenu && viewTrigger) joinHover(viewMenu, viewTrigger);
 
   /* THE ROUTE TIP: a press on the route mark leading a bar's time row shows the
      leg's whole route in a tip beside the trip, as the trip's other tips
@@ -12724,8 +12741,7 @@
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');
-    delete viewMenu.dataset.attached;
-    if (viewTrigger) delete viewTrigger.dataset.attached;
+    if (viewTrigger) partMenu(viewMenu, viewTrigger);
   });
 
   // A window that widens or narrows changes how many days fit: the label says what is on screen, and their trips are drawn.
@@ -18915,7 +18931,7 @@
     span.appendChild(weekInput);
     wrap.appendChild(span);
     container.appendChild(wrap);
-    root.append(container, calendarBody());
+    root.append(container, calendarBody(false));
     weekRow.appendChild(root);
     dressWeekPicker();
     rangeEl.setAttribute('data-rux-open', root.id);
@@ -18975,6 +18991,7 @@
         const r = btn.getBoundingClientRect();
         popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn, { matchWidth: true });
         btn.setAttribute('aria-expanded', 'true');
+        joinMenu(menu, btn);
         /* The list opens with the month in view at its top, the months
            before it a scroll up and those after it below, the list alone
            moving: focus goes to it once the menu has put it on its first. */
@@ -18992,7 +19009,9 @@
       menu.addEventListener('rux:menu-closed', () => {
         menu.hidden = true;
         btn.setAttribute('aria-expanded', 'false');
+        partMenu(menu, btn);
       });
+      joinHover(menu, btn);
     }
 
     window.Rux?.datePicker?.init?.(weekRow);
@@ -19000,12 +19019,18 @@
     /* `aria-expanded` is kept here because date-picker.js sets no state on a
        page-owned trigger. The module detaches the calendar container on close
        and re-inserts it on open, so its presence in the root is the open
-       state. */
+       state. Hung flush under the row, where its fill starts at the
+       button's foot, the calendar is one surface with its button, as a
+       toolbar menu is with its own; a theme that floats it clear by its
+       transparent band keeps the two apart. The button stands over the
+       calendar, so it covers the calendar's shadow itself and needs no strip. */
     const syncExpanded = () => {
-      rangeEl.setAttribute(
-        'aria-expanded',
-        root.querySelector('.rux--date-picker__calendar-container') ? 'true' : 'false',
-      );
+      const cal = root.querySelector('.rux--date-picker__calendar');
+      rangeEl.setAttribute('aria-expanded', cal ? 'true' : 'false');
+      const fillTop = cal && cal.getBoundingClientRect().top + parseFloat(getComputedStyle(cal).borderBlockStartWidth);
+      const joined = !!cal && Math.abs(fillTop - rangeEl.getBoundingClientRect().bottom) < 1;
+      rangeEl.toggleAttribute('data-attached', joined);
+      root.toggleAttribute('data-attached', joined);
     };
     new MutationObserver(syncExpanded).observe(root, { childList: true });
     syncExpanded();

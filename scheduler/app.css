@@ -2999,29 +2999,30 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* ── Week row ───────────────────────────────────────────────────────────────
    The week range, a date-picker trigger, first in the toolbar. */
-/* The board's ⋮ and its menu as one surface while the menu hangs under it,
-   in Carbon's overflow menu's open treatment: the ⋮ takes the menu's layer and
-   shadow, and a strip the ⋮'s width, in the menu's layer, covers the menu's
-   shadow along the ⋮'s foot. The strip is 5px, past the shadow's reach above
-   the menu, its 6px blur less its 2px drop, and the ⋮'s own shadow stops at its foot,
-   so the two never darken the corner where they meet. data.js sets where the
-   strip sits. The
-   rule between the toolbar's buttons comes off the ⋮'s leading edge while it
-   is open, as Carbon's open trigger has no line down its side. */
-.scheduler-toolbar__more[data-attached] {
+/* A toolbar menu hung flush under its button is one surface with it, in
+   Carbon's overflow menu's open treatment: the ⋮ and the month's list each
+   take it from data.js. The button takes the menu's layer and shadow, its
+   shadow stopping at its foot, and a strip the button's width, in the menu's
+   layer, covers the menu's shadow along the button's foot. The strip is 5px,
+   past the shadow's reach above the menu, its 6px blur less its 2px drop, so
+   the two never darken the corner where they meet. data.js sets where the
+   strip sits. The rule down the button's leading edge comes off while it is
+   open, as Carbon's open trigger has no line down its side. */
+:is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached] {
   background-color: var(--rux-layer);
   box-shadow: 0 2px 6px var(--rux-shadow);
   clip-path: inset(-6px -6px 0 -6px);
 }
-.scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
-/* Under the pointer the open ⋮ takes the menu's own hover, solid, as an open
-   header button does, and the strip at its foot takes it with it, so no band
-   of the menu's grey shows across the ⋮'s bottom. */
+.scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible),
+.scheduler-weekbtn--month[data-attached] { border-inline-start-color: transparent; }
+/* Under the pointer the open button takes the menu's own hover, solid, as an
+   open header button does, and the strip at its foot takes it with it, so no
+   band of the menu's grey shows across the button's bottom. */
 @media (hover: hover) {
-  .scheduler-toolbar__more[data-attached]:hover { background-color: var(--rux-layer-hover); }
-  .scheduler-view-menu[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
+  :is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached]:hover { background-color: var(--rux-layer-hover); }
+  :is(.scheduler-view-menu, .scheduler-long-menu)[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
 }
-.scheduler-view-menu[data-attached]::before {
+:is(.scheduler-view-menu, .scheduler-long-menu)[data-attached]::before {
   position: absolute;
   content: "";
   inset-block-start: -5px;
@@ -3030,6 +3031,10 @@ a.scheduler-tip__go { text-decoration: none; }
   block-size: 5px;
   background-color: var(--rux-layer);
 }
+/* The week's calendar joined to its button casts the menus' shadow, not the
+   fainter one Carbon's calendar keeps, so the three surfaces the toolbar
+   opens read as one kind. */
+#scheduler-week-picker[data-attached] .rux--date-picker__calendar { box-shadow: 0 2px 6px var(--rux-shadow); }
 .scheduler-toolbar__weekrow {
   /* One width for every month, so moving through them moves nothing: 18rem,
      the width Carbon gives the open calendar, so the calendar hangs under the
@@ -3113,22 +3118,11 @@ a.scheduler-tip__go { text-decoration: none; }
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;
 }
-/* While its calendar is open the calendar's button is the calendar's own
-   surface, as the board's ⋮ is its menu's: the calendar hangs from the row's
-   foot. `--rux-layer-02` is what the calendar paints, one layer up through
-   `rux--layer-two` in data.js. After the hover rule, so the pointer still
-   resting on it does not take the surface back, and above the calendar,
-   whose shadow would otherwise fall across the button's foot. The month's
-   takes it too while its list is open. */
+/* While its calendar is open the calendar's button stands over it, so the
+   calendar's shadow does not fall across the button's foot. */
 .scheduler-weekbtn[aria-expanded="true"] {
   position: relative;
   z-index: 100000;
-  background: var(--rux-layer-02);
-}
-/* Under the pointer it takes the calendar's own hover, solid, as the open ⋮
-   takes its menu's. */
-@media (hover: hover) {
-  .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--rux-layer-hover-02); }
 }
 /* The calendar the trip editor's date fields carry, because a calendar is
    what the press opens, and the lists' chevrons. Each is a `<use>` from the

@@ -1342,20 +1342,33 @@
 }
 [data-theme] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* On the bar's own fill the marks the darker footer held at 3 to 1 need a
-   step more where the fill is mid-tone: a pending or off-duty mark takes
-   Carbon's gray 30 on the dark themes' blue 70, 4.7 to 1 where gray 50 held
-   2.4; ant-dark's and pixel-dark's blue 6 takes Ant's gray 4 and green 4; and
-   apple-light's pale blue takes Apple's dark green, 3.9 where its green held
-   2.0. */
+   step more where the fill is mid-tone, so in the themes below each driver
+   mark holds 3 to 1 on every trip colour but the amber placeholder: on the
+   dark themes' 70 grades a not-sent mark takes Carbon's gray 30, 4.5 to 1,
+   and a request out or a decline Carbon's blue 40 and red 40, 3.3 to 1 where
+   the 50s held 2.3, level
+   with the confirmed tick's green 40; on ant-dark's and pixel-dark's brighter
+   6 grades they take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1 at the
+   least, on the green trip; apple-dark's teal takes Apple's increased-contrast
+   blue and red, 3.1 to 1 where its own held 2.5; and apple-light's pale blue
+   takes Apple's dark green, 3.9 where its green held 2.0. */
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar {
   --rux-status-gray: #c6c6c6;
   --scheduler-driver-neutral: #c6c6c6;
+  --scheduler-driver-normal: #78a9ff;
+  --scheduler-driver-error: #ff8389;
 }
 :is([data-theme="ant-dark"], [data-theme="pixel-dark"]) .scheduler-bar {
   --rux-status-gray: #d9d9d9;
   --scheduler-driver-neutral: #d9d9d9;
-  --rux-status-green: #95de64;
-  --scheduler-driver-success: #95de64;
+  --rux-status-green: #b7eb8f;
+  --scheduler-driver-success: #b7eb8f;
+  --scheduler-driver-normal: #bae0ff;
+  --scheduler-driver-error: #ffccc7;
+}
+[data-theme="apple-dark"] .scheduler-bar {
+  --scheduler-driver-normal: #409cff;
+  --scheduler-driver-error: #ff6961;
 }
 [data-theme="apple-light"] .scheduler-bar {
   --rux-status-green: #248a3d;

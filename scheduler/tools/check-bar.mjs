@@ -222,8 +222,8 @@ console.log('\n  The crew');
 const useOf = m => m ? [...m.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null;
 const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
 expect('each driver state uses its Carbon icon and tone',
-  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
-  [['off', '#i-circle-dash', false], ['warning', '#i-warning--alt--filled', false], ['off', '#i-pending--filled', false],
+  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|normal|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
+  [['off', '#i-circle-dash', false], ['warning', '#i-warning--alt--filled', false], ['normal', '#i-in-progress', false],
     ['success', '#i-checkmark--outline', false], ['success', '#i-checkmark--outline', false], ['error', '#i-error--filled', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',

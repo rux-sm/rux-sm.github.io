@@ -2683,7 +2683,9 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-crew__mark--success { color: var(--scheduler-driver-success); }
 .scheduler-crew__mark--error { color: var(--scheduler-driver-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
-/* Neutral workflow states stay gray; missing assignment takes the warning yellow. */
+/* A request still out to its driver is blue, Carbon's In progress; neutral
+   workflow states stay gray; missing assignment takes the warning yellow. */
+.scheduler-crew__mark--normal { color: var(--scheduler-driver-normal); }
 .scheduler-crew__mark--off { color: var(--scheduler-driver-neutral); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning
    colour, while a driver on the bus is to be told of a change. */

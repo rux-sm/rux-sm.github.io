@@ -1006,8 +1006,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 
 /* A PICK CELL AND ITS MENU ARE ONE SURFACE while the menu hangs under it, as
    the board's ⋮ and its menu are, in Carbon's overflow menu's open
-   treatment, the two raised to Layer 02, a layer above the bar the cell
-   stands in: the cell takes the menu's layer and shadow, clipped at its foot,
+   treatment, the cell raised into the menu's Layer 02, a layer above the bar
+   it stands in: the cell takes the menu's layer and shadow, clipped at its foot,
    and a strip the cell's width in the menu's layer covers the menu's shadow
    along the cell's foot, 5px, past the shadow's reach above the menu.
    print.js marks the two and sets where the strip sits. The cell's rule comes

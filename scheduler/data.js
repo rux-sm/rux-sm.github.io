@@ -4983,14 +4983,13 @@
   /* The calendar body, shared by both variants: `date-picker.js` claims any
      `--next` root holding a `__calendar-container` and fills the days, so
      range and single differ only in variant class and inputs. */
-  function calendarBody(raised = true) {
-    /* `rux--layer-two` raises `--rux-layer` for a field's calendar, which
-       otherwise paints the same layer as the side panel it opens in and shows
-       no edge. The week's calendar is raised only while it hangs joined to
-       its button, as the toolbar's menus are, and floats in the page's layer
-       otherwise. The class travels with the element, which `date-picker.js`
-       detaches on claim and re-inserts on open. */
-    const cc = el('div', raised ? 'rux--date-picker__calendar-container rux--layer-two' : 'rux--date-picker__calendar-container');
+  function calendarBody() {
+    /* `rux--layer-two` raises `--rux-layer` for the calendar, which opens over
+       a Layer 01 surface, a side panel or the board, and would otherwise paint
+       that surface's layer and show no edge; it is a layer above it, as the
+       menus placeMenu places are. The class travels with the element, which
+       `date-picker.js` detaches on claim and re-inserts on open. */
+    const cc = el('div', 'rux--date-picker__calendar-container rux--layer-two');
     cc.hidden = true;
     const cal = el('div', 'rux--date-picker__calendar');
     cal.setAttribute('role', 'grid');
@@ -12683,16 +12682,15 @@
   /* A TOOLBAR MENU HUNG FLUSH UNDER ITS BUTTON IS ONE SURFACE WITH IT, as
      Carbon's overflow menu is with its trigger: the button takes the menu's
      layer and shadow, and a strip the button's width in the menu's layer
-     covers the menu's shadow where the two meet. The two stand one layer
-     above the toolbar, which is Layer 01, as Carbon's table toolbar opens its
-     menus and their buttons in Layer 02, or the open button would read as the
-     toolbar's own fill: Carbon's `rux--layer-two` raises both, so the menu's
-     rows hover and select in that layer too. Both are marked, and the menu is
-     told where the button stands over it, unrounded, so the strip lands on
-     the button wherever the menu's width puts its edge. A menu that had to
-     open elsewhere, or that a theme floats clear by its gap, stays apart, in
-     the layer of the page it floats over. The ⋮ and the month's list are
-     joined this way. */
+     covers the menu's shadow where the two meet. The menu is Layer 02, as
+     every menu placeMenu places is, so the button is raised into it with
+     Carbon's `rux--layer-two`, as Carbon's table toolbar opens its menus and
+     their buttons in Layer 02, or the open button would read as the toolbar's
+     own Layer 01 fill. Both are marked, and the menu is told where the button
+     stands over it, unrounded, so the strip lands on the button wherever the
+     menu's width puts its edge. A menu that had to open elsewhere, or that a
+     theme floats clear by its gap, stays apart. The ⋮ and the month's list
+     are joined this way. */
   function joinMenu(menu, trigger) {
     const r = trigger.getBoundingClientRect();
     const m = menu.getBoundingClientRect();
@@ -12701,13 +12699,11 @@
     menu.style.setProperty('--scheduler-attach-w', `${r.width}px`);
     menu.dataset.attached = '';
     trigger.dataset.attached = '';
-    menu.classList.add('rux--layer-two');
     trigger.classList.add('rux--layer-two');
   }
   function partMenu(menu, trigger) {
     delete menu.dataset.attached;
     delete trigger.dataset.attached;
-    menu.classList.remove('rux--layer-two');
     trigger.classList.remove('rux--layer-two');
   }
 
@@ -13366,9 +13362,15 @@
   }
   /* The placing alone, which a menu that grows after it opens asks for again.
      `matchWidth` gives a list of values its trigger's width, as Design's list
-     box gives a dropdown its field's, past Carbon's 18rem cap on a menu. */
+     box gives a dropdown its field's, past Carbon's 18rem cap on a menu.
+     Every menu placed here opens over a Layer 01 surface, the board, the
+     roster, the toolbar or a panel, so it takes Carbon's 02 set, a layer
+     above what it opens on, as Carbon's layering puts a menu; placed in the
+     page, it would otherwise take the page's Layer 01 and show no step from
+     the surface under it. */
   function placeMenu(menu, e, from, { end = false, matchWidth = false } = {}) {
     const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
+    menu.classList.add('rux--layer-two');
     menu.hidden = false;
     menu.style.position = 'absolute';
     pageEl?.appendChild(menu);
@@ -19079,7 +19081,7 @@
     span.appendChild(weekInput);
     wrap.appendChild(span);
     container.appendChild(wrap);
-    root.append(container, calendarBody(false));
+    root.append(container, calendarBody());
     weekRow.appendChild(root);
     dressWeekPicker();
     rangeEl.setAttribute('data-rux-open', root.id);
@@ -19168,10 +19170,11 @@
        and re-inserts it on open, so its presence in the root is the open
        state. Hung flush under the row, where its fill starts at the
        button's foot, the calendar is one surface with its button, as a
-       toolbar menu is with its own, the two raised to Layer 02 as joinMenu
-       raises a menu and its button; a theme that floats it clear by its
-       transparent band keeps the two apart. The button stands over the
-       calendar, so it covers the calendar's shadow itself and needs no strip. */
+       toolbar menu is with its own, the button raised into the calendar's
+       Layer 02 as joinMenu raises a menu's button; a theme that floats it
+       clear by its transparent band keeps the two apart. The button stands
+       over the calendar, so it covers the calendar's shadow itself and needs
+       no strip. */
     const syncExpanded = () => {
       const cal = root.querySelector('.rux--date-picker__calendar');
       rangeEl.setAttribute('aria-expanded', cal ? 'true' : 'false');
@@ -19180,7 +19183,6 @@
       rangeEl.toggleAttribute('data-attached', joined);
       root.toggleAttribute('data-attached', joined);
       rangeEl.classList.toggle('rux--layer-two', joined);
-      root.querySelector('.rux--date-picker__calendar-container')?.classList.toggle('rux--layer-two', joined);
     };
     new MutationObserver(syncExpanded).observe(root, { childList: true });
     syncExpanded();

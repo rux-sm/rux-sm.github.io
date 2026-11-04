@@ -3002,11 +3002,11 @@ a.scheduler-tip__go { text-decoration: none; }
    The week range, a date-picker trigger, first in the toolbar. */
 /* A toolbar menu hung flush under its button is one surface with it, in
    Carbon's overflow menu's open treatment: the ⋮ and the month's list each
-   take it from data.js, which raises the two to Layer 02, a layer above the
-   toolbar, as Carbon's table toolbar does. The button takes the menu's layer
-   and shadow, its shadow stopping at its foot, and a strip the button's
-   width, in the menu's layer, covers the menu's shadow along the button's
-   foot. The strip is 5px,
+   take it from data.js, which raises the button into the menu's Layer 02, a
+   layer above the toolbar, as Carbon's table toolbar does. The button takes
+   the menu's layer and shadow, its shadow stopping at its foot, and a strip
+   the button's width, in the menu's layer, covers the menu's shadow along
+   the button's foot. The strip is 5px,
    past the shadow's reach above the menu, its 6px blur less its 2px drop, so
    the two never darken the corner where they meet. data.js sets where the
    strip sits. The rule down the button's leading edge comes off while it is

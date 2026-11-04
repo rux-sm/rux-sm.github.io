@@ -538,8 +538,10 @@
 
   /* The open row's menu, one for the whole list: Design's menu, which its
      script opens from the row's More button and shuts on a pick. It sits in
-     the body, since the pane moves and would carry a fixed menu with it. */
-  const menu = el('ul', 'rux--menu rux--menu--sm');
+     the body, since the pane moves and would carry a fixed menu with it, and
+     opens over the pane, a Layer 01 surface, so it takes Carbon's 02 set, a
+     layer above it, as the board's menus do. */
+  const menu = el('ul', 'rux--menu rux--menu--sm rux--layer-two');
   menu.id = MENU_ID;
   menu.setAttribute('role', 'menu');
   menu.setAttribute('aria-label', 'More');

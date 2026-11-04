@@ -3337,7 +3337,9 @@
       return n;
     };
     const id = `scheduler-print-${label.toLowerCase()}`;
-    const menu = make('ul', 'rux--menu rux--menu--sm rux--menu--with-selectable-items scheduler-print__menu');
+    /* The menu opens over the bar the cell stands in, a Layer 01 surface, so
+       it takes Carbon's 02 set, a layer above it, as the board's menus do. */
+    const menu = make('ul', 'rux--menu rux--menu--sm rux--menu--with-selectable-items rux--layer-two scheduler-print__menu');
     menu.id = id;
     menu.setAttribute('role', 'menu');
     menu.setAttribute('aria-label', label);
@@ -3369,11 +3371,10 @@
       if (row) picked = Number(row.dataset.pick);
     });
     /* Hung flush under the cell, the two are one surface, as the board's ⋮
-       and its menu are: both are marked and raised to Layer 02, a layer above
-       the bar the cell stands in, as Carbon's table toolbar opens its menus,
-       and the menu is told where the cell stands over it, unrounded, for the
-       strip that covers its edge there. Where the menu has to open elsewhere
-       it floats, in the layer of the page it floats over. */
+       and its menu are: both are marked, the cell raised into the menu's
+       Layer 02 as Carbon's table toolbar opens a menu's button, and the menu
+       is told where the cell stands over it, unrounded, for the strip that
+       covers its edge there. Where the menu has to open elsewhere it floats. */
     menu.addEventListener('rux:menu-opened', () => {
       const c = cell.getBoundingClientRect();
       const m = menu.getBoundingClientRect();
@@ -3382,13 +3383,11 @@
       menu.style.setProperty('--scheduler-attach-w', `${c.width}px`);
       menu.dataset.attached = '';
       cell.dataset.attached = '';
-      menu.classList.add('rux--layer-two');
       cell.classList.add('rux--layer-two');
     });
     menu.addEventListener('rux:menu-closed', () => {
       delete menu.dataset.attached;
       delete cell.dataset.attached;
-      menu.classList.remove('rux--layer-two');
       cell.classList.remove('rux--layer-two');
       if (picked == null || picked === chosen) return;
       choose(picked);

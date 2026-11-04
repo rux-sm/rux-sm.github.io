@@ -16568,11 +16568,14 @@
      the trip has confirmed: every bus with its confirmed drivers' names and
      numbers, and a bus with none says its driver is to be confirmed. Legs
      with the same crew are listed once; legs that differ each go under their
-     own date. It is addressed to the booking contact, and only its subject
-     names the destination, which is sometimes a group's name, not a place. */
+     own date. It speaks of the driver, singular, when it names one person and
+     no bus is still waiting on one. It is addressed to the booking contact,
+     and only its subject names the destination, which is sometimes a group's
+     name, not a place. */
   const monthDay = s => parseISO(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   function driverLetter(trip) {
-    let confirmed = 0;
+    const named = new Set();
+    let waiting = false;
     const legs = legsOf(trip).map(l => {
       const lines = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
@@ -16581,14 +16584,14 @@
           const bus = number ? `Bus ${number}` : 'Bus to be confirmed';
           const crew = crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
             .filter(c => c.who && c.status.value === 'confirmed');
-          confirmed += crew.length;
-          if (!crew.length) return [`${bus} — Driver to be confirmed`];
+          crew.forEach(c => named.add(c.driverId));
+          if (!crew.length) { waiting = true; return [`${bus} — Driver to be confirmed`]; }
           return crew.map(c => `${bus} — ${c.who.name}${c.role === 'driver' ? '' : c.role === 'co-driver' ? ' (co-driver)' : ' (relief driver)'}`
             + (c.who.phone ? `, ${showPhone(c.who.phone)}` : ''));
         });
       return { ...l, lines };
     }).filter(l => l.lines.length);
-    if (!confirmed) return null;
+    if (!named.size) return null;
     const to = tripContact(trip, 0);
     const first = legs[0].from;
     const last = legs.reduce((end, l) => (l.to > end ? l.to : end), legs[0].to);
@@ -16599,7 +16602,7 @@
       : legs.map(l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
     const body = [
       to?.name ? `Hi ${to.name.trim().split(/\s+/)[0]},` : 'Hello,',
-      `Here are the drivers for your trip ${when}:`,
+      named.size === 1 && !waiting ? `Here is the driver for your trip ${when}:` : `Here are the drivers for your trip ${when}:`,
       ...lists,
       'Please let us know if anything changes.',
     ].join('\r\n\r\n');

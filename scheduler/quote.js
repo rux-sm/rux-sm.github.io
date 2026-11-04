@@ -169,7 +169,7 @@
     'route-times-v1': { spot_minutes: 15, pre_trip_minutes: 0, post_trip_minutes: 0, drive_slowdown_percent: 0 },
     'fuel-card-v1': { miles: 600, days: 2 },
     'dead-miles-v1': { miles: null },
-    'late-return-v1': { hour: 4 },
+    'late-return-v1': { hour: 4, night_hour: 11 },
     'yard-location-v1': { name: '', address: '', lat: null, lng: null },
     'requirements-v1': [],
     'billing-workflow-v1': {
@@ -791,6 +791,7 @@
       ],
       'late-return': [
         { id: 'late-hour', key: 'hour', label: 'The night before, when back before (AM hour)' },
+        { id: 'night-hour', key: 'night_hour', label: 'The next day, when out at or after (PM hour)' },
       ],
     };
     const drawTrips = () => {
@@ -948,7 +949,8 @@
         ?? take('fuel-card-v1', 'miles', whole('fuel-miles', 'Fuel card miles', { min: 1 }))
         ?? take('fuel-card-v1', 'days', whole('fuel-days', 'Fuel card days', { min: 1 }))
         ?? take('dead-miles-v1', 'miles', whole('dead-over', 'Dead miles', { min: 1, blank: true }))
-        ?? take('late-return-v1', 'hour', whole('late-hour', 'Late return', { max: 12 }));
+        ?? take('late-return-v1', 'hour', whole('late-hour', 'Late return', { max: 12 }))
+        ?? take('late-return-v1', 'night_hour', whole('night-hour', 'Night departure', { min: 1, max: 12 }));
       if (problem) return { problem };
       // A month keeps its rate only while that rate is still in the list.
       const months = {};

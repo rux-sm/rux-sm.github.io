@@ -111,11 +111,25 @@ expect('a card that runs out before the leg ends is said in words',
 expect('and that driver is never picked automatically, though a person still can', autoPicks(lapsed).map(r => r.d.id), ['ok']);
 expect('with no leg read yet, nothing is said of a card', rankDrivers([D('lapsed', 1, { license_exp: '2026-10-01' })], null)[0].lapse, '');
 
+// A leg out of the yard at 11:46 PM on Tuesday for Wednesday, as the bar marks −1.
+const nightOut = t => ({ ...t, trip_stops: [
+  { leg: 'outbound', position: 0, type: 'pickup', depart_prev: '23:46', depart_prev_date: '2026-10-13', spot: '00:05', spot_date: '2026-10-14' },
+  { leg: 'outbound', position: 1, type: 'return', depart_prev: '18:00', arrive: '18:00' }] });
+const lateMine = legOf(nightOut(trip({ from: '2026-10-14', dest: 'Late' })));
+expect('a leg out after the night hour the evening before takes only its own day', [lateMine.from, lateMine.departDays], ['2026-10-14', 1]);
+f = fit([trip({ from: '2026-10-13', out: '06:00', back: '13:00', dest: 'Early', buses: [['a1', 'b1', 'd1']] }),
+  trip({ from: '2026-10-13', out: '15:00', back: '23:55', dest: 'Evening', buses: [['a2', 'b2', 'd2']] })], lateMine);
+expect('the evening before is free for a trip back before it leaves, with the rest counted to it, and one still out is a clash',
+  [said(f.buses, 'b1'), said(f.near, 'd1'), said(f.buses, 'b2'), said(f.drivers, 'd2')],
+  [[], ['Back-to-back with Early, 10.8h rest'], ['On trip Evening'], ['On trip Evening']]);
+
 // ── rest ────────────────────────────────────────────────────────────────────
 const leg = (from, to, depart, back, backDays = 0) => ({ from, to, depart, back, backDays });
 expect('rest is from the yard return to the next departure', restBetween(leg('2026-10-13', '2026-10-13', '08:00', '20:00'), leg('2026-10-14', '2026-10-14', '06:00', '18:00')), 10);
 expect('a return past midnight is on the day after the leg\'s last', restBetween(leg('2026-10-12', '2026-10-13', '08:00', '01:00', 1), leg('2026-10-14', '2026-10-14', '06:00', '18:00')), 5);
 expect('a missing time is unknown', restBetween(leg('2026-10-13', '2026-10-13', '08:00', null), mine), null);
+expect('a departure the evening before the leg, its −1, is on that evening',
+  restBetween(leg('2026-10-13', '2026-10-13', '06:00', '13:30'), { ...leg('2026-10-14', '2026-10-14', '23:30', '18:00'), departDays: 1 }), 10);
 expect('the rest a driver needs is ten hours', REST_HOURS, 10);
 
 // ── cards ───────────────────────────────────────────────────────────────────

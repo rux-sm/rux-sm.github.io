@@ -45,7 +45,11 @@ Availability counts a bus busy when it is on a trip or out of service, and a
 driver busy when they are on a trip or on time off. A bus back at the yard
 before the late-return hour, 4:00 AM unless the Settings page says otherwise,
 came back the night before, so that day is free; the answer names it with the
-time it is back, since a departure before then cannot be promised.
+time it is back, since a departure before then cannot be promised. A bus that
+leaves the yard at or after the night hour, 11:00 PM unless the Settings page
+says otherwise, on the evening before its trip left for the trip's day, so the
+day it leaves on is free too; the answer names it with the time it leaves,
+since a return after then cannot be promised.
 
 Claude can read a trip's own files too, the itineraries, POs and contracts
 on its Files tab, as text, and check the trip against them and its email

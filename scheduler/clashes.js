@@ -41,6 +41,8 @@
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
   // The days a leg's yard return comes after its last day, the bar's +1.
   const daysBack = leg => leg.backDays ?? 0;
+  // The day a leg's bus leaves the yard: its first, or the evening before, the bar's −1.
+  const departDay = leg => addDays(parseISO(leg.from), -(leg.departDays ?? 0));
 
   /* The embeds a `drivers` select adds to carry a driver's pairs: a pair is
      one row, the smaller id first, so a driver is on either side of it. */
@@ -73,13 +75,14 @@
   };
   /* Hours from the earlier leg's return to the later leg's departure, or null
      without both times. The return is on the earlier leg's last day, or the
-     day after it when the leg comes back past midnight. Below zero, the two
-     legs overlap. */
+     day after it when the leg comes back past midnight, and the departure on
+     the later leg's first day, or the evening before it when the bus leaves
+     the night before. Below zero, the two legs overlap. */
   const restBetween = (earlier, later) => {
     const end = clockHours(earlier.back), start = clockHours(later.depart);
     if (end == null || start == null) return null;
     const backDay = addDays(parseISO(earlier.to), daysBack(earlier));
-    return daysBetween(backDay, parseISO(later.from)) * 24 - end + start;
+    return daysBetween(backDay, departDay(later)) * 24 - end + start;
   };
 
   /* How another leg sits against this one, by the clock: 'clash', 'near'
@@ -96,7 +99,8 @@
       const oneDay = (l.to < range.to ? l.to : range.to) === (l.from > range.from ? l.from : range.from);
       if (!edge || !oneDay) return { kind: 'clash' };
       // Of two legs on one day, the earlier is the one that leaves first.
-      const lFirst = l.from < range.from || (l.from === range.from && (l.depart ?? '') < (range.depart ?? ''));
+      const outOf = x => `${iso(departDay(x))} ${x.depart ?? ''}`;
+      const lFirst = outOf(l) < outOf(range);
       const rest = lFirst ? restBetween(l, range) : restBetween(range, l);
       return rest == null || rest < 0 ? { kind: 'clash' } : { kind: 'near', rest };
     }
@@ -298,8 +302,9 @@
      starting the day after reads as back-to-back. The week covers a leg back
      past midnight, which takes a day past the one it ends on. `ends` is that
      test, an embed that returns nothing. Each trip comes with its legs and
-     routes, as trip-shape.js reads them, and its times and stops, which say
-     when it leaves and is back. */
+     routes, as trip-shape.js reads them, and its times and stops, with the
+     days the yard departure and the spot are on, which say when it leaves
+     and is back. */
   async function readNearby(client, lo, hi) {
     const past = iso(addDays(parseISO(hi), 1));
     const ended = iso(addDays(parseISO(lo), -(RECENT_DAYS + 7)));
@@ -308,7 +313,7 @@
       client.from('trips')
         .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,trip_type,'
           + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
-          + 'trip_stops(position,leg,route_id,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role)),'
+          + 'trip_stops(position,leg,route_id,type,depart_prev,depart_prev_date,arrive,spot,spot_date),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role)),'
           + 'ends:trip_legs!inner()')
         .is('cancelled_at', null).lte('start_date', past)
         .or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })

@@ -116,12 +116,20 @@
   /* THE LATE RETURN, the office's, kept in `settings` as `late-return-v1`: a
      bus back at the yard before this hour of the morning came back the night
      before, so the day it is back on is not one the leg takes. Hour 0 counts
-     no return as the night before. */
+     no return as the night before. Its `night_hour` is the same rule at the
+     other end, a PM hour: a bus that leaves the yard at or after it on the
+     evening just before the leg's first day left for that day, so the evening
+     it leaves on is not one the leg takes. Hour 12, midnight, counts no
+     departure so. */
   const LATE_RETURN_HOUR = 4;
+  const NIGHT_HOUR = 11;
   let lateBefore = LATE_RETURN_HOUR * 60;
+  let nightFrom = (12 + NIGHT_HOUR) * 60;
   const setLateReturn = value => {
     const hour = Number(value?.hour);
     lateBefore = (value?.hour != null && Number.isFinite(hour) && hour >= 0 && hour <= 12 ? hour : LATE_RETURN_HOUR) * 60;
+    const night = Number(value?.night_hour);
+    nightFrom = (12 + (value?.night_hour != null && Number.isInteger(night) && night >= 1 && night <= 12 ? night : NIGHT_HOUR)) * 60;
   };
   // The hour as minutes after midnight, for a route's model.
   const lateReturn = () => lateBefore;
@@ -161,7 +169,7 @@
     if (!later) return officeWall(at - HOUR_MS) === asUtc ? at - HOUR_MS : at;
     return officeWall(at + HOUR_MS) === asUtc ? at + HOUR_MS : at;
   };
-  const departAt = leg => officeInstant(leg.from, leg.depart);
+  const departAt = leg => officeInstant(dayFrom(leg.from, -(leg.departDays ?? 0)), leg.depart);
   const backAt = leg => (leg.back
     ? officeInstant(dayFrom(leg.to, leg.backDays ?? 0), leg.back, true)
     : officeInstant(dayFrom(leg.to, 1), `${Math.floor(lateBefore / 60)}:${lateBefore % 60}`, true));
@@ -175,14 +183,19 @@
      +1; back at or after that hour, it takes the day it is back on. A leg
      with no yard return takes its own last day. A bus that leaves the yard
      before the leg's first day, to be at a far pickup by its spot, takes
-     from the day it leaves, `outDays` before, whatever the hour, since it is
-     out of the yard from then on. */
+     from the day it leaves, `outDays` before, since it is out of the yard
+     from then on; one that leaves the evening just before at or after the
+     night hour takes from the leg's first day, and `departDays` says how
+     many days before it the bus leaves, the bar's −1. */
   /* The most days before its first that a leg's bus leaves the yard, so a
      read of the trips on a range of days reaches this far past its last. */
   const AHEAD_DAYS = 2;
   const takes = (from, to, times) => {
     const PAST = window.SchedulerPastMidnight;
-    const out = times?.outDays > 0 ? { from: dayFrom(from, -times.outDays), outDays: times.outDays } : { from, outDays: 0 };
+    const night = times?.outDays === 1 && (PAST.minutesOf(times.depart) ?? -1) >= nightFrom;
+    const out = night ? { from, outDays: 0, departDays: 1 }
+      : times?.outDays > 0 ? { from: dayFrom(from, -times.outDays), outDays: times.outDays, departDays: 0 }
+      : { from, outDays: 0, departDays: 0 };
     const back = PAST.minutesOf(times?.back);
     if (back == null) return { ...out, to, backDays: 0 };
     const backOn = dayFrom(to, to > from ? (PAST.after(times.end, times.back) ? 1 : 0) : times.nights ?? 0);

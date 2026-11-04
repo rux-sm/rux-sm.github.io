@@ -1341,8 +1341,9 @@ button.scheduler-row-head__num::after {
   pointer-events: none;
   cursor: default;
 }
-/* The return-after-midnight mark, small and raised so the row keeps its height. */
-.scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+/* The +1 beside a return past midnight and the −1 beside a departure the
+   evening before, small and raised so the row keeps its height. */
+.scheduler-bar__next-day, .scheduler-bar__day-before { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
    at 12px, and between them the track, 2px, centred on the figures with 6px
    either side, the trip's ink as far as its time has gone and a fifth of it

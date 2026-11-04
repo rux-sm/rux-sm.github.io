@@ -13813,7 +13813,7 @@
     const leg = assign.leg || 'outbound';
     const range = legByKey(trip, legKeyOfVehicle(trip, assign));
     const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === role) ?? null;
-    return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
+    return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays, departDays: range.departDays } : null, seat };
   }
   const driverById = id => [...panelIndex.driversById.values()].find(d => String(d.id) === String(id));
   /* The drivers on the trip a seat `barSeat` found works beside, on its bus
@@ -14269,7 +14269,7 @@
           if (state === 'pending-response' || state === 'confirmed') continue;
           rows.push({
             key: String(assign.id), trip, assign, now, state, split: legs.length > 1,
-            leg: { leg: l.leg, from: l.from, to: l.to, ends: l.ends, depart: l.depart, back: l.back, backDays: l.backDays },
+            leg: { leg: l.leg, from: l.from, to: l.to, ends: l.ends, depart: l.depart, back: l.back, backDays: l.backDays, departDays: l.departDays },
             ticked: state !== 'off', choice: null, pick: null, options: [], error: null,
           });
         }

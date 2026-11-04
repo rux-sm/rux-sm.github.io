@@ -91,7 +91,29 @@ expect('an undated yard departure takes no day before',
   early({ ...far2(null), trip_stops: far2(null).trip_stops.map(s => ({ ...s, depart_prev_date: s.type === 'pickup' ? null : s.depart_prev_date })) }),
   [['2026-10-16', '2026-10-18', '2026-10-16', '2026-10-18', 0]]);
 expect('the editor\'s own dates keep the days before, so a moved leg moves with them',
-  window.SchedulerWeek.takes('2026-10-23', '2026-10-25', legsOf(far2('2026-10-15'))[0]), { from: '2026-10-22', outDays: 1, to: '2026-10-25', backDays: 0 });
+  window.SchedulerWeek.takes('2026-10-23', '2026-10-25', legsOf(far2('2026-10-15'))[0]), { from: '2026-10-22', outDays: 1, departDays: 0, to: '2026-10-25', backDays: 0 });
+
+// THE NIGHT DEPARTURE: a bus that leaves the yard the evening just before the
+// leg at or after the night hour, 11:00 PM, left for the leg's first day.
+// Each leg is [from, to, the days before its first the bus leaves, the bar's −1].
+const night = (depart, out = '2026-10-15') => {
+  const t = far2(out);
+  t.trip_stops[0] = { ...t.trip_stops[0], depart_prev: depart };
+  return t;
+};
+const nightly = t => legsOf(t).map(l => [l.from, l.to, l.outDays, l.departDays]);
+expect('a bus out at 11:46 PM the evening before takes only the leg\'s days, and its bar says −1',
+  [nightly(night('23:46')), span(night('23:46'))], [[['2026-10-16', '2026-10-18', 0, 1]], [3]]);
+expect('and it still leaves at its departure on the evening before',
+  window.SchedulerWeek.departAt(legsOf(night('23:46'))[0]), window.SchedulerWeek.officeInstant('2026-10-15', '23:46'));
+expect('out at 11:00 PM sharp it is the next day\'s too', nightly(night('23:00')), [['2026-10-16', '2026-10-18', 0, 1]]);
+expect('out before the hour it takes the evening\'s day', nightly(night('22:59')), [['2026-10-15', '2026-10-18', 1, 0]]);
+expect('out late two evenings before it takes both days', nightly(night('23:30', '2026-10-14')), [['2026-10-14', '2026-10-18', 2, 0]]);
+setLateReturn({ hour: 4, night_hour: 10 });
+expect('the night hour is the office\'s: at 10, out at 10:30 PM is the next day\'s', nightly(night('22:30')), [['2026-10-16', '2026-10-18', 0, 1]]);
+setLateReturn({ hour: 4, night_hour: 12 });
+expect('night hour 12, midnight, counts no departure so', nightly(night('23:46')), [['2026-10-15', '2026-10-18', 1, 0]]);
+setLateReturn(undefined);
 
 // The same split trip read by its old columns and read with its legs: the same bars, each leg's id and number beside.
 const withRows = { trip_type: 'dropoff_pickup', start_date: '2026-10-13', end_date: '2026-10-13', return_start_date: '2026-10-15',

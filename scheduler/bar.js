@@ -100,6 +100,9 @@
   // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
   // return +1.
   const daysBack = leg => leg.backDays ?? 0;
+  // The days before its first a leg leaves the yard after the office's night
+  // hour, as `SchedulerWeek.takes` counts them: the bar marks its departure −1.
+  const daysOut = leg => leg.departDays ?? 0;
   // How much of a leg's time has gone, out to back on this computer's clock,
   // as a percent to one place: 0 before it leaves and 100 once it is back.
   const clockAt = (day, t) => {
@@ -107,7 +110,8 @@
     const d = parseDay(day);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
   };
-  const legSpan = leg => [clockAt(leg.from, leg.depart), clockAt(iso(addDays(parseDay(leg.to), daysBack(leg))), leg.back)];
+  const legSpan = leg => [clockAt(iso(addDays(parseDay(leg.from), -daysOut(leg))), leg.depart),
+    clockAt(iso(addDays(parseDay(leg.to), daysBack(leg))), leg.back)];
   const doneOf = (out, back, now) => (!(back > out) ? (now >= back ? 100 : 0)
     : Math.round(Math.min(1, Math.max(0, (now - out) / (back - out))) * 1000) / 10);
   const tripDone = (leg, now = Date.now()) => doneOf(...legSpan(leg), now);
@@ -599,6 +603,7 @@
        track runs out to the bar's cut edge, so it reads as going on into
        the other week; the row's tooltip names both times with their days. */
     const backDay = addDays(parseDay(leg.to), daysBack(leg));
+    const departDay = addDays(parseDay(leg.from), -daysOut(leg));
     const crosses = place.fromPrev || place.toNext;
     const depart = dep ? [clockEl(dep)] : [];
     const ret = back ? [clockEl(back)] : [];
@@ -614,9 +619,16 @@
     let route = null;
     const backAt = timeWords();
     backAt.append(...ret);
+    /* A departure the evening before the leg's first day, after the night
+       hour, is marked −1 beside its time, as a late return is marked +1. */
+    if (daysOut(leg) && dep && !place.fromPrev) {
+      const mark = el('sup', 'scheduler-bar__day-before', `\u2212${daysOut(leg)}`);
+      mark.title = 'Leaves the evening before';
+      depart.push(mark);
+    }
     if (dep && back) {
       when.className = 'scheduler-bar__span';
-      const unseen = [place.fromPrev ? `${weekday(leg.from)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
+      const unseen = [place.fromPrev ? `${weekday(departDay)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
       route = routeMark();
       const track = el('span', 'scheduler-bar__track', unseen);
       [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
@@ -633,10 +645,10 @@
       }
       when.append(track);
       if (!place.toNext) when.append(backAt);
-      if (crosses) when.title = `${weekday(leg.from)} ${dep} \u2013 ${weekday(backDay)} ${back}`;
+      if (crosses) when.title = `${weekday(departDay)} ${dep} \u2013 ${weekday(backDay)} ${back}`;
     }
     // A lone time in the other week names its day, having no track to say so.
-    else if (dep) when.append('Dep ', ...(place.fromPrev ? [`${weekday(leg.from)} `] : []), ...depart);
+    else if (dep) when.append('Dep ', ...(place.fromPrev ? [`${weekday(departDay)} `] : []), ...depart);
     else if (back) when.append('Ret ', ...(place.toNext ? [`${weekday(backDay)} `] : []), backAt);
     else when.append('No times');
     if (daysBack(leg) && back && !place.toNext) {

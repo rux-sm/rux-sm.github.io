@@ -3015,6 +3015,10 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible),
 .scheduler-weekbtn--month[data-attached] { border-inline-start-color: transparent; }
+/* The calendar hangs under the month's button as well as its own, so the
+   rule between the two, the month's leading one, would stand on the joined
+   surface; it comes off while they are joined. */
+#scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
 /* Under the pointer the open button takes the menu's own hover, solid, as an
    open header button does, and the strip at its foot takes it with it, so no
    band of the menu's grey shows across the button's bottom. */

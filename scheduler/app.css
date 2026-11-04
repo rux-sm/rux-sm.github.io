@@ -4281,6 +4281,10 @@ a.scheduler-tip__go { text-decoration: none; }
   border-block-start: 1px solid var(--rux-border-subtle-01);
   box-shadow: 0 -2px 8px rgb(0 0 0 / .4);
 }
+/* Closed, it draws nothing: Carbon's reset sets a section `display: block`,
+   which beats the browser's `[hidden]` and would leave the empty box's top
+   line and shadow along the window's foot. */
+.scheduler-bus-sheet[hidden] { display: none; }
 .scheduler-row-head[data-sheet] { background: var(--rux-layer-selected); }
 .scheduler-bus-sheet > .scheduler-tip {
   --tip-rule: var(--rux-border-subtle-01);

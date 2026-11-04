@@ -2146,6 +2146,12 @@
    800 and darkens to red 500 and 400 under the pointer and the press, where
    Geist's lighter red 700 holds its white words at only 4.0 to 1.
 
+   A LIGHT SURFACE ON THE PAGE IS GEIST'S LIGHT PALETTE, as Geist's own
+   invert theme draws one: a tooltip, a toggletip and a high-contrast note
+   are its Background 1, white, gray 100 under the pointer, gray 400 for a
+   line and gray 1000 and 900 for words, each declared as
+   `--geist-invert-*`. The dark gray 1000 stays the white accent's fill.
+
    EVERY STATUS IS A GEIST PAIR: the hue's 900 for words and marks, its 100
    for a notification's fill, and a tag Geist's subtle badge, its 200 fill,
    300 hover and 900 ink. Geist has no yellow or cyan, so a warning is amber
@@ -2248,6 +2254,18 @@
   --geist-white: #ffffff;
   --geist-black: #000000;
   --geist-overlay: hsl(0 0% 0% / .8);
+  --geist-invert-background-100: hsl(0 0% 100%);
+  --geist-invert-gray-100: hsl(0 0% 95%);
+  --geist-invert-gray-200: hsl(0 0% 92%);
+  --geist-invert-gray-400: hsl(0 0% 92%);
+  --geist-invert-gray-700: hsl(0 0% 56%);
+  --geist-invert-gray-900: hsl(0 0% 30%);
+  --geist-invert-gray-1000: hsl(0 0% 9%);
+  --geist-invert-blue-700: oklch(57.61% .2508 258.23);
+  --geist-invert-blue-900: oklch(53.18% .2399 256.99);
+  --geist-invert-red-900: oklch(54.99% .232 25.29);
+  --geist-invert-amber-900: oklch(52.79% .1496 54.65);
+  --geist-invert-green-900: oklch(51.75% .1453 147.65);
   --rux-ai-aura-end: transparent;
   --rux-ai-aura-hover-background: var(--geist-gray-400);
   --rux-ai-aura-hover-end: transparent;
@@ -2273,8 +2291,8 @@
   --rux-background-active: var(--geist-gray-alpha-500);
   --rux-background-brand: var(--geist-gray-1000);
   --rux-background-hover: var(--geist-gray-alpha-200);
-  --rux-background-inverse: var(--geist-gray-1000);
-  --rux-background-inverse-hover: var(--geist-gray-900);
+  --rux-background-inverse: var(--geist-invert-background-100);
+  --rux-background-inverse-hover: var(--geist-invert-gray-100);
   --rux-background-selected: var(--geist-gray-alpha-300);
   --rux-background-selected-hover: var(--geist-gray-alpha-400);
   --rux-border-disabled: var(--geist-gray-alpha-500);
@@ -2323,11 +2341,11 @@
   --rux-field-hover-03: var(--geist-gray-200);
   --rux-focus: var(--geist-blue-700);
   --rux-focus-inset: var(--geist-background-100);
-  --rux-focus-inverse: var(--geist-blue-700);
+  --rux-focus-inverse: var(--geist-invert-blue-700);
   --rux-highlight: var(--geist-gray-500);
   --rux-icon-disabled: var(--geist-gray-alpha-500);
   --rux-icon-interactive: var(--geist-gray-1000);
-  --rux-icon-inverse: var(--geist-background-100);
+  --rux-icon-inverse: var(--geist-invert-gray-1000);
   --rux-icon-on-color: var(--geist-white);
   --rux-icon-on-color-disabled: var(--geist-gray-700);
   --rux-icon-primary: var(--geist-gray-1000);
@@ -2362,10 +2380,10 @@
   --rux-layer-selected-hover-02: var(--geist-gray-400);
   --rux-layer-selected-hover-03: var(--geist-gray-500);
   --rux-layer-selected-inverse: var(--geist-gray-1000);
-  --rux-link-inverse: var(--geist-background-100);
-  --rux-link-inverse-active: var(--geist-background-100);
-  --rux-link-inverse-hover: var(--geist-background-200);
-  --rux-link-inverse-visited: var(--geist-background-100);
+  --rux-link-inverse: var(--geist-invert-gray-1000);
+  --rux-link-inverse-active: var(--geist-invert-gray-1000);
+  --rux-link-inverse-hover: var(--geist-invert-gray-900);
+  --rux-link-inverse-visited: var(--geist-invert-gray-1000);
   --rux-link-primary: var(--geist-gray-1000);
   --rux-link-primary-hover: var(--geist-white);
   --rux-link-secondary: var(--geist-gray-900);
@@ -2378,13 +2396,13 @@
   --rux-support-caution-minor: var(--geist-amber-900);
   --rux-support-caution-undefined: var(--geist-purple-900);
   --rux-support-error: var(--geist-red-900);
-  --rux-support-error-inverse: var(--geist-red-800);
+  --rux-support-error-inverse: var(--geist-invert-red-900);
   --rux-support-info: var(--geist-blue-900);
-  --rux-support-info-inverse: var(--geist-blue-800);
+  --rux-support-info-inverse: var(--geist-invert-blue-900);
   --rux-support-success: var(--geist-green-900);
-  --rux-support-success-inverse: var(--geist-green-800);
+  --rux-support-success-inverse: var(--geist-invert-green-900);
   --rux-support-warning: var(--geist-amber-900);
-  --rux-support-warning-inverse: var(--geist-amber-800);
+  --rux-support-warning-inverse: var(--geist-invert-amber-900);
   --rux-syntax-angle-bracket: var(--geist-gray-700);
   --rux-syntax-annotation: var(--geist-teal-900);
   --rux-syntax-arithmetic-operator: var(--geist-gray-1000);
@@ -2476,7 +2494,7 @@
   --rux-text-disabled: var(--geist-gray-alpha-500);
   --rux-text-error: var(--geist-red-900);
   --rux-text-helper: var(--geist-gray-900);
-  --rux-text-inverse: var(--geist-background-100);
+  --rux-text-inverse: var(--geist-invert-gray-1000);
   --rux-text-on-color: var(--geist-white);
   --rux-text-on-color-disabled: var(--geist-gray-700);
   --rux-text-placeholder: var(--geist-gray-700);

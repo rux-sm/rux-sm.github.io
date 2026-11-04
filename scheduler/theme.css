@@ -1656,6 +1656,19 @@
   --rux-button-disabled: color-mix(in srgb, var(--rux-text-inverse) 18%, transparent);
   --rux-text-on-color-disabled: color-mix(in srgb, var(--rux-text-inverse) 45%, transparent);
 }
+/* Rux 100's light surface is Geist's light palette, so what the others mix
+   from the ink is its step: a field's edge and a placeholder its gray 700, a
+   hover and a press its gray 100 and 200, a button that cannot act gray 100,
+   and the rule between rows its gray 400, the default border. */
+[data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card {
+  --rux-text-placeholder: var(--geist-invert-gray-700);
+  --rux-border-strong: var(--geist-invert-gray-700);
+  --rux-background-hover: var(--geist-invert-gray-100);
+  --rux-background-active: var(--geist-invert-gray-200);
+  --rux-button-disabled: var(--geist-invert-gray-100);
+  --rux-text-on-color-disabled: var(--geist-invert-gray-700);
+}
+[data-theme="rux-100"] .scheduler-tip { --tip-rule: var(--geist-invert-gray-400); }
 
 /* RUX 100'S TODAY IS A PILL, since its accent is white and white words alone
    would not part today from the other days: the date on the board's header

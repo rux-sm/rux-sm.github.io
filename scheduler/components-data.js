@@ -394,6 +394,21 @@
     const onRoute = live('Lakeview High School');
     const routeStops = window.SchedulerRoad.stopsOf(onRoute.trip, 'outbound');
     onRoute.live.look.next = { stops: routeStops, where: { reached: 0, at: false, next: 1, arrived: [now - 2 * HOUR + 4 * MIN] }, stop: routeStops[1], at: false, arrival: now + 50 * MIN, late: 0 };
+    // A long route: six stops between the pickup and the yard, the yard last.
+    const lengthen = (t, clocks) => {
+      const pickup = t.trip_stops.find(s => s.type === 'pickup');
+      t.trip_stops.find(s => s.type === 'return').position = 99;
+      t.trip_stops.push(...['Riverside Middle School', 'Harbor Elementary', 'Oak Park Diner', 'Mission Plaza', 'Lakeview Arena', 'Bayfront Hotel']
+        .map((name, k) => ({ id: `s${++ids}`, leg: 'outbound', position: k + 1, type: 'stop', name, arrive: clocks[k], route_id: pickup.route_id })));
+      return t;
+    };
+    const longTrip = lengthen(trip({ customer: 'Northside Band', destination: 'San Antonio, TX', back: '21:30', buses: [crewed('b106')] }),
+      ['08:30', '08:50', '11:30', '15:45', '17:00', '18:45']);
+    const longOut = live('Harbor Tours');
+    lengthen(longOut.trip, [-150, -120, -90, -40, 30, 80].map(m => clockAt(now + m * MIN)));
+    const longStops = window.SchedulerRoad.stopsOf(longOut.trip, 'outbound');
+    longOut.live.look.next = { stops: longStops, where: { reached: 4, at: false, next: 5, arrived: [-175, -148, -118, -86, -38].map(m => now + m * MIN) },
+      stop: longStops[5], at: false, arrival: now + 34 * MIN, late: 4 };
     const tips = {
       id: 'tips', title: "The trip's tips",
       intro: 'What a press on a bar opens over the board: Alerts from the badge, Updates from the update row, a driver\'s tip from their seat and the route from the times, and for a bus out the live card. On a phone the trip opens in the half sheet instead.',
@@ -417,6 +432,10 @@
             drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
         tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned beside what happened; the pickup alone says on time or how late.', bar(routed), { kind: 'route', section: 'route:' }),
         tipOf('The route on the road', 'A stop reached, a check and when the bus got there by Samsara\'s path, and the next one\'s estimate after the bus.', onRoute, { kind: 'route', section: 'route:' }),
+        tipOf('A long route', 'Five rows of a longer route, from the yard out, and Full route with the count of stops, which opens the editor\'s Route tab.',
+          bar(longTrip), { kind: 'route', section: 'route:' }),
+        tipOf('A long route on the road', 'For a bus out, the five rows from the last stop it reached, so where it has been and where it goes next both show.',
+          longOut, { kind: 'route', section: 'route:' }),
         tipOf('The live card', 'A bus out: its warnings, the map of the leg, the stops still to come, each driver\'s clocks and an engine lamp that is on.',
           live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'], drivers: [driver('d1', { drive_ms: 6 * HOUR, shift_ms: 9 * HOUR, cycle_ms: 40 * HOUR })] } }), { kind: 'live' }),
         tipOf('The half sheet', 'On a phone: the trip over its customer and times, what is happening now, its bus and drivers and three large buttons; pulled up, the rest.',

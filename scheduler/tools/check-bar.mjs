@@ -459,6 +459,17 @@ expect('the route on the road: the pickup reached, its check then when the bus g
   tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => [a.textContent.replace(/[\d:]+[ap]/, 'T'),
     !!a.querySelector('.scheduler-route__judged--on-time .scheduler-route__time'), a.classList.contains('scheduler-route__actual--estimate')]),
   [['—', false, false], ['T', true, false], ['~T', false, true]]);
+const routeNames = tip => tip.querySelectorAll('.scheduler-route__name').map(n => n.textContent);
+const fullRoute = tip => tip.querySelectorAll(':scope > .rux--toggletip-actions > a.rux--link').map(a => [a.textContent, a.dataset.go]);
+expect('a long route shows five rows from the yard out, and Full route with the count of stops, a link to the editor\'s Route tab',
+  [routeNames(tipDrawn('A long route')), fullRoute(tipDrawn('A long route'))],
+  [['Yard out', 'Pickup · Lakeview High School', 'Riverside Middle School', 'Harbor Elementary', 'Oak Park Diner'], [['Full route · 7 stops', 'route']]]);
+const longSample = tipSample('A long route');
+const [longBar] = drawn('tips', 'A long route');
+expect('a long route on the road shows the five rows from the last stop reached; a short route, or the half sheet\'s, every row with no Full route',
+  [routeNames(tipDrawn('A long route on the road')), fullRoute(tipDrawn('The route')), routeNames(tipDrawn('The route')).length,
+    routeNames(Tips.route(longSample.rows[0].bars[0].trip, longBar, tipBoard(longSample), Infinity)).length],
+  [['Oak Park Diner', 'Mission Plaza', 'Lakeview Arena', 'Bayfront Hotel', 'Yard back'], [], 3, 9]);
 const liveCard = tipDrawn('The live card');
 expect('the live card: the map of the leg, where the bus is and its links, the stops to come with the next in green, each driver\'s clocks and the engine lamp',
   [liveCard.classList.contains('scheduler-card--live'), !!liveCard.querySelector('.scheduler-card__live-map .scheduler-card__live-map-box'),

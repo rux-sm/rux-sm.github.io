@@ -213,9 +213,16 @@
     const back = { key: 'yard-back', name: 'Yard back', planned: track ? Number(track.dataset.back) : stops[home]?.due ?? null,
       actual: at(assign?.actual_yard_return_at) };
     rows.push(home >= 0 ? said(back, stops[home], home) : back);
-    return { rows, out };
+    return { rows, out, live: !!next };
   }
-  function routeTip(trip, bar, board) {
+  /* A floating route shows five rows of a longer route: for a bus out, from
+     the last point it reached on, so where it has been and where it goes
+     next both show, and otherwise from the yard out. Full route, with the
+     count of stops, opens the editor's Route tab. A route one row longer
+     shows whole rather than hide a row behind a link. The phone's half
+     sheet, with the room, asks for every row, `size` Infinity. */
+  const ROUTE_ROWS = 5;
+  function routeTip(trip, bar, board, size = ROUTE_ROWS) {
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
     tip.dataset.tripId = trip.id;
     const head = el('div', 'scheduler-tip__head');
@@ -226,7 +233,11 @@
     const names = el('div', 'scheduler-route__row scheduler-route__row--head');
     names.append(el('span'), el('span', null, 'Planned'), el('span', null, 'Actual'));
     table.append(names);
-    for (const r of route.rows) {
+    const all = route.rows;
+    const cut = all.length > size + 1;
+    const done = route.live ? all.findLastIndex(r => r.here || r.reached || r.actual != null) : 0;
+    const first = cut ? Math.max(0, Math.min(done, all.length - size)) : 0;
+    for (const r of cut ? all.slice(first, first + size) : all) {
       const row = el('div', 'scheduler-tip__row scheduler-route__row');
       const actual = el('span', 'scheduler-route__actual');
       if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
@@ -238,6 +249,12 @@
       table.append(row);
     }
     tip.appendChild(table);
+    if (cut) {
+      const foot = footer();
+      const stopsCount = all.length - 2;
+      foot.appendChild(goLink(`Full route · ${stopsCount} ${stopsCount === 1 ? 'stop' : 'stops'}`, 'route'));
+      tip.appendChild(foot);
+    }
     return tip;
   }
 
@@ -545,7 +562,7 @@
 
   /* A warning is a press that goes where it is put right: an editor tab,
      the Forms panel, or the itinerary slot's own upload. */
-  const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary', contacts: 'Contacts' };
+  const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary', contacts: 'Contacts', route: 'Route' };
 
   /* THE POST-TRIP ENTRY, first in a trip's Updates once it is back, which
      the bar's close-out button opens: close-out.js's report in a few lines,

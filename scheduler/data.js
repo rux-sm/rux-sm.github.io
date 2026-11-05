@@ -11478,8 +11478,10 @@
      left, else above, else below, each centred or, where centred would
      leave the board, at its start or its end. Carbon's own pages measure
      this with floating-ui; trying each class in turn is all the board
-     needs. A tip taller than the board's room scrolls its body, its list of
-     updates or the route's table, under its heading and over its footer. */
+     needs. A tip is 33rem tall at most, or the board's room; one that fits
+     no side whole goes where it runs least past the board, its body, the
+     updates or the route's table, shortened by that much to scroll under
+     its heading and over its footer. */
   const TIP_PLACEMENTS = [
     'rux--popover--right', 'rux--popover--right-start', 'rux--popover--right-end',
     'rux--popover--left', 'rux--popover--left-start', 'rux--popover--left-end',
@@ -11503,10 +11505,12 @@
     const surface = barShortcuts.querySelector('.rux--popover-content');
     if (!surface) return;
     const body = surface.querySelector(':scope > .scheduler-tip > :is(.scheduler-tip__list, .scheduler-route)');
-    // The body as tall as it is, or as the board's whole room allows.
+    // Every tip is 33rem tall at most, or the board's room where that is less.
+    const cap = Math.min(33 * parseFloat(getComputedStyle(document.documentElement).fontSize), room.bottom - room.top);
+    // The body as tall as it is, or as the cap allows.
     const whole = () => {
       body?.style.removeProperty('max-block-size');
-      const over = surface.offsetHeight - (room.bottom - room.top);
+      const over = surface.offsetHeight - cap;
       if (body && over > 0) body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - over)}px`;
     };
     whole();
@@ -11525,19 +11529,30 @@
       place(placement);
       if (fits()) return;
     }
-    /* Whole, it fits nowhere: the first placement whose width fits takes it,
-       its body shortened by what runs past the board, so the body scrolls. */
+    /* Whole, it fits nowhere: of the placements whose width fits, the one
+       that runs least past the board takes it, its body shortened by that
+       much, so the most of it shows and the body scrolls. */
     if (body) {
+      let best = null;
       for (const placement of TIP_PLACEMENTS) {
-        whole();
         place(placement);
         const r = surface.getBoundingClientRect();
         if (r.left < room.left || r.right > room.right) continue;
         const past = Math.max(0, r.bottom - room.bottom) + Math.max(0, room.top - r.top);
-        body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - past)}px`;
-        if (fits()) return;
+        if (!best || past < best.past) best = { placement, past };
       }
-      whole();
+      if (best) {
+        place(best.placement);
+        body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - best.past)}px`;
+        if (fits()) return;
+        // Shortened, a centred tip runs past each edge by half as much, so another placement may hold it now.
+        for (const placement of TIP_PLACEMENTS) {
+          place(placement);
+          if (fits()) return;
+        }
+        place(best.placement);
+        return;
+      }
     }
     place('rux--popover--right-start');
   }

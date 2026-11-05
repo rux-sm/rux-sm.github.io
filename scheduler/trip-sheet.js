@@ -217,7 +217,7 @@
     const acts = el('div', 'scheduler-sheet__acts');
     acts.append(...ROW.map(id => sheetAction(id, bar, 'slot', null, board)));
     const rest = el('div', 'scheduler-sheet__rest');
-    rest.append(...(board.section.startsWith('route:') ? [Tips.route(trip, bar, board)] : sheetRest(trip, bar, board)));
+    rest.append(...(board.section.startsWith('route:') ? [Tips.route(trip, bar, board, Infinity)] : sheetRest(trip, bar, board)));
     return [grab, head, band, sheetNow(trip, bar, board), sheetKit(trip, bar, board), acts, rest];
   }
 

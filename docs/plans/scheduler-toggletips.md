@@ -41,8 +41,16 @@ own label shows now.
 - **One ink.** Words are the inverse text, and a by-line or a column name is
   12px in that ink, not faded, since Carbon has no second inverse text
   colour. Status icons keep Carbon's inverse support colours.
+- **Every tip is as wide as what it holds, 288px at most,** Carbon's own
+  rule, so a short tip stays small; padding, type and footer are what make
+  them one thing.
+- **Every tip is 33rem tall at most,** or the board's room where that is
+  less, a cap every tip shares, since Carbon sets none. What a tip holds is
+  kept under it, so a body scrolls rarely: Updates' newest five, the
+  route's window, an alert's few lines.
 - **A tall tip scrolls its body only,** under the heading and over the
-  footer, within the board's room, as Carbon's toggletip says.
+  footer, as Carbon's toggletip says, on the side of its icon with the most
+  room when no side holds it whole.
 - **Updates:** the newest five, each its words over who wrote it and when,
   then a footer of a `Show all` link with the count and an `Add update`
   button. Add update puts Carbon's small field, with Cancel and Save, in the
@@ -55,7 +63,10 @@ own label shows now.
   to where it is put right, and a reminder's when stays at its end.
 - **The route tip** keeps its table, at 14px inside 288px, a stop's name
   wrapping, and a stop a bus out has reached shows Carbon's check and when
-  it got there by Samsara's path. **A driver's tip** keeps its face, status,
+  it got there by Samsara's path. It shows five rows of a longer route:
+  for a bus out, from the last stop reached on, and otherwise from the
+  yard out; its footer's Full route, with the count of stops, a link,
+  opens the editor's Route tab, where a long route has room. **A driver's tip** keeps its face, status,
   clocks, map and links, at Carbon's sizes, Call a link.
 - **A driver's tip is one tip that changes when Samsara has them in the
   bus,** not two merged: their answer only matters before the trip, and

@@ -323,8 +323,9 @@ caret, 14px type, 16px in from its edge and 16px between its parts with no rule 
 288px at most, narrower where what it holds is short. It is laid over the icon pressed, or the time
 row for the route, at Carbon's 13px from it: to its right where it fits the board, else its left,
 else above, else below, each centred, or at its start or end where centred would leave the board.
-It covers its own trip. It is as tall as what it holds, its body scrolling past the board's room,
-the updates or the route's table, and appears with no motion, as Carbon's popover does. Alerts heads with its count, Alerts for operational problems or Other needs where
+It covers its own trip. It is as tall as what it holds, 33rem at most or the board's room; one that
+fits no side whole goes where it runs least past the board, its body, the updates or the route's
+table, scrolling there. It appears with no motion, as Carbon's popover does. Alerts heads with its count, Alerts for operational problems or Other needs where
 there are only needs, then each alert, its icon and its words: a bus that does not fit behind the red
 mark, the follow-up reminder with when the trip leaves at its end, Trip contact missing and each
 need still to do, Hotel booking pending or HOS form pending, a need behind the dashed circle. The
@@ -352,7 +353,7 @@ Samsara has in the bus, it says how they are doing instead: their duty under the
 Shift and Cycle time left side by side, each over its meter, amber under an hour, their rest while
 off or in the sleeper, a line for each of the road's warnings, the leg's map 8rem tall with its credit
 and no zoom buttons, the next stop with when the bus gets there, and in its footer Live map and Google Maps, Carbon links; the
-bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px staying over the rows as they scroll, a name breaking between its words; a stop a bus out has reached shows Carbon's check and when it got there by Samsara's path, or Reached where that is not known, before the path or never within a quarter mile of it. A wheel
+bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px staying over the rows as they scroll, a name breaking between its words. A route longer than six rows shows five, for a bus out from the last stop it reached and otherwise from the yard out, with Full route and its count of stops in the footer, a link to the editor's Route tab; the phone's half sheet shows every row. A stop a bus out has reached shows Carbon's check and when it got there by Samsara's path, or Reached where that is not known, before the path or never within a quarter mile of it. A wheel
 over any tip scrolls the tip where it has more to show, and never the board behind it. The
 half sheet's pulled-up rest on a phone keeps the card's own bands: the Needs, and the Updates with the two newest
 cut to one line, where a press on the section or its title's arrow opens every update in full, an

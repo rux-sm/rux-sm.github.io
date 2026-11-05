@@ -489,7 +489,13 @@ button.scheduler-row-head__num::after {
 /* On the phone's half sheet the column names, a +1 and an estimate are
    faded; a tip, in one ink, sets its column names in 12px instead. */
 .scheduler-sheet__rest :is(.scheduler-route__row--head > *, .scheduler-route__day, .scheduler-route__actual--estimate) { opacity: .75; }
+/* In a tip the column names stay over the rows as the table scrolls, on the
+   popover's own surface. */
 .scheduler-trip-tip .scheduler-route__row--head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--rux-popover-background-color);
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -1749,7 +1755,10 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-body-01-letter-spacing);
 }
 .scheduler-trip-tip :is(.scheduler-tip__head, .scheduler-tip__row, .scheduler-route__row--head) { padding: 0; border: 0; }
-.scheduler-trip-tip .scheduler-route { row-gap: var(--rux-spacing-03); }
+/* In 288px the route's columns stand 12px apart, and where a table still
+   has too little room the check and its words wrap rather than be cut. */
+.scheduler-trip-tip .scheduler-route { row-gap: var(--rux-spacing-03); column-gap: var(--rux-spacing-04); }
+.scheduler-trip-tip .scheduler-route__judged { flex-wrap: wrap; }
 .scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; }
 /* A tip's count stands beside its name in the heading's own type. A row
    that is a press takes the inverse hover under the pointer and the

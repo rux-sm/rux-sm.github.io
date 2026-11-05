@@ -352,7 +352,7 @@ Samsara has in the bus, it says how they are doing instead: their duty under the
 Shift and Cycle time left side by side, each over its meter, amber under an hour, their rest while
 off or in the sleeper, a line for each of the road's warnings, the leg's map 8rem tall with its credit
 and no zoom buttons, the next stop with when the bus gets there, and in its footer Live map and Google Maps, Carbon links; the
-bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px, a name breaking between its words. A wheel
+bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px staying over the rows as they scroll, a name breaking between its words; a stop a bus out has reached shows Carbon's check and when it got there by Samsara's path, or Reached where that is not known, before the path or never within a quarter mile of it. A wheel
 over any tip scrolls the tip where it has more to show, and never the board behind it. The
 half sheet's pulled-up rest on a phone keeps the card's own bands: the Needs, and the Updates with the two newest
 cut to one line, where a press on the section or its title's arrow opens every update in full, an

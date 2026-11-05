@@ -172,11 +172,12 @@
     return j;
   };
   /* What a bus out says of a stop with no time of its own: the same green
-     check for one reached, and the bus where it is now, at the stop or on
-     its way to it. */
-  const routeReached = () => {
+     check for one reached, then when it got there by Samsara's path, or
+     Reached where that is not known; and the bus where it is now, at the
+     stop or on its way to it. */
+  const routeReached = (at, out) => {
     const j = el('span', 'scheduler-route__judged scheduler-route__judged--on-time');
-    j.append(svgUse('#i-checkmark--filled', '16', '0 0 16 16'), 'Reached');
+    j.append(svgUse('#i-checkmark--filled', '16', '0 0 16 16'), at != null ? routeClock(at, out) : 'Reached');
     return j;
   };
   const routeBus = () => {
@@ -197,7 +198,7 @@
     const said = (row, st, i) => {
       if (row.actual != null || !next) return row;
       if (i === reached && next.at) row.here = true;
-      else if (i <= reached) row.reached = true;
+      else if (i <= reached) { row.reached = true; row.reachedAt = next.where.arrived?.[i] ?? null; }
       else if (next.stop?.key === st.key && next.arrival != null) row.estimate = next.arrival;
       return row;
     };
@@ -230,7 +231,7 @@
       const actual = el('span', 'scheduler-route__actual');
       if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
       else if (r.here) actual.append(routeBus(), 'Here now');
-      else if (r.reached) actual.append(routeReached());
+      else if (r.reached) actual.append(routeReached(r.reachedAt, route.out));
       else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--estimate'); actual.append(routeBus(), '~', routeClock(r.estimate, route.out)); }
       else actual.append('—');
       row.append(el('span', 'scheduler-route__name', r.name), r.planned != null ? routeClock(r.planned, route.out) : el('span', null, '—'), actual);

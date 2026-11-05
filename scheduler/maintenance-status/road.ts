@@ -606,7 +606,10 @@ const window = {};
      oldest first: `reached`, the index of the last stop it has reached or -1,
      `at`, true while it is still within a quarter mile of that stop, and
      `next`, the index of the first stop after it with a map point, or -1
-     when there is none left. A stop reached is left behind once the bus is
+     when there is none left; and `arrived`, by a stop's index, when the bus
+     got there: the first point within reach, or where it came to rest for a
+     stop reached by standing, unknown for a stop taken as reached because
+     it was due before the path begins. A stop reached is left behind once the bus is
      out of its reach, and only then can the next be reached, so a bus waiting
      at a pickup it comes back to at the end has not come back yet. The path
      starts where the bus waited before it left, the yard, and nothing is
@@ -624,7 +627,8 @@ const window = {};
      off, standing as long as its engine has idled or been off by `now`,
      so a bus that sends no new points still counts its wait. */
   function whereOn(stops, path, bus = null, now = Date.now()) {
-    let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null, waited = -1;
+    let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null, waited = -1, waitedAt = null;
+    const arrived = [];
     const points = [...(path || [])];
     const standing = bus?.lat != null && bus?.lng != null && (bus.mph === 0 || bus.engine === 'idle' || bus.engine === 'off');
     const still = standing && (bus.engine === 'idle' || bus.engine === 'off') ? now - Date.parse(bus.engine_at) || 0 : 0;
@@ -647,23 +651,23 @@ const window = {};
       if (!left) continue;
       if (inside && miles(stops[reached].point, p) > reach) inside = false;
       if (inside) continue;
-      if (waited > reached && miles(stops[waited].point, p) > GONE_MILES) { reached = waited; continue; }
+      if (waited > reached && miles(stops[waited].point, p) > GONE_MILES) { reached = waited; arrived[reached] = waitedAt; continue; }
       for (let j = reached + 1; j < stops.length; j++) {
         const s = stops[j];
         if (!s.point) continue;
         const d = miles(s.point, p);
         if (s.due != null && p[2] < s.due - EARLY_MS) {
-          if (s.type !== 'return' && stood >= SKIP_MS && d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
+          if (s.type !== 'return' && stood >= SKIP_MS && d <= NEAR_MILES) { reached = j; arrived[j] = rest[2]; inside = true; reach = NEAR_MILES; break; }
           continue;
         }
-        if (d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
+        if (d <= NEAR_MILES) { reached = j; arrived[j] = p[2]; inside = true; reach = NEAR_MILES; break; }
         if (s.type !== 'pickup') continue;
-        if (stood >= PARKED_MS && d <= PARKED_MILES) { reached = j; inside = true; reach = PARKED_MILES; break; }
-        if (stood >= LOADED_MS && d <= AREA_MILES) waited = j;
+        if (stood >= PARKED_MS && d <= PARKED_MILES) { reached = j; arrived[j] = rest[2]; inside = true; reach = PARKED_MILES; break; }
+        if (stood >= LOADED_MS && d <= AREA_MILES) { if (waited !== j) waitedAt = rest[2]; waited = j; }
       }
     }
     const next = stops.findIndex((s, i) => i > reached && s.point);
-    return { reached, at: inside, next };
+    return { reached, at: inside, next, arrived };
   }
 
   /* A leg's stretch on the road, from its yard-out to its yard-back as

@@ -54,8 +54,16 @@ own label shows now.
 - **Alerts:** each alert is its icon and its words, the words a Carbon link
   to where it is put right, and a reminder's when stays at its end.
 - **The route tip** keeps its table, at 14px inside 288px, a stop's name
-  wrapping. **A driver's tip** keeps its face, status, clocks, map and links,
-  at Carbon's sizes, Call a link.
+  wrapping, and a stop a bus out has reached shows Carbon's check and when
+  it got there by Samsara's path. **A driver's tip** keeps its face, status,
+  clocks, map and links, at Carbon's sizes, Call a link.
+- **A driver's tip is one tip that changes when Samsara has them in the
+  bus,** not two merged: their answer only matters before the trip, and
+  their hours left exist only once they are out.
+- **On the road it keeps Call,** at the footer's start, since the office
+  calls a driver most while they are out, **and the rest either side,** a
+  back-to-back trip with the rest between, amber where it is short, since
+  it is about their next trip.
 - **Every hover label on a bar becomes Carbon's tooltip, with the same
   words.** On a planned bar: the trip kind arrow, Paid, the balance warning,
   the stop ticks, the −1 and +1 marks, the contact, the times across two
@@ -87,6 +95,10 @@ own label shows now.
 
 ## Questions
 
+- **Does a driver's tip on the road keep the leg's map?** The live card,
+  Live map and Google Maps already show it. Without it the tip is the
+  person: their hours left, what is wrong, and Call, with Live map beside
+  Call in the footer.
 - **Do the labels on marks that cannot take focus stay the pointer's, or
   become Carbon's definition tooltip?** Paid, the balance warning, the −1
   and +1, the contact, the times, the stop ticks, the kind arrow and the
@@ -105,6 +117,7 @@ own label shows now.
 
 ## Tasks
 
+- [ ] Give a driver's tip on the road Call and the rest either side.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by
       deleting its rule in `overrides.css`, and draw its rows as the others.
 - [ ] Add the board's one tooltip, and give it every label a bar's marks

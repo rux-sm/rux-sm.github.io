@@ -455,9 +455,10 @@ const routeTip = tipDrawn('The route');
 expect('the route: its head, a row for the yard out, the pickup with its arrival judged, and the yard back',
   [text(routeTip, '.scheduler-tip__name'), routeTip.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(routeTip, '.scheduler-route__judged')],
   ['Route', ['Yard out', 'Pickup · Lakeview High School', 'Yard back'], '4 min late']);
-expect('the route on the road: the pickup reached, and the next stop\'s estimate faded',
-  tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => [a.textContent.replace(/[\d:]+[ap]/, 'T'), a.classList.contains('scheduler-route__actual--estimate')]),
-  [['—', false], ['Reached', false], ['~T', true]]);
+expect('the route on the road: the pickup reached, its check then when the bus got there, and the next stop\'s estimate after the bus',
+  tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => [a.textContent.replace(/[\d:]+[ap]/, 'T'),
+    !!a.querySelector('.scheduler-route__judged--on-time .scheduler-route__time'), a.classList.contains('scheduler-route__actual--estimate')]),
+  [['—', false, false], ['T', true, false], ['~T', false, true]]);
 const liveCard = tipDrawn('The live card');
 expect('the live card: the map of the leg, where the bus is and its links, the stops to come with the next in green, each driver\'s clocks and the engine lamp',
   [liveCard.classList.contains('scheduler-card--live'), !!liveCard.querySelector('.scheduler-card__live-map .scheduler-card__live-map-box'),

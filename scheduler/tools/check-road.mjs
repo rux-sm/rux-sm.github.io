@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 for (const f of ['../trip-shape.js', '../past-midnight.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
-const { stopsOf, whereOn, clockOf, lateBy, pickupLate, arrivals, live } = window.SchedulerRoad;
+const { stopsOf, whereOn, clockOf, lateBy, pickupLate, arrivals, live, miles, NEAR_MILES } = window.SchedulerRoad;
 const { officeInstant } = window.SchedulerWeek;
 
 let failed = 0;
@@ -80,8 +80,14 @@ expect('home at the yard, every stop is reached and none is next', where(home), 
 expect('waiting at the pickup does not reach the time it comes back there',
   where([...path(yardOut, [[0, 5]]), ...path(yardOut + 20 * 60e3, [[5, 5], [5, 5], [5, 5]])]), [0, true, 1]);
 
+// The first point within a quarter mile of each stop, the path a mile a minute from the yard-out.
+const firstNear = (p, s) => p.find(q => miles(s.point, q) <= NEAR_MILES)?.[2];
+expect('home at the yard, each stop says when the bus got to it, the first point within its reach',
+  whereOn(stops, home).arrived.map((ms, i) => ms === firstNear(i === 3 ? back.slice(toArena.length) : i === 4 ? home.slice(back.length) : home, stops[i])),
+  [true, true, , true, true]);
 const lateStart = path(T('2026-10-15', '18:00'), [[20, 20], [20, 12]]);
 expect('a stop due before the path begins is taken as reached', where(lateStart), [1, false, 3]);
+expect('and when it got there is not known', whereOn(stops, lateStart).arrived[1], undefined);
 
 // A bus that drives past the arena hours before it is due has not reached it.
 const early = { ...day, trip_stops: day.trip_stops.map(s => (s.id === 's1' ? { ...s, ...place(8) } : s.id === 'p' ? { ...s, ...place(12) } : s)) };

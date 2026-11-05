@@ -393,7 +393,7 @@
     // A bus out past its pickup and on its way back to the yard, by the trip's own stops.
     const onRoute = live('Lakeview High School');
     const routeStops = window.SchedulerRoad.stopsOf(onRoute.trip, 'outbound');
-    onRoute.live.look.next = { stops: routeStops, where: { reached: 0, at: false, next: 1 }, stop: routeStops[1], at: false, arrival: now + 50 * MIN, late: 0 };
+    onRoute.live.look.next = { stops: routeStops, where: { reached: 0, at: false, next: 1, arrived: [now - 2 * HOUR + 4 * MIN] }, stop: routeStops[1], at: false, arrival: now + 50 * MIN, late: 0 };
     const tips = {
       id: 'tips', title: "The trip's tips",
       intro: 'What a press on a bar opens over the board: Alerts from the badge, Updates from the update row, a driver\'s tip from their seat and the route from the times, and for a bus out the live card. On a phone the trip opens in the half sheet instead.',
@@ -416,7 +416,7 @@
           live('Harbor Tours', { crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN, drive_ms: 50 * MIN, shift_ms: 4 * HOUR, cycle_ms: 31 * HOUR })] },
             drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
         tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned beside what happened; the pickup alone says on time or how late.', bar(routed), { kind: 'route', section: 'route:' }),
-        tipOf('The route on the road', 'A stop reached, and the next one\'s estimate, faded.', onRoute, { kind: 'route', section: 'route:' }),
+        tipOf('The route on the road', 'A stop reached, a check and when the bus got there by Samsara\'s path, and the next one\'s estimate after the bus.', onRoute, { kind: 'route', section: 'route:' }),
         tipOf('The live card', 'A bus out: its warnings, the map of the leg, the stops still to come, each driver\'s clocks and an engine lamp that is on.',
           live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'], drivers: [driver('d1', { drive_ms: 6 * HOUR, shift_ms: 9 * HOUR, cycle_ms: 40 * HOUR })] } }), { kind: 'live' }),
         tipOf('The half sheet', 'On a phone: the trip over its customer and times, what is happening now, its bus and drivers and three large buttons; pulled up, the rest.',

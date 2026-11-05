@@ -914,13 +914,25 @@
     return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop, arrival) };
   }
 
+  /* Each bus out on the board and where its path starts, two hours before
+     its leg leaves the yard; of two legs out on one bus, the later. */
+  function roadSince() {
+    const since = {};
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-road-from][data-bus-id]')) {
+      if (roadOut(bar)) since[bar.dataset.busId] = Math.max(since[bar.dataset.busId] ?? 0, Number(bar.dataset.roadFrom));
+    }
+    return since;
+  }
+  /* What the last ask asked for. A bus out on the board that it did not ask
+     about, as a trip drawn after it, has no path until it is asked, so the
+     board asks at once rather than at the next minute. */
+  let roadAskedFor = {};
+  const roadUnasked = () => Object.entries(roadSince()).some(([busId, from]) => roadAskedFor[busId] !== from);
+
   async function askRoad() {
     if (roadStopped || roadBusy || !client || document.hidden) return;
-    const out = [...gridEl.querySelectorAll('.scheduler-bar[data-road-from][data-bus-id]')].filter(roadOut);
-    // Each bus's path from two hours before its leg leaves the yard; of two
-    // legs out on one bus, the later.
-    const since = {};
-    for (const bar of out) since[bar.dataset.busId] = Math.max(since[bar.dataset.busId] ?? 0, Number(bar.dataset.roadFrom));
+    const since = roadSince();
+    roadAskedFor = since;
     roadLive ??= Road.live(client);
     roadBusy = true;
     let answer = null, status = null, failed = false;
@@ -935,6 +947,8 @@
     else if (!failed && answer) roadAnswer = answer;
     else if (roadAnswer && Date.now() - Date.parse(roadAnswer.at) > 5 * 60e3) roadAnswer = null;
     drawRoad();
+    // A bus drawn out while this ask was away is asked about now.
+    if (!failed && roadUnasked()) askRoad();
   }
 
   function drawRoad() {
@@ -1408,9 +1422,9 @@
     if (!barCount) sayQuietly('No trip touches the weeks around this one.');
     else say(null);
 
-    // The new bars and heads take what Samsara last said, and ask again if it is old.
+    // The new bars and heads take what Samsara last said, and ask again if it is old or a bus out is new.
     drawRoad();
-    if (Date.now() - roadAsked > ROAD_EVERY) askRoad();
+    if (Date.now() - roadAsked > ROAD_EVERY || roadUnasked()) askRoad();
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
@@ -11489,9 +11503,13 @@
     const surface = barShortcuts.querySelector('.rux--popover-content');
     if (!surface) return;
     const body = surface.querySelector(':scope > .scheduler-tip > :is(.scheduler-tip__list, .scheduler-route)');
-    body?.style.removeProperty('max-block-size');
-    const over = surface.offsetHeight - (room.bottom - room.top);
-    if (body && over > 0) body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - over)}px`;
+    // The body as tall as it is, or as the board's whole room allows.
+    const whole = () => {
+      body?.style.removeProperty('max-block-size');
+      const over = surface.offsetHeight - (room.bottom - room.top);
+      if (body && over > 0) body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - over)}px`;
+    };
+    whole();
     const fits = () => {
       const r = surface.getBoundingClientRect();
       return r.top >= room.top && r.bottom <= room.bottom && r.left >= room.left && r.right <= room.right;
@@ -11506,6 +11524,20 @@
     for (const placement of TIP_PLACEMENTS) {
       place(placement);
       if (fits()) return;
+    }
+    /* Whole, it fits nowhere: the first placement whose width fits takes it,
+       its body shortened by what runs past the board, so the body scrolls. */
+    if (body) {
+      for (const placement of TIP_PLACEMENTS) {
+        whole();
+        place(placement);
+        const r = surface.getBoundingClientRect();
+        if (r.left < room.left || r.right > room.right) continue;
+        const past = Math.max(0, r.bottom - room.bottom) + Math.max(0, room.top - r.top);
+        body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - past)}px`;
+        if (fits()) return;
+      }
+      whole();
     }
     place('rux--popover--right-start');
   }

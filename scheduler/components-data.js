@@ -14,7 +14,10 @@
    as it is used, and `live` a bus out on its trip, `{ bus, look, before }`,
    `look` what live-trip.js reads and `before` the answer before this one.
    A sample with `replay` plays once as drawn, and again from scratch on its
-   button.
+   button. A sample with `tip` is one bar and what a press on it opens,
+   `{ kind, section, editor }`: `kind` route, driver, live, card or sheet,
+   `section` the card's part, and `editor` the updates as open, as
+   trip-tips.js reads them.
    ========================================================================== */
 (() => {
   'use strict';
@@ -36,7 +39,7 @@
     { id: 'b119', number: '119', capacity: 56, type: 'Coach' },
   ].map(b => ({ status: 'active', ada_lift: false, sleeper: false, equipment: {}, ...b }));
   const DRIVERS = [
-    { id: 'd1', name: 'Marco Ruiz', short_name: 'Marco' },
+    { id: 'd1', name: 'Marco Ruiz', short_name: 'Marco', phone: '9565550188' },
     { id: 'd2', name: 'Lena Garza', short_name: 'Lena' },
     { id: 'd3', name: 'Rosa Peña', short_name: 'Rosa' },
     { id: 'd4', name: 'Ben Ochoa', short_name: 'Ben' },
@@ -371,6 +374,57 @@
       ],
     };
 
+    // ── The trip's tips ─────────────────────────────────────────────────────
+    /* Each sample one bar and what a press on it opens, `tip`: `kind` the
+       tip, `section` the card's part open, and `editor` the trip's updates
+       as the office has them open, as trip-tips.js reads them. */
+    const tipOf = (name, note, b, tip) => ({ name, note, days: 3, rows: [row(busesById.get(b.trip.trip_assignments[0]?.bus_id)?.number ?? '101', b)], tip });
+    const said = [
+      update('Gate 4 at the stadium, not the main doors', 2 * HOUR),
+      { ...update('Coach Ortiz has the rooming list', DAY), actor_name: 'Luis', edited_at: new Date(now - DAY + HOUR).toISOString() },
+      update('Quote sent for two coaches', 6 * DAY),
+    ];
+    const chatty = trip({ customer: 'Northside Band', destination: 'Austin, TX', buses: [crewed('b102')],
+      trip_updates: [...said, ...['Deposit in', 'Asked for the stops', 'Stops in', 'Hotel booked'].map((body, i) => update(body, (8 + i) * DAY))] });
+    const quiet = trip({ customer: 'Coastal Youth Choir', buses: [crewed('b101')], trip_updates: said });
+    const shut = trip({ customer: 'Mesa Robotics Club', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
+      trip_payments: [{ amount: 610, date: day(-9) }], buses: [{ bus: 'b104', backAt: [day(-1), '17:40'], crew: [['d6', 'driver', 'confirmed']] }] });
+    const routed = trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [{ bus: 'b105', spotAt: [day(0), '07:34'], crew: [['d1', 'driver', 'confirmed']] }] });
+    // A bus out past its pickup and on its way back to the yard, by the trip's own stops.
+    const onRoute = live('Lakeview High School');
+    const routeStops = window.SchedulerRoad.stopsOf(onRoute.trip, 'outbound');
+    onRoute.live.look.next = { stops: routeStops, where: { reached: 0, at: false, next: 1 }, stop: routeStops[1], at: false, arrival: now + 50 * MIN, late: 0 };
+    const tips = {
+      id: 'tips', title: "The trip's tips",
+      intro: 'What a press on a bar opens over the board: Alerts from the badge, Updates from the update row, a driver\'s tip from their seat and the route from the times, and for a bus out the live card. On a phone the trip opens in the half sheet instead.',
+      samples: [
+        tipOf('Alerts', 'Each alert its icon and words, a press going where it is put right: a mistake in red, an alert in amber, a need dashed.',
+          bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })), { kind: 'card', section: 'needs' }),
+        tipOf('No alerts', 'A trip with nothing to put right.', bar(trip({ customer: 'Lakeview High School', buses: [crewed('b101')] })), { kind: 'card', section: 'needs' }),
+        tipOf('Updates', 'Each update its words over who wrote it and how long ago, newest first, then Add update.', bar(quiet), { kind: 'card', section: 'updates' }),
+        tipOf('No updates', 'Said so, over Add update.', bar(trip({ customer: 'Harbor Tours', buses: [crewed('b103')] })), { kind: 'card', section: 'updates' }),
+        tipOf('More than five', 'The newest five, and the rest behind Show all.', bar(chatty), { kind: 'card', section: 'updates' }),
+        tipOf('Adding an update', 'Add update opens a box in its place: Save or Enter adds what it holds, Cancel or Escape puts it away.', bar(quiet),
+          { kind: 'card', section: 'updates', editor: { quick: 'Driver to call Coach Ortiz at 7' } }),
+        tipOf('Changing an update', 'A press on an update opens it in its place, with Delete, Cancel and Save.', bar(quiet),
+          { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'edit', draft: null } } }),
+        tipOf('Deleting an update', 'Delete asks first.', bar(quiet), { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'delete' } } }),
+        tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a press as an alert is.', bar(shut), { kind: 'card', section: 'updates' }),
+        tipOf("A driver's tip", 'Their face, seat and answer, who gave it and when, and their phone, a press that calls.', bar(routed), { kind: 'driver', section: 'driver:d1:driver' }),
+        tipOf('A driver to tell', 'The leg changed since they said yes, in amber.', bar(told), { kind: 'driver', section: 'driver:d4:driver' }),
+        tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop and where to see more.',
+          live('Harbor Tours', { crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN, drive_ms: 50 * MIN, shift_ms: 4 * HOUR, cycle_ms: 31 * HOUR })] },
+            drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
+        tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned beside what happened; the pickup alone says on time or how late.', bar(routed), { kind: 'route', section: 'route:' }),
+        tipOf('The route on the road', 'A stop reached, and the next one\'s estimate, faded.', onRoute, { kind: 'route', section: 'route:' }),
+        tipOf('The live card', 'A bus out: its warnings, the map of the leg, the stops still to come, each driver\'s clocks and an engine lamp that is on.',
+          live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'], drivers: [driver('d1', { drive_ms: 6 * HOUR, shift_ms: 9 * HOUR, cycle_ms: 40 * HOUR })] } }), { kind: 'live' }),
+        tipOf('The half sheet', 'On a phone: the trip over its customer and times, what is happening now, its bus and drivers and three large buttons; pulled up, the rest.',
+          bar(quiet), { kind: 'sheet' }),
+        tipOf('The half sheet on the road', 'A bus out says how it is doing, and its live card leads the rest.', live('Northside Band'), { kind: 'sheet' }),
+      ],
+    };
+
     // Reuse the same specimens so the index and the full boards share their facts.
     const sample = (section, name) => section.samples.find(s => s.name === name);
     const icons = {
@@ -396,7 +450,7 @@
         ...['Two drivers', 'Rest at eight hours', 'Rest beyond eight hours', 'Rest duration unknown'].map(name => sample(road, name)),
       ],
     };
-    return { busesById, driversById, statuses, sections: [icons, tripBar, crew, alerts, handled, road] };
+    return { busesById, driversById, statuses, sections: [icons, tripBar, crew, alerts, handled, road, tips] };
   }
 
   window.SchedulerComponentsData = { build };

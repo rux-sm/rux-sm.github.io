@@ -12,6 +12,9 @@
    the compact board `data-board`, and a row the board's own class on each
    sample. The theme is the account's, from the header, as on the board.
    A sample that plays once has a button to play it again, drawn afresh.
+   A sample with a tip draws, under its bar, what a press on the bar opens,
+   by trip-tips.js or the phone's half sheet by trip-sheet.js, each handed
+   the sample in place of the board.
    ========================================================================== */
 (() => {
   'use strict';
@@ -21,7 +24,9 @@
   const Bar = window.SchedulerBar;
   const RoadBar = window.SchedulerRoadBar;
   const Live = window.SchedulerLiveTrip;
-  const { legsOf, assignLanes } = window.SchedulerWeek;
+  const Tips = window.SchedulerTripTips;
+  const Sheet = window.SchedulerTripSheet;
+  const { legsOf, assignLanes, legByKey, legKeyOfVehicle } = window.SchedulerWeek;
   const page = root.closest('.scheduler-page') ?? root;
 
   const el = (tag, cls, text) => {
@@ -67,9 +72,11 @@
     };
   }
 
+  // What bar.js handed back for each bar drawn, and the sample's bar it was drawn from.
+  const drawnBars = new WeakMap();
   function barOf(b, data) {
     const { spec } = b;
-    const { bar } = Bar.draw(b, {
+    const { bar, facts } = Bar.draw(b, {
       driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
       saving: () => !!spec.state?.saving,
     });
@@ -81,7 +88,65 @@
       if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now, motion: view.motion });
       RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, motion: view.motion, day: look.day });
     }
+    drawnBars.set(bar, { spec, facts });
     return bar;
+  }
+
+  /* The bar menu's actions as the half sheet draws them, their words and
+     icons as data.js's menu has them; on this page a press does nothing. */
+  const ACTIONS = Object.fromEntries([
+    ['itinerary', 'Upload itinerary', 'Itinerary', '#m-upload'], ['contacts', 'Call or text', 'Call or text', '#m-call'],
+    ['route', 'Route', 'Route', '#m-route'], ['move', 'Move to bus', 'Bus', '#m-directions_bus'],
+    ['driver', 'Change driver', 'Driver', '#m-person'], ['open', 'Open trip', 'Open', '#m-open_in_new'],
+  ].map(([id, label, short, icon]) => [id, { id, label, short, icon, blocked: () => null }]));
+
+  /* What a tip reads from the board, trip-tips.js's `board`, answered from
+     the sample: its drivers, buses and answers, its bar's facts, its bus out
+     as components-data.js wrote it, and the updates open as `tip.editor`
+     says. Nothing else stands near it, no photo is signed and no staff are
+     read, so a seat has no clash and a face is its initial. */
+  function tipBoard(sample, data) {
+    return {
+      driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
+      facts: bar => drawnBars.get(bar)?.facts ?? null,
+      road: bar => {
+        const look = drawnBars.get(bar)?.spec.live?.look;
+        return look ? { bus: look.bus, next: look.next, said: { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) } } : null;
+      },
+      seat: (bar, role) => {
+        const { trip } = drawnBars.get(bar).spec;
+        const assign = trip.trip_assignments.find(a => String(a.id) === bar.dataset.assignmentId);
+        return assign ? { trip, assign, role, range: legByKey(trip, legKeyOfVehicle(trip, assign)) } : null;
+      },
+      standing: () => [],
+      near: () => null,
+      photo: () => Promise.resolve(''),
+      staff: () => null,
+      editor: () => ({ opened: false, editing: null, quick: null, ...sample.tip.editor }),
+      map: {},
+      section: sample.tip.section ?? '',
+      action: id => ACTIONS[id],
+    };
+  }
+
+  /* The tip in the board's own frame, as data.js marks it: a floating card,
+     a tip on it but for the live card, or the half sheet pulled up. */
+  function tipOf(sample, board, data) {
+    const bar = board.querySelector('.scheduler-bar');
+    const { trip } = drawnBars.get(bar).spec;
+    const { kind, section = '' } = sample.tip;
+    const frame = el('div', 'scheduler-bar-shortcuts scheduler-components__tip');
+    frame.toggleAttribute('data-card', true);
+    const said = tipBoard(sample, data);
+    if (kind === 'sheet') {
+      frame.toggleAttribute('data-docked', true);
+      frame.dataset.sheet = 'full';
+      frame.append(...Sheet.draw(trip, bar, said));
+    } else {
+      frame.toggleAttribute('data-tip', kind !== 'live');
+      frame.appendChild(kind === 'card' ? Tips.card(trip, bar, section, said) : kind === 'driver' ? Tips.driver(trip, bar, section, said) : Tips[kind](trip, bar, said));
+    }
+    return frame;
   }
 
   // The rows the view shows, on one sample's board.
@@ -120,7 +185,9 @@
     const caption = el('figcaption', 'scheduler-components__caption');
     caption.append(el('span', 'scheduler-components__name rux--type-heading-compact-01', sample.name),
       el('span', 'scheduler-components__note rux--type-body-compact-01', sample.note));
-    figure.append(caption, boardOf(sample, data));
+    const board = boardOf(sample, data);
+    figure.append(caption, board);
+    if (sample.tip) figure.appendChild(tipOf(sample, board, data));
     if (sample.replay) {
       const again = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-components__again', 'Play again');
       again.type = 'button';
@@ -191,7 +258,12 @@
     box.addEventListener('change', () => { view[r] = box.checked; applyView(); });
   }
 
-  draw();
-  select(motionSwitch, view.motion, 'motion');
-  applyView();
+  /* The live card's map draws Geoapify's streets with the key the office
+     keeps, so the page is drawn once it is read, or refused. */
+  const client = window.Rux?.account?.client;
+  Promise.resolve(client && window.SchedulerPlaces.init(client)).finally(() => {
+    draw();
+    select(motionSwitch, view.motion, 'motion');
+    applyView();
+  });
 })();

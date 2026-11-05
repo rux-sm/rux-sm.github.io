@@ -72,9 +72,8 @@ own label shows now.
   which these marks never take.
 - **The phone's half sheet keeps its own card.** Only the floating tips
   change.
-- **This follows the components page's first task,** which moves the tips
-  out of `data.js` (`docs/plans/scheduler-components-page.md`), so the new
-  tips are drawn once, on the board and as samples.
+- **The new tips are drawn in `trip-tips.js`,** which the board and the
+  components page's samples both draw from, so they are drawn once.
 
 ## Questions
 

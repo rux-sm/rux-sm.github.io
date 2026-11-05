@@ -35,5 +35,8 @@
      page that asks whether two people are the same asks this. */
   const digits = value => String(value ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
 
-  window.SchedulerPhone = { format, digits };
+  // A NUMBER AS IT IS DIALLED, in a tel: link: its digits and any plus sign.
+  const dial = value => String(value).replace(/[^\d+]/g, '');
+
+  window.SchedulerPhone = { format, digits, dial };
 })();

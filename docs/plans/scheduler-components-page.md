@@ -36,8 +36,6 @@ None open.
 
 ## Tasks
 
-- [ ] Move the trip's tips and the phone's half sheet and its card, and the
-      live card and its map, out of `data.js`, and add their section.
 - [ ] Add the section for the task rows and the Departures panel, whose
       drawing is already in files of their own.
 - [ ] Move the yard card out of `data.js`, and add the section for it and a

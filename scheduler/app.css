@@ -2021,7 +2021,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__road-lamp > .scheduler-card__road-name { font-weight: 600; }
 .scheduler-card__road-lamp--stop > .scheduler-card__road-name { color: var(--rux-text-error); }
 .scheduler-card__road-fault { color: var(--rux-text-secondary); }
-/* THE LIVE CARD, data.js's drawLiveCard, a trip out on the road's. Each warning is a band tinted its colour, its mark and name over
+/* THE LIVE CARD, trip-tips.js's `live`, a trip out on the road's. Each warning is a band tinted its colour, its mark and name over
    the sentence that says why; the map stands under them with its two links;
    each driver's clocks are three meters side by side, filled to what is left
    of what the rule allows, amber under an hour; where the bus is and when
@@ -2221,13 +2221,6 @@ a.scheduler-tip__go { text-decoration: none; }
   cursor: pointer;
 }
 .scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-.scheduler-card__none {
-  margin: 0;
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-body-compact-01-font-size);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
-}
 /* The age keeps its cell at the end of the first line, where Add's word
    above ends. */
 .scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; justify-self: end; }
@@ -4433,7 +4426,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 
 /* ── The phone's half sheet ─────────────────────────────────────────────────
-   data.js's `drawSheet`: on a compact board the selected trip's card is a
+   trip-sheet.js's: on a compact board the selected trip's card is a
    sheet across the foot of the screen, as rux decided, half up with the view
    above it, and pulled up for the rest, the view dimmed behind. It stays
    where data.js put it in the track, fixed to the window from there: no
@@ -6708,6 +6701,22 @@ html[data-scheduler-takeover] {
    size to nothing: the column takes the corner's own floor instead, 69px,
    or the compact board's narrow column. */
 .scheduler-components__board { --scheduler-head-w: var(--scheduler-head-min); }
+/* A sample's tip stands in the page under its bar, at the size the board
+   gives it: a floating tip as wide as two days and as tall as it needs, to
+   the board's 33rem, and the half sheet pulled up at a phone's width. */
+.scheduler-bar-shortcuts.scheduler-components__tip[data-card] {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  align-self: flex-start;
+}
+.scheduler-bar-shortcuts.scheduler-components__tip[data-card]:not([data-docked]) { block-size: auto; max-block-size: 33rem; }
+.scheduler-bar-shortcuts.scheduler-components__tip[data-card][data-docked] {
+  inline-size: min(100%, 24rem);
+  block-size: 44rem;
+  transform: none;
+  transition: none;
+}
 
 
 .scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-footer-paint: none; }

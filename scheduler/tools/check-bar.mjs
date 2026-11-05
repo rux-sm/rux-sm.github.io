@@ -1,4 +1,5 @@
 // Runs bar.js and road-bar.js against components-data.js's invented samples,
+// trip-tips.js and trip-sheet.js against the tips drawn from them,
 // and bus-head.js against invented Samsara readings,
 // the ones components.html draws, and checks each sample's bar carries the
 // classes, marks and words its state should: the colours, stripes, times,
@@ -128,7 +129,8 @@ const window = {};
 const context = { window, document, Intl, Date, Math, Number, String, Map, Set, Array, Object, JSON, Promise, WeakMap, RegExp,
   setTimeout: () => 0, console };
 for (const file of ['requirements.js', 'trip-shape.js', 'leg-facts.js', 'phone.js', 'billing.js', 'follow-up.js', 'past-midnight.js', 'week.js', 'road.js', 'live-trip.js',
-  'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'bus-head.js', 'components-data.js']) {
+  'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'bus-head.js', 'trip-tips.js', 'trip-sheet.js',
+  'components-data.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context, { filename: file });
 }
 const { SchedulerBar: Bar, SchedulerRoadBar: RoadBar, SchedulerBusHead: BusHead, SchedulerLiveTrip: Live, SchedulerWeek: Week } = window;
@@ -330,108 +332,145 @@ expect('the badge is the icon alone, named for the exact problem list, with no h
     return problems.length ? ['', `Alerts: ${problems.map(a=>a.words).join(' · ')}`, ''] : ['', '', ''];
   }));
 
-// Exercise the actual card builder with specimen trips and a minimal page.
-const dataSource = readFileSync(new URL('../data.js', import.meta.url), 'utf8');
-const cardSource = dataSource.slice(dataSource.indexOf('  function drawCard('), dataSource.indexOf('  /* Whether the card\'s updates have more'));
-const make = (tag, cls, value) => { const n = new Element(tag); if (cls) n.className = cls; if (value != null) n.textContent = value; return n; };
-const cardContext = {
-  ...context, el: make, barFacts: factsByBar, alertsOf: Bar.alertsOf,
-  pageEl: { getAttribute: () => 'full' }, dueFollowUp: () => false,
-  updatesOf: window.SchedulerFollowUp.updatesOf, updatesOpenFor: null, quickOpenFor: null,
-  quickDraft: { tripId: null, text: '' },
-  cardEdit: null,
-  svgUse: () => make('svg'), updateFace: () => make('span'), ageShort: () => '1d', updateStamp: Bar.updateStamp,
-  cardAction: () => make('button'),
-  cardClose: () => make('button'),
-  cardTitle: (name, count) => make('div', 'test-title', `${name}: ${count}`),
-};
-runInNewContext(cardSource + '\nglobalThis.testDrawCard = drawCard;', cardContext);
-const specimen = (section, name) => data.sections.find(s=>s.id===section).samples.find(s=>s.name===name).rows[0].bars[0].trip;
-const [needsBar] = drawn('alerts', 'Both');
-const needsCard = cardContext.testDrawCard(specimen('alerts','Both'), needsBar, 'needs');
-const tipHead = tip => [tip.querySelector('.scheduler-tip__name')?.childNodes[0]?.textContent, tip.querySelector('.scheduler-tip__count')?.textContent ?? null];
-expect('the Alerts tip heads with the exact badge count, its alerts lamp rows that go where each is put right',
-  [tipHead(needsCard), needsCard.classList.contains('scheduler-tip'), needsCard.querySelectorAll('.scheduler-tip__go').length === needsCard.querySelectorAll('[data-go][role="button"]').length,
-    needsCard.querySelectorAll('.scheduler-tip__lamp').length],
-  [['Alerts', String(factsByBar.get(needsBar).problems.length)], true, true, factsByBar.get(needsBar).problems.length]);
-const [paperBar] = drawn('alerts','A hotel to book');
-const paperCard = cardContext.testDrawCard(specimen('alerts','A hotel to book'), paperBar,'needs');
-expect('paperwork does not turn into a counted operational alert in the tip', tipHead(paperCard), ['Other needs', '1']);
-expect('the Alerts tip has no Updates, Close or Open trip', [paperCard.querySelector('.scheduler-tip__update, [data-card-action]'), paperCard.querySelector('button.rux--btn')], [null, null]);
-const updatesTrip = specimen('trip-bar', 'Update ages');
-const updatesTip = cardContext.testDrawCard(updatesTrip, null, 'updates');
-expect('the Updates tip heads with its count, a row per update with who and how long ago, and Add update last',
-  [tipHead(updatesTip)[0], updatesTip.querySelectorAll('.scheduler-tip__update').length === updatesTrip.trip_updates.filter(u => u.kind !== 'nothing').length,
-    updatesTip.querySelectorAll('.scheduler-tip__update [data-update-open]').length > 0, text(updatesTip, '.scheduler-tip__by')?.endsWith('1d') ?? false,
-    updatesTip.children.at(-1).dataset.cardAction, updatesTip.querySelector('.scheduler-card__face, .rux--user-avatar')],
-  ['Updates', true, true, true, 'update', null]);
-
-const tripWithPaperwork = specimen('alerts','A hotel to book');
-cardContext.quickOpenFor = tripWithPaperwork.id;
-cardContext.quickDraft = { tripId: tripWithPaperwork.id, text: 'Draft still being written' };
-cardContext.markSave = () => {};
-const draftTips = [cardContext.testDrawCard(tripWithPaperwork, paperBar, 'updates'), cardContext.testDrawCard(tripWithPaperwork, paperBar, 'updates')];
-expect('the Updates tip\'s redraws keep one box in Add\'s place and preserve the draft',
-  draftTips.map(c => [c.querySelectorAll('[data-quick] input').map(n => n.value), c.querySelector('.scheduler-tip__add'), c.querySelectorAll('[data-card-action]').map(b => b.dataset.cardAction)]),
-  Array(2).fill([['Draft still being written'], null, ['cancel', 'save']]));
-// The phone's half sheet keeps the card's own bands in its pulled-up rest.
-cardContext.pageEl = { getAttribute: () => 'compact' };
-const draftCards = [cardContext.testDrawCard(tripWithPaperwork, paperBar), cardContext.testDrawCard(tripWithPaperwork, paperBar)];
-expect('the half sheet\'s card keeps one Updates input across redraws and preserves the draft',
-  draftCards.map(c=>c.querySelectorAll('[data-quick] input').map(n=>n.value)),
-  [['Draft still being written'],['Draft still being written']]);
-cardContext.pageEl = { getAttribute: () => 'full' };
-
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 
-// The driver's tip and the route's, drawn by the board's own code from a stand-in seat, bus and leg.
-const between = (from, to) => dataSource.slice(dataSource.indexOf(from), dataSource.indexOf(to));
-const H = RoadBar.HOUR, at = Date.parse('2026-10-27T16:00:00Z');
-const seat = {
-  role: 'driver', driverId: 'd1', label: 'Driver', status: { value: 'confirmed', label: 'Confirmed', icon: '#i-checkmark--filled', indicator: 'x' },
-  row: { source: 'driver', acceptedAt: '2026-10-27T15:54:00Z' }, who: { name: 'Rosa Lima', phone: '9565550142', employment_type: 'part-time', photo_path: null },
-};
-const tipBar = road => { const b = make('div', 'scheduler-bar'); b.dataset.tripId = 't1'; b.dataset.assignmentId = 'a1'; b.dataset.busId = 'b1'; if (road) { b.dataset.road = 'out'; b.road = road; } return b; };
-const driverContext = {
-  ...context, el: make, svgUse: () => make('svg'), client: null, panelIndex: { driversById: new Map(), statuses: new Map(), buses: new Map() },
-  window: { ...window, SchedulerDriverJob: { changesSince: () => ['Stops changed'] } },
-  barSeat: () => ({ trip: { id: 't1' }, assign: { id: 'a1' }, range: { from: '2026-10-27', to: '2026-10-27' } }),
-  crewOf: () => [seat], driverById: () => null, roadBusOf: b => b.road ?? null,
-  ROAD_DUTY: RoadBar.DUTY, LIVE_CLOCKS: [['Drive', 'drive_ms', 10 * H], ['Shift', 'shift_ms', 15 * H], ['Cycle', 'cycle_ms', 70 * H]],
-  roadHours: RoadBar.hours, ROAD_HOUR: H, roadRest: RoadBar.restWords, hhmm: Bar.hhmm, Road: window.SchedulerRoad,
-  roadNext: () => ({ stop: { name: 'Laredo HS', due: at }, at: false, arrival: at + 10 * 60e3, late: 10 }),
-  roadLook: () => ({ warnings: [{ tone: 'warning', title: 'Late to spot', sentence: 'The bus gets there 10 minutes after its spot.' }] }),
-  roadNamed: () => new Set(), liveMapInto: () => {}, hueFor: () => 'blue', legKeyOfVehicle: () => 'outbound', requirementLabel: x => x,
-  standingFor: () => [{ assignmentId: 'a1', driverId: 'd1', what: 'Time off' }],
-  fitFor: () => ({ near: new Map([['d1', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d1']) }), boardNearby: {},
-  dial: p => p, showPhone: p => p,
-};
-runInNewContext(between("  /* A DRIVER'S TIP has one head at every stage", '  function drawLiveCard(trip, bar) {') + '\nglobalThis.testDriverTip = drawDriverTip;', driverContext);
-const rowsOf = tip => [...tip.querySelectorAll('.scheduler-tip__row')].map(r => [r.classes().find(c => /^scheduler-tip__(lamp--\w+|answer|call|clocks|map|next|links)$/.test(c))?.slice(15) ?? 'row', r.textContent]);
-const before = driverContext.testDriverTip({ id: 't1' }, tipBar(null), 'driver:d1:driver');
+console.log('\n  The trip\'s tips');
+/* Each tips sample drawn as components.js draws it: its bar by bar.js, then
+   what a press on it opens by trip-tips.js or trip-sheet.js, handed the
+   sample in place of the board. `more` stands in for what the board would
+   say of the seat around it. */
+const { SchedulerTripTips: Tips, SchedulerTripSheet: Sheet } = window;
+const roadLooks = new WeakMap();
+const tipSample = name => data.sections.find(s => s.id === 'tips').samples.find(s => s.name === name);
+function tipBoard(sample, more = {}) {
+  return {
+    driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
+    facts: b => factsByBar.get(b) ?? null,
+    road: b => {
+      const look = roadLooks.get(b);
+      return look ? { bus: look.bus, next: look.next, said: { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) } } : null;
+    },
+    seat: (b, role) => {
+      const trip = sample.rows[0].bars[0].trip;
+      const assign = trip.trip_assignments.find(a => String(a.id) === b.dataset.assignmentId);
+      return assign ? { trip, assign, role, range: Week.legByKey(trip, Week.legKeyOfVehicle(trip, assign)) } : null;
+    },
+    standing: () => [], near: () => null, photo: () => Promise.resolve(''), staff: () => null,
+    editor: () => ({ opened: false, editing: null, quick: null, ...sample.tip.editor }),
+    map: {}, section: sample.tip.section ?? '',
+    action: id => ({ id, label: id, short: id, icon: '#m-route', blocked: () => null }),
+    ...more,
+  };
+}
+function tipDrawn(name, more) {
+  const sample = tipSample(name);
+  const [b] = drawn('tips', name);
+  const spec = sample.rows[0].bars[0];
+  if (spec.live) roadLooks.set(b, spec.live.look);
+  const board = tipBoard(sample, more);
+  const { kind, section = '' } = sample.tip;
+  if (kind === 'sheet') {
+    const box = new Element('div');
+    box.append(...Sheet.draw(spec.trip, b, board));
+    return box;
+  }
+  return kind === 'card' ? Tips.card(spec.trip, b, section, board) : kind === 'driver' ? Tips.driver(spec.trip, b, section, board) : Tips[kind](spec.trip, b, board);
+}
+const tipHead = tip => [tip.querySelector('.scheduler-tip__name')?.childNodes[0]?.textContent, tip.querySelector('.scheduler-tip__count')?.textContent ?? null];
+const tipRows = tip => [...tip.querySelectorAll('.scheduler-tip__row')].map(r => [r.classes().find(c => /^scheduler-tip__(lamp--\w+|answer|call|clocks|map|next|links|need|update|add|box|more|none|post|close)$/.test(c))?.slice(15) ?? 'row', r.textContent]);
+
+const [alertsBar] = drawn('tips', 'Alerts');
+const alertsTip = tipDrawn('Alerts');
+expect('Alerts heads with the bar\'s count, each alert a lamp row and each need a dashed one, every row a press that goes where it is put right',
+  [tipHead(alertsTip), alertsTip.classList.contains('scheduler-tip--card'), tipRows(alertsTip).map(([kind]) => kind),
+    alertsTip.querySelectorAll('.scheduler-tip__go').length === alertsTip.querySelectorAll('[data-go][role="button"]').length],
+  [['Alerts', String(factsByBar.get(alertsBar).problems.length)], true,
+    [...factsByBar.get(alertsBar).problems.map(a => (a.row === 'scheduler-card__misfit' ? 'lamp--error' : 'lamp--warning')),
+      ...Bar.alertsOf(alertsBar && tipSample('Alerts').rows[0].bars[0].trip, factsByBar.get(alertsBar))
+        .filter(a => !factsByBar.get(alertsBar).problems.some(p => p.words === a.words && p.go === a.go)).map(() => 'need')], true]);
+expect('a trip with nothing to put right says so, and Alerts holds no update or button',
+  [tipHead(tipDrawn('No alerts')), tipRows(tipDrawn('No alerts')), tipDrawn('No alerts').querySelector('.scheduler-tip__update, [data-card-action], button.rux--btn')],
+  [['Alerts', null], [['row', 'No alerts.']], null]);
+const paperTrip = data.sections.find(s => s.id === 'alerts').samples.find(s => s.name === 'A hotel to book').rows[0].bars[0].trip;
+const [paperBar] = drawn('alerts', 'A hotel to book');
+expect('paperwork does not turn into a counted alert in the tip', tipHead(Tips.card(paperTrip, paperBar, 'needs', tipBoard({ tip: {} }))), ['Other needs', '1']);
+const updatesTip = tipDrawn('Updates');
+expect('Updates heads with its count, a row per update, newest first, its words over who wrote it and how long ago, and Add update last',
+  [tipHead(updatesTip), updatesTip.querySelectorAll('.scheduler-tip__update').map(u => [text(u, '.scheduler-tip__words'), text(u, '.scheduler-tip__by')]),
+    updatesTip.querySelectorAll('.scheduler-tip__update [data-update-open]').length, updatesTip.children.at(-1).dataset.cardAction, updatesTip.querySelector('.rux--user-avatar')],
+  [['Updates', '3'], [['Gate 4 at the stadium, not the main doors', 'Dana · 2h'], ['Coach Ortiz has the rooming list', 'Luis · 1d · edited'],
+    ['Quote sent for two coaches', 'Dana · 6d']], 3, 'update', null]);
+expect('a trip with no updates says so, over Add update', [tipHead(tipDrawn('No updates')), tipRows(tipDrawn('No updates'))],
+  [['Updates', null], [['none', 'No updates yet.'], ['add', 'Add update']]]);
+expect('more than five: the newest five and Show all with the count, and every one once opened',
+  [tipDrawn('More than five').querySelectorAll('.scheduler-tip__update').length, text(tipDrawn('More than five'), '.scheduler-tip__more'),
+    tipDrawn('More than five', { editor: () => ({ opened: true, editing: null, quick: null }) }).querySelectorAll('.scheduler-tip__update').length],
+  [5, 'Show all 7', 7]);
+const adding = [tipDrawn('Adding an update'), tipDrawn('Adding an update')];
+expect('adding: one box in Add\'s place across redraws, keeping what is typed, with Cancel and a primary Save',
+  adding.map(c => [c.querySelectorAll('[data-quick] input').map(n => n.value), c.querySelector('.scheduler-tip__add'), c.querySelectorAll('[data-card-action]').map(b => b.dataset.cardAction),
+    c.querySelector('[data-card-action="save"]').classList.contains('rux--btn--primary')]),
+  Array(2).fill([['Driver to call Coach Ortiz at 7'], null, ['cancel', 'save'], true]));
+const changing = tipDrawn('Changing an update');
+expect('changing: the update open in its place as its words in a box, with Delete, Cancel and Save, Save off until the words change',
+  [changing.querySelectorAll('[data-editing]').length, changing.querySelector('[data-editing] textarea')?.value,
+    changing.querySelectorAll('[data-editing] [data-edit-act]').map(b => [b.dataset.editAct, !!b.disabled])],
+  [1, 'Gate 4 at the stadium, not the main doors', [['ask-delete', false], ['cancel', false], ['save', true]]]);
+expect('deleting asks first', [text(tipDrawn('Deleting an update'), '.scheduler-tip__ask'), tipDrawn('Deleting an update').querySelectorAll('[data-editing] [data-edit-act]').map(b => b.dataset.editAct)],
+  ['Delete this update?', ['cancel', 'delete']]);
+const after = tipDrawn('After the trip');
+expect('after the trip: the post-trip entry first, back at the yard against the plan, the money and where it is from, then a press for each thing close-out asks',
+  [/^Back at the yard .*, 40 min late$/.test(after.querySelector('.scheduler-tip__post .scheduler-tip__words')?.textContent ?? ''), text(after, '.scheduler-tip__by'),
+    after.querySelectorAll('.scheduler-tip__close').map(r => [r.dataset.go, r.textContent])],
+  [true, 'After the trip · Samsara and Billing', [['billing', 'Actual miles missing'], ['billing', 'Invoice missing'], ['billing', 'Balance due $1,240']]]);
+
+// A driver's tip before the trip, with the board saying what stands in the way of the seat and the rest either side.
+const seatTrip = tipSample("A driver's tip").rows[0].bars[0].trip;
+const seatAssign = seatTrip.trip_assignments[0].id;
+const before = tipDrawn("A driver's tip", {
+  standing: () => [{ assignmentId: seatAssign, driverId: 'd1', what: 'Time off' }],
+  near: () => ({ near: new Map([['d1', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d1']) }),
+});
 expect('a driver\'s tip before the trip: their face and seat, their answer, what stands in the way, the rest either side and their phone',
   [text(before, '.scheduler-tip__name'), text(before, '.scheduler-tip__said > span'), !!before.querySelector('.scheduler-tip__face'),
-    rowsOf(before).map(([kind, words]) => [kind, words.replace(/ · .*$/, '')]), before.querySelector('.scheduler-tip__call')?.href],
-  ['Rosa Lima', 'Driver · Part-time', true, [['answer', 'Confirmed by the driver'], ['lamp--warning', 'Changed since they said yes: Stops changed'],
-    ['lamp--error', 'Time off'], ['lamp--warning', 'Back-to-back with Laredo, 6.5h rest'], ['call', '9565550142']], 'tel:9565550142']);
-const onRoad = driverContext.testDriverTip({ id: 't1' }, tipBar({ drivers: [{ driver_id: 'd1', name: 'Rosa Lima', duty: 'driving', wheel: true, drive_ms: 5 * H, shift_ms: 40 * 60e3, cycle_ms: 40 * H }], lat: 26.2, lng: -98.2 }), 'driver:d1:driver');
+    tipRows(before).map(([kind, words]) => [kind, words.replace(/ · .*$/, '')]), before.querySelector('.scheduler-tip__call')?.href],
+  ['Marco Ruiz', 'Driver', true, [['answer', 'Confirmed by the driver'], ['lamp--error', 'Time off'], ['lamp--warning', 'Back-to-back with Laredo, 6.5h rest'],
+    ['call', '(956) 555-0188']], 'tel:9565550188']);
+expect('a driver whose leg changed since they said yes is told so in amber',
+  tipRows(tipDrawn('A driver to tell')).filter(([kind]) => kind === 'lamp--warning').map(([, words]) => words.startsWith('Changed since they said yes: ')), [true]);
+const onRoad = tipDrawn("A driver's tip on the road");
 expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the map, the next stop and the two links',
   [text(onRoad, '.scheduler-tip__said > span'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
-    rowsOf(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
+    tipRows(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
     text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), onRoad.querySelectorAll('.scheduler-tip__link').map(a => a.textContent), onRoad.querySelector('.scheduler-tip__answer')],
-  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next', 'links'], true, 'Next: Laredo HS', ['Live map', 'Google Maps'], null]);
-
-const routeStops = [{ key: 's1', type: 'pickup', name: 'Rio HS', due: at }, { key: 's2', type: 'stop', name: 'Alamo', due: at + 3 * H }, { key: 'r', type: 'return', due: at + 6 * H }];
-const routeContext = {
-  ...context, el: make, svgUse: () => make('svg'), hhmm: Bar.hhmm, roadBusOf: () => null, roadNext: () => null,
-  Road: { ...window.SchedulerRoad, stopsOf: () => routeStops, pickupLate: () => 0 },
-  heldTrip: () => ({ id: 't1', trip_assignments: [{ id: 'a1', pickup_at: new Date(at).toISOString(), stop_arrivals: {} }] }),
-};
-runInNewContext(between('  const clockOfMs = ', "  viewMenu?.addEventListener('rux:menu-closed'") + '\nglobalThis.testRouteTip = drawRouteTip;', routeContext);
-const route = routeContext.testRouteTip({ id: 't1' }, tipBar(null));
-expect('the route\'s tip: its head, a row for the yard out, the pickup with its arrival judged, each stop and the yard back',
-  [text(route, '.scheduler-tip__name'), route.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(route, '.scheduler-route__judged')],
-  ['Route', ['Yard out', 'Pickup · Rio HS', 'Alamo', 'Yard back'], 'On time']);
+  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next', 'links'], true, 'Next: Alamodome', ['Live map', 'Google Maps'], null]);
+const routeTip = tipDrawn('The route');
+expect('the route: its head, a row for the yard out, the pickup with its arrival judged, and the yard back',
+  [text(routeTip, '.scheduler-tip__name'), routeTip.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(routeTip, '.scheduler-route__judged')],
+  ['Route', ['Yard out', 'Pickup · Lakeview High School', 'Yard back'], '4 min late']);
+expect('the route on the road: the pickup reached, and the next stop\'s estimate faded',
+  tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => [a.textContent.replace(/[\d:]+[ap]/, 'T'), a.classList.contains('scheduler-route__actual--estimate')]),
+  [['—', false], ['Reached', false], ['~T', true]]);
+const liveCard = tipDrawn('The live card');
+expect('the live card: the map of the leg, where the bus is and its links, the stops to come with the next in green, each driver\'s clocks and the engine lamp',
+  [liveCard.classList.contains('scheduler-card--live'), !!liveCard.querySelector('.scheduler-card__live-map .scheduler-card__live-map-box'),
+    text(liveCard, '.scheduler-card__live-place'), liveCard.querySelectorAll('.scheduler-card__live-link').map(a => a.textContent),
+    liveCard.querySelectorAll('.scheduler-card__road-stop').map(s => [text(s, '.scheduler-card__road-name'), s.classList.contains('scheduler-card__road-stop--next')]),
+    liveCard.querySelectorAll('.scheduler-card__live-clock').length, text(liveCard, '.scheduler-card__road-lamp .scheduler-card__road-name')],
+  [true, true, 'I-37 N near Three Rivers', ['Google Maps', 'Live map'], [['Alamodome', true], ['Yard', false]], 3, 'Engine warning lamp on']);
+const sheet = tipDrawn('The half sheet');
+expect('the half sheet: its head, its band, what is happening now, its bus and driver, three large buttons, and the rest with the card and Edit trip',
+  [text(sheet, '.scheduler-sheet__dest'), has(sheet, '.scheduler-sheet__band'), has(sheet, '.scheduler-sheet__now'), text(sheet, '.scheduler-sheet__bus'),
+    sheet.querySelectorAll('.scheduler-sheet__acts > .scheduler-bar-shortcut').map(b => b.dataset.shortcut),
+    sheet.querySelectorAll('.scheduler-sheet__facts > dt').map(d => d.textContent), sheet.querySelectorAll('.scheduler-sheet__rest .scheduler-card__update').length,
+    text(sheet, '.scheduler-sheet__edit')],
+  ['San Antonio, TX', true, true, 'Bus 101', ['itinerary', 'contacts', 'route'], ['Customer', 'Contacts', 'Pickup', 'Bus', 'Driver'], 2, 'Edit trip']);
+expect('the half sheet\'s card keeps one Updates box across redraws and preserves the draft',
+  [0, 1].map(() => tipDrawn('The half sheet', { editor: () => ({ opened: false, editing: null, quick: 'Draft still being written' }) })
+    .querySelectorAll('[data-quick] input').map(n => n.value)), [['Draft still being written'], ['Draft still being written']]);
+expect('on the road the sheet says so, and its live card leads the rest',
+  [text(tipDrawn('The half sheet on the road'), '.scheduler-sheet__now'), tipDrawn('The half sheet on the road').querySelector('.scheduler-sheet__rest')?.children.map(c => c.classes()[0])],
+  ['On the road · on time', ['scheduler-sheet__facts', 'scheduler-card', 'scheduler-card', 'rux--btn']]);
 
 console.log('\n  Out on the road');
 const lit = n => drawn('road', n)[0];

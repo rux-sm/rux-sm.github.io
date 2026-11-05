@@ -585,11 +585,24 @@
     return [block, ...post.asks.map(pressOf)];
   }
 
+  /* An alert's words, or a close-out ask's: a Carbon link to where it is
+     put right, the board's own click taking it there, or plain words where
+     nothing puts it right. */
+  function goLink(words, go, spot) {
+    if (!WARN_GO[go]) return el('span', 'scheduler-tip__words', words);
+    const link = el('a', 'rux--link scheduler-tip__words', words);
+    link.href = '#';
+    link.dataset.go = go;
+    if (spot) link.dataset.spot = spot;
+    link.setAttribute('aria-label', `${words}: open ${WARN_GO[go]}`);
+    return link;
+  }
+
   /* THE TRIP'S TIPS. Floating, Alerts and Updates are each Carbon's
      toggletip: a heading naming its one subject with its count beside it,
-     then its body, each thing 16px from the next. An alert is a row of its
-     icon and words, and the row is the press that goes where it is put
-     right; a reminder of a trip leaving soon says when at its end. An update
+     then its body, each thing 16px from the next. An alert is its icon and
+     its words, the words a Carbon link to where it is put right; a reminder
+     of a trip leaving soon says when at its end. An update
      is its words over who wrote it and how long ago, with a pencil at its
      end that opens it in its place to change or delete. The footer acts:
      Show all and Add update, which opens a box in its place, where Save or
@@ -616,20 +629,15 @@
       const problems = facts?.problems ?? [];
       const other = alertsOf(trip, facts).filter(a => !problems.some(p => p.words === a.words && p.go === a.go));
       tip.appendChild(head(problems.length || !other.length ? 'Alerts' : 'Other needs', problems.length || other.length));
-      if (!problems.length && !other.length) tip.appendChild(el('div', 'scheduler-tip__row', 'No alerts.'));
+      if (!problems.length && !other.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No alerts.'));
       let reminded = false;
       for (const a of [...problems, ...other]) {
         const need = other.includes(a);
         const tone = a.row === 'scheduler-card__misfit' ? 'error' : 'warning';
-        const row = el('div', need ? 'scheduler-tip__row scheduler-tip__go scheduler-tip__need'
-          : `scheduler-tip__row scheduler-tip__go scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
-        row.dataset.go = a.go;
-        if (a.spot) row.dataset.spot = a.spot;
-        row.tabIndex = 0;
-        row.setAttribute('role', 'button');
-        row.setAttribute('aria-label', WARN_GO[a.go] ? `${a.words}: open ${WARN_GO[a.go]}` : a.words);
+        const row = el('div', need ? 'scheduler-tip__alert scheduler-tip__need'
+          : `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
         row.append(svgUse(tone === 'error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
-          el('span', 'scheduler-tip__words', a.words));
+          goLink(a.words, a.go, a.spot));
         if (a.row === 'scheduler-card__asks' && !reminded) {
           reminded = true;
           if (dueFollowUp(trip)) {
@@ -649,13 +657,8 @@
     const post = postTripOf(trip);
     if (post) {
       tip.append(...postTripRows(post, 'scheduler-tip', a => {
-        const row = el('div', 'scheduler-tip__row scheduler-tip__go scheduler-tip__close');
-        row.dataset.go = a.go;
-        row.dataset.spot = a.id;
-        row.tabIndex = 0;
-        row.setAttribute('role', 'button');
-        row.setAttribute('aria-label', `${a.words}: open ${WARN_GO[a.go]}`);
-        row.append(svgUse('#i-incomplete', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', a.words));
+        const row = el('div', 'scheduler-tip__alert scheduler-tip__close');
+        row.append(svgUse('#i-incomplete', '16', '0 0 32 32'), goLink(a.words, a.go, a.id));
         return row;
       }));
     }

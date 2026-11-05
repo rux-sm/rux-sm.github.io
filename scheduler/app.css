@@ -1768,6 +1768,10 @@ a.scheduler-tip__go { text-decoration: none; }
    as an alert's row does. */
 .scheduler-tip__face { flex: none; }
 .scheduler-tip__answer { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
+/* An alert, or a close-out ask in Updates: its 16px icon, then its words, a
+   Carbon link where something puts it right, and a reminder's when at the end. */
+.scheduler-tip__alert { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
+.scheduler-tip__alert > svg { flex: none; inline-size: 16px; block-size: 16px; margin-block-start: 2px; }
 .scheduler-tip--card .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
 :is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 /* On the road: the three clocks side by side, each its name and the hours
@@ -1793,14 +1797,14 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tip--card .scheduler-card__live-map-box { block-size: 8rem; }
 .scheduler-tip--card .leaflet-control-zoom { display: none; }
 .scheduler-tip__next { display: flex; align-items: baseline; gap: var(--rux-spacing-03); }
-.scheduler-tip__next--late > .scheduler-tip__when { opacity: 1; font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-tip__next--late > .scheduler-tip__when { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-tip__links { display: flex; gap: var(--rux-spacing-05); }
 .scheduler-tip__link { color: inherit; text-decoration: underline; }
 .scheduler-tip__link:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: 1px; }
 .scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-tip__go:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
-.scheduler-tip__when { flex: none; margin-inline-start: auto; font-weight: 400; opacity: .75; white-space: nowrap; }
+.scheduler-tip__when { flex: none; margin-inline-start: auto; font-weight: 400; white-space: nowrap; }
 /* UPDATES: each its words over who wrote it and how long ago, 12px in the
    tip's one ink, since Carbon has no second inverse text colour, and its
    pencil at its end, its icon level with the first line. The footer is

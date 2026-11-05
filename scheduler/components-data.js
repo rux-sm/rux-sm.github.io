@@ -398,7 +398,7 @@
       id: 'tips', title: "The trip's tips",
       intro: 'What a press on a bar opens over the board: Alerts from the badge, Updates from the update row, a driver\'s tip from their seat and the route from the times, and for a bus out the live card. On a phone the trip opens in the half sheet instead.',
       samples: [
-        tipOf('Alerts', 'Each alert its icon and words, a press going where it is put right: a mistake in red, an alert in amber, a need dashed.',
+        tipOf('Alerts', 'Each alert its icon and its words, a link to where it is put right: a mistake in red, an alert in amber, a need dashed.',
           bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })), { kind: 'card', section: 'needs' }),
         tipOf('No alerts', 'A trip with nothing to put right.', bar(trip({ customer: 'Lakeview High School', buses: [crewed('b101')] })), { kind: 'card', section: 'needs' }),
         tipOf('Updates', 'Each update its words over who wrote it and how long ago, newest first, then Add update.', bar(quiet), { kind: 'card', section: 'updates' }),
@@ -409,7 +409,7 @@
         tipOf('Changing an update', 'Its pencil opens it in its place, with Delete, Cancel and Save.', bar(quiet),
           { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'edit', draft: null } } }),
         tipOf('Deleting an update', 'Delete asks first.', bar(quiet), { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'delete' } } }),
-        tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a press as an alert is.', bar(shut), { kind: 'card', section: 'updates' }),
+        tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a link as an alert\'s words are.', bar(shut), { kind: 'card', section: 'updates' }),
         tipOf("A driver's tip", 'Their face, seat and answer, who gave it and when, and their phone, a press that calls.', bar(routed), { kind: 'driver', section: 'driver:d1:driver' }),
         tipOf('A driver to tell', 'The leg changed since they said yes, in amber.', bar(told), { kind: 'driver', section: 'driver:d4:driver' }),
         tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop and where to see more.',

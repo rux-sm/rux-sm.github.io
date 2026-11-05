@@ -16371,11 +16371,11 @@
       toast('error', 'The update was not added.', 'Try again.');
     }
   }
-  // A warning is a press that takes Enter and Space, as a button does.
+  // A warning is a press that takes Enter and Space, as a button does, and an alert's link Enter, as a link does.
   barShortcuts?.addEventListener('keydown', e => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
     const press = e.target.closest?.('[data-go]');
-    if (!press || e.target !== press) return;
+    if (!press || e.target !== press || (e.key === ' ' && press.matches('a'))) return;
     e.preventDefault();
     goToWarning(press.dataset.go, press.dataset.spot);
   });
@@ -17138,9 +17138,9 @@
       openQuick(action.closest('[data-trip-id]')?.dataset.tripId ?? null);
       return;
     }
-    // A warning goes where it is put right.
+    // A warning goes where it is put right; an alert's link goes nowhere else.
     const warning = e.target.closest('[data-go]');
-    if (warning) { goToWarning(warning.dataset.go, warning.dataset.spot); return; }
+    if (warning) { if (warning.matches('a')) e.preventDefault(); goToWarning(warning.dataset.go, warning.dataset.spot); return; }
     // The open update's buttons: Delete asks first, Cancel puts the row back.
     const act = e.target.closest('[data-edit-act]');
     if (act) {

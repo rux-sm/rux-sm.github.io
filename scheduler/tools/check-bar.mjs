@@ -381,16 +381,18 @@ const tipRows = tip => [...tip.querySelectorAll('.scheduler-tip__row')].map(r =>
 
 const [alertsBar] = drawn('tips', 'Alerts');
 const alertsTip = tipDrawn('Alerts');
-expect('Alerts heads with the bar\'s count, each alert a lamp row and each need a dashed one, every row a press that goes where it is put right',
-  [tipHead(alertsTip), alertsTip.classList.contains('scheduler-tip--card'), tipRows(alertsTip).map(([kind]) => kind),
-    alertsTip.querySelectorAll('.scheduler-tip__go').length === alertsTip.querySelectorAll('[data-go][role="button"]').length],
+const alertKind = r => r.classes().find(c => /^scheduler-tip__(lamp--\w+|need)$/.test(c))?.slice(15);
+expect('Alerts heads with the bar\'s count, each alert a lamp and each need a dashed circle, its words a Carbon link that goes where it is put right',
+  [tipHead(alertsTip), alertsTip.classList.contains('scheduler-tip--card'), alertsTip.querySelectorAll('.scheduler-tip__alert').map(alertKind),
+    alertsTip.querySelectorAll('.scheduler-tip__alert').every(r => r.querySelector('a.rux--link[data-go]')?.textContent === r.textContent)
+      && !alertsTip.querySelector('[role="button"]')],
   [['Alerts', String(factsByBar.get(alertsBar).problems.length)], true,
     [...factsByBar.get(alertsBar).problems.map(a => (a.row === 'scheduler-card__misfit' ? 'lamp--error' : 'lamp--warning')),
       ...Bar.alertsOf(alertsBar && tipSample('Alerts').rows[0].bars[0].trip, factsByBar.get(alertsBar))
         .filter(a => !factsByBar.get(alertsBar).problems.some(p => p.words === a.words && p.go === a.go)).map(() => 'need')], true]);
 expect('a trip with nothing to put right says so, and Alerts holds no update or button',
-  [tipHead(tipDrawn('No alerts')), tipRows(tipDrawn('No alerts')), tipDrawn('No alerts').querySelector('.scheduler-tip__update, [data-card-action], button.rux--btn')],
-  [['Alerts', null], [['row', 'No alerts.']], null]);
+  [tipHead(tipDrawn('No alerts')), text(tipDrawn('No alerts'), '.scheduler-tip__none'), tipDrawn('No alerts').querySelector('.scheduler-tip__update, [data-card-action], button.rux--btn')],
+  [['Alerts', null], 'No alerts.', null]);
 const paperTrip = data.sections.find(s => s.id === 'alerts').samples.find(s => s.name === 'A hotel to book').rows[0].bars[0].trip;
 const [paperBar] = drawn('alerts', 'A hotel to book');
 expect('paperwork does not turn into a counted alert in the tip', tipHead(Tips.card(paperTrip, paperBar, 'needs', tipBoard({ tip: {} }))), ['Other needs', '1']);
@@ -423,9 +425,9 @@ expect('changing: the update open in its place as its words in a box, with Delet
 expect('deleting asks first', [text(tipDrawn('Deleting an update'), '.scheduler-tip__ask'), tipDrawn('Deleting an update').querySelectorAll('[data-editing] [data-edit-act]').map(b => b.dataset.editAct)],
   ['Delete this update?', ['cancel', 'delete']]);
 const after = tipDrawn('After the trip');
-expect('after the trip: the post-trip entry first, back at the yard against the plan, the money and where it is from, then a press for each thing close-out asks',
+expect('after the trip: the post-trip entry first, back at the yard against the plan, the money and where it is from, then a link for each thing close-out asks',
   [/^Back at the yard .*, 40 min late$/.test(after.querySelector('.scheduler-tip__post .scheduler-tip__words')?.textContent ?? ''), text(after, '.scheduler-tip__by'),
-    after.querySelectorAll('.scheduler-tip__close').map(r => [r.dataset.go, r.textContent])],
+    after.querySelectorAll('.scheduler-tip__close a.rux--link').map(a => [a.dataset.go, a.textContent])],
   [true, 'After the trip · Samsara and Billing', [['billing', 'Actual miles missing'], ['billing', 'Invoice missing'], ['billing', 'Balance due $1,240']]]);
 
 // A driver's tip before the trip, with the board saying what stands in the way of the seat and the rest either side.

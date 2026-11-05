@@ -1336,13 +1336,12 @@
    trip as in a menu or a panel, at the step that holds Carbon's 3 to 1 for a
    graphic on every surface it stands on: the board, a menu and every trip
    colour. It is set once on the page, so nothing derived from it can drift
-   to another step. g100's grade 80 trips hold Carbon's own status tokens at
-   3.4 to 1 at the least, so it takes them unchanged, red 50, blue 50, green
-   40 and yellow 30, as its menus do, and its grey as below. The themes below lift the
-   step where those fall short, on their trips and their lighter menus
-   alike: g90's and spotify-dark's grade 70 trips and g90's Gray 70 menus
-   held the 50s at 2.3, so they take Carbon's blue 40 and red 40, 3.2 to 1
-   at the least, level with green 40; ant-dark's and pixel-dark's
+   to another step. Carbon's own status tokens, red 50, blue 50, green 40
+   and yellow 30, are lifted where they fall short, on the trips and the
+   lighter menus alike: the grade 70 trips of g90, g100 and spotify-dark,
+   the tags' own grade, and g90's Gray 70 menus held the 50s at 2.3, so
+   they take Carbon's blue 40 and red 40, 3.2 to 1 at the least, level with
+   green 40; ant-dark's and pixel-dark's
    brighter 6 grades take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1
    at the least, on the green trip; apple-dark takes Apple's
    increased-contrast blue, 3.9 on its cyan trip where its blue held 3.0, and
@@ -1353,7 +1352,7 @@
    the grey trip where green 50 held 2.5; and rux-dark's grey takes Gray 30,
    as Carbon's dark themes do below, 5.1 on its grey trip where Gray 50
    held 2.6. */
-:is([data-theme="g90"], [data-theme="spotify-dark"]) {
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) {
   --rux-status-blue: var(--rux-blue-40);
   --rux-status-red: var(--rux-red-40);
 }
@@ -1362,23 +1361,6 @@
    reads at an ordinary icon's weight and the coloured ones stand out from
    it; Carbon's Gray 50 held it at 3.4 to 1, Gray 30 at 6.6 at the least. */
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) { --rux-status-gray: var(--rux-gray-30); }
-/* A trip stands one grade above the board it lies on, the step Carbon's
-   dark themes take from one layer to the next, whatever its colour. g100's
-   board is Gray 90, so its trips take grade 80, a step deeper than the
-   tags' grade 70, under the pointer in that grade's own hover, from
-   @carbon/colors. g90's board is Gray 80, so its trips keep the tags' grade
-   70, already a step above it. The roster's trip cells take the same blue,
-   so a trip is one colour on the board and beside it. */
-[data-theme="g100"] .scheduler-bar--gray      { --scheduler-bg: var(--rux-gray-80); --scheduler-hover: var(--rux-gray-80-hover); }
-[data-theme="g100"] .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-cool-gray-80); --scheduler-hover: var(--rux-cool-gray-80-hover); }
-[data-theme="g100"] .scheduler-bar--blue      { --scheduler-bg: var(--rux-blue-80); --scheduler-hover: var(--rux-blue-80-hover); }
-[data-theme="g100"] .scheduler-bar--cyan      { --scheduler-bg: var(--rux-cyan-80); --scheduler-hover: var(--rux-cyan-80-hover); }
-[data-theme="g100"] .scheduler-bar--teal      { --scheduler-bg: var(--rux-teal-80); --scheduler-hover: var(--rux-teal-80-hover); }
-[data-theme="g100"] .scheduler-bar--green     { --scheduler-bg: var(--rux-green-80); --scheduler-hover: var(--rux-green-80-hover); }
-[data-theme="g100"] .scheduler-bar--purple    { --scheduler-bg: var(--rux-purple-80); --scheduler-hover: var(--rux-purple-80-hover); }
-[data-theme="g100"] .scheduler-bar--magenta   { --scheduler-bg: var(--rux-magenta-80); --scheduler-hover: var(--rux-magenta-80-hover); }
-[data-theme="g100"] .scheduler-bar--red       { --scheduler-bg: var(--rux-red-80); --scheduler-hover: var(--rux-red-80-hover); }
-[data-theme="g100"] .scheduler-avail__cell--busy { --scheduler-avail-fill: var(--rux-blue-80); }
 :is([data-theme="ant-dark"], [data-theme="pixel-dark"]) {
   --rux-status-gray: #d9d9d9;
   --rux-status-green: #b7eb8f;

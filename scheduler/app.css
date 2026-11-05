@@ -1192,10 +1192,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
 /* Times in figures of one width, so down the board they line up; the a or
    p after each, and the Route summary's AM or PM, is smaller and dimmer, so
-   the figures are what reads. */
+   the figures are what reads, dimmed as far as a bar's other quiet text,
+   which keeps it 4.5 to 1 on the brightest dark trip. */
 .scheduler-bar__time { gap: calc(1.5 * var(--rux-spacing-02)); font-variant-numeric: tabular-nums; }
 .scheduler-bar__ampm,
-.scheduler-figures__ampm { font-size: .85em; opacity: .75; }
+.scheduler-figures__ampm { font-size: .85em; opacity: .85; }
 .scheduler-figures__none { color: var(--rux-text-placeholder); font-weight: var(--rux-body-compact-01-font-weight); }
 .scheduler-bar__phone { flex: none; }
 /* The phone sits straight after the name rather than at the bar's far end.

@@ -195,6 +195,10 @@
   border-block: inherit;
   pointer-events: none;
 }
+/* The band is opaque, so its edge is the band's surface too: where no day
+   stands under it the band runs on unbroken, and over a day it is the same
+   surface the day's cell shows there. */
+.scheduler-week--scroll .scheduler-corner::after { background: inherit; }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and

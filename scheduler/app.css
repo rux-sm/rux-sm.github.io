@@ -6543,12 +6543,12 @@ html[data-scheduler-takeover] {
 /* A row's form stands in the row, inset as a row's words are. */
 .scheduler-to-do__row--editing { padding: var(--scheduler-row-inset) var(--scheduler-list-inset); }
 .scheduler-to-do__form .rux--form-item { margin: 0; }
-/* A row of buttons, 254px wide inside a row's 32px beside the week: what
-   acts on the row first, and from the one marked as the end's, at the far
-   end. They stand half a step apart, since a ghost button keeps room around
-   its own words, and a row with no room wraps, where the pane would cut it
-   off. */
-.scheduler-to-do__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02); }
+/* A row of buttons inside a row's 32px sides: what acts on the row first,
+   and from the one marked as the end's, at the far end. They stand 8px
+   apart, Design's gap between buttons, so a ghost button's words stand as
+   far from the solid Done as Done's own words stand in from its edge, and a
+   row with no room wraps, where the pane would cut it off. */
+.scheduler-to-do__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); }
 .scheduler-to-do__end { margin-inline-start: auto; }
 
 /* ══ Departures ═══════════════════════════════════════════════════════════

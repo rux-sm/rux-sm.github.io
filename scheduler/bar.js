@@ -20,14 +20,12 @@
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
    overSeated, driverAlerts, tells, problems }`, which the trip's card reads.
-   `factsOf(b, board)` is the same facts with no element, with the problems
-   the bar's alert badge counts and the badge's tone, which the phone's day
-   list reads; `placeName(destination)` is the destination as a bar says it.
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
-   them, `crewGlyph(c, due, back)` the glyph it marks their seat with and
-   `glyphEl(glyph)` that glyph drawn, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
+   them, `crewGlyph(c, due, back)` the glyph it marks their seat with, which
+   the phone's half sheet marks its seats with too, and `glyphEl(glyph)` that
+   glyph drawn, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
    and its card say them, `tripDone(leg, now)` how much of a leg's time has
@@ -340,7 +338,7 @@
   /* A seat's glyph: its status icon in its indicator's colour, a relief
      seat's role arrow, the warning for an empty seat that is due, or none,
      for a distant empty seat and for a done trip's driver who did not
-     decline. `crewEl` draws it, and the phone's day list its trips' seats. */
+     decline. `crewEl` draws it, and the phone's half sheet its seats. */
   function crewGlyph(c, due, done) {
     const dot = !RELIEF_ROLES.has(c.role);
     if (done && dot && !c.needed && c.status?.value !== 'declined') return null;
@@ -443,12 +441,10 @@
   const staffingDue = (leg, today = new Date()) => leg.to >= iso(today) && leg.from <= iso(addDays(today, 14));
   const NOBODY_NEAR = { trips: [], off: [], oos: [] };
 
-  /* WHAT ONE BAR KNOWS OF ITS TRIP AND ITS BUS, worked out with no element:
-     `facts`, which the trip's card reads, the problems the bar's alert badge
-     counts, and the badge's tone, an error where the bus does not fit and a
-     warning otherwise, or none. `draw` draws the badge from it, and the
-     phone's day list says which trips need the office from it, so the two
-     cannot differ. */
+  /* WHAT ONE BAR KNOWS OF ITS TRIP AND ITS BUS: `facts`, which the trip's
+     card reads, the problems the bar's alert badge counts, and the badge's
+     tone, an error where the bus does not fit and a warning otherwise, or
+     none. */
   function factsOf(b, board) {
     const { trip, leg, assign } = b;
     const { driversById, busesById, statuses } = board;
@@ -759,6 +755,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, factsOf, placeName, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

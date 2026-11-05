@@ -377,7 +377,7 @@
               <!-- The month in view with its year, a list of every month held
                    a pick from moves the board to; data.js writes it and
                    builds the list. -->
-              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><span class="scheduler-weekbtn__days" id="scheduler-month-days"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
+              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
               </div>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
@@ -437,19 +437,10 @@
                  the options for how the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           </div>
-            <!-- On a phone, the board's views under the date line, Carbon's
-                 content switcher: List, a day after another, and 3 days, a
-                 bus a row. data.js keeps the one chosen in this browser. -->
-            <div class="scheduler-views" id="scheduler-views">
-              <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" aria-label="View">
-                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-phone-view="list"><span class="rux--content-switcher__label">List</span></button>
-                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-phone-view="days"><span class="rux--content-switcher__label">3 days</span></button>
-              </div>
-            </div>
-            <!-- The week the day in view falls in, on a phone, under the
-                 views: a day a button, the days in view marked, and under
-                 each day its trips' count and a dot where one needs the
-                 office. data.js draws it. -->
+            <!-- The week the first day in view falls in, on a phone, under the
+                 month: a day a button, the two days in view one pill and a
+                 dot under a day with a trip carrying a warning. data.js
+                 draws it. -->
             <div class="scheduler-weekstrip" id="scheduler-weekstrip" role="group" aria-label="This week"></div>
             <!-- The loading skeleton: the corner, three weeks of day cells and ten
                  rows of grey placeholders in the real grid's classes, so the first
@@ -580,10 +571,6 @@
                 </div>
               </div>
             </div>
-            <!-- LIST, the phone's first view: the day in view and each day
-                 after it, in one scroll, over the strip, which stays laid
-                 out under it for the trip a card opens. data.js draws it. -->
-            <div class="scheduler-list" id="scheduler-list" role="region" aria-label="Trips by day"></div>
           </div>
           <!-- The driver availability pane. order: -1 draws it left of the
                board while the markup keeps the schedule first. Its head holds

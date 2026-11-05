@@ -6,45 +6,35 @@ type: plan
 
 ## Goal
 
-On a phone the board says what is going on today and in the days after at a
+On a phone the board says what is going on today and the next day at a
 glance, and a trip, its itinerary, its driver or its customer is a tap or
-two away. It stops being the Mac's board narrowed: it is three views under
-one switch, List, 3 days and Week, and a tapped trip opens a half sheet
-over the view rather than a sheet that takes the screen.
+two away. It stops being the Mac's board narrowed: it is two days of buses,
+moved a day at a time, as the iPhone's Calendar shows two days, and a
+tapped trip opens a half sheet over the view rather than a sheet that takes
+the screen.
 
-Today the phone has List and 3 days under the switch, with search and +
-in the header and the date line and Today over the switch, and the week
-row under it. List is today and the days after as cards, and 3 days the
-strip three days wide, a flick a day; a tap on a trip, a card or a bar,
-opens the half sheet, pulled up for the rest with its Bus and Driver rows,
-a tap on a bus opens the bus's sheet, and the editor opens over the board
-as the Mac's form.
+Today the phone has the two days, with search and + in the header, the
+month and Today in the toolbar and the week row under it; a swipe moves the
+days one day, a tap on a trip opens the half sheet, pulled up for the rest
+with its Bus and Driver rows, a tap on a bus opens the bus's sheet, and the
+editor opens over the board as the Mac's form.
 
-The mockups rux chose from are `design/m/phone-agenda.html`,
-`design/m/phone-peek.html` and `design/m/phone-week.html`, local and
-unpublished, served on :8641.
+The mockup rux chose the half sheet from is `design/m/phone-peek.html`,
+local and unpublished, served on :8641.
 
 ## Decisions
 
-- **Three views under one switch, List, 3 days and Week,** as rux decided,
-  the switch Carbon's content switcher under the date line.
-- **List is today, then each day after it, in one scroll,** as rux decided.
-  Today's trips are full cards grouped On the road, Later today and Done,
-  a trip on the road saying on time or how late; a later day's trips are
-  the same cards in two lines. A day's name sticks at the top while its
-  trips pass under it, with how many need attention, and a day with none
-  says every bus is free.
-- **The week row follows the scroll and jumps,** as rux decided: under
-  each day the number of its trips and a dot where one needs attention,
-  the day in view marked, a tap going to that day and Today back.
-- **3 days is a bus a row, three days across,** as rux decided: a trip over
-  several days one bar across them, an empty row a free bus, the trips with
-  no bus in a row of their own at the foot, ‹ › a day at a time. It takes
-  the two-day strip's place, and a tap on a bus still opens the bus's
-  sheet.
-- **Week is a day a row,** as rux decided: each day's trips as tiles giving
-  where, when or which day of a longer trip, the bus and the driver with
-  their status, and each day's count and how many need attention.
+- **Two days is the phone's only view, a bus a row,** as rux decided, as
+  the iPhone's Calendar shows two days: a trip over several days one bar
+  across them, an empty row a free bus, the trips with no bus in a row of
+  their own at the foot, and a tap on a bus opens the bus's sheet.
+- **A swipe moves the days one day,** as rux decided: the days follow the
+  finger and settle on the next day or back on this one, a swipe that
+  starts up or down never moves them sideways, and they always come to
+  rest on a day's edge.
+- **The week row is the iPhone Calendar's,** under the month: each day its
+  letter over its date, the two days in view one pill, a dot under a day
+  where a trip needs attention, and a tap going to that day.
 - **A tapped trip opens a half sheet,** as rux decided, over the bottom
   half with the view still showing above it and the trip marked in it:
   where, the customer and times, what is happening now, the bus and the
@@ -56,10 +46,8 @@ unpublished, served on :8641.
   sheet.
 - **The top bar is ☰, the app's name, search, + for a new trip and the
   account,** the + taking the place of a round button at the foot, which
-  covered trips and which Carbon has no part for. The date line under it
-  names the day or the days in view, with ‹ › in 3 days and Today.
-- **The phone opens on List the first time and on the view last used after
-  that,** as rux decided, kept in that phone's browser.
+  covered trips and which Carbon has no part for. The toolbar under it
+  names the month and year, as the iPhone's Calendar does, with Today.
 - **Move to bus and Change driver are the Bus and Driver rows of the
   pulled-up sheet,** as rux decided, each opening its picker; a drag still
   moves a trip.
@@ -81,8 +69,5 @@ None open.
 
 ## Tasks
 
-- [ ] Put ‹ › on 3 days' date line.
-- [ ] Build Week, a day a row, and add it to the switch.
 - [ ] Add the bar of places at the foot.
 - [ ] Build the driver's screen and the customer's screen.
-- [ ] Show more days in 3 days with the phone turned sideways.

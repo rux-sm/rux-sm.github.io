@@ -126,7 +126,7 @@
      width take a tenth of a second. What is counted is the whole days in
      view, which data.js reads back to label the board by.
 
-     A COMPACT BOARD, a phone's, is the one exception: three days fill its pane,
+     A COMPACT BOARD, a phone's, is the one exception: two days fill its pane,
      each a whole number of pixels, since a fractional day paints every bar
      edge across two device pixels. That width is written on the week, and
      only changes when the phone turns. */
@@ -137,7 +137,7 @@
        pane's right edge, which the corner's margin is. */
     const edge = parseFloat(getComputedStyle(corner).marginInlineEnd) || 0;
     const available = sch.clientWidth - corner.offsetWidth - 2 * edge;
-    const pinned = sch.closest('[data-board="compact"]') ? `${Math.floor(available / 3)}px` : '';
+    const pinned = sch.closest('[data-board="compact"]') ? `${Math.floor(available / 2)}px` : '';
     if (sch.style.getPropertyValue('--scheduler-day-w') !== pinned) {
       if (pinned) sch.style.setProperty('--scheduler-day-w', pinned);
       else sch.style.removeProperty('--scheduler-day-w');

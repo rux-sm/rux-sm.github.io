@@ -115,8 +115,6 @@
   const monthBtn = document.getElementById('scheduler-month');
   const monthLongEl = document.getElementById('scheduler-month-long');
   const monthShortEl = document.getElementById('scheduler-month-short');
-  // On a phone the date line names the days in view, which `setRange` writes here.
-  const monthDaysEl = document.getElementById('scheduler-month-days');
   // The day the month and year are named from, the middle one in view.
   let viewDay = null;
   // The arrows either side of Today.
@@ -185,7 +183,7 @@
   const daysSeen = () => Number(schEl?.dataset.daysInView) || WEEK;
   /* The first day in view the board goes to for a day it is sent to: the
      day's week's first, which keeps every week lined up, or on a board
-     showing less than a week, as a phone's three days, the day itself, at
+     showing less than a week, as a phone's two days, the day itself, at
      its midnight as every day the board counts from is. */
   const cursorFor = d => (daysSeen() < WEEK ? addDays(d, 0) : firstDayOf(d));
 
@@ -229,18 +227,6 @@
     svg.appendChild(use);
     return svg;
   };
-
-  /* The phone's List, and where it stands: its first day, how many days it
-     has drawn, the day whose name stands at its top, each drawn day's top,
-     the card last tapped, the trips of each day as last worked out, when it
-     last scrolled, the draw waiting for it to stop, the idle work on the
-     trips' marks, and the mark after its last day that asks for more. Its
-     block near the end of this script draws it. */
-  const listEl = document.getElementById('scheduler-list');
-  let listFrom = null, listDrawn = 0, listDay = null, listTops = [], listTapped = null, tripLegs = null;
-  let listScrolledAt = 0, listOwed = 0, toneIdle = 0;
-  const dayLegs = new Map();
-  const listEnd = el('div', 'scheduler-list__end');
 
   /* What a bus number's toggletip says, laid out as the trip card is: a head
      with the bus in its own colour, a disc wearing its type's drawing beside
@@ -803,7 +789,6 @@
     viewDay = addDays(weekStart, Math.floor((Math.min(daysBetween(weekStart, weekEnd) + 1, daysSeen()) - 1) / 2));
     setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }));
     setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
-    setText(monthDaysEl, daysWords(weekStart));
     drawWeekStrip();
     // The calendar marks the days in view from the first.
     const picker = document.getElementById('scheduler-week-picker');
@@ -897,14 +882,12 @@
   const roadWaiting = () => !!client && !roadStopped && !roadAnswer && !roadAsked;
   const roadEta = Road.arrivals((a, b) => driveBetween(a, b).then(d => d?.min ?? null), () => drawRoad());
 
-  /* Where a leg's bus is on it, out on the road: its stops, the stop it is
-     at or goes to next, and, going, when it gets there and how late that is.
-     An out bar's is its trip's and leg's; the phone's List asks by the leg. */
-  const roadNext = (bar, bus) => legNext(bar.dataset.tripId, bar.dataset.legKey || bar.dataset.leg, bus);
-  function legNext(tripId, legKey, bus) {
-    const trip = heldTrip(tripId);
+  /* Where an out bar's bus is on its leg: its stops, the stop it is at or
+     goes to next, and, going, when it gets there and how late that is. */
+  function roadNext(bar, bus) {
+    const trip = heldTrip(bar.dataset.tripId);
     if (!trip || !bus) return null;
-    const stops = Road.stopsOf(trip, legKey);
+    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
     const where = Road.whereOn(stops, bus.path, bus);
     const here = bus.lat != null ? [bus.lat, bus.lng] : null;
     if (where.at) return { stops, where, stop: stops[where.reached], at: true };
@@ -949,8 +932,6 @@
     // A card showing the live card follows its bus with each answer, and the phone's sheet says what is happening now.
     const shown = selectedBar();
     if (shown && (!floatingCard() || (shown.dataset.road && roadPartOf(shown) === 'road'))) placeBarOpen(shown);
-    // Today on the List says which trips are out and how late, and moves them as the day goes.
-    drawListToday();
   }
 
   // Draws what Samsara last said on each of these bars.
@@ -1413,8 +1394,6 @@
     // The new bars and heads take what Samsara last said, and ask again if it is old.
     drawRoad();
     if (Date.now() - roadAsked > ROAD_EVERY) askRoad();
-    // The phone's List and week row read the trips from the rows just laid out.
-    listChanged();
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
@@ -1805,7 +1784,6 @@
     const barCount = [...laid.tracks.values()].reduce((n, list) => n + list.length, 0);
     if (!barCount && statusEl.hidden) sayQuietly('No trip touches the weeks around this one.');
     else if (barCount && !statusEl.hidden) { say(null); window.Rux?.schedule?.fit?.(); }
-    listChanged();
     return true;
   }
 
@@ -10279,15 +10257,12 @@
      been scrolled since. */
   let panelMoved = null;
 
-  /* Scrolls the board across just far enough to show a bar whole, clear of
-     the sticky bus column, or its start when it is wider than the board; on
-     the strip by the fewest whole days that do, so a strip on a day's edge
-     stays on one. It measures against the week
-     as wide as it will be once the panels beside it have opened, which
-     app.css's push reaches over 240ms, and scrolls as the week narrows. It
-     answers where it scrolls to, or null where the bar is in view. */
-  function revealBar(bar) {
-    if (!bar?.isConnected) return null;
+  /* How far the board scrolls across to show a bar whole, clear of the
+     sticky bus column, or its start when it is wider than the board; on the
+     strip the fewest whole days that do, so a strip on a day's edge stays on
+     one. It measures against the week as wide as it will be once the panels
+     beside it have opened, which app.css's push reaches over 240ms. */
+  function acrossBy(bar) {
     const pane = schEl.getBoundingClientRect();
     const head = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const box = bar.getBoundingClientRect();
@@ -10300,6 +10275,33 @@
     const w = stripStart ? dayWidth() : 0;
     if (w && by < 0) by = Math.floor(by / w) * w;
     else if (w && by > 0) by = Math.min(Math.ceil(by / w), Math.floor((box.left - first) / w)) * w;
+    return by;
+  }
+  /* How far the board scrolls up or down to show a bar, `nearest` or
+     `center` as scrollIntoView takes them, inside the pane's scroll padding,
+     the day band's at the top and a sheet's at the foot while one is up, and
+     the bar's own scroll margin. A bar is brought into view by this and
+     acrossBy rather than by scrollIntoView, whose own step across can leave
+     the strip part of a day off its edge, where nothing snaps it back on a
+     phone. */
+  function downBy(bar, block = 'nearest') {
+    const pane = schEl.getBoundingClientRect();
+    const box = bar.getBoundingClientRect();
+    const pad = getComputedStyle(schEl);
+    const inner = pane.top + schEl.clientTop;
+    const top = inner + (parseFloat(pad.scrollPaddingTop) || 0) + (parseFloat(getComputedStyle(bar).scrollMarginTop) || 0);
+    const bottom = inner + schEl.clientHeight - (parseFloat(pad.scrollPaddingBottom) || 0);
+    if (block === 'center') return Math.round((box.top + box.bottom - top - bottom) / 2);
+    if (box.top < top) return Math.round(box.top - top);
+    if (box.bottom > bottom) return Math.round(Math.min(box.bottom - bottom, box.top - top));
+    return 0;
+  }
+  /* Scrolls the board across to show a bar, as acrossBy measures, and as the
+     week narrows. It answers where it scrolls to, or null where the bar is
+     in view. */
+  function revealBar(bar) {
+    if (!bar?.isConnected) return null;
+    const by = acrossBy(bar);
     if (!by) return null;
     const to = schEl.scrollLeft + by;
     schEl.scrollTo({ left: to, behavior: boardStill() ? 'instant' : 'smooth' });
@@ -10377,7 +10379,7 @@
     const at = bars.indexOf(selectedBar());
     const bar = bars[(at + 1) % bars.length];
     selectBar(bar);
-    bar.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    schEl.scrollTo({ left: schEl.scrollLeft + acrossBy(bar), top: schEl.scrollTop + downBy(bar), behavior: 'instant' });
   }
 
   availGrid?.addEventListener('click', e => {
@@ -11450,13 +11452,10 @@
     // Focus that was on a slot goes back to the trip, until the action takes it.
     if (focused) bar.focus();
   }
-  // The room the docked sheet takes at the foot of the board or the List, given back once it goes.
+  // The room the half sheet takes at the board's foot, given back once it goes.
   const clearDocked = () => {
-    for (const pane of [schEl, listEl]) {
-      if (!pane) continue;
-      pane.style.paddingBlockEnd = '';
-      pane.style.scrollPaddingBlockEnd = '';
-    }
+    schEl.style.paddingBlockEnd = '';
+    schEl.style.scrollPaddingBlockEnd = '';
   };
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
@@ -11542,21 +11541,20 @@
          that much more to scroll, as its own padding, and the last trip can
          still be brought out from under it. Both are the pane's own
          properties, which nothing inherits: a custom property set there
-         restyled every element on the strip, about 45ms on a phone. On a
-         phone's List the List is the pane, and the trip is its card; the
-         strip stays put under it. */
-      const list = listShown();
-      clearDocked();
-      const pane = list ? listEl : schEl;
-      const sheet = Math.max(0, Math.round(pane.getBoundingClientRect().bottom - (innerHeight - sheetPeekHeight())));
-      pane.style.paddingBlockEnd = `${sheet}px`;
-      pane.style.scrollPaddingBlockEnd = `calc(${sheet}px + var(--rux-spacing-03))`;
-      /* A trip the sheet has just come up over is scrolled clear of it, once:
-         the pane's scroll padding is the sheet's height, so `nearest` moves the
-         board only as far as that takes and not at all when it is clear. */
+         restyled every element on the strip, about 45ms on a phone. */
+      const sheet = Math.max(0, Math.round(schEl.getBoundingClientRect().bottom - (innerHeight - sheetPeekHeight())));
+      schEl.style.paddingBlockEnd = `${sheet}px`;
+      schEl.style.scrollPaddingBlockEnd = `calc(${sheet}px + var(--rux-spacing-03))`;
+      /* A trip the sheet has just come up over is scrolled clear of it, once,
+         up or down only, as the bus sheet is: the pane's scroll padding is the
+         sheet's height, so `nearest` moves the board only as far as that
+         takes and not at all when it is clear. A trip tapped is already in
+         view across, and one that began on a day before the view stays where
+         it was tapped rather than sliding the days back to its start. */
       const fresh = target !== poppedFor;
       pop();
-      if (fresh) (list ? listCardOf(bar) : bar)?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+      const down = fresh ? downBy(bar) : 0;
+      if (down) schEl.scrollBy({ top: down, behavior: 'smooth' });
       return;
     }
     clearDocked();
@@ -11702,7 +11700,6 @@
     if (!bar || !cardAsked(bar)) cardOpenFor = null;
     placeBarOpen(bar);
     markTripBars();
-    markListCard();
     /* Selecting one of the picked driver's own trips keeps them picked, to
        read their week a trip at a time. Selecting a dimmed trip moves on from
        that driver, so the board comes back up around it. */
@@ -12371,20 +12368,18 @@
     else document.documentElement.removeAttribute('data-scheduler-room');
 
     /* Compact is the board's own answer, not a panel's: a board that cannot
-       show three readable days at the strip's width shows three narrower
-       ones, which app.js fits to the pane. It
+       show three readable days at the strip's width shows two, which
+       app.js fits to the pane. It
        asks the board rather than the room, because a panel over the week
        never makes the week itself a different week. */
     const compact = board < SCHEDULE_FLOOR * rem;
     if (compact !== (pageEl.getAttribute('data-board') === 'compact')) {
       if (compact) pageEl.setAttribute('data-board', 'compact');
       else pageEl.removeAttribute('data-board');
-      // Its rows are drawn again, three on a compact board, and its days
-      // fitted again, three to the pane there; a bus's sheet is the phone's alone.
+      // Its rows are drawn again, three lines a trip on a compact board, and its
+      // days fitted again, two to the pane there; a bus's sheet is the phone's alone.
       closeBusSheet();
       applyView();
-      // The phone's List is drawn when the board turns compact.
-      drawList();
     }
     // The menus the view menu holds stand outside the page, so they read it from the root.
     if (compact) document.documentElement.setAttribute('data-scheduler-board', 'compact');
@@ -16740,13 +16735,11 @@
   // A tap on the dimmed view drops the sheet back to half.
   sheetScrim?.addEventListener('click', () => setSheet(false));
   // A tap on the view, on neither a trip nor a bus nor anything else that takes a press, closes it.
-  for (const view of [schEl, listEl]) {
-    view?.addEventListener('click', e => {
-      if (floatingCard() || !selectedBar()
-        || e.target.closest('.scheduler-bar, .scheduler-list__card, .scheduler-row-head, .scheduler-bar-shortcuts, button, a')) return;
-      clearSelection();
-    });
-  }
+  schEl.addEventListener('click', e => {
+    if (floatingCard() || !selectedBar()
+      || e.target.closest('.scheduler-bar, .scheduler-row-head, .scheduler-bar-shortcuts, button, a')) return;
+    clearSelection();
+  });
 
   /* Contacts opens a small window of everyone to reach about this bar, in
      three parts: the customer's people, the crew on this bus, and the crew on
@@ -18735,8 +18728,6 @@
      Every caller gets the same promise, which settles once nothing is left to
      read, so `await show()` means the board is current. */
   function show() {
-    // The List goes to a day the board is sent to, and stays where it is for a read.
-    listFollow();
     // Cached navigation paints synchronously even while a refresh is in flight,
     // but never under a bar in hand, whose drag is measuring the rows. A strip
     // that runs to the week asked for scrolls to it instead.
@@ -19758,7 +19749,7 @@
       return;
     }
     // A strip keeps the trip's week at its left edge, so only a bar running past it scrolls across.
-    bar.scrollIntoView({ block: 'center', inline: stripStart ? 'nearest' : 'center' });
+    schEl.scrollTo({ left: schEl.scrollLeft + acrossBy(bar), top: schEl.scrollTop + downBy(bar, 'center'), behavior: 'instant' });
     const ref = barRef(bar);
     selectBar(bar);
     if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));
@@ -19940,128 +19931,20 @@
 
   /* Scrolls the strip to a day, as many days from its first, by the
      browser's own smooth scroll, as a trackpad's gesture lands; at once with
-     motion reduced, and under the phone's List, which hides it. Carbon has
-     no curve for a scroll, as
+     motion reduced. Carbon has no curve for a scroll, as
      design/docs/motion.md says, so the browser's is the one used. */
   function scrollStripTo(at) {
     const w = dayWidth();
     if (!w) return;
-    schEl.scrollTo({ left: at * w, behavior: reducedMotion.matches || listShown() ? 'instant' : 'smooth' });
+    schEl.scrollTo({ left: at * w, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   }
-  /* ── The phone's views ─────────────────────────────────────────────────────
-     A compact board, a phone's, is one of two views under the switch below
-     its date line, as rux decided: List, the day in view and each day after
-     it in one scroll, and 3 days, the strip a bus a row. The one chosen is
-     kept in this browser, `scheduler.phone-view`, which view.js sets on the
-     root before the page draws, so a phone opens on List the first time and
-     on the view last used after that. Under List the strip stays laid out,
-     out of sight and on the day in view, because the trip a card opens is
-     its bar's, and the docked sheet stands on the bar. */
-  const PHONE_VIEW_KEY = 'scheduler.phone-view';
-  function phoneView() { return document.documentElement.dataset.schedulerPhone === 'days' ? 'days' : 'list'; }
-  function listShown() { return !!listEl && phoneView() === 'list' && pageEl?.getAttribute('data-board') === 'compact'; }
-  const viewSwitch = document.querySelector('#scheduler-views [role="tablist"]');
-  {
-    // The switch shows the view the root names, quietly, as the page loads.
-    const chosen = viewSwitch?.querySelector(`[data-phone-view="${phoneView()}"]`);
-    if (chosen) window.Rux?.contentSwitcher?.select(viewSwitch, chosen, { focus: false, silent: true });
-  }
-  // The view taken up starts on the day the other was on.
-  viewSwitch?.addEventListener('rux:content-switcher-selected', e => {
-    const chosen = e.detail.option.dataset.phoneView === 'days' ? 'days' : 'list';
-    document.documentElement.dataset.schedulerPhone = chosen;
-    try { localStorage.setItem(PHONE_VIEW_KEY, chosen); } catch { /* kept for this visit only */ }
-    stopStripScroll();
-    if (chosen === 'list') { listFrom = null; drawList(); }
-    else placeStrip();
-    setRange(cursor, viewEnd(cursor));
-    placeBarOpen();
-  });
-
-  /* The date line's words on a phone: the day at the top of List, as
-     "Wednesday, Nov 4", or the days 3 days shows, "Nov 4 – 6", the month
-     named again only where it changes. */
-  function daysWords(start) {
-    if (!start || pageEl?.getAttribute('data-board') !== 'compact') return '';
-    if (phoneView() === 'list') return start.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
-    const end = addDays(start, Math.max(1, daysSeen()) - 1);
-    const md = { month: 'short', day: 'numeric' };
-    return `${start.toLocaleDateString(undefined, md)} – ${end.toLocaleDateString(undefined, end.getMonth() === start.getMonth() ? { day: 'numeric' } : md)}`;
-  }
-
-  /* THE TRIPS OF EACH DAY, which the List and the week row read: each leg
-     of a trip once, whatever buses it takes, with its bars as the strip lays
-     them out, in the board's order, and the days it takes, counted from the
-     strip's first. Worked out from the strip's rows when first asked after
-     `listChanged` lets them go, and each day's when first asked for. */
-  function legsOfStrip() {
-    if (tripLegs) return tripLegs;
-    const byKey = new Map();
-    for (const row of stripRows) {
-      for (const item of row.items) {
-        const b = item.b;
-        if (!b) continue;
-        const key = `${b.trip.id}|${b.leg.key ?? b.leg.leg}`;
-        if (!byKey.has(key)) byKey.set(key, { trip: b.trip, leg: b.leg, start: item.start, end: item.end, bars: [], tone: undefined });
-        byKey.get(key).bars.push(b);
-      }
-    }
-    tripLegs = [...byKey.values()];
-    return tripLegs;
-  }
-  /* A day's legs, the day counted from the strip's first: those out from
-     the days before it first, then the rest in the order they leave. */
-  function legsOnDay(at) {
-    if (!dayLegs.has(at)) {
-      dayLegs.set(at, legsOfStrip().filter(l => l.start <= at && at < l.end)
-        .sort((x, y) => (x.start === at) - (y.start === at) || String(x.leg.depart ?? '').localeCompare(String(y.leg.depart ?? ''))));
-    }
-    return dayLegs.get(at);
-  }
-  /* The worst a leg's bars' alert badges say, 'error', 'warning' or null,
-     worked out as the bars' own are, by bar.js's `factsOf`, so the List and
-     the week row agree with the board. Kept on the leg until it is laid out
-     again. */
-  function legTone(l) {
-    if (l.tone !== undefined) return l.tone;
-    const board = barBoard(panelIndex.driversById, panelIndex.buses, panelIndex.statuses);
-    let tone = null;
-    for (const b of l.bars) {
-      const t = Bar.factsOf(b, board).tone;
-      if (t === 'error') { tone = t; break; }
-      if (t) tone = t;
-    }
-    l.tone = tone;
-    return tone;
-  }
-  /* A leg's tone costs about a millisecond, its bars' standing rules and
-     drivers read, so the tones of the weeks around the day in view are
-     worked out while the page is idle, the day in view first, a few legs at
-     a time, and a day drawn finds them ready. */
-  const TONE_WEEKS = 3;
-  function fillTones() {
-    if (toneIdle || !stripStart || pageEl?.getAttribute('data-board') !== 'compact') return;
-    const whenIdle = window.requestIdleCallback ?? (fn => setTimeout(() => fn({ timeRemaining: () => 4 }), 50));
-    toneIdle = whenIdle(deadline => {
-      toneIdle = 0;
-      const at = daysBetween(stripStart, cursor);
-      for (let k = 0; k < TONE_WEEKS * WEEK; k++) {
-        for (const l of legsOnDay(at + k)) {
-          if (l.tone !== undefined) continue;
-          if (deadline.timeRemaining() < 2) { fillTones(); return; }
-          legTone(l);
-        }
-      }
-    });
-  }
-
-  /* THE WEEK UNDER THE VIEWS, on a compact board, a phone's: the seven days
-     of the week the day in view falls in, each its weekday's letter over its
-     date and its trips' count, the days in view marked as one, today in the
-     day band's colour, and beside the count a dot where a trip on that day
-     carries a warning mark, red where one is an error, as rux decided. A tap
-     on a day goes to it. Drawn with every day the view crosses and every
-     read laid out, so it writes only what changed: seven buttons, made once. */
+  /* THE WEEK UNDER THE MONTH, on a compact board, a phone's, as the
+     iPhone's Calendar has it: the seven days of the week the first day in
+     view falls in, each its weekday's letter over its date, the two days in
+     view one pill, today in the day band's colour, and under each day a dot
+     where a trip on it carries a warning mark, red where one is an error, as
+     rux decided. A tap on a day scrolls the strip to it. Drawn with every day the view crosses and every bar
+     drawn, so it writes only what changed: seven buttons, made once. */
   const weekStripEl = document.getElementById('scheduler-weekstrip');
   let weekStripKey = '';
   let weekStripFrame = 0;
@@ -20070,23 +19953,27 @@
     if (!stripStart || !weekStripEl || pageEl?.getAttribute('data-board') !== 'compact') return;
     const first = firstDayOf(cursor);
     const from = daysBetween(stripStart, first);
-    const shown = listShown() ? 1 : Math.max(1, Number(schEl.dataset.daysInView) || 1);
+    const shown = Math.max(1, Number(schEl.dataset.daysInView) || 1);
     const at = daysBetween(stripStart, cursor);
-    // Each day's trips, and the worst of their marks: 2 an error, 1 a warning.
-    const days = Array.from({ length: 7 }, (_, i) => legsOnDay(from + i));
-    const counts = days.map(legs => legs.length);
-    const marks = days.map(legs => legs.reduce((worst, l) => Math.max(worst, { error: 2, warning: 1 }[legTone(l)] ?? 0), 0));
+    // The worst mark on each day: 2 an error, 1 a warning.
+    const marks = Array(7).fill(0);
+    for (const bar of gridEl.querySelectorAll('.scheduler-track > .scheduler-bar')) {
+      const start = +bar.dataset.start, end = start + +bar.dataset.span;
+      if (end <= from || start >= from + 7) continue;
+      const alert = bar.querySelector(':scope > .scheduler-bar__dest .scheduler-bar__alert');
+      if (!alert) continue;
+      const tone = alert.classList.contains('scheduler-bar__msg--error') ? 2 : 1;
+      for (let d = Math.max(start, from); d < Math.min(end, from + 7); d++) marks[d - from] = Math.max(marks[d - from], tone);
+    }
     const today = iso(new Date());
-    const key = [iso(first), at, shown, today, counts.join(), marks.join('')].join('|');
+    const key = [iso(first), at, shown, today, marks.join('')].join('|');
     if (key === weekStripKey) return;
     weekStripKey = key;
     if (weekStripEl.childElementCount !== 7) {
       weekStripEl.replaceChildren(...Array.from({ length: 7 }, () => {
         const b = el('button', 'scheduler-weekstrip__day');
         b.type = 'button';
-        const foot = el('span', 'scheduler-weekstrip__foot');
-        foot.append(el('span', 'scheduler-weekstrip__count'), el('span', 'scheduler-weekstrip__dot'));
-        b.append(el('span', 'scheduler-weekstrip__name'), el('span', 'scheduler-weekstrip__num'), foot);
+        b.append(el('span', 'scheduler-weekstrip__name'), el('span', 'scheduler-weekstrip__num'), el('span', 'scheduler-weekstrip__dot'));
         return b;
       }));
     }
@@ -20096,355 +19983,94 @@
       b.dataset.day = iso(day);
       setText(b.children[0], day.toLocaleDateString(undefined, { weekday: 'narrow' }));
       setText(b.children[1], String(day.getDate()));
-      setText(b.children[2].children[0], counts[i] ? String(counts[i]) : '');
       b.toggleAttribute('data-in-view', inView);
       b.toggleAttribute('data-today', iso(day) === today);
       if (marks[i]) b.dataset.mark = marks[i] === 2 ? 'error' : 'warning'; else delete b.dataset.mark;
       b.setAttribute('aria-pressed', String(inView));
       b.setAttribute('aria-label', [day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }),
-        counts[i] === 1 ? '1 trip' : `${counts[i] || 'no'} trips`,
         marks[i] ? (marks[i] === 2 ? 'a trip with an error' : 'a trip with a warning') : null].filter(Boolean).join(', '));
     });
   }
-  // A read laid out changes the counts and the dots, so the strip is drawn again once a frame's work is in.
+  // Bars drawn change the dots, so the strip is drawn again once a frame's bars are in.
   const askWeekStrip = () => { if (!weekStripFrame) weekStripFrame = requestAnimationFrame(() => { weekStripFrame = 0; drawWeekStrip(); }); };
   weekStripEl?.addEventListener('click', e => {
     const b = e.target.closest('[data-day]');
     if (!b || !stripStart) return;
     stopStripScroll();
-    if (listShown()) listGo(parseISO(b.dataset.day));
-    else scrollStripTo(daysBetween(stripStart, parseISO(b.dataset.day)));
+    scrollStripTo(daysBetween(stripStart, parseISO(b.dataset.day)));
   });
 
-  /* ── LIST, the phone's first view ──────────────────────────────────────────
-     As rux decided: the day the board is on and each day after it, in one
-     scroll, opening on today. Each day's name stands at the top while its
-     trips pass under it, with how many need the office; a day with none says
-     every bus is free. Today's trips are full cards, grouped On the road,
-     Later today and Done, a trip on the road saying on time or how late; a
-     later day's are the same cards in two lines. A card is a leg of a trip,
-     whatever buses it takes, in the trip's colour, and a tap on it opens the
-     sheet its first bar opens, a second tap putting it away, as on the strip.
-
-     The day whose name is at the top is the board's day, `cursor`, which the
-     date line and the week row follow, and which 3 days opens on. Once the
-     List stops, the strip under it is placed on that day, which draws the
-     trips near it, and the weeks around are read as the strip's are. The List
-     draws LIST_CHUNK days at a time, and more as its end comes near, as far
-     as the trips held run: a week, about 10ms with its marks worked out. */
-  const LIST_CHUNK = 7;
-  const SEAT_RANK = { confirmed: 0, 'pending-response': 1, off: 2, 'pending-assignment': 3, declined: 5 };
-  // The last day the List can say: the last whose trips are held, within the strip.
-  const listLast = () => {
-    const held = heldOf(stripData)[1];
-    return iso(held) < iso(stripEnd) ? held : stripEnd;
-  };
-  // The drawn day at a height in the List, by its tops.
-  const listIndexAt = top => {
-    let i = 0;
-    while (i + 1 < listTops.length && listTops[i + 1] <= top + 1) i++;
-    return i;
-  };
-  const measureList = () => {
-    listTops = [...listEl.querySelectorAll(':scope > .scheduler-list__day')].map(day => day.offsetTop);
-  };
-  const dayName = day => {
-    const off = daysBetween(parseISO(iso(new Date())), day);
-    return off === 0 ? 'Today' : off === 1 ? 'Tomorrow' : off === -1 ? 'Yesterday'
-      : day.toLocaleDateString(undefined, { weekday: 'long' });
-  };
-  const dayDate = day => (Math.abs(daysBetween(parseISO(iso(new Date())), day)) <= 1
-    ? day.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
-    : day.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-
-  /* Where today's leg stands: on the road, from leaving the yard to being
-     back, or while Samsara has one of its buses out; later today, before it
-     leaves; done, once it is back. Out on the road, how many minutes late
-     the latest of its buses is to its pickup, road.js's measure, or 0. */
-  function legLive(l, now) {
-    const span = Road.span(l.leg);
-    let out = false, late = 0;
-    for (const b of l.bars) {
-      const bus = b.assign?.bus_id != null ? roadAnswer?.buses?.find(x => x.bus_id === b.assign.bus_id) : null;
-      if (!bus || !span || !(Road.isOut(bus, span) || Live.watching(bus, span))) continue;
-      out = true;
-      late = Math.max(late, legNext(l.trip.id, l.leg.key ?? l.leg.leg, bus)?.late || 0);
-    }
-    const leaves = window.SchedulerWeek.departAt(l.leg), back = window.SchedulerWeek.backAt(l.leg);
-    const group = out || (leaves <= now && now < back) ? 'road' : now < leaves ? 'later' : 'done';
-    return { group, out, late };
-  }
-
-  // A leg's times: out and back, the day it is back on where that is another, or which of its days this is.
-  function listTimes(l, at) {
-    const { leg } = l;
-    const times = el('span', 'scheduler-list__times');
-    const days = l.end - l.start;
-    if (days > 1 && at > l.start) { times.append(`Day ${at - l.start + 1} of ${days}`); return times; }
-    const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
-    if (!dep && !back) { times.append('No times'); return times; }
-    if (dep) times.append(clockEl(dep));
-    if (dep && leg.departDays) times.append(el('sup', 'scheduler-bar__day-before', `−${leg.departDays}`));
-    if (dep && back) times.append(' – ');
-    if (back && days > 1) times.append(`${addDays(parseISO(leg.to), leg.backDays ?? 0).toLocaleDateString(undefined, { weekday: 'short' })} `);
-    if (back) times.append(clockEl(back));
-    if (back && leg.backDays) times.append(el('sup', 'scheduler-bar__next-day', `+${leg.backDays}`));
-    return times;
-  }
-  // The leg's buses: its first bus's number, and how many more it takes, or that it has none yet.
-  function listBuses(l) {
-    const numbers = l.bars.map(b => (b.assign?.bus_id != null ? panelIndex.buses.get(b.assign.bus_id)?.number : null)).filter(n => n != null);
-    const buses = el('span', 'scheduler-list__bus');
-    buses.append(svgUse('#m-directions_bus', '16', '0 0 32 32'),
-      numbers.length ? `${numbers[0]}${numbers.length > 1 ? ` +${numbers.length - 1}` : ''}` : 'No bus');
-    return buses;
-  }
-  /* Every seat the leg's buses have, as their bars draw them, in one mark
-     and a few words: one seat's driver by name, or how many drivers, and
-     how many of them are named where a seat is still empty. The mark is the
-     least settled driver's, the bar's own glyph for them; a relief seat's is
-     its role, so only the drivers' seats choose it. */
-  function listSeats(l) {
-    const { trip, leg } = l;
-    const placeholder = window.SchedulerBilling.placeholder(trip);
-    const seats = l.bars.flatMap(b => (b.assign ? crewOf(trip, b.assign, panelIndex.driversById, panelIndex.statuses) : []))
-      .filter(c => !(placeholder && c.needed));
-    if (!seats.length) return null;
-    const due = Bar.staffingDue(leg);
-    const done = window.SchedulerCloseOut.isBack(trip) && !placeholder;
-    const rank = c => (c.needed ? (due ? 4 : 2) : SEAT_RANK[c.status?.value] ?? 2);
-    const drivers = seats.filter(c => c.role !== 'relief-start' && c.role !== 'relief-end');
-    const worst = (drivers.length ? drivers : seats).reduce((w, c) => (rank(c) > rank(w) ? c : w));
-    const seat = el('span', 'scheduler-list__seat');
-    const glyph = drivers.length ? Bar.crewGlyph(worst, due, done) : null;
-    if (glyph) seat.append(Bar.glyphEl(glyph));
-    const empty = seats.filter(c => c.needed).length;
-    seat.append(el('span', 'scheduler-list__seat-words', seats.length === 1
-      ? (empty ? `No ${worst.label.toLowerCase()}` : Bar.crewName(worst))
-      : empty ? `${seats.length - empty} of ${seats.length} drivers` : `${seats.length} drivers`));
-    return seat;
-  }
-  // The alert badge's glyph and words, after the destination, where the leg needs the office.
-  const WARNING_GLYPH = { href: '#i-warning--alt--filled', box: '0 0 32 32', indicator: 'rux--icon-indicator--caution-minor' };
-  const ERROR_GLYPH = { href: '#m-error-fill', box: '0 0 32 32', indicator: 'rux--icon-indicator--failed' };
-  function listAlert(tone) {
-    const mark = el('span', 'scheduler-list__alert');
-    mark.append(Bar.glyphEl(tone === 'error' ? ERROR_GLYPH : WARNING_GLYPH),
-      el('span', 'rux--visually-hidden', tone === 'error' ? ', a bus that does not fit' : ', needs the office'));
-    return mark;
-  }
-  // A trip out on the road: on time, or how late, as Samsara has it, or on the road by the clock alone.
-  function listLiveLine(live) {
-    const line = el('span', `scheduler-list__live scheduler-list__live--${live.late ? 'late' : live.out ? 'on-time' : 'clock'}`);
-    line.append(el('span', 'scheduler-list__pip'),
-      live.late ? `On the road · ${live.late} min late` : live.out ? 'On the road · on time' : 'On the road');
-    return line;
-  }
-  /* A leg's card on the day `at`: the destination with its bus count and
-     its alert, its times, the customer, its buses and its drivers; full,
-     today's, on lines of their own with the road's word under them, and
-     otherwise the customer, the buses and the drivers on one line. */
-  function listCard(l, at, live = null) {
-    const { trip, leg } = l;
-    const card = el('button', `scheduler-list__card scheduler-bar--${hueFor(trip)}`);
-    card.type = 'button';
-    card.dataset.tripId = trip.id;
-    card.dataset.legKey = leg.key ?? leg.leg;
-    card.dataset.assignmentId = l.bars[0].assign?.id ?? '';
-    if (live) card.classList.add('scheduler-list__card--full');
-    const top = el('span', 'scheduler-list__top');
-    const dest = el('span', 'scheduler-list__dest');
-    dest.append(el('span', 'scheduler-list__place', Bar.placeName(trip.destination) || 'No destination'));
-    if ((leg.count || 1) > 1) dest.append(el('span', 'scheduler-list__count', String(leg.count)));
-    const tone = legTone(l);
-    if (tone) dest.append(listAlert(tone));
-    top.append(dest, listTimes(l, at));
-    const who = el('span', 'scheduler-list__who', trip.customer || '');
-    const kit = [listBuses(l), listSeats(l)].filter(Boolean);
-    if (live) {
-      const row = el('span', 'scheduler-list__kit');
-      row.append(...kit);
-      card.append(top, who, row);
-      if (live.group === 'road') card.append(listLiveLine(live));
-    } else {
-      const row = el('span', 'scheduler-list__line');
-      row.append(who, ...kit);
-      card.append(top, row);
-    }
-    return card;
-  }
-  // One day: its name, how many of its trips need the office, and its trips, today's grouped.
-  function listDaySection(day) {
-    const at = daysBetween(stripStart, day);
-    const legs = legsOnDay(at);
-    const section = el('section', 'scheduler-list__day');
-    section.dataset.day = iso(day);
-    const head = el('h3', 'scheduler-list__head');
-    head.append(el('span', 'scheduler-list__name', dayName(day)), el('span', 'scheduler-list__date', dayDate(day)));
-    const need = legs.filter(legTone).length;
-    if (need) {
-      const n = el('span', 'scheduler-list__need');
-      n.append(Bar.glyphEl(WARNING_GLYPH), `${need} need${need === 1 ? 's' : ''} you`);
-      head.append(n);
-    }
-    section.append(head);
-    if (!legs.length) {
-      section.append(el('p', 'scheduler-list__free', 'No trips. Every bus is free.'));
-      return section;
-    }
-    if (iso(day) !== iso(new Date())) {
-      section.append(...legs.map(l => listCard(l, at)));
-      return section;
-    }
-    const now = Date.now();
-    const placed = legs.map(l => ({ l, live: legLive(l, now) }));
-    for (const [group, name] of [['road', 'On the road'], ['later', 'Later today'], ['done', 'Done']]) {
-      const these = placed.filter(p => p.live.group === group);
-      if (!these.length) continue;
-      const h = el('h4', 'scheduler-list__group');
-      h.append(el('span', null, name), el('span', 'scheduler-list__group-count', String(these.length)));
-      section.append(h, ...these.map(p => listCard(p.l, at, p.live)));
-    }
-    return section;
-  }
-
-  /* Draws the List from its first day, as many days as it showed and at
-     least as far as the day in view and a LIST_CHUNK more. A read laid out
-     again, `keep`, puts it back where it stood: the same day at its top, as
-     far into it; otherwise it starts on the board's day, at its top. */
-  function drawList({ keep = false } = {}) {
-    if (!listShown() || !stripStart || !stripData) return;
-    const was = keep && listFrom && listTops.length ? listIndexAt(listEl.scrollTop) : -1;
-    const into = was >= 0 ? listEl.scrollTop - listTops[was] : 0;
-    if (!keep || !listFrom) listFrom = cursor;
-    const last = daysBetween(listFrom, listLast()) + 1;
-    listDrawn = Math.max(0, Math.min(last, Math.max(keep ? listDrawn : 0, daysBetween(listFrom, cursor) + LIST_CHUNK)));
-    listEl.replaceChildren(...Array.from({ length: listDrawn }, (_, i) => listDaySection(addDays(listFrom, i))), listEnd);
-    measureList();
-    markListCard();
-    const at = was >= 0 ? Math.min(was, listTops.length - 1) : Math.max(0, daysBetween(listFrom, cursor));
-    listDay = addDays(listFrom, Math.max(0, at));
-    listEl.scrollTop = (listTops[at] ?? 0) + into;
-  }
-  // More days, once the List's end comes near, as far as the trips held run.
-  function growList(to = listDrawn + LIST_CHUNK) {
-    if (!listShown() || !listFrom) return;
-    const upto = Math.min(to, daysBetween(listFrom, listLast()) + 1);
-    if (upto <= listDrawn) return;
-    listEnd.before(...Array.from({ length: upto - listDrawn }, (_, i) => listDaySection(addDays(listFrom, listDrawn + i))));
-    listDrawn = upto;
-    measureList();
-    markListCard();
-    fillTones();
-  }
-  const listMore = listEl && 'IntersectionObserver' in window
-    ? new IntersectionObserver(entries => { if (entries.some(x => x.isIntersecting)) growList(); }, { root: listEl, rootMargin: '0px 0px 100% 0px' })
-    : null;
-  listMore?.observe(listEnd);
-  /* Today again, as Samsara answers and as the day goes on: its trips move
-     between the groups and say how late they are. The browser's scroll
-     anchoring holds the List still where today is above its top. */
-  function drawListToday() {
-    if (!listShown() || !listFrom) return;
-    const at = daysBetween(listFrom, parseISO(iso(new Date())));
-    const was = at >= 0 && at < listDrawn ? listEl.children[at] : null;
-    if (!was) return;
-    was.replaceWith(listDaySection(addDays(listFrom, at)));
-    measureList();
-    markListCard();
-  }
-  /* A read laid out again: the trips of each day are worked out afresh,
-     and the week row and the List follow, once neither the List nor the
-     strip is moving, so a read landing under a scroll never redraws what is
-     moving; until then they keep the trips as they were. */
-  const LIST_STILL_MS = 250;
-  function listChanged() {
-    clearTimeout(listOwed);
-    if (weekMotion || performance.now() - listScrolledAt < LIST_STILL_MS) {
-      listOwed = setTimeout(listChanged, LIST_STILL_MS);
-      return;
-    }
-    tripLegs = null;
-    dayLegs.clear();
-    askWeekStrip();
-    drawList({ keep: true });
-    fillTones();
-  }
-  /* Goes to a day on the List: scrolls to it where it is drawn or held
-     after the first, or starts the List on it. */
-  function listGo(day) {
-    const at = listFrom ? daysBetween(listFrom, day) : -1;
-    if (at < 0 || at > daysBetween(listFrom, listLast())) {
-      cursor = day;
-      listFrom = null;
-      drawList();
-      setRange(cursor, viewEnd(cursor));
-      return;
-    }
-    if (at >= listDrawn) growList(at + LIST_CHUNK);
-    const far = Math.abs(at - listIndexAt(listEl.scrollTop)) > WEEK;
-    listEl.scrollTo({ top: listTops[at], behavior: reducedMotion.matches || far ? 'instant' : 'smooth' });
-  }
-  // The board sent to a day, by Today, a month or a link, takes the List there; a read leaves it be.
-  function listFollow() {
-    if (!listShown() || !listFrom || (listDay && iso(cursor) === iso(listDay))) return;
-    listGo(cursor);
-  }
-  // The day at the List's top is the board's, which the date line and the week row follow.
-  function followList() {
-    const day = addDays(listFrom, listIndexAt(listEl.scrollTop));
-    if (listDay && iso(day) === iso(listDay)) return;
-    listDay = day;
-    cursor = day;
-    setRange(cursor, viewEnd(cursor), { quiet: true });
-  }
-  /* Once the List stops, the weeks around its day are read, and the strip
-     under it is placed on that day ROWS_FIT_MS later if the List has stayed
-     still, since laying the strip out costs a frame of its own, as its rows'
-     fitting does on the strip. */
-  let listPlace = 0;
-  function listStopped() {
-    if (!listShown() || !listFrom) return;
-    followList();
-    setRange(cursor, viewEnd(cursor));
-    readAround();
-    fillTones();
-    clearTimeout(listPlace);
-    listPlace = setTimeout(() => {
-      if (listShown() && performance.now() - listScrolledAt >= LIST_STILL_MS) placeStrip();
-    }, ROWS_FIT_MS);
-  }
-  let listFrame = 0;
-  listEl?.addEventListener('scroll', () => {
-    listScrolledAt = performance.now();
-    if (!listFrame) listFrame = requestAnimationFrame(() => { listFrame = 0; if (listShown() && listFrom) followList(); });
+  /* ONE DAY A SWIPE on a phone, as the iPhone's Calendar moves, rux's
+     choice. app.css lets a finger pan the strip up and down only, so a swipe
+     that starts up or down never slides it sideways, and one that starts
+     sideways is this script's, held to its axis: the days follow the finger,
+     as far as a day either way, and let go they settle on the next day, or
+     back on this one, on the browser's own smooth scroll, a quarter of a day
+     or a flick being enough to go on. A touch stops a settle where it is,
+     and let go without a swipe it settles on the nearer day, so the strip
+     always comes to rest on a day's edge. It reads touch events, which
+     Safari keeps sending once it has started a pan of its own, where it
+     cancels the pointer. A mouse or a trackpad, on a board as narrow,
+     scrolls the strip itself. A pull on the half sheet, which stands inside
+     the strip, is the sheet's, and a trip in hand is the drag's. */
+  const SWIPE_ON = 0.25;     // the part of a day a slow swipe moves the strip to go on to the next
+  const SWIPE_FLICK = 0.3;   // px/ms: a flick this fast goes on whatever its length
+  const SWIPE_START = 8;     // px before a swipe says which way it goes
+  const touchPaging = () => pageEl?.getAttribute('data-board') === 'compact' && matchMedia('(pointer: coarse)').matches;
+  let swipe = null;
+  schEl.addEventListener('touchstart', e => {
+    swipe = null;
+    if (e.touches.length !== 1 || !touchPaging() || !stripStart || barsInHand
+      || e.target.closest('.scheduler-bar-shortcuts')) return;
+    const w = dayWidth();
+    if (!w) return;
+    const t = e.touches[0];
+    stopStripScroll();
+    // `sideways` is unknown until the finger has moved SWIPE_START.
+    swipe = { id: t.identifier, x: t.clientX, y: t.clientY, at: Math.round(schEl.scrollLeft / w), w, sideways: null, lastX: t.clientX, lastT: e.timeStamp, v: 0 };
   }, { passive: true });
-  listEl?.addEventListener('scrollend', listStopped);
-  // The selected trip's cards stand out, as its bar does.
-  function markListCard() {
-    if (!listEl) return;
-    const bar = selectedBar();
-    const key = bar ? `${bar.dataset.tripId}|${bar.dataset.legKey}` : null;
-    for (const card of listEl.querySelectorAll('.scheduler-list__card')) {
-      if (key && `${card.dataset.tripId}|${card.dataset.legKey}` === key) card.setAttribute('aria-current', 'true');
-      else card.removeAttribute('aria-current');
+  schEl.addEventListener('touchmove', e => {
+    if (!swipe || swipe.sideways === false) return;
+    const t = [...e.changedTouches].find(c => c.identifier === swipe.id);
+    if (!t) return;
+    if (barsInHand || touchDragging || e.touches.length !== 1) {
+      // A trip lifted or a second finger ends the swipe where it began.
+      if (swipe.sideways) scrollStripTo(swipe.at);
+      swipe = null;
+      return;
     }
-  }
-  // The card a bar's sheet is about: the one tapped, or its first on the List.
-  function listCardOf(bar) {
-    const ofBar = card => card?.isConnected && card.dataset.tripId === bar.dataset.tripId && card.dataset.legKey === bar.dataset.legKey;
-    if (ofBar(listTapped)) return listTapped;
-    return listEl.querySelector(`.scheduler-list__card[data-trip-id="${CSS.escape(bar.dataset.tripId)}"][data-leg-key="${CSS.escape(bar.dataset.legKey)}"]`);
-  }
-  listEl?.addEventListener('click', e => {
-    const card = e.target.closest('.scheduler-list__card');
-    if (!card) return;
-    const bar = findBar({ tripId: card.dataset.tripId, legKey: card.dataset.legKey, assignmentId: card.dataset.assignmentId || null });
-    if (!bar) return;
-    listTapped = card;
-    if (bar.getAttribute('aria-current') === 'true') clearSelection();
-    else selectBar(bar);
-  });
+    const dx = t.clientX - swipe.x;
+    if (swipe.sideways === null) {
+      // A swipe more up or down than sideways is the browser's, all of it.
+      const dy = t.clientY - swipe.y;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_START) return;
+      swipe.sideways = Math.abs(dx) > Math.abs(dy);
+      if (!swipe.sideways) return;
+    }
+    // Sideways, the strip does not drift up or down under the finger.
+    if (e.cancelable) e.preventDefault();
+    if (e.timeStamp > swipe.lastT) swipe.v = (t.clientX - swipe.lastX) / (e.timeStamp - swipe.lastT);
+    swipe.lastX = t.clientX;
+    swipe.lastT = e.timeStamp;
+    schEl.scrollLeft = swipe.at * swipe.w + Math.max(-swipe.w, Math.min(swipe.w, -dx));
+  }, { passive: false });
+  const endSwipe = e => {
+    const t = swipe && [...e.changedTouches].find(c => c.identifier === swipe.id);
+    if (!t) return;
+    const { x, at, w, sideways, v } = swipe;
+    swipe = null;
+    if (!sideways) {
+      const near = Math.round(schEl.scrollLeft / w);
+      if (Math.abs(schEl.scrollLeft - near * w) >= 1) scrollStripTo(near);
+      return;
+    }
+    const dx = e.type === 'touchcancel' ? 0 : t.clientX - x;
+    const on = Math.abs(dx) > w * SWIPE_ON ? -Math.sign(dx) : Math.abs(v) > SWIPE_FLICK ? -Math.sign(v) : 0;
+    scrollStripTo(at + on);
+  };
+  schEl.addEventListener('touchend', endSwipe);
+  schEl.addEventListener('touchcancel', endSwipe);
+
 
   /* SCROLLS THE STRIP TO THE WEEK `cursor` STARTS, when it is not there
      already, a pick's, a list's or Today's. Within two weeks it scrolls

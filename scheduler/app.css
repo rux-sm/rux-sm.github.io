@@ -1207,8 +1207,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__update, .scheduler-bar__drivers {
   --scheduler-age-week: var(--scheduler-footer-warning);
   --scheduler-mark-warning: var(--scheduler-footer-warning);
-  --scheduler-mark-success: var(--scheduler-driver-success);
-  --scheduler-mark-error: var(--scheduler-driver-error);
 }
 .scheduler-bar {
   --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px)), transparent 0);
@@ -1268,7 +1266,7 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-row-h);
 }
 .scheduler-bar__alert > svg { flex: none; inline-size: 16px; block-size: 16px; }
-.scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--scheduler-driver-error); }
+.scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--rux-status-red); }
 /* The warning's mark is the ink on a warning fill, as Carbon fills it on
    yellow, so a light bar does not show through it. */
 .scheduler-bar__alert.scheduler-bar__msg--warning > svg { color: var(--scheduler-footer-warning); --rux-icon-inner: var(--scheduler-on-warning); }
@@ -1861,7 +1859,7 @@ a.scheduler-tip__go { text-decoration: none; }
   gap: var(--rux-spacing-03);
   align-items: center;
 }
-.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-driver-error); }
+.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--rux-status-red); }
 :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { min-inline-size: 0; font-weight: 400; }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
@@ -2255,7 +2253,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 .scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
 /* Paid is the alert pill's shape in Carbon's success green, its ink black or white by the fill's lightness. */
-.scheduler-bar__msg--success { background: var(--scheduler-driver-success); color: oklch(from var(--scheduler-driver-success) calc((0.59 - l) * 100) 0 0); }
+.scheduler-bar__msg--success { background: var(--rux-status-green); color: oklch(from var(--rux-status-green) calc((0.59 - l) * 100) 0 0); }
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
@@ -2366,12 +2364,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 /* Driver names retain neutral ink; the icon alone communicates status. */
 .scheduler-crew--due .scheduler-crew__name { opacity: 1; }
-/* Marks use the driver status set, which a theme steps for its bars' fills. */
+/* A driver's mark, in the status colours theme.css sets once for the page. */
 .scheduler-crew__mark {
-  --rux-status-gray: var(--scheduler-driver-neutral);
-  --rux-status-blue: var(--scheduler-driver-normal);
-  --rux-status-green: var(--scheduler-driver-success);
-  --rux-status-red: var(--scheduler-driver-error);
   display: flex;
   flex: none;
   align-items: center;
@@ -2683,13 +2677,13 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar:not(.scheduler-bar--open, .scheduler-bar--back) .scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id] { cursor: grab; }
 .scheduler-crew.scheduler-crew--carried { opacity: .4; }
 .scheduler-crew.scheduler-crew--carried :is(.scheduler-crew__dot, .scheduler-crew__mark svg) { visibility: hidden; }
-.scheduler-crew__mark--success { color: var(--scheduler-driver-success); }
-.scheduler-crew__mark--error { color: var(--scheduler-driver-error); }
+.scheduler-crew__mark--success { color: var(--rux-status-green); }
+.scheduler-crew__mark--error { color: var(--rux-status-red); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
 /* A request still out to its driver is blue, Carbon's In progress; neutral
    workflow states stay gray; missing assignment takes the warning yellow. */
-.scheduler-crew__mark--normal { color: var(--scheduler-driver-normal); }
-.scheduler-crew__mark--off { color: var(--scheduler-driver-neutral); }
+.scheduler-crew__mark--normal { color: var(--rux-status-blue); }
+.scheduler-crew__mark--off { color: var(--rux-status-gray); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning
    colour, while a driver on the bus is to be told of a change. */
 .scheduler-bar-menu__due { color: var(--scheduler-mark-warning); }
@@ -6611,7 +6605,7 @@ html[data-scheduler-takeover] {
 
 /* Each needs row says where a press on it goes at its end, in secondary text, after the day a due reminder names; a need is the neutral
    dashed circle, so a sign means an alert only. */
-.scheduler-card__needs-list > .scheduler-card__row--need > svg { color: var(--scheduler-driver-neutral); }
+.scheduler-card__needs-list > .scheduler-card__row--need > svg { color: var(--rux-status-gray); }
 .scheduler-card__go { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-04); color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-body-compact-01-line-height); }
 .scheduler-card__asks-when + .scheduler-card__go { margin-inline-start: 0; }
 

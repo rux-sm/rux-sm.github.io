@@ -83,6 +83,11 @@
    meter's dark time at 3.6 to 1, under the 4.5 its 12px needs; Purple 50
    holds it at 5.4. */
 :is([data-theme="white"], [data-theme="g10"]) { --scheduler-rest-fill: #a56eff; }
+/* The Apple themes fill it in Apple's increased-contrast dark purple,
+   #ea8dff, from design/docs/apple-token-map.md, where their status purple
+   held the dark time at 2.9 in apple-light and 4.5 in apple-dark; it holds
+   it at 6.9 and 7.6. */
+[data-theme^="apple-"] { --scheduler-rest-fill: #ea8dff; }
 /* The bus head's readings, bus-head.js's: the primary ink while normal,
    the status palette's warning when low or idling too long and its error
    when critical, and its green for a moving bus's speed. */
@@ -1318,20 +1323,14 @@
   background-color: var(--scheduler-region);
 }
 
-/* The footer's grey and ink outside a bar, and the status colours a
-   driver's marks take; a bar sets its footer to its own fill below, and a
-   theme steps a mark there where the fill needs it. The state fills lighten
-   the footer in its own hue, as Carbon's layer hover, selected and active
-   tokens lighten Gray 80. */
+/* The footer's grey and ink outside a bar; a bar sets its footer to its own
+   fill below. The state fills lighten the footer in its own hue, as Carbon's
+   layer hover, selected and active tokens lighten Gray 80. */
 [data-theme] {
   --scheduler-footer-base: #393939;
   --scheduler-footer: var(--scheduler-footer-base);
   --scheduler-footer-fg: #f4f4f4;
   --scheduler-footer-warning: var(--rux-status-yellow);
-  --scheduler-driver-neutral: var(--rux-status-gray);
-  --scheduler-driver-normal: var(--rux-status-blue);
-  --scheduler-driver-error: var(--rux-status-red);
-  --scheduler-driver-success: var(--rux-status-green);
 }
 
 /* A BAR IS ONE TONE IN EVERY THEME: its update and drivers stand on the
@@ -1346,22 +1345,27 @@
   --scheduler-footer-paint: none;
 }
 [data-theme] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
-/* On the bar's own fill the marks the darker footer held at 3 to 1 need a
-   step more where the fill is mid-tone, so in the themes below each driver
-   mark holds 3 to 1 on every trip colour but the amber placeholder: on
-   g100's 80 grades and g90's and spotify-dark's 70s a not-sent mark takes
-   Carbon's gray 30, 6.6 and 4.5 to 1, and a request out or a decline
-   Carbon's blue 40 and red 40, 4.7 and 3.3 to 1 where the 50s held 2.3,
-   level with the confirmed tick's green 40; on ant-dark's and pixel-dark's brighter
-   6 grades they take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1 at the
-   least, on the green trip; apple-dark's teal takes Apple's increased-contrast
-   blue and red, 3.1 to 1 where its own held 2.5; and apple-light's pale blue
-   takes Apple's dark green, 3.9 where its green held 2.0. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar {
+/* ONE STATUS STEP PER THEME, on a trip and off it. A status reads in one
+   colour wherever it stands on the page, a driver's mark and an alert on a
+   trip as in a menu or a panel, at the step that holds Carbon's 3 to 1 for a
+   graphic on every surface it stands on: the board, a menu and every trip
+   colour. It is set once on the page, so nothing derived from it can drift
+   to another step. g100's grade 80 trips hold Carbon's own status tokens at
+   3.4 to 1 at the least, so it takes them unchanged, red 50, blue 50, gray
+   50, green 40 and yellow 30, as its menus do. The themes below lift the
+   step where those fall short, on their trips and their lighter menus
+   alike: g90's and spotify-dark's grade 70 trips and g90's Gray 70 menus
+   held the 50s at 2.3, so they take Carbon's gray 30, blue 40 and red 40,
+   3.2 to 1 at the least, level with green 40; ant-dark's and pixel-dark's
+   brighter 6 grades take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1
+   at the least, on the green trip; apple-dark's teal takes Apple's
+   increased-contrast blue and red, 3.1 where its own held 2.5; and
+   apple-light's pale blue takes Apple's dark green, 3.9 where its green
+   held 2.0. */
+:is([data-theme="g90"], [data-theme="spotify-dark"]) {
   --rux-status-gray: #c6c6c6;
-  --scheduler-driver-neutral: #c6c6c6;
-  --scheduler-driver-normal: #78a9ff;
-  --scheduler-driver-error: #ff8389;
+  --rux-status-blue: #78a9ff;
+  --rux-status-red: #ff8389;
 }
 /* A trip stands one grade above the board it lies on, the step Carbon's
    dark themes take from one layer to the next, whatever its colour. g100's
@@ -1380,22 +1384,17 @@
 [data-theme="g100"] .scheduler-bar--magenta   { --scheduler-bg: #740937; --scheduler-hover: #8e0b43; }
 [data-theme="g100"] .scheduler-bar--red       { --scheduler-bg: #750e13; --scheduler-hover: #921118; }
 [data-theme="g100"] .scheduler-avail__cell--busy { --scheduler-avail-fill: #002d9c; }
-:is([data-theme="ant-dark"], [data-theme="pixel-dark"]) .scheduler-bar {
+:is([data-theme="ant-dark"], [data-theme="pixel-dark"]) {
   --rux-status-gray: #d9d9d9;
-  --scheduler-driver-neutral: #d9d9d9;
   --rux-status-green: #b7eb8f;
-  --scheduler-driver-success: #b7eb8f;
-  --scheduler-driver-normal: #bae0ff;
-  --scheduler-driver-error: #ffccc7;
+  --rux-status-blue: #bae0ff;
+  --rux-status-red: #ffccc7;
 }
-[data-theme="apple-dark"] .scheduler-bar {
-  --scheduler-driver-normal: #409cff;
-  --scheduler-driver-error: #ff6961;
+[data-theme="apple-dark"] {
+  --rux-status-blue: #409cff;
+  --rux-status-red: #ff6961;
 }
-[data-theme="apple-light"] .scheduler-bar {
-  --rux-status-green: #248a3d;
-  --scheduler-driver-success: #248a3d;
-}
+[data-theme="apple-light"] { --rux-status-green: #248a3d; }
 @media (hover: hover) {
   [data-theme] .scheduler-bar:hover:not([aria-current="true"]) { --scheduler-footer: oklch(from var(--scheduler-footer-base) calc(l + 0.06) c h); }
   [data-theme] .scheduler-week--static .scheduler-bar:hover { --scheduler-footer: var(--scheduler-footer-base); }

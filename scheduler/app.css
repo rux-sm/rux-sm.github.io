@@ -643,14 +643,17 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
 .scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
 
-/* THE UNASSIGNED ROW SITS LOWER THAN THE BUS ROWS: its head and track are the
-   pane's surface mixed 25% toward black, in every theme, so a trip bar on it
-   stands off it by its fill's lightness and not by its hue alone. A grey a
-   step up, which it was, sat at a bar's own lightness in most themes. The
-   head stays opaque, because bars scroll under it, and its label takes the
-   primary text, which this darker row holds at 8 to 1 or better in every
-   theme where the secondary would fall to 2.8. */
-.scheduler-row--unassigned { --scheduler-unassigned: color-mix(in srgb, var(--rux-layer) 75%, #000); }
+/* THE UNASSIGNED ROW IS THE PAGE SHOWING THROUGH THE BOARD: its head and
+   track are Carbon's base layer, `--rux-background`, the one under the
+   board's, so it reads as a gap no bus fills. In a dark theme that is a step
+   below the board, where its trips stand two steps above it; in a light
+   theme it is the White or Gray 10 the board alternates with, as Carbon's
+   light layers do, and each trip keeps its own edge. A grey a step up, which
+   it was, sat at a bar's own lightness, and the board mixed toward black
+   went below the page in the dark themes and to a mid-grey in the light
+   ones, which Carbon's layering has neither of. The head stays opaque,
+   because bars scroll under it, and its label takes the primary text. */
+.scheduler-row--unassigned { --scheduler-unassigned: var(--rux-background); }
 .scheduler-row--unassigned .scheduler-row-head { background: var(--scheduler-unassigned); }
 .scheduler-row--unassigned .scheduler-row-head__num {
   /* Always two lines, "No" over "bus", so the label is no wider than the bus

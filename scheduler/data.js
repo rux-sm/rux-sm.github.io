@@ -13337,8 +13337,11 @@
     window.Rux?.menu?.open?.(menu, from ?? null);
   }
   /* The placing alone, which a menu that grows after it opens asks for again.
-     `matchWidth` gives a list of values its trigger's width, as Design's list
-     box gives a dropdown its field's, past Carbon's 18rem cap on a menu.
+     `matchWidth` gives a list of values at least its trigger's width, as
+     Design's list box gives a dropdown its field's, past Carbon's 18rem cap on
+     a menu, and lets it grow past a trigger narrower than its rows, as the
+     month's button is on a phone, where a fixed width cut every month's
+     name short.
      Every menu placed here opens over a Layer 01 surface, the board, the
      roster, the toolbar or a panel, so it takes Carbon's 02 set, a layer
      above what it opens on, as Carbon's layering puts a menu; placed in the
@@ -13352,8 +13355,8 @@
     pageEl?.appendChild(menu);
     if (matchWidth && from) {
       const w = `${Math.round(from.getBoundingClientRect().width)}px`;
-      menu.style.inlineSize = w;
-      menu.style.maxInlineSize = w;
+      menu.style.minInlineSize = w;
+      menu.style.maxInlineSize = 'none';
     }
     let { clientX: px, clientY: py } = e;
     if (!px && !py) {

@@ -1281,6 +1281,13 @@
    the spacer are Carbon's table toolbar actions, which carry none, the ⋮
    with them. */
 :is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"]) .scheduler-page :is(.scheduler-toolbar__spacer ~ .rux--btn--ghost, .scheduler-toolbar > .rux--btn--ghost):not(:focus-visible) { border-inline-color: transparent; }
+/* A narrow toolbar's spacer has no width, and app.css takes its rule away
+   there so it does not stand against the next button's; these themes draw
+   none on the buttons after it, so they keep it, and it still closes the
+   week's controls, on a phone the last of them, Today. */
+@container scheduler-toolbar (max-width: 48.5rem) {
+  :is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"]) .scheduler-toolbar__spacer { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+}
 /* A form's open pick cell does the same with its menu, in the menu's own
    surface and line, Background 1 and gray 400, which Design gives every Rux 100
    menu, on the form's page and in the board's panel alike. */

@@ -294,7 +294,7 @@
      row and the whole of it is the press, Design's arrow at its first
      line's end, turning as it opens.
      The panel under it holds what a closed row has no room for: who it is
-     about, its trip, its detail and its number, then the buttons. What a
+     about, its trip and its detail, then the buttons. What a
      row has none of, a trip or a thread, is left out rather than shown
      disabled. */
   function storedRow(row) {
@@ -308,8 +308,9 @@
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    // The first line is its kind and its due day, with Due said for a
-    // reader; the second its words.
+    // The first line is its kind, its due day, with Due said for a reader,
+    // and its number, with Task said, so a person can name it aloud without
+    // opening it; the second its words.
     const context = el('div', 'scheduler-to-do__context');
     context.appendChild(kindTag(row));
     const dueWord = row.due_on ? dueWords(row.due_on) : '';
@@ -317,6 +318,11 @@
       const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
       due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
       context.appendChild(due);
+    }
+    if (row.number != null) {
+      const number = el('span', 'scheduler-to-do__number');
+      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
+      context.appendChild(number);
     }
     // The one working on it, by face at the line's end, so a row nobody has taken shows none.
     const owner = staff.get(row.owner_id);
@@ -350,16 +356,11 @@
       link.append(svgUse('#m-directions_bus'), words, svgUse('#m-arrow_forward'));
       more.appendChild(link);
     }
+    // Then its detail, a fact to an item of Design's list.
     if (lines.length) {
-      const notes = el('ul', 'scheduler-to-do__notes');
-      for (const line of lines) notes.appendChild(el('li', 'scheduler-to-do__note', line));
+      const notes = el('ul', 'rux--list--unordered');
+      for (const line of lines) notes.appendChild(el('li', 'rux--list__item', line));
       more.appendChild(notes);
-    }
-    // Its number ends what it holds, with Task said for a reader, so a person can name it aloud.
-    if (row.number != null) {
-      const number = el('div', 'scheduler-to-do__meta');
-      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
-      more.appendChild(number);
     }
 
     // Done is the row's one primary action, as Geist's solid button is.

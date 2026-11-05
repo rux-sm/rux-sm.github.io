@@ -18,9 +18,11 @@ own label shows now.
 
 - **Carbon's markup and CSS, unchanged.** The container is
   `rux--popover-container rux--popover--caret rux--popover--high-contrast
-  rux--popover--drop-shadow rux--toggletip`, the surface
+  rux--popover--drop-shadow rux--toggletip`, with `rux--popover--open` while
+  the tip shows, since Carbon's CSS shows the surface only then. Inside it is
+  `rux--popover`, which carries the inverse colours, and in that the surface
   `rux--popover-content rux--toggletip-content` with Carbon's caret beside
-  it, and no local rule changes their padding, gap, size or width.
+  it. No local rule changes their padding, gap, size or width.
 - **One tip at a time, laid over the icon pressed.** The board keeps one
   container and places it over the pressed icon, so Carbon's CSS draws the
   tip and its caret at Carbon's offset. The board only chooses the
@@ -56,20 +58,26 @@ own label shows now.
   words.** On a planned bar: the trip kind arrow, Paid, the balance warning,
   the stop ticks, the −1 and +1 marks, the contact, the times across two
   weeks and the faces. On a bus out on the road, its labels too, so no
-  browser label is left on the board.
+  browser label is left on a bar.
+- **A label of more than one line keeps its lines,** each its own line in
+  the tooltip: a stop tick's, the times row's on a bus out, and a driver's
+  not on the trip. Carbon's tooltip runs text together, so a line break in
+  the words would not show.
 - **One tooltip, laid over what the pointer rests on, as the tip is.** A bar
   clips what is inside it, so the board keeps one Carbon tooltip container,
   `rux--tooltip rux--popover-container rux--popover--caret
-  rux--popover--high-contrast`, outside the bars, places it over the thing,
-  above first, and chooses another placement by the room as the tip does.
-  It shows after Carbon's 100ms and goes after its 300ms, the delays
-  Design's `js/popover.js` keeps.
+  rux--popover--high-contrast`, with `rux--popover` inside it and the surface
+  `rux--popover-content rux--tooltip-content` in that, outside the bars. It
+  places it over the thing, above first, and chooses another placement by
+  the room as the tip does. It shows after 100ms and goes after 300ms, the
+  defaults of Carbon's React tooltip, which Design's `js/popover.js` keeps.
 - **Carbon's default tooltip for every label,** not its icon tooltip, which
   Carbon keeps for icon buttons, so every label looks the same.
-- **A label is the pointer's.** Its words are already in the bar's or the
-  mark's accessible name, so the keyboard and a screen reader have them
-  without a tab stop on each mark; Carbon also opens a tooltip on focus,
-  which these marks never take.
+- **A label is the pointer's, until the question below is answered.** Its
+  words are in the bar's or the mark's accessible name, so a screen reader
+  has them without a tab stop on each mark. This departs from Carbon, whose
+  tooltip opens on focus as well as hover and sits on a trigger that takes
+  focus; these marks take none.
 - **The phone's half sheet keeps its own card.** Only the floating tips
   change.
 - **The new tips are drawn in `trip-tips.js`,** which the board and the
@@ -77,7 +85,21 @@ own label shows now.
 
 ## Questions
 
-None open.
+- **Do the labels on marks that cannot take focus stay the pointer's, or
+  become Carbon's definition tooltip?** Paid, the balance warning, the −1
+  and +1, the contact, the times, the stop ticks, the kind arrow and the
+  faces are words or marks with no tab stop, so a keyboard or a phone never
+  shows them. Carbon's answer for words in a tight space is the definition
+  tooltip: a dotted underline that a press or Tab opens.
+- **Where does a bus's engine warning lamp show on a wide board?** Only the
+  times row's hover label says it there, since nothing on a bus out opens
+  the live card, and Carbon says a tooltip must not hold what the office
+  needs to act on. It could go on the bar, in a tip a press opens, or the
+  live card could get an opener back.
+- **Do the bus row heads and the time at the yard between two trips join
+  this plan?** They keep the browser's label: a bus's name, seats, type,
+  lift, sleeper and status, Trips with no bus yet, and the hours at the
+  yard.
 
 ## Tasks
 

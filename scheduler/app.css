@@ -6437,8 +6437,11 @@ html[data-scheduler-takeover] {
    it takes the height app.js gives it. */
 .scheduler-to-do--pane {
   --scheduler-pane-w: var(--scheduler-list-w);
-  /* The pane's inset, the list's and the title's alike. */
+  /* The pane's inset at the sides, the list's and the title's alike, and a
+     row's above and below its lines, Carbon's 16px tile and list padding,
+     so a closed row of two lines is 80px. */
   --scheduler-list-inset: var(--rux-spacing-07);
+  --scheduler-row-inset: var(--rux-spacing-05);
   flex: 0 0 var(--scheduler-list-w);
   inline-size: var(--scheduler-list-w);
   background: var(--rux-layer);
@@ -6556,9 +6559,9 @@ html[data-scheduler-takeover] {
 .scheduler-to-do__trip-customer { color: var(--rux-text-secondary); }
 /* An empty list or day is one line where its rows would be, in the quiet
    colour, inset as a row's words are. */
-.scheduler-to-do__none { margin: 0; padding: var(--scheduler-list-inset); color: var(--rux-text-secondary); font-size: 0.875rem; }
+.scheduler-to-do__none { margin: 0; padding: var(--scheduler-row-inset) var(--scheduler-list-inset); color: var(--rux-text-secondary); font-size: 0.875rem; }
 /* A row's form stands in the row, inset as a row's words are. */
-.scheduler-to-do__row--editing { padding: var(--scheduler-list-inset); }
+.scheduler-to-do__row--editing { padding: var(--scheduler-row-inset) var(--scheduler-list-inset); }
 .scheduler-to-do__form .rux--form-item { margin: 0; }
 /* A row of buttons, 254px wide inside a row's 32px beside the week: what
    acts on the row first, and from the one marked as the end's, at the far

@@ -1358,6 +1358,15 @@
   --scheduler-driver-normal: #78a9ff;
   --scheduler-driver-error: #ff8389;
 }
+/* Carbon's dark themes paint a blue trip in Blue 80, #002d9c, a step deeper
+   than the blue tag's Blue 70, under the pointer in Blue 80's own hover,
+   #0039c5; the roster's trip cells take the same blue, so a trip is one
+   colour on the board and beside it. */
+:is([data-theme="g90"], [data-theme="g100"]) .scheduler-bar--blue {
+  --scheduler-bg: #002d9c;
+  --scheduler-hover: #0039c5;
+}
+:is([data-theme="g90"], [data-theme="g100"]) .scheduler-avail__cell--busy { --scheduler-avail-fill: #002d9c; }
 :is([data-theme="ant-dark"], [data-theme="pixel-dark"]) .scheduler-bar {
   --rux-status-gray: #d9d9d9;
   --scheduler-driver-neutral: #d9d9d9;

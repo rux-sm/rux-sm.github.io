@@ -37,10 +37,14 @@ from a bar, and the bus number's tip.
   colour. Status icons keep Carbon's inverse support colours.
 - **A tall tip scrolls its body only,** under the heading and over the
   footer, within the board's room, as Carbon's toggletip says.
-- **Updates:** the newest five, then a footer of a `Show all` link with
-  the count and an `Add update` button. Add update puts Carbon's small
-  field, with Cancel and Save, in the footer's place. Changing or deleting
-  an update is the first question below.
+- **Updates:** the newest five, each its words over who wrote it and when,
+  then a footer of a `Show all` link with the count and an `Add update`
+  button. Add update puts Carbon's small field, with Cancel and Save, in the
+  footer's place.
+- **An update is changed or deleted from a pencil at its end:** Carbon's
+  small ghost icon-only button, Carbon's `i-edit` icon, which Design has,
+  with its tooltip, Edit update. It opens the update in place, its box with
+  Delete, Cancel and Save, as a press on the row does now.
 - **Alerts:** each alert is its icon and its words, the words a Carbon link
   to where it is put right, and a reminder's when stays at its end.
 - **The route tip** keeps its table, at 14px inside 288px, a stop's name
@@ -54,11 +58,6 @@ from a bar, and the bus number's tip.
 
 ## Questions
 
-- **How is an update changed or deleted, now that its row is not a press?**
-  (a) A pencil at each update's end, Carbon's small ghost icon button with
-  its tooltip, opening the box in place as now. Recommended: one press, as
-  today. (b) Carbon's overflow menu at each update's end, with Edit and
-  Delete. (c) Not in the tip: the trip editor's Updates.
 - **Do the bar's nine hover labels become Carbon tooltips in this plan, or
   in a plan of their own?** They are the browser's own labels now: the trip
   kind arrow, Paid, the balance warning, the stop ticks, the −1 and +1
@@ -70,8 +69,7 @@ from a bar, and the bus number's tip.
       placement class by the room on the board, and delete the day-column
       placing, the drawn caret and the `data-tip` rules in `app.css` and
       `theme.css`.
-- [ ] Draw Updates as decided, with changing an update as the first
-      question answers.
+- [ ] Draw Updates as decided, with its pencils.
 - [ ] Draw Alerts as decided.
 - [ ] Draw the route tip and a driver's tip as decided.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by

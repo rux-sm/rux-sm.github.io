@@ -12679,33 +12679,9 @@
     window.Rux?.schedule?.fit?.();
   }
 
-  /* A TOOLBAR MENU HUNG FLUSH UNDER ITS BUTTON IS ONE SURFACE WITH IT, as
-     Carbon's overflow menu is with its trigger: the button takes the menu's
-     layer and shadow, and a strip the button's width in the menu's layer
-     covers the menu's shadow where the two meet. The menu is Layer 02, as
-     every menu placeMenu places is, so the button is raised into it with
-     Carbon's `rux--layer-two`, as Carbon's table toolbar opens its menus and
-     their buttons in Layer 02, or the open button would read as the toolbar's
-     own Layer 01 fill. Both are marked, and the menu is told where the button
-     stands over it, unrounded, so the strip lands on the button wherever the
-     menu's width puts its edge. A menu that had to open elsewhere, or that a
-     theme floats clear by its gap, stays apart. The ⋮ and the month's list
-     are joined this way. */
-  function joinMenu(menu, trigger) {
-    const r = trigger.getBoundingClientRect();
-    const m = menu.getBoundingClientRect();
-    if (Math.abs(m.top - r.bottom) >= 1) return;
-    menu.style.setProperty('--scheduler-attach-x', `${r.left - m.left}px`);
-    menu.style.setProperty('--scheduler-attach-w', `${r.width}px`);
-    menu.dataset.attached = '';
-    trigger.dataset.attached = '';
-    trigger.classList.add('rux--layer-two');
-  }
-  function partMenu(menu, trigger) {
-    delete menu.dataset.attached;
-    delete trigger.dataset.attached;
-    trigger.classList.remove('rux--layer-two');
-  }
+  /* The ⋮ and the month's list each join the menu they open, as
+     joined-menu.js says. */
+  const { join: joinMenu, part: partMenu } = window.SchedulerJoinedMenu;
 
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
@@ -19171,7 +19147,7 @@
        state. Hung flush under the row, where its fill starts at the
        button's foot, the calendar is one surface with its button, as a
        toolbar menu is with its own, the button raised into the calendar's
-       Layer 02 as joinMenu raises a menu's button; a theme that floats it
+       Layer 02 as joined-menu.js raises a menu's button; a theme that floats it
        clear by its transparent band keeps the two apart. The button stands
        over the calendar, so it covers the calendar's shadow itself and needs
        no strip. */

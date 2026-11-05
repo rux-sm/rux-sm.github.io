@@ -3003,41 +3003,16 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* ── Week row ───────────────────────────────────────────────────────────────
    The week range, a date-picker trigger, first in the toolbar. */
-/* A toolbar menu hung flush under its button is one surface with it, in
-   Carbon's overflow menu's open treatment: the ⋮ and the month's list each
-   take it from data.js, which raises the button into the menu's Layer 02, a
-   layer above the toolbar, as Carbon's table toolbar does. The button takes
-   the menu's layer and shadow, its shadow stopping at its foot, and a strip
-   the button's width, in the menu's layer, covers the menu's shadow along
-   the button's foot. The strip is 5px,
-   past the shadow's reach above the menu, its 6px blur less its 2px drop, so
-   the two never darken the corner where they meet. data.js sets where the
-   strip sits. The rule down the button's leading edge comes off while it is
-   open, as Carbon's open trigger has no line down its side. */
-:is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached] {
-  background-color: var(--rux-layer);
-  box-shadow: 0 2px 6px var(--rux-shadow);
-  clip-path: inset(-6px -6px 0 -6px);
-}
+/* The ⋮, the month and the calendar's button join the surface they open as
+   overrides.css draws a joined menu's button. The rule down a joined
+   button's leading edge comes off while it is open, as Carbon's open
+   trigger has no line down its side. */
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible),
 .scheduler-weekbtn--month[data-attached] { border-inline-start-color: transparent; }
 /* The calendar hangs under the month's button as well as its own, so the
    rule between the two, the month's leading one, would stand on the joined
    surface; it comes off while they are joined. */
 #scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
-/* Under the pointer the open button holds its layer, as Carbon's open overflow
-   trigger does, so the button and its menu stay one surface and only the
-   menu's rows answer the pointer. */
-:is(.scheduler-toolbar__more, .scheduler-weekbtn)[data-attached]:hover { background-color: var(--rux-layer); }
-:is(.scheduler-view-menu, .scheduler-long-menu)[data-attached]::before {
-  position: absolute;
-  content: "";
-  inset-block-start: -5px;
-  inset-inline-start: var(--scheduler-attach-x);
-  inline-size: var(--scheduler-attach-w);
-  block-size: 5px;
-  background-color: var(--rux-layer);
-}
 /* The week's calendar joined to its button casts the menus' shadow, not the
    fainter one Carbon's calendar keeps, so the three surfaces the toolbar
    opens read as one kind. */

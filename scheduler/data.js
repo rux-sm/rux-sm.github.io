@@ -11068,7 +11068,7 @@
         || (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
       .map(d => ({
         driver: d, legs: [],
-        days: Array.from({ length }, () => ({ off: null, reason: null, offOf: null, trips: [], refs: [], rest: null })),
+        days: Array.from({ length }, () => ({ off: null, offOf: null, trips: [], refs: [], rest: null })),
       }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
@@ -11136,7 +11136,6 @@
         const day = row.days[place.start + i];
         if (!day) continue;
         day.off = off.reason || 'Time off';
-        day.reason = off.reason || null;
         day.offOf = off;
         day.offFromPrev = i === 0 && place.fromPrev;
         day.offToNext = i === place.span - 1 && place.toNext;
@@ -11165,18 +11164,6 @@
     }
     return rows;
   }
-
-  /* The drawing a bar's first day carries: a bus for a trip, and for time off
-     the reason, by the values the driver editor's Reason list saves. A reason
-     outside that list, or none, takes the crossed-out day. */
-  const TRIP_GLYPH = '#m-directions_bus-fill';
-  const OFF_GLYPHS = new Map([
-    ['vacation', '#m-beach_access-fill'],
-    ['sick', '#m-medical_services-fill'],
-    ['personal', '#m-person-fill'],
-    ['suspended', '#m-block'],
-  ]);
-  const OFF_GLYPH = '#m-event_busy-fill';
 
   /* Draws `count` of the board's `days`, from its day `first`. Every day cell
      keeps the board's own day number, so the selected trip's days light the
@@ -11273,15 +11260,11 @@
           : `${Math.floor(rest.hours)}h rest after ${rest.after}${tight ? `, under ${REST_HOURS}` : ''}`;
         cell.appendChild(el('span', null, restText ?? (offAndOn ? '!' : (day.off || day.trips.join(' · ')))));
         /* One bar per leg or time off: a day joined to its neighbour runs to
-           that edge of its cell, and the bar's first day shown carries its
-           drawing, unless that day shows a rest or an overlap instead. */
+           that edge of its cell. A bar carries no drawing, since its blue
+           already says booked and its red away, and the cell's title names
+           the trip or the reason. */
         if (day.joinPrev) cell.classList.add('scheduler-avail__cell--from-prev');
         if (day.joinNext) cell.classList.add('scheduler-avail__cell--to-next');
-        if ((day.off || busy) && !restText && !offAndOn && (!day.joinPrev || j === 0)) {
-          const glyph = svgUse(day.off ? (OFF_GLYPHS.get(day.reason) || OFF_GLYPH) : TRIP_GLYPH, '16', '0 0 32 32');
-          glyph.classList.add('scheduler-avail__glyph');
-          cell.appendChild(glyph);
-        }
         if (day.off || busy) {
           const said = offAndOn ? `${day.off}, and on ${day.trips.join(' · ')}` : (day.off || day.trips.join(' · '));
           cell.title = `${row.driver.name || ''} — ${said}${restWords ? ` · ${restWords}` : ''}`;

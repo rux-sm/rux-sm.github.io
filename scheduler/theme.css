@@ -865,13 +865,9 @@
   --scheduler-avail-fill: var(--geist-red-800);
   color: var(--geist-white);
 }
-/* A roster mark carries no drawing: the blue mark already says booked and
-   the red one away, and a drawing on the first day of every bar filled the
-   roster with icons. Each cell's words still name its trip or the reason
-   for the time off. The rule that parts the two weeks in the day band goes
-   too, its width kept as padding so the letters do not move: the letters
-   repeat, M after S, and say where the week turns. */
-[data-theme="rux-100"] .scheduler-avail__glyph { display: none; }
+/* The rule that parts the two weeks in the day band goes, its width kept as
+   padding so the letters do not move: the letters repeat, M after S, and say
+   where the week turns. */
 [data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--week { border-inline-start: 0; padding-inline-start: 1px; }
 /* The days draw no rule at all, rather than a clear one: a clear 1px rule
    still takes its corner of the row's line under it, which left a notch in

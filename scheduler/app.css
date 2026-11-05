@@ -3923,15 +3923,6 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev { overflow: visible; }
 .scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev::after { inset-inline-start: -1px; }
-/* A bar's first day carries a drawing in the mark's own text colour: a bus
-   for a trip, and the reason for time off. Centred in the cell, over the
-   mark. */
-.scheduler-avail__glyph {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  z-index: 1;
-}
 .scheduler-avail__cell > span {
   overflow: hidden;
   text-overflow: ellipsis;

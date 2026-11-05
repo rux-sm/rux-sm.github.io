@@ -20,6 +20,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A quote names the departing city and the farthest destination city only, even when the trip stops in more, because one pair of cities keeps the quote simple.
 - When a customer changes a quoted trip's days or route, the trip is priced again by the calculator on the new route and days, as its Bus rental line, never as the old price with a line added, because the calculator's figure is what the office quotes that trip new.
 - When a customer changes a signed trip's days or route, only the route and days are changed and the price stays as signed, because the signed contract fixes it; a new price the office quotes for the change replaces it, as the latest quote sent.
+- A transfer a customer adds after their trip is signed and paid is quoted as its own trip with its own price, never as a leg on the signed one, because the signed quote and its invoice stay as they were.
 - A booking whose buses run different itineraries is entered as one trip per bus, each with its own route and its bus's share of the price, and each carries the same contract, PO and quote sent, because the editor cannot yet give one trip a second route.
 
 ## Route

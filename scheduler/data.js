@@ -17758,11 +17758,20 @@
       li.append(open, el('span', 'scheduler-tip__words', u.body), el('span', 'scheduler-tip__by', by(u)));
       return li;
     };
+    /* The newest five, and the rest behind Show all, so a trip with many
+       updates keeps a tip that reads at a glance; the docked card's own
+       switch, `updatesOpenFor`, opens them, so the two show the same. */
+    const every = updatesOpenFor === trip.id || all.length <= 5;
     if (all.length) {
       const list = el('ol', 'scheduler-tip__list');
       list.setAttribute('aria-label', 'Updates, newest first');
-      list.append(...all.map(item));
+      list.append(...(every ? all : all.slice(0, 5)).map(item));
       tip.appendChild(list);
+    }
+    if (all.length > 5) {
+      const row = el('div', 'scheduler-tip__row scheduler-tip__more');
+      row.appendChild(small('rux--btn--ghost', every ? 'Show the newest 5' : `Show all ${all.length}`, 'show-all'));
+      tip.appendChild(row);
     }
     const quickOpen = quickOpenFor === trip.id || (quickDraft.tripId === trip.id && !!quickDraft.text);
     if (quickOpen) {
@@ -17870,7 +17879,8 @@
     const act = e.target.closest('[data-edit-act]');
     if (act) {
       const how = act.dataset.editAct;
-      if (how === 'cancel') endCardEdit(true);
+      if (how === 'show-all') toggleUpdates(act.closest('[data-trip-id]')?.dataset.tripId ?? selectedBar()?.dataset.tripId ?? null, e.detail === 0);
+      else if (how === 'cancel') endCardEdit(true);
       else if (how === 'ask-delete') { cardEdit.mode = 'delete'; placeBarOpen(); barShortcuts.querySelector('[data-edit-act="cancel"]')?.focus(); }
       else changeCardUpdate(act);
       return;

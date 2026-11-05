@@ -410,6 +410,24 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
+/* A TIP IS THE INVERSE SURFACE, so a status mark in it takes Carbon's
+   inverse support colours, as its route marks do, where the page's status
+   colours, tuned for the page, fell under 3 to 1 on it in every theme. The
+   not-sent grey is the tip's own ink, faded, and the warning triangle takes
+   an edge of its yellow halfway to that ink, Carbon's outline for yellow on
+   a light surface, which a dark tip shows only faintly. The docked sheet's
+   card is not inverse, and keeps the page's below. */
+.scheduler-tip {
+  --rux-status-green: var(--rux-support-success-inverse);
+  --rux-status-red: var(--rux-support-error-inverse);
+  --rux-status-blue: var(--rux-support-info-inverse);
+  --rux-status-yellow: var(--rux-support-warning-inverse);
+  --rux-status-gray: color-mix(in srgb, var(--rux-icon-inverse) 60%, var(--rux-background-inverse));
+}
+.scheduler-tip svg:has(> use[href="#i-warning--alt--filled"]) {
+  fill: color-mix(in srgb, var(--rux-support-warning-inverse) 50%, var(--rux-icon-inverse));
+  --rux-icon-path-2: var(--rux-support-warning-inverse);
+}
 .scheduler-tip__head {
   display: flex;
   align-items: center;
@@ -438,8 +456,9 @@ button.scheduler-row-head__num::after {
    the planned time and the actual, the columns lined up down the tip by a
    subgrid, their names faded over them. The point pressed is lit in the
    inverse surface's hover tone. A time past the yard-out's day carries its
-   +1 as the bar's return does, and an estimate is faded, since it is not
-   yet a time that happened. */
+   +1 beside it at the tip's own 12px, faded, where a raised mark at the
+   bar's size would fall under Carbon's smallest type, and an estimate is
+   faded, since it is not yet a time that happened. */
 .scheduler-route { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
 .scheduler-route__row {
   display: grid;
@@ -452,7 +471,7 @@ button.scheduler-row-head__num::after {
 .scheduler-route__row--head > * { opacity: .75; }
 .scheduler-route__name { min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-route__time { white-space: nowrap; }
-.scheduler-route__day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+.scheduler-route__day { margin-inline-start: .1em; opacity: .75; }
 .scheduler-route__actual { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--rux-spacing-02); }
 .scheduler-route__actual--estimate { opacity: .75; }
 /* The pickup's on time in Carbon's green check, or late in its amber
@@ -469,14 +488,15 @@ button.scheduler-row-head__num::after {
 .scheduler-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
 .scheduler-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
 .scheduler-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
-/* An engine lamp that is on: the lamp before its words, in Carbon's support
-   colour for an inverse surface, its inner mark filled as Carbon fills it so
-   the yellow reads on the light tip. */
+/* A warning, or an engine lamp that is on: the lamp before its words, in
+   Carbon's support colour for an inverse surface, its inner mark filled as
+   Carbon fills it so the yellow reads on the light tip. Its words are the
+   tip's regular weight, as an alert's are, the mark alone saying it is a
+   warning. */
 .scheduler-tip__lamp {
   display: flex;
   align-items: flex-start;
   gap: var(--rux-spacing-02);
-  font-weight: var(--rux-heading-compact-01-font-weight);
 }
 .scheduler-tip__lamp > svg { flex: none; }
 .scheduler-tip__lamp--warning > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
@@ -1763,7 +1783,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tip__answer { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
 .scheduler-tip--card .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
 :is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
-.scheduler-tip__why { font-weight: 400; }
 /* On the road: the three clocks side by side, each its name and the hours
    left over a 3px meter of them in the inverse green, amber and the hours
    bold under an hour; the small map the tip's full width and 8rem tall,
@@ -4654,6 +4673,19 @@ a.scheduler-tip__go { text-decoration: none; }
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   --tip-rule: var(--rux-border-subtle-01);
+}
+/* The docked card stands on the page's layer, so its marks keep the page's
+   status colours and plain warning triangle. */
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card {
+  --rux-status-green: inherit;
+  --rux-status-red: inherit;
+  --rux-status-blue: inherit;
+  --rux-status-yellow: inherit;
+  --rux-status-gray: inherit;
+}
+.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card svg:has(> use[href="#i-warning--alt--filled"]) {
+  fill: currentColor;
+  --rux-icon-path-2: initial;
 }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }

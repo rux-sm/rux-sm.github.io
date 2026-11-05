@@ -1260,18 +1260,18 @@
    #0a0a0a, in its line, from Design. The open ⋮ and the open week's name
    join the menu and the calendar they open in it, so they take that sheet
    rather than the board's black. */
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-panel-more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
   --scheduler-region: var(--geist-background-100);
 }
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) { --rux-layer: var(--scheduler-region); }
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-panel-more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) { --rux-layer: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two.
    The menu hangs 1px lower than the ⋮'s foot, so its outline lies on the
    board's top line, as the shell's panels lie on the header's, and the strip
    covers that line under the ⋮. */
-[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
-[data-theme="rux-100"] .scheduler-view-menu[data-attached] { margin-block-start: 1px; }
+[data-theme="rux-100"] :is(.scheduler-toolbar__more, .scheduler-panel-more)[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
+[data-theme="rux-100"] :is(.scheduler-view-menu, .scheduler-panel-menu)[data-attached] { margin-block-start: 1px; }
 /* Carbon's four and Rux 100, whose Geist gives a toolbar no dividers of its
    own, draw the toolbar as the two Carbon patterns it holds. The
    week, Today and the arrows step through weeks as Carbon's pagination steps
@@ -1419,7 +1419,7 @@
    pointer takes Geist's gray 100, #1a1a1a. The regions are told apart by
    their lines alone: each is parted from the next by one 1px line in
    Geist's default border, #2e2e2e, set as border-subtle-01 on the board,
-   every panel and the ⋮'s menu, which opens outside the board on Geist's
+   every panel and the two ⋮ menus, which open outside the board on Geist's
    Background 1, #0a0a0a, so the toolbar's dividers, the rows, the region
    edges and the panels' rules are all that one grey.
    The driver roster beside it is the same sheet with the same lines, and
@@ -1427,13 +1427,13 @@
    Unassigned, a darker tint of the board elsewhere, is the same sheet, its
    italic No bus saying what the row is. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
-[data-theme="rux-100"] :is(.rux--header, .scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
+[data-theme="rux-100"] :is(.rux--header, .scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu, #scheduler-panel-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: var(--geist-gray-400);
   --scheduler-region: var(--geist-background-200);
   --scheduler-region-hover: var(--geist-gray-100);
 }
-[data-theme="rux-100"] #scheduler-view-menu { --scheduler-region: var(--geist-background-100); }
+[data-theme="rux-100"] :is(#scheduler-view-menu, #scheduler-panel-menu) { --scheduler-region: var(--geist-background-100); }
 /* The header's menu and account panel open on the same sheet, as the ⋮'s
    menu does: its layer, its hover and its one grey line, round the panel,
    its open button and the rules inside it. */

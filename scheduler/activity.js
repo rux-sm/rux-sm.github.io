@@ -1,73 +1,97 @@
-/* THE ACTIVITY LINE, the view menu's Activity: what the page is doing in the
-   background, in the header beside the people here. While anything is
-   fetched it is Carbon's inline loading, a spinner and what is being asked;
-   at rest a check and what the board holds; its tooltip lists the last
-   things done, with how long each took.
+/* THE ACTIVITY LINE, the view menu's Activity: whether the board is up to
+   date, in the header beside the people here. While the board's trips load
+   it says Loading trips..., while a change is written Saving... and while
+   anything else is read Loading..., beside Carbon's inline loading spinner;
+   at rest a check and Up to date; and what failed, with Carbon's error mark,
+   when something does. Its tooltip lists the last things done, each at its
+   time.
    Every request the page makes passes through `fetch`, so this script wraps
    it, and is loaded before the Supabase script, whose client keeps the
-   `fetch` it finds. data.js says the rest through `SchedulerActivity`: the
-   weeks it reads and holds, and the changes that reach it live. The wrap
-   costs a map entry a request, so it stays on with the line off. */
+   `fetch` it finds. data.js says the rest through `SchedulerActivity`: when
+   it reads the board's trips, when a change reaches it live, and whether
+   the live board is open. The wrap costs a map entry a request, so it stays
+   on with the line off. */
 (() => {
+  /* What the line says of each kind of work: under way, done, and failed.
+     A save done is said for a moment and kept in the tooltip; the board's
+     trips loaded are only kept, as Up to date says the rest; any other read
+     done is not news. */
+  const WORDS = {
+    save: { busy: 'Saving…', done: 'Saved', failed: "Couldn't save" },
+    trips: { busy: 'Loading trips…', kept: 'Trips loaded', failed: "Couldn't load trips" },
+    load: { busy: 'Loading…', failed: "Couldn't load" },
+  };
+  // The kind said while several are under way: a save first, then the board's trips.
+  const FIRST = ['save', 'trips', 'load'];
+  const CHANGED = 'Board updated';
+  const PAUSED = 'Live changes paused';
+
   const running = new Map();
   const recent = [];
-  let seq = 0, held = '', said = '', saidUntil = 0, on = false, line = null, timer = 0;
+  let seq = 0, said = null, saidUntil = 0, paused = false, on = false, line = null, timer = 0;
 
-  // A table's or a function's name as words: trip_assignments, trip assignments.
-  const named = s => decodeURIComponent(s).replace(/[_-]+/g, ' ');
-  /* What a request is, in words: the database's tables, functions and files,
-     the sign-in, and any other site by its name. The page's own files are
-     not news, nor is the live channel, which holds one socket open. */
-  function wordsFor(url, method) {
+  /* What kind of work a request is: a change written to a table or a file,
+     or anything read, from the tables, the files, the database's functions,
+     the Edge Functions or another site. A database function is asked by
+     POST whatever it does, so it counts as a read, and a change one makes
+     is reported by what asked for it; a file's signed link and a folder's
+     list are asked for by POST too, and read. The page's own files, the
+     sign-in and the live channel are not news. */
+  function kindOf(url, method) {
     let u;
     try { u = new URL(url, location.href); } catch { return null; }
     if (u.origin === location.origin) return null;
     const path = u.pathname;
-    let m;
-    if ((m = path.match(/\/rest\/v1\/rpc\/([^/?]+)/))) return `Running ${named(m[1])}`;
-    if ((m = path.match(/\/rest\/v1\/([^/?]+)/))) {
-      const what = named(m[1]);
-      if (method === 'GET' || method === 'HEAD') return `Reading ${what}`;
-      return method === 'DELETE' ? `Deleting from ${what}` : `Saving ${what}`;
-    }
-    if ((m = path.match(/\/functions\/v1\/([^/?]+)/))) return `Asking ${named(m[1])}`;
-    if (path.includes('/storage/v1/')) return method === 'GET' ? 'Loading a file' : 'Saving a file';
-    if (path.includes('/auth/v1/')) return 'Checking the sign-in';
-    if (path.includes('/realtime/')) return null;
-    return `Asking ${u.hostname.replace(/^www\./, '')}`;
+    if (path.includes('/auth/v1/') || path.includes('/realtime/')) return null;
+    const reads = method === 'GET' || method === 'HEAD';
+    if (path.includes('/rest/v1/rpc/')) return 'load';
+    if (path.includes('/rest/v1/')) return reads ? 'load' : 'save';
+    if (path.includes('/storage/v1/')) return reads || /\/object\/(sign|list)\//.test(path) ? 'load' : 'save';
+    return 'load';
   }
 
-  const clock = d => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  function remember(label, ms, ok) {
-    recent.unshift({ label, ms, ok, at: new Date() });
+  const clock = d => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  // Keeps a line for the tooltip; the same words again within ten seconds only move its time.
+  function remember(words, failed) {
+    const at = new Date(), last = recent[0];
+    if (last?.words === words && at - last.at < 10000) { last.at = at; return; }
+    recent.unshift({ words, failed, at });
     recent.length = Math.min(recent.length, 12);
   }
+  // Says something for a moment, once nothing is under way; a failure still showing is not talked over.
+  function say(words, failed, ms) {
+    if (!failed && said?.failed && Date.now() < saidUntil) return;
+    said = { words, failed };
+    saidUntil = Date.now() + ms;
+  }
 
-  /* Starts something under way and gives back the call that ends it. A lead
-     is what data.js asks for, such as the weeks it reads, and is shown ahead
-     of the requests it makes. */
-  function begin(label, lead = false) {
+  // Starts a kind of work under way and gives back the call that ends it.
+  function begin(kind) {
     const id = ++seq;
-    running.set(id, { label, lead, t: performance.now() });
+    running.set(id, kind);
     paint();
     return (ok = true) => {
-      const run = running.get(id);
-      if (!run) return;
-      running.delete(id);
-      remember(run.label, Math.round(performance.now() - run.t), ok);
-      if (!ok) { said = `${run.label} failed`; saidUntil = Date.now() + 4000; }
+      if (!running.delete(id)) return;
+      const w = WORDS[kind], words = ok ? w.done ?? w.kept : w.failed;
+      if (words) remember(words, !ok);
+      if (!ok) say(words, true, 4000);
+      else if (w.done) say(words, false, 2500);
       paint();
     };
   }
-  // Something done at once, shown for a moment and kept in the list.
-  function note(label) {
-    remember(label, null, true);
-    said = label;
-    saidUntil = Date.now() + 2500;
+  // A change that reached the board live, from this page or another.
+  function changed() {
+    remember(CHANGED, false);
+    say(CHANGED, false, 2500);
     paint();
   }
-  // What the board holds, said at rest.
-  function hold(text) { held = text; paint(); }
+  // Whether the live board is open; while it is not, the board is not up to date.
+  function live(open) {
+    if (paused === !open) return;
+    paused = !open;
+    if (paused) remember(PAUSED, true);
+    paint();
+  }
 
   function build() {
     line = document.getElementById('scheduler-activity');
@@ -82,30 +106,32 @@
   function paint() {
     if (!on || (!line && !build())) return;
     clearTimeout(timer);
-    const runs = [...running.values()];
-    const shown = runs.find(r => r.lead) || runs.at(-1);
-    let mark, text, state;
-    if (shown) {
+    const kinds = new Set(running.values());
+    const busy = FIRST.find(k => kinds.has(k));
+    let state, text;
+    if (busy) {
       state = 'busy';
-      mark = SPINNER;
-      // A lead stands for the requests it makes; loose requests say how many more are going.
-      text = shown.label + (!shown.lead && runs.length > 1 ? ` +${runs.length - 1}` : '');
+      text = WORDS[busy].busy;
     } else if (said && Date.now() < saidUntil) {
-      state = said.endsWith('failed') ? 'error' : 'note';
-      mark = state === 'error' ? ERROR : CHECK;
-      text = said;
+      state = said.failed ? 'error' : 'note';
+      text = said.words;
       timer = setTimeout(paint, saidUntil - Date.now());
+    } else if (paused) {
+      state = 'error';
+      text = PAUSED;
     } else {
       state = 'rest';
-      mark = CHECK;
-      text = held || 'Nothing loading';
+      text = 'Up to date';
     }
     const anim = line.firstElementChild, words = line.lastElementChild;
-    if (line.dataset.state !== state) { anim.innerHTML = mark; line.dataset.state = state; }
+    if (line.dataset.state !== state) {
+      anim.innerHTML = state === 'busy' ? SPINNER : state === 'error' ? ERROR : CHECK;
+      line.dataset.state = state;
+    }
     words.textContent = text;
     line.title = recent.length
-      ? recent.map(r => `${clock(r.at)}  ${r.label}${r.ms != null ? ` · ${r.ms}ms` : ''}${r.ok ? '' : ' · failed'}`).join('\n')
-      : 'Nothing done yet';
+      ? recent.map(r => `${clock(r.at)}  ${r.words}`).join('\n')
+      : 'Nothing yet';
   }
   function show(flag) {
     on = !!flag;
@@ -114,16 +140,16 @@
     paint();
   }
 
-  window.SchedulerActivity = { begin, note, hold, show };
+  window.SchedulerActivity = { begin, changed, live, show };
 
   const base = window.fetch;
   if (typeof base !== 'function') return;
   window.fetch = function (input, init) {
     const url = typeof input === 'string' ? input : input?.url ?? String(input);
     const method = String(init?.method || input?.method || 'GET').toUpperCase();
-    const label = wordsFor(url, method);
-    if (!label) return base.call(window, input, init);
-    const end = begin(label);
+    const kind = kindOf(url, method);
+    if (!kind) return base.call(window, input, init);
+    const end = begin(kind);
     return base.call(window, input, init).then(r => { end(r.ok); return r; }, e => { end(false); throw e; });
   };
 })();

@@ -172,9 +172,9 @@ Three homes, and one rule for choosing.
   moves no edge of the page and no trip, and Fill the window is read from the browser before the first paint by `view.js`, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to
   reduce motion, What the colours mean, a window of each colour of a live bar's dial, and Activity, which shows first in the
-  header's right side what the page is fetching, as Carbon's inline loading with what is being asked, such as Loading 35
-  weeks around Nov 7 or Reading trips, and at rest a check and the weeks held, its tooltip the last twelve things done with
-  their times, from `activity.js`, hidden below md. It hangs under its ⋮ and opens
+  header's right side whether the board is up to date, as Carbon's inline loading: Loading trips…, Saving… or Loading…
+  while it works, a check and Up to date at rest, and what failed when something does, its tooltip the last twelve things
+  done with their times, from `activity.js`, hidden below md. It hangs under its ⋮ and opens
   attached to it, one surface.
 - **The board's title is a calendar button, the month and the year.** A permanent mini calendar
   spends standing space on an occasional action, so the calendar opens from its glyph and marks the

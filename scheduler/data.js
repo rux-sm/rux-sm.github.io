@@ -731,10 +731,8 @@
   async function read(weekStart, reach = NEAR_DAYS) {
     const mine = ++readsBegun;
     const win = windowOf(weekStart, lastShown(weekStart), reach);
-    // The Activity line says the weeks asked for, and once read, the weeks held.
-    const weeks = Math.round(daysBetween(win.from, addDays(win.weekEnd, reach + 1)) / 7);
-    const shortDay = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const done = window.SchedulerActivity?.begin(`Loading ${weeks} weeks around ${shortDay(weekStart)}`, true);
+    // The Activity line says Loading trips... while the board reads.
+    const done = window.SchedulerActivity?.begin('trips');
     let trips, oos, timeOff, statuses;
     try {
       [, trips, oos, timeOff] = await withTimeout(Promise.all([
@@ -749,7 +747,6 @@
       throw e;
     }
     done?.();
-    window.SchedulerActivity?.hold(`${weeks} weeks held, ${shortDay(win.from)} – ${shortDay(addDays(win.weekEnd, reach))}`);
     const data = { ...lists, trips, oos, timeOff, statuses, weekStart, weekEnd: win.weekEnd, reach };
     carryMoves(data, mine);
     return data;
@@ -1600,7 +1597,6 @@
     stripData = data;
     render({ ...data, weekStart: first, weekEnd: last });
     placeStrip(left);
-    window.SchedulerActivity?.note('Drew the board again');
     shown = cursor;
   }
 
@@ -1826,7 +1822,6 @@
     if (!barCount && statusEl.hidden) sayQuietly('No trip touches the weeks around this one.');
     else if (barCount && !statusEl.hidden) { say(null); window.Rux?.schedule?.fit?.(); }
     listChanged();
-    window.SchedulerActivity?.note('Took the read in where the board stands');
     return true;
   }
 
@@ -2385,7 +2380,8 @@
   // The checklist's drop-down in the panel head, its button and the list inside it.
   const panelSave = document.getElementById('scheduler-panel-save');
   const panelReset = document.getElementById('scheduler-panel-reset');
-  const panelCancel = document.getElementById('scheduler-panel-cancel');
+  const panelMore = document.getElementById('scheduler-panel-more');
+  const panelMenu = document.getElementById('scheduler-panel-menu');
 
   const panelEl = document.getElementById('scheduler-panel');
   const tripEl = document.getElementById('scheduler-trip');
@@ -8342,7 +8338,7 @@
 
     // Cancel is static markup in the action bar. A trip not yet saved has
     // nothing to cancel, and Close already discards a draft.
-    panelCancel.hidden = creating || !trip.id;
+    panelMore.hidden = creating || !trip.id;
 
     /* ── Route ──
        The quick part first: where the group is picked up, one place search,
@@ -12995,11 +12991,33 @@
     openPanel(null, panelArgs.draft, panelArgs);
   });
 
-  /* The button only opens `scheduler-cancel-modal`; the dialog's confirm makes
-     the write. It reads `editing.id`, so it acts on the trip the panel shows
-     now. */
-  panelCancel?.addEventListener('click', () => {
-    if (editing?.id) openCancelModal(editing.id);
+  /* The head's ⋮ opens its menu joined under it, at the panel's end, and a
+     second press closes it, as the toolbar's ⋮ does. History leaves for the
+     History page on this trip once unsaved work is settled; Cancel trip only
+     opens `scheduler-cancel-modal`, whose confirm makes the write. Both read
+     `editing.id`, so they act on the trip the panel shows now. */
+  panelMore?.addEventListener('click', () => {
+    if (window.Rux?.menu?.isOpen?.(panelMenu)) { window.Rux.menu.close(panelMenu); return; }
+    const r = panelMore.getBoundingClientRect();
+    popMenuAt(panelMenu, { clientX: r.left, clientY: r.bottom }, panelMore, { end: true });
+    panelMore.setAttribute('aria-expanded', 'true');
+    joinMenu(panelMenu, panelMore);
+  });
+  panelMenu?.addEventListener('click', e => {
+    const item = e.target.closest('[role="menuitem"]');
+    if (!item || !editing?.id) return;
+    window.Rux?.menu?.close?.(panelMenu);
+    if (item.id === 'scheduler-panel-menu-history') {
+      const href = `history.html?trip=${encodeURIComponent(editing.id)}`;
+      whenSafe(() => { window.location.href = href; });
+    } else if (item.id === 'scheduler-panel-menu-cancel') {
+      openCancelModal(editing.id);
+    }
+  });
+  panelMenu?.addEventListener('rux:menu-closed', () => {
+    panelMenu.hidden = true;
+    panelMore?.setAttribute('aria-expanded', 'false');
+    if (panelMore) partMenu(panelMenu, panelMore);
   });
 
   // Save closes the editor once the week has been read back.
@@ -17928,7 +17946,7 @@
      drivers come off it, so they are free
      for other trips at once; the history entry says how many. The reason is
      required: Cancel trip stays disabled until the box holds some text. The
-     bar menu and the editor's Cancel trip button both open the dialog
+     bar menu and the editor's ⋮ menu both open the dialog
      through here. The drivers on the trip are named in the dialog, its toast
      and its history entry, since each has to be told; their link shows the
      trip as Cancelled until its day passes. */
@@ -18938,7 +18956,8 @@
     // A channel joining again, or a new one in a dead one's place, missed
     // whatever changed while it was down.
     if (status === 'SUBSCRIBED' && boardJoins++) { liveFull = true; liveSoon(); tellListeners({ full: true }); }
-    // Only a failure is worth a line; a healthy channel says nothing, as it did.
+    // The Activity line says Live changes paused while the channel is down.
+    if (status === 'SUBSCRIBED') window.SchedulerActivity?.live(true);
     if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       console.info(`scheduler: the live board is ${status.toLowerCase()}; coming back to this tab opens it again.`);
     }
@@ -18947,7 +18966,7 @@
     boardCh = client.channel('scheduler-board');
     for (const table of LIVE_TABLES) {
       boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, change => {
-        window.SchedulerActivity?.note(`A change came in: ${table.replace(/_/g, ' ')}`);
+        window.SchedulerActivity?.changed();
         tellListeners(change);
         liveSoon(change);
       });
@@ -19043,6 +19062,7 @@
       const data = await read(asked, wide ? STRIP_REACH : NEAR_DAYS);
       // A narrow read is followed by a wide one, unless a newer ask is waiting, which will be.
       if (!wide && !readAgain) { stripAhead = true; weekOwed = true; }
+      window.SchedulerActivity?.live(false);
       if (weekMotion && !ahead) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;

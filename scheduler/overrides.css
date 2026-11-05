@@ -481,10 +481,9 @@
 
 
 /* The editor's action buttons divide the bar evenly. Carbon pads a filled
-   button's trailing edge 63px for an optional icon, which on a phone makes
-   Cancel trip wider than a third of the bar; one symmetric padding lets the
-   equal flex basis decide, and 12px of it is what Cancel trip leaves of a
-   third on a 320px phone. Scoped to the panel's bar, so modal footers keep
+   button's trailing edge 63px for an optional icon, which would let a long
+   label take more than its share of the bar; one symmetric padding lets the
+   equal flex basis decide. Scoped to the panel's bar, so modal footers keep
    Carbon's spacing. Design's rounded themes end the bar instead and pad each
    button themselves, so this changes nothing there. */
 .rux--side-panel__actions-container .rux--action-set__action-button {
@@ -1016,13 +1015,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    names the panel's toolbar to outrank that toolbar's own hover. A pick
    cell's rule comes off while it is open, as Carbon's open trigger has no
    line down its side. */
-:is(.scheduler-toolbar__more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached] {
+:is(.scheduler-toolbar__more, .scheduler-panel-more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached] {
   background-color: var(--rux-layer);
   box-shadow: 0 2px 6px var(--rux-shadow);
   clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-print__pick[data-attached] { border-inline-end-color: transparent; }
-:is(.scheduler-view-menu, .scheduler-long-menu, .scheduler-print__menu)[data-attached]::before {
+:is(.scheduler-view-menu, .scheduler-panel-menu, .scheduler-long-menu, .scheduler-print__menu)[data-attached]::before {
   position: absolute;
   content: "";
   inset-block-start: -5px;
@@ -1051,7 +1050,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-print__pick:hover { background: var(--rux-layer-hover); }
 .scheduler-viewer__toolbar > .scheduler-print__cell--action:hover,
 .scheduler-viewer__toolbar > .scheduler-print__pick:hover { background: var(--rux-background-hover); }
-:is(.scheduler-toolbar__more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached]:hover,
+:is(.scheduler-toolbar__more, .scheduler-panel-more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached]:hover,
 .scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer); }
 
 /* A labelled action, Print all, is as wide as its words with the cell's own
@@ -1503,14 +1502,6 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   line-height: var(--rux-label-01-line-height);
   color: var(--rux-text-secondary);
 }
-
-/* The editor's Cancel trip is grey beside Reset and takes Carbon's danger red
-   under the pointer and while pressed, so the rarest action warns only when it
-   is reached for. The two classes together outrank Carbon's secondary hover. */
-@media (any-hover: hover) {
-  .scheduler-panel-cancel.rux--btn--secondary:hover { background-color: var(--rux-button-danger-primary); }
-}
-.scheduler-panel-cancel.rux--btn--secondary:active { background-color: var(--rux-button-danger-active); }
 
 /* A disabled button in a panel's action bar: in a dark theme Carbon paints its
    fill and its border in the same see-through grey, so the edge where they

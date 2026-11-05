@@ -2694,9 +2694,9 @@
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
 }
-/* Three or more, and the first stands away from the rest: the trip editor's
-   Cancel trip is destructive where Reset and Save are the safe pair, so a
-   reach for Save never crosses it. Two sit together at the end. The first
+/* Three or more, and the first stands away from the rest: a first action
+   that is destructive, such as Delete beside Cancel and Save, so a reach for
+   Save never crosses it. Two sit together at the end. The first
    column takes the free space and its button sits at the column's start,
    because a grid packed to the end leaves no space for an auto margin. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--action-set:has(> :nth-child(3)),

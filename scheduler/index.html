@@ -170,8 +170,8 @@
        opens the one panel below, which holds the theme, the account's rows
        and the apps that account can open. -->
   <div class="rux--header__global">
-    <!-- What the page is fetching or holds, while the view menu's Activity
-         is on; activity.js fills it. -->
+    <!-- Whether the board is up to date, while the view menu's Activity is
+         on; activity.js fills it. -->
     <div class="rux--inline-loading scheduler-activity" id="scheduler-activity" role="status" aria-live="polite" hidden></div>
     <!-- Who else has the Scheduler open, one face each beside my own on the
          Account action; a face links to the page that person is on. people.js
@@ -639,6 +639,13 @@
              hidden on a trip not yet saved, which has no number. -->
         <span class="scheduler-panel-ref" id="scheduler-panel-ref" hidden></span>
         <div class="rux--side-panel__decorator-and-close">
+          <!-- The trip's ⋮, Carbon's overflow menu for what the editor does
+               rarely, History and Cancel trip, so a cancel is never a slip
+               beside Save; it opens #scheduler-panel-menu joined to it, as
+               the toolbar's ⋮ opens its menu, and is hidden on a trip not
+               yet saved. Its size is the head's height, 40px on a desktop and
+               48px on a phone. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-panel-more" id="scheduler-panel-more" aria-label="More for this trip" aria-haspopup="menu" aria-expanded="false" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           <!-- Inside .rux--side-panel Carbon sizes the close button with its own
                rule, so rux--btn--md, not rux--layout--size-md, makes it 40px. -->
           <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-panel-close" aria-label="Close">
@@ -693,19 +700,12 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-files" aria-labelledby="scheduler-tab-files" tabindex="0" hidden></div>
       </div>
-      <!-- The action bar, least to most committing: Cancel trip, Reset, Save.
-           The row-double and md classes give each button a flex basis of 50%,
-           so three share the bar in even thirds, and two share it in halves
-           when Cancel trip is hidden for a new trip; geist-dark ends the bar
-           instead and gives each its own width. Cancel trip is a secondary button
-           like Reset that turns red under the pointer, because it is the rarest
-           action here and the modal it opens is where the danger is: it only opens
-           #scheduler-cancel-modal, and names the trip
-           because the close button is what leaves the editor; Reset drops
-           unsaved edits. Each carries an icon at its end, Carbon's place for
-           one, which answers the label at the start. -->
+      <!-- The action bar, Reset and Save. The row-double and md classes give
+           each button a flex basis of 50%, so the two share the bar in
+           halves; geist-dark ends the bar instead and gives each its own
+           width. Reset drops unsaved edits. Cancel trip is in the head's ⋮,
+           away from Save. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
       </div>
@@ -937,7 +937,7 @@
       <div class="rux--menu-item__label">What the colours mean</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
-    <!-- What the page is loading and holds, in the header; see activity.js. -->
+    <!-- Whether the board is up to date, in the header; see activity.js. -->
     <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="activity">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"></div>
@@ -1275,6 +1275,22 @@
        entry of the kind in one dialog, an accordion item each, and Done
        rather than Save, because the editor's Save is what writes trip_pos,
        trip_invoices and trip_payments. data.js names the kind in the heading
+  <!-- The editor's ⋮ menu, what the editor does rarely, opened from
+       #scheduler-panel-more: the trip's History, then Cancel trip, which
+       opens #scheduler-cancel-modal for the trip the editor shows. Each item
+       carries the icon its bar menu item carries. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons scheduler-panel-menu" id="scheduler-panel-menu" role="menu" tabindex="-1" aria-label="Trip" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-panel-menu-history">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-history"/></svg></div>
+      <div class="rux--menu-item__label">History</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="-1" id="scheduler-panel-menu-cancel">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-dangerous"/></svg></div>
+      <div class="rux--menu-item__label">Cancel trip…</div>
+    </li>
+  </ul>
+
        and asks date-picker.js to claim each entry's picker. -->
   <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-entries-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-entries-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">

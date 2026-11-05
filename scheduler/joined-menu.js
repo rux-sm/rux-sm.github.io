@@ -3,7 +3,8 @@
    --------------------------------------------------------------------------
    A menu hung flush under the button that opened it is one surface with
    it, as Carbon's overflow menu is with its trigger, loaded by the board
-   and the forms page: the board's ⋮ and month list, and a form's pick cell.
+   and the forms page: the board's ⋮ and month list, the editor's ⋮, and a
+   form's pick cell.
 
    Both are marked `data-attached`, and the button is raised into the
    menu's Layer 02 with Carbon's `rux--layer-two`, as Carbon's table toolbar

@@ -83,14 +83,13 @@
   };
 
   // -- placing -----------------------------------------------------------------
-  /* The board's colours, as data.js's `hueFor` picks them: the trip's chosen
-     colour, with the older colour names mapped, or else red for an unconfirmed
-     trip and blue for the rest. `confirmed` is the function's own reading,
-     which also counts a signed contract, a covering PO, a deposit or a payment. */
+  /* The board's colours, as week.js's `hueFor` picks them: the trip's chosen
+     colour, or else red for an unconfirmed trip and blue for the rest.
+     `confirmed` is the function's own reading, which also counts a signed
+     contract, a covering PO, a deposit or a payment. */
   const HUE_CLASS = {
     teal: 'scheduler-bar--teal', green: 'scheduler-bar--green', purple: 'scheduler-bar--purple',
-    amber: 'scheduler-bar--amber', pink: 'scheduler-bar--magenta',
-    orange: 'scheduler-bar--amber', yellow: 'scheduler-bar--amber', cyan: 'scheduler-bar--teal',
+    amber: 'scheduler-bar--amber',
   };
   const hueClass = trip => HUE_CLASS[String(trip.tripBarColor || '').toLowerCase()]
     ?? (trip.confirmed === false ? 'scheduler-bar--red' : 'scheduler-bar--blue');

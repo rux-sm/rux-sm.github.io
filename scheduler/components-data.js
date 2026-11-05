@@ -125,7 +125,6 @@
       ['Teal', { trip_bar_color: 'teal' }],
       ['Green', { trip_bar_color: 'green' }],
       ['Purple', { trip_bar_color: 'purple' }],
-      ['Pink', { trip_bar_color: 'pink' }],
       ['Placeholder', { trip_bar_color: 'amber', confirmed: false, start_date: day(90), end_date: day(91) }],
     ].map(([customer, o], i) => row(BUSES[i].number, bar(trip({ customer, buses: [crewed(BUSES[i].id)], ...o }))));
 
@@ -160,7 +159,7 @@
       id: 'trip-bar', title: 'The trip bar',
       intro: 'One bus on one leg of a trip: where, who booked it, their contact, the times, the newest update and the crew.',
       samples: [
-        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of four colours, or amber while it is a placeholder.', days: 3, rows: colours },
+        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of three colours, or amber while it is a placeholder.', days: 3, rows: colours },
         { name: 'A placeholder', note: 'Amber, not a trip yet: no times, no empty seats and no alerts, with a driver someone named still shown.', days: 3,
           rows: [row('104', bar(trip({ trip_bar_color: 'amber', confirmed: false, customer: 'Mesa Robotics Club', destination: 'Houston, TX', depart: null, back: null,
             start_date: day(40), end_date: day(41), buses: [{ bus: 'b104', crew: [['d4', 'driver']], roles: ['driver', 'co-driver'] }] })))] },

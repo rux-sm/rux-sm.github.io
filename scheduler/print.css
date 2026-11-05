@@ -2025,7 +2025,6 @@ a.scheduler-print__row:focus-visible { outline: 2px solid var(--rux-focus); outl
 .scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal);        --scheduler-week-edge: var(--rux-tag-border-teal); }
 .scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green);       --scheduler-week-edge: var(--rux-tag-border-green); }
 .scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple);      --scheduler-week-edge: var(--rux-tag-border-purple); }
-.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta);     --scheduler-week-edge: var(--rux-tag-border-magenta); }
 .scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);         --scheduler-week-edge: var(--rux-tag-border-red); }
 .scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);             --scheduler-week-edge: var(--scheduler-amber-border); }
 /* A TRIP THAT RUNS PAST THE WEEK is marked on that edge as the board marks

@@ -172,7 +172,7 @@ function expect(name, got, want) {
 
 console.log('\n  The trip bar');
 expect('each colour paints its hue, with no alert', drawn('trip-bar', 'Colours').map(b => [hue(b), mark(b)]),
-  [['blue', null], ['red', null], ['teal', null], ['green', null], ['purple', null], ['magenta', null], ['amber', null]]);
+  [['blue', null], ['red', null], ['teal', null], ['green', null], ['purple', null], ['amber', null]]);
 const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],

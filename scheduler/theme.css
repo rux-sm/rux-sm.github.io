@@ -162,7 +162,6 @@
 /* The colours the office picks take each hue's deep step too, so a picked
    colour never outshines a trip not yet confirmed; the placeholder's gold is
    the one bright bar. */
-[data-theme="rux-dark"] .scheduler-bar--magenta { --scheduler-bg: oklch(0.34 0.151 350); --scheduler-hover: oklch(0.38 0.169 350); }
 [data-theme="rux-dark"] .scheduler-bar--purple { --scheduler-bg: oklch(0.34 0.179 300); --scheduler-hover: oklch(0.38 0.2 300); }
 [data-theme="rux-dark"] .scheduler-bar--green { --scheduler-bg: oklch(0.34 0.124 150); --scheduler-hover: oklch(0.38 0.139 150); }
 [data-theme="rux-dark"] .scheduler-bar--teal { --scheduler-bg: oklch(0.34 0.077 185); --scheduler-hover: oklch(0.38 0.086 185); }
@@ -308,9 +307,6 @@
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--purple {
   --scheduler-bg: var(--rux-purple-10); --scheduler-hover: var(--rux-tag-background-purple);
 }
-:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--magenta {
-  --scheduler-bg: var(--rux-magenta-10); --scheduler-hover: var(--rux-tag-background-magenta);
-}
 [data-theme="apple-light"] .scheduler-bar--teal {
   --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-teal) 70%, #fff); --scheduler-hover: var(--rux-tag-background-teal);
 }
@@ -319,9 +315,6 @@
 }
 [data-theme="apple-light"] .scheduler-bar--purple {
   --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-purple) 70%, #fff); --scheduler-hover: var(--rux-tag-background-purple);
-}
-[data-theme="apple-light"] .scheduler-bar--magenta {
-  --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-magenta) 70%, #fff); --scheduler-hover: var(--rux-tag-background-magenta);
 }
 /* APPLE-DARK'S BOARD IS CALENDAR'S, measured beside it: the trips lie on the
    window's own colour, which is this theme's page, where every other region
@@ -723,10 +716,6 @@
   --scheduler-bg: oklch(27% 0.1197 314.41); --scheduler-hover: oklch(29% 0.1197 314.41);
   --scheduler-fg: oklch(69.87% 0.2037 309.51); --scheduler-border: oklch(69.87% 0.2037 309.51);
 }
-[data-theme="geist-dark"] .scheduler-bar--magenta {
-  --scheduler-bg: oklch(27% 0.1387 355.93); --scheduler-hover: oklch(29% 0.1387 355.93);
-  --scheduler-fg: oklch(69.36% 0.2223 3.91); --scheduler-border: oklch(69.36% 0.2223 3.91);
-}
 [data-theme="geist-dark"] .scheduler-bar--gray,
 [data-theme="geist-dark"] .scheduler-bar--cool-gray {
   --scheduler-bg: oklch(27% 0 0); --scheduler-hover: oklch(29% 0 0);
@@ -803,7 +792,7 @@
   opacity: 1;
   color: var(--geist-gray-900);
 }
-[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__update, .scheduler-bar__drivers) {
+[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__update, .scheduler-bar__drivers) {
   color: var(--scheduler-fg);
 }
 /* Its rest meter is Geist's purple 400, the step its edges take, so a
@@ -1482,7 +1471,7 @@
    notes draw one: a 1px line inside the bar, so it costs none of its
    writing. At the lowest weight, so the selection, the same trip's ring
    and focus draw over it. A grey trip, in Carbon's grey, keeps none. */
-:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) {
+:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) {
   outline: 1px solid var(--scheduler-border);
   outline-offset: -1px;
 }
@@ -1553,16 +1542,8 @@
 }
 /* THE COLOURS THE OFFICE PICKS ARE GEIST'S OWN PAIRS, as the status
    colours are: each hue's 100 for the surface, its 900 for the words and
-   marks, its 1000 for the destination, its 200 on hover, its 400 for the edge and its 600 for a stop ahead. Magenta takes Geist's pink, its nearest hue. A
-   trip stored as cyan paints as teal, week.js's retired name. */
-[data-theme="rux-100"] .scheduler-bar--magenta {
-  --scheduler-dim: var(--geist-pink-600);
-  --scheduler-bg: var(--geist-pink-100);
-  --scheduler-fg: var(--geist-pink-900);
-  --scheduler-hover: var(--geist-pink-200);
-  --scheduler-border: var(--geist-pink-400);
-  --scheduler-strong: var(--geist-pink-1000);
-}
+   marks, its 1000 for the destination, its 200 on hover, its 400 for the
+   edge and its 600 for a stop ahead. */
 [data-theme="rux-100"] .scheduler-bar--purple {
   --scheduler-dim: var(--geist-purple-600);
   --scheduler-bg: var(--geist-purple-100);

@@ -77,6 +77,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 ## Placeholders
 
 - A yellow (amber) trip is a placeholder: the bus is held, no quote is sent yet. Asked to add a trip, look for a placeholder with the same customer and dates and fill it in with `draft_trip_change` rather than drafting a new one. Report it as a placeholder, not a booking.
+- A customer still choosing between dates gets a placeholder on each date, and one still choosing a destination names both, as `Corpus Christi or San Antonio, TX`, because an undecided trip holds a bus with nothing quoted or confirmed, which is what a placeholder is.
 
 ## Not yet decided
 

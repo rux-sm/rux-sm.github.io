@@ -1015,7 +1015,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--teal      { --scheduler-bg: var(--rux-tag-background-teal);      --scheduler-fg: var(--rux-tag-color-teal);      --scheduler-hover: var(--rux-tag-hover-teal);      --scheduler-border: var(--rux-tag-border-teal); }
 .scheduler-bar--green     { --scheduler-bg: var(--rux-tag-background-green);     --scheduler-fg: var(--rux-tag-color-green);     --scheduler-hover: var(--rux-tag-hover-green);     --scheduler-border: var(--rux-tag-border-green); }
 .scheduler-bar--purple    { --scheduler-bg: var(--rux-tag-background-purple);    --scheduler-fg: var(--rux-tag-color-purple);    --scheduler-hover: var(--rux-tag-hover-purple);    --scheduler-border: var(--rux-tag-border-purple); }
-.scheduler-bar--magenta   { --scheduler-bg: var(--rux-tag-background-magenta);   --scheduler-fg: var(--rux-tag-color-magenta);   --scheduler-hover: var(--rux-tag-hover-magenta);   --scheduler-border: var(--rux-tag-border-magenta); }
 .scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
 /* Amber is the placeholder colour, a trip not yet quoted. Carbon's tags have

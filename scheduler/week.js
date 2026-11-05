@@ -19,13 +19,14 @@
   /* The trip colours, read by the board, the editor, the bar menu and the
      printed week. `value` is what `trips.trip_bar_color` stores and `hue` is
      the `scheduler-bar--*` class that paints it. Amber is the office's
-     placeholder colour; billing.js says when an amber trip is a placeholder. */
+     placeholder colour, for a trip not yet quoted or one whose customer has
+     not settled its date or destination; billing.js says when an amber trip
+     is a placeholder. */
   const TRIP_COLORS = [
     { value: 'teal', label: 'Teal', hue: 'teal' },
     { value: 'green', label: 'Green', hue: 'green' },
     { value: 'purple', label: 'Purple', hue: 'purple' },
     { value: 'amber', label: 'Placeholder', hue: 'amber' },
-    { value: 'pink', label: 'Pink', hue: 'magenta' },
   ];
   // The colour a trip paints as, by its current name, or null for standard.
   const tripColorOf = trip => {

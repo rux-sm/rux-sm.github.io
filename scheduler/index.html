@@ -170,13 +170,16 @@
        opens the one panel below, which holds the theme, the account's rows
        and the apps that account can open. -->
   <div class="rux--header__global">
-    <!-- Whether the board is up to date, while the view menu's Activity is
-         on; activity.js fills it. -->
-    <div class="rux--inline-loading scheduler-activity" id="scheduler-activity" role="status" aria-live="polite" hidden></div>
-    <!-- Who else has the Scheduler open, one face each beside my own on the
-         Account action; a face links to the page that person is on. people.js
-         fills it and shows it only while somebody is here. -->
+    <!-- Who else has the Scheduler open, one face each; a face links to the
+         page that person is on. people.js fills it and shows it only while
+         somebody is here. -->
     <div class="scheduler-header-people" id="scheduler-people" hidden></div>
+    <!-- Whether the board is up to date, while the view menu's Activity is
+         on; activity.js fills it. It stands after the faces, which arrive
+         once the page has loaded, and team-chat.js holds the Team chat
+         action's place from the start, so nothing that arrives later stands
+         right of it to move it. -->
+    <div class="rux--inline-loading scheduler-activity" id="scheduler-activity" role="status" aria-live="polite" hidden></div>
     <!-- On a phone's board, search and New trip stand in the header, where a
          thumb finds them over every view; the toolbar's own two stand in for
          them on a wider board, and app.css shows one pair or the other. -->

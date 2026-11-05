@@ -134,6 +134,11 @@
   const dot = el('span', 'scheduler-team-action__dot');
   dot.hidden = true;
   action.appendChild(dot);
+  /* It takes its place at once, unseen until the account is known to be a
+     staff member's, so nothing beside it in the header moves when it
+     arrives, the Activity line among them; anyone else's is taken out. */
+  action.dataset.pending = '';
+  globalEl.insertBefore(action, globalEl.querySelector('[aria-controls="rux-account-panel"]'));
 
   const panel = el('section', 'rux--header-panel scheduler-team');
   panel.id = 'scheduler-team';
@@ -980,10 +985,9 @@
      left as it was. */
   (async () => {
     const who = await Promise.resolve(account.person?.()).catch(() => null);
-    if (!who?.staff) return;
+    if (!who?.staff) { action.remove(); return; }
     me = who;
-    const accountBtn = globalEl.querySelector('[aria-controls="rux-account-panel"]');
-    globalEl.insertBefore(action, accountBtn ?? null);
+    delete action.dataset.pending;
     const accountPanel = document.getElementById('rux-account-panel');
     (accountPanel ?? globalEl).after(panel);
     tabStops(false);

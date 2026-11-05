@@ -1166,6 +1166,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    Its panel is Carbon's header panel at the width a conversation needs, and
    the whole screen on a phone: the room above, the box below. */
 .scheduler-team-action { position: relative; }
+/* Held in its place, unseen and out of reach, until the account is known. */
+.scheduler-team-action[data-pending] { visibility: hidden; }
 .scheduler-team-action__dot {
   position: absolute;
   inset-block-start: 0.625rem;

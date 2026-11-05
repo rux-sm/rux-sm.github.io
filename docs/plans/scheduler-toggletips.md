@@ -21,8 +21,9 @@ own label shows now.
   rux--popover--drop-shadow rux--toggletip`, with `rux--popover--open` while
   the tip shows, since Carbon's CSS shows the surface only then. Inside it is
   `rux--popover`, which carries the inverse colours, and in that the surface
-  `rux--popover-content rux--toggletip-content` with Carbon's caret beside
-  it. No local rule changes their padding, gap, size or width.
+  `rux--popover-content` with Carbon's caret beside it, holding the tip as
+  `rux--toggletip-content`, nested as Carbon renders them. No local rule
+  changes their padding, gap, size or width.
 - **One tip at a time, laid over the icon pressed.** The board keeps one
   container and places it over the pressed icon, so Carbon's CSS draws the
   tip and its caret at Carbon's offset. The board only chooses the
@@ -30,8 +31,9 @@ own label shows now.
   `-start` or `-end` where centred would leave the board. Carbon's own
   pages measure this with floating-ui, which Design's `js/popover.js` does
   not have, and a class is all the board needs.
-- **The tip covers its own trip.** That is where Carbon puts it; the
-  placing over the next two days, and its hand-drawn caret, go.
+- **The tip covers its own trip.** That is where Carbon puts it. The live
+  card, which is not a toggletip, keeps the placing over the next two days
+  and its drawn caret.
 - **Every tip has a heading, its name and count in heading-compact-01, then
   its body, then a footer where it acts:** Carbon's
   `rux--toggletip-actions`, a link at the start and a small primary button at
@@ -103,11 +105,6 @@ own label shows now.
 
 ## Tasks
 
-- [ ] Lay the tip over the pressed icon in Carbon's container, choosing its
-      placement class by the room on the board, and delete the day-column
-      placing, the drawn caret and the `data-tip` rules in `app.css` and
-      `theme.css`.
-- [ ] Draw Updates as decided, with its pencils.
 - [ ] Draw Alerts as decided.
 - [ ] Draw the route tip and a driver's tip as decided.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by

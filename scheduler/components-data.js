@@ -406,7 +406,7 @@
         tipOf('More than five', 'The newest five, and the rest behind Show all.', bar(chatty), { kind: 'card', section: 'updates' }),
         tipOf('Adding an update', 'Add update opens a box in its place: Save or Enter adds what it holds, Cancel or Escape puts it away.', bar(quiet),
           { kind: 'card', section: 'updates', editor: { quick: 'Driver to call Coach Ortiz at 7' } }),
-        tipOf('Changing an update', 'A press on an update opens it in its place, with Delete, Cancel and Save.', bar(quiet),
+        tipOf('Changing an update', 'Its pencil opens it in its place, with Delete, Cancel and Save.', bar(quiet),
           { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'edit', draft: null } } }),
         tipOf('Deleting an update', 'Delete asks first.', bar(quiet), { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'delete' } } }),
         tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a press as an alert is.', bar(shut), { kind: 'card', section: 'updates' }),

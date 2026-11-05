@@ -1622,21 +1622,11 @@
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
-/* THE TRIP'S TIPS ARE THE BUS NUMBER'S IN EVERY THEME, Carbon's high-contrast toggletip: the inverse surface and ink under Carbon's popover
-   shadow, with no ring, so every tip over the board is one thing. The caret takes the surface through `--card-surface`. */
-[data-theme] .scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) {
-  --card-surface: var(--rux-background-inverse);
-  background: var(--rux-background-inverse);
-  color: var(--rux-text-inverse);
-  box-shadow: none;
-  /* Carbon's popover shadow, the value Design's `.rux--popover--drop-shadow` falls back to. */
-  filter: drop-shadow(0 0.125rem 0.125rem rgba(0, 0, 0, 0.2));
-}
 /* A press row lights with the inverse hover. Carbon's field and buttons inside take the inverse surface's colours: the field the inverse
    hover with an edge of the ink, the ink for words and a ghost button, the inverse focus, the inverse red for Delete, and a button
    that cannot act yet a faint wash of the ink. The phone's docked sheet, which shows the route the same way, keeps the page's own. */
-[data-theme] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card :is(.scheduler-tip__go, .scheduler-tip__update:not([data-editing])):hover { background: var(--rux-background-inverse-hover); }
-[data-theme] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card {
+[data-theme] .scheduler-trip-tip .scheduler-tip__go:hover { background: var(--rux-background-inverse-hover); }
+[data-theme] .scheduler-trip-tip .scheduler-tip--card {
   --rux-text-primary: var(--rux-text-inverse);
   --rux-text-placeholder: color-mix(in srgb, var(--rux-text-inverse) 60%, transparent);
   --rux-icon-primary: var(--rux-icon-inverse);
@@ -1656,7 +1646,7 @@
    from the ink is its step: a field's edge and a placeholder its gray 700, a
    hover and a press its gray 100 and 200, a button that cannot act gray 100,
    and the rule between rows its gray 400, the default border. */
-[data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-tip--card {
+[data-theme="rux-100"] .scheduler-trip-tip .scheduler-tip--card {
   --rux-text-placeholder: var(--geist-invert-gray-700);
   --rux-border-strong: var(--geist-invert-gray-700);
   --rux-background-hover: var(--geist-invert-gray-100);

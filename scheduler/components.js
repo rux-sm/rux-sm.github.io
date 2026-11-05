@@ -129,23 +129,27 @@
     };
   }
 
-  /* The tip in the board's own frame, as data.js marks it: a floating card,
-     a tip on it but for the live card, or the half sheet pulled up. */
+  /* The tip in the board's own frame, as data.js draws it: a tip in
+     Carbon's toggletip container, the live card in the card's frame, or the
+     half sheet pulled up. */
   function tipOf(sample, board, data) {
     const bar = board.querySelector('.scheduler-bar');
     const { trip } = drawnBars.get(bar).spec;
     const { kind, section = '' } = sample.tip;
+    const said = tipBoard(sample, data);
+    if (kind === 'card' || kind === 'driver' || kind === 'route') {
+      const frame = el('div', `${Tips.CONTAINER} scheduler-components__tip`);
+      const tip = kind === 'card' ? Tips.card(trip, bar, section, said) : kind === 'driver' ? Tips.driver(trip, bar, section, said) : Tips.route(trip, bar, said);
+      frame.appendChild(Tips.surface(tip));
+      return frame;
+    }
     const frame = el('div', 'scheduler-bar-shortcuts scheduler-components__tip');
     frame.toggleAttribute('data-card', true);
-    const said = tipBoard(sample, data);
     if (kind === 'sheet') {
       frame.toggleAttribute('data-docked', true);
       frame.dataset.sheet = 'full';
       frame.append(...Sheet.draw(trip, bar, said));
-    } else {
-      frame.toggleAttribute('data-tip', kind !== 'live');
-      frame.appendChild(kind === 'card' ? Tips.card(trip, bar, section, said) : kind === 'driver' ? Tips.driver(trip, bar, section, said) : Tips[kind](trip, bar, said));
-    }
+    } else frame.appendChild(Tips.live(trip, bar, said));
     return frame;
   }
 

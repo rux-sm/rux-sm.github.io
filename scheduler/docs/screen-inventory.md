@@ -317,16 +317,14 @@ press on the bar's words, the times, the line and its stops' ticks and a driver'
 selects it, and a driver's name is pulled to move them. No hover
 label repeats what a tip says: a driver, the update's words and its age have none. The same press or Escape puts a tip away, another opener switches
 tips, and selecting another trip takes it away. It never stands beside the trip's own editor. On a
-phone the half sheet comes up with the selection, because it carries the trip's actions. A floating tip is the bus number's, Carbon's high-contrast
-toggletip: the inverse surface and ink, 2px corners, its drop shadow and a 12px by 6px caret, with no
-head, Close or footer, and the bus tip's head and ruled rows inside, in 12px type. It stands beside
-the trip the way a calendar's event popover does: beside the trip's first day, where everything the
-trip says is written, over the two days after it, the trip's own or the board's, 14rem to 20rem wide
-as those two days allow, its caret at the middle of the icon pressed, or of the time row for the
-route; over the two days before it where the two after are not both on screen; and above or below
-the trip only where neither side has room, slid back inside the board at either edge. It is as tall
-as what it holds, scrolling inside past the board's room, and appears with no motion, as Carbon's
-popover does. Alerts heads with its count, Alerts for operational problems or Other needs where
+phone the half sheet comes up with the selection, because it carries the trip's actions. A floating tip is Carbon's high-contrast
+toggletip, the bus number's kind: the inverse surface and ink, 2px corners, its drop shadow and its
+caret, 14px type, 16px in from its edge and 16px between its parts with no rule between them, and
+288px at most, narrower where what it holds is short. It is laid over the icon pressed, or the time
+row for the route, at Carbon's 13px from it: to its right where it fits the board, else its left,
+else above, else below, each centred, or at its start or end where centred would leave the board.
+It covers its own trip. It is as tall as what it holds, its body scrolling past the board's room,
+the updates or the route's table, and appears with no motion, as Carbon's popover does. Alerts heads with its count, Alerts for operational problems or Other needs where
 there are only needs, then a row for each, its icon and words: a bus that does not fit behind the red
 mark, the follow-up reminder with when the trip leaves at its end, Trip contact missing and each
 need still to do, Hotel booking pending or HOS form pending, a need behind the dashed circle. A row
@@ -335,12 +333,16 @@ Billing with the cursor in the field it names. No warning has a dismiss; each st
 right, and a trip that is back raises none of them on the bar or in its tip, its update row giving
 its Spot and Back times and whether it is paid instead: what its record still lacks, `close-out.js`'s
 list, is read on the editor's Billing tab and the Trips page's To close. Updates heads with its
-count, then every update, newest first, its words over who wrote it and how long ago (45m, 2h, 3d,
-or its date, Sep 22, past a week), its full stamp on its tooltip; with none, No updates yet. An
-update is a press that opens it in its own row, a box with Delete, Cancel and Save, where Delete asks
-before the update goes. Add update is the last row and opens a box in its place over Cancel and
-Save, Save primary once a line is typed, which adds the line as Enter does; Cancel, Escape or leaving
-it empty closes it, and the bar's right-click Add update opens the tip at that box. Inside a tip
+count, then the newest five, newest first, each its words over who wrote it and how long ago (45m,
+2h, 3d, or its date, Sep 22, past a week) at 12px in the same ink, its full stamp on the time's
+tooltip, and at its end a pencil, Carbon's small ghost icon button with its tooltip Edit update;
+with none, No updates yet. The pencil opens the update in its place, a box with Delete, Cancel and
+Save, where Delete asks before the update goes. The footer is Carbon's toggletip actions: where
+there are more than five, Show all with the count, a link at its start that turns to Show the
+newest 5, and Add update, a small primary button, at its end. Add update opens a box in the
+footer's place over Cancel and Save, Save primary once a line is typed, which adds the line as
+Enter does; Cancel, Escape or leaving it empty closes it, and the bar's right-click Add update
+opens the tip at that box. Inside a tip
 Carbon's field and buttons take the inverse surface's colours. A driver's tip heads with their photo,
 or their initials until it loads, their name, and their seat with Part-time where they are; then
 their answer, who gave it and when, an amber line for a leg changed since they said yes, a red line

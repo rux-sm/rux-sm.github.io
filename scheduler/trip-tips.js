@@ -35,6 +35,8 @@
    `ageShort(at)`, `cardTitle(name, count, action)`, `postTripOf(trip)`,
    `postTripRows(post, cls, pressOf)`, `markSave(save, ready)` and `WARN_GO`
    are the parts the half sheet's card and the Updates window share.
+   Floating, a tip is Carbon's toggletip: `CONTAINER` is the container's
+   classes and `surface(tip)` the popover that goes inside it.
 
    Every value from the database is written with textContent.
    ========================================================================== */
@@ -583,15 +585,15 @@
     return [block, ...post.asks.map(pressOf)];
   }
 
-  /* THE TRIP'S TIPS. Floating, Alerts and Updates are each a tip, as the bus
-     number's is: a head naming its one subject with its count beside it,
-     then a ruled row for each thing it holds, in app.css's high-contrast
-     surface. An alert is a row of its icon and words, and the row is the
-     press that goes where it is put right; a reminder of a trip leaving soon
-     says when at its end. An update is a row of its words over who wrote it
-     and how long ago, and the row is the press that opens it in its place to
-     change or delete. Add update is the last row, and opens a box in its
-     place: Save or Enter adds what it holds. */
+  /* THE TRIP'S TIPS. Floating, Alerts and Updates are each Carbon's
+     toggletip: a heading naming its one subject with its count beside it,
+     then its body, each thing 16px from the next. An alert is a row of its
+     icon and words, and the row is the press that goes where it is put
+     right; a reminder of a trip leaving soon says when at its end. An update
+     is its words over who wrote it and how long ago, with a pencil at its
+     end that opens it in its place to change or delete. The footer acts:
+     Show all and Add update, which opens a box in its place, where Save or
+     Enter adds what it holds. */
   function cardTip(trip, bar, section, board) {
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
     tip.dataset.tripId = trip.id;
@@ -641,6 +643,7 @@
     }
     const all = updatesOf(trip);
     const { opened, editing, quick } = board.editor(trip);
+    tip.classList.add('scheduler-tip--updates');
     tip.appendChild(head('Updates', all.length));
     // A trip that is back opens on what it came to, each thing still to close a press as an alert's row is.
     const post = postTripOf(trip);
@@ -656,16 +659,15 @@
         return row;
       }));
     }
-    if (!all.length) tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__none', 'No updates yet.'));
+    if (!all.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No updates yet.'));
     const by = u => [u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'), ageShort(u.created_at),
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
     const item = u => {
-      const li = el('li', 'scheduler-tip__row scheduler-tip__update');
+      const li = el('li', 'scheduler-tip__update');
       li.dataset.updateId = u.id;
       // An update opened to change: its box, or before a delete its words and the question.
       if (editing?.id === u.id) {
         li.dataset.editing = '';
-        li.classList.add('scheduler-tip__box');
         const edit = el('div', 'scheduler-tip__edit');
         edit.dataset.updateEdit = '';
         const acts = el('div', 'scheduler-tip__acts');
@@ -689,15 +691,14 @@
         li.appendChild(edit);
         return li;
       }
-      /* The press is a button laid over the whole row, so a pointer can
-         press anywhere on it and Tab reaches it; the full stamp is its
-         tooltip, since the row gives only how long ago. */
-      const open = el('button', 'scheduler-tip__open');
-      open.type = 'button';
-      open.dataset.updateOpen = '';
-      open.setAttribute('aria-label', `Edit update: ${u.body}`);
-      open.title = updateStamp(u);
-      li.append(open, el('span', 'scheduler-tip__words', u.body), el('span', 'scheduler-tip__by', by(u)));
+      /* Its words over who wrote it and how long ago, the full stamp on the
+         time, and at its end the pencil that opens it to change or delete. */
+      const said = el('div', 'scheduler-tip__text');
+      const when = el('time', 'scheduler-tip__by', by(u));
+      when.dateTime = u.created_at;
+      when.title = updateStamp(u);
+      said.append(el('span', 'scheduler-tip__words', u.body), when);
+      li.append(said, pencil(u));
       return li;
     };
     /* The newest five, and the rest behind Show all, so a trip with many
@@ -710,13 +711,13 @@
       list.append(...(every ? all : all.slice(0, 5)).map(item));
       tip.appendChild(list);
     }
-    if (all.length > 5) {
-      const row = el('div', 'scheduler-tip__row scheduler-tip__more');
-      row.appendChild(small('rux--btn--ghost', every ? 'Show the newest 5' : `Show all ${all.length}`, 'show-all'));
-      tip.appendChild(row);
-    }
+    /* THE FOOTER, Carbon's toggletip actions: Show all as a link at its
+       start where there are more than five, and Add update, a small primary
+       button, at its end. Add update puts Carbon's small field in the
+       footer's place, with Cancel and Save, Save primary once there are
+       words to save. */
+    const foot = el('div', quick != null ? 'scheduler-tip__foot scheduler-tip__box' : 'rux--toggletip-actions scheduler-tip__foot');
     if (quick != null) {
-      const row = el('div', 'scheduler-tip__row scheduler-tip__box');
       const field = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm');
       field.dataset.quick = '';
       const input = el('input', 'rux--text-input');
@@ -726,7 +727,6 @@
       input.dataset.tripId = trip.id;
       input.value = quick;
       field.appendChild(input);
-      // Carbon's small buttons, apart from the docked card's Add and the themes' rings for it.
       const button = (act, words, label) => {
         const b = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', words);
         b.type = 'button';
@@ -738,20 +738,61 @@
       markSave(save, !!quick.trim());
       const acts = el('div', 'scheduler-tip__acts');
       acts.append(button('cancel', 'Cancel', 'Cancel the update'), save);
-      row.append(field, acts);
-      tip.appendChild(row);
+      foot.append(field, acts);
     } else {
-      const add = el('button', 'scheduler-tip__row scheduler-tip__go scheduler-tip__add');
+      if (all.length > 5) {
+        const more = el('a', 'rux--link scheduler-tip__more', every ? 'Show the newest 5' : `Show all ${all.length}`);
+        more.href = '#';
+        more.dataset.editAct = 'show-all';
+        foot.appendChild(more);
+      }
+      const add = el('button', 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm scheduler-tip__add', 'Add update');
       add.type = 'button';
       add.dataset.cardAction = 'update';
-      add.append(svgUse('#m-add', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', 'Add update'));
-      tip.appendChild(add);
+      foot.appendChild(add);
     }
+    tip.appendChild(foot);
     return tip;
   }
 
+  /* AN UPDATE'S PENCIL: Carbon's small ghost icon-only button, its tooltip
+     Edit update, as Carbon's icon button carries one. Design's popover.js
+     shows the tooltip; the board's own click opens the update. */
+  function pencil(u) {
+    const wrap = el('span', 'rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--left '
+      + 'rux--popover--caret rux--popover--high-contrast scheduler-tip__pencil');
+    const trigger = el('div', 'rux--tooltip-trigger__wrapper');
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+    btn.type = 'button';
+    btn.dataset.updateOpen = '';
+    btn.setAttribute('aria-label', `Edit update: ${u.body}`);
+    btn.appendChild(svgUse('#i-edit', '16', '0 0 32 32'));
+    trigger.appendChild(btn);
+    const pop = el('span', 'rux--popover');
+    pop.append(el('span', 'rux--popover-content rux--tooltip-content', 'Edit update'), el('span', 'rux--popover-caret'));
+    wrap.append(trigger, pop);
+    return wrap;
+  }
+
+  /* A FLOATING TIP IN CARBON'S TOGGLETIP. `CONTAINER` is the container's
+     classes, open, which the board puts on the element it lays over the icon
+     pressed and a placement class beside them; `surface(tip)` makes the tip
+     Carbon's toggletip content inside its popover content, nested as Carbon
+     renders them, and hands back the popover holding that and its caret,
+     which goes inside the container. */
+  const CONTAINER = 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow '
+    + 'rux--toggletip rux--popover--open scheduler-trip-tip';
+  function surface(tip) {
+    tip.classList.add('rux--toggletip-content');
+    const content = el('span', 'rux--popover-content');
+    content.appendChild(tip);
+    const pop = el('span', 'rux--popover');
+    pop.append(content, el('span', 'rux--popover-caret'));
+    return pop;
+  }
+
   window.SchedulerTripTips = {
-    route: routeTip, driver: driverTip, live: liveCard, card: cardTip,
+    route: routeTip, driver: driverTip, live: liveCard, card: cardTip, CONTAINER, surface,
     updateFace, ageShort, cardTitle, postTripOf, postTripRows, markSave, WARN_GO,
   };
 })();

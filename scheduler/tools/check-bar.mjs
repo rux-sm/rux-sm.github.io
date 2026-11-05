@@ -395,13 +395,17 @@ const paperTrip = data.sections.find(s => s.id === 'alerts').samples.find(s => s
 const [paperBar] = drawn('alerts', 'A hotel to book');
 expect('paperwork does not turn into a counted alert in the tip', tipHead(Tips.card(paperTrip, paperBar, 'needs', tipBoard({ tip: {} }))), ['Other needs', '1']);
 const updatesTip = tipDrawn('Updates');
-expect('Updates heads with its count, a row per update, newest first, its words over who wrote it and how long ago, and Add update last',
+const footOf = tip => { const f = tip.children.at(-1); return [f.classList.contains('rux--toggletip-actions'), f.children.map(c => [c.tagName, c.textContent, c.dataset.cardAction ?? c.dataset.editAct])]; };
+expect('Updates heads with its count, each update its words over who wrote it and how long ago with a pencil at its end, and Carbon\'s footer with Add update',
   [tipHead(updatesTip), updatesTip.querySelectorAll('.scheduler-tip__update').map(u => [text(u, '.scheduler-tip__words'), text(u, '.scheduler-tip__by')]),
-    updatesTip.querySelectorAll('.scheduler-tip__update [data-update-open]').length, updatesTip.children.at(-1).dataset.cardAction, updatesTip.querySelector('.rux--user-avatar')],
+    updatesTip.querySelectorAll('.scheduler-tip__update > .scheduler-tip__pencil button.rux--btn--icon-only[data-update-open]').length,
+    text(updatesTip, '.scheduler-tip__pencil .rux--tooltip-content'), footOf(updatesTip), updatesTip.querySelector('.rux--user-avatar, .scheduler-tip__row')],
   [['Updates', '3'], [['Gate 4 at the stadium, not the main doors', 'Dana · 2h'], ['Coach Ortiz has the rooming list', 'Luis · 1d · edited'],
-    ['Quote sent for two coaches', 'Dana · 6d']], 3, 'update', null]);
-expect('a trip with no updates says so, over Add update', [tipHead(tipDrawn('No updates')), tipRows(tipDrawn('No updates'))],
-  [['Updates', null], [['none', 'No updates yet.'], ['add', 'Add update']]]);
+    ['Quote sent for two coaches', 'Dana · 6d']], 3, 'Edit update', [true, [['BUTTON', 'Add update', 'update']]], null]);
+expect('a trip with no updates says so, over Add update', [tipHead(tipDrawn('No updates')), text(tipDrawn('No updates'), '.scheduler-tip__none'), footOf(tipDrawn('No updates'))],
+  [['Updates', null], 'No updates yet.', [true, [['BUTTON', 'Add update', 'update']]]]);
+expect('more than five: Show all is a link at the footer\'s start, Add update at its end',
+  footOf(tipDrawn('More than five')), [true, [['A', 'Show all 7', 'show-all'], ['BUTTON', 'Add update', 'update']]]);
 expect('more than five: the newest five and Show all with the count, and every one once opened',
   [tipDrawn('More than five').querySelectorAll('.scheduler-tip__update').length, text(tipDrawn('More than five'), '.scheduler-tip__more'),
     tipDrawn('More than five', { editor: () => ({ opened: true, editing: null, quick: null }) }).querySelectorAll('.scheduler-tip__update').length],

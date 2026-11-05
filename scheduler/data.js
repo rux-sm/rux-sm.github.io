@@ -11456,6 +11456,64 @@
     schEl.style.paddingBlockEnd = '';
     schEl.style.scrollPaddingBlockEnd = '';
   };
+  /* A TIP STANDS OVER THE ICON PRESSED, as Carbon's toggletip stands over
+     its button: the container is laid on the icon, fixed to the window so
+     the pane's edge never cuts it, and Carbon's CSS draws the surface and
+     its caret at Carbon's offset from it. The board chooses only the
+     placement class: right of the icon where the tip fits the board, else
+     left, else above, else below, each centred or, where centred would
+     leave the board, at its start or its end. Carbon's own pages measure
+     this with floating-ui; trying each class in turn is all the board
+     needs. A tip taller than the board's room scrolls its body, its list of
+     updates or the route's table, under its heading and over its footer. */
+  const TIP_PLACEMENTS = [
+    'rux--popover--right', 'rux--popover--right-start', 'rux--popover--right-end',
+    'rux--popover--left', 'rux--popover--left-start', 'rux--popover--left-end',
+    'rux--popover--top', 'rux--popover--top-start', 'rux--popover--top-end',
+    'rux--popover--bottom', 'rux--popover--bottom-start', 'rux--popover--bottom-end',
+  ];
+  let tipPlacement = '';
+  function placeTip(bar) {
+    const pane = schEl.getBoundingClientRect();
+    const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
+    const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
+    const room = { top: (band ? band.bottom : pane.top) + TIP_GAP, bottom: pane.bottom - TIP_GAP,
+      left: (column ? column.right : pane.left) + TIP_GAP, right: pane.right - TIP_GAP };
+    const box = cardOrigin(bar).getBoundingClientRect();
+    // An icon scrolled out of the board's room leaves nothing to point at, as a card's trip does.
+    const gone = box.bottom <= room.top || box.top >= room.bottom || box.right <= room.left || box.left >= room.right;
+    barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
+    for (const [name, px] of [['top', box.top], ['start', box.left], ['w', box.width], ['h', box.height]]) {
+      barShortcuts.style.setProperty(`--scheduler-open-${name}`, `${px}px`);
+    }
+    const surface = barShortcuts.querySelector('.rux--popover-content');
+    if (!surface) return;
+    const body = surface.querySelector(':scope > .scheduler-tip > :is(.scheduler-tip__list, .scheduler-route)');
+    body?.style.removeProperty('max-block-size');
+    const over = surface.offsetHeight - (room.bottom - room.top);
+    if (body && over > 0) body.style.maxBlockSize = `${Math.max(48, body.offsetHeight - over)}px`;
+    const fits = () => {
+      const r = surface.getBoundingClientRect();
+      return r.top >= room.top && r.bottom <= room.bottom && r.left >= room.left && r.right <= room.right;
+    };
+    const place = placement => {
+      if (tipPlacement) barShortcuts.classList.remove(tipPlacement);
+      tipPlacement = placement;
+      barShortcuts.classList.add(placement);
+    };
+    // The placement it has already, while it still fits, so a scroll does not flip it.
+    if (tipPlacement && fits()) return;
+    for (const placement of TIP_PLACEMENTS) {
+      place(placement);
+      if (fits()) return;
+    }
+    place('rux--popover--right-start');
+  }
+  // The icon pressed grows as its tip opens, app.css's lift, so the tip is laid on it again once it has.
+  gridEl?.addEventListener('transitionend', e => {
+    if (e.propertyName === 'transform' && e.target.matches?.('[data-card-opener][aria-expanded="true"]')
+      && barShortcuts?.classList.contains('scheduler-trip-tip')) placeBarOpen();
+  });
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
     const docked = !floatingCard();
@@ -11557,6 +11615,7 @@
       return;
     }
     clearDocked();
+    if (barShortcuts.classList.contains('scheduler-trip-tip')) { placeTip(bar); pop(); return; }
     /* The room is measured on screen, against the pane and the two bands that
        stick to its edges, and then written in the track's own coordinates,
        which is where the bar is laid out. */
@@ -11590,12 +11649,11 @@
     const start = Math.max(0, Math.min(days.length - 1, (Number(bar.dataset.start) || 0) + lit));
     /* BESIDE THE TRIP, THE CARD IS AS WIDE AS THE TWO DAYS IT STANDS OVER, less
        the 16px in from each of their edges, and no wider than 20rem or
-       narrower than 16rem, so it hides no more than the two bars next to it.
-       A tip may be as narrow as the bus number's, 14rem. */
+       narrower than 16rem, so it hides no more than the two bars next to it. */
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
     const span = days[start + 2] && days[start + 1] ? days[start + 2].right - days[start + 1].left
       : days[start - 1] && days[start - 2] ? days[start - 1].right - days[start - 2].left : 0;
-    const narrowest = (barShortcuts.hasAttribute('data-tip') ? 14 : 16) * rem;
+    const narrowest = 16 * rem;
     if (span) barShortcuts.style.setProperty('--scheduler-card-w', `${Math.max(narrowest, Math.min(20 * rem, span - 2 * INSET))}px`);
     else barShortcuts.style.removeProperty('--scheduler-card-w');
     const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
@@ -13341,7 +13399,7 @@
   // anywhere off the tracks.
   const cellTrack = target => {
     const track = target.closest('.scheduler-track');
-    return !track || target.closest('.scheduler-bar, .scheduler-bar-shortcuts') ? null : track;
+    return !track || target.closest('.scheduler-bar, #scheduler-bar-shortcuts') ? null : track;
   };
 
   function openCellMenu(track, e) {
@@ -16402,14 +16460,18 @@
     // The sheet drawn again for the same trip keeps where its rest was scrolled to.
     const scrolled = same ? barShortcuts.querySelector('.scheduler-sheet__rest')?.scrollTop ?? 0 : 0;
     const board = carded ? tipBoard() : null;
-    barShortcuts.replaceChildren(...(!carded ? [] : docked ? Sheet.draw(trip, bar, board)
-      : [cardSection.startsWith('route:') ? Tips.route(trip, bar, board)
-        : cardSection.startsWith('driver:') ? Tips.driver(trip, bar, cardSection, board)
-        : bar.dataset.road && roadPartOf(bar) === 'road' ? Tips.live(trip, bar, board) : Tips.card(trip, bar, cardSection, board)]));
+    /* Floating, Alerts, Updates, a driver's and the route are tips, Carbon's
+       toggletip: the element takes the container's classes in place of its
+       own, so none of the card's frame applies, and holds the tip's popover.
+       The live card and the phone's sheet keep the card's frame. */
+    const tipped = carded && !docked && !(bar.dataset.road && roadPartOf(bar) === 'road');
+    barShortcuts.className = tipped ? Tips.CONTAINER : 'scheduler-bar-shortcuts';
+    tipPlacement = '';
+    const tip = !tipped ? null : cardSection.startsWith('route:') ? Tips.route(trip, bar, board)
+      : cardSection.startsWith('driver:') ? Tips.driver(trip, bar, cardSection, board) : Tips.card(trip, bar, cardSection, board);
+    barShortcuts.replaceChildren(...(!carded ? [] : tipped ? [Tips.surface(tip)] : docked ? Sheet.draw(trip, bar, board) : [Tips.live(trip, bar, board)]));
     if (scrolled) barShortcuts.querySelector('.scheduler-sheet__rest')?.scrollTo(0, scrolled);
     barShortcuts.toggleAttribute('data-card', carded);
-    // Floating, Alerts, Updates, a driver's and the route are tips, app.css's.
-    barShortcuts.toggleAttribute('data-tip', carded && !docked && !(bar.dataset.road && roadPartOf(bar) === 'road'));
     if (focusQuick) {
       const input = barShortcuts.querySelector('[data-quick] input');
       input?.focus({ preventScroll: true });
@@ -16470,7 +16532,7 @@
   // A tap on the view, on neither a trip nor a bus nor anything else that takes a press, closes it.
   schEl.addEventListener('click', e => {
     if (floatingCard() || !selectedBar()
-      || e.target.closest('.scheduler-bar, .scheduler-row-head, .scheduler-bar-shortcuts, button, a')) return;
+      || e.target.closest('.scheduler-bar, .scheduler-row-head, #scheduler-bar-shortcuts, button, a')) return;
     clearSelection();
   });
 
@@ -17082,6 +17144,8 @@
     // The open update's buttons: Delete asks first, Cancel puts the row back.
     const act = e.target.closest('[data-edit-act]');
     if (act) {
+      // Show all is a link that goes nowhere but the tip itself.
+      if (act.matches('a')) e.preventDefault();
       const how = act.dataset.editAct;
       if (how === 'show-all') toggleUpdates(act.closest('[data-trip-id]')?.dataset.tripId ?? selectedBar()?.dataset.tripId ?? null, e.detail === 0);
       else if (how === 'cancel') endCardEdit(true);
@@ -17090,7 +17154,7 @@
       return;
     }
     // An update opens in its own row; docked, only once the section shows them all, the press before that opening it.
-    const update = e.target.closest('[data-update-id]');
+    const update = e.target.closest('[data-update-open]')?.closest('[data-update-id]');
     if (update) {
       if (update.hasAttribute('data-editing')) return;
       if (!barShortcuts.hasAttribute('data-docked') || update.closest('.scheduler-card__updates[data-open]')) {
@@ -17718,7 +17782,7 @@
   // driver with it. A click on a bar is app.js's toggle and opens nothing; a
   // click on a bar's button is the button's.
   gridEl.addEventListener('click', e => {
-    if (e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts') || !e.target.closest('.scheduler-track')) return;
+    if (e.target.closest('.scheduler-bar, #scheduler-bar-shortcuts') || !e.target.closest('.scheduler-track')) return;
     if (focusDriver != null) pickDriver(null);
     clearSelection();
   });
@@ -19099,7 +19163,7 @@
   schEl.addEventListener('touchstart', e => {
     swipe = null;
     if (e.touches.length !== 1 || !touchPaging() || !stripStart || barsInHand
-      || e.target.closest('.scheduler-bar-shortcuts')) return;
+      || e.target.closest('#scheduler-bar-shortcuts')) return;
     const w = dayWidth();
     if (!w) return;
     const t = e.touches[0];

@@ -471,7 +471,9 @@ button.scheduler-row-head__num::after {
    +1 beside it at the tip's own 12px, faded, where a raised mark at the
    bar's size would fall under Carbon's smallest type, and an estimate is
    faded, since it is not yet a time that happened. */
-.scheduler-route { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
+/* A name breaks between its words, and inside one only where it must, so
+   its column keeps its longest word and the times give way around it. */
+.scheduler-route { display: grid; grid-template-columns: minmax(min-content, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
 .scheduler-route__row {
   display: grid;
   grid-column: 1 / -1;
@@ -481,7 +483,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); }
 .scheduler-route__row--head > * { opacity: .75; }
-.scheduler-route__name { min-inline-size: 0; overflow-wrap: anywhere; }
+.scheduler-route__name { min-inline-size: 0; overflow-wrap: break-word; }
 .scheduler-route__time { white-space: nowrap; }
 .scheduler-route__day { margin-inline-start: .1em; opacity: .75; }
 .scheduler-route__actual { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--rux-spacing-02); }
@@ -1728,73 +1730,26 @@ button.scheduler-row-head__num::after {
   border-inline-start-width: 1px;
   border-block-start-width: 1px;
 }
-/* THE TRIP'S TIPS, Alerts and Updates, are Carbon's high-contrast
-   toggletip, as the bus number's is: its 2px corners, its drop shadow and its
-   12px by 6px caret, with no ring and none of the theme's inset; theme.css
-   gives it the inverse surface and ink. The card's own placing stands it
-   beside the trip, as tall as what it holds; past the board's room it
-   scrolls inside, so the caret outside it is never cut. Its head stays put
-   while what is under it scrolls: an update's list or the route's table
-   scroll on their own, so Add update stays under the list and the route's
-   column names stay over its rows, and a tip of loose rows scrolls whole
-   under its head. */
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) {
-  padding: 0;
-  border-radius: 2px;
+/* THE TRIP'S TIPS are Carbon's high-contrast toggletip, trip-tips.js's
+   `CONTAINER`, laid over the icon pressed; overrides.css places it. Inside,
+   Carbon's body: its 14px type, where the bus tip's is 12px, and each
+   part 16px from the next with no rule between, the content's own gap. Past
+   the board's room the body scrolls, the updates or the route's table,
+   under the heading and over the footer. */
+.scheduler-trip-tip .scheduler-tip {
+  min-inline-size: 0;
+  font-size: var(--rux-body-01-font-size);
+  line-height: var(--rux-body-01-line-height);
+  letter-spacing: var(--rux-body-01-letter-spacing);
 }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-block-size: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > * { flex: none; }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > .scheduler-tip__head {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1;
-  background: var(--card-surface);
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > :is(.scheduler-tip__list, .scheduler-route) {
-  flex: 0 1 auto;
-  min-block-size: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) .scheduler-route__row--head {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1;
-  background: var(--card-surface);
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])::after {
-  inline-size: 0;
-  block-size: 0;
-  border: 0 solid transparent;
-  background: none;
-  transform: none;
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]):is([data-side="right"], [data-side="left"])::after {
-  inset-block-start: calc(var(--scheduler-open-tip, 50%) - 6px);
-  border-block-width: 6px;
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="right"]::after { inset-inline-start: -6px; border-inline-end-width: 6px; }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="left"]::after { inset-inline-start: 100%; border-inline-start-width: 6px; }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]):is([data-side="above"], [data-side="below"])::after {
-  inset-inline-start: var(--scheduler-open-tip, var(--rux-spacing-05));
-  border-inline-width: 6px;
-}
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="above"]::after { inset-block-start: 100%; border-block-start-width: 6px; }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="below"]::after { inset-block-start: -6px; border-block-end-width: 6px; }
-/* Inside it are the bus tip's head and ruled rows. Its count stands beside
-   its name in plain faded type. A row that is a press takes the inverse
-   hover under the pointer and the inverse focus ring, and leads with its
-   16px icon. An update is its words over who wrote it and how long ago, the
-   press a button laid over the row; Add update is a row of its own. */
+.scheduler-trip-tip :is(.scheduler-tip__head, .scheduler-tip__row, .scheduler-route__row--head) { padding: 0; border: 0; }
+.scheduler-trip-tip .scheduler-route { row-gap: var(--rux-spacing-03); }
+.scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; }
+/* A tip's count stands beside its name in the heading's own type. A row
+   that is a press takes the inverse hover under the pointer and the
+   inverse focus ring, and leads with its 16px icon. */
 .scheduler-tip--card { min-inline-size: 0; }
-.scheduler-tip__count { margin-inline-start: var(--rux-spacing-03); font-weight: 400; opacity: .75; }
+.scheduler-tip__count { margin-inline-start: var(--rux-spacing-03); }
 .scheduler-tip__go {
   display: flex;
   align-items: flex-start;
@@ -1843,13 +1798,26 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tip__link { color: inherit; text-decoration: underline; }
 .scheduler-tip__link:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: 1px; }
 .scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
-.scheduler-tip__go:focus-visible, .scheduler-tip__open:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+.scheduler-tip__go:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
 .scheduler-tip__when { flex: none; margin-inline-start: auto; font-weight: 400; opacity: .75; white-space: nowrap; }
-.scheduler-tip__none { opacity: .75; }
-.scheduler-tip__list { margin: 0; padding: 0; list-style: none; }
-.scheduler-tip__update { position: relative; display: grid; gap: var(--rux-spacing-01); }
-.scheduler-tip__by { opacity: .75; }
+/* UPDATES: each its words over who wrote it and how long ago, 12px in the
+   tip's one ink, since Carbon has no second inverse text colour, and its
+   pencil at its end, its icon level with the first line. The footer is
+   Carbon's toggletip actions, Add update at its end with Show all or alone. */
+.scheduler-tip__none { margin: 0; }
+.scheduler-tip__list { display: grid; gap: var(--rux-spacing-05); margin: 0; padding: 0; list-style: none; }
+.scheduler-tip__update { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
+.scheduler-tip__text { display: grid; flex: 1 1 auto; gap: var(--rux-spacing-01); min-inline-size: 0; }
+.scheduler-tip__by {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+/* The 32px button stands 12px taller than the 20px line, so half of it hangs above and below. */
+.scheduler-tip__pencil { flex: none; margin-block: -0.375rem; }
+.scheduler-tip__update > .scheduler-tip__edit { flex: 1 1 auto; }
+.scheduler-tip__foot > .rux--btn:only-child { margin-inline-start: auto; }
 /* THE POST-TRIP ENTRY, data.js's `postTripRows`, heads a trip's Updates
    once it is back: its lines in the surface's own ink as an update's words
    are, where they are from under them as an update's author is, Paid in the
@@ -1859,10 +1827,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__by { color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); }
 :is(.scheduler-tip__paid, .scheduler-card__paid) { color: var(--scheduler-paid, var(--rux-tag-color-green)); font-weight: 600; }
 :is(.scheduler-tip__close, .scheduler-card__close) > svg { color: var(--rux-status-blue); }
-.scheduler-tip__open { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: pointer; }
-/* A box opened in a row, Add's or an update's: Carbon's small field over its
-   buttons at the row's end, Delete alone at its start. */
-.scheduler-tip__box { display: grid; gap: var(--rux-spacing-03); padding-block: var(--rux-spacing-03); }
+/* A box opened in the tip, Add's in the footer's place or an update's in
+   its own: Carbon's small field over its buttons at the end, Delete alone at
+   the start. */
+.scheduler-tip__box { display: grid; gap: var(--rux-spacing-03); }
 .scheduler-tip__box .rux--text-input, .scheduler-tip__edit .rux--text-area { inline-size: 100%; }
 .scheduler-tip__edit { display: grid; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-tip__acts { display: flex; align-items: center; justify-content: flex-end; gap: var(--rux-spacing-02); }
@@ -2256,8 +2224,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar-shortcuts[data-card][data-side="left"] { --card-rise-x: 4px; }
 .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-in 110ms cubic-bezier(0, 0, .38, .9) both; }
 .scheduler-bar-shortcuts[data-pop][data-docked] { animation-name: scheduler-card-fade; }
-/* A tip appears as the bus number's does, with no pop: Carbon's popover has no entrance motion. */
-.scheduler-bar-shortcuts[data-pop][data-tip] { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-fade 110ms linear both; }
 }
@@ -6701,9 +6667,10 @@ html[data-scheduler-takeover] {
    size to nothing: the column takes the corner's own floor instead, 69px,
    or the compact board's narrow column. */
 .scheduler-components__board { --scheduler-head-w: var(--scheduler-head-min); }
-/* A sample's tip stands in the page under its bar, at the size the board
-   gives it: a floating tip as wide as two days and as tall as it needs, to
-   the board's 33rem, and the half sheet pulled up at a phone's width. */
+/* A sample's tip stands in the page under its bar rather than floating
+   over it: a toggletip in the flow, which overrides.css lays out there; the
+   live card as wide as two days and as tall as it needs, to the board's
+   33rem; and the half sheet pulled up at a phone's width. */
 .scheduler-bar-shortcuts.scheduler-components__tip[data-card] {
   position: relative;
   inset: auto;

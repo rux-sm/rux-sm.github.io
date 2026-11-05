@@ -167,7 +167,10 @@
   editingBar.hidden = true;
   const chips = el('div', 'scheduler-team__chips');
   chips.hidden = true;
-  const picker = el('ul', 'scheduler-team__pick');
+  /* Design's list box menu, a layer up, so each theme dresses it as its
+     dropdowns' lists: Carbon's shadow and no line, Rux 100's Geist outline,
+     the floating themes' corners. */
+  const picker = el('ul', 'rux--list-box__menu rux--layer-two scheduler-team__pick');
   picker.id = 'scheduler-team-pick';
   picker.setAttribute('role', 'listbox');
   picker.setAttribute('aria-label', 'Suggestions');

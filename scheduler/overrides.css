@@ -1463,19 +1463,19 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 }
 .scheduler-team__urgent[aria-pressed="true"] svg { fill: var(--rux-support-error); }
 .scheduler-team__send:not(:disabled) { color: var(--rux-link-primary); }
+/* The mention list is Design's list box menu, which shows only inside an
+   open list box; here it shows whenever it is not hidden, and stands over
+   the message box rather than under a field. */
 .scheduler-team__pick {
-  position: absolute;
+  display: block;
   z-index: 2;
   inset-inline: var(--rux-spacing-05);
   inset-block-end: calc(100% - var(--rux-spacing-03));
+  inline-size: auto;
   max-block-size: 16rem;
   margin: 0;
   padding: var(--rux-spacing-02) 0;
-  overflow-y: auto;
   list-style: none;
-  border: 1px solid var(--rux-border-subtle-01);
-  background: var(--rux-layer-02);
-  box-shadow: 0 2px 6px var(--rux-shadow);
 }
 .scheduler-team__option {
   display: flex;

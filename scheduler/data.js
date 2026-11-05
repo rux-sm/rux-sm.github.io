@@ -12556,8 +12556,15 @@
   }
   if (boardEl) {
     new MutationObserver(records => {
-      for (const target of new Set(records.map(r => r.target))) {
-        if (target.parentElement !== boardEl) continue;
+      /* A column has changed when it is shown or hidden now and was not
+         before the records: `hidden` set to what it already was, as
+         placeAvailability sets the shut roster's on every draw, moves
+         nothing, and a close pushed for a column never open held the week
+         16px short and slid it back. */
+      const wasHidden = new Map();
+      for (const r of records) if (!wasHidden.has(r.target)) wasHidden.set(r.target, r.oldValue !== null);
+      for (const [target, was] of wasHidden) {
+        if (target.parentElement !== boardEl || was === target.hasAttribute('hidden')) continue;
         /* A left panel's change waits for the frame, so a panel opened in
            place of another one closed a moment before is seen with it. */
         if (leftColumn(target) && slides()) {
@@ -12565,7 +12572,7 @@
           if (!slideAsked) { slideAsked = true; requestAnimationFrame(slideOrPush); }
         } else trackPush(target);
       }
-    }).observe(boardEl, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    }).observe(boardEl, { subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ['hidden'] });
   }
   // to-do-list.js says when it has shown or hidden one of the lists' panes.
   document.addEventListener('scheduler:to-do-pane', () => {

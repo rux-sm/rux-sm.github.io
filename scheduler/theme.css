@@ -21,7 +21,7 @@
    pocket. */
 :root {
   --scheduler-binder-confirmed: #2f6293;
-  --scheduler-binder-quotes: #c1c7cd;
+  --scheduler-binder-quotes: var(--rux-cool-gray-30);
 }
 
 /* The pair a trip bar's marks are drawn from, both of them text-primary and
@@ -82,7 +82,7 @@
    the dark ones take, where their status purple, Purple 60, held the
    meter's dark time at 3.6 to 1, under the 4.5 its 12px needs; Purple 50
    holds it at 5.4. */
-:is([data-theme="white"], [data-theme="g10"]) { --scheduler-rest-fill: #a56eff; }
+:is([data-theme="white"], [data-theme="g10"]) { --scheduler-rest-fill: var(--rux-purple-50); }
 /* The Apple themes fill it in Apple's increased-contrast dark purple,
    #ea8dff, from design/docs/apple-token-map.md, where their status purple
    held the dark time at 2.9 in apple-light and 4.5 in apple-dark; it holds
@@ -104,16 +104,16 @@
 [data-theme="white"],
 [data-theme="g10"],
 [data-theme="apple-light"] {
-  --scheduler-head-low: #8e6a00;
-  --scheduler-head-critical: #da1e28;
-  --scheduler-head-moving: #198038;
+  --scheduler-head-low: var(--rux-yellow-60);
+  --scheduler-head-critical: var(--rux-red-60);
+  --scheduler-head-moving: var(--rux-green-60);
 }
 /* On a light pane a low tank's orange takes Carbon's orange 60, which holds
    3 to 1 as a bar where the status colour does not. */
 [data-theme="white"] .scheduler-row-head,
 [data-theme="g10"] .scheduler-row-head,
 [data-theme="apple-light"] .scheduler-row-head {
-  --scheduler-fuel-low: #ba4e00;
+  --scheduler-fuel-low: var(--rux-orange-60);
 }
 /* A live seat's reading over its meter is dark, the inverse text, since the
    bar's own fill under the rest of it is no longer a dark footer. */
@@ -191,16 +191,16 @@
 :root,
 [data-theme="white"],
 [data-theme="g10"] {
-  --scheduler-age-new: #0e6027;
-  --scheduler-age-week: #684e00;
-  --scheduler-age-old: #a2191f;
+  --scheduler-age-new: var(--rux-green-70);
+  --scheduler-age-week: var(--rux-yellow-70);
+  --scheduler-age-old: var(--rux-red-70);
 }
 [data-theme="g90"],
 [data-theme="g100"],
 [data-theme="spotify-dark"] {
-  --scheduler-age-new: #6fdc8c;
+  --scheduler-age-new: var(--rux-green-30);
   --scheduler-age-week: var(--rux-support-warning);
-  --scheduler-age-old: #ffb3b8;
+  --scheduler-age-old: var(--rux-red-30);
 }
 [data-theme="rux-100"] {
   --scheduler-age-new: var(--geist-green-900);
@@ -246,9 +246,9 @@
 [data-theme="white"],
 [data-theme="g10"] {
   --scheduler-amber-bg: var(--rux-notification-background-warning);
-  --scheduler-amber-fg: #684e00;
+  --scheduler-amber-fg: var(--rux-yellow-70);
   --scheduler-amber-hover: oklch(92% 0.07 95);
-  --scheduler-amber-border: #d2a106;
+  --scheduler-amber-border: var(--rux-yellow-40);
   --scheduler-amber-hover-ring: none;
 }
 [data-theme="g90"],
@@ -300,16 +300,16 @@
   --scheduler-free-fill: var(--rux-notification-background-success);
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--teal {
-  --scheduler-bg: #d9fbfb; --scheduler-hover: var(--rux-tag-background-teal);
+  --scheduler-bg: var(--rux-teal-10); --scheduler-hover: var(--rux-tag-background-teal);
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--cyan {
-  --scheduler-bg: #e5f6ff; --scheduler-hover: var(--rux-tag-background-cyan);
+  --scheduler-bg: var(--rux-cyan-10); --scheduler-hover: var(--rux-tag-background-cyan);
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--purple {
-  --scheduler-bg: #f6f2ff; --scheduler-hover: var(--rux-tag-background-purple);
+  --scheduler-bg: var(--rux-purple-10); --scheduler-hover: var(--rux-tag-background-purple);
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--magenta {
-  --scheduler-bg: #fff0f7; --scheduler-hover: var(--rux-tag-background-magenta);
+  --scheduler-bg: var(--rux-magenta-10); --scheduler-hover: var(--rux-tag-background-magenta);
 }
 [data-theme="apple-light"] .scheduler-bar--teal {
   --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-teal) 70%, #fff); --scheduler-hover: var(--rux-tag-background-teal);
@@ -1327,9 +1327,9 @@
    fill below. The state fills lighten the footer in its own hue, as Carbon's
    layer hover, selected and active tokens lighten Gray 80. */
 [data-theme] {
-  --scheduler-footer-base: #393939;
+  --scheduler-footer-base: var(--rux-gray-80);
   --scheduler-footer: var(--scheduler-footer-base);
-  --scheduler-footer-fg: #f4f4f4;
+  --scheduler-footer-fg: var(--rux-gray-10);
   --scheduler-footer-warning: var(--rux-status-yellow);
 }
 
@@ -1358,19 +1358,24 @@
    held the 50s at 2.3, so they take Carbon's blue 40 and red 40, 3.2 to 1
    at the least, level with green 40; ant-dark's and pixel-dark's
    brighter 6 grades take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1
-   at the least, on the green trip; apple-dark's teal takes Apple's
-   increased-contrast blue and red, 3.1 where its own held 2.5; and
+   at the least, on the green trip; apple-dark takes Apple's
+   increased-contrast blue, 3.9 on its cyan trip where its blue held 3.0, and
+   the same red 13% toward white, design/docs/apple-dark-token-map.md's red
+   tag words, 3.3 on its red trip where Apple's own reds hold 2.9 at best;
    apple-light's pale blue takes Apple's dark green, 3.9 where its green
-   held 2.0. */
+   held 2.0; white's and g10's pale trips take Carbon's green 60, 3.8 on
+   the grey trip where green 50 held 2.5; and rux-dark's grey takes Gray 30,
+   as Carbon's dark themes do below, 5.1 on its grey trip where Gray 50
+   held 2.6. */
 :is([data-theme="g90"], [data-theme="spotify-dark"]) {
-  --rux-status-blue: #78a9ff;
-  --rux-status-red: #ff8389;
+  --rux-status-blue: var(--rux-blue-40);
+  --rux-status-red: var(--rux-red-40);
 }
 /* Carbon's dark themes draw the neutral status, a seat not sent, in Gray 30,
    the grey of the menus' and panels' other icons, so having no status yet
    reads at an ordinary icon's weight and the coloured ones stand out from
    it; Carbon's Gray 50 held it at 3.4 to 1, Gray 30 at 6.6 at the least. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) { --rux-status-gray: #c6c6c6; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) { --rux-status-gray: var(--rux-gray-30); }
 /* A trip stands one grade above the board it lies on, the step Carbon's
    dark themes take from one layer to the next, whatever its colour. g100's
    board is Gray 90, so its trips take grade 80, a step deeper than the
@@ -1378,16 +1383,16 @@
    @carbon/colors. g90's board is Gray 80, so its trips keep the tags' grade
    70, already a step above it. The roster's trip cells take the same blue,
    so a trip is one colour on the board and beside it. */
-[data-theme="g100"] .scheduler-bar--gray      { --scheduler-bg: #393939; --scheduler-hover: #474747; }
-[data-theme="g100"] .scheduler-bar--cool-gray { --scheduler-bg: #343a3f; --scheduler-hover: #434a51; }
-[data-theme="g100"] .scheduler-bar--blue      { --scheduler-bg: #002d9c; --scheduler-hover: #0039c7; }
-[data-theme="g100"] .scheduler-bar--cyan      { --scheduler-bg: #003a6d; --scheduler-hover: #00498a; }
-[data-theme="g100"] .scheduler-bar--teal      { --scheduler-bg: #004144; --scheduler-hover: #005357; }
-[data-theme="g100"] .scheduler-bar--green     { --scheduler-bg: #044317; --scheduler-hover: #05521c; }
-[data-theme="g100"] .scheduler-bar--purple    { --scheduler-bg: #491d8b; --scheduler-hover: #5b24ad; }
-[data-theme="g100"] .scheduler-bar--magenta   { --scheduler-bg: #740937; --scheduler-hover: #8e0b43; }
-[data-theme="g100"] .scheduler-bar--red       { --scheduler-bg: #750e13; --scheduler-hover: #921118; }
-[data-theme="g100"] .scheduler-avail__cell--busy { --scheduler-avail-fill: #002d9c; }
+[data-theme="g100"] .scheduler-bar--gray      { --scheduler-bg: var(--rux-gray-80); --scheduler-hover: var(--rux-gray-80-hover); }
+[data-theme="g100"] .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-cool-gray-80); --scheduler-hover: var(--rux-cool-gray-80-hover); }
+[data-theme="g100"] .scheduler-bar--blue      { --scheduler-bg: var(--rux-blue-80); --scheduler-hover: var(--rux-blue-80-hover); }
+[data-theme="g100"] .scheduler-bar--cyan      { --scheduler-bg: var(--rux-cyan-80); --scheduler-hover: var(--rux-cyan-80-hover); }
+[data-theme="g100"] .scheduler-bar--teal      { --scheduler-bg: var(--rux-teal-80); --scheduler-hover: var(--rux-teal-80-hover); }
+[data-theme="g100"] .scheduler-bar--green     { --scheduler-bg: var(--rux-green-80); --scheduler-hover: var(--rux-green-80-hover); }
+[data-theme="g100"] .scheduler-bar--purple    { --scheduler-bg: var(--rux-purple-80); --scheduler-hover: var(--rux-purple-80-hover); }
+[data-theme="g100"] .scheduler-bar--magenta   { --scheduler-bg: var(--rux-magenta-80); --scheduler-hover: var(--rux-magenta-80-hover); }
+[data-theme="g100"] .scheduler-bar--red       { --scheduler-bg: var(--rux-red-80); --scheduler-hover: var(--rux-red-80-hover); }
+[data-theme="g100"] .scheduler-avail__cell--busy { --scheduler-avail-fill: var(--rux-blue-80); }
 :is([data-theme="ant-dark"], [data-theme="pixel-dark"]) {
   --rux-status-gray: #d9d9d9;
   --rux-status-green: #b7eb8f;
@@ -1395,10 +1400,12 @@
   --rux-status-red: #ffccc7;
 }
 [data-theme="apple-dark"] {
-  --rux-status-blue: #409cff;
-  --rux-status-red: #ff6961;
+  --rux-status-blue: #5cb8ff;
+  --rux-status-red: #ff7679;
 }
 [data-theme="apple-light"] { --rux-status-green: #248a3d; }
+:is([data-theme="white"], [data-theme="g10"]) { --rux-status-green: var(--rux-green-60); }
+[data-theme="rux-dark"] { --rux-status-gray: var(--rux-gray-30); }
 @media (hover: hover) {
   [data-theme] .scheduler-bar:hover:not([aria-current="true"]) { --scheduler-footer: oklch(from var(--scheduler-footer-base) calc(l + 0.06) c h); }
   [data-theme] .scheduler-week--static .scheduler-bar:hover { --scheduler-footer: var(--scheduler-footer-base); }

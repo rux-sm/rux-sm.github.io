@@ -800,9 +800,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar { transition: transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out; }
 .scheduler-bar.scheduler-bar--pressed { z-index: 2; transform: scale(1.03); }
 .scheduler-bar.scheduler-bar--pressed:not([aria-current="true"]) { box-shadow: var(--scheduler-lift); }
-.scheduler-bar.scheduler-bar--amber.scheduler-bar--pressed:hover:not([aria-current="true"]) {
-  box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift);
-}
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
 .scheduler-bar--leaving { opacity: 0; transition: opacity 150ms ease-out; }
 .scheduler-bar.scheduler-ghost {
@@ -1018,12 +1015,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--red       { --scheduler-bg: var(--rux-tag-background-red);       --scheduler-fg: var(--rux-tag-color-red);       --scheduler-hover: var(--rux-tag-hover-red);       --scheduler-border: var(--rux-tag-border-red); }
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
 /* Amber is the placeholder colour, a trip not yet quoted. Carbon's tags have
-   no yellow, so theme.css sets its colours per theme: a tint beside the other
-   bars in a light theme, the warning fill in a dark one, with the inner ring a
-   dark theme shows on hover in place of a hover step. */
+   no yellow, so theme.css sets its colours per theme, in yellow's own steps
+   by the rule the theme's other trips follow. */
 .scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
-.scheduler-bar.scheduler-bar--amber:hover:not([aria-current="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
-.scheduler-bar.scheduler-bar--amber.scheduler-bar--same-trip:hover { box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift); }
 
 /* A trip colour chip, in the editor's colour field and the bar menu. It wears
    a `scheduler-bar--*` hue class for its custom properties, so it shows the
@@ -1303,8 +1297,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__run { display: flex; gap: inherit; min-inline-size: 0; }
 .scheduler-bar__run > * { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-bar__run > :last-child { flex: 0 1 auto; min-inline-size: 0; }
-/* The amber bar is the warning colour itself in a dark theme, and none of
-   the inks reads on it, so its icon keeps the bar's own. */
 /* MARKS OPEN, WORDS DO NOT. Only a bar's marks are pressed for something
    of their own -- its icons -- and each says so under
    the pointer by lifting; a press on its words, the times and the line
@@ -5024,7 +5016,6 @@ html[data-scheduler-takeover] {
    it on its own sides; its day band and its last row draw the top and bottom. */
 .scheduler-week--static { border-inline: var(--scheduler-region-edge, 0 solid transparent); }
 .scheduler-week--static .scheduler-bar:hover { background-color: var(--scheduler-bg); }
-.scheduler-week--static .scheduler-bar.scheduler-bar--amber:hover { box-shadow: none; }
 /* A list wider than a phone scrolls sideways inside its own box. */
 /* The page's list of changes is a region of the page as the week above it
    is, on the same surface, edge and corner. */

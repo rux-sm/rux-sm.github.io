@@ -89,10 +89,10 @@ no Missive tools says so and stops.
 
 ## Writing a row
 
-A closed row is a tile: a name with the due day beside it, a few words on
-up to two lines, and one quiet line that starts with the tag and is cut
-where it runs long. Each part is short, and the rest shows when the row is
-opened.
+A closed row is two lines on the board's Tasks pane: the kind's tag, the
+due day, the row's number and the owner's face, then `body`, cut where it
+runs long. Opened, it shows `who`, the trip and `detail` as a list. The
+pane is narrow, so every part is short.
 
 - **`kind`** is the work the email asks for, shown as the tag: `quote`, a
   quote to send; `itinerary`, trips to enter or check from one; `po`, a PO
@@ -102,18 +102,20 @@ opened.
   kind of the one the office does first.
 - **`who`** is the person who wrote, by the name they sign with, or the
   company when no person is named.
-- **`body`** is what the work is about, in a few words that fit one line:
-  the group and the place, such as "varsity cheer to Fort Worth". The kind
-  says the work and `who` the person, so neither is said again.
-- **`detail`** is short lines. The first is the days and any count, such as
-  "Jan 14 to 17, 2027 · 30 passengers", and shows on the closed row; the
-  place is left out when the row has a trip, whose name stands on that line.
-  The lines after it are the row's notes, a list that shows when the row is
-  opened: what the office needs to know before it opens the email, one fact
-  a line, and what the team's comments say the work waits on.
-- **A note is a phrase and never a sentence,** because the tile is narrow
+- **`body`** is what the work is about, in the closed row's one line of
+  35 characters: the group and the place, such as "varsity cheer to Fort
+  Worth". The tag says the work and `who` the person, so neither is said
+  again, and the row needs no other summary.
+- **`detail`** is the row's notes, one fact a line and four at most, in
+  this order, each only where there is one: what the email asks for; the
+  days and any count, such as "Jan 14 to 17, 2027 · 30 passengers", without
+  the place when the row has a trip, whose line names it; what the work
+  waits on, from the email or the team's comments; and what has been done
+  already, where the office needs it before it opens the email. The email
+  keeps the rest of its history, so a note never retells it.
+- **A note is a phrase and never a sentence,** because the pane is narrow
   and a sentence fills three of its lines. It is the fewest words that keep
-  the fact: 35 characters fill one line of the tile, and a note runs to two
+  the fact: 35 characters fill one line of the pane, and a note runs to two
   lines, 70, and no further. "Quoted Sep 24, never answered", "First choice
   sold out Oct 12" and "Waits on the manager's yes" are notes. A note leaves
   out what the row already says, its person, its place and its work, and
@@ -165,8 +167,9 @@ opened.
   longer reads true.
 - **What the review learns about a row's work goes in its detail,** as a
   note written the way Writing a row says, such as "Same job as the Oct 3
-  row" or "No free bus has 56 seats". The row's other lines stay as they
-  are.
+  row" or "No free bus has 56 seats", in its place in the order and in
+  place of a note it outdates, so the row keeps four at most. The row's
+  other lines stay as they are.
 - **A row that reads true is left exactly as it is,** so a review changes
   only what moved.
 - **A row is closed once the office has replied on its thread,** even when

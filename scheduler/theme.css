@@ -1272,22 +1272,15 @@
    covers that line under the ⋮. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
 [data-theme="rux-100"] .scheduler-view-menu[data-attached] { margin-block-start: 1px; }
-/* Rux 100's toolbar rules off only the two buttons that open a surface
-   joined to them, the week's name with its calendar, closed by Today's
-   leading rule, and the ⋮ with its menu, so each reads as the box its surface
-   hangs from. Every other button is its icon or word alone, as Carbon's
-   table toolbar draws its actions. */
-[data-theme="rux-100"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(#scheduler-today, .scheduler-toolbar__more, :focus-visible) { border-inline-color: transparent; }
-[data-theme="rux-100"] .scheduler-page #scheduler-today.rux--btn--ghost:not(:focus-visible) { border-inline-end-color: transparent; }
-/* Carbon's four draw the toolbar as the two Carbon patterns it holds. The
+/* Carbon's four and Rux 100, whose Geist gives a toolbar no dividers of its
+   own, draw the toolbar as the two Carbon patterns it holds. The
    week, Today and the arrows step through weeks as Carbon's pagination steps
    through pages, so each keeps the rule that parts it from the one before,
    overrides.css's, and the spacer's rule closes the last arrow, where
    pagination's last arrow is closed by the bar's own edge; the buttons after
    the spacer are Carbon's table toolbar actions, which carry none, the ⋮
    with them. */
-:is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"]) .scheduler-page :is(.scheduler-toolbar__spacer ~ .rux--btn--ghost, .scheduler-toolbar > .rux--btn--ghost):not(:focus-visible) { border-inline-color: transparent; }
-[data-theme="rux-100"] .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
+:is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"]) .scheduler-page :is(.scheduler-toolbar__spacer ~ .rux--btn--ghost, .scheduler-toolbar > .rux--btn--ghost):not(:focus-visible) { border-inline-color: transparent; }
 /* A form's open pick cell does the same with its menu, in the menu's own
    surface and line, Background 1 and gray 400, which Design gives every Rux 100
    menu, on the form's page and in the board's panel alike. */

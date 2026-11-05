@@ -16,6 +16,8 @@
 @use "@carbon/styles/scss/type";
 @use "@carbon/styles/scss/grid";   // auto-emits CSS grid
 @use "@carbon/styles/scss/layout"; // size/density constraint classes components depend on
+@use "@carbon/styles/scss/colors"; // the palette, emitted as tokens below
+@use "sass:meta";
 
 // Phase 3 pass 2, 2026-08-28 — the opt-in layers, verified absent rather than
 // removed. `compat/` (the v10 shim), `feature-flags` and the flexbox grid are
@@ -200,3 +202,15 @@
 [data-theme="g10"]     { @include theme.theme(themes.$g10);   }
 [data-theme="g90"]     { @include theme.theme(themes.$g90);   }
 [data-theme="g100"]    { @include theme.theme(themes.$g100);  }
+
+// CARBON'S PALETTE AS TOKENS. A theme's tokens name roles; a step no role
+// names, a trip at grade 80 or a status a step brighter, is read here by its
+// Carbon name, `--rux-blue-80` and its hover `--rux-blue-80-hover`, rather
+// than typed as a hex, because Carbon's colour guidelines want every colour a
+// token. Each holds its one value in every theme, every colour variable of
+// @carbon/colors, which @carbon/styles forwards as its colors module.
+:root {
+  @each $name, $value in meta.module-variables("colors") {
+    @if meta.type-of($value) == "color" { --rux-#{$name}: #{$value}; }
+  }
+}

@@ -2,7 +2,7 @@
 type: plan
 ---
 
-# Plan: The board's tips are Carbon's toggletip
+# Plan: The board's tips and labels are Carbon's
 
 ## Goal
 
@@ -10,7 +10,9 @@ Every tip a press on the board opens is Carbon's toggletip as Carbon draws
 it: the inverse surface, 14px text, 16px padding and gap, 288px at most,
 13px from the icon pressed, a heading, a body and a footer of a link and a
 button. That is the route tip, Alerts, Updates and a driver's tip, opened
-from a bar, and the bus number's tip.
+from a bar, and the bus number's tip. Every label that shows when the
+pointer rests on something on a bar is Carbon's tooltip, where the browser's
+own label shows now.
 
 ## Decisions
 
@@ -50,6 +52,24 @@ from a bar, and the bus number's tip.
 - **The route tip** keeps its table, at 14px inside 288px, a stop's name
   wrapping. **A driver's tip** keeps its face, status, clocks, map and links,
   at Carbon's sizes, Call a link.
+- **Every hover label on a bar becomes Carbon's tooltip, with the same
+  words.** On a planned bar: the trip kind arrow, Paid, the balance warning,
+  the stop ticks, the −1 and +1 marks, the contact, the times across two
+  weeks and the faces. On a bus out on the road, its labels too, so no
+  browser label is left on the board.
+- **One tooltip, laid over what the pointer rests on, as the tip is.** A bar
+  clips what is inside it, so the board keeps one Carbon tooltip container,
+  `rux--tooltip rux--popover-container rux--popover--caret
+  rux--popover--high-contrast`, outside the bars, places it over the thing,
+  above first, and chooses another placement by the room as the tip does.
+  It shows after Carbon's 100ms and goes after its 300ms, the delays
+  Design's `js/popover.js` keeps.
+- **Carbon's default tooltip for every label,** not its icon tooltip, which
+  Carbon keeps for icon buttons, so every label looks the same.
+- **A label is the pointer's.** Its words are already in the bar's or the
+  mark's accessible name, so the keyboard and a screen reader have them
+  without a tab stop on each mark; Carbon also opens a tooltip on focus,
+  which these marks never take.
 - **The phone's half sheet keeps its own card.** Only the floating tips
   change.
 - **This follows the components page's first task,** which moves the tips
@@ -58,10 +78,7 @@ from a bar, and the bus number's tip.
 
 ## Questions
 
-- **Do the bar's nine hover labels become Carbon tooltips in this plan, or
-  in a plan of their own?** They are the browser's own labels now: the trip
-  kind arrow, Paid, the balance warning, the stop ticks, the −1 and +1
-  marks, the contact, the times across two weeks and the faces.
+None open.
 
 ## Tasks
 
@@ -74,5 +91,8 @@ from a bar, and the bus number's tip.
 - [ ] Draw the route tip and a driver's tip as decided.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by
       deleting its rule in `overrides.css`, and draw its rows as the others.
+- [ ] Add the board's one tooltip, and give it every label a bar's marks
+      carry in `bar.js`, `road-bar.js` and the faces in `data.js`, in place
+      of their `title`.
 - [ ] Delete the `scheduler-tip` rules nothing draws any more, and correct
       `scheduler/docs/screen-inventory.md` where it describes the tips.

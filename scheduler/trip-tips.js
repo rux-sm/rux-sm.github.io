@@ -284,7 +284,7 @@
   // A driver's three clocks, each against the most its rule allows.
   const LIVE_CLOCKS = [['Drive', 'drive_ms', 10 * ROAD_HOUR], ['Shift', 'shift_ms', 15 * ROAD_HOUR], ['Cycle', 'cycle_ms', 70 * ROAD_HOUR]];
   /* A DRIVER'S TIP has one head at every stage: their photo, or their
-     initials until it comes, their name, and one faded line. `section` is
+     initials until it comes, their name, and a 12px line under it. `section` is
      `driver:<id>:<seat>`, the seat `wheel` for a driver at the wheel the bar
      does not name. The photo is signed from the Drivers page's bucket; every
      other line is read from what the board holds.
@@ -294,14 +294,15 @@
      a lamp row for each thing in the way, a leg that changed since they said
      yes in amber and what stands in the way of the seat, clashes.js's, in
      red; a back-to-back trip either side with the rest between, in amber
-     where the rest is short; and their phone, a press that calls.
+     where the rest is short; and in its footer Call with their phone, a link.
 
      ON THE ROAD, for a driver Samsara has in the bus, it says how they are
      doing, the live card's driver with the driver as its head: their duty
      under the name; their Drive, Shift and Cycle time left, each over its
      meter, amber under an hour; their rest while off or in the sleeper; a
      lamp row for each of the road's warnings; the small map of the leg; the
-     next stop and when the bus gets there; and Live map and Google Maps. The
+     next stop and when the bus gets there; and in its footer Live map and
+     Google Maps, links. The
      bus's own state, its engine, fuel and place, is the bus tip's. */
 
   const initialsOf = name => String(name || '').trim().split(/\s+/).filter(Boolean)
@@ -321,7 +322,7 @@
     tip.appendChild(head);
     if (!d && !c?.who) {
       head.appendChild(el('strong', 'scheduler-tip__name', 'Driver'));
-      tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__none', 'Nobody is in this seat now.'));
+      tip.appendChild(el('p', 'scheduler-tip__none', 'Nobody is in this seat now.'));
       return tip;
     }
     const name = who?.name || d?.name || who?.short_name || 'Unnamed driver';
@@ -335,8 +336,8 @@
       img.addEventListener('error', () => { face.textContent = initialsOf(name); }, { once: true });
       face.replaceChildren(img);
     });
-    const said = el('div', 'scheduler-tip__said');
-    said.append(el('strong', 'scheduler-tip__name', name), el('span', null, d
+    const said = el('div', 'scheduler-tip__text');
+    said.append(el('strong', 'scheduler-tip__name', name), el('span', 'scheduler-tip__by', d
       ? [(ROAD_DUTY[d.duty] ?? ROAD_DUTY.unknown).word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')
       : [c.label, who?.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
     head.append(face, said);
@@ -379,16 +380,10 @@
         row.append(el('span', 'scheduler-tip__words', `Next: ${next.stop.name || 'Stop'}`), el('span', 'scheduler-tip__when', words || 'No time'));
         tip.appendChild(row);
       }
-      const links = el('div', 'scheduler-tip__row scheduler-tip__links');
-      const link = (words, href, away) => {
-        const a = el('a', 'scheduler-tip__link', words);
-        a.href = href;
-        if (away) { a.target = '_blank'; a.rel = 'noopener'; }
-        return a;
-      };
-      links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
-      if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
-      tip.appendChild(links);
+      const foot = footer();
+      foot.appendChild(footLink('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`));
+      if (bus.lat != null && bus.lng != null) foot.appendChild(footLink('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
+      tip.appendChild(foot);
       return tip;
     }
     // Their answer: who gave it and when, as the bar's own words say it.
@@ -414,13 +409,21 @@
       else tip.appendChild(el('div', 'scheduler-tip__row', words));
     }
     if (who.phone) {
-      const call = el('a', 'scheduler-tip__row scheduler-tip__go scheduler-tip__call');
-      call.href = `tel:${dial(who.phone)}`;
-      call.setAttribute('aria-label', `Call ${name}`);
-      call.append(svgUse('#m-call', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', showPhone(who.phone)));
-      tip.appendChild(call);
+      const call = footLink(`Call ${showPhone(who.phone)}`, `tel:${dial(who.phone)}`);
+      call.setAttribute('aria-label', `Call ${name}, ${showPhone(who.phone)}`);
+      const foot = footer();
+      foot.appendChild(call);
+      tip.appendChild(foot);
     }
     return tip;
+  }
+  // A tip's footer, Carbon's toggletip actions, and a Carbon link in it, one that leaves the board opening a tab of its own.
+  const footer = () => el('div', 'rux--toggletip-actions scheduler-tip__foot');
+  function footLink(words, href, away = false) {
+    const a = el('a', 'rux--link', words);
+    a.href = href;
+    if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+    return a;
   }
 
   function liveCard(trip, bar, board) {

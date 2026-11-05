@@ -466,11 +466,11 @@ button.scheduler-row-head__num::after {
 }
 /* THE ROUTE TIP'S TABLE: each point of the leg a row of three, its name,
    the planned time and the actual, the columns lined up down the tip by a
-   subgrid, their names faded over them. The point pressed is lit in the
+   subgrid, their names over them. The point pressed is lit in the
    inverse surface's hover tone. A time past the yard-out's day carries its
-   +1 beside it at the tip's own 12px, faded, where a raised mark at the
-   bar's size would fall under Carbon's smallest type, and an estimate is
-   faded, since it is not yet a time that happened. */
+   +1 beside it, where a raised mark at the bar's size would fall under
+   Carbon's smallest type, and an estimate leads with the bus and a tilde,
+   since it is not yet a time that happened. */
 /* A name breaks between its words, and inside one only where it must, so
    its column keeps its longest word and the times give way around it. */
 .scheduler-route { display: grid; grid-template-columns: minmax(min-content, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
@@ -482,12 +482,18 @@ button.scheduler-row-head__num::after {
   font-variant-numeric: tabular-nums;
 }
 .scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); }
-.scheduler-route__row--head > * { opacity: .75; }
 .scheduler-route__name { min-inline-size: 0; overflow-wrap: break-word; }
 .scheduler-route__time { white-space: nowrap; }
-.scheduler-route__day { margin-inline-start: .1em; opacity: .75; }
+.scheduler-route__day { margin-inline-start: .1em; }
 .scheduler-route__actual { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--rux-spacing-02); }
-.scheduler-route__actual--estimate { opacity: .75; }
+/* On the phone's half sheet the column names, a +1 and an estimate are
+   faded; a tip, in one ink, sets its column names in 12px instead. */
+.scheduler-sheet__rest :is(.scheduler-route__row--head > *, .scheduler-route__day, .scheduler-route__actual--estimate) { opacity: .75; }
+.scheduler-trip-tip .scheduler-route__row--head {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
 /* The pickup's on time in Carbon's green check, or late in its amber
    warning, each in the support colour for an inverse surface. */
 .scheduler-route__judged { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); align-self: center; }
@@ -1779,11 +1785,18 @@ a.scheduler-tip__go { text-decoration: none; }
    bold under an hour; the small map the tip's full width and 8rem tall,
    with its credit and no zoom buttons, since Live map is a press away; the
    next stop with when the bus gets there at the row's end; and the two
-   links, underlined in the tip's ink. */
-.scheduler-tip__clocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--rux-spacing-04); padding-block: var(--rux-spacing-03); }
+   links in the footer. A clock's name and hours are 12px, in one ink. */
+.scheduler-tip__clocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--rux-spacing-04); }
 .scheduler-tip__clock { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; }
-.scheduler-tip__clock-top { display: flex; justify-content: space-between; gap: var(--rux-spacing-02); white-space: nowrap; }
-.scheduler-tip__clock-top > :first-child { opacity: .75; }
+.scheduler-tip__clock-top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--rux-spacing-02);
+  white-space: nowrap;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
 .scheduler-tip__left { font-variant-numeric: tabular-nums; }
 .scheduler-tip__clock--low .scheduler-tip__left { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-tip__meter {
@@ -1796,11 +1809,14 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tip__map { padding: 0; }
 .scheduler-tip--card .scheduler-card__live-map-box { block-size: 8rem; }
 .scheduler-tip--card .leaflet-control-zoom { display: none; }
+/* The map's credit stays Carbon's 12px under the tip's 14px. */
+.scheduler-tip--card .leaflet-control-attribution {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
 .scheduler-tip__next { display: flex; align-items: baseline; gap: var(--rux-spacing-03); }
 .scheduler-tip__next--late > .scheduler-tip__when { font-weight: var(--rux-heading-compact-01-font-weight); }
-.scheduler-tip__links { display: flex; gap: var(--rux-spacing-05); }
-.scheduler-tip__link { color: inherit; text-decoration: underline; }
-.scheduler-tip__link:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: 1px; }
 .scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-tip__go:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }

@@ -347,12 +347,12 @@ Carbon's field and buttons take the inverse surface's colours. A driver's tip he
 or their initials until it loads, their name, and their seat with Part-time where they are; then
 their answer, who gave it and when, an amber line for a leg changed since they said yes, a red line
 for each thing in the way of the seat, a back-to-back trip either side with the rest between, amber
-where it is short, and their phone, a press that calls. On a bus out on the road, for a driver
+where it is short, and in its footer Call with their phone, a Carbon link. On a bus out on the road, for a driver
 Samsara has in the bus, it says how they are doing instead: their duty under the name, their Drive,
 Shift and Cycle time left side by side, each over its meter, amber under an hour, their rest while
 off or in the sleeper, a line for each of the road's warnings, the leg's map 8rem tall with its credit
-and no zoom buttons, the next stop with when the bus gets there, and Live map and Google Maps; the
-bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table. A wheel
+and no zoom buttons, the next stop with when the bus gets there, and in its footer Live map and Google Maps, Carbon links; the
+bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px, a name breaking between its words. A wheel
 over any tip scrolls the tip where it has more to show, and never the board behind it. The
 half sheet's pulled-up rest on a phone keeps the card's own bands: the Needs, and the Updates with the two newest
 cut to one line, where a press on the section or its title's arrow opens every update in full, an

@@ -105,7 +105,6 @@ own label shows now.
 
 ## Tasks
 
-- [ ] Draw the route tip and a driver's tip as decided.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by
       deleting its rule in `overrides.css`, and draw its rows as the others.
 - [ ] Add the board's one tooltip, and give it every label a bar's marks

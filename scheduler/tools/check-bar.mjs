@@ -437,19 +437,20 @@ const before = tipDrawn("A driver's tip", {
   standing: () => [{ assignmentId: seatAssign, driverId: 'd1', what: 'Time off' }],
   near: () => ({ near: new Map([['d1', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d1']) }),
 });
-expect('a driver\'s tip before the trip: their face and seat, their answer, what stands in the way, the rest either side and their phone',
-  [text(before, '.scheduler-tip__name'), text(before, '.scheduler-tip__said > span'), !!before.querySelector('.scheduler-tip__face'),
-    tipRows(before).map(([kind, words]) => [kind, words.replace(/ · .*$/, '')]), before.querySelector('.scheduler-tip__call')?.href],
-  ['Marco Ruiz', 'Driver', true, [['answer', 'Confirmed by the driver'], ['lamp--error', 'Time off'], ['lamp--warning', 'Back-to-back with Laredo, 6.5h rest'],
-    ['call', '(956) 555-0188']], 'tel:9565550188']);
+const footLinks = tip => tip.querySelectorAll(':scope > .rux--toggletip-actions > a.rux--link').map(a => [a.textContent, a.href, a.target ?? null]);
+expect('a driver\'s tip before the trip: their face and seat, their answer, what stands in the way, the rest either side, and Call in its footer, a link',
+  [text(before, '.scheduler-tip__name'), text(before, '.scheduler-tip__text > .scheduler-tip__by'), !!before.querySelector('.scheduler-tip__face'),
+    tipRows(before).map(([kind, words]) => [kind, words.replace(/ · .*$/, '')]), footLinks(before)],
+  ['Marco Ruiz', 'Driver', true, [['answer', 'Confirmed by the driver'], ['lamp--error', 'Time off'], ['lamp--warning', 'Back-to-back with Laredo, 6.5h rest']],
+    [['Call (956) 555-0188', 'tel:9565550188', null]]]);
 expect('a driver whose leg changed since they said yes is told so in amber',
   tipRows(tipDrawn('A driver to tell')).filter(([kind]) => kind === 'lamp--warning').map(([, words]) => words.startsWith('Changed since they said yes: ')), [true]);
 const onRoad = tipDrawn("A driver's tip on the road");
-expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the map, the next stop and the two links',
-  [text(onRoad, '.scheduler-tip__said > span'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
+expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the map, the next stop, and Live map and Google Maps in its footer',
+  [text(onRoad, '.scheduler-tip__text > .scheduler-tip__by'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
     tipRows(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
-    text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), onRoad.querySelectorAll('.scheduler-tip__link').map(a => a.textContent), onRoad.querySelector('.scheduler-tip__answer')],
-  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next', 'links'], true, 'Next: Alamodome', ['Live map', 'Google Maps'], null]);
+    text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), footLinks(onRoad).map(([words, , target]) => [words, target]), onRoad.querySelector('.scheduler-tip__answer')],
+  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next'], true, 'Next: Alamodome', [['Live map', null], ['Google Maps', '_blank']], null]);
 const routeTip = tipDrawn('The route');
 expect('the route: its head, a row for the yard out, the pickup with its arrival judged, and the yard back',
   [text(routeTip, '.scheduler-tip__name'), routeTip.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(routeTip, '.scheduler-route__judged')],

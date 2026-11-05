@@ -2999,13 +2999,12 @@ a.scheduler-tip__go { text-decoration: none; }
    opens read as one kind. */
 #scheduler-week-picker[data-attached] .rux--date-picker__calendar { box-shadow: 0 2px 6px var(--rux-shadow); }
 .scheduler-toolbar__weekrow {
-  /* One width for every month, so moving through them moves nothing: 18rem,
-     the width Carbon gives the open calendar, so the calendar hangs under the
-     row edge to edge. The calendar's button, the month and the year share it,
-     the month taking what the other two leave, which holds "September". The
-     narrow toolbar below gives the width up with the month's full name. */
-  flex: 0 1 auto;
-  min-inline-size: 18rem;
+  /* One width for every month, so moving through them moves nothing: the
+     calendar's button and the month's, the month's as wide as its widest
+     name (see `.scheduler-weekbtn__name`), and never squeezed below it. The
+     calendar hangs from its button wider than the row, as the ⋮'s menu
+     does from the ⋮. */
+  flex: none;
   /* Its minimum follows the toolbar's size token, or it would hold the row
      taller than the controls. */
   min-block-size: var(--rux-layout-size-height-md);
@@ -3068,8 +3067,6 @@ a.scheduler-tip__go { text-decoration: none; }
   padding-inline: 0;
   justify-content: center;
 }
-/* The month takes the row's width the calendar leaves. */
-.scheduler-weekbtn--month { flex: 1 1 auto; min-inline-size: 0; }
 /* A rule between the two, the one the toolbar's buttons draw on their
    leading edge (see overrides.css). */
 .scheduler-weekbtn--month { border-inline-start: 1px solid var(--rux-border-subtle-01); }
@@ -3093,27 +3090,27 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-weekbtn__icon { flex: 0 0 auto; }
 /* The month's two names, in full and short. Where the toolbar is too narrow
    the short one shows, and the full one stays for a screen reader, which the
-   short one is hidden from. */
+   short one is hidden from. Each is one cell with every month of its year
+   stacked in it, data.js's `sizeMonthNames`, all hidden but the one in view,
+   so the cell is its widest month's width, and a screen reader hears only
+   the one shown. Each name sits at the cell's start, after the button's
+   inset, as a field's value does, where a button would centre it. */
 .scheduler-weekbtn__long,
-.scheduler-weekbtn__short {
-  min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.scheduler-weekbtn__short { display: grid; justify-items: start; }
+.scheduler-weekbtn__name { grid-area: 1 / 1; }
+.scheduler-weekbtn__sizer { visibility: hidden; }
 .scheduler-weekbtn__short { display: none; }
-/* 48.5rem is where the room runs out in the roomiest theme: there the
-   arrows, Today and six icons take 363px, the week's fixed 18rem another
-   288px, the gaps between them 80px, the bar's own insets 24px, and the
-   spacer keeps 1rem so the rule it draws never stands against the next
-   button's, 771px in all. A theme whose buttons touch needs 694px, and
-   takes the shorter week early rather than have a second width to keep.
+/* 44.5rem is where the room runs out in Carbon's own themes, whose buttons
+   touch: there the week takes 221px, the controls after it 406px with the
+   spacer's 1rem, so the rule it draws never stands against the next
+   button's, and New trip and the ⋮ 80px, 708px in all. A theme with larger
+   buttons or gaps between them needs up to 811px, and scrolls its row of
+   controls by the difference rather than have a width of its own to keep.
    Below it the month is as wide as its short name. The toolbar is asked, not
    the window, because the roster and the editor beside the schedule are
    what take the room and a window's width cannot see them. */
-@container scheduler-toolbar (max-width: 48.5rem) {
-  .scheduler-toolbar__weekrow { min-inline-size: 0; }
-  .scheduler-weekbtn--month { flex: none; }
-  .scheduler-weekbtn__short { display: block; }
+@container scheduler-toolbar (max-width: 44.5rem) {
+  .scheduler-weekbtn__short { display: grid; }
   .scheduler-weekbtn__long {
     position: absolute;
     inline-size: 1px;
@@ -3134,7 +3131,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* Under the narrow toolbar above, what is left of the spacer may be no width
    at all, and its rule would stand against the next button's, so it draws
    none. */
-@container scheduler-toolbar (max-width: 48.5rem) {
+@container scheduler-toolbar (max-width: 44.5rem) {
   .scheduler-toolbar__spacer { border-inline-start: 0; }
 }
 /* The controls between the week and the menu, as one row: the toolbar's own

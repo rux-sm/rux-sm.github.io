@@ -777,6 +777,20 @@
     if (node && node.nodeType === Node.TEXT_NODE && node === el.lastChild) node.nodeValue = words;
     else el.textContent = words;
   }
+  /* Every month of the year in view, in each of the month's two names,
+     stacked hidden under the name shown, so each name's box is as wide as
+     its year's widest month in the theme's own type and the button holds
+     still from month to month. Written again only when the year changes. */
+  let sizedYear = null;
+  function sizeMonthNames(year) {
+    if (year === sizedYear) return;
+    sizedYear = year;
+    for (const [nameEl, month] of [[monthLongEl, 'long'], [monthShortEl, 'short']]) {
+      if (!nameEl) continue;
+      nameEl.parentElement.replaceChildren(nameEl, ...Array.from({ length: 12 }, (_, m) =>
+        el('span', 'scheduler-weekbtn__name scheduler-weekbtn__sizer', new Date(year, m, 1).toLocaleDateString(undefined, { month, year: 'numeric' }))));
+    }
+  }
   function setRange(weekStart, weekEnd, { quiet = false } = {}) {
     if (!rangeEl) return;
     /* The days in view, "Sep 7 – Sep 13, 2026", heard as the calendar
@@ -787,6 +801,7 @@
        most of the days seen are in, since a week that starts the month can
        begin a day or two before it. */
     viewDay = addDays(weekStart, Math.floor((Math.min(daysBetween(weekStart, weekEnd) + 1, daysSeen()) - 1) / 2));
+    sizeMonthNames(viewDay.getFullYear());
     setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }));
     setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
     drawWeekStrip();

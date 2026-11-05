@@ -181,7 +181,8 @@ Three homes, and one rule for choosing.
 - **The board's title is a calendar button, the month and the year.** A permanent mini calendar
   spends standing space on an occasional action, so the calendar opens from its glyph and marks the
   days in view; the month button names the month most of the days on screen are in with its year,
-  "November 2026", and its list holds every month from 2026 to two years ahead, a divider between
+  "November 2026", at the width of its year's longest month so nothing beside it moves from month
+  to month, and its list holds every month from 2026 to two years ahead, a divider between
   years, opening with the month in view at its top and that month on the selected surface. A pick, the month in view's
   too, puts the month's first day first in view, whatever weekday it is, and the day header names
   it, "Dec 1". The arrows step a week. The compact board has no arrows, a swipe being its step, and

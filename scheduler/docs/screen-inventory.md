@@ -169,7 +169,9 @@ Three homes, and one rule for choosing.
   Today, each week then starting on today's weekday, Compact, which in one press leaves a bar its destination, times and drivers, about half its height, ticked while the rows stand so and turning them all back on when pressed again, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Fill the window, off
   until turned on and kept by the browser, for a board that takes the whole window rather than the Scheduler's 1312px frame, which
   seven days fill exactly. A day on the strip that is the board from md up is always 175px, a one-day bar 167px with two drivers side by side, so the open panels and a narrower window leave fewer days in view, the rest scrolled to, and Fill the window shows more, the label naming them up to two weeks; its arrows move a week and the Left and Right keys a day. Opening a panel
-  moves no edge of the page and no trip, and Fill the window is read from the browser before the first paint by `view.js`, then Motion, full, calm or
+  moves no edge of the page and no trip, and Fill the window is read from the browser before the first paint by `view.js`, then Confirmed trips in
+  gray, off until turned on and kept by the browser, which draws a confirmed trip of the standard colour in the theme's gray trip colour rather than
+  blue, so an unconfirmed trip's red and a chosen colour stand out, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to
   reduce motion, What the colours mean, a window of each colour of a live bar's dial, and Activity, which shows first in the
   header's right side whether the board is up to date, as Carbon's inline loading: Loading trips…, Saving… or Loading…

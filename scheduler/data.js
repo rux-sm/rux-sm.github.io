@@ -12637,7 +12637,7 @@
      key it replaced, still written beside it so a tab running the older
      script reads a Sunday start, and read when `weekStart` was never saved. */
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
-    yard: false, fill: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
+    yard: false, fill: false, grayConfirmed: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
   /* Compact is the rows' own switches set to the destination, the times and
      the drivers, about half a bar's height; it is not saved on its own, but
@@ -12652,7 +12652,7 @@
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'yard', 'fill', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'yard', 'fill', 'grayConfirmed', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
     view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
@@ -12694,6 +12694,8 @@
     markTripBars();
     // On the page, which holds the panels beside the week as well as the week.
     pageEl.dataset.motion = view.motion;
+    // Confirmed trips in gray: week.js's standard colour, read as each bar is drawn.
+    window.SchedulerWeek.confirmedHue(view.grayConfirmed ? 'gray' : 'blue');
     // Activity: what the page loads and holds, in the header.
     window.SchedulerActivity?.show(view.activity);
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"]') || []) {
@@ -12752,8 +12754,10 @@
     }
     if (!(key in view)) return;
     view[key] = !view[key];
-    // The view's toggles are drawing only and need no fetch.
+    // The view's toggles are drawing only and need no fetch; a trip's
+    // colour is drawn with its bar, so the held week is drawn again.
     applyView();
+    if (key === 'grayConfirmed') drawHeld();
   });
 
   /* THE ROUTE TIP: a press on the route mark leading a bar's time row shows the

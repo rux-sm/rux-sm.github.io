@@ -225,10 +225,14 @@ const window = {};
     const stored = String(trip.trip_bar_color || '').toLowerCase();
     return TRIP_COLORS.some(c => c.value === stored) ? stored : null;
   };
-  // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
-  const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
+  /* Standard is the status colour: red for an unconfirmed trip, and for a
+     confirmed one blue, or gray where the View menu's Confirmed trips in
+     gray is on, which data.js sets through `confirmedHue`. */
+  let confirmed = 'blue';
+  const confirmedHue = hue => { confirmed = hue; };
+  const standardHueOf = trip => (trip.confirmed === false ? 'red' : confirmed);
 
-  // An override colour beats status, and status beats the default blue.
+  // An override colour beats status, and status beats the confirmed colour.
   const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
     ?? standardHueOf(trip);
 
@@ -469,7 +473,7 @@ const window = {};
   }
 
   window.SchedulerWeek = {
-    TRIP_COLORS, tripColorOf, standardHueOf, hueFor,
+    TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
     stopsOfLeg, stopsOfKey, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
   };

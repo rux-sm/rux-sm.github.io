@@ -513,7 +513,7 @@
         { busesById, driversById, nameOf: requirementLabel }) ?? [];
       if (!lines.length) return [];
       tells.push(name);
-      return [`Tell ${name}: ${lines.join(', ')}`];
+      return [`Tell ${name}: ${lines.join('; ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
     const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };

@@ -298,11 +298,13 @@
     if (where === 'trip-forms') return { words: 'Print', href: tripHref(page, '&tab=forms') };
     /* The word on the Contact list's button the line presses, which the
        link names, Driver info or a driver's Remind or Tell by their seat, so
-       the board presses it and the list stays shut. */
+       the board presses it and the list stays shut. A change to tell is
+       Dismissed the same way, by `dismiss`, its second link. */
     if (where === 'contacts') {
       const words = line.key === 'reminder' ? 'Remind' : line.key === 'told' ? 'Tell' : 'Send';
       const press = words === 'Send' ? 'driver-info' : member?.seat?.id;
-      return { words, href: tripHref(page, `&open=contacts${press ? `&press=${encodeURIComponent(press)}` : ''}`) };
+      const href = name => tripHref(page, `&open=contacts${name ? `&press=${encodeURIComponent(name)}` : ''}`);
+      return { words, href: href(press), dismiss: words === 'Tell' && press ? href(`dismiss:${press}`) : null };
     }
     if (where === 'billing') return { words: 'Open', href: tripHref(page, '&tab=billing') };
     return null;
@@ -338,6 +340,12 @@
       a.href = act.href;
       a.setAttribute('aria-label', `${act.words}: ${of}`);
       row.appendChild(a);
+      if (act.dismiss) {
+        const d = el('a', 'rux--link', 'Dismiss');
+        d.href = act.dismiss;
+        d.setAttribute('aria-label', `Dismiss: ${of}`);
+        row.appendChild(d);
+      }
     } else {
       /* The line's word at its end, with the day where it was done, as
          Received Thu; a step with no word says when. Whatever the end cuts

@@ -16878,15 +16878,15 @@
       return {
         trip, inbound, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
         bus: number != null ? String(number) : '',
-        spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
+        spot: legPickup.spot, dropoff: legBack.depart_prev, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
         partner: partner ? (partner.short_name || partner.name) : '',
         from: legPickup.address || legPickup.name,
         to: inbound ? (legBack.address || legBack.name || '') : trip.destination, toYard: inbound,
         itinerary: legItinerary(trip, leg)?.id || '',
       };
     };
-    const changesOf = (c, lang, keys = false) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
-      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel, lang, keys }) ?? [];
+    const changesOf = (c, lang) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
+      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel, lang }) ?? [];
     const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
       .filter(c => c.who)
       .map(c => {
@@ -16903,7 +16903,7 @@
           declined: c.status?.value === 'declined',
           tell,
           // What changed, told to the driver in their own language, with the leg as it stands.
-          news: job && tell.length ? link => driverText.change(first, job, officeToday, changesOf(c, c.who.language, true), link, c.who.language) : null,
+          news: job && tell.length ? link => driverText.change(first, job, officeToday, changesOf(c, c.who.language), link, c.who.language) : null,
           seatRole: c.role,
         };
       });
@@ -16946,21 +16946,30 @@
       if (!(await ask(`Mark ${firstName(p.name)} as reminded?`))) return;
       if (await setReminded(p, true)) { await show(); toast('success', `${firstName(p.name)} is marked as reminded`); }
     };
-    /* MARK THE DRIVER AS TOLD, on a yes: after Tell, or by Mark as told for
-       a change told by phone, the office says it was, and what the driver now
-       knows is the leg as it stands; reading it is theirs. Their accepting
-       again does the same. `again` draws what is open: the window from Mark
-       as told, the board alone after Tell, which put the window away. */
-    const askTold = async (p, again = redraw) => {
-      if (!(await ask(`Mark ${firstName(p.name)} as told of the changes?`, p.tell.join(' · ')))) return;
+    /* THE CHANGES ARE SETTLED, on a yes, after Tell or by Dismiss: what the
+       driver now knows is the leg as it stands, on the board and on their
+       own page; reading it is theirs. Tell asks once the text is sent; Dismiss
+       sends nothing, for a change told by phone or one that needs no telling.
+       Their accepting again does the same. `again` draws what is open: the
+       window from Dismiss, the board alone after Tell, which put the window
+       away. */
+    const settle = async (p, again, said) => {
       const view = window.SchedulerDriverJob.viewNow(trip, leg, p.driverId,
         { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel });
       const { data, error } = await client.rpc('mark_driver_told',
         { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
-      if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
+      if (error || !data) { toast('error', 'The changes were not cleared.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
       stepMarked({ trip: trip.id, table: 'trip_driver_statuses', column: 'told', drivers: [p.driverId], leg });
       await again();
-      toast('success', `${firstName(p.name)} is marked as told`);
+      toast('success', said);
+    };
+    const askTold = async (p, again = redraw) => {
+      if (!(await ask(`Mark ${firstName(p.name)} as told of the changes?`, p.tell.join(' · ')))) return;
+      await settle(p, again, `${firstName(p.name)} is marked as told`);
+    };
+    const askDismiss = async (p, again = redraw) => {
+      if (!(await ask(`Dismiss the changes for ${firstName(p.name)}?`, `${p.tell.join(' · ')}. Nothing is sent.`))) return;
+      await settle(p, again, `The changes for ${firstName(p.name)} are dismissed`);
     };
     const askInfoSent = async (to, note) => {
       if (prep?.driver_info_sent) return;
@@ -17036,15 +17045,15 @@
         return line;
       };
       if (p.seat?.trip_reminder_sent) who.appendChild(sentLine('Reminded', p.seat.trip_reminder_sent_at, () => setReminded(p, false)));
-      // A driver who declined, or who has a change to be told of, with the way to mark them told.
+      // A driver who declined, or who has a change to be told of, which Tell sends and Dismiss clears.
       if (p.declined) who.appendChild(alertLine('Declined'));
       if (p.tell?.length) {
         const line = alertLine(`Changed since they accepted: ${p.tell.join(' · ')}`);
-        const told = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Mark as told');
-        told.type = 'button';
-        told.setAttribute('aria-label', `Mark ${p.name} as told of the changes`);
-        told.addEventListener('click', () => askTold(p));
-        line.appendChild(told);
+        const dismiss = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Dismiss');
+        dismiss.type = 'button';
+        dismiss.setAttribute('aria-label', `Dismiss the changes for ${p.name}`);
+        dismiss.addEventListener('click', () => askDismiss(p));
+        line.appendChild(dismiss);
         who.appendChild(line);
       }
       if (p === booker && prep?.driver_info_sent) who.appendChild(sentLine('Driver info sent', prep.driver_info_sent_at, () => setInfoSent(false)));
@@ -17140,6 +17149,8 @@
        the reminder first to paste. */
     const send = (p, it) => { if (p.seat?.id) sends.set(String(p.seat.id), it); hand(p, toRemind, it); };
     for (const p of drivers) {
+      // Departures' Dismiss, which clears the changes with the list shut.
+      if (p.tell?.length && p.seat?.id) sends.set(`dismiss:${p.seat.id}`, { run: () => askDismiss(p, show) });
       if (p.news) {
         const text = linkOf(p).then(p.news);
         const asTell = { label: `Tell ${p.name}`, words: 'Tell', icon: '#m-notification_important' };
@@ -17471,7 +17482,7 @@
     const leg = legKeyOfVehicle(trip, found.assign);
     const changed = value === 'declined' ? [] : window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
       { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel }) ?? [];
-    if (changed.length) lamp('warning', `Changed since they said yes: ${changed.join(', ')}`);
+    if (changed.length) lamp('warning', `Changed since they said yes: ${changed.join('; ')}`);
     for (const x of standingFor(trip, leg, panelIndex.driversById, panelIndex.buses)) {
       if (String(x.assignmentId) === String(found.assign.id) && String(x.driverId) === driverId) lamp('error', x.what);
     }

@@ -58,7 +58,7 @@
     + 'trips(id,destination,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
     + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
     + 'trip_contacts(id,position,leg_id,contact_id,name,phone),'
-    + 'trip_stops(leg,route_id,type,name,address,spot,position),trip_documents(id,label,created_at,leg,leg_id)))';
+    + 'trip_stops(leg,route_id,type,name,address,spot,depart_prev,position),trip_documents(id,label,created_at,leg,leg_id)))';
   const Shape = window.SchedulerTripShape;
 
   let driver = null;
@@ -95,7 +95,7 @@
         key: `${trip.id}:${shaped.id}`, assignmentId: a.id, trip, legId: shaped.id, leg, inbound, role: row.role || 'driver',
         start: dateOf(start), end: dateOf(end) || dateOf(start),
         bus: a.buses?.number != null ? String(a.buses.number) : '',
-        spot: pickup.spot || trip.spot_time, swap: row.report_time, instructions: clean(row.instructions),
+        spot: pickup.spot || trip.spot_time, dropoff: back.depart_prev, swap: row.report_time, instructions: clean(row.instructions),
         partner: partner ? nameOf(partner.drivers) : '',
         from: pickup.address || pickup.name, to: inbound ? (back.address || back.name || '') : trip.destination, toYard: inbound,
         itinerary: itinerary?.id || '',

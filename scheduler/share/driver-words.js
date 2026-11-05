@@ -77,10 +77,13 @@
 
     changedTitle: 'This trip changed since you accepted it',
     changedCheck: 'Check the details below, then answer again.',
+    // One line a change, the new value first: "New spot time: 9:00 AM (was 8:45 AM)".
+    told: {
+      date: 'New date', dates: 'New dates', time: 'New spot time', handoff: 'New handoff time',
+      place: 'New pickup', destination: 'New destination',
+    },
+    was: v => ` (was ${v})`,
     newItinerary: 'New itinerary',
-    itineraryRemoved: 'Itinerary removed',
-    stopsChanged: 'Stops changed',
-    changed: what => `${what} changed`,
     changedJustNow: 'This trip just changed. Read it again, then answer.',
     stops: n => `Stops (${n})`,
     stopArrive: time => `arrive ${time}`,
@@ -88,13 +91,6 @@
     stopUnnamed: 'Stop',
     cancelled: 'Cancelled',
     cancelledText: "This trip was cancelled. You don't need to do anything.",
-    added: list => `Added: ${list}`,
-    removed: list => `Removed: ${list}`,
-    none: 'none',
-    view: {
-      dates: 'Dates', time: 'Spot time', place: 'Pickup', destination: 'Destination', bus: 'Bus',
-      role: 'Role', relief: 'Relief details',
-    },
 
     accept: 'Accept',
     decline: 'Decline',
@@ -215,10 +211,12 @@
 
     changedTitle: 'Este viaje cambió desde que lo aceptaste',
     changedCheck: 'Revisa los detalles abajo y vuelve a responder.',
+    told: {
+      date: 'Nueva fecha', dates: 'Nuevas fechas', time: 'Nueva hora de llegada', handoff: 'Nueva hora del relevo',
+      place: 'Nueva recogida', destination: 'Nuevo destino',
+    },
+    was: v => ` (antes ${v})`,
     newItinerary: 'Itinerario nuevo',
-    itineraryRemoved: 'Se quitó el itinerario',
-    stopsChanged: 'Cambiaron las paradas',
-    changed: what => `Cambió: ${what}`,
     changedJustNow: 'Este viaje acaba de cambiar. Léelo otra vez y luego responde.',
     stops: n => `Paradas (${n})`,
     stopArrive: time => `llega ${time}`,
@@ -226,13 +224,6 @@
     stopUnnamed: 'Parada',
     cancelled: 'Cancelado',
     cancelledText: 'Este viaje se canceló. No tienes que hacer nada.',
-    added: list => `Se agregó: ${list}`,
-    removed: list => `Se quitó: ${list}`,
-    none: 'nada',
-    view: {
-      dates: 'Fechas', time: 'Hora de llegada', place: 'Recogida', destination: 'Destino', bus: 'Autobús',
-      role: 'Puesto', relief: 'Detalles del relevo',
-    },
 
     accept: 'Aceptar',
     decline: 'Rechazar',

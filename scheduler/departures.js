@@ -186,7 +186,7 @@
       // By the bus's leg key, its id on a trip read with its legs, so a later leg with no old word is not weighed against the first.
       const changed = window.SchedulerDriverJob?.changesSince(trip, Week.legKeyOfVehicle(trip, assign), c.driverId, c.row,
         { busesById, driversById, nameOf: Facts.requirementLabel }) ?? [];
-      if (changed.length) lines.push(line('told', 'todo', 'Tell of changes', { value: changed.join(', '), action: 'contacts' }));
+      if (changed.length) lines.push(line('told', 'todo', 'Tell of changes', { value: changed.join('; '), action: 'contacts' }));
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
         role: c.label, partTime, seat, driverId: c.driverId, lines });
     }

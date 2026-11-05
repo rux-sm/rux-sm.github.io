@@ -6441,6 +6441,8 @@ html[data-scheduler-takeover] {
 .scheduler-departures__line { display: flex; align-items: center; gap: var(--rux-spacing-01) 0.625rem; min-block-size: 2rem; font-size: 0.875rem; }
 .scheduler-departures__line > :is(.rux--link, .scheduler-departures__when) { margin-inline-start: auto; }
 .scheduler-departures__line > .rux--link { flex: none; }
+/* A change to tell has Tell and Dismiss, side by side at the line's end. */
+.scheduler-departures__line > .rux--link + .rux--link { margin-inline-start: 0; }
 .scheduler-departures__mark { flex: none; }
 :is(.scheduler-departures__line--done, .scheduler-departures__who--done) .scheduler-departures__mark { color: var(--rux-support-success); }
 .scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-support-error); }

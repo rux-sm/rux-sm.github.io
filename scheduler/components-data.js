@@ -214,9 +214,9 @@
 
     // ── Alerts ──────────────────────────────────────────────────────────────
     /* A confirmed driver whom the leg changed for since they said yes: the
-       view they accepted is the leg with its old pickup time. */
+       view they accepted is the leg with its old pickup place. */
     const told = trip({ customer: 'Northside Band', destination: 'Austin, TX', buses: [{ bus: 'b105', crew: [['d4', 'driver', 'confirmed']] }] });
-    const before = { ...told, trip_stops: told.trip_stops.map(s => (s.type === 'pickup' ? { ...s, depart_prev: '06:15' } : s)) };
+    const before = { ...told, trip_stops: told.trip_stops.map(s => (s.type === 'pickup' ? { ...s, name: 'Riverside Middle School' } : s)) };
     const toldRow = statuses.get(statusKey(told.id, 'd4', `${told.id}-outbound`, 'driver'));
     toldRow.acceptedView = window.SchedulerDriverJob?.viewNow(before, `${told.id}-outbound`, 'd4',
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;

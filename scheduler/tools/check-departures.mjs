@@ -163,7 +163,7 @@ const moved = { ...daily, trip_stops: daily.trip_stops.map(x => (x.route_id === 
 expect('a driver told of a later leg has nothing to be told, and a change to that leg asks to tell them',
   [said(D.page(daily, 'm2', acceptedOn(daily, 'm2')).buses[0].crew[0].lines).filter(l => /Tell/.test(l)),
     said(D.page(moved, 'm2', acceptedOn(daily, 'm2')).buses[0].crew[0].lines).filter(l => /Tell/.test(l))],
-  [[], ['todo Tell of changes [Spot time changed] -> contacts']]);
+  [[], ['todo Tell of changes [New spot time: 1:15 PM (was 12:45 PM)] -> contacts']]);
 
 expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
   [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],

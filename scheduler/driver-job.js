@@ -179,65 +179,83 @@
     };
   }
 
-  /* THE DRIVER'S JOB, AS THE CARD AND ITS SHEETS SHOW IT. What Accept keeps
-     and a later load compares. Every value is text as the card writes it, so
-     a change reads as the driver would read it. The trip's notes are on
-     neither, so a change to them asks nothing. */
-  const stopText = s => [clean(s.name) || clean(s.address) || clean(s.label) || 'Stop',
-    s.arrive && `arrive ${timeText(s.arrive)}`, s.depart_prev && `leave ${timeText(s.depart_prev)}`].filter(Boolean).join(' · ');
+  /* THE DRIVER'S JOB, AS FAR AS A CHANGE TO IT IS TOLD: what Accept keeps
+     and a later load compares, each value text as the card writes it, so a
+     change reads as the driver would read it. A view kept before holds the
+     bus, stops, role and needs too, which nothing reads. */
   function jobView(l) {
     return {
       dates: rangeText(l.start, l.end),
       time: timeText(l.time),
       place: [l.place.name, l.place.address].filter(Boolean).join(', '),
       destination: l.destination,
-      stops: l.stops.map(stopText),
-      bus: l.bus,
-      role: roleLabel(l.role),
       relief: l.relief ? [l.relief.at && `Handoff at ${timeText(l.relief.at)}`, l.relief.instructions].filter(Boolean).join(' · ') : '',
-      requirements: [...l.requirements].sort(),
       // The file itself, so a file replaced under the same document reads as new.
       itinerary: l.itineraries[0]?.path || l.itineraries[0]?.id || '',
     };
   }
-  // What Accept keeps, in the order a change is listed.
-  const VIEW_KEYS = ['dates', 'time', 'place', 'destination', 'stops', 'bus', 'role', 'relief', 'requirements', 'itinerary'];
+  /* A KEPT VALUE IN THE DRIVER'S LANGUAGE. What Accept keeps is English, so
+     a day reads back as `lang` writes it, its year left off within this one,
+     and the page's own words for a leg with no place named are its own. */
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const KEPT_DAY = new RegExp(`^(?:${DAYS.join('|')}), (${MONTHS.join('|')}) (\\d{1,2})(?:, (\\d{4}))?$`);
+  const keptDates = (text, lang) => {
+    const days = clean(text).split(' – ').map(p => KEPT_DAY.exec(p));
+    if (!days.every(Boolean)) return clean(text);
+    const year = days.map(m => m[3]).find(Boolean) ?? todayIso().slice(0, 4);
+    const [a, b] = [days[0], days.at(-1)].map(m => `${m[3] ?? year}-${String(MONTHS.indexOf(m[1]) + 1).padStart(2, '0')}-${m[2].padStart(2, '0')}`);
+    return rangeText(a, b, true, WORDS.LOCALE[lang] ?? WORDS.LOCALE.en);
+  };
+  /* The words a change is said in, `{ w, keptValue }`: the page's or the
+     driver's language, English where none is named. */
+  function sayIn(lang) {
+    const language = lang && lang !== 'LOCALE' && WORDS[lang] ? lang : 'en';
+    const w = WORDS[language];
+    return {
+      w,
+      keptValue: (key, v) => (key === 'dates' ? keptDates(v, language)
+        : key === 'destination' && v === WORDS.en.yard ? w.yard : v),
+    };
+  }
 
-  /* Each difference as one line the driver reads. `say` is the page's words,
-     `{ w, keptValue, keptRequirement }`, since a kept value is English and the
-     page writes it in its own language. With `brief`, a changed value is named
-     and not given, Pickup changed rather than its old and new places. With
-     `keys`, each difference is `{ key }` by its VIEW_KEYS name, for a text
-     that words them itself; requirements add the `added` and `removed`
-     names, and an itinerary says whether it was `removed`. */
-  function changesBetween(was, now, l, { w, keptValue, keptRequirement, brief = false, keys = false }) {
+  /* WHAT A DRIVER IS TOLD OF: what would put them on the wrong day, at the
+     wrong time or at the wrong place, and a new itinerary, which carries
+     everything else. A bus, a stop or a need that changes asks nothing,
+     since the reminder sent before the trip gives the leg as it stands. A
+     relief driver's time is their handoff, which the kept `relief` opens
+     with, not the bus's spot. A value taken away, such as a time back to
+     TBD, asks nothing either: there is nothing new to tell. */
+  const handoffOf = v => /^Handoff at (.+?)(?= · |$)/.exec(clean(v))?.[1] ?? '';
+  // A leg with no destination named keeps the page's word for one.
+  const named = v => (v === WORDS.en.destination ? '' : clean(v));
+  // A pickup by its name, or by its whole place where only the address moved.
+  const placeName = v => clean(v).split(', ')[0];
+
+  /* Each change as one line the driver reads, the new value first and the
+     one it replaced after: "New spot time: 9:00 AM (was 8:45 AM)". `say` is
+     `sayIn`'s words, the page's or the driver's language. */
+  function changesBetween(was, now, l, { w, keptValue }) {
     const lines = [];
-    for (const key of VIEW_KEYS) {
-      const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
-      const b = now[key];
-      if (JSON.stringify(a) === JSON.stringify(b)) continue;
-      // A view kept before the itinerary was told by its file holds the
-      // document's id, which stands for the file it had then.
-      if (key === 'itinerary' && a && a === l.itineraries[0]?.id) continue;
-      // A relief driver's card gives the handoff, which `relief` compares, and
-      // not the bus's spot time.
-      if (key === 'time' && isRelief(l.role)) continue;
-      if (keys) {
-        if (key === 'requirements') {
-          lines.push({ key, added: b.filter(x => !a.includes(x)).map(keptRequirement), removed: a.filter(x => !b.includes(x)).map(keptRequirement) });
-        } else lines.push(key === 'itinerary' ? { key, removed: !b } : { key });
-      } else if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
-      else if (key === 'stops') lines.push(w.stopsChanged);
-      else if (key === 'requirements') {
-        const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));
-        if (added.length) lines.push(w.added(added.map(keptRequirement).join(', ')));
-        if (gone.length) lines.push(w.removed(gone.map(keptRequirement).join(', ')));
-      } else if (brief) {
-        lines.push(w.changed(w.view[key]));
-      } else {
-        lines.push(`${w.view[key]}: ${keptValue(key, a) || w.none} → ${keptValue(key, b) || w.none}`);
-      }
+    const tell = (label, key, a, b) => {
+      const old = keptValue(key, a), value = keptValue(key, b);
+      lines.push(`${label}: ${value}${old ? w.was(old) : ''}`);
+    };
+    const kept = key => clean(was?.[key]);
+    if (now.dates && kept('dates') !== now.dates) tell(now.dates.includes(' – ') ? w.told.dates : w.told.date, 'dates', kept('dates'), now.dates);
+    const [a, b] = isRelief(l.role) ? [handoffOf(was?.relief), handoffOf(now.relief)] : [kept('time'), clean(now.time)];
+    if (b && a !== b) tell(isRelief(l.role) ? w.told.handoff : w.told.time, 'time', a, b);
+    if (now.place && kept('place') !== now.place) {
+      const byName = placeName(kept('place')) !== placeName(now.place);
+      tell(w.told.place, 'place', byName ? placeName(kept('place')) : kept('place'), byName ? placeName(now.place) : now.place);
     }
+    if (named(now.destination) && named(kept('destination')) !== named(now.destination)) {
+      tell(w.told.destination, 'destination', named(kept('destination')), named(now.destination));
+    }
+    // A view kept before the itinerary was told by its file holds the
+    // document's id, which stands for the file it had then.
+    const file = kept('itinerary');
+    if (now.itinerary && file !== now.itinerary && !(file && file === l.itineraries[0]?.id)) lines.push(w.newItinerary);
     return lines;
   }
 
@@ -269,20 +287,9 @@
      `driversById` and `nameOf`, the office's name for a need. `row` is the
      seat's status as get_trip_driver_statuses returns it; only a confirmed
      seat with a kept view can have changed, so one accepted before views
-     were kept says nothing. The lines are brief, Pickup changed or Bus
-     changed, because a card and a to-do rule's row say only what to tell, and the
-     driver's own page gives the old and new. They are English, as the office
-     reads them, unless `read.lang` names the driver's language; a need the
-     driver page names in it is named so here. `read.keys` gives the
-     VIEW_KEYS names instead, which the text that tells the driver words. */
-  const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name, brief: true };
-  const briefIn = lang => (lang && lang !== 'en' && WORDS[lang] ? {
-    ...ENGLISH, w: WORDS[lang],
-    keptRequirement: name => {
-      const id = Object.keys(WORDS.en.legacy).find(k => WORDS.en.legacy[k] === name);
-      return id ? WORDS[lang].legacy[id] : name;
-    },
-  } : ENGLISH);
+     were kept says nothing. The lines are the driver's own, so the office
+     reads what the driver will: English, unless `read.lang` names the
+     driver's language, which the text that tells them is written in. */
   const officeTrip = (trip, { busesById = new Map(), driversById = new Map() } = {}) => ({
     ...trip,
     trip_assignments: (trip.trip_assignments || []).map(a => ({
@@ -296,7 +303,7 @@
     const names = { get: id => read.nameOf?.(id) };
     const l = legOf({ tripId: trip.id, leg }, officeTrip(trip, read), driverId, names);
     if (l.error) return [];
-    return changesBetween(row.acceptedView, jobView(l), l, { ...briefIn(read.lang), keys: !!read.keys });
+    return changesBetween(row.acceptedView, jobView(l), l, sayIn(read.lang));
   }
   // The view the office keeps for a driver it marks as told: the leg as it stands.
   function viewNow(trip, leg, driverId, read = {}) {
@@ -307,6 +314,6 @@
   window.SchedulerDriverJob = {
     clean, dateOnly, dayFmt, dayText, rangeText, timeText, todayIso,
     ROLE_KEY, roleKey, roleLabel, isRelief, activeSeats, stopsForLeg, requirementsOf, contactsOf, contactOf, itinerariesOf,
-    legOf, stopText, jobView, VIEW_KEYS, changesBetween, keyOf, stateOf, changesSince, viewNow,
+    legOf, jobView, sayIn, changesBetween, keyOf, stateOf, changesSince, viewNow,
   };
 })();

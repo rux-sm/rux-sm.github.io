@@ -89,7 +89,7 @@
     }
     // A driver who said no, and a change a driver has not been told of, each said by name.
     if (facts.declined?.length) add('Buses', 'declined', 'No driver declined', false, TABS.buses, facts.declined.map(d => `${d.name} declined`).join(' · '));
-    if (facts.toTell?.length) add('Buses', 'told', 'Every driver told of changes', false, 'contacts', facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join(', ')}`).join(' · '));
+    if (facts.toTell?.length) add('Buses', 'told', 'Every driver told of changes', false, 'contacts', facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join('; ')}`).join(' · '));
 
     // Each driver is handed their own, so with nobody in a seat it is not printed yet.
     // The sheet is the itinerary the customer sent where the trip has one, and the one Forms draws where it has none.

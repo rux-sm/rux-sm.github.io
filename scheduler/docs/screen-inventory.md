@@ -368,17 +368,24 @@ under its date when their crews differ; Email for a contact who has an address; 
 driver, a text with their reminder of the leg typed in: "Hi Oscar, a reminder for your trip
 tomorrow:", then the leg in the Driver week info message's own lines, from
 `scheduler/driver-text.js`, and the newest itinerary's link; and Add number for a person with none.
-While the leg changed for a driver since they accepted it, Tell takes the place of their Remind: "Hi
-Oscar, your bus changed for tomorrow's trip.", naming what their Contact list row names, the leg in the
-same lines, then their link where it is live and carries the leg, or the itinerary's link where it
-does not; after it the board asks to mark them told. On a screen md or wider Remind or Tell is a
+A driver is told of a change only to what would put them on the wrong day, at the wrong time or at
+the wrong place, or to their itinerary: the date, the spot time, a relief driver's handoff time,
+the pickup, the destination and a new itinerary file, each a line with the new value and the old,
+"New spot time: 9:00 AM (was 8:45 AM)", as `scheduler/driver-job.js` words it; a new bus, stop or
+need asks nothing, since the reminder gives the leg as it stands. A reminder's spot time carries
+the time the group is let off, which says how long the day runs, with its day on a leg of more
+than one. While such a change waits, Tell
+takes the place of their Remind: "Hello Oscar," and "There was an update to tomorrow's trip:", then
+each change on its own line, then their link where it is live and carries the leg, or the
+itinerary's link where it does not; after it the board asks to mark them told. On a screen md or wider Remind or Tell is a
 button in its driver's row, and the booking contact's holds Driver info, which copies the driver
 details, and Email, each before Call and Text; the menu holds what is left. A driver's Text opens their Google Messages link on a computer where the Drivers page
 holds one; there, Remind and Tell copy their text first, to paste. A call, text or email to the
 customer's people, and the driver details, offer to add it to the trip's updates, and writes nothing
 if the offer is ignored. A driver who declined says so under their name, and one the leg changed for
-since they accepted says what changed, with Mark as told, which on a yes keeps the leg as it stands
-as what they know. A shortcut that cannot act on the trip, such as the envelope on a bus with no
+since they accepted says what changed, with Dismiss, which sends nothing and on a yes keeps the leg
+as it stands as what they know, for a change told by phone or one that needs no telling; the
+Departures line of a change to tell has Tell and Dismiss both. A shortcut that cannot act on the trip, such as the envelope on a bus with no
 driver, shows faint with the reason as its label. Escape clears the selection and takes the bar with
 it. The panel keeps its trip through week changes and other selections, so a call about another trip
 does not cost an edit in progress, and it asks before unsaved changes are lost.

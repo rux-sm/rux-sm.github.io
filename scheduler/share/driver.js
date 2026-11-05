@@ -71,12 +71,11 @@
      The page hands in what only it holds: the office's names for the trip's
      needs, the answers, the kept views and its words. */
   const Job = window.SchedulerDriverJob;
-  const { clean, dateOnly, dayFmt, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
+  const { clean, dateOnly, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
   let requirementNames = new Map();
   const legOf = (ref, trip, driverId) => Job.legOf(ref, trip, driverId, requirementNames);
-  const pageWords = () => ({ w, keptValue, keptRequirement });
-  const changesBetween = (was, now, l) => Job.changesBetween(was, now, l, pageWords());
-  const stateOf = l => Job.stateOf(l, { statuses, views }, pageWords());
+  // What changed is said in the page's language, which the driver can switch.
+  const stateOf = l => Job.stateOf(l, { statuses, views }, Job.sayIn(lang));
 
   // -- the language ---------------------------------------------------------------
   /* The page starts in the language the driver chose on this phone, else the
@@ -138,24 +137,6 @@
     requestAnimationFrame(() => { live.textContent = text; });
   };
 
-  /* Dates an accepted card kept, in English, written again in the page's
-     language for the list of what changed: "Sat, Oct 17, 2026", alone or as
-     one end of a range, the year taken from the end that carries it. */
-  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const keptDates = text => {
-    if (lang === 'en' || !text) return text;
-    const parts = String(text).split(' – ');
-    const years = parts.map(p => /, (\d{4})$/.exec(p)?.[1] ?? null);
-    const shown = parts.map((p, i) => {
-      const m = new RegExp(`^(?:${DAYS.join('|')}), (${MONTHS.join('|')}) (\\d{1,2})(?:, (\\d{4}))?$`).exec(p);
-      if (!m) return p;
-      const year = +(m[3] ?? years.find(Boolean) ?? todayIso().slice(0, 4));
-      const d = new Date(Date.UTC(year, MONTHS.indexOf(m[1]), +m[2]));
-      return dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(m[3] ? { year: 'numeric' } : {}) }, WORDS.LOCALE[lang]).format(d);
-    });
-    return shown.join(' – ');
-  };
   // "Today" while a leg is under way and "Tomorrow" the day before, in the
   // office's time, so the day a driver checks for reads first.
   const soonText = (from, to) => {
@@ -172,19 +153,6 @@
   // so it opens in its own tab as the file itself did.
   const fileUrl = id => (id ? `${location.origin}/scheduler/share/document.html?id=${encodeURIComponent(id)}` : '');
 
-  // A kept value, which is English, as the page's language writes it.
-  const keptValue = (key, v) => {
-    if (!v || lang === 'en') return v;
-    if (key === 'dates') return keptDates(v);
-    if (key === 'role') return w.role[Object.keys(WORDS.en.role).find(k => WORDS.en.role[k] === v)] ?? v;
-    if (key === 'destination') return v === WORDS.en.yard ? w.yard : v === WORDS.en.destination ? w.destination : v;
-    if (key === 'relief') return v.replace(/^Handoff at (.+?)(?= · |$)/, (_, time) => w.handoffAt(time));
-    return v;
-  };
-  const keptRequirement = name => {
-    const id = Object.keys(WORDS.en.legacy).find(k => WORDS.en.legacy[k] === name);
-    return id ? w.legacy[id] : name;
-  };
   // -- the answer ---------------------------------------------------------------
   let token = '';
   let statuses = new Map();

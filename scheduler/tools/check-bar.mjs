@@ -253,11 +253,11 @@ const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers
 // A missing trip contact warns whatever day the sample leaves.
 expect('a problem wears the alert badge in its colour, a missing trip contact too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
   null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
-  'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
+  'amber Rosa declined', 'amber Tell Ben: New pickup: Lakeview High School (was Riverside Middle School)', null, 'red Coach needed', 'red Sleeper needed',
   'red Sleeper needed · Trip contact missing', 'amber PO, deposit or payment pending']);
 expect('a later bus of a leg wears only its own problems: a misfit or a driver, not the trip\'s',
   alerts.map(n => mark(drawn('alerts', n, true)[0])), [
-  null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
+  null, null, null, 'amber Rosa declined', 'amber Tell Ben: New pickup: Lakeview High School (was Riverside Middle School)', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('a seated driver\'s icon opens their own tip, an empty seat\'s opens nothing, and a done trip\'s drivers have none to press',

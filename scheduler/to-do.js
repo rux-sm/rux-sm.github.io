@@ -152,7 +152,7 @@
         }
         if (facts.declined?.length) out.push(row('declined', trip, leg, { what: facts.declined.map(d => `${d.name} declined`).join(' · '), detail: null }));
         if (facts.toTell?.length) {
-          out.push(row('tell', trip, leg, { what: facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join(', ')}`).join(' · '), detail: null }));
+          out.push(row('tell', trip, leg, { what: facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join('; ')}`).join(' · '), detail: null }));
         }
       }
 

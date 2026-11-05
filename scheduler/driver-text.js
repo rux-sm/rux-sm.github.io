@@ -10,9 +10,10 @@
    text its Forms tab sends a driver their forms with.
 
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
-   same shape: { trip, inbound, role, start, end, bus, spot, swap,
+   same shape: { trip, inbound, role, start, end, bus, spot, dropoff, swap,
    instructions, partner, from, to, toYard, itinerary }, dates as Date and
-   times as stored. `inbound` is a split trip's pickup, every leg after its
+   times as stored; `dropoff` is when the group is let off, the time the
+   bus leaves its last place for the yard. `inbound` is a split trip's pickup, every leg after its
    first, as trip-shape.js orders them.
 
    IT WRITES IN THE DRIVER'S LANGUAGE, `en` or `es` from their profile, which
@@ -72,26 +73,17 @@
       swapWith: name => `Swap: coordinate with ${name}`,
       swapNotSet: 'Swap time not set',
       spotAt: time => `${time} spot`,
+      dropoffAt: (time, day) => `${day ? `${day} ` : ''}${time} drop-off`,
       pickup: 'Pickup',
       destination: 'Destination',
       itinerary: link => `Itinerary: ${link}`,
       reminderToday: name => `Hi ${name}, a reminder for your trip today:`,
       reminderTomorrow: name => `Hi ${name}, a reminder for your trip tomorrow:`,
       reminderSoon: name => `Hi ${name}, a reminder for your trip coming up:`,
-      // "Hi Maria, your bus and spot time changed for today's trip."
-      hello: name => `Hi ${name},`,
-      changedWhen: { today: "today's trip", tomorrow: "tomorrow's trip", soon: 'your upcoming trip' },
-      changedWhat: {
-        time: 'spot time', place: 'pickup', destination: 'destination', stops: 'stops',
-        bus: 'bus', relief: 'relief details', itinerary: 'itinerary',
-      },
-      changed: (what, plural, when) => `your ${what} changed for ${when}`,
-      changedToo: (what, plural) => `your ${what} changed too`,
-      dateChanged: 'the date of your trip changed',
-      nowRole: (role, when) => (when ? `you're now the ${role} on ${when}` : `you're now the ${role}`),
-      nowNeeds: (list, when) => `${when || 'it'} now needs: ${list}`,
-      noLongerNeeds: (list, when) => `${when || 'it'} no longer needs: ${list}`,
-      noItinerary: when => `${when || 'it'} no longer has an itinerary`,
+      // "Hello Maria," and "There was an update to Saturday's trip:".
+      hello: name => `Hello ${name},`,
+      update: trip => `There was an update to ${trip}:`,
+      tripOn: { today: "today's trip", tomorrow: "tomorrow's trip", weekday: day => `${day}'s trip`, date: day => `your trip on ${day}` },
       and: 'and',
       week:(name, range) => `Hi ${name}, here are your assignments for ${range}:`,
       noneTicked: name => `Hi ${name}, no trips are ticked yet.`,
@@ -109,26 +101,17 @@
       swapWith: name => `Relevo: acuerda la hora con ${name}`,
       swapNotSet: 'Hora del relevo sin definir',
       spotAt: time => `Llegar a las ${time}`,
+      dropoffAt: (time, day) => `dejar al grupo ${day ? `el ${day} ` : ''}a las ${time}`,
       pickup: 'Recogida',
       destination: 'Destino',
       itinerary: link => `Itinerario: ${link}`,
       reminderToday: name => `Hola ${name}, te recordamos tu viaje de hoy:`,
       reminderTomorrow: name => `Hola ${name}, te recordamos tu viaje de mañana:`,
       reminderSoon: name => `Hola ${name}, te recordamos tu próximo viaje:`,
-      // "Hola Maria, cambió el autobús de tu viaje de hoy."
+      // "Hola Maria," and "Hubo un cambio en tu viaje del sábado:".
       hello: name => `Hola ${name},`,
-      changedWhen: { today: 'tu viaje de hoy', tomorrow: 'tu viaje de mañana', soon: 'tu próximo viaje' },
-      changedWhat: {
-        time: 'la hora de llegada', place: 'el lugar de recogida', destination: 'el destino', stops: 'las paradas',
-        bus: 'el autobús', relief: 'los detalles del relevo', itinerary: 'el itinerario',
-      },
-      changed: (what, plural, when) => `${plural ? 'cambiaron' : 'cambió'} ${what} de ${when}`,
-      changedToo: (what, plural) => `también ${plural ? 'cambiaron' : 'cambió'} ${what}`,
-      dateChanged: 'cambió la fecha de tu viaje',
-      nowRole: (role, when) => (when ? `ahora eres ${role} de ${when}` : `ahora eres ${role}`),
-      nowNeeds: (list, when) => (when ? `${when} ahora necesita: ${list}` : `ahora necesita: ${list}`),
-      noLongerNeeds: (list, when) => (when ? `${when} ya no necesita: ${list}` : `ya no necesita: ${list}`),
-      noItinerary: when => (when ? `${when} ya no tiene itinerario` : 'ya no tiene itinerario'),
+      update: trip => `Hubo un cambio en ${trip}:`,
+      tripOn: { today: 'tu viaje de hoy', tomorrow: 'tu viaje de mañana', weekday: day => `tu viaje del ${day}`, date: day => `tu viaje del ${day}` },
       and: 'y',
       week:(name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
       noneTicked: name => `Hola ${name}, todavía no hay viajes marcados.`,
@@ -153,10 +136,14 @@
   const roleLabel = (r, lang) => wordsFor(lang).role[ROLE_KEY[r] || 'driver'];
   const isRelief = r => r === 'relief-start' || r === 'relief-end';
 
+  const capital = s => s.charAt(0).toUpperCase() + s.slice(1);
+
   /* One leg's lines: the day, bus, role and which way a split trip's leg
      runs; then a relief driver's swap, and their instructions, or everyone
-     else's spot time; then where the leg runs from and to. `itinerary` adds
-     the leg's itinerary link, which a message without a driver link carries. */
+     else's spot time and the time the group is let off, which says how long
+     the day runs, with its day on a leg of more than one; then where the leg
+     runs from and to. `itinerary` adds the
+     leg's itinerary link, which a message without a driver link carries. */
   function legLines(l, { itinerary = false, lang = 'en' } = {}) {
     const w = wordsFor(lang);
     const lines = [];
@@ -165,8 +152,11 @@
     if (isRelief(l.role)) {
       lines.push(l.swap ? w.swapAt(timeText(l.swap)) : l.partner ? w.swapWith(l.partner) : w.swapNotSet);
       if (l.instructions) lines.push(l.instructions);
-    } else if (l.spot) {
-      lines.push(w.spotAt(timeText(l.spot)));
+    } else if (l.spot || l.dropoff) {
+      // A leg of more than one day lets the group off on its last, which it names.
+      const last = iso(l.start) === iso(l.end) ? ''
+        : lang === 'es' ? short(l.end, { weekday: 'long' }, 'es-MX') : short(l.end, { weekday: 'short' }).toUpperCase();
+      lines.push(capital([l.spot && w.spotAt(timeText(l.spot)), l.dropoff && w.dropoffAt(timeText(l.dropoff), last)].filter(Boolean).join(' · ')));
     }
     const a = town(l.from), b = town(l.to);
     // `toYard` is a leg that ends back at the yard, which the office may leave unnamed.
@@ -191,46 +181,32 @@
     return [hello(first), '', ...legLines(l, { itinerary: true, lang })].join('\n');
   }
 
-  // What changed, in a list a sentence can hold: "bus", "bus and spot time", "bus, pickup and stops".
-  const PLURAL = new Set(['stops', 'relief']);
-  const listOf = (items, and) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} ${and} ${items.at(-1)}`);
-  const capital = s => s.charAt(0).toUpperCase() + s.slice(1);
-
-  /* What changed, as sentences: a new date first, since the trip it moved
-     to is no longer "today's" to the driver who knew it; then the values
-     named in one list; then a new role, the requirements added and removed,
-     and an itinerary taken away. Only the first sentence names the trip;
-     the rest say "it". `changes` is driver-job.js's `{ key }` items. */
-  function changeSentences(l, today, changes, lang) {
+  /* The trip a change is to, as the driver says it: today's, tomorrow's,
+     one later this week by its weekday, or one further off by its date. A
+     leg under way is today's. */
+  const tripOn = (l, today, lang) => {
     const w = wordsFor(lang);
-    const has = key => changes.find(c => c.key === key);
-    const moved = !!has('dates');
-    const out = [];
-    // The trip by its day in the first sentence, and "it" after.
-    const when = () => (out.length ? null : w.changedWhen[whenOf(l, today)]);
-    const named = changes.filter(c => w.changedWhat[c.key] && !(c.key === 'itinerary' && c.removed)).map(c => c.key);
-    const what = listOf(named.map(k => w.changedWhat[k]), w.and);
-    const plural = named.length > 1 || PLURAL.has(named[0]);
-    if (moved) out.push(w.dateChanged);
-    if (named.length) out.push(moved ? w.changedToo(what, plural) : w.changed(what, plural, when()));
-    if (has('role')) out.push(w.nowRole(roleLabel(l.role, lang).toLowerCase(), when()));
-    const needs = has('requirements');
-    if (needs?.added?.length) out.push(w.nowNeeds(needs.added.join(', '), when()));
-    if (needs?.removed?.length) out.push(w.noLongerNeeds(needs.removed.join(', '), when()));
-    if (has('itinerary')?.removed) out.push(w.noItinerary(when()));
-    return out;
-  }
+    const when = whenOf(l, today);
+    if (when !== 'soon') return w.tripOn[when];
+    const [y, m, d] = today.split('-').map(Number);
+    const days = Math.round((l.start - new Date(y, m - 1, d)) / 86400000);
+    if (days < 0) return w.tripOn.today;
+    const locale = lang === 'es' ? 'es-MX' : 'en-US';
+    const weekday = short(l.start, { weekday: 'long' }, locale);
+    if (days < 7) return w.tripOn.weekday(weekday);
+    return w.tripOn.date(lang === 'es' ? `${weekday} ${l.start.getDate()} de ${short(l.start, { month: 'long' }, locale)}`
+      : short(l.start, { weekday: 'short', month: 'short', day: 'numeric' }, locale));
+  };
 
-  /* The news of a leg that changed, to one driver by their first name: what
-     changed in plain sentences, then the leg's lines as it stands, then their
-     link, where the leg reads in full. With no link, the leg's itinerary
-     takes its place. */
-  function change(first, l, today, changes, link, lang = 'en') {
+  /* The news of a leg that changed, to one driver by their first name: that
+     the trip had an update, named by its day, then each change on a line of
+     its own, as driver-job.js words it in the driver's language, then their
+     link, where the leg reads in full, or with none the leg's itinerary. */
+  function change(first, l, today, lines, link, lang = 'en') {
     const w = wordsFor(lang);
-    const said = changeSentences(l, today, changes, lang);
-    const hello = `${w.hello(first)} ${said.map((s, i) => (i ? capital(s) : s)).join('. ')}.`;
-    return [hello, '', ...legLines(l, { itinerary: !link, lang }),
-      ...(link ? ['', w.details, link] : [])].join('\n');
+    const more = link ? [w.details, link] : l.itinerary ? [w.itinerary(`${DOCUMENT_LINK}${encodeURIComponent(l.itinerary)}`)] : [];
+    return [w.hello(first), w.update(tripOn(l, today, lang)), ...lines.map(x => `• ${x}`),
+      ...(more.length ? ['', ...more] : [])].join('\n');
   }
 
   /* The text that sends a driver their forms: each title in their language,

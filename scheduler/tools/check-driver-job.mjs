@@ -1,16 +1,15 @@
 // Runs driver-job.js, what a driver's leg asks of them and what changed since
 // they accepted it, against an invented trip: the leg as the driver works it,
-// what Accept keeps, the lines a change reads as, and where the driver stands;
-// and driver-text.js's sentence that tells a driver what changed.
+// what Accept keeps, which changes are told and the lines they read as, and
+// where the driver stands; and driver-text.js's text that tells a driver.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
 for (const f of ['../trip-shape.js', '../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
-const { legOf, jobView, changesBetween, stateOf, keyOf } = window.SchedulerDriverJob;
-const en = window.SchedulerDriverWords.en;
+const { legOf, jobView, changesBetween, stateOf, keyOf, sayIn, rangeText } = window.SchedulerDriverJob;
 // The English page's words, as share/driver.js hands them in.
-const say = { w: en, keptValue: (k, v) => v, keptRequirement: n => n };
+const say = sayIn('en');
 
 let failed = 0;
 function expect(name, got, want) {
@@ -77,23 +76,49 @@ expect('a leg with no day-of contact is handed whoever booked',
   legOf(ref, { ...trip, trip_contacts: [], booking_contact_name: 'Office Desk' }, 'd1').contacts.map(c => c.name), ['Office Desk']);
 
 const view = jobView(l);
-expect('what Accept keeps, as text the card writes', [view.dates, view.time, view.bus, view.role, view.stops.length, view.itinerary],
-  ['Sat, Nov 7 – Sun, Nov 8, 2026', '6:30 AM', '763', 'Driver', 3, 'a.pdf']);
-const replaced = jobView(legOf(ref, { ...trip, trip_documents: [{ ...trip.trip_documents[0], file_path: 'c.pdf' }] }, 'd1', new Map([['sleeper', 'Sleeper berth']])));
+expect('what Accept keeps, as text the card writes', view,
+  { dates: 'Sat, Nov 7 – Sun, Nov 8, 2026', time: '6:30 AM', place: 'Lone Oak HS, 1 School Rd', destination: 'Austin, TX', relief: '', itinerary: 'a.pdf' });
+const viewOf = (changes, driver = 'd1') => jobView(legOf(ref, { ...trip, ...changes }, driver, new Map()));
+const pickupWith = fields => ({ trip_stops: trip.trip_stops.map(s => (s.type === 'pickup' ? { ...s, ...fields } : s)) });
+const replaced = viewOf({ trip_documents: [{ ...trip.trip_documents[0], file_path: 'c.pdf' }] });
 expect('an itinerary replaced under the same document reads as new', changesBetween(view, replaced, l, say), ['New itinerary']);
 expect('a view kept with the document\'s id still matches the same file', changesBetween({ ...view, itinerary: 'f1' }, view, l, say), []);
 
-const moved = jobView(legOf(ref, { ...trip, trip_assignments: [{ ...trip.trip_assignments[0], buses: { number: 897 } }],
-  trip_stops: trip.trip_stops.map(s => (s.position === 1 ? { ...s, arrive: '10:30' } : s)),
-  trip_documents: [...trip.trip_documents, { id: 'f2', label: 'Itinerary', file_path: 'b.pdf', created_at: '2026-10-05' }] }, 'd1', new Map()));
-expect('each change is one line the driver reads',
-  changesBetween(view, moved, l, say), ['Stops changed', 'Bus: 763 → 897', 'Added: Sleeper bus', 'Removed: Sleeper berth', 'New itinerary']);
+const moved = viewOf({ trip_assignments: [{ ...trip.trip_assignments[0], buses: { number: 897 } }], trip_reqs: { hotel: true },
+  trip_stops: trip.trip_stops.map(s => (s.position === 1 ? { ...s, arrive: '10:30' } : s.type === 'return' ? { ...s, arrive: '23:00' } : s)) });
+expect('a new bus, a stop moved, a need and the yard times ask nothing', changesBetween(view, moved, l, say), []);
+expect('and a view kept before, holding the bus and stops, reads the same',
+  changesBetween({ ...view, bus: '470', stops: ['Somewhere'], role: 'Co-driver', requirements: ['Hotel'] }, view, l, say), []);
+
+const day = (a, b) => rangeText(a, b, true);
+const rebooked = viewOf({ start_date: '2026-11-06', destination: 'Dallas, TX', ...pickupWith({ name: 'Lone Oak MS', spot: '07:00' }) });
+expect('the day, the spot time, the pickup and the destination each say the new and the old',
+  changesBetween(view, rebooked, l, say), [`New dates: ${day('2026-11-06', '2026-11-08')} (was ${day('2026-11-07', '2026-11-08')})`,
+    'New spot time: 7:00 AM (was 6:30 AM)', 'New pickup: Lone Oak MS (was Lone Oak HS)', 'New destination: Dallas, TX (was Austin, TX)']);
+expect('a pickup that keeps its name and moves says its whole place',
+  changesBetween(view, viewOf(pickupWith({ address: '2 School Rd' })), l, say), ['New pickup: Lone Oak HS, 2 School Rd (was Lone Oak HS, 1 School Rd)']);
+expect('a placeholder destination filled in says what it was',
+  changesBetween({ ...view, destination: 'TBD' }, view, l, say), ['New destination: Austin, TX (was TBD)']);
+expect('a time taken back to TBD asks nothing', changesBetween(view, viewOf(pickupWith({ spot: null })), l, say), []);
+expect('in Spanish, as the driver\'s page or text writes it',
+  changesBetween(view, viewOf(pickupWith({ spot: '07:00' })), l, sayIn('es')), ['Nueva hora de llegada: 7:00 AM (antes 6:30 AM)']);
+
+// A relief driver's time is their handoff, not the bus's spot.
+const reliefTrip = changes => ({ ...trip, ...changes, trip_assignments: [{ ...trip.trip_assignments[0], trip_drivers: [
+  ...trip.trip_assignments[0].trip_drivers, { driver_id: 'd5', role: 'relief-end', report_time: changes.handoff ?? '14:00', drivers: { short_name: 'Luz' } }] }] });
+const relief = legOf(ref, reliefTrip({}), 'd5', new Map());
+const reliefView = jobView(relief);
+expect('a relief driver is told a new handoff time, and not a new spot',
+  [changesBetween(reliefView, jobView(legOf(ref, reliefTrip({ handoff: '15:00' }), 'd5', new Map())), relief, say),
+    changesBetween(reliefView, jobView(legOf(ref, reliefTrip(pickupWith({ spot: '07:00' })), 'd5', new Map())), relief, say)],
+  [['New handoff time: 3:00 PM (was 2:00 PM)'], []]);
 
 const statuses = new Map([[keyOf('t1', 'outbound', 'driver'), { status: 'confirmed', confirmedAt: '2026-10-02T00:00:00Z' }]]);
-expect('accepted, with what they accepted unchanged', stateOf(l, { statuses, views: new Map([[keyOf('t1', 'outbound', 'driver'), view]]) }, say).status, 'accepted');
+const kept = v => new Map([[keyOf('t1', 'outbound', 'driver'), v]]);
+expect('accepted, with what they accepted unchanged, or only its bus', [stateOf(l, { statuses, views: kept(view) }, say).status,
+  stateOf(l, { statuses, views: kept({ ...view, bus: '470' }) }, say).status], ['accepted', 'accepted']);
 expect('changed since they accepted, with its lines',
-  stateOf(l, { statuses, views: new Map([[keyOf('t1', 'outbound', 'driver'), { ...view, bus: '470' }]]) }, say),
-  { status: 'changed', lines: ['Bus: 470 → 763'] });
+  stateOf(l, { statuses, views: kept({ ...view, time: '6:00 AM' }) }, say), { status: 'changed', lines: ['New spot time: 6:30 AM (was 6:00 AM)'] });
 expect('accepted before views were kept and saved since asks again, with no list',
   stateOf({ ...l, trip: { ...trip, updated_at: '2026-10-03T00:00:00Z' } }, { statuses, views: new Map() }, say), { status: 'changed', lines: [] });
 expect('no answer is pending, and a decline is declined',
@@ -103,31 +128,40 @@ expect('no answer is pending, and a decline is declined',
 
 // The office's reading, from rows that hold the bus and the driver by id.
 const { changesSince, viewNow } = window.SchedulerDriverJob;
-const office = { ...trip, trip_assignments: [{ leg: 'outbound', active_roles: null, bus_id: 'b2', trip_drivers: [
-  { driver_id: 'd1', role: 'driver' }, { driver_id: 'd2', role: 'co-driver' }] }] };
+const office = changes => ({ ...trip, ...changes, trip_assignments: [{ leg: 'outbound', active_roles: null, bus_id: 'b2', trip_drivers: [
+  { driver_id: 'd1', role: 'driver' }, { driver_id: 'd2', role: 'co-driver' }] }] });
 const read = { busesById: new Map([['b1', { number: 763 }], ['b2', { number: 897 }]]),
   driversById: new Map([['d1', { short_name: 'Rigo' }], ['d2', { short_name: 'Ana' }]]), nameOf: id => (id === 'sleeper' ? 'Sleeper berth' : id) };
-expect('the office reads what changed since the driver accepted, in English, naming it only',
-  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, read), ['Bus changed']);
-expect('the text that tells a driver names it in their language',
-  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, lang: 'es' }), ['Cambió: Autobús']);
-expect('the text that tells a driver gets what changed by name, to word itself',
-  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, keys: true }), [{ key: 'bus' }]);
-expect('nothing changed says nothing', changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office, 'outbound', 'd1', read) }, read), []);
+const since = (changes, extra = {}) => changesSince(office(changes), 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, ...extra });
+expect('the office reads the driver\'s own lines, in English, and a new bus is not one of them',
+  [since({}), since(pickupWith({ spot: '07:00' }))], [[], ['New spot time: 7:00 AM (was 6:30 AM)']]);
+expect('the text that tells a driver has them in their language',
+  since(pickupWith({ spot: '07:00' }), { lang: 'es' }), ['Nueva hora de llegada: 7:00 AM (antes 6:30 AM)']);
+expect('nothing changed says nothing', changesSince(office({}), 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office({}), 'outbound', 'd1', read) }, read), []);
 expect('a seat not confirmed, or with no kept view, says nothing',
-  [changesSince(office, 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office, 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);
+  [changesSince(office({}), 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office({}), 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);
 
-// The sentence that tells a driver, by an invented co-driver's leg today.
-const told = { trip: { trip_type: 'one_way' }, leg: 'outbound', role: 'co-driver', start: new Date(2026, 9, 16), end: new Date(2026, 9, 16), bus: '763', spot: '14:45:00', from: 'A, Hidalgo, TX', to: 'B, Zapata, TX' };
-const opening = (changes, lang) => window.SchedulerDriverText.change('Ana', told, '2026-10-16', changes, 'link', lang).split('\n')[0];
-expect('one change is one sentence', opening([{ key: 'bus' }]), "Hi Ana, your bus changed for today's trip.");
-expect('several values are one list', opening([{ key: 'place' }, { key: 'stops' }, { key: 'itinerary', removed: false }]),
-  "Hi Ana, your pickup, stops and itinerary changed for today's trip.");
-expect('a new date comes first, and the rest changed too', opening([{ key: 'dates' }, { key: 'bus' }]), 'Hi Ana, the date of your trip changed. Your bus changed too.');
-expect('a role, a need and a removed itinerary each say what, and only the first names the trip',
-  opening([{ key: 'role' }, { key: 'requirements', added: ['Hotel'], removed: ['HOS form'] }, { key: 'itinerary', removed: true }]),
-  "Hi Ana, you're now the co-driver on today's trip. It now needs: Hotel. It no longer needs: HOS form. It no longer has an itinerary.");
-expect('Spanish agrees in number', opening([{ key: 'bus' }, { key: 'time' }], 'es'), 'Hola Ana, cambiaron el autobús y la hora de llegada de tu viaje de hoy.');
+// The text that tells a driver, by an invented co-driver's leg.
+const Text = window.SchedulerDriverText;
+const told = { trip: { trip_type: 'one_way' }, leg: 'outbound', role: 'co-driver', start: new Date(2026, 9, 16), end: new Date(2026, 9, 16), bus: '763', spot: '14:45:00', from: 'A, Hidalgo, TX', to: 'B, Zapata, TX', itinerary: 'f1' };
+const lines = ['New spot time: 3:00 PM (was 2:45 PM)', 'New itinerary'];
+expect('the text says there was an update, a line a change, then the link',
+  Text.change('Ana', told, '2026-10-16', lines, 'link'),
+  "Hello Ana,\nThere was an update to today's trip:\n• New spot time: 3:00 PM (was 2:45 PM)\n• New itinerary\n\nTrip details and itineraries:\nlink");
+expect('with no live link, the itinerary\'s takes its place',
+  Text.change('Ana', told, '2026-10-16', lines, '').split('\n').at(-1), `Itinerary: ${Text.DOCUMENT_LINK}f1`);
+const tripOn = (today, lang) => Text.change('Ana', { ...told, start: new Date(2026, 9, 17) }, today, lines, 'link', lang).split('\n')[1];
+expect('the trip is named by its day: tomorrow, this week\'s weekday, or a later date, in the driver\'s language',
+  [tripOn('2026-10-16'), tripOn('2026-10-13'), tripOn('2026-10-01'), tripOn('2026-10-13', 'es')],
+  ["There was an update to tomorrow's trip:", "There was an update to Saturday's trip:", 'There was an update to your trip on Sat, Oct 17:',
+    'Hubo un cambio en tu viaje del sábado:']);
+expect('a reminder gives the spot and the drop-off, which says how long the day runs',
+  [Text.legLines({ ...told, dropoff: '15:30' })[1], Text.legLines({ ...told, dropoff: '15:30' }, { lang: 'es' })[1], Text.legLines(told)[1]],
+  ['2:45 PM spot · 3:30 PM drop-off', 'Llegar a las 2:45 PM · dejar al grupo a las 3:30 PM', '2:45 PM spot']);
+const twoDays = { ...told, end: new Date(2026, 9, 18), dropoff: '22:00' };
+expect('and on a leg of more than one day, the day the group is let off',
+  [Text.legLines(twoDays)[1], Text.legLines(twoDays, { lang: 'es' })[1]],
+  ['2:45 PM spot · SUN 10:00 PM drop-off', 'Llegar a las 2:45 PM · dejar al grupo el domingo a las 10:00 PM']);
 
 // A split trip's leg says which way it runs, Inbound for its pickup, every leg after the first.
 const way = (inbound, lang) => window.SchedulerDriverText.legLines({ ...told, trip: split, inbound }, { lang })[0].split(' • ').at(-1);

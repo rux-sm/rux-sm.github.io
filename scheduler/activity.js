@@ -25,6 +25,9 @@
   const FIRST = ['save', 'trips', 'load'];
   const CHANGED = 'Board updated';
   const PAUSED = 'Live changes paused';
+  const REST = 'Up to date';
+  // Everything the line can say, which sizes it.
+  const PHRASES = new Set([...Object.values(WORDS).flatMap(w => [w.busy, w.done, w.kept, w.failed]), CHANGED, PAUSED, REST].filter(Boolean));
 
   const running = new Map();
   const recent = [];
@@ -96,7 +99,17 @@
   function build() {
     line = document.getElementById('scheduler-activity');
     if (!line) return false;
-    line.innerHTML = '<div class="rux--inline-loading__animation"></div><div class="rux--inline-loading__text"></div>';
+    /* The words stand in one cell over every phrase the line can say,
+       hidden, so the line is as wide as its longest and the mark beside
+       the words holds still as they change. */
+    line.innerHTML = '<div class="rux--inline-loading__animation"></div><div class="rux--inline-loading__text"><span class="scheduler-activity__said"></span></div>';
+    for (const phrase of PHRASES) {
+      const size = document.createElement('span');
+      size.className = 'scheduler-activity__size';
+      size.setAttribute('aria-hidden', 'true');
+      size.textContent = phrase;
+      line.lastElementChild.appendChild(size);
+    }
     return true;
   }
   const SPINNER = '<div class="rux--loading rux--loading--small"><svg class="rux--loading__svg" viewBox="0 0 100 100"><circle class="rux--loading__background" cx="50%" cy="50%" r="42"></circle><circle class="rux--loading__stroke" cx="50%" cy="50%" r="42"></circle></svg></div>';
@@ -121,9 +134,9 @@
       text = PAUSED;
     } else {
       state = 'rest';
-      text = 'Up to date';
+      text = REST;
     }
-    const anim = line.firstElementChild, words = line.lastElementChild;
+    const anim = line.firstElementChild, words = line.querySelector('.scheduler-activity__said');
     if (line.dataset.state !== state) {
       anim.innerHTML = state === 'busy' ? SPINNER : state === 'error' ? ERROR : CHECK;
       line.dataset.state = state;

@@ -185,20 +185,26 @@
 /* The rules along the column's cells, the band's and each row's, run on
    across the edge they leave unpainted, so a line never breaks there where
    no day stands under it, as in the loading skeleton or at the strip's
-   start. Over a day they draw on the day's own rule. */
+   start. Over a day they draw on the day's own rule. The run-on is placed
+   from the cell's padding box, so it reaches past it by the cell's own rules
+   and no further: a row head's one rule at its foot, and the band's at both
+   edges, none where a theme fills the band instead. */
 .scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head)::after {
   content: '';
   position: absolute;
-  inset-block: -1px;
   inset-inline-start: 100%;
   inline-size: calc(var(--scheduler-edge) + 1px);
   border-block: inherit;
   pointer-events: none;
 }
+.scheduler-week--scroll .scheduler-row-head::after { inset-block: 0 -1px; }
 /* The band is opaque, so its edge is the band's surface too: where no day
    stands under it the band runs on unbroken, and over a day it is the same
    surface the day's cell shows there. */
-.scheduler-week--scroll .scheduler-corner::after { background: inherit; }
+.scheduler-week--scroll .scheduler-corner::after {
+  inset-block: calc(-1 * var(--scheduler-band-rule-w));
+  background: inherit;
+}
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and
@@ -248,8 +254,7 @@
 .scheduler-corner,
 .scheduler-day {
   background: var(--scheduler-band-surface);
-  border-block-start: var(--scheduler-band-rule);
-  border-block-end: var(--scheduler-band-rule);
+  border-block: var(--scheduler-band-rule-w) solid var(--rux-border-subtle-01);
   /* 2rem, Carbon's sm row height; the corner's 2rem floor makes it square. */
   block-size: 2rem;
   display: flex;
@@ -3766,8 +3771,7 @@ a.scheduler-tip__go { text-decoration: none; }
   /* No rule around the header, as in Carbon's table header: the surface change
      separates it from the first row. A theme that draws rules instead takes
      both edges, because the panel's own title sits directly above this row. */
-  border-block-start: var(--scheduler-band-rule);
-  border-block-end: var(--scheduler-band-rule);
+  border-block: var(--scheduler-band-rule-w) solid var(--rux-border-subtle-01);
 }
 
 /* The rule between the names and the days belongs to the first day's cell, not

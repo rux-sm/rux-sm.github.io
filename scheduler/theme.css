@@ -885,15 +885,17 @@
    the band is filled and carries no rule. Geist separates with a line instead
    -- every region on its own pages is told apart by a hairline, not a slab --
    so there the band takes the pane's own surface and the rule under it. It
-   stays opaque either way, because the band is sticky and rows scroll beneath. */
+   stays opaque either way, because the band is sticky and rows scroll beneath.
+   The rule is set by its width alone, so what reaches across its edge, as
+   the bus column's corner does, can be as tall as the band's rules. */
 :root {
   --scheduler-band-surface: var(--rux-layer-accent-01);
-  --scheduler-band-rule: 0;
+  --scheduler-band-rule-w: 0px;
 }
 [data-theme="geist-dark"],
 [data-theme="rux-dark"] {
   --scheduler-band-surface: var(--rux-layer);
-  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  --scheduler-band-rule-w: 1px;
   /* The same line around each region, so the schedule and the roster are told
      apart the way the trip panel beside them already is. It is drawn at every
      width, geist-dark's page keeping 16px around the board throughout. */
@@ -955,7 +957,7 @@
    themes' hard shadow, which apple-dark keeps. */
 [data-theme^="apple-"] {
   --scheduler-band-surface: var(--rux-layer);
-  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  --scheduler-band-rule-w: 1px;
   --scheduler-shortcut-radius: 8px;
 }
 [data-theme="apple-light"] { --scheduler-lift: 0 8px 24px rgb(0 0 0 / .16); }
@@ -1419,7 +1421,7 @@
   --rux-layer: var(--scheduler-region);
   --rux-layer-hover: var(--scheduler-region-hover);
   --scheduler-band-surface: var(--scheduler-region);
-  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  --scheduler-band-rule-w: 1px;
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge-width: 1px;
   --scheduler-last-rule: 0;

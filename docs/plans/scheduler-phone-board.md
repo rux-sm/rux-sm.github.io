@@ -12,11 +12,12 @@ two away. It stops being the Mac's board narrowed: it is three views under
 one switch, List, 3 days and Week, and a tapped trip opens a half sheet
 over the view rather than a sheet that takes the screen.
 
-Today the phone shows the strip three days wide, a flick a day, its trips
-three lines beside a narrow bus column, a trip's destination running its
-whole length, a tap on a trip opening its sheet
-and a tap on a bus the bus's, and above it the month, Today and search
-over the week; the editor opens over the board as the Mac's form.
+Today the phone has List and 3 days under the switch, with search and +
+in the header and the date line and Today over the switch, and the week
+row under it. List is today and the days after as cards, and 3 days the
+strip three days wide, a flick a day; a tap on a trip, a card or a bar,
+opens the docked sheet and a tap on a bus the bus's, and the editor opens
+over the board as the Mac's form.
 
 The mockups rux chose from are `design/m/phone-agenda.html`,
 `design/m/phone-peek.html` and `design/m/phone-week.html`, local and
@@ -79,13 +80,9 @@ None open.
 
 ## Tasks
 
-- [ ] Put the view switch and the date line over the board, and the + and
-  search in the top bar.
-- [ ] Build List: today grouped, the days after it, the sticky day names
-  and the week row that follows the scroll.
 - [ ] Replace the docked sheet with the half sheet and its pulled-up rest.
 - [ ] Put ‹ › on 3 days' date line.
-- [ ] Build Week, a day a row.
+- [ ] Build Week, a day a row, and add it to the switch.
 - [ ] Add the bar of places at the foot.
 - [ ] Make Move to bus and Change driver the pulled-up sheet's rows.
 - [ ] Build the driver's screen and the customer's screen.

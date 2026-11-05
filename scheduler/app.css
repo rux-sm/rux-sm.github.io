@@ -4110,31 +4110,64 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
 
 /* ══ The compact board ═════════════════════════════════════════════════════
-   Where the schedule cannot show three readable days, on a window as narrow
-   as a phone's, the strip shows two, which app.js fits to the pane.
+   Where the schedule cannot show three readable days at the strip's width,
+   on a window as narrow as a phone's, the board is the phone's: List or 3
+   days, the strip's three narrower days, which app.js fits to the pane.
    `placeRoom` in data.js turns it on from the whole board's width, panels
    and all, not from the room they leave the week, so opening a panel never
    turns it on. */
-/* ITS TOP IS THE MONTH, TODAY AND SEARCH, as rux decided, with no arrows,
-   a swipe being the step: the calendar's button gives way, and the month is
-   written in full. */
-.scheduler-page[data-board="compact"] .scheduler-toolbar__range { display: none; }
+/* ITS TOP IS THE DATE LINE AND TODAY, as rux decided, with no arrows, a
+   swipe being the step: the day or the days in view, data.js's
+   `daysWords`, on the month's button, which still lists the months, and
+   which they are its name. The calendar's button gives way, and search and
+   New trip are the header's, where a thumb finds them over every view. */
+.scheduler-page[data-board="compact"] .scheduler-toolbar__range,
+.scheduler-page[data-board="compact"] .scheduler-toolbar__search { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn--month { border-inline-start: 0; }
-.scheduler-page[data-board="compact"] .scheduler-weekbtn__short { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-weekbtn__long { position: static; inline-size: auto; block-size: auto; clip-path: none; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn--month > :is(.rux--visually-hidden, .scheduler-weekbtn__long, .scheduler-weekbtn__short) { display: none; }
+.scheduler-weekbtn__days { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn__days {
+  display: block;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:root:not([data-scheduler-board="compact"]) .scheduler-header-phone { display: none; }
+/* THE BOARD IS ITS ROWS, the date line, the views, the week and the view,
+   List over the strip in one place: the strip keeps its height, which
+   app.js gives it, and the List takes that height and none of its own. */
+.scheduler-page[data-board="compact"] .scheduler-frame {
+  display: grid;
+  grid-template: "bar" auto "views" auto "days" auto "view" auto / minmax(0, 1fr);
+}
+.scheduler-page[data-board="compact"] .scheduler-frame > .scheduler-toolbar { grid-area: bar; }
+.scheduler-page[data-board="compact"] .scheduler-frame > .scheduler-views { grid-area: views; }
+.scheduler-page[data-board="compact"] .scheduler-frame > .scheduler-weekstrip { grid-area: days; }
+.scheduler-page[data-board="compact"] .scheduler-frame > :is(.scheduler-week, .scheduler-list) { grid-area: view; }
+/* THE VIEWS, Carbon's content switcher across the board under the date
+   line, as rux decided: List and 3 days, Week to come. */
+.scheduler-views { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-views {
+  display: block;
+  padding: var(--rux-spacing-03) var(--rux-spacing-03) 0;
+  background: var(--rux-layer);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-views > .rux--content-switcher { inline-size: 100%; }
 /* UNDER THEM THE WEEK, data.js's `drawWeekStrip`: seven days sharing the
    width on the toolbar's own surface, each its weekday's letter at the
-   label size over its date at the heading size and a 4px dot, the space for
-   which every day keeps so none moves when one shows. The days in view are
-   one selected block, square unless the theme rounds its bars; today's date
-   is in the day band's colour; the dot is the warning's or the error's. */
+   label size over its date at the heading size, and under it its trips'
+   count and a 6px dot, the space for which every day keeps so none moves
+   when one shows. The days in view are one selected block, square unless
+   the theme rounds its bars; today's date is in the day band's colour; the
+   dot is the warning's or the error's. */
 .scheduler-weekstrip { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekstrip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   background: var(--rux-layer);
-  border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 .scheduler-weekstrip__day {
   appearance: none;
@@ -4174,7 +4207,18 @@ a.scheduler-tip__go { text-decoration: none; }
   font-variant-numeric: tabular-nums;
 }
 .scheduler-weekstrip__day[data-today] .scheduler-weekstrip__num { color: var(--rux-link-primary-hover); }
-.scheduler-weekstrip__dot { inline-size: 4px; block-size: 4px; border-radius: 50%; }
+.scheduler-weekstrip__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-01);
+  min-block-size: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-weekstrip__dot { flex: none; inline-size: 6px; block-size: 6px; border-radius: 50%; }
 .scheduler-weekstrip__day[data-mark="warning"] .scheduler-weekstrip__dot { background: var(--rux-support-warning); }
 .scheduler-weekstrip__day[data-mark="error"] .scheduler-weekstrip__dot { background: var(--rux-support-error); }
 /* A swipe moves it a day: the strip stops at the next day's edge however
@@ -4186,6 +4230,140 @@ a.scheduler-tip__go { text-decoration: none; }
   scroll-snap-align: none start;
   scroll-snap-stop: always;
 }
+
+/* LIST, data.js's, over the strip, which stays laid out under it out of
+   sight, since the trip a card opens is its bar's: only the bar's docked
+   sheet shows from it. The List scrolls in the strip's box, its days'
+   tops measured from it. */
+.scheduler-list { display: none; }
+:root[data-scheduler-phone="list"] .scheduler-page[data-board="compact"] .scheduler-week { visibility: hidden; }
+:root[data-scheduler-phone="list"] .scheduler-page[data-board="compact"] .scheduler-bar-shortcuts[data-docked] { visibility: visible; }
+:root[data-scheduler-phone="list"] .scheduler-page[data-board="compact"] .scheduler-list {
+  display: block;
+  position: relative;
+  contain: size;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* A card scrolled to stays clear of the day's name standing over it. */
+  scroll-padding-block-start: calc(2 * var(--rux-spacing-03) + var(--rux-heading-compact-01-line-height) * var(--rux-heading-compact-01-font-size));
+  background: var(--rux-layer);
+  border-end-start-radius: var(--scheduler-inner-radius);
+  border-end-end-radius: var(--scheduler-inner-radius);
+}
+.scheduler-list__day { padding-block-end: var(--rux-spacing-03); }
+/* A day's name stands at the List's top while its trips pass under it, on
+   the day band's surface, with its date and how many of its trips need the
+   office. */
+.scheduler-list__head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+  margin: 0;
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  background: var(--scheduler-band-surface);
+  border-block-end: var(--scheduler-band-rule);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-list__date,
+.scheduler-list__need {
+  color: var(--rux-text-secondary);
+  font-weight: var(--rux-body-compact-01-font-weight);
+}
+.scheduler-list__need {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  margin-inline-start: auto;
+}
+/* Today's three groups, each its name and how many. */
+.scheduler-list__group {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: var(--rux-spacing-05) var(--rux-spacing-05) 0;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-list__group-count { font-weight: var(--rux-body-compact-01-font-weight); }
+.scheduler-list__free {
+  margin: var(--rux-spacing-03) var(--rux-spacing-05) 0;
+  padding: var(--rux-spacing-04) var(--rux-spacing-05);
+  border: 1px dashed var(--rux-border-subtle-01);
+  color: var(--rux-text-helper);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+/* A TRIP'S CARD, in the trip's colour as its bar is, the bar's colour class
+   giving its fill and ink: the destination over the customer, its buses
+   and drivers, today's each on a line of its own and a later day's on one.
+   The selected trip's cards are ringed as its bar is. */
+.scheduler-list__card {
+  appearance: none;
+  display: grid;
+  gap: var(--rux-spacing-01);
+  box-sizing: border-box;
+  inline-size: calc(100% - 2 * var(--rux-spacing-05));
+  margin: var(--rux-spacing-03) var(--rux-spacing-05) 0;
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  border: 0;
+  border-radius: var(--scheduler-bar-radius, 0);
+  background: var(--scheduler-bg);
+  color: var(--scheduler-fg);
+  font: inherit;
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-list__card--full { gap: var(--rux-spacing-02); padding-block: var(--rux-spacing-04); }
+@media (hover: hover) {
+  .scheduler-list__card:hover { background: var(--scheduler-hover); }
+}
+.scheduler-list__card:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-list__card[aria-current="true"] { outline: 1px solid var(--rux-layer-selected-inverse); outline-offset: -1px; }
+.scheduler-list__top,
+.scheduler-list__dest { display: flex; align-items: baseline; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.scheduler-list__dest {
+  flex: 1 1 auto;
+  gap: var(--rux-spacing-02);
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
+}
+.scheduler-list__place,
+.scheduler-list__who,
+.scheduler-list__seat-words { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-list__count { flex: none; font-weight: 400; opacity: .85; }
+.scheduler-list__alert { flex: none; align-self: center; display: flex; }
+.scheduler-list__times { flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scheduler-list__kit,
+.scheduler-list__line { display: flex; align-items: center; gap: var(--rux-spacing-05); min-inline-size: 0; }
+.scheduler-list__line > .scheduler-list__who { flex: 1 1 auto; }
+.scheduler-list__bus,
+.scheduler-list__seat { display: inline-flex; flex: none; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; white-space: nowrap; }
+.scheduler-list__kit > .scheduler-list__seat { flex: 0 1 auto; }
+.scheduler-list__bus > svg,
+.scheduler-list__seat > svg { flex: none; }
+/* A trip on the road says so under its drivers: a dot in the success
+   colour on time, the warning's late, and the secondary icon's by the
+   clock alone, where Samsara has not said. */
+.scheduler-list__live { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-list__pip { flex: none; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
+.scheduler-list__live--on-time > .scheduler-list__pip { background: var(--rux-support-success); }
+.scheduler-list__live--late > .scheduler-list__pip { background: var(--rux-support-warning); }
 
 /* A TRIP BAR HERE IS THREE LINES, data.js's `rowShown`: the destination with
    its bus count, its mark and its colour, the times out and back, and the
@@ -4574,11 +4752,11 @@ a.scheduler-tip__go { text-decoration: none; }
    place rather than two, and the menu row that stood in for it goes. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
 :root[data-scheduler-board="compact"] .scheduler-menu-item--sm-only { display: none; }
-/* New trip is the menu's first row on a phone's compact board and under the
-   tight width, where the week label needs the 40px. */
+/* New trip is the menu's first row under the tight width, where the week
+   label needs the 40px; on a phone's compact board it is the header's. */
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
-:root:not([data-scheduler-room="tight"]):not([data-scheduler-board="compact"]) .scheduler-menu-item--new { display: none; }
+:root:is(:not([data-scheduler-room="tight"]), [data-scheduler-board="compact"]) .scheduler-menu-item--new { display: none; }
 /* In the same state, and on the compact board, the calendar's, the month's
    and the year's buttons give up two steps of inset, as the insets come down
    from 16px to 8px and the glyph's gap from 12px to 4px, so "Nov" and "2026"

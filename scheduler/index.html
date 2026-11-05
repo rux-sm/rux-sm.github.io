@@ -177,6 +177,11 @@
          Account action; a face links to the page that person is on. people.js
          fills it and shows it only while somebody is here. -->
     <div class="scheduler-header-people" id="scheduler-people" hidden></div>
+    <!-- On a phone's board, search and New trip stand in the header, where a
+         thumb finds them over every view; the toolbar's own two stand in for
+         them on a wider board, and app.css shows one pair or the other. -->
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only scheduler-header-phone" data-rux-open="scheduler-search-modal" aria-label="Search trips"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only scheduler-header-phone" id="scheduler-header-new" aria-label="New trip"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
   </div>
   <!-- ACCOUNT:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -369,7 +374,7 @@
               <!-- The month in view with its year, a list of every month held
                    a pick from moves the board to; data.js writes it and
                    builds the list. -->
-              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
+              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><span class="scheduler-weekbtn__days" id="scheduler-month-days"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
               </div>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
@@ -396,7 +401,7 @@
                  buttons after it, which each show and hide a pane. It opens
                  its own window, so the toolbar keeps one row at every width.
                  Cmd-K opens it too. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__search" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
             <!-- Tasks and Departures, the board's two lists: each shows and hides
                  its own pane left of the week, so each is a pressed toggle,
                  its glyph filled while its pane is open, and
@@ -429,9 +434,19 @@
                  the options for how the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           </div>
-            <!-- The week the first day in view falls in, on a phone, under the
-                 month: a day a button, the days in view marked and a dot
-                 under a day with a trip carrying a warning. data.js draws it. -->
+            <!-- On a phone, the board's views under the date line, Carbon's
+                 content switcher: List, a day after another, and 3 days, a
+                 bus a row. data.js keeps the one chosen in this browser. -->
+            <div class="scheduler-views" id="scheduler-views">
+              <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" aria-label="View">
+                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-phone-view="list"><span class="rux--content-switcher__label">List</span></button>
+                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-phone-view="days"><span class="rux--content-switcher__label">3 days</span></button>
+              </div>
+            </div>
+            <!-- The week the day in view falls in, on a phone, under the
+                 views: a day a button, the days in view marked, and under
+                 each day its trips' count and a dot where one needs the
+                 office. data.js draws it. -->
             <div class="scheduler-weekstrip" id="scheduler-weekstrip" role="group" aria-label="This week"></div>
             <!-- The loading skeleton: the corner, three weeks of day cells and ten
                  rows of grey placeholders in the real grid's classes, so the first
@@ -562,6 +577,10 @@
                 </div>
               </div>
             </div>
+            <!-- LIST, the phone's first view: the day in view and each day
+                 after it, in one scroll, over the strip, which stays laid
+                 out under it for the trip a card opens. data.js draws it. -->
+            <div class="scheduler-list" id="scheduler-list" role="region" aria-label="Trips by day"></div>
           </div>
           <!-- The driver availability pane. order: -1 draws it left of the
                board while the markup keeps the schedule first. Its head holds

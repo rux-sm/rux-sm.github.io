@@ -20,10 +20,14 @@
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
    overSeated, driverAlerts, tells, problems }`, which the trip's card reads.
+   `factsOf(b, board)` is the same facts with no element, with the problems
+   the bar's alert badge counts and the badge's tone, which the phone's day
+   list reads; `placeName(destination)` is the destination as a bar says it.
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
-   them, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
+   them, `crewGlyph(c, due, back)` the glyph it marks their seat with and
+   `glyphEl(glyph)` that glyph drawn, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
    and its card say them, `tripDone(leg, now)` how much of a leg's time has
@@ -333,6 +337,22 @@
      no hover label, since the tip says it; a
      done trip's drivers have none to press, but one who declined. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
+  /* A seat's glyph: its status icon in its indicator's colour, a relief
+     seat's role arrow, the warning for an empty seat that is due, or none,
+     for a distant empty seat and for a done trip's driver who did not
+     decline. `crewEl` draws it, and the phone's day list its trips' seats. */
+  function crewGlyph(c, due, done) {
+    const dot = !RELIEF_ROLES.has(c.role);
+    if (done && dot && !c.needed && c.status?.value !== 'declined') return null;
+    if (!dot) return { href: c.icon, box: c.box, indicator: null };
+    if (c.needed) return due ? { href: '#i-warning--alt--filled', box: '0 0 32 32', indicator: 'rux--icon-indicator--caution-minor' } : null;
+    return { href: c.status.icon, box: '0 0 32 32', indicator: c.status.indicator };
+  }
+  const glyphEl = g => {
+    const svg = svgUse(g.href, '16', g.box);
+    if (g.indicator) svg.setAttribute('class', g.indicator);
+    return svg;
+  };
   function crewEl(c, due, done) {
     const tone = c.needed ? (due ? 'warning' : 'off') : c.status.tone;
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
@@ -349,12 +369,8 @@
         mark.setAttribute('aria-label', `${crewText(c)}: details`);
         mark.title = '';
       }
-      const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
-        : svgUse(c.icon, '16', c.box);
-      if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-minor' : 'rux--icon-indicator--not-started')
-        : c.status.indicator);
-      // Distant empty seats need no status indicator; the neutral label is enough.
-      if (!c.needed || due || !dot) mark.appendChild(glyph);
+      const glyph = crewGlyph(c, due, done);
+      if (glyph) mark.appendChild(glyphEl(glyph));
       item.appendChild(mark);
     }
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
@@ -427,66 +443,17 @@
   const staffingDue = (leg, today = new Date()) => leg.to >= iso(today) && leg.from <= iso(addDays(today, 14));
   const NOBODY_NEAR = { trips: [], off: [], oos: [] };
 
-  function draw(b, board) {
-    const { trip, leg, assign, place, slot } = b;
+  /* WHAT ONE BAR KNOWS OF ITS TRIP AND ITS BUS, worked out with no element:
+     `facts`, which the trip's card reads, the problems the bar's alert badge
+     counts, and the badge's tone, an error where the bus does not fit and a
+     warning otherwise, or none. `draw` draws the badge from it, and the
+     phone's day list says which trips need the office from it, so the two
+     cannot differ. */
+  function factsOf(b, board) {
+    const { trip, leg, assign } = b;
     const { driversById, busesById, statuses } = board;
-    const hue = hueFor(trip);
-    const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
-    // The bar menu reads both to check the trip's colour and paint Standard.
-    bar.dataset.tripColor = tripColorOf(trip) ?? '';
-    bar.dataset.standardHue = standardHueOf(trip);
-    /* The leg is read by its key, week.js's, which is its id on a trip read
-       with its legs. The itinerary shortcut and menu item open this document. */
-    const itinerary = board.itineraryOf?.(trip, leg.key) ?? null;
-    bar.dataset.itineraryId = itinerary?.id ?? '';
-    // The bar menu's hotel item reads both: whether the trip needs a hotel, and
-    // whether this leg's is booked.
-    bar.dataset.needHotel = trip.trip_reqs?.hotel === true ? 'true' : '';
-    bar.dataset.hotelBooked = leg.hotelBooked ? 'true' : '';
-    bar.setAttribute('role', 'group');
-    bar.setAttribute('aria-keyshortcuts', 'Enter Space');
-    bar.tabIndex = 0;
-    bar.setAttribute('aria-current', 'false');
-    bar.dataset.tripId = trip.id;
-    // A trip that is back stays where it is on the board; close-out.js says when.
-    if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
-    // The leg by its key, week.js's, and its number; `leg` is the old word it mirrors, if any.
-    bar.dataset.legKey = leg.key ?? leg.leg;
-    bar.dataset.legNumber = leg.number ?? 1;
-    bar.dataset.leg = leg.leg ?? '';
-    bar.dataset.start = place.start;
-    bar.dataset.span = place.span;
-    // The slot is the position an empty slot's assignment row is written at.
-    bar.dataset.slot = slot;
-    if (assign) {
-      bar.dataset.assignmentId = assign.id;
-      if (board.saving?.(assign.id)) bar.classList.add('scheduler-bar--saving');
-      bar.dataset.busId = assign.bus_id ?? '';
-    }
-    if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
-    if (place.toNext) bar.classList.add('scheduler-bar--to-next');
-    bar.style.setProperty('--scheduler-start', place.start);
-    bar.style.setProperty('--scheduler-span', place.span);
-    bar.style.setProperty('--scheduler-lane', b.lane);
-
-    /* A PLACEHOLDER IS NOT A TRIP YET, as billing.js reads one. Nothing is
-       due on it, so its bar is never the wrong bus and draws no empty seat and
-       no missing bus; a driver someone has named still shows. */
     const placeholder = window.SchedulerBilling.placeholder(trip);
-
-    /* A leg that leaves the group or fetches it says so after the destination, its arrow pointing the way the bus does: across for a
-       one-way trip, down for a split's drop-off, where the group is set down,
-       up for its pickup, every leg after the first. The pill says which leg
-       of a split this is, so the reference is only its count. */
-    const SHAPE = window.SchedulerTripShape;
-    const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
-      : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
-    /* How many buses the leg takes, written after the destination on a leg of
-       more than one, as the figure alone: `3`. The board numbers them down its rows, as `nth`, and
-       every bus after the first says which it is in place of the update, so
-       the trip's news is read once. */
-    const count = leg.count || 1;
-    const later = count > 1 && b.nth > 1;
+    const later = (leg.count || 1) > 1 && b.nth > 1;
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no mark for a need: the needs are read on the trip's card, which the
@@ -560,10 +527,74 @@
     /* A later bus wears only its own problems, a bus that does not fit or a
        driver to tell; the trip's are on its first bus, and every bus's card
        lists them all. */
-    const problems = later ? facts.problems.filter(a => a.row === 'scheduler-card__misfit' || a.spot === 'driver')
+    const own = later ? facts.problems.filter(a => a.row === 'scheduler-card__misfit' || a.spot === 'driver')
       : facts.problems;
-    const alert = problems.length
-      ? alertMark(misfits.length ? 'error' : 'warning', problems.map(a => a.words).join(' · ')) : null;
+    return { facts, problems: own, tone: own.length ? (misfits.length ? 'error' : 'warning') : null };
+  }
+
+  function draw(b, board) {
+    const { trip, leg, assign, place, slot } = b;
+    const { driversById, busesById, statuses } = board;
+    const hue = hueFor(trip);
+    const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
+    // The bar menu reads both to check the trip's colour and paint Standard.
+    bar.dataset.tripColor = tripColorOf(trip) ?? '';
+    bar.dataset.standardHue = standardHueOf(trip);
+    /* The leg is read by its key, week.js's, which is its id on a trip read
+       with its legs. The itinerary shortcut and menu item open this document. */
+    const itinerary = board.itineraryOf?.(trip, leg.key) ?? null;
+    bar.dataset.itineraryId = itinerary?.id ?? '';
+    // The bar menu's hotel item reads both: whether the trip needs a hotel, and
+    // whether this leg's is booked.
+    bar.dataset.needHotel = trip.trip_reqs?.hotel === true ? 'true' : '';
+    bar.dataset.hotelBooked = leg.hotelBooked ? 'true' : '';
+    bar.setAttribute('role', 'group');
+    bar.setAttribute('aria-keyshortcuts', 'Enter Space');
+    bar.tabIndex = 0;
+    bar.setAttribute('aria-current', 'false');
+    bar.dataset.tripId = trip.id;
+    // A trip that is back stays where it is on the board; close-out.js says when.
+    if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
+    // The leg by its key, week.js's, and its number; `leg` is the old word it mirrors, if any.
+    bar.dataset.legKey = leg.key ?? leg.leg;
+    bar.dataset.legNumber = leg.number ?? 1;
+    bar.dataset.leg = leg.leg ?? '';
+    bar.dataset.start = place.start;
+    bar.dataset.span = place.span;
+    // The slot is the position an empty slot's assignment row is written at.
+    bar.dataset.slot = slot;
+    if (assign) {
+      bar.dataset.assignmentId = assign.id;
+      if (board.saving?.(assign.id)) bar.classList.add('scheduler-bar--saving');
+      bar.dataset.busId = assign.bus_id ?? '';
+    }
+    if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
+    if (place.toNext) bar.classList.add('scheduler-bar--to-next');
+    bar.style.setProperty('--scheduler-start', place.start);
+    bar.style.setProperty('--scheduler-span', place.span);
+    bar.style.setProperty('--scheduler-lane', b.lane);
+
+    /* A PLACEHOLDER IS NOT A TRIP YET, as billing.js reads one. Nothing is
+       due on it, so its bar is never the wrong bus and draws no empty seat and
+       no missing bus; a driver someone has named still shows. */
+    const placeholder = window.SchedulerBilling.placeholder(trip);
+
+    /* A leg that leaves the group or fetches it says so after the destination, its arrow pointing the way the bus does: across for a
+       one-way trip, down for a split's drop-off, where the group is set down,
+       up for its pickup, every leg after the first. The pill says which leg
+       of a split this is, so the reference is only its count. */
+    const SHAPE = window.SchedulerTripShape;
+    const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
+      : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
+    /* How many buses the leg takes, written after the destination on a leg of
+       more than one, as the figure alone: `3`. The board numbers them down its rows, as `nth`, and
+       every bus after the first says which it is in place of the update, so
+       the trip's news is read once. */
+    const count = leg.count || 1;
+    const later = count > 1 && b.nth > 1;
+
+    const { facts, problems, tone } = factsOf(b, board);
+    const alert = tone ? alertMark(tone, problems.map(a => a.words).join(' · ')) : null;
     /* A trip that is back raises no alert, and says Paid in the alert's place
        once it is paid in full. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
@@ -706,7 +737,7 @@
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
-      ...misfits,
+      ...facts.misfits,
       asksFollowUp(trip) ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return { bar, facts };
@@ -728,6 +759,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, factsOf, placeName, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

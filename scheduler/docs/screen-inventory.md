@@ -363,8 +363,8 @@ then every driver on the leg, this bar's bus first. Each row names who they are 
 Driver") over their name and number, with Call and Text, on a phone each its word under its icon
 beside the person. A ⋮ beside the close button holds the rest: Text all drivers, one group message
 from two drivers up; once a driver has confirmed, Email driver details and Copy driver details, the
-letter to the booking contact of every bus with its confirmed drivers' names and numbers, each leg
-under its date when their crews differ; Email for a contact who has an address; Remind for each
+letter to the booking contact of every bus with its confirmed drivers' names and numbers and each
+leg's spot time at its pickup, each leg under its day when their crews differ; Email for a contact who has an address; Remind for each
 driver, a text with their reminder of the leg typed in: "Hi Oscar, a reminder for your trip
 tomorrow:", then the leg in the Driver week info message's own lines, from
 `scheduler/driver-text.js`, and the newest itinerary's link; and Add number for a person with none.

@@ -16772,46 +16772,63 @@
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
   /* The driver details letter for the customer, or null while no driver on
-     the trip has confirmed: every bus with its confirmed drivers' names and
-     numbers, and a bus with none says its driver is to be confirmed. Legs
-     with the same crew are listed once; legs that differ each go under their
-     own date. It speaks of the driver, singular, when it names one person and
-     no bus is still waiting on one. It is addressed to the booking contact,
-     and only its subject names the destination, which is sometimes a group's
-     name, not a place. */
+     the trip has confirmed: every bus under its number, with its confirmed
+     drivers' names and numbers beneath, and a bus with none says its driver
+     is to be confirmed; then each leg's spot time at its pickup. Legs with
+     the same crew list the buses once and the spot times one line a day;
+     legs that differ each go under their own day with their own spot time.
+     It says the drivers are confirmed only while no bus is waiting on one,
+     and speaks of the driver, singular, when it names one person. It is
+     addressed to the booking contact, and only its subject names the
+     destination, which is sometimes a group's name, not a place. */
   const monthDay = s => parseISO(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const longDay = s => parseISO(s).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   function driverLetter(trip) {
     const named = new Set();
     let waiting = false;
     const legs = legsOf(trip).map(l => {
-      const lines = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
+      const buses = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-        .flatMap(a => {
+        .map(a => {
           const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
-          const bus = number ? `Bus ${number}` : 'Bus to be confirmed';
           const crew = crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
             .filter(c => c.who && c.status.value === 'confirmed');
           crew.forEach(c => named.add(c.driverId));
-          if (!crew.length) { waiting = true; return [`${bus} — Driver to be confirmed`]; }
-          return crew.map(c => `${bus} — ${c.who.name}${c.role === 'driver' ? '' : c.role === 'co-driver' ? ' (co-driver)' : ' (relief driver)'}`
-            + (c.who.phone ? `, ${showPhone(c.who.phone)}` : ''));
+          if (!crew.length) waiting = true;
+          const lines = crew.length ? crew.map(c => `${c.who.name}${c.role === 'driver' ? '' : c.role === 'co-driver' ? ' (co-driver)' : ' (relief driver)'}`
+            + (c.who.phone ? `, ${showPhone(c.who.phone)}` : '')) : ['Driver to be confirmed'];
+          return [number ? `Bus ${number}` : 'Bus to be confirmed', ...lines].join('\r\n');
         });
-      return { ...l, lines };
-    }).filter(l => l.lines.length);
+      const stops = window.SchedulerWeek.stopsOfKey(trip, l.key);
+      const pickup = stops.find(s => s.type === 'pickup') ?? stops[0];
+      const place = (pickup?.name || pickup?.address || '').trim();
+      const spot = pickup?.spot ? `${window.SchedulerQuoteText.clock(pickup.spot)}${place ? ` at ${place}` : ''}` : null;
+      return { ...l, buses, spot };
+    }).filter(l => l.buses.length);
     if (!named.size) return null;
     const to = tripContact(trip, 0);
     const first = legs[0].from;
     const last = legs.reduce((end, l) => (l.to > end ? l.to : end), legs[0].to);
-    const when = first === last ? `on ${monthDay(first)}` : `from ${monthDay(first)} to ${monthDay(last)}`;
-    const same = legs.every(l => l.lines.join() === legs[0].lines.join());
+    const when = first === last ? longDay(first) : `${longDay(first)}, through ${longDay(last)}`;
+    const one = named.size === 1;
+    const same = legs.every(l => l.buses.join() === legs[0].buses.join());
     const split = SHAPE.isSplit(trip);
-    const lists = same ? [legs[0].lines.join('\r\n')]
-      : legs.map(l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
+    const day = l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${longDay(l.from)}`;
+    /* One bus on one leg carries its spot time in its own block, as the
+       letter's one paragraph of details; more stand apart beneath them. */
+    const timed = legs.filter(l => l.spot);
+    const spots = !timed.length ? null : legs.length === 1 ? `Spot time: ${timed[0].spot}`
+      : timed.map(l => `Spot time on ${day(l)}: ${l.spot}`).join('\r\n');
+    const parts = !same
+      ? legs.flatMap(l => [[day(l), l.spot && `Spot time: ${l.spot}`].filter(Boolean).join('\r\n'), ...l.buses])
+      : legs.length === 1 && legs[0].buses.length === 1 ? [[legs[0].buses[0], spots].filter(Boolean).join('\r\n')]
+      : [...legs[0].buses, spots].filter(Boolean);
     const body = [
       to?.name ? `Hi ${to.name.trim().split(/\s+/)[0]},` : 'Hello,',
-      named.size === 1 && !waiting ? `Here is the driver for your trip ${when}:` : `Here are the drivers for your trip ${when}:`,
-      ...lists,
-      'Please let us know if anything changes.',
+      waiting ? `Here are the driver details for ${when}:` : `Your ${one ? 'driver' : 'drivers'} for ${when}, ${one ? 'is' : 'are'} confirmed:`,
+      ...parts,
+      'If anything changes with your plans, please reply to this email or give us a call.',
+      'Thank you,',
     ].join('\r\n\r\n');
     return { to, subject: `Driver details for ${trip.destination || trip.customer || 'your trip'} on ${monthDay(first)}`, body };
   }

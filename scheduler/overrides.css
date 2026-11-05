@@ -108,7 +108,7 @@
      and Carbon's menus and modals (9000). */
   z-index: 1001;
   /* Carbon's own shadow for a panel that floats, which this one does. */
-  box-shadow: 0 2px 8px rgb(0 0 0 / .4);
+  box-shadow: 0 2px 6px var(--rux-shadow);
   transition: none;
 }
 /* Each docks to the side it sits on beside the week, so the board it leaves
@@ -1473,7 +1473,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   list-style: none;
   border: 1px solid var(--rux-border-subtle-01);
   background: var(--rux-layer-02);
-  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+  box-shadow: 0 2px 6px var(--rux-shadow);
 }
 .scheduler-team__option {
   display: flex;

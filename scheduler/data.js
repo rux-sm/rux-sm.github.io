@@ -183,7 +183,7 @@
   const daysSeen = () => Number(schEl?.dataset.daysInView) || WEEK;
   /* The first day in view the board goes to for a day it is sent to: the
      day's week's first, which keeps every week lined up, or on a board
-     showing less than a week, as a phone's two days, the day itself, at
+     showing less than a week, as a phone's three days, the day itself, at
      its midnight as every day the board counts from is. */
   const cursorFor = d => (daysSeen() < WEEK ? addDays(d, 0) : firstDayOf(d));
 
@@ -12351,7 +12351,8 @@
     else document.documentElement.removeAttribute('data-scheduler-room');
 
     /* Compact is the board's own answer, not a panel's: a board that cannot
-       show three readable days shows two, which app.js fits to the pane. It
+       show three readable days at the strip's width shows three narrower
+       ones, which app.js fits to the pane. It
        asks the board rather than the room, because a panel over the week
        never makes the week itself a different week. */
     const compact = board < SCHEDULE_FLOOR * rem;
@@ -12359,7 +12360,7 @@
       if (compact) pageEl.setAttribute('data-board', 'compact');
       else pageEl.removeAttribute('data-board');
       // Its rows are drawn again, three on a compact board, and its days
-      // fitted again, two to the pane there; a bus's sheet is the phone's alone.
+      // fitted again, three to the pane there; a bus's sheet is the phone's alone.
       closeBusSheet();
       applyView();
     }

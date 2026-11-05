@@ -76,7 +76,7 @@
   /* One day's width, which every bar, out-of-service span and day rule is
      placed from. A percentage of the track by default, so the stylesheet
      stands alone, as Maintenance's weeks are. The strip fixes it at 175px,
-     and on a compact board app.js fits two days to the pane on whole
+     and on a compact board app.js fits three days to the pane on whole
      pixels. */
   --scheduler-day-w: calc(100% / var(--scheduler-days));
   --scheduler-bar-rows: 6;
@@ -4204,6 +4204,11 @@ a.scheduler-tip__go { text-decoration: none; }
   position: sticky;
   inset-inline-start: calc(var(--scheduler-head-w) + var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline));
 }
+/* Three days a pane leave a day too narrow for most destinations, so on a
+   compact board a trip's destination runs to its last day, as its crew
+   does, and only a one-day trip's long name is cut, which its sheet gives
+   whole. */
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__dest { max-inline-size: none; }
 .scheduler-page[data-board="compact"] .scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) {
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
 }

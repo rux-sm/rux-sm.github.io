@@ -12,8 +12,9 @@ two away. It stops being the Mac's board narrowed: it is three views under
 one switch, List, 3 days and Week, and a tapped trip opens a half sheet
 over the view rather than a sheet that takes the screen.
 
-Today the phone shows the strip two days wide, a flick a day, its trips
-three lines beside a narrow bus column, a tap on a trip opening its sheet
+Today the phone shows the strip three days wide, a flick a day, its trips
+three lines beside a narrow bus column, a trip's destination running its
+whole length, a tap on a trip opening its sheet
 and a tap on a bus the bus's, and above it the month, Today and search
 over the week; the editor opens over the board as the Mac's form.
 
@@ -83,7 +84,7 @@ None open.
 - [ ] Build List: today grouped, the days after it, the sticky day names
   and the week row that follows the scroll.
 - [ ] Replace the docked sheet with the half sheet and its pulled-up rest.
-- [ ] Rebuild the two-day strip as 3 days, a bus a row, with ‹ ›.
+- [ ] Put ‹ › on 3 days' date line.
 - [ ] Build Week, a day a row.
 - [ ] Add the bar of places at the foot.
 - [ ] Make Move to bus and Change driver the pulled-up sheet's rows.

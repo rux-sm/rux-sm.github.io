@@ -126,7 +126,11 @@
       ['Green', { trip_bar_color: 'green' }],
       ['Purple', { trip_bar_color: 'purple' }],
       ['Placeholder', { trip_bar_color: 'amber', confirmed: false, start_date: day(90), end_date: day(91) }],
-    ].map(([customer, o], i) => row(BUSES[i].number, bar(trip({ customer, buses: [crewed(BUSES[i].id)], ...o }))));
+      ['Back from its trip', { start_date: day(-3), end_date: day(-3) }],
+    ].map(([customer, o], i) => {
+      const bus = BUSES[i % BUSES.length];
+      return row(bus.number, bar(trip({ customer, buses: [crewed(bus.id)], ...o })));
+    });
 
     const split = trip({
       destination: 'Corpus Christi, TX', customer: 'Coastal Youth Choir', trip_type: 'dropoff_pickup',
@@ -159,7 +163,7 @@
       id: 'trip-bar', title: 'The trip bar',
       intro: 'One bus on one leg of a trip: where, who booked it, their contact, the times, the newest update and the crew.',
       samples: [
-        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of three colours, or amber while it is a placeholder.', days: 3, rows: colours },
+        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of three colours, or amber while it is a placeholder. A trip that is back gives its colour up and stands outlined on the board.', days: 3, rows: colours },
         { name: 'A placeholder', note: 'Amber, not a trip yet: no times, no empty seats and no alerts, with a driver someone named still shown.', days: 3,
           rows: [row('104', bar(trip({ trip_bar_color: 'amber', confirmed: false, customer: 'Mesa Robotics Club', destination: 'Houston, TX', depart: null, back: null,
             start_date: day(40), end_date: day(41), buses: [{ bus: 'b104', crew: [['d4', 'driver']], roles: ['driver', 'co-driver'] }] })))] },
@@ -172,7 +176,7 @@
         { name: 'Either side of the week', note: 'A trip from last week runs off the start and says the day it left, one into next week runs off the end and says the day it is back.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
-        { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: it keeps its own colour, its regular update row and its driver names without status icons, and says Paid in green where an alert badge would stand once it is paid in full.', days: 3,
+        { name: 'Back at the yard', note: 'A trip whose bus is back gives its colour up and stands outlined, keeps its regular update row and its driver names without status icons, and says how it closed where an alert badge would stand: Paid in green once it is paid in full, or the warning while a balance is owed with no PO, then the Incomplete button while close-out still asks anything, which opens Updates at the post-trip entry.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
             buses: [{ bus: 'b102', crew: [['d2', 'driver', 'pending-response', { pay: null }]] }] }))),
             row('103', bar(trip({ customer: 'Harbor Tours', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850, actual_miles: 412,
@@ -180,7 +184,7 @@
             row('104', bar(trip({ customer: 'Mesa Robotics Club', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
               trip_payments: [{ amount: 610, date: day(-9) }], buses: [{ bus: 'b104', backAt: [day(-1), '17:40'], crew: [['d6', 'driver', 'confirmed']] }] }))),
             row('105', bar(trip({ customer: 'Coastal Youth Choir', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
-              trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
+              trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, invoice_number: '4108', buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
         { name: 'Update ages', note: "Age is neutral text before the newest update; the entire row opens Updates, including when none exist.", days: 3, rows: aged },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,

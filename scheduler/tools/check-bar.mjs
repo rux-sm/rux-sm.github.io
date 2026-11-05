@@ -172,7 +172,10 @@ function expect(name, got, want) {
 
 console.log('\n  The trip bar');
 expect('each colour paints its hue, with no alert', drawn('trip-bar', 'Colours').map(b => [hue(b), mark(b)]),
-  [['blue', null], ['red', null], ['teal', null], ['green', null], ['purple', null], ['amber', null]]);
+  [['blue', null], ['red', null], ['teal', null], ['green', null], ['purple', null], ['amber', null], ['blue', null]]);
+expect('only a trip that is back is marked back, which app.css draws outlined in place of its hue',
+  drawn('trip-bar', 'Colours').map(b => b.classList.contains('scheduler-bar--back')),
+  [false, false, false, false, false, false, true]);
 const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
@@ -207,6 +210,17 @@ expect('a trip back stays put and raises no alert, though its record lacks miles
 expect('a trip back says Paid in the alert badge\'s place once paid in full, and nothing when it is not',
   drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest .scheduler-bar__paid'), has(b, '.scheduler-bar__alert')]),
   [['', false], ['Paid', false], ['', false], ['Paid', false]].map(([p, a]) => [p || null, a]));
+expect('a trip back wears its money, then while close-out asks anything the close-out button, a card opener in Carbon\'s Incomplete that names what it asks',
+  drawn('trip-bar', 'Back at the yard').map(b => {
+    const close = b.querySelector('.scheduler-bar__dest .scheduler-bar__close');
+    return [has(b, '.scheduler-bar__dest .scheduler-bar__owed'), close?.getAttribute('aria-label') ?? null,
+      close ? close.getAttribute('data-card-opener') != null : null,
+      close ? [...close.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null];
+  }),
+  [[false, 'Close-out: Actual miles missing · Driver pay missing · Invoice missing', true, '#i-incomplete'],
+    [false, 'Close-out: Invoice missing', true, '#i-incomplete'],
+    [true, 'Close-out: Actual miles missing · Invoice missing · Balance due', true, '#i-incomplete'],
+    [false, null, null, null]]);
 expect('a trip back keeps the regular update row and carries no driver status icon',
   drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__run > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
   [[true, false, 0], [true, false, 0], [true, false, 0], [true, false, 0]]);

@@ -401,19 +401,25 @@
 }
 /* Carbon's notification holds that fill inside a 1px edge of its colour at
    30%, and so does the bar, in its own ink, because the fill alone is as light
-   as the board. The edge is four painted strips, so the bar's border and
-   shadow stay free for the week's run-on marks and the selection ring. An end
-   that runs into another week has no edge of its own. */
+   as the board. */
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar {
   --scheduler-edge: color-mix(in srgb, var(--scheduler-fg) 30%, transparent);
+}
+/* A BAR'S EDGE is four painted strips in `--scheduler-edge`, so the bar's
+   border and shadow stay free for the week's run-on marks and the selection
+   ring: a light theme's every bar wears one, and in every theme a trip that
+   is back, whose edge app.css sets. An end that runs into another week has no
+   edge of its own. */
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar,
+[data-theme] .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) {
   background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
     linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), var(--scheduler-footer-paint);
   background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%, 100% 100%;
   background-position: 0 0, 0 100%, 0 0, 100% 0, 0 0;
   background-repeat: no-repeat;
 }
-:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
-:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--to-next { --scheduler-edge-end: 0px; }
+.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
+.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
 
 /* THE FOUR HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
    the roster's head, the trip editor's head and the document panel's head

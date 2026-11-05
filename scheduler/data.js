@@ -194,7 +194,7 @@
   /* A trip's bar, its crew and its alerts, and the times as they say them:
      bar.js, which the components page draws its samples with too. */
   const Bar = window.SchedulerBar;
-  const { alertsOf, crewName, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
+  const { alertsOf, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
 
@@ -17822,6 +17822,16 @@
       quick.appendChild(quickInput);
       updates.appendChild(quick);
     }
+    // A trip that is back opens on what it came to, each thing still to close a press as a need's row is.
+    const post = postTripOf(trip);
+    if (post) {
+      updates.append(...postTripRows(post, 'scheduler-card', a => {
+        const band = goes(row('scheduler-card__close scheduler-card__row--need'), a.go, a.words);
+        band.dataset.spot = a.id;
+        band.append(svgUse('#i-incomplete', '16', '0 0 32 32'), el('strong', null, a.words), el('span', 'scheduler-card__go', WARN_GO[a.go]));
+        return band;
+      }));
+    }
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', 'Updates, newest first');
@@ -17835,6 +17845,48 @@
   /* A warning is a press that goes where it is put right: an editor tab,
      the Forms panel, or the itinerary slot's own upload. */
   const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary', contacts: 'Contacts' };
+
+  /* THE POST-TRIP ENTRY, first in a trip's Updates once it is back, which
+     the bar's close-out button opens: close-out.js's report in a few lines,
+     worked out at every draw and never stored, so it says what is true now
+     and is not an update, which would restart a follow-up's wait. When the
+     buses were back at the yard by Samsara, against the planned return, and
+     when the first left; the money, Paid in green, the PO and the invoice;
+     and each thing close-out still asks, in the words the Billing tab uses,
+     as a press that goes where it is put right, as an alert does. */
+  function postTripOf(trip) {
+    const report = window.SchedulerCloseOut.report(trip);
+    if (!report) return null;
+    const { WORDS, GO } = window.SchedulerCloseOut;
+    const lines = [];
+    if (report.back != null) {
+      const diff = report.plannedBack != null ? Math.round((report.back - report.plannedBack) / 60e3) : null;
+      const by = diff == null ? '' : diff === 0 ? ', on time' : `, ${driveWords(Math.abs(diff), null)} ${diff < 0 ? 'early' : 'late'}`;
+      const some = report.timed < report.buses ? ` · ${report.timed} of ${report.buses} buses` : '';
+      lines.push(`Back at the yard ${setAt(report.back)}${by}${some}`);
+    }
+    if (report.out != null) lines.push(`Out ${setAt(report.out)}`);
+    const paid = report.paid ? (report.paidOn ? `Paid ${dayWords(report.paidOn)}` : 'Paid') : null;
+    const filed = [report.po ? `PO ${report.po}` : null, report.invoice ? `Invoice ${report.invoice}` : null].filter(Boolean);
+    const from = [report.back != null || report.out != null ? 'Samsara' : null, 'Billing'].filter(Boolean).join(' and ');
+    const asks = report.asks.map(a => ({ id: a, go: GO[a], words: a === 'balance' ? `${WORDS.balance} ${usd(report.owed)}` : WORDS[a] }));
+    return { lines, paid, filed, by: `After the trip · ${from}`, asks };
+  }
+  /* The entry drawn: its lines as words, Paid among the filed ones in its
+     green, under the line that names where it is from, then a press for each
+     thing still to close, drawn by `pressOf` as the surface draws its own. */
+  function postTripRows(post, cls, pressOf) {
+    const block = el('div', `${cls}__row ${cls}__post`);
+    for (const line of post.lines) block.appendChild(el('span', `${cls}__words`, line));
+    if (post.paid || post.filed.length) {
+      const money = el('span', `${cls}__words`);
+      if (post.paid) money.appendChild(el('span', `${cls}__paid`, post.paid));
+      money.append([post.paid ? '' : null, ...post.filed].filter(s => s != null).join(' · '));
+      block.appendChild(money);
+    }
+    block.appendChild(el('span', `${cls}__by`, post.by));
+    return [block, ...post.asks.map(pressOf)];
+  }
 
   /* THE TRIP'S TIPS. Floating, Alerts and Updates are each a tip, as the bus
      number's is: a head naming its one subject with its count beside it,
@@ -17894,6 +17946,20 @@
     }
     const all = updatesOf(trip);
     tip.appendChild(head('Updates', all.length));
+    // A trip that is back opens on what it came to, each thing still to close a press as an alert's row is.
+    const post = postTripOf(trip);
+    if (post) {
+      tip.append(...postTripRows(post, 'scheduler-tip', a => {
+        const row = el('div', 'scheduler-tip__row scheduler-tip__go scheduler-tip__close');
+        row.dataset.go = a.go;
+        row.dataset.spot = a.id;
+        row.tabIndex = 0;
+        row.setAttribute('role', 'button');
+        row.setAttribute('aria-label', `${a.words}: open ${WARN_GO[a.go]}`);
+        row.append(svgUse('#i-incomplete', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', a.words));
+        return row;
+      }));
+    }
     if (!all.length) tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__none', 'No updates yet.'));
     const by = u => [u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'), ageShort(u.created_at),
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');

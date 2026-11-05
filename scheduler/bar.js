@@ -27,8 +27,8 @@
    the phone's half sheet marks its seats with too, and `glyphEl(glyph)` that
    glyph drawn, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
-   `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
-   and its card say them, `tripDone(leg, now)` how much of a leg's time has
+   `clockEl(short)`, `setAt(at)`, `dayWords(day)` and `updateStamp(u)` are
+   times as the bar and its card say them, `tripDone(leg, now)` how much of a leg's time has
    gone, which its times' track is filled to, and `fillTracks(root)` fills
    every track under `root` again to the clock.
 
@@ -212,16 +212,47 @@
     m.setAttribute('aria-label', `Alerts: ${words}`);
     return m;
   };
-  /* THE PAID BADGE takes the alert badge's place on a trip that is back and
-     paid in full: the same pill in the success colour, the word alone since
-     it says it. A trip back raises no alert, so the two never stand together,
-     and it opens nothing. */
-  const paidMark = () => {
-    const m = el('span', 'scheduler-bar__msg scheduler-bar__msg--success scheduler-bar__paid');
-    m.append('Paid');
-    m.title = 'Paid in full';
-    return m;
+  /* A TRIP THAT IS BACK SAYS HOW IT CLOSED where a trip still to come wears
+     its alert, which it never does, each mark in Carbon's status form: its
+     money first, Paid in green once it is paid in full or Carbon's warning
+     while a balance is owed that no PO covers, and a trip on a PO wears
+     neither; then, while close-out still asks anything, Carbon's Incomplete,
+     its symbol for a stepped process begun and not finished, as the button
+     that opens the trip's Updates at their post-trip entry. A trip with
+     nothing left to close wears its money alone, or nothing. */
+  const closeMarks = report => {
+    if (!report) return null;
+    const { WORDS } = window.SchedulerCloseOut;
+    const marks = [];
+    if (report.paid) {
+      const p = el('span', 'scheduler-bar__paid', 'Paid');
+      p.title = report.paidOn ? `Paid in full ${dayWords(report.paidOn)}` : 'Paid in full';
+      marks.push(p);
+    } else if (report.owed > 0) {
+      const w = el('span', 'scheduler-bar__owed');
+      w.setAttribute('role', 'img');
+      w.setAttribute('aria-label', WORDS.balance);
+      w.title = WORDS.balance;
+      w.append(svgUse('#i-warning--alt--filled', '16', '0 0 32 32'));
+      marks.push(w);
+    }
+    if (report.asks.length) {
+      const b = el('button', 'scheduler-bar__close');
+      b.type = 'button';
+      b.setAttribute('aria-expanded', 'false');
+      b.setAttribute('aria-label', `Close-out: ${report.asks.map(a => WORDS[a]).join(' · ')}`);
+      b.dataset.cardOpener = '';
+      b.append(svgUse('#i-incomplete', '16', '0 0 32 32'));
+      marks.push(b);
+    }
+    if (!marks.length) return null;
+    const box = el('span', 'scheduler-bar__marks');
+    box.append(...marks);
+    return box;
   };
+  // A day as a mark says it, "Oct 31", from its YYYY-MM-DD.
+  const dayWords = day => formatOf('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+    .format(new Date(`${String(day).slice(0, 10)}T00:00:00Z`));
   /* The newest update's age is neutral metadata, without a clock or pill,
      and no hover label, since Updates says when. The row's chat mark opens
      Updates, including when it has no update. */
@@ -591,18 +622,16 @@
 
     const { facts, problems, tone } = factsOf(b, board);
     const alert = tone ? alertMark(tone, problems.map(a => a.words).join(' · ')) : null;
-    /* A trip that is back raises no alert, and says Paid in the alert's place
-       once it is paid in full. */
+    // A trip that is back raises no alert, and says how it closed in the alert's place.
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
-    const billed = isDone ? window.SchedulerBilling.of(trip) : null;
-    const paidBadge = billed && billed.price > 0 && billed.paid > 0 && billed.remaining <= 0 ? paidMark() : null;
+    const closed = alert ? null : closeMarks(window.SchedulerCloseOut.report(trip));
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', String(count)));
     /* The destination row holds what the trip is on the left, and only what
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
-    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? paidBadge);
+    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? closed);
     // The words in a run, which spans the trip's length; see app.css's row widths.
     const runOf = (...parts) => {
       const run = el('span', 'scheduler-bar__run');
@@ -755,6 +784,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp, tripDone, fillTracks,
   };
 })();

@@ -1,6 +1,7 @@
 // Runs close-out.js, what a trip that is back still asks, against sample
 // trips: when a trip counts as back on the office's clock, which trips ask
-// nothing, and each thing a record can lack. The scripts it needs are loaded
+// nothing, each thing a record can lack, and what a trip that is back came
+// to, its yard times and its money. The scripts it needs are loaded
 // beside it as a page loads them.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -69,6 +70,25 @@ expect('everything at once, in the card\'s order',
   ['bus', 'driver', 'miles', 'pay', 'invoice', 'balance']);
 expect('a leg with no bus at all asks for the bus, which has no seat yet',
   asks({ ...done, trip_assignments: [] }, after), ['bus']);
+
+// ── what it came to ─────────────────────────────────────────────────────────
+const { report } = window.SchedulerCloseOut;
+const iso = n => (n == null ? null : new Date(n).toISOString());
+const timed = { ...done, trip_assignments: [{ ...seat, actual_yard_depart_at: '2026-10-20T11:04:00Z', actual_yard_return_at: '2026-10-20T22:16:00Z' }] };
+const came = report(timed, after);
+expect('a trip back reports the earliest yard out and latest yard back of its buses beside the planned ones',
+  [iso(came.out), iso(came.plannedOut), iso(came.back), iso(came.plannedBack), came.timed, came.buses],
+  ['2026-10-20T11:04:00.000Z', '2026-10-20T11:00:00.000Z', '2026-10-20T22:16:00.000Z', '2026-10-20T23:00:00.000Z', 1, 1]);
+expect('a bus with no Samsara times is counted and gives none',
+  [came.timed, report(done, after).back, report(done, after).timed, report(done, after).buses], [1, null, 0, 1]);
+const money = t => { const r = report(t, after); return [r.paid, r.paidOn, r.po, r.invoice, r.owed, r.asks]; };
+expect('paid in full, on the day its last payment landed, with its invoice', money(done), [true, '2026-10-21', null, '15800', 0, []]);
+expect('a balance owed with no PO', money({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }), [false, null, null, '15800', 600, ['balance']]);
+expect('a PO carries its reference and owes nothing', money({ ...done, po_ref: 'PO-1', trip_payments: [] }), [false, null, 'PO-1', '15800', 0, []]);
+expect('a trip before close-out began still reports its money, and asks nothing',
+  money({ ...done, start_date: '2026-10-01', end_date: '2026-10-01', actual_miles: null }), [true, '2026-10-21', null, '15800', 0, []]);
+expect('a trip not back, or a placeholder, reports nothing',
+  [report(done, at('2026-10-20T20:00:00Z')), report({ ...done, trip_bar_color: 'amber', confirmed: false }, after)], [null, null]);
 window.SchedulerBilling.setWorkflow({ workflow: { invoiced: { active: false } } });
 expect('an office that does not invoice is not asked for one', asks({ ...done, invoice_number: null }, after), []);
 

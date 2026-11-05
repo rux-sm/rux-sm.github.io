@@ -1218,7 +1218,7 @@ button.scheduler-row-head__num::after {
    and the chat mark and the clock are drawn in it. Neither has a status to colour it, so this is what makes
    each stand out from the words beside it, as the crew's marks stand out
    from their names. */
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) { --scheduler-ink-strong: var(--scheduler-strong, oklch(from var(--scheduler-bg) calc((0.59 - l) * 100) 0 0)); }
+.scheduler-bar { --scheduler-ink-strong: var(--scheduler-strong, oklch(from var(--scheduler-bg) calc((0.59 - l) * 100) 0 0)); }
 .scheduler-bar :is(.scheduler-bar__chat, .scheduler-bar__route)[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* The alert badge pairs its count with the warning icon. */
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
@@ -1241,9 +1241,9 @@ button.scheduler-row-head__num::after {
 /* A live bar's times are the times row's size too, so the trip on the road
    reads as every other. */
 .scheduler-bar__dest, .scheduler-bar__time, .scheduler-road__times { font-size: var(--rux-body-compact-01-font-size); }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
+.scheduler-bar [data-card-opener] { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
+.scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
+.scheduler-bar :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
 /* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
    pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
    and a bigger mark to press, standing a pixel past the 18px row above and
@@ -1258,7 +1258,7 @@ button.scheduler-row-head__num::after {
    the last cut; they clip both ways because Chrome keeps a clip's margin
    only then. The grow is Carbon's moderate-01 on its productive standard
    curve, a small expansion. */
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] {
+.scheduler-bar [data-card-opener] {
   padding: 0;
   background: none;
   color: inherit;
@@ -1267,7 +1267,7 @@ button.scheduler-row-head__num::after {
   transform-origin: left center;
   transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-bar__alert { transform-origin: right center; }
+.scheduler-bar .scheduler-bar__alert { transform-origin: right center; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
@@ -1316,31 +1316,31 @@ button.scheduler-row-head__num::after {
   :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener] {
     transform: scale(1.12);
   }
-  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
+  .scheduler-bar [data-card-opener]:hover,
   :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
   }
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] {
+.scheduler-bar [data-card-opener][aria-expanded="true"] {
   transform: scale(1.25);
   filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { transform: none; filter: none; }
+.scheduler-bar [data-card-opener]:active { transform: none; filter: none; }
 /* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
    `glyphTo`: the outline fades out as the solid fades in. */
 .scheduler-bar__solid { opacity: 0; }
 :is(.scheduler-bar__line, .scheduler-bar__solid) { transition: opacity 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 @media (hover: hover) {
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
+    .scheduler-bar [data-card-opener]:hover,
     :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__line { opacity: 0; }
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
+    .scheduler-bar [data-card-opener]:hover,
     :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__solid { opacity: 1; }
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
+.scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
+.scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
 /* The time line lifts as a line does while the route is open, data.js's
    `data-route-open`: from 2px to 4px, and its part still to go from a fifth
    of the ink to half. The ticks keep a pixel past the line either side. */
@@ -1353,14 +1353,6 @@ button.scheduler-row-head__num::after {
 [data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
-}
-/* The phone's docked sheet has no driver's tip and no route, so a driver's
-   icon and the clock there are drawn plain: they take no press of their
-   own, which goes to the trip, and do not lift. On the board itself nothing
-   inside a bar takes a press; see the compact board's bars. */
-.scheduler-page[data-board="compact"] .scheduler-bar-shortcuts__trip :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__route)[data-card-opener] {
-  pointer-events: none;
-  cursor: default;
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
    evening before, small and raised so the row keeps its height. */
@@ -1637,20 +1629,13 @@ button.scheduler-row-head__num::after {
   /* The selected trip's own lift, so the card stands as high as the trip. */
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) > :is(.scheduler-card, .scheduler-card-tabs) { flex: 1 1 auto; min-block-size: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card { flex: 1 1 auto; min-block-size: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; }
-/* An out trip's tabs stay at the top and the panel under them scrolls; a
-   trip's card inside its panel fills it, so its own updates list scrolls as
-   it does with no tabs. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card-tabs { display: flex; flex-direction: column; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__tabs { flex: none; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:not([hidden]) { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; display: flex; flex-direction: column; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel > .scheduler-card:not(.scheduler-card--live) { flex: 1 1 auto; min-block-size: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { flex: 0 1 auto; min-block-size: 0; max-block-size: none; overflow-y: auto; }
 /* THE CARD'S ARROW is a 14px square of the card's surface turned 45deg and
    centred on the edge facing the trip, so it stands about 10px out and its
@@ -1980,17 +1965,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__road-lamp > .scheduler-card__road-name { font-weight: 600; }
 .scheduler-card__road-lamp--stop > .scheduler-card__road-name { color: var(--rux-text-error); }
 .scheduler-card__road-fault { color: var(--rux-text-secondary); }
-/* AN OUT TRIP'S CARD is two tabs over its two cards, data.js's
-   drawRoadCard: On the road, the live card, and Updates, the trip card, its
-   Needs counted on its tab. It stands in the card's place at the card's one
-   size, both tabs alike so the card does not jump. */
-.scheduler-card-tabs { flex: 1 0 100%; min-inline-size: 0; }
-/* The strip runs edge to edge, across the card's own padding where a theme
-   gives it one, so its rule meets the card's sides as the trip editor's
-   meets the panel's; overrides.css shares it between the tabs. */
-.scheduler-card-tabs__tabs { padding-inline: 0; margin-inline: calc(-1 * var(--scheduler-shortcut-pad, 0px)); inline-size: auto; }
-.scheduler-card-tabs__tabs .scheduler-card__count { margin-inline-start: var(--rux-spacing-02); }
-/* THE LIVE CARD, data.js's drawLiveCard, the On the road tab. Each warning is a band tinted its colour, its mark and name over
+/* THE LIVE CARD, data.js's drawLiveCard, a trip out on the road's. Each warning is a band tinted its colour, its mark and name over
    the sentence that says why; the map stands under them with its two links;
    each driver's clocks are three meters side by side, filled to what is left
    of what the rule allows, amber under an hour; where the bus is and when
@@ -2009,18 +1984,12 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__live-why { grid-column: 2; color: var(--card-ink); }
 /* THE LIVE CARD IS A STACK OF TILES: each warning, the map with where the
    bus is, the stops, the drivers and the engine lamp, a step apart. As the
-   trip editor's tiles, each is 16px from the card's sides and holds its words 16px in; the tabs
-   on a docked sheet are 16px over the first, and the panel scrolls under a
-   16px foot, so the edge is the one 16px all round. A theme that already holds the card 12px
+   trip editor's tiles, each is 16px from the card's sides and holds its words 16px in, so the
+   edge is the one 16px all round. A theme that already holds the card 12px
    from its edge gives the 4px more in theme.css. */
 .scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); margin: 0; padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:has(> .scheduler-card--live) { margin-block-end: var(--rux-spacing-05); }
-/* Floating, the live card stands alone in the card with no tabs over it, so
-   it scrolls itself, its foot the same 16px. */
+/* Floating, the live card scrolls itself, its foot the same 16px. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card.scheduler-card--live { overflow-y: auto; padding-block-end: var(--rux-spacing-05); }
-/* Its tab panel adds no padding of its own, Carbon's 16px, so the tiles
-   stand 8px in, in line with the tabs over them. */
-.scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card--live) { padding: 0; }
 .scheduler-card--live > .scheduler-card__live-tile { flex: none; min-block-size: 0; min-inline-size: 0; margin: 0; padding: var(--rux-spacing-05); }
 .scheduler-card.scheduler-card--live > .scheduler-card__live-tile > .scheduler-card__title { margin-block-end: 0; }
 /* One column held to the tile, so the map's attribution, which does not
@@ -2226,8 +2195,8 @@ a.scheduler-tip__go { text-decoration: none; }
 /* IT ARRIVES WITH CARBON'S PRODUCTIVE MOTION, as a popover does: a fade
    with a 4px slide out of the trip's side, over fast-02, 110ms, on the
    productive entrance curve, the card whole rather than row by row. Reduced
-   motion keeps the fade alone. Docked, it only fades, because a sheet does
-   not come out of a trip. */
+   motion keeps the fade alone. The phone's sheet only fades as it moves to
+   another trip, because a sheet does not come out of a trip. */
 @keyframes scheduler-card-in {
   from { opacity: 0; transform: translate(var(--card-rise-x, 0), var(--card-rise, 4px)); }
   to { opacity: 1; transform: none; }
@@ -4587,72 +4556,164 @@ a.scheduler-tip__go { text-decoration: none; }
   .scheduler-contact { flex-wrap: nowrap; }
 }
 
-/* ── The docked shortcut bar ────────────────────────────────────────────────
-   A compact board's days are too narrow for the shortcut bar to float beside
-   a trip, so the bar docks to the bottom edge instead and, having the width
-   down there, carries the trip's rows whole. It is the same bar with the same slots,
-   not a second surface: selecting a trip still is not opening it.
+/* ── The phone's half sheet ─────────────────────────────────────────────────
+   data.js's `drawSheet`: on a compact board the selected trip's card is a
+   sheet across the foot of the screen, as rux decided, half up with the view
+   above it, and pulled up for the rest, the view dimmed behind. It stays
+   where data.js put it in the track, fixed to the window from there: no
+   ancestor of the track makes a containing block, and staying put keeps the
+   board's own tokens inherited. 997 is under the roster overlay's 998 and the
+   trip panel's 999, so an open trip and an open roster are both in front of
+   it, and over its dim's 996.
 
-   Fixed, and left where data.js already put it in the track: no ancestor of
-   the track makes a containing block, so this positions against the window,
-   and staying put is what keeps the board's own tokens inherited. 997 is under
-   the roster overlay's 998 and the trip panel's 999, so an open trip and an
-   open roster are both in front of it. */
+   It is the full height under the header and is moved by its transform
+   alone, which the compositor draws: half up shows it down to its three
+   buttons, `--scheduler-sheet-peek`, which data.js measures, and the home
+   bar's inset under them. It moves on Carbon's productive curves, 240ms,
+   moderate-02, for an expansion: up from the foot and between half and full
+   on the standard one, and away on the exit one, while it is still shown. A
+   pull moves it with the finger, `data-pulling`, with no transition until
+   it is let go. */
 .scheduler-bar-shortcuts[data-docked] {
   position: fixed;
   inset: auto 0 0 0;
-  padding: 0;
   z-index: 997;
-  /* Docked, it is a sheet across the foot of the screen rather than a chip
-     floating over one trip, so it takes the page's own raised surface in place
-     of the header band the chip wears: a 150px slab of the band reads as a
-     second header. The trip's head wears the trip's own
-     colour, which is what says which trip this is. What shows of the sheet
-     itself, under the slots and down into the home bar, is the header's
-     background, so the screen opens and closes on the same shell; the card's
-     rows paint the raised layer themselves. */
-  background: var(--scheduler-shell-background, var(--rux-background));
+  display: flex;
+  flex-flow: column nowrap;
+  block-size: calc(100dvh - 3rem);
+  box-sizing: border-box;
+  padding: 0 0 var(--scheduler-safe-bottom, 0px);
+  background: var(--rux-layer-01);
   border-block-start: 1px solid var(--rux-border-subtle-01);
-  /* The head takes a whole line and the slots flow beneath it, which spares
-     the slots a wrapper and `drawShortcuts` any knowledge of this. */
-  flex-wrap: wrap;
   border-radius: 0;
   box-shadow: 0 -2px 6px var(--rux-shadow);
-  padding-block-end: var(--scheduler-safe-bottom);
+  transform: translateY(calc(100% - var(--scheduler-sheet-peek, 50dvh) - var(--scheduler-safe-bottom, 0px)));
+  transition: transform 240ms cubic-bezier(0.2, 0, 0.38, 0.9), display 240ms allow-discrete;
+}
+.scheduler-bar-shortcuts[data-docked][data-sheet="full"] { transform: none; }
+.scheduler-bar-shortcuts[data-docked][data-pulling] { transition: none; }
+@starting-style {
+  .scheduler-bar-shortcuts[data-docked] { transform: translateY(100%); }
+}
+.scheduler-bar-shortcuts[data-docked][hidden] {
+  display: none;
+  transform: translateY(100%);
+  transition-timing-function: cubic-bezier(0.2, 0, 1, 0.9);
 }
 /* No arrow: from the bottom edge it points at nothing. */
 .scheduler-bar-shortcuts[data-docked]::after { content: none; }
-/* Its slots stand on the raised layer, below, so they take the page's own ink. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
-/* THE SLOTS ARE ONE ROW OF FIVE, Contacts, Route, Bus, Driver and Open, a
-   fifth of the width each and 64px tall, the size a thumb finds without
-   looking: a 20px icon over a 14px word, on the raised layer and 1px apart,
-   as Carbon's button set is. The height is set on the slot and never on
-   `--scheduler-slot-w`: in compact that token is also the day column's
-   floor, and widening the week to suit a button would be the tail wagging
-   the dog. They come last, under the trip, where a thumb rests, each with
-   its word, because a phone has no hover to name it. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut {
-  /* A fifth with no shrinking, so the row breaks from the full-width card
-     above it and never shares a line. */
-  flex: 1 0 20%;
-  order: 1;
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-bar-shortcuts[data-docked] { transition: none; }
+}
+/* The view dimmed behind the sheet pulled up, Carbon's overlay, in and out
+   over the sheet's own 240ms; a press on it drops the sheet back to half. */
+.scheduler-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 996;
+  background: var(--rux-overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.scheduler-sheet-scrim[data-on] { opacity: 1; pointer-events: auto; }
+:root:not([data-scheduler-board="compact"]) .scheduler-sheet-scrim { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-sheet-scrim { transition: none; }
+}
+/* ITS HANDLE, a 36px bar on a 24px strip the width of the sheet, a press
+   or a pull; the head under it pulls too. Neither scrolls the page. */
+.scheduler-sheet__grab {
+  flex: none;
+  display: grid;
+  place-items: center;
+  block-size: var(--rux-spacing-07);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+.scheduler-sheet__grab::before {
+  content: "";
+  inline-size: 36px;
+  block-size: 4px;
+  border-radius: 2px;
+  background: var(--rux-border-strong-01);
+}
+.scheduler-sheet__grab:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+/* Where the trip goes at the heading size, over its customer and times. */
+.scheduler-sheet__head {
+  flex: none;
+  display: grid;
+  gap: var(--rux-spacing-01);
+  padding: 0 var(--rux-spacing-05) var(--rux-spacing-03);
+  touch-action: none;
+}
+.scheduler-sheet__dest {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--rux-heading-03-font-size);
+  font-weight: var(--rux-heading-03-font-weight);
+  line-height: var(--rux-heading-03-line-height);
+  letter-spacing: var(--rux-heading-03-letter-spacing);
+}
+.scheduler-sheet__meta,
+.scheduler-sheet__now,
+.scheduler-sheet__kit,
+.scheduler-sheet__facts {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-sheet__meta { color: var(--rux-text-secondary); }
+/* A band in the trip's colour, its bar's colour class giving the fill. */
+.scheduler-sheet__band { flex: none; block-size: 4px; margin: 0 var(--rux-spacing-05) var(--rux-spacing-03); background: var(--scheduler-bg); }
+/* What is happening now: a dot in the success colour on time, the
+   warning's or the error's for what needs the office, and the secondary
+   icon's otherwise. */
+.scheduler-sheet__now,
+.scheduler-sheet__kit {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+}
+.scheduler-sheet__pip { flex: none; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
+.scheduler-sheet__now--success > .scheduler-sheet__pip { background: var(--rux-support-success); }
+.scheduler-sheet__now--warning > .scheduler-sheet__pip { background: var(--rux-support-warning); }
+.scheduler-sheet__now--error > .scheduler-sheet__pip { background: var(--rux-support-error); }
+.scheduler-sheet__bus,
+.scheduler-sheet__seat { display: inline-flex; flex: none; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-sheet__crew { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02) var(--rux-spacing-04); min-inline-size: 0; }
+.scheduler-sheet__kit > .scheduler-sheet__crew { margin-inline-start: auto; justify-content: flex-end; color: var(--rux-text-secondary); }
+/* THE THREE LARGE BUTTONS, Itinerary, Call or text and Route, a third of
+   the width each and 64px tall, the size a thumb finds without looking: a
+   20px icon over its 14px word, on the raised layer and 1px apart, as
+   Carbon's button set is, a phone having no hover to name them. */
+.scheduler-sheet__acts {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: var(--rux-spacing-02) var(--rux-spacing-05) 0;
+}
+.scheduler-sheet__acts > .scheduler-bar-shortcut {
   flex-direction: column;
   gap: var(--rux-spacing-02);
-  min-inline-size: 0;
-  box-sizing: border-box;
+  inline-size: auto;
   block-size: auto;
   min-block-size: var(--rux-spacing-10, 4rem);
   padding-block: var(--rux-spacing-03);
   background: var(--rux-layer-02);
-  box-shadow: inset 1px 0 0 var(--scheduler-shell-background, var(--rux-background));
+  color: var(--rux-icon-primary);
 }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-pressed="true"] { background: var(--rux-layer-selected-02); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-disabled="true"] { color: var(--rux-icon-disabled); }
-.scheduler-bar-shortcut__label { display: none; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut__label {
-  display: block;
+.scheduler-sheet__acts > .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
+.scheduler-sheet__acts > .scheduler-bar-shortcut[aria-pressed="true"] { background: var(--rux-layer-selected-02); }
+.scheduler-sheet__acts > .scheduler-bar-shortcut[aria-disabled="true"] { color: var(--rux-icon-disabled); }
+.scheduler-bar-shortcut__label {
   max-inline-size: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4662,104 +4723,85 @@ a.scheduler-tip__go { text-decoration: none; }
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-disabled="true"] > .scheduler-bar-shortcut__label { color: var(--rux-text-disabled); }
-/* The route, Route's, stands where the card stood, on the page's raised
-   surface and in its inks rather than the floating tip's inverse ones. */
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card {
-  flex: 1 0 100%;
-  order: -1;
-  max-block-size: 40dvh;
+.scheduler-bar-shortcut[aria-disabled="true"] > .scheduler-bar-shortcut__label { color: var(--rux-text-disabled); }
+/* THE REST, under the buttons, scrolls inside the sheet once it is pulled
+   up, and is out of sight at half, the home bar's inset under the buttons
+   showing the sheet's own surface. */
+.scheduler-sheet__rest {
+  flex: 1 1 auto;
+  min-block-size: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--rux-spacing-05) 0;
+}
+.scheduler-bar-shortcuts[data-sheet="half"]:not([data-pulling]) > .scheduler-sheet__rest { visibility: hidden; }
+/* Its facts, a name over what it is, ruled as Carbon's structured list is. */
+.scheduler-sheet__facts {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  margin: 0 var(--rux-spacing-05);
+}
+.scheduler-sheet__facts > :is(dt, dd) {
+  margin: 0;
+  padding-block: var(--rux-spacing-04);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-sheet__facts > dt { color: var(--rux-text-secondary); }
+.scheduler-sheet__facts > dd { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; }
+.scheduler-sheet__person { display: flex; flex-wrap: wrap; gap: 0 var(--rux-spacing-03); }
+.scheduler-sheet__phone { color: var(--rux-link-primary); font-variant-numeric: tabular-nums; }
+/* A row that changes what it says, the bus or the driver, is a press across
+   its line with Carbon's chevron at its end, opening its list. */
+.scheduler-sheet__row--press {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  inline-size: 100%;
+  min-block-size: var(--rux-layout-size-height-sm, 2rem);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--rux-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-sheet__row--press > :first-child { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-sheet__row--press > svg { flex: none; color: var(--rux-icon-secondary); }
+.scheduler-sheet__row--press[aria-disabled="true"] { cursor: default; }
+.scheduler-sheet__row--press[aria-disabled="true"] > svg { visibility: hidden; }
+.scheduler-sheet__row--press:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+/* The trip on the road, its needs and its updates stand on the raised
+   layer, a step under the facts, as the trip's card has them. */
+.scheduler-sheet__rest > .scheduler-card { display: block; margin-block-start: var(--rux-spacing-05); background: var(--rux-layer-02); }
+.scheduler-sheet__rest > .scheduler-card.scheduler-card--live { display: flex; margin-block-start: var(--rux-spacing-05); background: none; }
+.scheduler-sheet__rest > .scheduler-card > * { min-inline-size: 0; }
+.scheduler-sheet__rest .scheduler-card__needs { border-block-start: 0; }
+.scheduler-sheet__edit { display: flex; inline-size: calc(100% - 2 * var(--rux-spacing-05)); max-inline-size: none; margin: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
+/* The route, Route's, stands in the rest's place, on the page's raised
+   surface and in its inks rather than the floating tip's inverse ones, so
+   its marks keep the page's status colours and plain warning triangle. */
+.scheduler-sheet__rest > .scheduler-tip--card {
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   --tip-rule: var(--rux-border-subtle-01);
-}
-/* The docked card stands on the page's layer, so its marks keep the page's
-   status colours and plain warning triangle. */
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card {
   --rux-status-green: inherit;
   --rux-status-red: inherit;
   --rux-status-blue: inherit;
   --rux-status-yellow: inherit;
   --rux-status-gray: inherit;
 }
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card svg:has(> use[href="#i-warning--alt--filled"]) {
+.scheduler-sheet__rest > .scheduler-tip--card svg:has(> use[href="#i-warning--alt--filled"]) {
   fill: currentColor;
   --rux-icon-path-2: initial;
 }
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
-.scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
+.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
+.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
+.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
 /* A list that can run past the screen, every bus or driver on the sheet's
    or every month held, scrolls inside. */
 .scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; }
-/* The card's rows join the sheet's own flow and stand above the trip: the
-   needs, then the updates. What changes size from trip to trip is all up
-   there, so the sheet grows upward and the trip and its slots keep one place
-   at the foot on every trip. The needs at the top need no rule above them. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
-/* A trip's card with no tabs is one box of the same 40%, its needs over its
-   updates, scrolling inside. */
-.scheduler-bar-shortcuts[data-docked] > .scheduler-card {
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 100%;
-  order: -1;
-  min-inline-size: 0;
-  block-size: 40dvh;
-  overflow-y: auto;
-  background: var(--rux-layer-02);
-}
-/* Named twice to outrank the sheet's own rule that stretches each row. */
-.scheduler-bar-shortcuts[data-docked] > .scheduler-card.scheduler-card > * { flex: none; }
-.scheduler-bar-shortcuts[data-docked] > .scheduler-card.scheduler-card > .scheduler-card__updates { flex: 1 0 auto; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__needs { order: -3; border-block-start: 0; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
-
-/* The updates hold at least their title and one line however many there
-   are, so the sheet is the same height with none, one or twenty, on the
-   raised layer the sheet itself no longer paints. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__updates {
-  min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
-  background: var(--rux-layer-02);
-}
-/* The needs stand on the same raised layer, since the sheet under them is
-   the header's, and their box on the layer above it. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > .scheduler-card__needs { background: var(--rux-layer-02); }
-/* The trip, above its slots: the bar's own rows, cloned, so they keep
-   one builder and one set of rules. The trip's colour comes with them as the
-   bar's colour class, and the head paints its fill and ink, so it reads as
-   the whole of the bar on the board. */
-.scheduler-bar-shortcuts__trip {
-  flex: 1 0 100%;
-  /* The sheet's full width with its insets inside it, not added to it. */
-  box-sizing: border-box;
-  min-inline-size: 0;
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
-  background: var(--scheduler-bg);
-  color: var(--scheduler-fg);
-  /* A tap on it opens the trip, as the Open slot does. */
-  cursor: pointer;
-  font-size: var(--scheduler-fs);
-  letter-spacing: var(--scheduler-ls);
-  line-height: var(--scheduler-row-h);
-}
-/* The sheet carries every row, whatever the view menu has turned off on the
-   board. Those toggles buy height among the bars; this is where the writing a
-   block gave up is read, so hiding a row here would leave it nowhere. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
-/* The bar's alert count is left off: the alerts are read just above it,
-   under their own count, and so is its newest update's row. */
-.scheduler-bar-shortcuts__trip :is(.scheduler-bar__msg, .scheduler-bar__lead, .scheduler-bar__age) { display: none; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }
-/* A live trip says its times on its own times row, so the bar's is left off. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip:has(> .scheduler-road__times) > .scheduler-bar__time { display: none; }
-/* On a phone the card is 40% of the screen, whichever tab, full or not,
-   and scrolls inside it, so the trip and its slots keep one place under it. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card-tabs__panel:not([hidden]) { block-size: 40dvh; overflow-y: auto; }
-/* The phone number dials, drawn as a link in the trip's own ink. */
-.scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ══ Below Carbon's md, 41.98rem ═══════════════════════════════════════════
    42rem is Carbon's md, where `.rux--side-panel` turns on its 75vw limit. Below

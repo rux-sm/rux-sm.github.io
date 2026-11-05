@@ -23,7 +23,7 @@ parts join it.
   rows.
 - **The sections after the bars, in order:** the trip's tips, Alerts,
   Updates, a driver's before the trip and on the road, and the route, with
-  the docked sheet's card, its tabs and the live card and its map; the Tasks
+  the phone's half sheet and its card, and the live card and its map; the Tasks
   list's rows and the Departures panel;
   a bus's row head, its tip and the yard card; the editor's route stops,
   quote lines and billing tiles.
@@ -36,7 +36,7 @@ None open.
 
 ## Tasks
 
-- [ ] Move the trip's tips and the docked sheet's card, its tabs and the
+- [ ] Move the trip's tips and the phone's half sheet and its card, and the
       live card and its map, out of `data.js`, and add their section.
 - [ ] Add the section for the task rows and the Departures panel, whose
       drawing is already in files of their own.

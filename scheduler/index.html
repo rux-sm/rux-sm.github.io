@@ -1072,11 +1072,15 @@
     </li>
   </ul>
 
-  <!-- The selected trip's shortcuts: a small bar that floats clear of the trip,
-       placed the way a tooltip is, so a selected trip loses none of its width
-       or height. data.js moves it into the board's scroll pane, draws its
-       slots and places it above or below the trip. It lives here until then. -->
+  <!-- The selected trip's card: on a wider board a small card that floats
+       clear of the trip, placed the way a tooltip is, so a selected trip
+       loses none of its width or height, and on a phone the half sheet over
+       the foot of the view. data.js moves it into the board's scroll pane
+       beside the trip's bar and draws it. It lives here until then. -->
   <div class="scheduler-bar-shortcuts" id="scheduler-bar-shortcuts" role="group" aria-label="Trip shortcuts" hidden></div>
+  <!-- The dim over the view while the phone's half sheet is pulled up; a
+       press on it drops the sheet back to half. -->
+  <div class="scheduler-sheet-scrim" id="scheduler-sheet-scrim"></div>
 
   <!-- A list the trip's sheet drops from Move to bus or Change driver, on a
        phone. data.js fills and places it. -->

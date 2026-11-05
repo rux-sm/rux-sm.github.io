@@ -946,9 +946,9 @@
     }
     roadBars(gridEl.querySelectorAll('.scheduler-bar[data-bus-id]'));
     if (busSheetFor) drawBusSheet();
-    // A card showing the live card follows its bus with each answer.
+    // A card showing the live card follows its bus with each answer, and the phone's sheet says what is happening now.
     const shown = selectedBar();
-    if (shown?.dataset.road && roadPartOf(shown) === 'road') placeBarOpen(shown);
+    if (shown && (!floatingCard() || (shown.dataset.road && roadPartOf(shown) === 'road'))) placeBarOpen(shown);
     // Today on the List says which trips are out and how late, and moves them as the day goes.
     drawListToday();
   }
@@ -1056,22 +1056,6 @@
   setInterval(() => { if (!document.hidden) window.SchedulerBar.fillTracks(gridEl); }, 60e3);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) window.SchedulerBar.fillTracks(gridEl); });
 
-  /* THE DOCKED SHEET OF A TRIP OUT ON THE ROAD has three tabs: On the
-     road, Needs and Updates, and opens on On the road; the tab picked stays
-     with the trip until the page loads again. Design's tabs.js switches them and says so
-     with rux:tab-selected, which the card is drawn again from, so it fits
-     and places itself for the tab now showing. */
-  const roadTabs = new Map();
-  const roadTabOf = bar => roadTabs.get(barKey(bar)) ?? 'road';
-  document.addEventListener('rux:tab-selected', e => {
-    const which = e.detail?.tab?.dataset.roadTab;
-    const bar = selectedBar();
-    if (!which || !bar) return;
-    roadTabs.set(barKey(bar), which);
-    cardSection = which;
-    placeBarOpen(bar);
-    document.querySelector(`#scheduler-bar-shortcuts [data-road-tab="${which}"]`)?.focus();
-  });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && Date.now() - roadAsked > ROAD_EVERY) askRoad();
   });
@@ -2392,6 +2376,11 @@
   const pageEl = document.querySelector('.scheduler-page');
   // The selected trip's shortcut bar, placed and drawn by placeBarOpen.
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
+  /* The phone's half sheet: whether it is pulled up, whether a pull of its
+     handle has just moved it, so the press that ends the pull is not a
+     press, and the dim behind it while it is up. Its block draws it. */
+  let sheetFull = false, sheetPulledAt = 0;
+  const sheetScrim = document.getElementById('scheduler-sheet-scrim');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   /* A section can carry one control on its heading line, as the Quote and
@@ -11430,8 +11419,8 @@
      since its trip is the bar beside it. The docked sheet keeps an out trip's
      parts as tabs. */
   let cardSection = '';
-  // The part an out trip's card shows: floating, the one asked for; docked, its tab.
-  const roadPartOf = bar => floatingCard() ? cardSection || 'road' : roadTabOf(bar);
+  // The part an out trip's card shows: floating, the one asked for; on a phone's sheet, its live card in the rest.
+  const roadPartOf = bar => (floatingCard() ? cardSection || 'road' : 'road');
   // The openers marked open, the ones whose part of the card shows.
   let openOpeners = [];
   let cardTrigger = null;
@@ -11451,7 +11440,6 @@
   function askCard(bar, open, section = '') {
     cardOpenFor = open ? barKey(bar) : null;
     cardSection = open ? section : '';
-    if (open && bar.dataset.road && section && !/^(driver|route):/.test(section)) roadTabs.set(barKey(bar), section);
     if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
     placeBarOpen();
   }
@@ -11500,8 +11488,8 @@
     for (const lit of gridEl.querySelectorAll('.scheduler-bar[data-route-open]')) if (!(route && lit === bar)) delete lit.dataset.routeOpen;
     if (route) bar.dataset.routeOpen = '';
     if (cardSection && !(docked && bar?.dataset.road)) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
-    // The Contacts window goes with its trip when it is put down.
-    if (none) { poppedFor = null; clearDocked(); return; }
+    // The Contacts window goes with its trip when it is put down, and the half sheet comes down to half.
+    if (none) { poppedFor = null; sheetFull = false; sheetScrim?.removeAttribute('data-on'); clearDocked(); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A card that comes to a trip afresh starts compact, its note and updates
     // closed, however they were left the last time it showed.
@@ -11538,23 +11526,29 @@
     barShortcuts.toggleAttribute('data-docked', docked);
     fitUpdates();
     if (docked) {
-      drawDockedTrip(bar);
-      wearShell();
       barShortcuts.removeAttribute('data-out');
       barShortcuts.removeAttribute('data-side');
-      /* The sheet stands over the foot of the board, so the pane is given that
-         much more to scroll, as its own padding, and the last bus can still be
-         brought out from under it; the home bar is the page's foot padding to
-         clear. The height is measured because the rows a bar draws are the
-         view's to choose. Both are the pane's own properties, which nothing
-         inherits: a custom property set there restyled every element on the
-         strip, about 45ms on a phone. */
-      /* On a phone's List the List is the pane, and the trip is its card;
-         the strip stays put under it. */
-      const sheet = Math.round(barShortcuts.getBoundingClientRect().height);
+      /* Half shows the sheet down to its three buttons, measured, since what
+         is happening now can take two lines; full, all of it, the view dimmed
+         behind. */
+      const acts = barShortcuts.querySelector('.scheduler-sheet__acts');
+      if (acts) barShortcuts.style.setProperty('--scheduler-sheet-peek', `${Math.ceil(acts.offsetTop + acts.offsetHeight + remPx() / 2)}px`);
+      barShortcuts.dataset.sheet = sheetFull ? 'full' : 'half';
+      sheetScrim?.toggleAttribute('data-on', sheetFull);
+      const grab = barShortcuts.querySelector('.scheduler-sheet__grab');
+      grab?.setAttribute('aria-expanded', String(sheetFull));
+      grab?.setAttribute('aria-label', sheetFull ? 'Show less of the trip' : 'Show more of the trip');
+      /* The half sheet stands over the foot of the view, so the pane is given
+         that much more to scroll, as its own padding, and the last trip can
+         still be brought out from under it. Both are the pane's own
+         properties, which nothing inherits: a custom property set there
+         restyled every element on the strip, about 45ms on a phone. On a
+         phone's List the List is the pane, and the trip is its card; the
+         strip stays put under it. */
       const list = listShown();
       clearDocked();
       const pane = list ? listEl : schEl;
+      const sheet = Math.max(0, Math.round(pane.getBoundingClientRect().bottom - (innerHeight - sheetPeekHeight())));
       pane.style.paddingBlockEnd = `${sheet}px`;
       pane.style.scrollPaddingBlockEnd = `calc(${sheet}px + var(--rux-spacing-03))`;
       /* A trip the sheet has just come up over is scrolled clear of it, once:
@@ -11566,8 +11560,6 @@
       return;
     }
     clearDocked();
-    dockedDrawn = '';
-    barShortcuts.querySelector('.scheduler-bar-shortcuts__trip')?.remove();
     /* The room is measured on screen, against the pane and the two bands that
        stick to its edges, and then written in the track's own coordinates,
        which is where the bar is laid out. */
@@ -16219,15 +16211,15 @@
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
         : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file, null, barLeg(bar)))) },
   ];
-  /* The phone's sheet, the only place the slots show, as rux chose them:
-     Contacts, whose window calls and texts everyone on the trip, Route, Bus,
-     Driver and Open. The itinerary is in Open, and Forms on the toolbar and
-     in the ☰ menu. */
-  const SHORTCUT_ROW = ['contacts', 'route', 'move', 'driver', 'open'];
+  /* The half sheet's three large buttons, as rux chose them: Itinerary,
+     Call or text, whose window calls and texts everyone on the trip, and
+     Route. Bus, Driver and Edit trip are the pulled-up rest's, and Forms is
+     on the toolbar and in the ☰ menu. */
+  const SHORTCUT_ROW = ['itinerary', 'contacts', 'route'];
 
   /* THE SHEET'S LISTS, Move to bus and Change driver: a menu dropped from the
-     slot, holding what the drag and the bar menu's Assign driver hold on a
-     wider board. */
+     rest's Bus or Driver row, holding what the drag and the bar menu's Assign
+     driver hold on a wider board. */
   const pickMenu = document.getElementById('scheduler-pick-menu');
   let pickFor = null;
   function openPick(kind, bar, slot) {
@@ -16277,43 +16269,6 @@
     const free = marked.filter(([, busy]) => !busy).map(([r]) => item(r, null));
     const busy = marked.filter(([, b]) => b).map(([r, b]) => item(r, b));
     list.replaceChildren(...(free.length ? free : [assignItem('No free buses', { disabled: true })]), ...(busy.length ? [rule(), ...busy] : []));
-  }
-
-  /* The docked sheet stands on the header's own surface. The header is a theme
-     zone of its own in theme.js, g100 under Carbon's four whatever the page
-     is, so its colours are read off it rather than named, and a saved theme's
-     bar is matched as well as a built-in one. */
-  const SHELL_TOKENS = ['background'];
-  function wearShell() {
-    const shell = document.querySelector('.rux--header[data-theme]');
-    if (!shell) return;
-    const cs = getComputedStyle(shell);
-    for (const t of SHELL_TOKENS) barShortcuts.style.setProperty(`--scheduler-shell-${t}`, cs.getPropertyValue(`--rux-${t}`).trim());
-  }
-
-  /* The docked bar's head: the trip's rows, cloned from the bar itself
-     rather than built again, so a row has one builder and one set of rules.
-     The bar's colour class comes with them, which the head's stripe reads. `aria-label` is in the key because it is the whole trip written out,
-     so any change to what a row says redraws this. */
-  let dockedDrawn = '';
-  function drawDockedTrip(bar) {
-    const key = `${bar.dataset.tripId}|${bar.dataset.legKey}|${bar.getAttribute('aria-label') || ''}`;
-    let head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
-    if (head && key === dockedDrawn) return;
-    dockedDrawn = key;
-    if (!head) head = el('div', 'scheduler-bar-shortcuts__trip');
-    head.className = ['scheduler-bar-shortcuts__trip',
-      ...[...bar.classList].filter(c => c.startsWith('scheduler-bar--'))].join(' ');
-    head.replaceChildren(...[...bar.children].map(node => node.cloneNode(true)));
-    // A phone has the dialler the bar has not: the number calls.
-    for (const phone of head.querySelectorAll('.scheduler-bar__phone')) {
-      const call = el('a', 'scheduler-bar__phone scheduler-bar__phone--call', phone.textContent);
-      call.href = `tel:${phone.textContent.replace(/[^\d+]/g, '')}`;
-      phone.replaceWith(call);
-    }
-    barShortcuts.prepend(head);
-    // The copy is fitted to the sheet's width, not the bar's.
-    fitKind(head);
   }
 
   // The trip whose card shows all its updates, kept until the card leaves it.
@@ -16525,50 +16480,34 @@
   }
 
   let shortcutsDrawn = '';
-  /* The slots are the phone's docked sheet's alone, where there is no
-     right-click; the floating card is the trip's warnings and updates, and the
-     bar's own menu holds what the slots do. */
+  /* What the selected trip shows: on a phone the half sheet, `drawSheet`,
+     and on a wider board the floating card, the trip's warnings and updates,
+     whose actions are the bar's own menu. Drawn again only when something it
+     shows has changed, so a focused control keeps focus. */
   function drawShortcuts(bar) {
     const docked = pageEl?.getAttribute('data-board') === 'compact';
-    const slots = docked ? SHORTCUT_ROW : [];
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
     const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
-      bar.dataset.hotelBooked, slots.join(), cardKey(trip), cardSection,
-      JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadPartOf(bar)} ${roadPartOf(bar) === 'road' || cardSection.startsWith('route:') ? bar.dataset.road : ''}` : ''].join('|');
-    // The same slots on the same bar are left alone, so a focused slot keeps focus.
-    // The slots are counted rather than every child, because the docked bar
-    // carries the trip's rows ahead of them.
-    if (key === shortcutsDrawn && barShortcuts.querySelectorAll('.scheduler-bar-shortcut').length === slots.length) return;
+      bar.dataset.hotelBooked, cardKey(trip), cardSection, bar.getAttribute('aria-label'),
+      JSON.stringify(barFacts.get(bar) ?? null), docked ? sheetMinute() : '',
+      bar.dataset.road ? `${roadPartOf(bar)} ${roadPartOf(bar) === 'road' || cardSection.startsWith('route:') ? bar.dataset.road : ''}` : ''].join('|');
+    if (key === shortcutsDrawn && barShortcuts.childElementCount) return;
+    const same = shortcutsDrawn.split('|', 3).join('|') === key.split('|', 3).join('|');
     shortcutsDrawn = key;
     const active = barShortcuts.contains(document.activeElement) ? document.activeElement : null;
-    const focusTab = active?.closest('[data-road-tab]')?.dataset.roadTab;
     const focusUpdate = active?.closest('[data-update-id]')?.dataset.updateId;
     const focusQuick = active?.matches('[data-quick] input');
+    const focusShortcut = active?.closest('[data-shortcut]')?.dataset.shortcut;
     const selection = focusQuick ? [active.selectionStart, active.selectionEnd] : null;
-    const head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
-    barShortcuts.replaceChildren(...(head ? [head] : []), ...slots.map((id, i) => {
-      const btn = el('button', 'scheduler-bar-shortcut');
-      btn.type = 'button';
-      btn.dataset.slot = String(i + 1);
-      const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
-      // Itinerary says which way it acts on this bar.
-      const why = action.blocked(bar);
-      const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
-      btn.dataset.shortcut = action.id;
-      // Route is pressed while the route stands in the card's place.
-      if (action.id === 'route') btn.setAttribute('aria-pressed', String(cardSection.startsWith('route:')));
-      btn.setAttribute('aria-label', label);
-      btn.title = label;
-      if (why) btn.setAttribute('aria-disabled', 'true');
-      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '20', '0 0 32 32'),
-        el('span', 'scheduler-bar-shortcut__label', action.short));
-      return btn;
-    }), ...(carded ? [cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
-      : !docked && cardSection.startsWith('driver:') ? drawDriverTip(trip, bar, cardSection)
-      : !bar.dataset.road ? drawCard(trip, bar, cardSection)
-      : docked ? drawRoadCard(trip, bar) : roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
+    // The sheet drawn again for the same trip keeps where its rest was scrolled to.
+    const scrolled = same ? barShortcuts.querySelector('.scheduler-sheet__rest')?.scrollTop ?? 0 : 0;
+    barShortcuts.replaceChildren(...(!carded ? [] : docked ? drawSheet(trip, bar)
+      : [cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
+        : cardSection.startsWith('driver:') ? drawDriverTip(trip, bar, cardSection)
+        : bar.dataset.road && roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)]));
+    if (scrolled) barShortcuts.querySelector('.scheduler-sheet__rest')?.scrollTo(0, scrolled);
     barShortcuts.toggleAttribute('data-card', carded);
     // Floating, Alerts, Updates, a driver's and the route are tips, app.css's.
     barShortcuts.toggleAttribute('data-tip', carded && !docked && !(bar.dataset.road && roadPartOf(bar) === 'road'));
@@ -16576,8 +16515,226 @@
       const input = barShortcuts.querySelector('[data-quick] input');
       input?.focus({ preventScroll: true });
       if (input && selection) input.setSelectionRange(...selection);
-    } else if (focusTab) barShortcuts.querySelector(`[data-road-tab="${focusTab}"]`)?.focus({ preventScroll: true });
-    else if (focusUpdate) barShortcuts.querySelector(`[data-update-id="${CSS.escape(focusUpdate)}"] [data-update-open]`)?.focus({ preventScroll: true });
+    } else if (focusUpdate) barShortcuts.querySelector(`[data-update-id="${CSS.escape(focusUpdate)}"] [data-update-open]`)?.focus({ preventScroll: true });
+    else if (focusShortcut) barShortcuts.querySelector(`[data-shortcut="${focusShortcut}"]`)?.focus({ preventScroll: true });
+  }
+
+  /* ── THE PHONE'S HALF SHEET ────────────────────────────────────────────────
+     As rux decided: over the foot of the view, the view still showing above
+     it with the trip marked in it, its handle, where the trip goes over its
+     customer and times, a band in its colour, what is happening now, its bus
+     and drivers, and three large buttons, Itinerary, Call or text and Route.
+     A tap on another trip moves it there. Its handle, a press or a pull,
+     takes it to the top for the rest, the view dimmed behind: the customer,
+     the contacts, the pickup, the bus and the driver, each a press that
+     changes it, the trip on the road, what it still needs and its updates,
+     and Edit trip; Route shows the leg's stops in the rest's place. A tap on
+     the dimmed view drops it back to half, a tap on the view closes it, and
+     so does a pull down past half. */
+  // The minute the sheet's words were written in, since they say how long until a trip leaves.
+  const sheetMinute = () => Math.floor(Date.now() / 60e3);
+  // A press of one of the sheet's actions, drawn as `kind`: a large button, a row or Edit trip.
+  function sheetAction(id, bar, kind, words = null) {
+    const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
+    const why = action.blocked(bar);
+    const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
+    const btn = el('button', kind === 'edit' ? 'rux--btn rux--btn--primary rux--layout--size-lg scheduler-sheet__edit'
+      : kind === 'row' ? 'scheduler-sheet__row scheduler-sheet__row--press' : 'scheduler-bar-shortcut');
+    btn.type = 'button';
+    btn.dataset.shortcut = action.id;
+    if (why) btn.setAttribute('aria-disabled', 'true');
+    if (kind === 'edit') { btn.textContent = why ?? 'Edit trip'; return btn; }
+    if (kind === 'row') {
+      btn.setAttribute('aria-label', `${label}: ${words.textContent}`);
+      btn.append(words, svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
+      return btn;
+    }
+    // Route is pressed while the route stands in the rest's place.
+    if (action.id === 'route') btn.setAttribute('aria-pressed', String(cardSection.startsWith('route:')));
+    btn.setAttribute('aria-label', label);
+    btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '20', '0 0 32 32'),
+      el('span', 'scheduler-bar-shortcut__label', action.short));
+    return btn;
+  }
+  // The leg's times, out and back, the days named where they are not one.
+  function sheetTimes(trip, bar) {
+    const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg);
+    const dep = bar.dataset.depart, back = bar.dataset.back;
+    if (!leg || (!dep && !back)) return dep || back || '';
+    const many = leg.from !== leg.to;
+    const day = d => (many ? `${parseISO(d).toLocaleDateString(undefined, { weekday: 'short' })} ` : '');
+    return [dep && `${day(leg.from)}${dep}`, back && `${day(leg.to)}${back}${leg.backDays ? ` +${leg.backDays}` : ''}`].filter(Boolean).join(' – ');
+  }
+  /* WHAT IS HAPPENING NOW, a dot and a line: out on the road, on time or
+     how many minutes late to its pickup, and the worst of what Samsara
+     warns; otherwise when it leaves, that it is on the road by the clock,
+     or that it is back; and after either, the trip's first alert and how
+     many more. */
+  function sheetNow(trip, bar) {
+    const facts = barFacts.get(bar);
+    const alerts = alertsOf(trip, facts);
+    const problems = facts?.problems ?? [];
+    const first = problems[0] ?? alerts[0];
+    const more = Math.max(problems.length, alerts.length) - 1;
+    const words = [];
+    let tone = 'quiet';
+    const bus = bar.dataset.road ? roadBusOf(bar) : null;
+    if (bus) {
+      const next = roadNext(bar, bus);
+      const warn = roadLook(bar, bus, next, roadNamed(bar)).warnings[0];
+      words.push(next?.late ? `On the road · ${next.late} min late` : 'On the road · on time');
+      if (warn) words.push(warn.title);
+      tone = warn?.tone === 'error' ? 'error' : next?.late || warn ? 'warning' : 'success';
+    } else {
+      const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg);
+      const now = Date.now();
+      const out = leg ? window.SchedulerWeek.departAt(leg) : null, back = leg ? window.SchedulerWeek.backAt(leg) : null;
+      if (out == null) words.push('No times yet');
+      else if (now < out) {
+        const min = Math.round((out - now) / 60e3);
+        const day = daysBetween(parseISO(iso(new Date())), parseISO(iso(new Date(out))));
+        words.push(day === 0 ? (min < 60 ? `Leaves in ${min} min` : `Leaves in ${Math.round(min / 60)}h`)
+          : day === 1 ? 'Leaves tomorrow' : `Leaves in ${day} days`);
+      } else if (now < back) words.push('On the road');
+      else words.push(iso(new Date(back)) === iso(new Date()) ? 'Back at the yard' : 'Back');
+    }
+    if (first) {
+      words.push(more > 0 ? `${first.words} +${more}` : first.words);
+      if (tone === 'quiet' || tone === 'success') tone = problems.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning';
+    }
+    const line = el('div', `scheduler-sheet__now scheduler-sheet__now--${tone}`);
+    line.append(el('span', 'scheduler-sheet__pip'), el('span', null, words.join(' · ')));
+    return line;
+  }
+  // The bar's bus and its seats, each driver by name with the bar's own mark.
+  function sheetCrew(trip, bar) {
+    const assign = (trip.trip_assignments || []).find(a => String(a.id) === bar.dataset.assignmentId);
+    const due = Bar.staffingDue(legByKey(trip, bar.dataset.legKey || bar.dataset.leg) ?? { from: trip.start_date, to: trip.end_date });
+    const done = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    return (assign ? crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses) : []).map(c => {
+      const seat = el('span', 'scheduler-sheet__seat');
+      const glyph = Bar.crewGlyph(c, due, done);
+      if (glyph) seat.append(Bar.glyphEl(glyph));
+      seat.append(el('span', null, c.needed ? `No ${c.label.toLowerCase()}` : Bar.crewName(c)));
+      return seat;
+    });
+  }
+  function sheetKit(trip, bar) {
+    const bus = bar.dataset.busId ? panelIndex.buses.get(bar.dataset.busId) : null;
+    const row = el('div', 'scheduler-sheet__kit');
+    const which = el('span', 'scheduler-sheet__bus');
+    which.append(svgUse('#m-directions_bus', '16', '0 0 32 32'), bus ? `Bus ${bus.number}` : 'No bus');
+    const crew = el('span', 'scheduler-sheet__crew');
+    crew.append(...sheetCrew(trip, bar));
+    row.append(which, crew);
+    return row;
+  }
+  // A person and the number that dials them.
+  function sheetPerson(c) {
+    const who = el('span', 'scheduler-sheet__person');
+    who.append(el('span', null, c.name));
+    if (c.phone) {
+      const call = el('a', 'scheduler-sheet__phone', showPhone(c.phone));
+      call.href = `tel:${dial(c.phone)}`;
+      who.append(call);
+    }
+    return who;
+  }
+  /* THE REST, under the handle once the sheet is pulled up: the facts a
+     call or a change needs, then the trip on the road, its needs and its
+     updates, as its card has them, and Edit trip. */
+  function sheetRest(trip, bar) {
+    const legKey = bar.dataset.legKey || bar.dataset.leg || 'outbound';
+    const facts = el('dl', 'scheduler-sheet__facts');
+    const fact = (name, ...values) => {
+      const dd = el('dd');
+      dd.append(...values);
+      facts.append(el('dt', null, name), dd);
+    };
+    if (trip.customer) fact('Customer', trip.customer);
+    const people = [tripContact(trip, 0), ...dayContactsOf(trip, legKey)].filter(c => c?.name)
+      .filter((c, i, all) => all.findIndex(o => o.name === c.name && dial(o.phone || '') === dial(c.phone || '')) === i);
+    if (people.length) fact(people.length > 1 ? 'Contacts' : 'Contact', ...people.map(sheetPerson));
+    const stops = window.SchedulerWeek.stopsOfKey(trip, legKey);
+    const pickup = stops.find(st => st.type === 'pickup') ?? stops[0];
+    if (pickup) fact('Pickup', [pickup.spot ? hhmm(pickup.spot, true) : null, (pickup.name || pickup.address || '').trim()].filter(Boolean).join(' · '));
+    const bus = bar.dataset.busId ? panelIndex.buses.get(bar.dataset.busId) : null;
+    const busWords = el('span', null, bus ? [vehicleName(bus), bus.capacity ? `${bus.capacity} seats` : null].filter(Boolean).join(' · ') : 'No bus');
+    fact('Bus', sheetAction('move', bar, 'row', busWords));
+    const crewWords = el('span', 'scheduler-sheet__crew');
+    crewWords.append(...sheetCrew(trip, bar));
+    if (!crewWords.childElementCount) crewWords.append('No driver seat');
+    fact('Driver', sheetAction('driver', bar, 'row', crewWords));
+    return [facts, ...(bar.dataset.road ? [drawLiveCard(trip, bar)] : []), drawCard(trip, bar), sheetAction('open', bar, 'edit')];
+  }
+  function drawSheet(trip, bar) {
+    // Its state is written where it is placed, `placeBarOpen`.
+    const grab = el('button', 'scheduler-sheet__grab');
+    grab.type = 'button';
+    const head = el('div', 'scheduler-sheet__head');
+    head.append(el('span', 'scheduler-sheet__dest', trip.destination || 'No destination'),
+      el('span', 'scheduler-sheet__meta', [trip.customer, sheetTimes(trip, bar)].filter(Boolean).join(' · ')));
+    const band = el('div', `scheduler-sheet__band scheduler-bar--${hueFor(trip)}`);
+    const acts = el('div', 'scheduler-sheet__acts');
+    acts.append(...SHORTCUT_ROW.map(id => sheetAction(id, bar, 'slot')));
+    const rest = el('div', 'scheduler-sheet__rest');
+    rest.append(...(cardSection.startsWith('route:') ? [drawRouteTip(trip, bar)] : sheetRest(trip, bar)));
+    return [grab, head, band, sheetNow(trip, bar), sheetKit(trip, bar), acts, rest];
+  }
+  // How much of the sheet shows at half: down to its buttons, and the home bar's inset under them.
+  const sheetPeekHeight = () => (parseFloat(barShortcuts.style.getPropertyValue('--scheduler-sheet-peek')) || 0)
+    + (parseFloat(getComputedStyle(barShortcuts).paddingBlockEnd) || 0);
+  function setSheet(full) {
+    sheetFull = full;
+    placeBarOpen();
+  }
+  /* A PULL ON THE HANDLE OR THE HEAD follows the finger, and where it is let
+     go takes the sheet to the nearer of full and half, or away below half.
+     It moves the sheet by its transform alone, which the compositor draws,
+     and app.css's transition takes it the rest of the way from there. */
+  let sheetPull = null;
+  barShortcuts?.addEventListener('pointerdown', e => {
+    if (!barShortcuts.hasAttribute('data-docked') || !e.target.closest('.scheduler-sheet__grab, .scheduler-sheet__head')) return;
+    const h = barShortcuts.offsetHeight;
+    const half = h - sheetPeekHeight();
+    sheetPull = { id: e.pointerId, y: e.clientY, from: sheetFull ? 0 : half, half, h, at: null };
+  });
+  barShortcuts?.addEventListener('pointermove', e => {
+    if (!sheetPull || e.pointerId !== sheetPull.id) return;
+    const dy = e.clientY - sheetPull.y;
+    if (sheetPull.at == null && Math.abs(dy) < 6) return;
+    if (sheetPull.at == null) {
+      // The pull follows the finger off the handle; a pointer already gone has nothing to capture.
+      try { barShortcuts.setPointerCapture(e.pointerId); } catch { /* the pull still follows this pointer's events */ }
+      barShortcuts.setAttribute('data-pulling', '');
+    }
+    sheetPull.at = Math.min(sheetPull.h, Math.max(0, sheetPull.from + dy));
+    barShortcuts.style.transform = `translateY(${sheetPull.at}px)`;
+  });
+  const endPull = e => {
+    if (!sheetPull || e.pointerId !== sheetPull.id) return;
+    const { at, half, h } = sheetPull;
+    sheetPull = null;
+    if (at == null) return;
+    sheetPulledAt = performance.now();
+    barShortcuts.removeAttribute('data-pulling');
+    barShortcuts.style.transform = '';
+    if (e.type === 'pointercancel') return;
+    if (at < half / 2) setSheet(true);
+    else if (at < half + (h - half) / 2) setSheet(false);
+    else clearSelection();
+  };
+  barShortcuts?.addEventListener('pointerup', endPull);
+  barShortcuts?.addEventListener('pointercancel', endPull);
+  // A tap on the dimmed view drops the sheet back to half.
+  sheetScrim?.addEventListener('click', () => setSheet(false));
+  // A tap on the view, on neither a trip nor a bus nor anything else that takes a press, closes it.
+  for (const view of [schEl, listEl]) {
+    view?.addEventListener('click', e => {
+      if (floatingCard() || !selectedBar()
+        || e.target.closest('.scheduler-bar, .scheduler-list__card, .scheduler-row-head, .scheduler-bar-shortcuts, button, a')) return;
+      clearSelection();
+    });
   }
 
   /* Contacts opens a small window of everyone to reach about this bar, in
@@ -16606,7 +16763,7 @@
   const contactsList = document.getElementById('scheduler-contacts-list');
   const contactsMenu = document.getElementById('scheduler-contacts-menu');
   const contactsOptions = document.getElementById('scheduler-contacts-options');
-  const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', keeps: true, blocked: () => null,
+  const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Call or text', icon: '#m-call', keeps: true, blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
@@ -17447,51 +17604,9 @@
     return card;
   }
 
-  /* The tabs over an out trip's docked sheet, as Design draws a tablist, each tab's
-     panel its card: On the road the live card, Updates the trip card, with
-     its Needs counted on its tab in their colour. */
-  function drawRoadCard(trip, bar) {
-    const on = roadTabOf(bar);
-    const wrap = el('div', 'scheduler-card-tabs');
-    const tabs = el('div', 'rux--tabs scheduler-card-tabs__tabs');
-    const list = el('div', 'rux--tab--list');
-    list.setAttribute('role', 'tablist');
-    list.setAttribute('aria-label', 'Trip card');
-    tabs.appendChild(list);
-    const alerts = alertsOf(trip, barFacts.get(bar));
-    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['needs', 'Needs', () => drawCard(trip, bar, 'needs')], ['updates', 'Updates', () => drawCard(trip, bar, 'updates')]].map(([id, words, draw]) => {
-      const selected = id === on;
-      const tab = el('button', `rux--tabs__nav-item rux--tabs__nav-link${selected ? ' rux--tabs__nav-item--selected' : ''}`);
-      tab.type = 'button';
-      tab.id = `scheduler-card-tab-${id}`;
-      tab.dataset.roadTab = id;
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-selected', String(selected));
-      tab.setAttribute('aria-controls', `scheduler-card-panel-${id}`);
-      tab.tabIndex = selected ? 0 : -1;
-      const label = el('div', 'rux--tabs__nav-item-label-wrapper');
-      label.appendChild(el('span', 'rux--tabs__nav-item-label', words));
-      if (id === 'needs' && alerts.length) {
-        label.appendChild(el('span', `scheduler-bar__msg scheduler-bar__msg--${alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'} scheduler-card__count`,
-          String(alerts.length)));
-      }
-      tab.appendChild(label);
-      list.appendChild(tab);
-      const panel = el('div', 'rux--tab-content scheduler-card-tabs__panel');
-      panel.id = `scheduler-card-panel-${id}`;
-      panel.setAttribute('role', 'tabpanel');
-      panel.setAttribute('aria-labelledby', tab.id);
-      panel.hidden = !selected;
-      panel.appendChild(draw());
-      return panel;
-    });
-    wrap.append(tabs, ...panels);
-    return wrap;
-  }
-
-  /* THE DOCKED SHEET'S CARD, on a phone: the trip's needs and updates as
-     the sheet's own bands. The floating board draws each as a tip instead,
-     `drawCardTip`. */
+  /* THE HALF SHEET'S CARD, on a phone: the trip's needs and updates as
+     bands of the sheet's pulled-up rest. The floating board draws each as a
+     tip instead, `drawCardTip`. */
   function drawCard(trip, bar, section = '') {
     if (pageEl?.getAttribute('data-board') !== 'compact') return drawCardTip(trip, bar, section);
     const card = el('div', 'scheduler-card');
@@ -17860,21 +17975,10 @@
     if (refocus) barShortcuts.querySelector('.scheduler-card__toggle')?.focus();
   }
 
-  // A slot acts on the bar it shows, and a disabled one does nothing.
+  // An action acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
-    // Compact sheets copy the bar's rows; their controls act on the selected bar.
-    const head = e.target.closest('.scheduler-bar-shortcuts__trip');
-    const opener = head && e.target.closest('[data-card-opener]');
-    if (opener) {
-      const bar = selectedBar();
-      if (!bar) return;
-      if (/^(driver|route):/.test(window.SchedulerBar.cardSectionOf(opener))) return;
-      else {
-        cardTrigger = opener;
-        askCard(bar, true, window.SchedulerBar.cardSectionOf(opener));
-      }
-      return;
-    }
+    // The half sheet's handle, pressed rather than pulled, takes it up or down.
+    if (e.target.closest('.scheduler-sheet__grab')) { if (performance.now() - sheetPulledAt > 400) setSheet(!sheetFull); return; }
     // The quick update's box takes its own clicks.
     if (e.target.closest('[data-quick]')) return;
     // Add opens the quick update's box, and Save adds what it holds, or with
@@ -17919,19 +18023,18 @@
       toggleUpdates(more.closest('[data-trip-id]')?.dataset.tripId ?? null, e.detail === 0);
       return;
     }
-    // The docked sheet's trip is the whole bar written out, and a tap on it
-    // opens the trip as the Open slot does; its phone number dials instead.
-    if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
-    const btn = e.target.closest('.scheduler-bar-shortcut');
+    const btn = e.target.closest('[data-shortcut]');
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = selectedBar();
     if (!bar) return;
-    /* A shortcut that leaves for a panel or a file puts the card away. One
-       that `keeps` it does not: Contacts, whose window opens over it and
-       hands focus back to its slot on closing, Open, whose editor opens
-       beside the board, and the sheet's route and lists. */
+    /* An action that leaves for a panel or a file puts the card away. One
+       that `keeps` it does not: Call or text, whose window opens over it and
+       hands focus back to its button on closing, Edit trip, whose editor
+       opens over the board, and the sheet's route and lists. The route
+       stands in the rest's place, so the sheet comes up for it. */
     const shortcut = FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut);
     if (!shortcut?.keeps) putCardAway(bar);
+    if (shortcut?.id === 'route' && !cardSection.startsWith('route:')) sheetFull = true;
     shortcut?.run(bar, btn);
   });
 

@@ -352,15 +352,7 @@ expect('the Updates tip heads with its count, a row per update with who and how 
     updatesTip.children.at(-1).dataset.cardAction, updatesTip.querySelector('.scheduler-card__face, .rux--user-avatar')],
   ['Updates', true, true, true, 'update', null]);
 
-const tabsSource = dataSource.slice(dataSource.indexOf('  function drawRoadCard('), dataSource.indexOf('  function drawCard('));
-cardContext.roadTabOf = () => 'needs';
-cardContext.drawLiveCard = () => make('div');
-runInNewContext(tabsSource + '\nglobalThis.testDrawRoadCard = drawRoadCard;', cardContext);
 const tripWithPaperwork = specimen('alerts','A hotel to book');
-const tabsCard = cardContext.testDrawRoadCard(tripWithPaperwork, paperBar);
-expect('live cards keep three reachable sections and select the requested one',
-  tabsCard.querySelectorAll('[role="tab"]').map(t=>[t.dataset.roadTab,t.getAttribute('aria-selected')]),
-  [['road','false'],['needs','true'],['updates','false']]);
 cardContext.quickOpenFor = tripWithPaperwork.id;
 cardContext.quickDraft = { tripId: tripWithPaperwork.id, text: 'Draft still being written' };
 cardContext.markSave = () => {};
@@ -368,10 +360,10 @@ const draftTips = [cardContext.testDrawCard(tripWithPaperwork, paperBar, 'update
 expect('the Updates tip\'s redraws keep one box in Add\'s place and preserve the draft',
   draftTips.map(c => [c.querySelectorAll('[data-quick] input').map(n => n.value), c.querySelector('.scheduler-tip__add'), c.querySelectorAll('[data-card-action]').map(b => b.dataset.cardAction)]),
   Array(2).fill([['Draft still being written'], null, ['cancel', 'save']]));
-// The docked sheet on a phone keeps the card's own bands.
+// The phone's half sheet keeps the card's own bands in its pulled-up rest.
 cardContext.pageEl = { getAttribute: () => 'compact' };
-const draftCards = [cardContext.testDrawRoadCard(tripWithPaperwork, paperBar), cardContext.testDrawRoadCard(tripWithPaperwork, paperBar)];
-expect('docked redraws keep one Updates input and preserve the draft',
+const draftCards = [cardContext.testDrawCard(tripWithPaperwork, paperBar), cardContext.testDrawCard(tripWithPaperwork, paperBar)];
+expect('the half sheet\'s card keeps one Updates input across redraws and preserves the draft',
   draftCards.map(c=>c.querySelectorAll('[data-quick] input').map(n=>n.value)),
   [['Draft still being written'],['Draft still being written']]);
 cardContext.pageEl = { getAttribute: () => 'full' };

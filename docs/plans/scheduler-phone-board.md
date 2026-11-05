@@ -16,8 +16,9 @@ Today the phone has List and 3 days under the switch, with search and +
 in the header and the date line and Today over the switch, and the week
 row under it. List is today and the days after as cards, and 3 days the
 strip three days wide, a flick a day; a tap on a trip, a card or a bar,
-opens the docked sheet and a tap on a bus the bus's, and the editor opens
-over the board as the Mac's form.
+opens the half sheet, pulled up for the rest with its Bus and Driver rows,
+a tap on a bus opens the bus's sheet, and the editor opens over the board
+as the Mac's form.
 
 The mockups rux chose from are `design/m/phone-agenda.html`,
 `design/m/phone-peek.html` and `design/m/phone-week.html`, local and
@@ -51,8 +52,8 @@ unpublished, served on :8641.
   tap on another trip moves the sheet to it. Its handle pulls it to the
   top for the customer, the contacts, the pickup, the newest update and
   Edit trip, the view dimmed behind; a tap on the dimmed view drops it back
-  to half, and a tap on the view closes it. It takes the place of today's
-  docked sheet and its row of five buttons.
+  to half, and a tap on the view closes it. It is the phone's only trip
+  sheet.
 - **The top bar is ☰, the app's name, search, + for a new trip and the
   account,** the + taking the place of a round button at the foot, which
   covered trips and which Carbon has no part for. The date line under it
@@ -80,10 +81,8 @@ None open.
 
 ## Tasks
 
-- [ ] Replace the docked sheet with the half sheet and its pulled-up rest.
 - [ ] Put ‹ › on 3 days' date line.
 - [ ] Build Week, a day a row, and add it to the switch.
 - [ ] Add the bar of places at the foot.
-- [ ] Make Move to bus and Change driver the pulled-up sheet's rows.
 - [ ] Build the driver's screen and the customer's screen.
 - [ ] Show more days in 3 days with the phone turned sideways.

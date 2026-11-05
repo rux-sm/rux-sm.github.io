@@ -50,7 +50,7 @@
   };
   /* An outline icon's solid one, which a bar's mark is drawn in as well, so
      app.css can turn the mark solid while it lifts. */
-  const SOLID = { '#m-route': '#m-route-fill', '#m-chat': '#m-chat-fill', '#i-checkmark--outline': '#i-checkmark--filled' };
+  const SOLID = { '#m-route': '#m-route-fill', '#m-chat': '#m-chat-fill' };
   // Draws `href` in an icon's svg, with its solid icon over it where it has one.
   const glyphTo = (svg, href) => {
     svg.replaceChildren();

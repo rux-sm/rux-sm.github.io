@@ -150,7 +150,9 @@
     { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
     { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
   ];
-  /* Stored driver states use Carbon's status icons. Display urgency for an
+  /* Stored driver states use Carbon's status icons, each the glyph Carbon's
+     icon indicator draws for its kind, so Confirmed is succeeded's solid
+     check. Display urgency for an
      empty seat is decided by the leg's departure, without changing its data.
      Pending response is Carbon's In progress, blue, which Carbon gives a
      process started and not yet finished whose icon turns to a tick or a
@@ -160,7 +162,7 @@
     { value: 'off', label: 'Not sent', tone: 'off', icon: '#i-circle-dash', indicator: 'rux--icon-indicator--not-started' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'warning', icon: '#i-warning--alt--filled', indicator: 'rux--icon-indicator--caution-minor' },
     { value: 'pending-response', label: 'Pending response', tone: 'normal', icon: '#i-in-progress', indicator: 'rux--icon-indicator--in-progress' },
-    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--outline', indicator: 'rux--icon-indicator--succeeded' },
+    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--filled', indicator: 'rux--icon-indicator--succeeded' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#i-error--filled', indicator: 'rux--icon-indicator--failed' },
   ];
   /* A status row's identity: trip, driver, leg and role, the leg by the key

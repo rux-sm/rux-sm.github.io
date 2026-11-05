@@ -1351,22 +1351,26 @@
    graphic on every surface it stands on: the board, a menu and every trip
    colour. It is set once on the page, so nothing derived from it can drift
    to another step. g100's grade 80 trips hold Carbon's own status tokens at
-   3.4 to 1 at the least, so it takes them unchanged, red 50, blue 50, gray
-   50, green 40 and yellow 30, as its menus do. The themes below lift the
+   3.4 to 1 at the least, so it takes them unchanged, red 50, blue 50, green
+   40 and yellow 30, as its menus do, and its grey as below. The themes below lift the
    step where those fall short, on their trips and their lighter menus
    alike: g90's and spotify-dark's grade 70 trips and g90's Gray 70 menus
-   held the 50s at 2.3, so they take Carbon's gray 30, blue 40 and red 40,
-   3.2 to 1 at the least, level with green 40; ant-dark's and pixel-dark's
+   held the 50s at 2.3, so they take Carbon's blue 40 and red 40, 3.2 to 1
+   at the least, level with green 40; ant-dark's and pixel-dark's
    brighter 6 grades take Ant's gray 4, green 3, blue 2 and red 2, 3.2 to 1
    at the least, on the green trip; apple-dark's teal takes Apple's
    increased-contrast blue and red, 3.1 where its own held 2.5; and
    apple-light's pale blue takes Apple's dark green, 3.9 where its green
    held 2.0. */
 :is([data-theme="g90"], [data-theme="spotify-dark"]) {
-  --rux-status-gray: #c6c6c6;
   --rux-status-blue: #78a9ff;
   --rux-status-red: #ff8389;
 }
+/* Carbon's dark themes draw the neutral status, a seat not sent, in Gray 30,
+   the grey of the menus' and panels' other icons, so having no status yet
+   reads at an ordinary icon's weight and the coloured ones stand out from
+   it; Carbon's Gray 50 held it at 3.4 to 1, Gray 30 at 6.6 at the least. */
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) { --rux-status-gray: #c6c6c6; }
 /* A trip stands one grade above the board it lies on, the step Carbon's
    dark themes take from one layer to the next, whatever its colour. g100's
    board is Gray 90, so its trips take grade 80, a step deeper than the

@@ -1275,10 +1275,6 @@
     </li>
   </ul>
 
-  <!-- A kind of billing entry, purchase orders, invoices or payments: every
-       entry of the kind in one dialog, an accordion item each, and Done
-       rather than Save, because the editor's Save is what writes trip_pos,
-       trip_invoices and trip_payments. data.js names the kind in the heading
   <!-- The editor's ⋮ menu, what the editor does rarely, opened from
        #scheduler-panel-more: the trip's History, then Cancel trip, which
        opens #scheduler-cancel-modal for the trip the editor shows. Each item
@@ -1295,6 +1291,10 @@
     </li>
   </ul>
 
+  <!-- A kind of billing entry, purchase orders, invoices or payments: every
+       entry of the kind in one dialog, an accordion item each, and Done
+       rather than Save, because the editor's Save is what writes trip_pos,
+       trip_invoices and trip_payments. data.js names the kind in the heading
        and asks date-picker.js to claim each entry's picker. -->
   <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-entries-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-entries-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">

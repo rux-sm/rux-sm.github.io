@@ -19062,6 +19062,7 @@
     // The Activity line says Live changes paused while the channel is down.
     if (status === 'SUBSCRIBED') window.SchedulerActivity?.live(true);
     if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+      window.SchedulerActivity?.live(false);
       console.info(`scheduler: the live board is ${status.toLowerCase()}; coming back to this tab opens it again.`);
     }
   };
@@ -19165,7 +19166,6 @@
       const data = await read(asked, wide ? STRIP_REACH : NEAR_DAYS);
       // A narrow read is followed by a wide one, unless a newer ask is waiting, which will be.
       if (!wide && !readAgain) { stripAhead = true; weekOwed = true; }
-      window.SchedulerActivity?.live(false);
       if (weekMotion && !ahead) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;

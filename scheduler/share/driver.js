@@ -311,7 +311,7 @@
     if (state.status === 'accepted' || state.status === 'declined') return null;
     const wrap = el('div', 'scheduler-leg-card__response');
     if (state.status === 'changed') {
-      const box = el('div', 'rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast scheduler-leg-card__changed');
+      const box = el('div', 'rux--inline-notification rux--inline-notification--warning scheduler-leg-card__changed');
       box.setAttribute('role', 'status');
       const details = el('div', 'rux--inline-notification__details');
       const i = icon('#m-warning-fill', 20); i.setAttribute('class', 'rux--inline-notification__icon');

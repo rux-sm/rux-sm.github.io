@@ -113,7 +113,7 @@
     $('scheduler-forms-flags').replaceChildren(...flags.map(s => {
       const d = drivers.find(x => x.id === s.driver_id);
       const f = forms.find(x => x.id === s.form_id);
-      const box = el('div', 'rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast');
+      const box = el('div', 'rux--inline-notification rux--inline-notification--warning');
       box.setAttribute('role', 'status');
       const details = el('div', 'rux--inline-notification__details');
       const text = el('div', 'rux--inline-notification__text-wrapper');

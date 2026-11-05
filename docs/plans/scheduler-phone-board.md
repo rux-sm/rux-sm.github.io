@@ -55,24 +55,26 @@ unpublished, served on :8641.
   account,** the + taking the place of a round button at the foot, which
   covered trips and which Carbon has no part for. The date line under it
   names the day or the days in view, with ‹ › in 3 days and Today.
+- **The phone opens on List the first time and on the view last used after
+  that,** as rux decided, kept in that phone's browser.
+- **Move to bus and Change driver are the Bus and Driver rows of the
+  pulled-up sheet,** as rux decided, each opening its picker; a drag still
+  moves a trip.
+- **A driver's and a customer's names open a screen of their own,** as rux
+  decided, in this plan: a driver's trips this week with their status and
+  Call, and a customer's coming trips and contacts, each opening the half
+  sheet for a trip.
+- **The bar at the foot holds Board, Drivers, Tasks and Live map,** built
+  from Design's `frame-bar`, rux having no preference: Drivers leads to the
+  driver's screen, Tasks carries its due mark as the toolbar does now,
+  search is in the top bar, and the ☰ menu keeps every other page.
 - **Every task is measured before and after** in Chrome on :8641 on a real
   week, a scroll's and a sheet's frames, with the numbers in the commit
   message, **and checked in the iPhone simulator,** held both ways.
 
 ## Questions
 
-- **Which view does the phone open on, and does it keep the last one
-  used?** The recommendation is List, keeping the last one on that phone.
-- **What are the places in the bar at the foot?** The mockups show Today,
-  Buses, Drivers, Tasks and More; the old decision was Board, Drivers,
-  Live map and Search. It turns on what is looked up most on the phone:
-  drivers, customers, itineraries or a trip.
-- **Where do Move to bus and Change driver go now that the sheet's row of
-  five goes?** The recommendation is the Bus and Driver rows of the
-  pulled-up sheet, each opening its picker, a drag still working.
-- **Do a driver and a customer get a screen of their own,** a tap on a name
-  opening the driver's trips this week with Call, or the customer's coming
-  trips and contacts, in this plan or a later one?
+None open.
 
 ## Tasks
 
@@ -84,4 +86,6 @@ unpublished, served on :8641.
 - [ ] Rebuild the two-day strip as 3 days, a bus a row, with ‹ ›.
 - [ ] Build Week, a day a row.
 - [ ] Add the bar of places at the foot.
+- [ ] Make Move to bus and Change driver the pulled-up sheet's rows.
+- [ ] Build the driver's screen and the customer's screen.
 - [ ] Show more days in 3 days with the phone turned sideways.

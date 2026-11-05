@@ -15150,6 +15150,14 @@
     window.Rux?.schedule?.fit?.();
     syncViewerButtons();
   }
+  /* Focus goes into the panel, onto its close, unless the panel's own
+     toolbar button opened it: a pressed button that shows and hides a pane
+     keeps the focus, as Tasks, Departures and Drivers do, so a second press
+     shuts it. Opened from a menu, a bar or a file, the focus would otherwise
+     be left on something that has gone. */
+  const focusViewer = opener => {
+    if (!opener?.hasAttribute('aria-pressed')) viewerClose?.focus();
+  };
 
   /* What the panel was last opened on, whether a page in its frame has been
      typed into since, and the trip it shows, by id, for the head's number and
@@ -15196,7 +15204,7 @@
     // tab has nothing here to follow.
     viewerDocId = null;
     showViewer(opener);
-    viewerClose?.focus();
+    focusViewer(opener);
     swapFrame(url);
   }
 
@@ -15244,7 +15252,7 @@
     viewerMark = mark;
     setTrip(trip?.id ?? doc.trip_id ?? null);
     showViewer(opener);
-    viewerClose?.focus();
+    focusViewer(opener);
     // The file showing, or downloading, is not fetched again.
     if (viewerShown?.id === doc.id || viewerLoading?.id === doc.id) return;
     const seq = ++viewerSeq;
@@ -15462,7 +15470,7 @@
     if (viewers.calc.el && !viewers.calc.el.hidden) { viewers.calc.close(); return; }
     const id = tripInFocus();
     const bar = selectedBar();
-    if (id && editorOn(id)) openCalculator(null);
+    if (id && editorOn(id)) openCalculator(null, calcOpen);
     else if (id) openSavedCalculator(panelIndex.trips.get(id), bar?.dataset.tripId === id ? bar.dataset.legKey : null, calcOpen);
     else {
       calcFor = null;
@@ -15519,8 +15527,10 @@
      editor's fields say now, saved or not. A trip picked on the board opens in
      the editor first, since the Summary is where its days are counted. Until
      the route has miles, typed estimated miles stand in, spread over the days
-     with the remainder on the first. `bar` is null from the editor's own row. */
-  async function openCalculator(bar) {
+     with the remainder on the first. `bar` is null from the editor's own row;
+     `opener` is what focus returns to, the toolbar's own button when that
+     opened it. */
+  async function openCalculator(bar, opener = bar ?? document.getElementById('scheduler-f-quotemenu')) {
     if (bar && !isEditorTrip(bar)) {
       const ref = barRef(bar);
       whenSafe(() => { openRef(ref); if (String(editing?.id) === String(ref.tripId)) openCalculator(null); });
@@ -15551,7 +15561,7 @@
       url: `quote.html?${params}`,
       kind: 'Quote calculator',
       note: '',
-      opener: bar ?? document.getElementById('scheduler-f-quotemenu'),
+      opener,
       trip: editing?.id ?? null,
     });
   }

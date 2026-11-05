@@ -40,6 +40,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 ## Buses and drivers
 
+- A day with no free bus is answered with no availability, never quoted with its buses left empty, even when the buses are held by unconfirmed quotes, because a quote is an offer of a bus the office does not have.
 - Drivers are sent the trip only once it is confirmed, so an unconfirmed trip's drivers not confirming is expected, not a problem.
 - A new driver goes out first as co-driver beside an experienced driver, never alone on a bus, so they learn the work before they drive a trip of their own.
 - A driver gets trips on two days in a row only when the rest between them is clearly enough, at least 10 hours from one trip's return to the yard to the next trip's departure, such as an evening trip back by 19:30 before a 10:30 departure, so the driver's hours reset. A trip spanning several days counts as one trip.

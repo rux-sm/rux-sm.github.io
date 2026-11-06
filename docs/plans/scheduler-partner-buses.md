@@ -165,9 +165,9 @@ None open.
 
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
-- [ ] Move the company's driver seat to a partner, and set the upcoming
-      trips whose updates say a bus was outsourced, asking rux for the
-      partner where an update does not name one.
+- [ ] Give trip 100783's outsourced bus to its partner, confirmed at its
+      price, once rux has the partner's company name, and trip 100662's two
+      outsourced buses once rux says who covers them.
 - [ ] Name the partner in the connector's `get_trip` and `needs_attention`,
       find its papers in `find_documents`, deploy the connector, whose rules
       already count a covered bus, and say how to enter one in the trips

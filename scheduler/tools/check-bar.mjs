@@ -408,10 +408,11 @@ expect('a trip with no updates says so, over Add update', [tipHead(tipDrawn('No 
   [['Updates', null], 'No updates yet.', [true, [['BUTTON', 'Add update', 'update']]]]);
 expect('more than five: Show all is a link at the footer\'s start, Add update at its end',
   footOf(tipDrawn('More than five')), [true, [['A', 'Show all 7', 'show-all'], ['BUTTON', 'Add update', 'update']]]);
-expect('more than five: the newest five and Show all with the count, and every one once opened',
+const everyUpdate = tipDrawn('More than five', { editor: () => ({ opened: true, editing: null, quick: null }) });
+expect('more than five: the newest five and Show all with the count, and every one once opened, with Show less',
   [tipDrawn('More than five').querySelectorAll('.scheduler-tip__update').length, text(tipDrawn('More than five'), '.scheduler-tip__more'),
-    tipDrawn('More than five', { editor: () => ({ opened: true, editing: null, quick: null }) }).querySelectorAll('.scheduler-tip__update').length],
-  [5, 'Show all 7', 7]);
+    everyUpdate.querySelectorAll('.scheduler-tip__update').length, text(everyUpdate, '.scheduler-tip__more')],
+  [5, 'Show all 7', 7, 'Show less']);
 const adding = [tipDrawn('Adding an update'), tipDrawn('Adding an update')];
 expect('adding: one box in Add\'s place across redraws, keeping what is typed, with Cancel and a primary Save',
   adding.map(c => [c.querySelectorAll('[data-quick] input').map(n => n.value), c.querySelector('.scheduler-tip__add'), c.querySelectorAll('[data-card-action]').map(b => b.dataset.cardAction),

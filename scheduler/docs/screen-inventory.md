@@ -339,8 +339,8 @@ count, then the newest five, newest first, each its words over who wrote it and 
 tooltip, and at its end a pencil, Carbon's small ghost icon button with its tooltip Edit update;
 with none, No updates yet. The pencil opens the update in its place, a box with Delete, Cancel and
 Save, where Delete asks before the update goes. The footer is Carbon's toggletip actions: where
-there are more than five, Show all with the count, a link at its start that turns to Show the
-newest 5, and Add update, a small primary button, at its end. Add update opens a box in the
+there are more than five, Show all with the count, a link at its start that turns to Show
+less, and Add update, a small primary button, at its end. Add update opens a box in the
 footer's place over Cancel and Save, Save primary once a line is typed, which adds the line as
 Enter does; Cancel, Escape or leaving it empty closes it, and the bar's right-click Add update
 opens the tip at that box. Inside a tip

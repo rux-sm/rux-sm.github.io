@@ -749,7 +749,8 @@
       tip.appendChild(list);
     }
     /* THE FOOTER, Carbon's toggletip actions: Show all as a link at its
-       start where there are more than five, and Add update, a small primary
+       start where there are more than five, Show less once they all show,
+       and Add update, a small primary
        button, at its end. Add update puts Carbon's small field in the
        footer's place, with Cancel and Save, Save primary once there are
        words to save. */
@@ -778,7 +779,7 @@
       foot.append(field, acts);
     } else {
       if (all.length > 5) {
-        const more = el('a', 'rux--link scheduler-tip__more', every ? 'Show the newest 5' : `Show all ${all.length}`);
+        const more = el('a', 'rux--link scheduler-tip__more', every ? 'Show less' : `Show all ${all.length}`);
         more.href = '#';
         more.dataset.editAct = 'show-all';
         foot.appendChild(more);

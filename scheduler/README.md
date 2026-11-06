@@ -93,7 +93,7 @@ them; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
 a multi-stop layout, on the 6 by 9 envelope itself; the hours-of-service record
 is one per seat too, in the top half of Letter, dated back 7 days from the leg.
-The driver itinerary is one copy per leg, on Letter, running onto as many sheets as its stops need, a day never starting
+The driver itinerary is one copy per leg, and one for each bus a partner covers, headed with the partner to send it, on Letter, running onto as many sheets as its stops need, a day never starting
 at the foot of a sheet and named again over the rest of it on the next, every line typed into before it is printed. Its
 Simple layout is the driver's, naming only the rest taken in the sleeper, and its Detailed one the office's; on either, a time past midnight on a one-day leg carries its weekday, and the customer quote says which day it arrives, both by `past-midnight.js`, the one rule for the day an undated time falls on, which `tools/check-past-midnight.mjs` checks. The Detailed one adds the yard, each wait and the leg's daily miles and
 hours from `route-figures.js`, the Route tab's own sum, which `tools/check-route-figures.mjs` checks. The
@@ -103,7 +103,7 @@ where it has none, lines of words typed under them, figures that are the trip's 
 and the Terms and Conditions Agreement Form behind it. A rental's wording is `quote-text.js`, which the
 trip editor's Copy for QuickBooks reads too, each leg from its own stops, so the description
 pasted into an estimate and the one printed on the quote read the same. The week schedule is the billing report of a week on
-Legal landscape, five buses a sheet, opened from the board's menu as Print
+Legal landscape, five buses a sheet and a row for each partner covering one that week, opened from the board's menu as Print
 week; `week.js` places its trips as it places the board's, and a trip that
 does not fit its row is named above the sheet. The binder covers and spines are the office's own, drawn from today's date and no trip: a Letter cover for each quotes and confirmed binder of this year and the next, and their spine strips in five ring sizes, every word typed over on the sheet. A year split between binders has one added from a cover's own button, and the months each holds are typed under its year, once for its cover and its spines. `print.js` holds the registry every form is an entry in; a
 new form names its group, its short name for the list, a

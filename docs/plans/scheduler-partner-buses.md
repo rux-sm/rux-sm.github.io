@@ -160,7 +160,7 @@ driver pickers, links and forms as if it were a person.
   hours-of-service record or driver's link.
 - **Departures lists it by the partner,** with their driver and phone and no
   seat steps.
-- **The week schedule prints it in a Partners row,** and the maintenance
+- **The week schedule prints it in its partner's row,** and the maintenance
   schedule leaves it out, because the coach never comes to our yard.
 - **The customer's quote, confirmations and emails never name the
   partner,** as now, and speak of the trip's buses; the Driver info message
@@ -200,8 +200,6 @@ None open.
       `partners.contact_name` and `trip_assignments.partner_driver_name` and
       `partner_driver_phone` with their place in the partner fields check;
       show it to rux and apply it on a yes.
-- [ ] Print it: the itinerary headed with the partner, the week schedule's
-      Partners row, and no envelope, hours of service or driver's link.
 - [ ] Give trip 100783's outsourced bus to its partner, confirmed at its
       price, once rux has the partner's company name, and trip 100662's two
       outsourced buses once rux says who covers them.

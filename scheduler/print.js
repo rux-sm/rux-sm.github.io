@@ -1149,11 +1149,19 @@
   /* WHO: the client and who to call on the day. No crew, no bus and no leg,
      because the envelope this sheet goes in names all three, and naming them
      twice is one fact with two homes. The Detailed layout, read at a desk,
-     puts where the group is going on the same line, in the same type. */
+     puts where the group is going on the same line, in the same type. A bus a
+     partner covers has no envelope of ours, so its sheet, which goes to the
+     partner, leads with the partner, its coach and its driver. */
   function itineraryMeta(subject, detailed = false) {
     const { trip, leg } = subject;
     const [contact, backup] = contactsOf(trip, leg);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
+    const covered = subject.assignment?.partner_id ? subject.assignment : null;
+    if (covered) {
+      const driver = covered.partner_driver;
+      meta.appendChild(headField('Partner', [covered.partner?.name, covered.partner_vehicle,
+        driver ? [driver.name, driver.phone].filter(Boolean).join(', ') : null].filter(Boolean).join(' · ')));
+    }
     if (detailed) {
       meta.classList.add('scheduler-driver-itinerary__meta--three');
       const where = headField('Destination', '');
@@ -2047,6 +2055,10 @@
     const columns = String(Math.max(1, crew.length));
     const crewLine = el('div', 'scheduler-week__crew');
     crewLine.dataset.fields = columns;
+    // A partner's bus names its driver, its partner's own, where ours name theirs.
+    if (assignment.partner_id && assignment.partner_driver) {
+      crewLine.appendChild(el('span', 'scheduler-week__driver', assignment.partner_driver.name));
+    }
     for (const d of crew) {
       const person = el('span', 'scheduler-week__driver');
       if (String(d.role).startsWith('relief')) {
@@ -2057,7 +2069,7 @@
       person.appendChild(el('span', null, d.drivers.short_name || d.drivers.name || ''));
       crewLine.appendChild(person);
     }
-    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', BLANK));
+    if (!crewLine.children.length) crewLine.appendChild(el('span', 'scheduler-week__driver', BLANK));
     facts.appendChild(crewLine);
     card.appendChild(facts);
 
@@ -2086,8 +2098,10 @@
     return card;
   }
 
-  // Every leg of every trip on a bus this week, with the days it covers, as
-  // the board places them: one card per bus the leg is on.
+  /* Every leg of every trip on a bus this week, with the days it covers, as
+     the board places them: one card per bus the leg is on, a bus a partner
+     covers under its partner, `partner:<id>`. */
+  const partnerKey = a => `partner:${a.partner_id}`;
   function barsOfWeek(trips, first) {
     const last = plusDays(first, 6);
     const byBus = new Map();
@@ -2096,11 +2110,12 @@
         const place = WEEK.clip(leg.from, leg.to, first, last);
         if (!place) continue;
         const onLeg = (trip.trip_assignments || [])
-          .filter(a => WEEK.legKeyOfVehicle(trip, a) === leg.key && a.bus_id)
+          .filter(a => WEEK.legKeyOfVehicle(trip, a) === leg.key && (a.bus_id || a.partner_id))
           .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
         onLeg.forEach((assignment, i) => {
-          if (!byBus.has(assignment.bus_id)) byBus.set(assignment.bus_id, []);
-          byBus.get(assignment.bus_id).push({
+          const key = assignment.bus_id ?? partnerKey(assignment);
+          if (!byBus.has(key)) byBus.set(key, []);
+          byBus.get(key).push({
             trip, leg, assignment, place: { ...place },
             of: leg.count > 1 ? `${i + 1}/${leg.count}` : '',
           });
@@ -2113,8 +2128,15 @@
   function weekSchedule(subject) {
     const first = dayOf(subject.week);
     const byBus = barsOfWeek(subject.trips || [], first);
-    // Every active bus, and an inactive one only in a week it has a trip.
-    const buses = (subject.buses || []).filter(b => b.status === 'active' || byBus.has(b.id));
+    /* Every active bus, and an inactive one only in a week it has a trip,
+       then a row for each partner covering a bus that week, headed with its
+       name, as the board has one below the fleet. */
+    const partners = new Map();
+    for (const [key, bars] of byBus) if (String(key).startsWith('partner:')) partners.set(key, bars[0].assignment.partner?.name || 'Partner');
+    const buses = [
+      ...(subject.buses || []).filter(b => b.status === 'active' || byBus.has(b.id)).map(b => ({ key: b.id, head: String(b.number ?? '') })),
+      ...[...partners].sort((a, b) => a[1].localeCompare(b[1])).map(([key, name]) => ({ key, head: name, partner: true })),
+    ];
     const pages = Math.max(1, Math.ceil(buses.length / BUSES_PER_SHEET));
     const title = weekTitle(first);
     const today = new Date();
@@ -2149,7 +2171,7 @@
       for (let r = 0; r < BUSES_PER_SHEET; r++) {
         const bus = buses[p * BUSES_PER_SHEET + r];
         const row = el('div', 'scheduler-week__row');
-        row.appendChild(el('div', 'scheduler-week__bus', bus ? String(bus.number ?? '') : ''));
+        row.appendChild(el('div', 'scheduler-week__bus', bus ? bus.head : ''));
         for (let d = 0; d < 7; d++) {
           // Placed by hand: the lanes already hold these columns in the same
           // row, and a cell left to find its own place is pushed past them.
@@ -2158,7 +2180,7 @@
           row.appendChild(cell);
         }
         const lanes = el('div', 'scheduler-week__lanes');
-        const bars = bus ? byBus.get(bus.id) || [] : [];
+        const bars = bus ? byBus.get(bus.key) || [] : [];
         // One lane stretches its cards to the row's height; two or more stack.
         const laneCount = bars.length ? WEEK.assignLanes(bars) : 0;
         lanes.dataset.lanes = String(laneCount);
@@ -2645,7 +2667,7 @@
      is a seat the form drops without saying so. */
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'route_id', 'position', 'bus_id', 'fuel_card_number',
-    'buses:bus_id(number,type)',
+    'buses:bus_id(number,type)', 'partner_id', 'partner:partner_id(name)',
     'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,drivers:driver_id(name,short_name,employment_type))',
   ].join(',');
 
@@ -3518,7 +3540,7 @@
      legs are read beside the buses. */
   const TRIP_BUSES_QUERY = 'id,destination,customer_id,start_date,return_start_date,trip_stops(leg,route_id),'
     + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
-    + 'trip_assignments(id,leg,route_id,position,buses:bus_id(number),'
+    + 'trip_assignments(id,leg,route_id,position,buses:bus_id(number),partner_id,partner:partner_id(name),'
     + 'trip_drivers(id,driver_id,role,envelope_printed,driver_forms_printed,drivers:driver_id(name,short_name)))';
 
   async function tripBuses(tripId) {
@@ -3531,7 +3553,9 @@
     const buses = (data.trip_assignments || [])
       .filter(a => (a.trip_drivers || []).some(d => d.driver_id))
       .sort(byLegThenPosition);
-    return { destination: data.destination, buses, legs: legsOf(data), trip: data };
+    // The buses partners cover, whose itinerary goes to the partner.
+    const covered = (data.trip_assignments || []).filter(a => a.partner_id).sort(byLegThenPosition);
+    return { destination: data.destination, buses, covered, legs: legsOf(data), trip: data };
   }
 
   async function showHub() {
@@ -3635,6 +3659,21 @@
       }
       const item = el('div', 'scheduler-print__row');
       item.append(...face(form, el('p', 'scheduler-print__row-need', need)));
+      rows.appendChild(item);
+    }
+
+    /* A BUS A PARTNER COVERS gets its own itinerary, headed with the
+       partner, its coach and its driver, to send the partner; it gets no
+       envelope or hours-of-service record, which are our drivers'. */
+    const itineraryForm = FORMS.find(form => form.id === 'driver-itinerary');
+    for (const a of found?.covered ?? []) {
+      const split = found.legs.length > 1;
+      const leg = legOfVehicle(found.trip, a);
+      const item = el('a', 'scheduler-print__row');
+      item.href = `print.html?form=driver-itinerary&assignment=${encodeURIComponent(a.id)}&trip=${encodeURIComponent(trip)}`
+        + `&leg=${encodeURIComponent(leg)}&from=forms`;
+      item.append(...face({ ...itineraryForm,
+        short: `Itinerary for ${a.partner?.name || 'a partner'}${split ? `, ${legDays(found.trip, leg)}` : ''}` }));
       rows.appendChild(item);
     }
 
@@ -3796,7 +3835,7 @@
     'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
     'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_stops(leg,route_id,position,type,depart_prev,depart_prev_date,spot,spot_date,arrive,miles)',
-    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,trip_drivers(id,role,pay,drivers(name,short_name)))',
+    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,partner_id,partner:partner_id(name),partner_driver:partner_driver_id(name),trip_drivers(id,role,pay,drivers(name,short_name)))',
     'trip_payments(position,amount,method,date,ref)',
     'trip_pos(position,ref,amount)',
     'trip_invoices(position,number)',
@@ -3846,7 +3885,7 @@
     const columns = tripQuery(form);
     const { data, error } = assignmentId
       ? await client.from('trip_assignments')
-        .select(`id,leg,route_id,buses:bus_id(number,type),trips:trip_id(${columns})`)
+        .select(`id,leg,route_id,buses:bus_id(number,type),partner_id,partner_vehicle,partner:partner_id(name),partner_driver:partner_driver_id(name,phone),trips:trip_id(${columns})`)
         .eq('id', assignmentId).maybeSingle()
       : await client.from('trips').select(columns).eq('id', tripId).maybeSingle();
     if (error) return say('error', 'The schedule did not answer.', error.message);
@@ -3910,6 +3949,11 @@
       seat: null,
     };
     const copies = form.copies(subject);
+    // A bus a partner covers has its partner's driver, whom the office prints nothing personal for.
+    if (!copies.length && data.partner_id) {
+      return say('info', `${data.partner?.name || 'A partner'} covers this bus.`,
+        `Its driver is the partner's own, so the office prints no ${form.name.toLowerCase()} for it. Its itinerary, headed with the partner, is on the trip's Forms.`);
+    }
     if (!copies.length) {
       return say('info', 'This bus has no driver yet.',
         `Fill a seat on the trip's Buses tab, and the ${form.name.toLowerCase()} has someone to print for.`);

@@ -1048,11 +1048,7 @@
        Call and Text for a driver with no number, and names Pick out trips
        Show every trip while that driver is picked. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-driver-menu" role="menu" tabindex="-1" hidden>
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-driver-menu-send">
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
-      <div class="rux--menu-item__label">Send trips</div>
-    </li>
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-open">
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-driver-menu-open">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></div>
       <div class="rux--menu-item__label">Open driver</div>
     </li>
@@ -1067,9 +1063,27 @@
       <div class="rux--menu-item__label">Text</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-send">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
+      <div class="rux--menu-item__label">Send trips</div>
+    </li>
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-pick">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-visibility"/></svg></div>
       <div class="rux--menu-item__label">Pick out trips</div>
+    </li>
+  </ul>
+
+  <!-- A bus head's menu, in the driver menu's order: the record, then where
+       it is. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-bus-menu" role="menu" tabindex="-1" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bus-menu-open">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
+      <div class="rux--menu-item__label">Open bus</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator" id="scheduler-bus-menu-reach"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bus-menu-map">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
+      <div class="rux--menu-item__label">Show on map</div>
     </li>
   </ul>
 
@@ -1973,6 +1987,7 @@
 <script src="bar.js"></script>
 <script src="road-bar.js"></script>
 <script src="bus-head.js"></script>
+<script src="driver-head.js"></script>
 <script src="trip-tips.js"></script>
 <script src="trip-sheet.js"></script>
 <script src="data.js"></script>

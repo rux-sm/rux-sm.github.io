@@ -129,11 +129,11 @@ const window = {};
 const context = { window, document, Intl, Date, Math, Number, String, Map, Set, Array, Object, JSON, Promise, WeakMap, RegExp,
   setTimeout: () => 0, console };
 for (const file of ['requirements.js', 'trip-shape.js', 'leg-facts.js', 'phone.js', 'billing.js', 'follow-up.js', 'past-midnight.js', 'week.js', 'road.js', 'live-trip.js',
-  'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'bus-head.js', 'trip-tips.js', 'trip-sheet.js',
+  'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'bus-head.js', 'driver-head.js', 'trip-tips.js', 'trip-sheet.js',
   'components-data.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context, { filename: file });
 }
-const { SchedulerBar: Bar, SchedulerRoadBar: RoadBar, SchedulerBusHead: BusHead, SchedulerLiveTrip: Live, SchedulerWeek: Week } = window;
+const { SchedulerBar: Bar, SchedulerRoadBar: RoadBar, SchedulerBusHead: BusHead, SchedulerDriverHead: DriverHead, SchedulerLiveTrip: Live, SchedulerWeek: Week } = window;
 const data = window.SchedulerComponentsData.build();
 
 // Each sample's bars drawn as components.js draws them.
@@ -715,6 +715,40 @@ expect('the tip words what the head shows',
 expect('a standing bus\'s tip says its state, then the address, naming the city once',
   BusHead.tipOf({}, { engine: 'idle', engine_at: ago(12), mph: 0, place: '4015 South Interstate 35, San Marcos, TX, 78666', seen: new Date().toISOString() }).slice(0, 2),
   ['Idling 12m', '4015 South Interstate 35, San Marcos, TX, 78666']);
+const papers = h => { const m = h.querySelector('.scheduler-row-head__papers'); return m ? [m.dataset.tone, m.getAttribute('aria-label')] : null; };
+expect('the papers\' one mark: amber while one expires within 45 days, red once one has expired, the soonest first, and none further off',
+  [papers(busHead(null, { capacity: 56, inspection_exp: dayIn(20) })),
+    papers(busHead({ engine: 'on', mph: 40 }, { capacity: 56, inspection_exp: dayIn(20), insurance_exp: dayIn(-3), registration_exp: dayIn(90) })),
+    papers(busHead(null, { capacity: 56, insurance_exp: dayIn(90) }))],
+  [['warning', 'Inspection expires in 20 days'], ['error', 'Insurance expired 3 days ago. Inspection expires in 20 days'], null]);
+expect('the tip words each paper in the inspection\'s place',
+  [BusHead.tipOf({ registration_exp: dayIn(10), inspection_exp: dayIn(90) }, null),
+    BusHead.tipOf({ insurance_exp: dayIn(0) }, { engine: 'off', mph: 0, fault: null, faults: [] })],
+  [['Registration expires in 10 days'], ['Engine off', 'Insurance expires today']]);
+
+console.log('\n  The roster');
+const H = 3600e3;
+expect('a driver\'s line: the time left driving, the duty log\'s word and the time left on duty, the hours rested off or in the berth, a dash with no clock',
+  [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'yard', left_ms: 3 * H },
+    { duty: 'off', left_ms: 10 * H, rest_since: ago(14.2 * 60) }, { duty: 'sleeper', left_ms: 4 * H, rest_since: ago(40) },
+    { duty: 'off', rest_since: ago(30 * 60) }, { duty: 'off', rest_since: null }, null]
+    .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone]; }),
+  [['6:30 left', 'normal'], ['On 0:36', 'warning'], ['Yard 3:00', 'normal'], ['Off 14h', 'normal'], ['SB 40m', 'normal'],
+    ['Off 24h+', 'normal'], ['Off', 'normal'], ['\u2013', 'quiet']]);
+const today = new Date(new Date().setHours(0, 0, 0, 0));
+expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
+  DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
+    [{ kind: 'unsent', trip: { destination: 'McAllen' }, legName: null }, { kind: 'tell', trip: { destination: 'Austin' }, legName: 'Return' }], today)
+    .map(m => [m.kind, m.tone, m.words]),
+  [['papers', 'error', 'Medical card expired 2 days ago'], ['papers', 'warning', 'Licence expires in 12 days'],
+    ['tell', 'warning', 'Tell of a change: Austin, Return'], ['unsent', 'warning', 'Not sent: McAllen']]);
+expect('a card further off than 45 days, or none on file, marks nothing',
+  DriverHead.marksOf({ license_exp: dayIn(46), med_card_expiry: null }, [], today), []);
+const cell = document.createElement('div');
+DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'driving', left_ms: 2 * H }, []);
+expect('the head draws the short name over the line, and the most urgent mark before them',
+  [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone],
+  ['Rigo', '2:00 left', 'warning']);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

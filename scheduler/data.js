@@ -641,7 +641,7 @@
      others broadcast nothing, so they are owed again on coming back to the
      tab, on the channel joining again, and when a change cannot be told. */
   const LIST_READS = {
-    buses: () => client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin,inspection_exp').order('sort_order').then(rowsOf),
+    buses: () => client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin,insurance_exp,registration_exp,inspection_exp').order('sort_order').then(rowsOf),
     // `status`, so the Buses tab offers active drivers; `priority`, so the
     // roster lists them in the order they are called on; `employment_type`,
     // because a part-time driver needs an hours-of-service record; the
@@ -898,6 +898,19 @@
 
   let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false, roadLive = null;
   const BusHead = window.SchedulerBusHead;
+  const DriverHead = window.SchedulerDriverHead;
+  // A driver's entry in samsara-now's answer, or null.
+  const liveDriverOf = id => roadAnswer?.drivers?.find(d => String(d.driver_id) === String(id)) ?? null;
+  // A driver's legs to tell of a change or still to send, as to-do-rows.js last read them.
+  const driverAlertsOf = id => window.SchedulerToDoRows?.drivers().get(String(id)) ?? [];
+  // Each roster head again, with what Samsara and the trips say now.
+  function drawDriverHeads() {
+    for (const n of availGrid?.querySelectorAll('.scheduler-avail__name[data-driver-id]') ?? []) {
+      const driver = availAll?.rows.find(r => String(r.driver.id) === n.dataset.driverId)?.driver;
+      if (driver) DriverHead.draw(n, driver, liveDriverOf(driver.id), driverAlertsOf(driver.id));
+    }
+  }
+  document.addEventListener('scheduler:to-do-rows', () => drawDriverHeads());
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
   // Logged in and samsara-now not yet asked: the heads draw every bus at rest until it answers.
   const roadWaiting = () => !!client && !roadStopped && !roadAnswer && !roadAsked;
@@ -962,6 +975,7 @@
       const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
       BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-tip'), waiting: roadWaiting() });
     }
+    drawDriverHeads();
     roadBars(gridEl.querySelectorAll('.scheduler-bar[data-bus-id]'));
     if (busSheetFor) drawBusSheet();
     // A card showing the live card follows its bus with each answer, and the phone's sheet says what is happening now.
@@ -10542,6 +10556,8 @@
   availGrid?.addEventListener('click', e => {
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
     if (name) {
+      // The second press of a double-click opens the record, so it picks no one.
+      if (e.detail > 1) return;
       // The tap that ends a hold opened the name's menu, and the press that
       // ends a carry dropped the name; neither picks anyone.
       if (heldName || carriedName) { heldName = carriedName = false; return; }
@@ -10554,6 +10570,13 @@
     if (!availRefs.get(cell)?.length && focusDriver != null) pickDriver(null);
     else selectDayTrip(cell);
   });
+  // A double-click on a name opens the driver's record, as one on a trip opens the trip.
+  availGrid?.addEventListener('dblclick', e => {
+    const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
+    if (!name) return;
+    window.getSelection?.()?.removeAllRanges();
+    follow(`drivers.html?id=${encodeURIComponent(name.dataset.driverId)}`, true);
+  });
   availGrid?.addEventListener('keydown', e => {
     const name = e.target.closest?.('.scheduler-avail__name[data-driver-id]');
     if (!name) return;
@@ -10561,11 +10584,13 @@
     else if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
   });
 
-  /* A NAME'S MENU, from a right-click, the menu key or a finger's hold: Send
-     trips opens the Driver view and Open driver the driver's record, each in
-     a new tab so the board stays as it is; Call and Text reach the driver as
-     a trip's Contacts do, shown only with a number; Pick out trips is the
-     name's own press. Placed and opened as the bar's menu is. */
+  /* A NAME'S MENU, from a right-click, the menu key or a finger's hold, in
+     the order a bus head's menu shares: Open driver opens the driver's
+     record in a new tab, so the board stays as it is, as a double-click on
+     the name does; Call and Text reach the driver as a trip's Contacts do,
+     shown only with a number; Send trips opens the Driver view in a new tab;
+     Pick out trips is the name's own press. Placed and opened as the bar's
+     menu is. */
   const driverMenu = document.getElementById('scheduler-driver-menu');
   let driverMenuFor = null;
   let heldName = false;
@@ -11120,7 +11145,7 @@
     // The roster in front of the board has no trip under it to drop on.
     if (!name || pageEl?.getAttribute('data-takeover') === 'roster') return;
     carry(down, {
-      driverId: name.dataset.driverId, label: name.textContent, held: name, dim: 'scheduler-avail__name--carried',
+      driverId: name.dataset.driverId, label: name.querySelector('.scheduler-avail__who')?.textContent ?? '', held: name, dim: 'scheduler-avail__name--carried',
       onLift: () => { carriedName = true; },
     });
   });
@@ -11164,6 +11189,78 @@
     } else if (item.id === 'scheduler-driver-menu-pick') pickDriver(id);
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
+
+  /* A BUS HEAD'S MENU, from a right-click, the menu key or a finger's hold,
+     in the driver menu's order: Open bus opens the bus's Fleet record in a
+     new tab, as Open driver opens the driver's, and Show on map, for a bus
+     Samsara answers for, opens the Live map on it, as the bar's menu does.
+     A double-click on the head opens the record too, as one on a name or a
+     trip does. A press is the head's own, its tip. */
+  const busMenu = document.getElementById('scheduler-bus-menu');
+  let busMenuFor = null;
+  let heldHead = false;
+  const busHeadOf = target => target.closest?.('.scheduler-row-head[data-bus-id]') ?? null;
+  function openBusMenu(head, e) {
+    const id = head.dataset.busId;
+    if (!busMenu || !id) return;
+    busMenuFor = id;
+    const mapped = !!roadAnswer?.buses?.some(b => b.bus_id === id);
+    document.getElementById('scheduler-bus-menu-map').hidden = !mapped;
+    document.getElementById('scheduler-bus-menu-reach').hidden = !mapped;
+    popMenuAt(busMenu, e);
+  }
+  gridEl.addEventListener('contextmenu', e => {
+    const head = busHeadOf(e.target);
+    if (!head) return;
+    e.preventDefault();
+    openBusMenu(head, e);
+  });
+  /* A finger holding still on a head opens its menu, timed and bounded as a
+     name's hold is; the tap that ends it opens no tip. */
+  gridEl.addEventListener('pointerdown', down => {
+    heldHead = false;
+    if (down.pointerType !== 'touch' || !down.isPrimary) return;
+    const head = busHeadOf(down.target);
+    if (!head) return;
+    const mine = e => e.pointerId === down.pointerId;
+    const move = e => {
+      if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
+    };
+    const up = e => { if (mine(e)) end(); };
+    const end = () => {
+      clearTimeout(hold);
+      gridEl.removeEventListener('pointermove', move);
+      gridEl.removeEventListener('pointerup', up);
+      gridEl.removeEventListener('pointercancel', up);
+    };
+    const hold = setTimeout(() => { end(); heldHead = true; openBusMenu(head, down); }, TOUCH_HOLD_MS);
+    gridEl.addEventListener('pointermove', move);
+    gridEl.addEventListener('pointerup', up);
+    gridEl.addEventListener('pointercancel', up);
+  });
+  // Caught on the way down, before Design's popover sees it at the document.
+  gridEl.addEventListener('click', e => {
+    if (!heldHead || !busHeadOf(e.target)) return;
+    heldHead = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+  gridEl.addEventListener('dblclick', e => {
+    const head = busHeadOf(e.target);
+    if (!head) return;
+    window.getSelection?.()?.removeAllRanges();
+    follow(`fleet.html?id=${encodeURIComponent(head.dataset.busId)}`, true);
+  });
+  busMenu?.addEventListener('click', e => {
+    const item = e.target.closest('.rux--menu-item');
+    if (!item || !busMenuFor) return;
+    window.Rux?.menu?.close?.(busMenu);
+    busMenu.hidden = true;
+    const ref = encodeURIComponent(busMenuFor);
+    if (item.id === 'scheduler-bus-menu-open') follow(`fleet.html?id=${ref}`, true);
+    else if (item.id === 'scheduler-bus-menu-map') location.href = `live.html?bus=${ref}`;
+  });
+  busMenu?.addEventListener('rux:menu-closed', e => { if (e.target === busMenu) busMenu.hidden = true; });
 
   /* The roster shows the week the board does. Under a strip it shows the
      week in view, and follows the scroll. */
@@ -11356,13 +11453,14 @@
       const starts = n === 0 || p !== band;
       band = p;
       const r = el('div', `scheduler-avail__row${starts && n ? ' scheduler-avail__row--break' : ''}`);
-      /* The full name and the priority go on the title, because the cell
-         shows `short_name` when there is one and ellipses a long name. `title`
-         is hover only, so it does not help a keyboard or screen-reader user
-         tell two similar names apart. */
-      const shown = row.driver.short_name || row.driver.name || 'Driver';
-      const nameEl = el('div', 'scheduler-avail__name', shown);
-      nameEl.title = `${row.driver.name || shown} · ${p == null ? 'No priority' : `Priority ${p}`}`;
+      /* The cell is the driver's head, driver-head.js's: the name, what
+         Samsara's clock says now and the most urgent mark. The full name,
+         the priority and every mark's words go on its title, because the
+         cell shows `short_name` when there is one and ellipses a long name.
+         `title` is hover only, so it does not help a keyboard or
+         screen-reader user tell two similar names apart. */
+      const nameEl = el('div', 'scheduler-avail__name');
+      DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id));
       // A press picks out the driver's trips on the board; see `markDriverTrips`.
       nameEl.setAttribute('role', 'button');
       nameEl.tabIndex = 0;

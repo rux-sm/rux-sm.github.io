@@ -16,6 +16,11 @@
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
+   - In the kit beside the number, where the out-of-service mark is, one
+     mark for its papers, the insurance, registration and inspection, as the
+     Fleet page compares them: amber while one expires within WARN_DAYS and
+     red once one has expired, as a driver's head marks their licence and
+     medical card. The words of each are the number's toggletip's.
    The fuel is a meter filled to the tank's share over its percent, grey
    until low, orange, or critical, red. Until samsara-now first
    answers, every bus is drawn at rest, Off over an empty fuel meter and a
@@ -160,12 +165,53 @@
     };
   }
 
+  // The papers the Fleet page compares, and the words it gives them.
+  const PAPERS = [['insurance_exp', 'Insurance'], ['registration_exp', 'Registration'], ['inspection_exp', 'Inspection']];
+  /* Each paper that expires within WARN_DAYS or has expired, the soonest
+     first: `{ tone, words }`, tone `error` once expired. */
+  function papersOf(bus, today = new Date(new Date().setHours(0, 0, 0, 0))) {
+    const out = [];
+    for (const [field, word] of PAPERS) {
+      const v = String(bus?.[field] ?? '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) continue;
+      const [y, m, d] = v.split('-').map(Number);
+      const n = Math.round((new Date(y, m - 1, d) - today) / DAY);
+      if (n > WARN_DAYS) continue;
+      const plural = k => `${k} day${k === 1 ? '' : 's'}`;
+      out.push({ n, tone: n < 0 ? 'error' : 'warning',
+        words: n < 0 ? `${word} expired ${plural(-n)} ago` : n === 0 ? `${word} expires today` : `${word} expires in ${plural(n)}` });
+    }
+    return out.sort((a, b) => a.n - b.n).map(({ tone, words }) => ({ tone, words }));
+  }
+
+  // The papers' one mark in the kit, in the worst tone, or none.
+  function drawPapers(head, papers) {
+    const top = head.querySelector(':scope > .scheduler-row-head__top');
+    if (!top) return;
+    let kit = top.querySelector(':scope > .scheduler-row-head__kit');
+    kit?.querySelector(':scope > .scheduler-row-head__papers')?.remove();
+    if (!papers.length) {
+      if (kit && !kit.childElementCount) kit.remove();
+      return;
+    }
+    if (!kit) top.appendChild(kit = el('div', 'scheduler-row-head__kit'));
+    const error = papers.some(p => p.tone === 'error');
+    const mark = el('span', 'scheduler-row-head__papers');
+    mark.dataset.tone = error ? 'error' : 'warning';
+    mark.setAttribute('role', 'img');
+    mark.setAttribute('aria-label', papers.map(p => p.words).join('. '));
+    mark.appendChild(svgUse(error ? '#i-error--filled' : '#i-warning--alt--filled', '16', '0 0 32 32'));
+    kit.prepend(mark);
+  }
+
   function draw(head, bus, live, opts = {}) {
     const shown = live ?? (opts.waiting ? WAITING : null);
-    const key = JSON.stringify(shown ? [shown.waiting, shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
-      shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp]);
+    const papers = papersOf(bus);
+    const key = JSON.stringify([papers, ...(shown ? [shown.waiting, shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
+      shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp])]);
     if (head.dataset.live === key) return;
     head.dataset.live = key;
+    drawPapers(head, papers);
     head.toggleAttribute('data-signal-lost', !!noSignal(shown));
     const top = head.querySelector('.scheduler-row-head__top');
 
@@ -230,11 +276,14 @@
     }
   }
 
-  // The lines the number's toggletip adds while the bus is answered for.
+  /* The lines the number's toggletip adds: its papers' words while one
+     expires within WARN_DAYS, and while the bus is answered for, what it is
+     doing. */
   function tipOf(bus, live) {
+    const papers = papersOf(bus).map(p => p.words);
     if (!live) {
       const insp = inspection(bus);
-      return insp ? [insp.words] : [];
+      return papers.length ? papers : insp ? [insp.words] : [];
     }
     return [
       stateOf(live).words,
@@ -242,10 +291,10 @@
       [live.fuel != null ? `Fuel ${live.fuel}%` : null, live.def != null ? `DEF ${live.def}%` : null].filter(Boolean).join(' · ') || null,
       live.odometer != null ? `${live.odometer.toLocaleString()} mi` : null,
       live.seen ? `Last seen ${ago(live.seen)} ago` : null,
-      inspection(bus)?.words,
+      ...(papers.length ? papers : [inspection(bus)?.words]),
       live.fault ? [lampOf(live).word, ...(live.faults ?? [])].join(' · ') : null,
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, papersOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

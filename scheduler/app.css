@@ -535,8 +535,9 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
 }
-/* The type's drawing and the out-of-service mark at the top right. An
-   engine lamp is not drawn here: it leads its line in the number's tip. */
+/* The type's drawing, the papers' mark and the out-of-service mark at the
+   top right. An engine lamp is not drawn here: it leads its line in the
+   number's tip. */
 .scheduler-row-head__kit {
   position: relative;
   pointer-events: none;
@@ -546,6 +547,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__kit svg { display: block; }
 .scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
+/* The papers' mark in the bus head's readings' warning and error inks, as a
+   driver's mark in the roster. */
+.scheduler-row-head__papers { color: var(--scheduler-head-low); display: inline-flex; }
+.scheduler-row-head__papers[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* The compact board's one dot, drawn only there. */
 .scheduler-row-head__dot { display: none; box-sizing: border-box; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
@@ -3648,15 +3653,16 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__cell--week,
 .scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
 
-/* The roster's rows are Carbon's sm height, 32px, level with the header band. */
-.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-sm); max-block-size: 15rem; }
+/* The roster's rows are Carbon's md height, 40px, room for a driver's head
+   on two lines, as a bus's head stands over its row. */
+.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-md); max-block-size: 15rem; }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
 .scheduler-aside .scheduler-week--avail {
   --scheduler-head-w: minmax(0, 1fr);
-  /* Each day column is as wide as the row is tall, so a day reads as a square
-     mark; the two-letter day heads fit inside it. */
+  /* Each day column is Carbon's sm, 32px, which the day letters fit, and
+     leaves the names what they had before the rows grew to two lines. */
   --scheduler-day-track: var(--rux-layout-size-height-sm);
   /* Takes what the head leaves of the height app.js gives the aside: a short
      list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`
@@ -3745,16 +3751,49 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 
 /* The rule between the names and the days belongs to the first day's cell, not
-   to this one, so all seven days have the same box. A driver's name is read
-   rather than scanned like the board's labels, so it takes Carbon's
-   `body-compact-01`, 14px, over the 12px the grid sets; the 32px `line-height`
-   above still centres it in its row. It starts 32px in, under the pane's
-   title, and keeps 8px before the first day. */
+   to this one, so all seven days have the same box. A driver's head,
+   driver-head.js's, is two lines centred in the row: the name, read rather
+   than scanned like the board's labels, in Carbon's `body-compact-01`, 14px,
+   over what Samsara's clock says in its `label-01`, 12px, the bus head's
+   reading size. It starts 32px in, under the pane's title, and keeps 8px
+   before the first day; the most urgent mark stands in those 32px, level
+   with the name. */
 .scheduler-avail__name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  line-height: normal;
   padding-inline: var(--rux-spacing-07) var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
+.scheduler-avail__who,
+.scheduler-avail__state {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scheduler-avail__who { line-height: var(--rux-body-compact-01-line-height); }
+.scheduler-avail__state {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-weight: var(--rux-label-01-font-weight);
+  color: var(--rux-text-secondary);
+}
+/* Amber under an hour left, in the bus head's warning ink. */
+.scheduler-avail__state[data-tone="warning"] { color: var(--scheduler-head-low); }
+/* The mark's top puts its 16px level with the name's 18px line, the two
+   lines' 34px centred in the row. */
+.scheduler-avail__mark {
+  position: absolute;
+  inset-inline-start: var(--rux-spacing-03);
+  inset-block-start: calc((var(--scheduler-avail-h) - 34px) / 2 + 1px);
+  display: inline-flex;
+  color: var(--scheduler-head-low);
+}
+.scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 
 /* The corner stays above the day letters when the roster scrolls sideways.
    It needs the header row's two-class specificity to beat their z-index 3. */
@@ -3940,8 +3979,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name[aria-pressed="true"] {
   background: var(--rux-layer-selected);
   color: var(--rux-text-primary);
-  font-weight: var(--rux-heading-compact-01-font-weight);
 }
+.scheduler-avail__name[aria-pressed="true"] .scheduler-avail__who { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-avail__name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-avail__cell--busy { cursor: pointer; }
 

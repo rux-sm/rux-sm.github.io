@@ -77,7 +77,7 @@
   function barOf(b, data) {
     const { spec } = b;
     const { bar, facts } = Bar.draw(b, {
-      driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
+      driversById: data.driversById, busesById: data.busesById, statuses: data.statuses, partnersById: data.partnersById,
       saving: () => !!spec.state?.saving,
     });
     if (spec.state?.pressed) bar.setAttribute('aria-current', 'true');
@@ -103,11 +103,12 @@
   /* What a tip reads from the board, trip-tips.js's `board`, answered from
      the sample: its drivers, buses and answers, its bar's facts, its bus out
      as components-data.js wrote it, and the updates open as `tip.editor`
-     says. Nothing else stands near it, no photo is signed and no staff are
-     read, so a seat has no clash and a face is its initial. */
+     says. No other trip stands near it, no photo is signed and no staff are
+     read, so a seat clashes with nothing and a face is its initial; what
+     stands in the way is only a sample's own, such as a partner's paper. */
   function tipBoard(sample, data) {
     return {
-      driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
+      driversById: data.driversById, busesById: data.busesById, statuses: data.statuses, partnersById: data.partnersById,
       facts: bar => drawnBars.get(bar)?.facts ?? null,
       road: bar => {
         const look = drawnBars.get(bar)?.spec.live?.look;
@@ -118,7 +119,7 @@
         const assign = trip.trip_assignments.find(a => String(a.id) === bar.dataset.assignmentId);
         return assign ? { trip, assign, role, range: legByKey(trip, legKeyOfVehicle(trip, assign)) } : null;
       },
-      standing: () => [],
+      standing: (trip, leg) => window.SchedulerClashes.standing(trip, leg, { trips: [], off: [], oos: [] }, data),
       near: () => null,
       photo: () => Promise.resolve(''),
       staff: () => null,
@@ -137,9 +138,10 @@
     const { trip } = drawnBars.get(bar).spec;
     const { kind, section = '' } = sample.tip;
     const said = tipBoard(sample, data);
-    if (kind === 'card' || kind === 'driver' || kind === 'route') {
+    if (kind === 'card' || kind === 'driver' || kind === 'partner' || kind === 'route') {
       const frame = el('div', `${Tips.CONTAINER} scheduler-components__tip`);
-      const tip = kind === 'card' ? Tips.card(trip, bar, section, said) : kind === 'driver' ? Tips.driver(trip, bar, section, said) : Tips.route(trip, bar, said);
+      const tip = kind === 'card' ? Tips.card(trip, bar, section, said) : kind === 'driver' ? Tips.driver(trip, bar, section, said)
+        : kind === 'partner' ? Tips.partner(trip, bar, said) : Tips.route(trip, bar, said);
       frame.appendChild(Tips.surface(tip));
       return frame;
     }
@@ -168,10 +170,12 @@
     const grid = el('div', 'scheduler-grid');
     for (const r of sample.rows) {
       const none = r.head === 'No bus';
-      const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : ''}`);
+      const partners = r.head === 'Partners';
+      const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : partners ? ' scheduler-row--partners' : ''}`);
       const head = el('div', 'scheduler-row-head');
-      head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
+      head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : partners ? 'Part\u00ADners' : r.head));
       if (none) head.title = 'Trips with no bus yet';
+      if (partners) head.title = 'Buses partners cover with their own coach and driver';
       const track = el('div', 'scheduler-track');
       const bars = r.bars.map(placed);
       track.style.setProperty('--scheduler-lanes', assignLanes(bars));

@@ -145,11 +145,23 @@
     line.append(el('span', 'scheduler-sheet__pip'), el('span', null, words.join(' · ')));
     return line;
   }
-  // The bar's bus and its seats, each driver by name with the bar's own mark.
+  // The bar's vehicle, and the partner covering it, if one does.
+  const assignOf = (trip, bar) => (trip.trip_assignments || []).find(a => String(a.id) === bar.dataset.assignmentId);
+  const partnerOf = (assign, board) => (assign?.partner_id != null ? board.partnersById?.get(assign.partner_id) ?? { name: 'A partner' } : null);
+  /* The bar's bus and its seats, each driver by name with the bar's own
+     mark, or the partner covering it with its answer's mark. */
   function sheetCrew(trip, bar, board) {
-    const assign = (trip.trip_assignments || []).find(a => String(a.id) === bar.dataset.assignmentId);
+    const assign = assignOf(trip, bar);
     const due = Bar.staffingDue(legByKey(trip, bar.dataset.legKey || bar.dataset.leg) ?? { from: trip.start_date, to: trip.end_date });
     const done = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    const partner = partnerOf(assign, board);
+    if (partner) {
+      const seat = el('span', 'scheduler-sheet__seat');
+      const status = window.SchedulerLegFacts.DRIVER_STATUSES.find(s => s.value === (assign.partner_confirmed ? 'confirmed' : 'pending-response'));
+      if (!done) seat.append(Bar.glyphEl({ href: status.icon, box: '0 0 32 32', indicator: status.indicator }));
+      seat.append(el('span', null, partner.name));
+      return [seat];
+    }
     return (assign ? crewOf(trip, assign, board.driversById, board.statuses) : []).map(c => {
       const seat = el('span', 'scheduler-sheet__seat');
       const glyph = Bar.crewGlyph(c, due, done);
@@ -160,9 +172,10 @@
   }
   function sheetKit(trip, bar, board) {
     const bus = bar.dataset.busId ? board.busesById.get(bar.dataset.busId) : null;
+    const covered = bar.dataset.partnerId;
     const row = el('div', 'scheduler-sheet__kit');
     const which = el('span', 'scheduler-sheet__bus');
-    which.append(svgUse('#m-directions_bus', '16', '0 0 32 32'), bus ? `Bus ${bus.number}` : 'No bus');
+    which.append(svgUse('#m-directions_bus', '16', '0 0 32 32'), bus ? `Bus ${bus.number}` : covered ? 'Partner' : 'No bus');
     const crew = el('span', 'scheduler-sheet__crew');
     crew.append(...sheetCrew(trip, bar, board));
     row.append(which, crew);
@@ -198,12 +211,28 @@
     const pickup = stops.find(st => st.type === 'pickup') ?? stops[0];
     if (pickup) fact('Pickup', [pickup.spot ? hhmm(pickup.spot, true) : null, (pickup.name || pickup.address || '').trim()].filter(Boolean).join(' · '));
     const bus = bar.dataset.busId ? board.busesById.get(bar.dataset.busId) : null;
-    const busWords = el('span', null, bus ? [vehicleName(bus), bus.capacity ? `${bus.capacity} seats` : null].filter(Boolean).join(' · ') : 'No bus');
-    fact('Bus', sheetAction('move', bar, 'row', busWords, board));
-    const crewWords = el('span', 'scheduler-sheet__crew');
-    crewWords.append(...sheetCrew(trip, bar, board));
-    if (!crewWords.childElementCount) crewWords.append('No driver seat');
-    fact('Driver', sheetAction('driver', bar, 'row', crewWords, board));
+    const assign = assignOf(trip, bar);
+    const partner = partnerOf(assign, board);
+    /* A bus a partner covers is the partner's: its coach and its driver as
+       the partner gave them, the driver dialling, and its price. It moves
+       only on the Buses tab, where its partner is let go. */
+    if (partner) {
+      const crewWords = el('span', 'scheduler-sheet__crew');
+      crewWords.append(...sheetCrew(trip, bar, board));
+      fact('Partner', crewWords);
+      if (assign.partner_vehicle) fact('Coach', assign.partner_vehicle);
+      if (assign.partner_driver_name || assign.partner_driver_phone) {
+        fact('Driver', sheetPerson({ name: assign.partner_driver_name || 'Not named', phone: assign.partner_driver_phone }));
+      }
+      if (partner.phone) fact('Call', sheetPerson({ name: partner.name, phone: partner.phone }));
+    } else {
+      const busWords = el('span', null, bus ? [vehicleName(bus), bus.capacity ? `${bus.capacity} seats` : null].filter(Boolean).join(' · ') : 'No bus');
+      fact('Bus', sheetAction('move', bar, 'row', busWords, board));
+      const crewWords = el('span', 'scheduler-sheet__crew');
+      crewWords.append(...sheetCrew(trip, bar, board));
+      if (!crewWords.childElementCount) crewWords.append('No driver seat');
+      fact('Driver', sheetAction('driver', bar, 'row', crewWords, board));
+    }
     return [facts, ...(bar.dataset.road ? [Tips.live(trip, bar, board)] : []), sheetCard(trip, bar, board), sheetAction('open', bar, 'edit', null, board)];
   }
   function drawSheet(trip, bar, board) {

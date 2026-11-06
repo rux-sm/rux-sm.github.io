@@ -10,6 +10,7 @@
    Each is handed the trip, its bar as bar.js drew it, and `board`, what it
    reads from the board around it:
      driversById, busesById, statuses   as bar.js is handed them;
+     partnersById          the partners, as bar.js is handed them;
      facts(bar)            the facts bar.js handed back for the bar;
      road(bar)             `{ bus, next, said }` for the bar's bus in
                            Samsara's last answer, or null: the bus, where it
@@ -29,7 +30,8 @@
                            the words in the Add box while it is open, or null;
      map                   an object the board keeps its live map in.
    `route(trip, bar, board)`, `driver(trip, bar, section, board)`, the section
-   being `driver:<id>:<seat>`, `live(trip, bar, board)` and `card(trip, bar,
+   being `driver:<id>:<seat>`, `partner(trip, bar, board)`, the partner
+   covering the bar's bus, `live(trip, bar, board)` and `card(trip, bar,
    section, board)`, Alerts for the section `needs` and Updates for any
    other, each hand back one element. `updateFace(u, size, staff)`,
    `ageShort(at)`, `cardTitle(name, count, action)`, `postTripOf(trip)`,
@@ -466,6 +468,62 @@
     }
     return tip;
   }
+  /* THE PARTNER'S TIP, for a bus a partner covers with its own coach and
+     driver: who the partner is and whether it confirmed, and when; the
+     coach and driver it gave, the driver's phone dialling; what the office
+     pays it; and what stands in its way, a partner set Inactive or a paper
+     it lacks. Its footer calls the partner. */
+  function partnerTip(trip, bar, board) {
+    const tip = el('div', 'scheduler-tip scheduler-tip--card');
+    tip.dataset.tripId = trip.id;
+    const found = board.seat(bar);
+    const assign = found?.assign ?? null;
+    const partner = assign?.partner_id != null ? board.partnersById?.get(assign.partner_id) ?? null : null;
+    const head = el('div', 'scheduler-tip__head');
+    const said = el('div', 'scheduler-tip__text');
+    said.append(el('strong', 'scheduler-tip__name', partner?.name || 'Partner'), el('span', 'scheduler-tip__by', 'Partner, their coach and driver'));
+    head.appendChild(said);
+    tip.appendChild(head);
+    if (!assign) {
+      tip.appendChild(el('p', 'scheduler-tip__none', 'No partner covers this bus now.'));
+      return tip;
+    }
+    const status = window.SchedulerLegFacts.DRIVER_STATUSES.find(s => s.value === (assign.partner_confirmed ? 'confirmed' : 'pending-response'));
+    const answer = el('div', 'scheduler-tip__row scheduler-tip__answer');
+    const icon = svgUse(status.icon, '16', '0 0 32 32');
+    icon.setAttribute('class', status.indicator);
+    answer.append(icon, el('span', 'scheduler-tip__words',
+      assign.partner_confirmed ? ['Confirmed', setAt(assign.partner_confirmed_at)].filter(Boolean).join(' · ') : 'Not confirmed'));
+    tip.appendChild(answer);
+    // The coach and driver as the partner gave them, typed as they came.
+    if (assign.partner_vehicle) tip.appendChild(el('div', 'scheduler-tip__row', `Coach: ${assign.partner_vehicle}`));
+    if (assign.partner_driver_name || assign.partner_driver_phone) {
+      const row = el('div', 'scheduler-tip__row');
+      row.append(`Driver: ${assign.partner_driver_name || 'not named'}`);
+      if (assign.partner_driver_phone) {
+        row.append(' · ');
+        row.appendChild(footLink(showPhone(assign.partner_driver_phone), `tel:${dial(assign.partner_driver_phone)}`));
+      }
+      tip.appendChild(row);
+    }
+    tip.appendChild(el('div', 'scheduler-tip__row', assign.partner_price != null && assign.partner_price !== ''
+      ? `Price: ${usd(Number(assign.partner_price))}` : 'No price entered'));
+    for (const x of board.standing(trip, legKeyOfVehicle(trip, assign))) {
+      if (String(x.assignmentId) !== String(assign.id)) continue;
+      const row = el('div', 'scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--error');
+      row.append(svgUse('#m-error-fill', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', x.what));
+      tip.appendChild(row);
+    }
+    if (partner?.phone) {
+      const foot = footer();
+      const call = footLink(`Call ${showPhone(partner.phone)}`, `tel:${dial(partner.phone)}`);
+      call.setAttribute('aria-label', `Call ${partner.name}, ${showPhone(partner.phone)}`);
+      foot.appendChild(call);
+      tip.appendChild(foot);
+    }
+    return tip;
+  }
+
   // A tip's footer, Carbon's toggletip actions, and a Carbon link in it.
   const footer = () => el('div', 'rux--toggletip-actions scheduler-tip__foot');
   function footLink(words, href) {
@@ -854,7 +912,7 @@
   }
 
   window.SchedulerTripTips = {
-    route: routeTip, driver: driverTip, live: liveCard, card: cardTip, CONTAINER, surface,
+    route: routeTip, driver: driverTip, partner: partnerTip, live: liveCard, card: cardTip, CONTAINER, surface,
     updateFace, ageShort, cardTitle, postTripOf, postTripRows, markSave, WARN_GO,
   };
 })();

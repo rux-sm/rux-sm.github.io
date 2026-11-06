@@ -369,7 +369,7 @@
 .scheduler-week:not([data-bar-rows="6"]) .scheduler-row-head__insp-word { display: none; }
 /* On one row the number and its dot, and "No bus" on one line. */
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head__dot { display: block; }
-.scheduler-week[data-bar-rows="1"] .scheduler-row--unassigned .scheduler-row-head__num { white-space: nowrap; }
+.scheduler-week[data-bar-rows="1"] :is(.scheduler-row--unassigned, .scheduler-row--partners) .scheduler-row-head__num { white-space: nowrap; }
 /* Below the last row the board's own sheet carries that rule on to its foot,
    on the head's own pixel, inside the strip's edge the heads leave
    unpainted, drawn in the pane's background so it stays put as the board
@@ -698,11 +698,13 @@ button.scheduler-row-head__num::after {
    went below the page in the dark themes and to a mid-grey in the light
    ones, which Carbon's layering has neither of. The head stays opaque,
    because bars scroll under it, and its label takes the primary text. */
-.scheduler-row--unassigned { --scheduler-unassigned: var(--rux-background); }
-.scheduler-row--unassigned .scheduler-row-head { background: var(--scheduler-unassigned); }
-.scheduler-row--unassigned .scheduler-row-head__num {
+/* The partners' row reads as the unassigned row does: neither is a bus of
+   the fleet. */
+:is(.scheduler-row--unassigned, .scheduler-row--partners) { --scheduler-unassigned: var(--rux-background); }
+:is(.scheduler-row--unassigned, .scheduler-row--partners) .scheduler-row-head { background: var(--scheduler-unassigned); }
+:is(.scheduler-row--unassigned, .scheduler-row--partners) .scheduler-row-head__num {
   /* Always two lines, "No" over "bus", so the label is no wider than the bus
-     numbers. */
+     numbers; "Partners" breaks at its soft hyphen. */
   white-space: pre-line;
   color: var(--rux-text-primary);
   font-weight: 400;
@@ -711,7 +713,7 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-helper-text-01-line-height);
   letter-spacing: var(--rux-helper-text-01-letter-spacing);
 }
-.scheduler-row--unassigned .scheduler-track { background-color: var(--scheduler-unassigned); }
+:is(.scheduler-row--unassigned, .scheduler-row--partners) .scheduler-track { background-color: var(--scheduler-unassigned); }
 
 .scheduler-track {
   position: relative;

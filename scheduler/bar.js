@@ -9,6 +9,7 @@
    `draw(b, board)` is one bar, `b` the board's `{ trip, leg, assign, place,
    slot, lane }`, and `board` what the bar reads from the board around it:
      driversById, busesById   the drivers and buses, as Maps by id;
+     partnersById             the partners, with the papers each must hold;
      statuses                 the driver statuses the office keeps;
      standing(trip, key)      clashes.js's standing answer for the leg, which
                               the board works out once a draw; without it the
@@ -24,7 +25,8 @@
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
-   them, `crewGlyph(c, due, back)` the glyph it marks their seat with, which
+   them, `partnerEl(assign, partner, done)` the partner covering a bus in
+   their place, `crewGlyph(c, due, back)` the glyph it marks their seat with, which
    the phone's half sheet marks its seats with too, and `glyphEl(glyph)` that
    glyph drawn, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
@@ -40,7 +42,7 @@
 
   const {
     REQUIREMENTS, requirementLabel, requirementIcon, shortfall, needsFor, wrongType, seatsOf, overSeats,
-    activeRolesOf, crewOf, tripContact, dayOfContact,
+    activeRolesOf, crewOf, isCovered, tripContact, dayOfContact, DRIVER_STATUSES,
   } = window.SchedulerLegFacts;
   const { tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
   const { waitsOf, updatesOf, asks: asksFollowUp, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
@@ -413,6 +415,31 @@
     return item;
   }
 
+  /* A BUS A PARTNER COVERS has no seat of ours: the drivers row names the
+     partner, its mark the partner's answer, confirmed or waited on, drawn as
+     a driver's is, and a press on it opens the partner's tip. A done trip's
+     partner is its name alone. */
+  const partnerName = partner => partner?.name || 'A partner';
+  const partnerStatus = assign => DRIVER_STATUSES.find(s => s.value === (assign.partner_confirmed ? 'confirmed' : 'pending-response'));
+  const partnerText = (assign, partner) => `Partner ${partnerName(partner)} · ${assign.partner_confirmed ? 'Confirmed' : 'Not confirmed'}`;
+  function partnerEl(assign, partner, done) {
+    const item = el('span', 'scheduler-crew');
+    item.dataset.partnerId = assign.partner_id;
+    if (!done) {
+      const status = partnerStatus(assign);
+      const mark = el('button', `scheduler-crew__mark scheduler-crew__mark--${status.tone} scheduler-crew__mark--dot`);
+      mark.type = 'button';
+      mark.dataset.cardOpener = '';
+      mark.setAttribute('aria-expanded', 'false');
+      mark.setAttribute('aria-label', `${partnerText(assign, partner)}: details`);
+      mark.title = '';
+      mark.appendChild(glyphEl({ href: status.icon, box: '0 0 32 32', indicator: status.indicator }));
+      item.appendChild(mark);
+    }
+    item.appendChild(el('span', 'scheduler-crew__name', partnerName(partner)));
+    return item;
+  }
+
   const kindObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
     for (const { target } of entries) fitKind(target);
   }) : null;
@@ -430,7 +457,7 @@
      The errors lead, each a red row: a bus that does not fit this trip, a
      mistake on the board that goes when the bus is changed, then each seat
      of the bus still with nobody in it inside fourteen days of departure,
-     put right on the Buses tab. Then the follow-up reminder, one for
+     or a partner covering it not yet confirmed, put right on the Buses tab. Then the follow-up reminder, one for
      each thing waited on, which stays while it is true, until the missing
      thing arrives or an update is written; on a confirmed trip with nothing
      paid, the reminder for its money stays until a PO, a deposit or a
@@ -444,6 +471,8 @@
     if (window.SchedulerCloseOut.isBack(trip)) return [];
     const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__error', go: 'fleet', words }));
     for (const words of facts?.emptySeats ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', spot: 'driver', words });
+    // A partner not yet confirmed once the leg is due is the empty seat of a bus it covers.
+    for (const words of facts?.partnerUnconfirmed ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', spot: 'partner', words });
     const asks = asksFollowUp(trip);
     const unpaid = nothingPaid(trip);
     for (const w of waitsOf(trip)) {
@@ -532,7 +561,7 @@
        standing rule: another trip, days out, time off, Inactive or a card
        that runs out. Each is a mistake to put right, so a misfit. */
     const standing = board.standing
-      ?? ((t, l) => window.SchedulerClashes.standing(t, l, board.nearby ?? NOBODY_NEAR, { driversById, busesById }));
+      ?? ((t, l) => window.SchedulerClashes.standing(t, l, board.nearby ?? NOBODY_NEAR, { driversById, busesById, partnersById: board.partnersById }));
     const clashes = placeholder || !assign ? []
       : standing(trip, leg.key).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
@@ -545,6 +574,8 @@
     const crew = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses);
     // Each seat still empty once the leg is due, named as the seat is: Driver missing, Relief end missing.
     const emptySeats = staffingDue(leg) ? crew.filter(c => c.needed).map(c => `${c.label} missing`) : [];
+    const partnerUnconfirmed = !placeholder && isCovered(assign) && !assign.partner_confirmed && staffingDue(leg)
+      ? [`${partnerName(board.partnersById?.get(assign.partner_id))} not confirmed`] : [];
     const driverAlerts = crew.flatMap(c => {
       if (c.needed) return [];
       const name = c.who?.short_name || c.who?.name || 'A driver';
@@ -556,13 +587,13 @@
       return [`Tell ${name}: ${lines.join('; ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    const facts = { leg: leg.key, needs, misfits, overSeated, emptySeats, driverAlerts, tells };
+    const facts = { leg: leg.key, needs, misfits, overSeated, emptySeats, partnerUnconfirmed, driverAlerts, tells };
 
     // One structured list feeds the badge and the card's Alerts group.
     facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
-    /* A later bus wears only its own problems, a bus that does not fit or a
-       driver to tell; the trip's are on its first bus, and every bus's card
-       lists them all. */
+    /* A later bus wears only its own problems, a bus that does not fit, a
+       driver to tell or a partner to confirm; the trip's are on its first
+       bus, and every bus's card lists them all. */
     const own = later ? facts.problems.filter(a => a.row === 'scheduler-card__error' || a.spot === 'driver')
       : facts.problems;
     return { facts, problems: own, tone: own.length ? (own.some(a => a.row === 'scheduler-card__error') ? 'error' : 'warning') : null };
@@ -603,6 +634,7 @@
       bar.dataset.assignmentId = assign.id;
       if (board.saving?.(assign.id)) bar.classList.add('scheduler-bar--saving');
       bar.dataset.busId = assign.bus_id ?? '';
+      if (isCovered(assign)) bar.dataset.partnerId = assign.partner_id;
     }
     if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
     if (place.toNext) bar.classList.add('scheduler-bar--to-next');
@@ -751,13 +783,15 @@
     // A leg whose route is done, whose live times row says when the bus gets to its next stop.
     if (trip.route_done_at) bar.dataset.routeDone = '';
 
-    // The crew in role order, or what the bar needs before it can have one.
+    // The crew in role order, the partner covering the bus, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
+    const partner = isCovered(assign) ? board.partnersById?.get(assign.partner_id) ?? null : null;
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     /* A leg is due from today to the end of the stretch the office staffs:
        it has not finished, and it starts before that stretch ends. */
     const due = staffingDue(leg);
     crewBox.append(...crew.map(c => crewEl(c, due, isDone)));
+    if (isCovered(assign)) crewBox.appendChild(partnerEl(assign, partner, isDone));
     // Who drives this bar, for the driver grid to pick out.
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
     // An empty seat, which app.css outlines while a driver is carried.
@@ -771,13 +805,15 @@
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
+      isCovered(assign) ? partnerText(assign, partner) : null,
       ...facts.misfits,
       asksFollowUp(trip) ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return { bar, facts };
   }
 
-  /* The part a card opener opens: Alerts, a driver's tip, named by the
+  /* The part a card opener opens: Alerts, the partner's tip for a bus a
+     partner covers, a driver's tip, named by the
      driver and the seat so each driver's icon opens their own, the seat
      `wheel` for a driver at the wheel the bar does not name, or Updates. A
      live bar's mark with no driver Samsara knows opens its live card. */
@@ -787,6 +823,7 @@
     if (opener.matches('.scheduler-bar__close')) return 'close';
     if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
     const crew = opener.closest('.scheduler-crew');
+    if (crew?.dataset.partnerId) return 'partner';
     const id = crew?.dataset.driverId ?? crew?.dataset.wheelDriver;
     return opener.matches('.scheduler-crew > :is(.scheduler-crew__mark, .scheduler-crew__duty)') && id
       ? `driver:${id}:${crew.dataset.seat ?? 'wheel'}` : 'road';
@@ -794,6 +831,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, crewGlyph, glyphEl, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp, tripDone, fillTracks,
+    draw, crewGlyph, glyphEl, glyphTo, staffingDue, partnerEl, partnerText, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp, tripDone, fillTracks,
   };
 })();

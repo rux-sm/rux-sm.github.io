@@ -138,9 +138,14 @@
   }
 
   /* One bus of the leg: what it needs, met or not, and its crew's lines. A
-     row with no bus yet says so, and so does a seat with nobody in it. */
-  function busBlock(trip, assign, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}, clashes = []) {
+     row with no bus yet says so, and so does a seat with nobody in it. A bus
+     a partner covers is the partner's, with its lines in a crew member's
+     place: confirmed, its price and the driver it gave, and no fuel card or
+     paperwork of ours. */
+  function busBlock(trip, assign, { busesById = new Map(), driversById = new Map(), partnersById = new Map(), statuses = new Map() } = {}, clashes = []) {
     const bus = assign.bus_id != null ? busesById.get(assign.bus_id) ?? null : null;
+    const covered = Facts.isCovered(assign);
+    const partner = covered ? partnersById.get(assign.partner_id) ?? { id: assign.partner_id, name: 'A partner' } : null;
     const mine = clashes.filter(c => String(c.assignmentId) === String(assign.id));
     const needs = [];
     if (bus) {
@@ -152,13 +157,26 @@
       }
     }
     // A trip with a fuel card asks one of every bus, by its number; it is typed on the first driver's envelope.
-    const wantsCard = trip.trip_reqs?.fuelCard === true;
+    const wantsCard = trip.trip_reqs?.fuelCard === true && !covered;
     if (wantsCard) {
       const number = String(assign.fuel_card_number ?? '').trim();
       needs.push({ id: 'fuelCard', label: number ? `Fuel card ${number}` : 'Fuel card', met: !!number, action: 'forms:envelope' });
     }
     for (const c of mine.filter(x => x.driverId == null)) needs.push({ id: `clash:${c.what}`, label: c.what, met: false });
     const crew = [];
+    if (covered) {
+      const priced = assign.partner_price != null && assign.partner_price !== '';
+      const driver = [assign.partner_driver_name, assign.partner_driver_phone].filter(Boolean).join(' · ');
+      crew.push({ key: `${assign.id}:partner`, name: partner.name, role: 'Partner', partTime: false, seat: null, partnerId: assign.partner_id,
+        lines: [
+          assign.partner_confirmed
+            ? line('confirmed', 'done', 'Confirmed', { at: assign.partner_confirmed_at ?? null })
+            : line('confirmed', 'warn', 'Not confirmed'),
+          priced ? line('price', 'done', 'Price', { value: `$${Number(assign.partner_price).toLocaleString('en-US')}` })
+            : line('price', 'warn', 'No price'),
+          ...(driver ? [line('partner-driver', 'done', 'Driver', { value: driver })] : []),
+        ] });
+    }
     for (const c of Facts.crewOf(trip, assign, driversById, statuses)) {
       if (c.needed) {
         crew.push({ key: `${assign.id}:${c.role}`, name: null, role: c.label, partTime: false, seat: null,
@@ -190,9 +208,9 @@
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
         role: c.label, partTime, seat, driverId: c.driverId, lines });
     }
-    const left = (bus ? 0 : 1) + needs.filter(n => !n.met).length
+    const left = (bus || covered ? 0 : 1) + needs.filter(n => !n.met).length
       + crew.reduce((n, c) => n + c.lines.filter(l => l.state !== 'done').length, 0);
-    return { key: assign.id, assign, bus, needs, crew, left };
+    return { key: assign.id, assign, bus, partner, needs, crew, left };
   }
 
   /* A leg's page: the trip's lines, then a block for each bus the leg has, in
@@ -220,8 +238,8 @@
     const out = p.lines.filter(l => l.state !== 'done').map(said);
     if (p.missing) out.push(`${p.missing} ${p.missing === 1 ? 'bus' : 'buses'} not assigned`);
     for (const b of p.buses) {
-      const name = b.bus ? `Bus ${b.bus.number ?? ''}`.trim() : 'No bus yet';
-      if (!b.bus) out.push(name);
+      const name = b.bus ? `Bus ${b.bus.number ?? ''}`.trim() : b.partner ? b.partner.name : 'No bus yet';
+      if (!b.bus && !b.partner) out.push(name);
       for (const n of b.needs.filter(x => !x.met)) out.push(`${name}: ${n.label}`);
       for (const c of b.crew) {
         for (const l of c.lines.filter(x => x.state !== 'done')) out.push(`${name}, ${c.name ?? c.role}: ${said(l)}`);
@@ -251,7 +269,7 @@
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_name,partner_driver_phone,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the to-do rules read for a trip read here.

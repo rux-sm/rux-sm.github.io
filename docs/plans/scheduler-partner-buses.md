@@ -162,9 +162,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw it: the Partners row in `data.js`, the bar in `bar.js`, the card
-      in `trip-tips.js`, the sheet in `trip-sheet.js`, Departures, and its
-      states in `components-data.js`.
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
 - [ ] Make `partners.html` on `pair.js`, with its side-nav link on every

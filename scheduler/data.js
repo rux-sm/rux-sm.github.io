@@ -201,6 +201,8 @@
   const { crewName, hhmm, setAt, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
+  // The row of the buses partners cover, between the fleet and the unassigned row.
+  const PARTNERS = ' partners';
 
   // A vehicle as every screen names it, "Coach 218" or "Van 12"; vehicles.js.
   const vehicleName = bus => window.SchedulerVehicles?.label(bus) ?? (String(bus?.number ?? '').trim() || 'Unit');
@@ -429,7 +431,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_name,partner_driver_phone,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks,
     // and the QuickBooks estimate, which the bar menu marks.
     'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
@@ -646,6 +648,8 @@
     // licence and medical card dates, so the bar menu flags an expired one;
     // and the drivers each is kept apart from, so a pick warns of them.
     drivers: () => client.from('drivers').select(`id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language,photo_path,${window.SchedulerClashes.APART_COLUMNS}`).then(rowsOf),
+    // The partners that cover a bus with their own coach and driver, each with the papers it must hold, by leg-facts.js.
+    partners: () => window.SchedulerLegFacts.readPartners(client).then(byId => [...byId.values()]),
     // Every contact, for the contact search rather than a read on each keystroke.
     contacts: () => client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(rowsOf),
     // The customers and the saved places, for the Customer field, the fill
@@ -678,7 +682,7 @@
     // refused read keeps what was there.
     forms: () => window.SchedulerLegFacts.readDriverForms(client).catch(() => false),
   };
-  const LISTS = ['buses', 'drivers', 'contacts', 'customers', 'locations'];
+  const LISTS = ['buses', 'drivers', 'partners', 'contacts', 'customers', 'locations'];
   let lists = Object.fromEntries(LISTS.map(name => [name, []]));
   const listsOwed = new Set(Object.keys(LIST_READS));
   const oweEveryList = () => { for (const name of Object.keys(LIST_READS)) listsOwed.add(name); };
@@ -1119,10 +1123,12 @@
      rule is read against, and each leg's answer by its key, kept until the
      next draw. */
   let boardNearby = { trips: [], off: [], oos: [] };
+  // The partners the board drew with, by id, each with the papers it must hold.
+  let boardPartners = new Map();
   const standingOf = new Map();
   const standingFor = (trip, leg, driversById, busesById) => {
     const key = `${trip.id}:${leg}`;
-    if (!standingOf.has(key)) standingOf.set(key, window.SchedulerClashes.standing(trip, leg, boardNearby, { driversById, busesById }));
+    if (!standingOf.has(key)) standingOf.set(key, window.SchedulerClashes.standing(trip, leg, boardNearby, { driversById, busesById, partnersById: boardPartners }));
     return standingOf.get(key);
   };
 
@@ -1133,7 +1139,7 @@
      key, and its itinerary is the one trip-shape.js hands it. */
   const legItinerary = (trip, key) => SHAPE.itineraryFor(trip, key);
   const barBoard = (driversById, busesById, statuses) => ({
-    driversById, busesById, statuses,
+    driversById, busesById, statuses, partnersById: boardPartners,
     standing: (trip, key) => standingFor(trip, key, driversById, busesById),
     saving: id => !!heldMoves.get(String(id))?.saving,
     itineraryOf: legItinerary,
@@ -1154,6 +1160,7 @@
     const { buses, trips, drivers, oos } = data;
     const driversById = new Map(drivers.map(d => [d.id, d]));
     const busesById = new Map(buses.map(b => [b.id, b]));
+    const partnersById = new Map((data.partners ?? []).map(p => [p.id, p]));
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
 
@@ -1164,7 +1171,8 @@
         const assigns = (trip.trip_assignments || [])
           .filter(a => legKeyOfVehicle(trip, a) === leg.key)
           .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
-        assigns.forEach(a => push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
+        // A bus a partner covers sits in the partners' row, one with no bus yet in the unassigned row.
+        assigns.forEach(a => push(a.partner_id != null ? PARTNERS : a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
         for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
       }
     }
@@ -1192,6 +1200,10 @@
     // longer active while none of its trips is on screen. A drag has to be
     // able to drop the week's first unassigned trip somewhere, and a row that
     // is not in the document has no rectangle to aim at.
+    /* The partners' row holds every bus a partner covers, each bar naming its
+       partner, since the office plans no partner's coaches by row; it stands
+       shut, as the unassigned row does, until one of its trips is on screen. */
+    rows.push({ id: PARTNERS, bus: null, partners: true, empty: !tracks.has(PARTNERS) });
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
     /* Which of its leg's buses a bar is, counted down the board, so the
        topmost is the leg's first bus and bar.js tells the rest apart. */
@@ -1207,7 +1219,7 @@
     /* The read covers the four weeks either side, so a window can miss the
        days being drawn; `clip` says so by answering nothing. */
     const windowsOf = r => (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
-    return { tracks, rows, driversById, busesById, windowsOf };
+    return { tracks, rows, driversById, busesById, partnersById, windowsOf };
   }
   // The words of a row head's out-of-service mark, for the windows in the days drawn.
   const oosWords = windows => `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`;
@@ -1291,7 +1303,8 @@
     // The board's columns follow the days asked for.
     const days = Math.round((weekEnd - weekStart) / DAY) + 1;
     schEl.style.setProperty('--scheduler-days', String(days));
-    const { tracks, rows, driversById, busesById, windowsOf } = layOutBoard(data, weekStart, weekEnd);
+    const { tracks, rows, driversById, busesById, partnersById, windowsOf } = layOutBoard(data, weekStart, weekEnd);
+    boardPartners = partnersById;
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
     // for nothing.
@@ -1314,7 +1327,7 @@
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
       if (bars.length) assignLanes(bars);
-      const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
+      const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : r.partners ? ' scheduler-row--partners' : ''));
       if (r.empty) rowEl.hidden = true;
 
       /* The head is the bus number, its marks and the bus's own state, which
@@ -1347,9 +1360,9 @@
         tip.append(trigger, pop);
         top.appendChild(tip);
       } else {
-        top.append(el('div', 'scheduler-row-head__num', 'No\nbus'));
+        top.append(el('div', 'scheduler-row-head__num', r.partners ? 'Part\u00ADners' : 'No\nbus'));
       }
-      if (!r.bus) head.title = 'Trips with no bus yet';
+      if (!r.bus) head.title = r.partners ? 'Buses partners cover with their own coach and driver' : 'Trips with no bus yet';
       if (r.bus) {
         head.title = [
           vehicleName(r.bus),
@@ -1384,13 +1397,15 @@
       }
 
       const track = el('div', 'scheduler-track');
-      if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
+      if (r.bus) track.dataset.busId = r.bus.id;
+      else if (r.partners) track.dataset.partners = 'true';
+      else track.dataset.unassigned = 'true';
       if (r.bus && r.bus.status !== 'active') track.dataset.retired = '';
       for (const w of windows) track.appendChild(oosEl(w, clip(w.start_date, w.end_date, weekStart, weekEnd)));
       const items = rowItems(bars, r.bus ? yardGaps(bars) : [], { driversById, busesById, statuses });
       /* A row starts with the fewest lanes it takes, which `fitLanesInView`
          grows for the trips in view once the strip is placed. */
-      const least = track.dataset.retired != null || track.dataset.unassigned ? 0 : 1;
+      const least = track.dataset.retired != null || track.dataset.unassigned || track.dataset.partners ? 0 : 1;
       track.style.setProperty('--scheduler-lanes', least);
       stripRows.push({ track, head, bus: r.bus, items, least, windows });
 
@@ -1492,7 +1507,7 @@
      drawn board rather than the data, because what is drawn near the view
      is exactly the days being asked about. */
   function inTheWay(track, start, span) {
-    if (track.dataset.unassigned) return null;
+    if (track.dataset.unassigned || track.dataset.partners) return null;
     for (const other of track.querySelectorAll('.scheduler-bar')) {
       if (overlaps(start, span, +other.dataset.start, +other.dataset.span)) return other;
     }
@@ -1766,11 +1781,11 @@
   function swapStrip(data, [sameFrom, sameTo]) {
     const days = viewDays();
     const laid = layOutBoard(data, stripStart, stripEnd);
-    const laidRow = r => (r.id === UNASSIGNED ? UNASSIGNED : String(r.id));
-    const drawnRow = row => (row.track.dataset.unassigned ? UNASSIGNED : row.track.dataset.busId);
+    const laidRow = r => (r.id === UNASSIGNED || r.id === PARTNERS ? r.id : String(r.id));
+    const drawnRow = row => (row.track.dataset.unassigned ? UNASSIGNED : row.track.dataset.partners ? PARTNERS : row.track.dataset.busId);
     if (laid.rows.length !== stripRows.length || laid.rows.some((r, i) => laidRow(r) !== drawnRow(stripRows[i]))) return false;
     // A live read since the strip was drawn changed nothing in it, but the standing rules read the payload in hand.
-    if (data !== stripData) { boardNearby = { trips: data.trips, off: data.timeOff, oos: data.oos }; standingOf.clear(); }
+    if (data !== stripData) { boardNearby = { trips: data.trips, off: data.timeOff, oos: data.oos }; boardPartners = laid.partnersById; standingOf.clear(); }
     const selected = selectedBar();
     const selectedRef = selected ? barRef(selected) : null;
     const kept = new Map(stripRows.flatMap(row => row.items.filter(item => item.el).map(item => [item.key, item])));
@@ -1794,7 +1809,7 @@
       row.track.querySelectorAll(':scope > .scheduler-oos').forEach(node => node.remove());
       row.track.prepend(...row.windows.map(w => oosEl(w, clip(w.start_date, w.end_date, stripStart, stripEnd))));
       const rowEl = row.track.parentElement;
-      if (r.id === UNASSIGNED && rowEl.hidden !== !!r.empty) rowEl.hidden = !!r.empty;
+      if ((r.id === UNASSIGNED || r.id === PARTNERS) && rowEl.hidden !== !!r.empty) rowEl.hidden = !!r.empty;
     });
     // A bar the new layout moved or no longer has goes, and is drawn again as it comes near.
     for (const item of kept.values()) item.el.remove();
@@ -2094,8 +2109,10 @@
      its Undo. Escape while it is held puts it back unsaved. For the keyboard
      it answers `{ step, finish }`, or null for a trip that cannot move. */
   function carryTrip(bar, down) {
-    // The trip open in the editor is locked on the board, and so is a trip that is back.
-    if (isEditorTrip(bar) || bar.classList.contains('scheduler-bar--back')) return null;
+    /* The trip open in the editor is locked on the board, and so is a trip
+       that is back. A bus a partner covers is taken back on the Buses tab,
+       where its partner is let go first. */
+    if (isEditorTrip(bar) || bar.classList.contains('scheduler-bar--back') || bar.dataset.partnerId) return null;
     // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
     if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return null;
     const keys = !down;
@@ -2138,7 +2155,8 @@
         unassignedRow.dataset.opened = 'true';
         markLastRow(gridEl);
       }
-      tracks = [...gridEl.querySelectorAll('.scheduler-track')];
+      // The partners' row takes no drop: a partner is given a bus on the Buses tab.
+      tracks = [...gridEl.querySelectorAll('.scheduler-track:not([data-partners])')];
       /* The press's rise comes off the bar at once, with no settle, so the
          bar is measured at its own size; the copy takes the rise over. */
       const pressed = bar.classList.contains('scheduler-bar--pressed');
@@ -16519,7 +16537,8 @@
     barShortcuts.className = tipped ? Tips.CONTAINER : 'scheduler-bar-shortcuts';
     tipPlacement = '';
     const tip = !tipped ? null : cardSection.startsWith('route:') ? Tips.route(trip, bar, board)
-      : cardSection.startsWith('driver:') ? Tips.driver(trip, bar, cardSection, board) : Tips.card(trip, bar, cardSection, board);
+      : cardSection.startsWith('driver:') ? Tips.driver(trip, bar, cardSection, board)
+        : cardSection === 'partner' ? Tips.partner(trip, bar, board) : Tips.card(trip, bar, cardSection, board);
     barShortcuts.replaceChildren(...(!carded ? [] : tipped ? [Tips.surface(tip)] : docked ? Sheet.draw(trip, bar, board) : [Tips.live(trip, bar, board)]));
     if (scrolled) barShortcuts.querySelector('.scheduler-sheet__rest')?.scrollTo(0, scrolled);
     barShortcuts.toggleAttribute('data-card', carded);
@@ -17116,7 +17135,7 @@
   }
   function tipBoard() {
     return {
-      driversById: panelIndex.driversById, busesById: panelIndex.buses, statuses: panelIndex.statuses,
+      driversById: panelIndex.driversById, busesById: panelIndex.buses, statuses: panelIndex.statuses, partnersById: boardPartners,
       facts: bar => barFacts.get(bar),
       road: roadOf,
       seat: barSeat,
@@ -17971,7 +17990,7 @@
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses',
-    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart', 'driver_kept_apart_allowed'];
+    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart', 'driver_kept_apart_allowed', 'partners'];
 
   /* The to-do list and Departures hear their changes on this channel too,
      rather than each opening one of its own: every change is handed to them
@@ -17992,7 +18011,7 @@
   const liveTrips = new Set();
   const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
   // A pair kept apart, and the trips it is allowed on, are read with the drivers, so a change owes their list.
-  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings', driver_kept_apart: 'drivers', driver_kept_apart_allowed: 'drivers' };
+  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', partners: 'partners', settings: 'settings', driver_kept_apart: 'drivers', driver_kept_apart_allowed: 'drivers' };
   // The tables embedded in a trip whose rows carry `trip_id`.
   const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines',
     'trip_documents', 'trip_contacts', 'trip_legs'];

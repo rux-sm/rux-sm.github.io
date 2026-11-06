@@ -7,7 +7,7 @@
    office's: every name, number and place is invented.
 
    `build()` makes them afresh and hands back `{ busesById, driversById,
-   statuses, sections }`. A section is `{ id, title, intro, samples }`, and a
+   partnersById, statuses, sections }`. A section is `{ id, title, intro, samples }`, and a
    sample `{ name, note, days, rows, replay }`, where each row is `{ head,
    bars }` and each bar `{ trip, leg, slot, start, span, fromPrev, toNext,
    state, live }`: `state` the classes and attributes the board puts on a bar
@@ -15,7 +15,7 @@
    `look` what live-trip.js reads and `before` the answer before this one.
    A sample with `replay` plays once as drawn, and again from scratch on its
    button. A sample with `tip` is one bar and what a press on it opens,
-   `{ kind, section, editor }`: `kind` route, driver, live, card or sheet,
+   `{ kind, section, editor }`: `kind` route, driver, partner, live, card or sheet,
    `section` the card's part, and `editor` the updates as open, as
    trip-tips.js reads them.
    ========================================================================== */
@@ -56,6 +56,14 @@
     const day = n => { const d = new Date(`${today}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
     const busesById = new Map(BUSES.map(b => [b.id, b]));
     const driversById = new Map(DRIVERS.map(d => [d.id, d]));
+    /* Two partners that cover a bus with their own coach and driver, each
+       with the one paper every partner must hold: one whose insurance lasts,
+       and one whose ran out last week. */
+    const insurance = ends_on => [{ kind: 'Insurance certificate', held: true, ends_on }];
+    const partnersById = new Map([
+      { id: 'p1', name: 'Valley Coach Lines', phone: '9565550175', status: 'active', papers: insurance(day(200)) },
+      { id: 'p2', name: 'Delta Motorcoach', phone: null, status: 'active', papers: insurance(day(-7)) },
+    ].map(p => [p.id, p]));
     const statuses = new Map();
     let ids = 0;
 
@@ -68,9 +76,11 @@
 
     /* A trip, settled unless `o` says otherwise: confirmed, a booking and a
        day-of contact, no itinerary asked for, and its buses from `o.buses`,
-       each `{ bus, crew, roles, needs, type, leg, position }` with `crew` a
-       list of `[driver, role, status, more]`, a status row written for each
-       status but Not sent. */
+       each `{ bus, crew, roles, needs, type, leg, position, partner }` with
+       `crew` a list of `[driver, role, status, more]`, a status row written
+       for each status but Not sent, and `partner` a partner covering it in
+       place of a bus and crew, `{ id, confirmed, price, vehicle, driver,
+       phone }`. */
     function trip(o = {}) {
       const id = `sample-${++ids}`;
       const { buses = [], depart = '07:30', back = '18:00', returnDepart, returnBack, ...rest } = o;
@@ -103,6 +113,10 @@
         actual_yard_return_at: b.backAt ? new Date(window.SchedulerWeek.officeInstant(...b.backAt)).toISOString() : null,
         pickup_at: b.spotAt ? new Date(window.SchedulerWeek.officeInstant(...b.spotAt)).toISOString() : null,
         trip_drivers: (b.crew ?? []).map(([driver_id, role = 'driver', , more]) => ({ driver_id, role, pay: 180, ...more })),
+        partner_id: b.partner?.id ?? null, partner_confirmed: !!b.partner?.confirmed,
+        partner_confirmed_at: b.partner?.confirmed ? new Date(now - 3 * DAY).toISOString() : null,
+        partner_price: b.partner?.price ?? null, partner_vehicle: b.partner?.vehicle ?? null,
+        partner_driver_name: b.partner?.driver ?? null, partner_driver_phone: b.partner?.phone ?? null,
       }));
       t.trip_assignments.forEach((a, i) => {
         for (const [driverId, role = 'driver', status, more] of buses[i].crew ?? []) {
@@ -120,6 +134,10 @@
     const bar = (t, more = {}) => ({ trip: t, leg: 'outbound', slot: 0, start: 0, span: 2, ...more });
     const row = (head, ...bars) => ({ head, bars });
     const crewed = (bus, status = 'confirmed') => ({ bus, crew: [['d1', 'driver', status]] });
+    // Three buses: one of ours, one a partner confirmed with its price, one a partner has not confirmed.
+    const covered = trip({ customer: 'Northside Band', destination: 'Austin, TX', bus_count: 3, buses: [crewed('b101'),
+      { partner: { id: 'p1', confirmed: true, price: 2400, vehicle: 'Prevost H3-45, unit 52', driver: 'Luis Treviño', phone: '9565550163' } },
+      { partner: { id: 'p2' } }] });
 
     // ── The trip bar ────────────────────────────────────────────────────────
     const colours = [
@@ -190,6 +208,8 @@
               trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, invoice_number: '4108', buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
         { name: 'Update ages', note: "Age is neutral text before the newest update; the entire row opens Updates, including when none exist.", days: 3, rows: aged },
+        { name: 'A bus a partner covers', note: 'A partner\'s coach and driver in place of a bus of ours, in the Partners row between the fleet and No bus: the partner where the drivers go, its mark its answer. One not confirmed inside fourteen days of departure is an error, as an empty seat is, and so is a partner whose insurance runs out before the trip ends.', days: 3,
+          rows: [row('101', bar(covered)), row('Partners', bar(covered, { slot: 1 }), bar(covered, { slot: 2 }))] },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,
           rows: [row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
       ],
@@ -378,7 +398,8 @@
     /* Each sample one bar and what a press on it opens, `tip`: `kind` the
        tip, `section` the card's part open, and `editor` the trip's updates
        as the office has them open, as trip-tips.js reads them. */
-    const tipOf = (name, note, b, tip) => ({ name, note, days: 3, rows: [row(busesById.get(b.trip.trip_assignments[0]?.bus_id)?.number ?? '101', b)], tip });
+    const tipOf = (name, note, b, tip) => ({ name, note, days: 3,
+      rows: [row(b.trip.trip_assignments[b.slot ?? 0]?.partner_id ? 'Partners' : busesById.get(b.trip.trip_assignments[0]?.bus_id)?.number ?? '101', b)], tip });
     const said = [
       update('Gate 4 at the stadium, not the main doors', 2 * HOUR),
       { ...update('Coach Ortiz has the rooming list', DAY), actor_name: 'Luis', edited_at: new Date(now - DAY + HOUR).toISOString() },
@@ -429,6 +450,10 @@
         tipOf('Close-out', 'A trip that is back, from its close-out icon: what it came to, and each thing close-out still asks, a link as an alert\'s words are.', bar(shut), { kind: 'card', section: 'close' }),
         tipOf("A driver's tip", 'Their face, seat and answer, who gave it and when, and their phone, a press that calls.', bar(routed), { kind: 'driver', section: 'driver:d1:driver' }),
         tipOf('A driver to tell', 'The leg changed since they said yes, in amber.', bar(told), { kind: 'driver', section: 'driver:d4:driver' }),
+        tipOf("A partner's tip", 'Who covers the bus and whether they confirmed, the coach and driver they gave, the driver\'s phone a press that calls, the price, and Call the partner.',
+          bar(covered, { slot: 1 }), { kind: 'partner', section: 'partner' }),
+        tipOf("A partner's bus on the phone", 'The half sheet names the partner with its answer\'s mark, its coach, its driver and the partner, each phone a press that calls.',
+          bar(covered, { slot: 1 }), { kind: 'sheet' }),
         tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop, and Call and the Live map.',
           live('Harbor Tours', { crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN, drive_ms: 50 * MIN, shift_ms: 4 * HOUR, cycle_ms: 31 * HOUR })] },
             drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
@@ -453,7 +478,7 @@
       intro: 'The bus icon, driver duty icons, assignment statuses and alerts, each on a real sample bar; duties, statuses and alerts share Design’s semantic status colours. Hover a mark for its meaning. Equipment needs belong to the trip card; the bar counts problems in its alert badge.',
       samples: [
         sample(tripBar, 'One way'), sample(tripBar, 'Drop-off and pickup'),
-        sample(tripBar, 'More than one bus'), sample(tripBar, 'Back at the yard'),
+        sample(tripBar, 'More than one bus'), sample(tripBar, 'A bus a partner covers'), sample(tripBar, 'Back at the yard'),
         ...window.SchedulerLegFacts.DRIVER_STATUSES.map(({ label }) => ({
           name: `${label} icon`, note: `The driver's ${label.toLowerCase()} status mark.`, days: 3,
           rows: [statusRows.find(r => r.bars[0].trip.customer === label)],
@@ -471,7 +496,7 @@
         ...['Two drivers', 'Rest at eight hours', 'Rest beyond eight hours', 'Rest duration unknown'].map(name => sample(road, name)),
       ],
     };
-    return { busesById, driversById, statuses, sections: [icons, tripBar, crew, alerts, handled, road, tips] };
+    return { busesById, driversById, partnersById, statuses, sections: [icons, tripBar, crew, alerts, handled, road, tips] };
   }
 
   window.SchedulerComponentsData = { build };

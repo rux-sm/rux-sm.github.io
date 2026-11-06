@@ -436,7 +436,7 @@
     const name = el('div', 'scheduler-departures__bus');
     const icon = svgUse('#m-directions_bus-fill', 20);
     const row = bus.bus ? buses.get(bus.bus.id) ?? bus.bus : null;
-    name.append(icon, el('strong', null, row ? String(row.number ?? 'Bus') : 'No bus yet'));
+    name.append(icon, el('strong', null, row ? String(row.number ?? 'Bus') : bus.partner ? bus.partner.name : 'No bus yet'));
     // The first driver's seat, whose envelope a missing fuel card is typed on.
     const lead = bus.crew.find(m => m.seat && (m.seat.role || 'driver') === 'driver');
     for (const n of bus.needs) {

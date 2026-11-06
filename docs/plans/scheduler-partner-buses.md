@@ -87,10 +87,11 @@ driver pickers, links and forms as if it were a person.
 - **The vehicle's window chooses Our bus or Partner.** Partner shows the
   partner picker, the price, Confirmed, and their coach, driver and phone,
   and hides the bus, the seats and Add co-driver.
-- **Turning a vehicle with drivers seated to Partner asks first,** because
-  those drivers come off the trip and are told as a driver taken off is.
-- **A partner name typed that the list lacks becomes a partner on Save,** as
-  a customer typed new does.
+- **Turning a vehicle with drivers seated to a partner names them in the
+  window,** because Done takes them off the trip, and Save sends their
+  statuses as it does for any driver taken off.
+- **A partner is picked from the Partners list,** and a new one is made on
+  the Partners page first, because its profile and papers are kept there.
 - **The Billing tab shows Paid to partners,** the sum of the trip's partner
   prices, and what is left of the trip's price after it.
 - **The trip's history names it:** which bus of how many, the partner, and
@@ -104,9 +105,9 @@ driver pickers, links and forms as if it were a person.
 - **The bar names the partner where the drivers go,** marked unconfirmed
   until it is, and never says Needs a bus.
 - **It has no live line,** because Samsara knows only our buses.
-- **Dragging a covered bar onto a bus's row asks first,** since it takes the
-  bus back from the partner; dropping a bar on the Partners row opens its
-  vehicle's window at Partner.
+- **A covered bar does not lift for a drag, and the Partners row takes no
+  drop,** because a drop's Undo could not give a partner back its price and
+  confirmation; a partner is let go in its vehicle's window.
 - **The card and the phone's sheet name the partner,** their coach, driver,
   phone, price and whether they confirmed.
 
@@ -164,8 +165,6 @@ None open.
 
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
-- [ ] Give the vehicle's window Our bus or Partner, the Billing tab Paid to
-      partners, the history its line, and the board's drag its question.
 - [ ] Move the company's driver seat to a partner, and set the upcoming
       trips whose updates say a bus was outsourced, asking rux for the
       partner where an update does not name one.

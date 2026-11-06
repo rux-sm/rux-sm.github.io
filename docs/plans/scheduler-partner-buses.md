@@ -57,10 +57,11 @@ driver pickers, links and forms as if it were a person.
   the Documents page, such as operating authority.
 - **The profile's Documents tab uploads them in place,** as a driver's does,
   and lists each with its end date, flagged within 30 days.
-- **The board reads one paper: the Insurance certificate.** A covered bus
-  whose partner has no current certificate through the leg's last day, or
-  whose earliest part ends before then, is a problem on its bar, as a
-  driver's medical card that runs out is.
+- **The board reads the papers every partner must hold,** the kinds marked
+  so on the Documents page, the Insurance certificate at first. A covered
+  bus whose partner lacks one, or whose copy ends before the leg's last
+  day, is a problem on its bar, as a driver's medical card that runs out
+  is.
 
 ### The covered bus
 
@@ -161,10 +162,6 @@ None open.
 
 ## Tasks
 
-- [ ] Teach `leg-facts.js`, `clashes.js` and the connector's `rules.ts` a
-      covered bus: counted as assigned, no seats, its partner's certificate
-      and status standing in its way, and asking for a confirmation and a
-      price.
 - [ ] Draw it: the Partners row in `data.js`, the bar in `bar.js`, the card
       in `trip-tips.js`, the sheet in `trip-sheet.js`, Departures, and its
       states in `components-data.js`.
@@ -172,15 +169,17 @@ None open.
       Partners row, and no envelope, hours of service or driver's link.
 - [ ] Make `partners.html` on `pair.js`, with its side-nav link on every
       page, and the profile's Details, Documents and Trips tabs; let the
-      Documents page list, upload and filter a partner's papers.
+      Documents page list, upload and filter a partner's papers, and mark a
+      kind as one every partner must hold.
 - [ ] Give the vehicle's window Our bus or Partner, the Billing tab Paid to
       partners, the history its line, and the board's drag its question.
 - [ ] Move the company's driver seat to a partner, and set the upcoming
       trips whose updates say a bus was outsourced, asking rux for the
       partner where an update does not name one.
 - [ ] Name the partner in the connector's `get_trip` and `needs_attention`,
-      find its papers in `find_documents`, and say how to enter one in the
-      trips skill.
+      find its papers in `find_documents`, deploy the connector, whose rules
+      already count a covered bus, and say how to enter one in the trips
+      skill.
 - [ ] Say which screens read and write `partners` and the partner columns in
       the database inventory, and describe the page and the changed screens
       in the screen inventory and the scheduler's `README.md`.

@@ -1,11 +1,12 @@
 // Runs leg-facts.js's seat count against invented legs: the seats a leg's
-// buses have between them, and when the passengers are more than that.
+// buses have between them, and when the passengers are more than that; and
+// what a leg with a bus a partner covers asks for.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
 for (const f of ['../requirements.js', '../leg-facts.js', '../trip-shape.js', '../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
-const { seatsOf, overSeats, dayContactsOf, dayOfContact } = window.SchedulerLegFacts;
+const { seatsOf, overSeats, dayContactsOf, dayOfContact, crewOf, factsOf } = window.SchedulerLegFacts;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -38,6 +39,24 @@ expect('a leg\'s contacts come from the list, the leg named by its id or its old
 expect('a leg with none of its own takes the first leg\'s, and the contact is the first',
   [names(dayContactsOf({ ...listed, trip_contacts: listed.trip_contacts.slice(1) }, 'l2')), dayOfContact(listed, 'l1')?.phone, dayOfContact(listed)?.name],
   [['Ana'], '9565550101', 'Ana']);
+
+// A leg of three buses: one of ours with a driver, one a partner covers and confirmed with its price, one a partner covers and has not.
+const partnersById = new Map([['p1', { id: 'p1', name: 'Valley Coaches' }], ['p2', { id: 'p2', name: 'Delta Lines' }]]);
+const coveredTrip = { start_date: '2026-11-20', end_date: '2026-11-20', bus_count: 3, trip_type: 'round_trip', trip_reqs: { fuelCard: true },
+  trip_assignments: [
+    { id: 'a1', leg: 'outbound', bus_id: 'b56', fuel_card_number: '4410', trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: 300 }] },
+    { id: 'a2', leg: 'outbound', bus_id: null, partner_id: 'p1', partner_confirmed: true, partner_price: 2400, trip_drivers: [] },
+    { id: 'a3', leg: 'outbound', bus_id: null, partner_id: 'p2', partner_confirmed: false, partner_price: null, trip_drivers: [] }] };
+const covered = factsOf(coveredTrip, 'outbound', { busesById: buses, partnersById });
+expect('a bus a partner covers has no crew, so no seat open', crewOf(coveredTrip, coveredTrip.trip_assignments[1], new Map()), []);
+expect('a covered bus counts as assigned and opens no seat',
+  [covered.busesNeeded, covered.busesAssigned, covered.seatsOpen, covered.seats], [3, 3, 0, 1]);
+expect('the leg says how many buses partners cover and how many are ours, and asks no fuel card of theirs',
+  [covered.covered, covered.ours, covered.fuelCardsLeft], [2, 1, 0]);
+expect('each partner not confirmed and each with no price is named',
+  [covered.partnersUnconfirmed, covered.partnerPricesLeft], [['Delta Lines'], ['Delta Lines']]);
+expect('a partner the page did not read is still named as a partner',
+  factsOf(coveredTrip, 'outbound', { busesById: buses }).partnersUnconfirmed, ['A partner']);
 
 console.log(failed ? `\n  ${failed} fault(s) in leg facts` : '\n  leg facts: every case passed');
 process.exit(failed ? 1 : 0);

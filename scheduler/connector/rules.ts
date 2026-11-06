@@ -47,7 +47,8 @@ const window = {};
 
      Needs     the office's requirement list, which of a trip's needs are a
                vehicle's, and where a bus falls short of one
-     Crew      the roles an assignment turns on, who fills each and their status
+     Crew      the roles an assignment turns on, who fills each and their
+               status, and a vehicle a partner covers, which has no crew
      Contact   a contact as the trip records it, and its day-of contact
      Forms     the driver forms a trip's customer asks for, and each driver's
      Facts     `factsOf`, what checklist.js is handed for a leg
@@ -56,7 +57,8 @@ const window = {};
    it to `setRequirementList`, and `factsOf` is handed the buses, the drivers
    and the driver statuses by whoever read them. Two reads take the page's
    client, so every page and the connector ask the same questions:
-   `readDriverForms`, and `readBasics`, the buses, the drivers and the
+   `readDriverForms`, `readPartners`, the partners with the papers each must
+   hold, and `readBasics`, the buses, the drivers, the partners and the
    office's settings every rule needs set first. Needs requirements.js and
    trip-shape.js loaded first.
    ========================================================================== */
@@ -232,10 +234,17 @@ const window = {};
     return on;
   }
 
+  /* A VEHICLE A PARTNER COVERS is one of the leg's buses, run by another
+     company with its own coach and driver, so it has no bus of ours and no
+     seat, which the database holds to. */
+  const isCovered = assign => assign?.partner_id != null;
+
   /* An assignment's crew in role order: each driver in a role that is on, with
      their status, and each role that is on with nobody in it. Each carries
-     its leg's key in `legKey` and the old word in `leg`. */
+     its leg's key in `legKey` and the old word in `leg`. A covered vehicle
+     has none, so it never shows a seat open. */
   function crewOf(trip, assign, driversById, statuses) {
+    if (isCovered(assign)) return [];
     const on = activeRolesOf(assign);
     const leg = assign.leg || 'outbound';
     const legKey = window.SchedulerWeek?.legKeyOfVehicle(trip, assign) ?? leg;
@@ -309,19 +318,44 @@ const window = {};
     setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data });
     return true;
   }
-  /* The buses and the drivers by id, and the office's settings set in the
-     rule files that keep them: the requirement list here, the follow-up wait
-     and window in follow-up.js and the billing workflow in billing.js.
-     `forms` reads the driver forms too, as Departures does. */
+  /* THE PARTNERS by id, each with `papers`: a line for every kind of paper
+     every partner must hold, the kinds marked `partner_required`, with its
+     name and the end day of the partner's current copy, or `held` false
+     where it has none. A read of the papers that fails leaves `papers` null,
+     so a partner is never told it lacks a paper the page could not look
+     for. */
+  async function readPartners(client) {
+    const [partners, kinds, papers] = await Promise.all([
+      client.from('partners').select('id,name,status,phone'),
+      client.from('document_kinds').select('id,name').eq('partner_required', true).order('name'),
+      client.from('company_documents').select('partner_id,kind_id,ends_on')
+        .is('replaced_at', null).not('partner_id', 'is', null),
+    ]);
+    if (partners.error) throw new Error(partners.error.message);
+    const known = !kinds.error && !papers.error;
+    return new Map((partners.data ?? []).map(p => [p.id, {
+      ...p,
+      papers: known ? kinds.data.map(k => {
+        const copy = papers.data.find(d => d.partner_id === p.id && d.kind_id === k.id);
+        return { kind: k.name, held: !!copy, ends_on: copy?.ends_on ?? null };
+      }) : null,
+    }]));
+  }
+  /* The buses, the drivers and the partners by id, and the office's
+     settings set in the rule files that keep them: the requirement list
+     here, the follow-up wait and window in follow-up.js and the billing
+     workflow in billing.js. `forms` reads the driver forms too, as
+     Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     // The pairs kept apart, where clashes.js is loaded to read them.
     const apart = window.SchedulerClashes ? `,${window.SchedulerClashes.APART_COLUMNS}` : '';
-    const [buses, drivers, settings] = await Promise.all([
+    const [buses, drivers, settings, partnersById] = await Promise.all([
       client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
       // The names, status and card dates, for what stands in a driver's way.
       client.from('drivers').select(`id,name,short_name,employment_type,status,license_exp,med_card_expiry${apart}`).then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
+      readPartners(client),
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));
     setRequirementList(setting.get('requirements-v1'));
@@ -329,7 +363,7 @@ const window = {};
     window.SchedulerBilling?.setWorkflow(setting.get('billing-workflow-v1'));
     // The driver forms customers ask for; a refused read asks for none.
     if (forms) await readDriverForms(client).catch(() => false);
-    return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])) };
+    return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])), partnersById };
   }
 
   /* A trip's leg as week.js reads it, by its key or the old word a page
@@ -375,21 +409,34 @@ const window = {};
      around it, it also says what stands in its way, as clashes.js's
      standing rule says it. `declined` names the drivers who said no, and
      `toTell` each confirmed driver the leg changed for since they accepted,
-     as driver-job.js reads it, with the lines that say what. */
-  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
+     as driver-job.js reads it, with the lines that say what.
+
+     A covered vehicle counts as a bus assigned. `covered` is how many the
+     leg has and `ours` how many of its buses are left for us to drive, the
+     ones a fuel card and our drivers' paperwork are for;
+     `partnersUnconfirmed` and `partnerPricesLeft` name each partner not yet
+     confirmed and each with no price entered. */
+  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), partnersById = new Map(), statuses = new Map(), nearby = null } = {}) {
     // The leg by its key, or by its old word.
     const on = weekLeg(trip, leg);
     const word = on?.leg ?? leg ?? 'outbound';
     const key = on?.key ?? word;
     const assigns = vehiclesOf(trip, leg);
     const busesNeeded = on ? on.count : word === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    const covered = assigns.filter(isCovered);
+    const ours = Math.max(0, busesNeeded - covered.length);
+    const partnerName = a => partnersById.get(a.partner_id)?.name || 'A partner';
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
-      fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
+      covered: covered.length, ours,
+      partnersUnconfirmed: covered.filter(a => !a.partner_confirmed).map(partnerName),
+      partnerPricesLeft: covered.filter(a => a.partner_price == null || a.partner_price === '').map(partnerName),
+      fuelCardsLeft: Math.max(0, ours - assigns.filter(a => !isCovered(a) && String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
-      facts.clashes = window.SchedulerClashes.standing(trip, key, nearby, { driversById, busesById }).map(c => c.words);
+      facts.clashes = window.SchedulerClashes.standing(trip, key, nearby, { driversById, busesById, partnersById }).map(c => c.words);
     }
+    facts.busesAssigned += covered.length;
     for (const a of assigns) {
       if (a.bus_id == null) continue;
       facts.busesAssigned++;
@@ -432,8 +479,8 @@ const window = {};
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
-    setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
+    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
   };
 })();
 
@@ -689,10 +736,11 @@ const window = {};
      Customer     confirmed, the itinerary received or not needed, a trip
                   contact
      Buses        every bus assigned and fit for the trip, nothing in a
-                  bus's or a driver's way, every seat filled, every driver
-                  confirmed, no driver declined, and every driver told of a
-                  change since they accepted
-     Paperwork    each driver's itinerary and envelope printed, the
+                  bus's, a driver's or a partner's way, every seat filled,
+                  every driver confirmed, no driver declined, every driver
+                  told of a change since they accepted, and each partner
+                  covering a bus confirmed and its price entered
+     Paperwork    each of our drivers' itinerary and envelope printed, the
                   hours-of-service record of each part-time driver, and each
                   driver's form of a kind the customer asks for
      Extras       the hotel booked and each bus's fuel card assigned, when
@@ -727,9 +775,11 @@ const window = {};
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
        envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft,
-       formsWanted, formsMissing, formsLeft, clashes, declined, toTell },
+       formsWanted, formsMissing, formsLeft, clashes, declined, toTell,
+       covered, ours, partnersUnconfirmed, partnerPricesLeft },
      where `seats`
-     counts the seats with a driver in them. `tripContact` is whether the trip
+     counts the seats with a driver in them and `ours` the buses left for
+     our drivers once the partners' are taken out. `tripContact` is whether the trip
      has a day-of contact. */
   function legItems(trip, leg, facts = {}, tripContact = false) {
     const first = leg === legsOf(trip)[0];
@@ -770,11 +820,23 @@ const window = {};
     // A driver who said no, and a change a driver has not been told of, each said by name.
     if (facts.declined?.length) add('Buses', 'declined', 'No driver declined', false, TABS.buses, facts.declined.map(d => `${d.name} declined`).join(' · '));
     if (facts.toTell?.length) add('Buses', 'told', 'Every driver told of changes', false, 'contacts', facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join('; ')}`).join(' · '));
+    // A bus a partner covers asks only that the partner confirm and that its price be entered.
+    if (facts.covered) {
+      const unconfirmed = facts.partnersUnconfirmed || [];
+      const unpriced = facts.partnerPricesLeft || [];
+      add('Buses', 'partners', 'Every partner confirmed', !unconfirmed.length, TABS.buses,
+        unconfirmed.length ? unconfirmed.map(name => `${name} not confirmed`).join(' · ') : null);
+      add('Buses', 'partner-prices', 'Every partner\'s price entered', !unpriced.length, TABS.buses,
+        unpriced.length ? unpriced.map(name => `${name} has no price`).join(' · ') : null);
+    }
 
     // Each driver is handed their own, so with nobody in a seat it is not printed yet.
     // The sheet is the itinerary the customer sent where the trip has one, and the one Forms draws where it has none.
-    add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, hasItinerary(trip) ? TABS.itinerary : TABS.forms,
-      facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
+    // A leg whose every bus a partner covers has no driver of ours to hand one to.
+    if ((facts.ours ?? 1) > 0) {
+      add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, hasItinerary(trip) ? TABS.itinerary : TABS.forms,
+        facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
+    }
     if (facts.seats) {
       add('Paperwork', 'envelopes', 'Envelopes printed', !facts.envelopesLeft, TABS.forms,
         facts.envelopesLeft ? `${plural(facts.envelopesLeft, 'envelope', 'envelopes')} left` : null);
@@ -1941,12 +2003,15 @@ const window = {};
    driver's way on one leg; `rankDrivers` puts drivers in the order to ask
    them and `autoPicks` in the order an automatic pick takes them;
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
-   licence or medical card that runs out before a leg ends.
+   licence or medical card that runs out before a leg ends, and
+   `paperLapse` a paper a partner must hold that it lacks or that runs out.
 
    THE STANDING RULE: `standing(trip, leg, nearby, read)` is what stands in
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
    days out, a driver's time off, a driver set Inactive, a card that runs
-   out before the leg ends, or a driver kept apart from another on the trip.
+   out before the leg ends, or a driver kept apart from another on the trip;
+   and for a bus a partner covers, the partner set Inactive or a paper it
+   must hold that it lacks or that runs out before the leg ends.
    The leg is named by its key, week.js's, or by the old word a page still
    names it by. The bar, the checklist, Departures and
    the Trips page all read it, so they cannot disagree. A placeholder raises
@@ -2195,6 +2260,20 @@ const window = {};
       .join(' · ');
   }
 
+  /* What a partner lacks or what runs out before the leg ends, among the
+     papers every partner must hold, in words, or '' when each is held and
+     lasts the trip. A partner read without its papers says nothing, since
+     the page could not look. */
+  function paperLapse(p, range) {
+    if (!Array.isArray(p?.papers)) return '';
+    return p.papers.map(paper => {
+      if (!paper.held) return `${paper.kind} not on file`;
+      const day = String(paper.ends_on ?? '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || day >= (range.ends ?? range.to)) return '';
+      return `${paper.kind} ${day < range.from ? 'expired' : 'expires'} ${cardDay.format(parseISO(day))}`;
+    }).filter(Boolean).join(' · ');
+  }
+
   /* The drivers in a trip's seats that are on, on the legs whose days
      overlap `range`, each with the vehicle it is in: the crew a driver on
      that leg works beside, on their bus or another. */
@@ -2209,9 +2288,11 @@ const window = {};
 
   /* What stands in a saved leg's way, one entry for each thing: the
      assignment and the driver it is on, `what` it is, and `words`, the bus's
-     number or the driver's name before it. `read` holds the page's
-     `driversById`, read with APART_COLUMNS, and `busesById`. */
-  function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map() } = {}) {
+     number, the driver's or the partner's name before it. `read` holds the
+     page's `driversById`, read with APART_COLUMNS, `busesById`, and
+     `partnersById`, read with their papers by leg-facts.js's
+     `readPartners`. */
+  function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map(), partnersById = new Map() } = {}) {
     if (!trip || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return [];
     const range = legByKey(trip, leg);
     if (!range) return [];
@@ -2220,10 +2301,19 @@ const window = {};
     const out = [];
     const put = (a, driverId, subject, what) => {
       if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
-        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, what, words: `${subject}: ${what}` });
+        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, partnerId: a.partner_id ?? null, what, words: `${subject}: ${what}` });
       }
     };
     for (const a of (trip.trip_assignments || []).filter(x => legKeyOfVehicle(trip, x) === range.key)) {
+      // A bus a partner covers has no bus of ours and no seat; only its partner can stand in its way.
+      if (a.partner_id != null) {
+        const partner = partnersById.get(a.partner_id);
+        const name = partner?.name || 'The partner';
+        if (partner?.status && partner.status !== 'active') put(a, null, name, 'Inactive');
+        const lapse = paperLapse(partner, range);
+        if (lapse) put(a, null, name, lapse);
+        continue;
+      }
       if (a.bus_id != null) {
         const bus = busesById.get(a.bus_id);
         for (const what of fit.buses.get(a.bus_id) ?? []) put(a, null, bus?.number != null ? `Bus ${bus.number}` : 'The bus', what);
@@ -2274,7 +2364,7 @@ const window = {};
   }
 
   window.SchedulerClashes = {
-    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse,
+    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse,
     apartPairs, pairWords, apartWords, tripCrew, standing, readNearby,
   };
 })();
@@ -2369,8 +2459,9 @@ const window = {};
   const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
   const needed = (trip, leg) => legOf(trip, leg)?.count || 1;
+  // A bus is assigned when it is one of ours or a partner covers it, as leg-facts.js counts it.
   const assigned = (trip, leg) => (trip.trip_assignments || [])
-    .filter(a => Week().legKeyOfVehicle(trip, a) === leg && a.bus_id != null).length;
+    .filter(a => Week().legKeyOfVehicle(trip, a) === leg && (a.bus_id != null || a.partner_id != null)).length;
   const hasTimes = (trip, leg) => Week().stopsOfKey(trip, leg).some(s => s.arrive || s.spot || s.depart_prev);
 
   // An open checklist item as a fault, in the words the trip's card uses.

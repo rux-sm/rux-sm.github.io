@@ -1,8 +1,9 @@
 // Runs clashes.js, what stands in a bus's or a driver's way on a leg,
 // against invented trips: a trip on the same days, time off, days out, a
 // trip the day before or after and the rest between, the order drivers are
-// asked in and picked in, a licence or medical card that runs out, and two
-// drivers kept apart on one trip, and allowed on one.
+// asked in and picked in, a licence or medical card that runs out, two
+// drivers kept apart on one trip, and allowed on one, and a bus a partner
+// covers whose partner is Inactive or lacks a paper it must hold.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -10,7 +11,7 @@ const window = {};
 for (const f of ['../billing.js', '../requirements.js', '../leg-facts.js', '../trip-shape.js', '../past-midnight.js', '../week.js', '../clashes.js']) {
   runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 }
-const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, standing, apartPairs } = window.SchedulerClashes;
+const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse, standing, apartPairs } = window.SchedulerClashes;
 const { legsOf } = window.SchedulerWeek;
 
 let failed = 0;
@@ -168,6 +169,19 @@ expect('a leg read with its legs says the same by its id or its old word, its ve
   [standing(shaped(saved), `l-${saved.id}`, shapedAround, read).map(c => c.words), standing(shaped(saved), 'outbound', shapedAround, read).length],
   [['Bus 897: On trip Lunch', 'Rigo: Time off', 'Rigo: Licence expired Oct 10, 2026', 'Ana Ruiz: Inactive'], 4]);
 expect('a leg the trip does not have stands in nothing\'s way', standing(shaped(saved), 'l-none', shapedAround, read), []);
+
+// ── a bus a partner covers ──────────────────────────────────────────────────
+const insurance = ends_on => ({ kind: 'Insurance certificate', held: ends_on !== undefined, ends_on: ends_on ?? null });
+expect('a partner\'s paper is said when it is not on file or runs out before the leg ends, and nothing when it lasts or was not read',
+  [paperLapse({ papers: [insurance('2027-03-01')] }, mine), paperLapse({ papers: [insurance()] }, mine),
+    paperLapse({ papers: [insurance('2026-10-01')] }, mine), paperLapse({ papers: null }, mine), paperLapse(undefined, mine)],
+  ['', 'Insurance certificate not on file', 'Insurance certificate expired Oct 1, 2026', '', '']);
+const coveredSaved = { ...saved, trip_assignments: [{ id: 'c1', leg: 'outbound', bus_id: null, partner_id: 'p1', trip_drivers: [] }] };
+const partnerRead = { ...read, partnersById: new Map([['p1', { name: 'Valley Coaches', status: 'inactive', papers: [insurance('2026-10-01')] }]]) };
+expect('a covered bus stands in nothing\'s way but its partner\'s, by the partner\'s name',
+  standing(coveredSaved, 'outbound', around, partnerRead).map(c => [c.assignmentId, c.partnerId, c.words]),
+  [['c1', 'p1', 'Valley Coaches: Inactive'], ['c1', 'p1', 'Valley Coaches: Insurance certificate expired Oct 1, 2026']]);
+expect('a partner the page did not read stands in nothing\'s way', standing(coveredSaved, 'outbound', around, read), []);
 
 // ── kept apart ──────────────────────────────────────────────────────────────
 // A pair is one row, the smaller id first: k1 and k2 are kept apart, read from both sides.

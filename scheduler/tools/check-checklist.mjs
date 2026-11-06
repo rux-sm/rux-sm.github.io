@@ -116,5 +116,15 @@ expect('the form issued to the trip\'s customer is taken first, and one that end
 expect('a return leg is held to the day it leaves',
   Facts.driverFormsOf(tripFor('north', [], { return_start_date: '2027-01-05' }), 'return', 'd1').map(f => f.ended), [true]);
 
+const part = f => ids(checklist(ready, () => ({ ...full, ...f }), true)).filter(i => /^(partners|partner-prices|itinerary-printed):/.test(i));
+expect('a bus a partner covers asks for the partner confirmed and its price, and a leg with none asks neither',
+  [part({}), part({ covered: 1, ours: 0, partnersUnconfirmed: ['Delta Lines'], partnerPricesLeft: ['Delta Lines'] }),
+    part({ covered: 1, ours: 1, partnersUnconfirmed: [], partnerPricesLeft: [] })],
+  [['itinerary-printed:l1+'], ['partners:l1-', 'partner-prices:l1-'], ['partners:l1+', 'partner-prices:l1+', 'itinerary-printed:l1+']]);
+expect('a partner not confirmed is said by name',
+  checklist(ready, () => ({ ...full, covered: 1, ours: 0, partnersUnconfirmed: ['Delta Lines'] }), true)[0]
+    .items.find(i => i.id.startsWith('partners:')).detail,
+  'Delta Lines not confirmed');
+
 console.log(failed ? `\n  ${failed} checklist case(s) failed` : '\n  checklist: every case passed');
 process.exit(failed ? 1 : 0);

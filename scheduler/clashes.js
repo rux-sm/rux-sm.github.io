@@ -7,12 +7,15 @@
    driver's way on one leg; `rankDrivers` puts drivers in the order to ask
    them and `autoPicks` in the order an automatic pick takes them;
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
-   licence or medical card that runs out before a leg ends.
+   licence or medical card that runs out before a leg ends, and
+   `paperLapse` a paper a partner must hold that it lacks or that runs out.
 
    THE STANDING RULE: `standing(trip, leg, nearby, read)` is what stands in
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
    days out, a driver's time off, a driver set Inactive, a card that runs
-   out before the leg ends, or a driver kept apart from another on the trip.
+   out before the leg ends, or a driver kept apart from another on the trip;
+   and for a bus a partner covers, the partner set Inactive or a paper it
+   must hold that it lacks or that runs out before the leg ends.
    The leg is named by its key, week.js's, or by the old word a page still
    names it by. The bar, the checklist, Departures and
    the Trips page all read it, so they cannot disagree. A placeholder raises
@@ -261,6 +264,20 @@
       .join(' · ');
   }
 
+  /* What a partner lacks or what runs out before the leg ends, among the
+     papers every partner must hold, in words, or '' when each is held and
+     lasts the trip. A partner read without its papers says nothing, since
+     the page could not look. */
+  function paperLapse(p, range) {
+    if (!Array.isArray(p?.papers)) return '';
+    return p.papers.map(paper => {
+      if (!paper.held) return `${paper.kind} not on file`;
+      const day = String(paper.ends_on ?? '').slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || day >= (range.ends ?? range.to)) return '';
+      return `${paper.kind} ${day < range.from ? 'expired' : 'expires'} ${cardDay.format(parseISO(day))}`;
+    }).filter(Boolean).join(' · ');
+  }
+
   /* The drivers in a trip's seats that are on, on the legs whose days
      overlap `range`, each with the vehicle it is in: the crew a driver on
      that leg works beside, on their bus or another. */
@@ -275,9 +292,11 @@
 
   /* What stands in a saved leg's way, one entry for each thing: the
      assignment and the driver it is on, `what` it is, and `words`, the bus's
-     number or the driver's name before it. `read` holds the page's
-     `driversById`, read with APART_COLUMNS, and `busesById`. */
-  function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map() } = {}) {
+     number, the driver's or the partner's name before it. `read` holds the
+     page's `driversById`, read with APART_COLUMNS, `busesById`, and
+     `partnersById`, read with their papers by leg-facts.js's
+     `readPartners`. */
+  function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map(), partnersById = new Map() } = {}) {
     if (!trip || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return [];
     const range = legByKey(trip, leg);
     if (!range) return [];
@@ -286,10 +305,19 @@
     const out = [];
     const put = (a, driverId, subject, what) => {
       if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
-        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, what, words: `${subject}: ${what}` });
+        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, partnerId: a.partner_id ?? null, what, words: `${subject}: ${what}` });
       }
     };
     for (const a of (trip.trip_assignments || []).filter(x => legKeyOfVehicle(trip, x) === range.key)) {
+      // A bus a partner covers has no bus of ours and no seat; only its partner can stand in its way.
+      if (a.partner_id != null) {
+        const partner = partnersById.get(a.partner_id);
+        const name = partner?.name || 'The partner';
+        if (partner?.status && partner.status !== 'active') put(a, null, name, 'Inactive');
+        const lapse = paperLapse(partner, range);
+        if (lapse) put(a, null, name, lapse);
+        continue;
+      }
       if (a.bus_id != null) {
         const bus = busesById.get(a.bus_id);
         for (const what of fit.buses.get(a.bus_id) ?? []) put(a, null, bus?.number != null ? `Bus ${bus.number}` : 'The bus', what);
@@ -340,7 +368,7 @@
   }
 
   window.SchedulerClashes = {
-    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse,
+    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse,
     apartPairs, pairWords, apartWords, tripCrew, standing, readNearby,
   };
 })();

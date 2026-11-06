@@ -7,7 +7,8 @@
 
      Needs     the office's requirement list, which of a trip's needs are a
                vehicle's, and where a bus falls short of one
-     Crew      the roles an assignment turns on, who fills each and their status
+     Crew      the roles an assignment turns on, who fills each and their
+               status, and a vehicle a partner covers, which has no crew
      Contact   a contact as the trip records it, and its day-of contact
      Forms     the driver forms a trip's customer asks for, and each driver's
      Facts     `factsOf`, what checklist.js is handed for a leg
@@ -16,7 +17,8 @@
    it to `setRequirementList`, and `factsOf` is handed the buses, the drivers
    and the driver statuses by whoever read them. Two reads take the page's
    client, so every page and the connector ask the same questions:
-   `readDriverForms`, and `readBasics`, the buses, the drivers and the
+   `readDriverForms`, `readPartners`, the partners with the papers each must
+   hold, and `readBasics`, the buses, the drivers, the partners and the
    office's settings every rule needs set first. Needs requirements.js and
    trip-shape.js loaded first.
    ========================================================================== */
@@ -192,10 +194,17 @@
     return on;
   }
 
+  /* A VEHICLE A PARTNER COVERS is one of the leg's buses, run by another
+     company with its own coach and driver, so it has no bus of ours and no
+     seat, which the database holds to. */
+  const isCovered = assign => assign?.partner_id != null;
+
   /* An assignment's crew in role order: each driver in a role that is on, with
      their status, and each role that is on with nobody in it. Each carries
-     its leg's key in `legKey` and the old word in `leg`. */
+     its leg's key in `legKey` and the old word in `leg`. A covered vehicle
+     has none, so it never shows a seat open. */
   function crewOf(trip, assign, driversById, statuses) {
+    if (isCovered(assign)) return [];
     const on = activeRolesOf(assign);
     const leg = assign.leg || 'outbound';
     const legKey = window.SchedulerWeek?.legKeyOfVehicle(trip, assign) ?? leg;
@@ -269,19 +278,44 @@
     setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data });
     return true;
   }
-  /* The buses and the drivers by id, and the office's settings set in the
-     rule files that keep them: the requirement list here, the follow-up wait
-     and window in follow-up.js and the billing workflow in billing.js.
-     `forms` reads the driver forms too, as Departures does. */
+  /* THE PARTNERS by id, each with `papers`: a line for every kind of paper
+     every partner must hold, the kinds marked `partner_required`, with its
+     name and the end day of the partner's current copy, or `held` false
+     where it has none. A read of the papers that fails leaves `papers` null,
+     so a partner is never told it lacks a paper the page could not look
+     for. */
+  async function readPartners(client) {
+    const [partners, kinds, papers] = await Promise.all([
+      client.from('partners').select('id,name,status,phone'),
+      client.from('document_kinds').select('id,name').eq('partner_required', true).order('name'),
+      client.from('company_documents').select('partner_id,kind_id,ends_on')
+        .is('replaced_at', null).not('partner_id', 'is', null),
+    ]);
+    if (partners.error) throw new Error(partners.error.message);
+    const known = !kinds.error && !papers.error;
+    return new Map((partners.data ?? []).map(p => [p.id, {
+      ...p,
+      papers: known ? kinds.data.map(k => {
+        const copy = papers.data.find(d => d.partner_id === p.id && d.kind_id === k.id);
+        return { kind: k.name, held: !!copy, ends_on: copy?.ends_on ?? null };
+      }) : null,
+    }]));
+  }
+  /* The buses, the drivers and the partners by id, and the office's
+     settings set in the rule files that keep them: the requirement list
+     here, the follow-up wait and window in follow-up.js and the billing
+     workflow in billing.js. `forms` reads the driver forms too, as
+     Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     // The pairs kept apart, where clashes.js is loaded to read them.
     const apart = window.SchedulerClashes ? `,${window.SchedulerClashes.APART_COLUMNS}` : '';
-    const [buses, drivers, settings] = await Promise.all([
+    const [buses, drivers, settings, partnersById] = await Promise.all([
       client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
       // The names, status and card dates, for what stands in a driver's way.
       client.from('drivers').select(`id,name,short_name,employment_type,status,license_exp,med_card_expiry${apart}`).then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
+      readPartners(client),
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));
     setRequirementList(setting.get('requirements-v1'));
@@ -289,7 +323,7 @@
     window.SchedulerBilling?.setWorkflow(setting.get('billing-workflow-v1'));
     // The driver forms customers ask for; a refused read asks for none.
     if (forms) await readDriverForms(client).catch(() => false);
-    return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])) };
+    return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])), partnersById };
   }
 
   /* A trip's leg as week.js reads it, by its key or the old word a page
@@ -335,21 +369,34 @@
      around it, it also says what stands in its way, as clashes.js's
      standing rule says it. `declined` names the drivers who said no, and
      `toTell` each confirmed driver the leg changed for since they accepted,
-     as driver-job.js reads it, with the lines that say what. */
-  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
+     as driver-job.js reads it, with the lines that say what.
+
+     A covered vehicle counts as a bus assigned. `covered` is how many the
+     leg has and `ours` how many of its buses are left for us to drive, the
+     ones a fuel card and our drivers' paperwork are for;
+     `partnersUnconfirmed` and `partnerPricesLeft` name each partner not yet
+     confirmed and each with no price entered. */
+  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), partnersById = new Map(), statuses = new Map(), nearby = null } = {}) {
     // The leg by its key, or by its old word.
     const on = weekLeg(trip, leg);
     const word = on?.leg ?? leg ?? 'outbound';
     const key = on?.key ?? word;
     const assigns = vehiclesOf(trip, leg);
     const busesNeeded = on ? on.count : word === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    const covered = assigns.filter(isCovered);
+    const ours = Math.max(0, busesNeeded - covered.length);
+    const partnerName = a => partnersById.get(a.partner_id)?.name || 'A partner';
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
-      fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
+      covered: covered.length, ours,
+      partnersUnconfirmed: covered.filter(a => !a.partner_confirmed).map(partnerName),
+      partnerPricesLeft: covered.filter(a => a.partner_price == null || a.partner_price === '').map(partnerName),
+      fuelCardsLeft: Math.max(0, ours - assigns.filter(a => !isCovered(a) && String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
-      facts.clashes = window.SchedulerClashes.standing(trip, key, nearby, { driversById, busesById }).map(c => c.words);
+      facts.clashes = window.SchedulerClashes.standing(trip, key, nearby, { driversById, busesById, partnersById }).map(c => c.words);
     }
+    facts.busesAssigned += covered.length;
     for (const a of assigns) {
       if (a.bus_id == null) continue;
       facts.busesAssigned++;
@@ -392,7 +439,7 @@
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
-    setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
+    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
   };
 })();

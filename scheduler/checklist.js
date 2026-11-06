@@ -9,10 +9,11 @@
      Customer     confirmed, the itinerary received or not needed, a trip
                   contact
      Buses        every bus assigned and fit for the trip, nothing in a
-                  bus's or a driver's way, every seat filled, every driver
-                  confirmed, no driver declined, and every driver told of a
-                  change since they accepted
-     Paperwork    each driver's itinerary and envelope printed, the
+                  bus's, a driver's or a partner's way, every seat filled,
+                  every driver confirmed, no driver declined, every driver
+                  told of a change since they accepted, and each partner
+                  covering a bus confirmed and its price entered
+     Paperwork    each of our drivers' itinerary and envelope printed, the
                   hours-of-service record of each part-time driver, and each
                   driver's form of a kind the customer asks for
      Extras       the hotel booked and each bus's fuel card assigned, when
@@ -47,9 +48,11 @@
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
        envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft,
-       formsWanted, formsMissing, formsLeft, clashes, declined, toTell },
+       formsWanted, formsMissing, formsLeft, clashes, declined, toTell,
+       covered, ours, partnersUnconfirmed, partnerPricesLeft },
      where `seats`
-     counts the seats with a driver in them. `tripContact` is whether the trip
+     counts the seats with a driver in them and `ours` the buses left for
+     our drivers once the partners' are taken out. `tripContact` is whether the trip
      has a day-of contact. */
   function legItems(trip, leg, facts = {}, tripContact = false) {
     const first = leg === legsOf(trip)[0];
@@ -90,11 +93,23 @@
     // A driver who said no, and a change a driver has not been told of, each said by name.
     if (facts.declined?.length) add('Buses', 'declined', 'No driver declined', false, TABS.buses, facts.declined.map(d => `${d.name} declined`).join(' · '));
     if (facts.toTell?.length) add('Buses', 'told', 'Every driver told of changes', false, 'contacts', facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join('; ')}`).join(' · '));
+    // A bus a partner covers asks only that the partner confirm and that its price be entered.
+    if (facts.covered) {
+      const unconfirmed = facts.partnersUnconfirmed || [];
+      const unpriced = facts.partnerPricesLeft || [];
+      add('Buses', 'partners', 'Every partner confirmed', !unconfirmed.length, TABS.buses,
+        unconfirmed.length ? unconfirmed.map(name => `${name} not confirmed`).join(' · ') : null);
+      add('Buses', 'partner-prices', 'Every partner\'s price entered', !unpriced.length, TABS.buses,
+        unpriced.length ? unpriced.map(name => `${name} has no price`).join(' · ') : null);
+    }
 
     // Each driver is handed their own, so with nobody in a seat it is not printed yet.
     // The sheet is the itinerary the customer sent where the trip has one, and the one Forms draws where it has none.
-    add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, hasItinerary(trip) ? TABS.itinerary : TABS.forms,
-      facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
+    // A leg whose every bus a partner covers has no driver of ours to hand one to.
+    if ((facts.ours ?? 1) > 0) {
+      add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, hasItinerary(trip) ? TABS.itinerary : TABS.forms,
+        facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
+    }
     if (facts.seats) {
       add('Paperwork', 'envelopes', 'Envelopes printed', !facts.envelopesLeft, TABS.forms,
         facts.envelopesLeft ? `${plural(facts.envelopesLeft, 'envelope', 'envelopes')} left` : null);

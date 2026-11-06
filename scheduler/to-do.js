@@ -87,8 +87,9 @@
   const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
   const needed = (trip, leg) => legOf(trip, leg)?.count || 1;
+  // A bus is assigned when it is one of ours or a partner covers it, as leg-facts.js counts it.
   const assigned = (trip, leg) => (trip.trip_assignments || [])
-    .filter(a => Week().legKeyOfVehicle(trip, a) === leg && a.bus_id != null).length;
+    .filter(a => Week().legKeyOfVehicle(trip, a) === leg && (a.bus_id != null || a.partner_id != null)).length;
   const hasTimes = (trip, leg) => Week().stopsOfKey(trip, leg).some(s => s.arrive || s.spot || s.depart_prev);
 
   // An open checklist item as a fault, in the words the trip's card uses.

@@ -9,7 +9,10 @@
    with its own coach and driver. Its profile is the office's: the details
    on its Details tab, its papers on its Documents tab, which the Documents
    page uploads and comes back from, and on its Trips tab every bus it has
-   covered, with what the office pays it. The papers every partner must hold,
+   covered, with what the office pays it. Its Contacts tab lists its people, contacts
+   that name it, one of them its main contact, and its Drivers tab its own
+   drivers, `partner_drivers`, never ours, each saved from its own window.
+   The papers every partner must hold,
    the kinds marked so on the Documents page, are listed whether held or not,
    since the board warns of a covered bus whose partner lacks one. A partner
    a trip or a paper names is set Inactive, never deleted.
@@ -28,7 +31,7 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-partners-h').hidden = true;
 
-  const COLUMNS = 'id,name,phone,email,contact_name,usdot_number,notes,status,updated_at';
+  const COLUMNS = 'id,name,phone,email,main_contact_id,usdot_number,notes,status,updated_at';
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   const folded = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
   const day = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
@@ -87,7 +90,7 @@
   };
   const matches = (p, q) => {
     if (!q) return true;
-    return folded([p.name, p.contact_name, p.phone, p.email, p.usdot_number].filter(Boolean).join(' ')).includes(folded(q));
+    return folded([p.name, mains.get(p.main_contact_id)?.name, p.phone, p.email, p.usdot_number].filter(Boolean).join(' ')).includes(folded(q));
   };
 
   function drawList() {
@@ -122,7 +125,9 @@
       const link = el('a', 'scheduler-pair-cell__name', p.name);
       link.href = `partners.html?id=${encodeURIComponent(p.id)}`;
       lines.appendChild(link);
-      const reach = [p.contact_name, showPhone(p.phone)].filter(Boolean).join(' · ');
+      // Its main contact and their phone, or the company's phone with none.
+      const main = mains.get(p.main_contact_id);
+      const reach = (main ? [main.name, showPhone(main.phone)] : [showPhone(p.phone)]).filter(Boolean).join(' · ');
       if (reach) lines.appendChild(el('span', 'scheduler-pair-cell__detail', reach));
       cell.appendChild(lines);
       who.appendChild(cell);
@@ -144,10 +149,14 @@
   // Search, sort and a row's click, which opens its partner.
   const view = pair.table({ sortKey: 'name', draw: drawList });
 
+  let mains = new Map();       // contact id → each partner's main contact
   async function readPartners() {
     const { data, error } = await client.from('partners').select(COLUMNS).order('name');
     if (error) throw error;
     partners = data || [];
+    const ids = partners.map(p => p.main_contact_id).filter(Boolean);
+    const found = ids.length ? await client.from('contacts').select('id,name,title,phone').in('id', ids) : { data: [] };
+    mains = new Map((found.data || []).map(c => [c.id, c]));
   }
 
   async function loadList() {
@@ -160,7 +169,7 @@
   /* ══ One partner ════════════════════════════════════════════════════════ */
   const form = $('scheduler-partner-form');
   const field = key => $(`scheduler-pa-${key}`);
-  const TEXT = { name: 'name', phone: 'phone', email: 'email', contact_name: 'contact', usdot_number: 'usdot', notes: 'notes' };
+  const TEXT = { name: 'name', phone: 'phone', email: 'email', usdot_number: 'usdot', notes: 'notes' };
 
   let loaded = null;
   // A new record's id, made once, so a Save sent again cannot insert it twice.
@@ -170,6 +179,7 @@
   const readForm = () => ({
     ...Object.fromEntries(Object.entries(TEXT).map(([column, key]) => [column, field(key).value.trim() || null])),
     status: field('status').value || 'active',
+    main_contact_id: field('main').value || null,
   });
   const snapshot = () => JSON.stringify(readForm());
   const dirty = () => baseline !== '' && snapshot() !== baseline;
@@ -177,6 +187,19 @@
   function fillForm(p) {
     for (const [column, key] of Object.entries(TEXT)) field(key).value = p[column] ?? '';
     field('status').value = p.status === 'inactive' ? 'inactive' : 'active';
+    /* The main contact, one of its people, or the one it has if that person
+       no longer names it, so a Save never drops it unasked. */
+    const offered = [...people];
+    if (p.main_contact_id && !offered.some(c => c.id === p.main_contact_id)) {
+      const kept = mains.get(p.main_contact_id);
+      if (kept) offered.push(kept);
+    }
+    field('main').replaceChildren(...[{ id: '', name: people.length ? 'None' : 'No contacts yet' }, ...offered].map(c => {
+      const option = el('option', 'rux--select-option', [c.name, c.title].filter(Boolean).join(', '));
+      option.value = c.id;
+      return option;
+    }));
+    field('main').value = p.main_contact_id ?? '';
     showNameError('');
   }
 
@@ -300,19 +323,130 @@
     }
   }
 
+  /* ── people ──
+     The contacts that name this partner, the main one first, each opening
+     its contact. */
+  let people = [];
+  async function readPeople(id) {
+    const { data, error } = await client.from('contacts').select('id,name,title,phone,email')
+      .eq('partner_id', id).order('name');
+    if (error) throw error;
+    people = data || [];
+  }
+  function drawContacts() {
+    $('scheduler-partner-contacts-add').href = `contacts.html?new&partner=${encodeURIComponent(loaded.id)}`;
+    const list = $('scheduler-partner-contacts');
+    list.replaceChildren();
+    const main = loaded.main_contact_id;
+    const ordered = [...people].sort((a, b) => (b.id === main) - (a.id === main) || folded(a.name).localeCompare(folded(b.name)));
+    if (!ordered.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No contacts yet.'));
+      list.appendChild(li);
+      return;
+    }
+    for (const c of ordered) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `contacts.html?id=${encodeURIComponent(c.id)}`;
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', c.name || 'Unnamed contact'));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [c.id === main ? 'Main contact' : null, c.title,
+        showPhone(c.phone), c.email].filter(Boolean).join(' · ') || 'No phone or email'));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  }
+
+  /* ── drivers ──
+     The partner's own drivers, Active first, each opening its window, which
+     writes it at once: a driver is not part of the Details form's Save. */
+  let drivers = [];
+  async function readDrivers(id) {
+    const { data, error } = await client.from('partner_drivers').select('id,name,phone,notes,status')
+      .eq('partner_id', id).order('name');
+    if (error) throw error;
+    drivers = data || [];
+  }
+  function drawDrivers() {
+    const list = $('scheduler-partner-drivers');
+    list.replaceChildren();
+    const ordered = [...drivers].sort((a, b) => (a.status === 'inactive') - (b.status === 'inactive') || folded(a.name).localeCompare(folded(b.name)));
+    if (!ordered.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No drivers yet.'));
+      list.appendChild(li);
+      return;
+    }
+    for (const d of ordered) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const open = el('button', 'rux--contained-list-item__content scheduler-pair-trip');
+      open.type = 'button';
+      open.addEventListener('click', () => openDriver(d));
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', d.name));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [d.status === 'inactive' ? 'Inactive' : null,
+        showPhone(d.phone), d.notes].filter(Boolean).join(' · ') || 'No phone'));
+      open.appendChild(lines);
+      li.appendChild(open);
+      list.appendChild(li);
+    }
+  }
+  const driverField = key => $(`scheduler-pd-${key}`);
+  let driverOpen = null;      // the driver the window edits, or null for a new one
+  function openDriver(d = null) {
+    driverOpen = d;
+    $('scheduler-partner-driver-h').textContent = d ? d.name : 'Add driver';
+    for (const key of ['name', 'phone', 'notes']) driverField(key).value = d?.[key] ?? '';
+    driverField('status').value = d?.status === 'inactive' ? 'inactive' : 'active';
+    pair.textError(driverField('name'), 'scheduler-pd-name-error', '');
+    window.Rux?.modal?.open?.('scheduler-partner-driver-modal');
+  }
+  $('scheduler-partner-drivers-add')?.addEventListener('click', () => openDriver());
+  $('scheduler-partner-driver-save')?.addEventListener('click', async () => {
+    const row = {
+      name: driverField('name').value.trim(),
+      phone: driverField('phone').value.trim() || null,
+      notes: driverField('notes').value.trim() || null,
+      status: driverField('status').value || 'active',
+    };
+    // Two of a partner's drivers never share a name, as the database holds.
+    const twin = drivers.some(d => d.id !== driverOpen?.id && folded(d.name) === folded(row.name));
+    const problem = !row.name ? 'Enter a name.' : twin ? 'This partner already has a driver of this name.' : '';
+    pair.textError(driverField('name'), 'scheduler-pd-name-error', problem);
+    if (problem) { driverField('name').focus(); return; }
+    const button = $('scheduler-partner-driver-save');
+    button.disabled = true;
+    try {
+      const { error } = driverOpen
+        ? await client.from('partner_drivers').update(row).eq('id', driverOpen.id)
+        : await client.from('partner_drivers').insert({ ...row, partner_id: loaded.id });
+      if (error) throw error;
+      window.Rux?.modal?.close?.('scheduler-partner-driver-modal');
+      await readDrivers(loaded.id);
+      drawDrivers();
+      result('success', driverOpen ? 'Driver saved.' : 'Driver added.');
+    } catch {
+      result('error', "The driver wasn't saved. Try again.");
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   // ── delete ──
   function drawDelete() {
     const section = $('scheduler-partner-delete-section');
     section.hidden = !loaded;
     if (!loaded) return;
     const papers = (current.get(loaded.id) || []).length;
-    const blocked = covered === null || covered.length > 0 || papers > 0;
+    const blocked = covered === null || covered.length > 0 || papers > 0 || people.length > 0;
     $('scheduler-partner-delete').disabled = blocked;
     $('scheduler-partner-delete-text').textContent = covered === null
       ? 'Checking the trips…'
-      : covered.length || papers
-        ? "A trip or a paper names this partner, so it can't be deleted. Set it Inactive instead."
-        : 'No trip or paper names this partner.';
+      : covered.length || papers || people.length
+        ? "A trip, a paper or a contact names this partner, so it can't be deleted. Set it Inactive instead."
+        : 'No trip, paper or contact names this partner. Deleting it takes its drivers with it.';
   }
   // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-partner-delete-confirm')?.addEventListener('click', async () => {
@@ -334,9 +468,11 @@
 
   // ── load, save ──
   async function show(id) {
-    await readPapers(id);
+    await Promise.all([readPapers(id), readPeople(id), readDrivers(id)]);
     fillForm(loaded);
     drawTitle();
+    drawContacts();
+    drawDrivers();
     drawDocuments();
     baseline = snapshot();
     readCovered(id);
@@ -348,6 +484,7 @@
     await readPartners();
     if (!partnerId) {
       loaded = null;
+      people = [];
       fillForm({ status: 'active' });
       drawTitle();
       baseline = snapshot();
@@ -357,9 +494,10 @@
       await show(loaded.id);
     }
     $('scheduler-partner').hidden = false;
-    // A paper uploaded from here comes back to the Documents tab.
-    if (loaded && location.hash === '#documents') {
-      const tab = $('scheduler-partner-tab-documents');
+    // A paper uploaded or a contact added from here comes back to its tab.
+    const back = { '#documents': 'documents', '#contacts': 'contacts' }[location.hash];
+    if (loaded && back) {
+      const tab = $(`scheduler-partner-tab-${back}`);
       window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
       history.replaceState(null, '', location.pathname + location.search);
     }

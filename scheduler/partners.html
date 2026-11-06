@@ -344,6 +344,12 @@
             <button id="scheduler-partner-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-partner-panel-details" tabindex="0">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
             </button>
+            <button id="scheduler-partner-tab-contacts" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-partner-panel-contacts" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Contacts</span></div>
+            </button>
+            <button id="scheduler-partner-tab-drivers" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-partner-panel-drivers" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Drivers</span></div>
+            </button>
             <button id="scheduler-partner-tab-documents" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-partner-panel-documents" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Documents</span></div>
             </button>
@@ -382,10 +388,15 @@
                     <div class="rux--text-input__field-wrapper"><input id="scheduler-pa-email" class="rux--text-input" type="email" autocomplete="off"></div>
                   </div>
                 </div>
-                <div class="rux--form-item rux--text-input-wrapper">
-                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-pa-contact">Dispatch contact</label></div>
-                  <div class="rux--text-input__field-outer-wrapper">
-                    <div class="rux--text-input__field-wrapper"><input id="scheduler-pa-contact" class="rux--text-input" type="text" autocomplete="off"></div>
+                <!-- One of its people, from the Contacts tab; partners.js fills it. -->
+                <div class="rux--form-item">
+                  <div class="rux--select">
+                    <label class="rux--label" for="scheduler-pa-main">Main contact</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-pa-main" class="rux--select-input" aria-describedby="scheduler-pa-main-help"></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
+                    <div class="rux--form__helper-text" id="scheduler-pa-main-help">One of the people on its Contacts tab.</div>
                   </div>
                 </div>
                 <div class="rux--form-item rux--text-input-wrapper">
@@ -439,6 +450,39 @@
         </div>
         </div>
 
+        <!-- Its people, contacts that name this partner, the main one first.
+             A contact is edited on the Contacts page, which Add contact opens
+             with this partner filled in and comes back from. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-partner-panel-contacts" aria-labelledby="scheduler-partner-tab-contacts" tabindex="0" hidden>
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-partner-contacts-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-partner-contacts-h">People at this partner</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-partner-contacts"></ul>
+            </div>
+            <div class="scheduler-pair-links">
+              <a class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" href="contacts.html?new" id="scheduler-partner-contacts-add">Add contact
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- Its own drivers, never ours: a row opens its window, which saves
+             it at once, apart from the Details form. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-partner-panel-drivers" aria-labelledby="scheduler-partner-tab-drivers" tabindex="0" hidden>
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-partner-drivers-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-partner-drivers-h">Its drivers</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-partner-drivers"></ul>
+            </div>
+            <div class="scheduler-pair-links">
+              <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="scheduler-partner-drivers-add">Add driver
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+              </button>
+            </div>
+          </section>
+        </div>
+
         <!-- Read only here: a paper is uploaded on the Documents page, which
              these links open for this partner and which comes back here. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-partner-panel-documents" aria-labelledby="scheduler-partner-tab-documents" tabindex="0" hidden>
@@ -469,6 +513,57 @@
           </section>
         </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- One of the partner's drivers, added or changed; its Save writes at once. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-partner-driver-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-partner-driver-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-partner-driver-h">Add driver</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <div class="rux--form-item rux--text-input-wrapper">
+            <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-pd-name">Name</label></div>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper"><input id="scheduler-pd-name" class="rux--text-input" type="text" autocomplete="off"></div>
+              <div class="rux--form-requirement" id="scheduler-pd-name-error"></div>
+            </div>
+          </div>
+          <div class="rux--form-item rux--text-input-wrapper">
+            <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-pd-phone">Phone</label></div>
+            <div class="rux--text-input__field-outer-wrapper">
+              <div class="rux--text-input__field-wrapper"><input id="scheduler-pd-phone" class="rux--text-input" type="tel" autocomplete="off" inputmode="tel"></div>
+            </div>
+          </div>
+          <div class="rux--form-item">
+            <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-pd-notes">Notes</label></div>
+            <div class="rux--text-area__wrapper"><textarea id="scheduler-pd-notes" class="rux--text-area" rows="2"></textarea></div>
+          </div>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="scheduler-pd-status">Status</label>
+              <div class="rux--select-input__wrapper">
+                <select id="scheduler-pd-status" class="rux--select-input">
+                  <option class="rux--select-option" value="active">Active</option>
+                  <option class="rux--select-option" value="inactive">Inactive</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-partner-driver-save">Save</button>
       </div>
     </div>
   </div>

@@ -124,7 +124,7 @@ Accept and Decline at its foot; a cancelled leg stays until its day passes, and 
 trips again on return and before Accept. Staff see the same schedule inside the app at `maintenance.html`,
 from the side nav, where a bar's details also open its trip, and they copy the public link to send and replace it when it has gone further
 than it should, and a driver's page at `driver-view.html`, from See their page on the Drivers page,
-where they tick the trips to send, copy the message and make, update, replace or revoke the link.
+where a switch for each trip, saved as it is flipped, says what their page shows, and they copy the message and replace or revoke the link.
 
 Staff can also work the schedule from the Claude app, which asks the
 `scheduler-connector` Edge Function, with its source in `connector/`. It reads the live tables and writes no trip: a trip Claude

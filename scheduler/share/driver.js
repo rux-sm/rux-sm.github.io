@@ -255,6 +255,8 @@
     green: 'rux--tag rux--tag--green rux--layout--size-md',
     red: 'rux--tag rux--tag--red rux--layout--size-md',
     warm: 'rux--tag rux--tag--warm-gray rux--layout--size-md',
+    magenta: 'rux--tag rux--tag--magenta rux--layout--size-md',
+    cyan: 'rux--tag rux--tag--cyan rux--layout--size-md',
   };
   const tag = (text, color, iconId) => {
     const t = el('span', TAG[color]);
@@ -270,6 +272,16 @@
     declined: () => tag(w.declined, 'red', '#m-cancel-fill'),
   };
   const statusTag = l => (l.cancelled ? tag(w.cancelled, 'red', '#m-cancel-fill') : (STATUS_TAG[stateOf(l).status] ?? STATUS_TAG.pending)());
+  /* Whether the customer has confirmed the trip, read with it each load, so
+     a confirmation reaches the driver with nothing sent. A row says only Not
+     confirmed yet; the trip's own screen says Confirmed too. */
+  const unconfirmed = l => !l.cancelled && l.trip?.confirmed === false;
+  const rowTags = l => {
+    if (!unconfirmed(l)) return statusTag(l);
+    const both = el('span', 'scheduler-driver-row__tags');
+    both.append(statusTag(l), tag(w.notConfirmed, 'magenta', '#m-schedule'));
+    return both;
+  };
 
   /* A screen's head: a way back where there is one, the heading, which takes
      focus when the screen changes so a screen reader starts there, and a
@@ -416,7 +428,7 @@
     }
     for (const [month, legs] of months) {
       screen.appendChild(section(month, rows(...legs.map(l => row({ hash: legHash(l), lead: dayBlock(l.start),
-        title: whereOf(l), line: lengthOf(l), end: statusTag(l) })))));
+        title: whereOf(l), line: lengthOf(l), end: rowTags(l) })))));
     }
     return screen;
   }
@@ -429,10 +441,12 @@
       { label: w.myTrips, hash: 'trips' });
     const tags = el('div', 'scheduler-driver-tags');
     tags.appendChild(statusTag(l));
+    if (!l.cancelled) tags.appendChild(unconfirmed(l) ? tag(w.notConfirmed, 'magenta', '#m-schedule') : tag(w.confirmedTag, 'cyan', '#m-check'));
     // The role only where it is not the usual one.
     if (!l.cancelled && (l.role || 'driver') !== 'driver') tags.appendChild(tag(w.role[roleKey(l.role)], 'gray', '#m-person'));
     top.appendChild(tags);
     if (!l.cancelled && l.customer) top.appendChild(el('p', 'rux--type-body-compact-01 scheduler-driver-muted', l.customer));
+    if (unconfirmed(l)) top.appendChild(el('p', 'rux--type-body-compact-01', w.notConfirmedText));
     screen.appendChild(top);
 
     // A cancelled trip stays until its day passes, so a driver who had it

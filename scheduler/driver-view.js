@@ -1,24 +1,24 @@
 /* ==========================================================================
    driver-view.js — SENDING A DRIVER THEIR TRIPS (driver-view.html)
    --------------------------------------------------------------------------
-   Staff pick a driver, tick which of their current and upcoming trip legs
-   go on the driver's link, copy the message to send them, and make, update
-   or revoke the link. The
-   driver's own page, drawn below by share/driver.js, redraws from the link
-   once it is saved, so staff read what the driver will read.
+   Staff pick a driver and switch each of their current and upcoming trip
+   legs on or off their page. A switch saves as it is flipped, so the
+   driver's link always shows what the toggles say, and a trip still being
+   worked out stays off it until it is switched on; a new trip starts off.
+   The driver's own page, drawn below by share/driver.js, redraws after each
+   save, so staff read what the driver will read.
 
-   The link functions: create_driver_schedule_share
-   makes a link, or brings back the driver's last one so the address stays
-   the same; update_driver_schedule_share saves a new choice to the same
-   address; revoke_driver_schedule_share stops it, and replace_driver_schedule_share
+   The link functions: create_driver_schedule_share makes a link, or brings
+   back the driver's last one so the address stays the same, the first time
+   a trip is switched on; update_driver_schedule_share saves each switch
+   after, and takes an empty list, which leaves the link showing no trips;
+   revoke_driver_schedule_share stops it, and replace_driver_schedule_share
    gives it a new address, which stops the old one. A link's dates run from
-   the first ticked leg to the last. Copy only copies, and only while the
-   link shows the ticked trips, because a copied text is not a sent one. Mark
-   as sent, offered while the message can be copied and the driver has not
-   answered one of its trips, sets each ticked leg the driver has not
-   answered to Pending response through sync_trip_driver_statuses, which
-   takes the trip's whole crew, read again for the mark, and changes only
-   the rows marked dirty.
+   the first leg on it to the last. Copy only copies, because a copied text
+   is not a sent one. Mark as sent, offered while the driver has not
+   answered a trip on their page, sets each such leg to Pending response
+   through sync_trip_driver_statuses, which takes the trip's whole crew,
+   read again for the mark, and changes only the rows marked dirty.
    ========================================================================== */
 (() => {
   'use strict';
@@ -55,7 +55,7 @@
      message's words are still chosen by. */
   const LEG_QUERY = 'id,role,report_time,instructions,trip_assignments(id,leg,route_id,active_roles,buses(number),'
     + 'trip_drivers(driver_id,role,drivers(name,short_name)),'
-    + 'trips(id,destination,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
+    + 'trips(id,destination,confirmed,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
     + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
     + 'trip_contacts(id,position,leg_id,contact_id,name,phone),'
     + 'trip_stops(leg,route_id,type,name,address,spot,depart_prev,position),trip_documents(id,label,created_at,leg,leg_id)))';
@@ -63,7 +63,7 @@
 
   let driver = null;
   let legs = [];            // [{ key, assignmentId, trip, legId, leg, role, start, end, ... }]
-  let ticked = new Set();   // leg keys
+  let onPage = new Set();   // leg keys switched on
   let link = null;          // the driver's active link, or null
   let statuses = new Map(); // tripId:driverId:legId:role -> status
 
@@ -129,7 +129,11 @@
   const STATUS_WORDS = { confirmed: 'Accepted', declined: 'Declined', 'pending-response': 'Pending response' };
 
   // -- the list -------------------------------------------------------------------------
-  const tickedLegs = () => legs.filter(l => ticked.has(l.key));
+  const onPageLegs = () => legs.filter(l => onPage.has(l.key));
+  /* A row a leg: the day, where, and the bus, role, answer and whether the
+     customer has confirmed, with the leg's switch at the right. The label is
+     read by a screen reader and hidden, as Carbon's hideLabel hides it; the
+     switch says On or Off. */
   function drawList() {
     const list = $('scheduler-send-list');
     list.replaceChildren();
@@ -139,24 +143,38 @@
       const m = short(l.start, { month: 'long', year: 'numeric' });
       if (m !== month) { month = m; list.appendChild(el('p', 'rux--type-label-01 scheduler-send__month', m)); }
       const id = `scheduler-send-${l.key.replace(/[^a-z0-9]/gi, '-')}`;
-      const item = el('div', 'rux--form-item rux--checkbox-wrapper');
-      const box = el('input', 'rux--checkbox');
-      Object.assign(box, { type: 'checkbox', id, checked: ticked.has(l.key) });
-      box.addEventListener('change', () => { box.checked ? ticked.add(l.key) : ticked.delete(l.key); refresh(); });
-      const label = el('label', 'rux--checkbox-label');
+      const where = `${messageDate(l.start, l.end)} · ${clean(l.trip.destination) || 'Trip'}`;
+      const row = el('div', 'scheduler-send__row');
+      const text = el('div', 'scheduler-send__leg');
+      text.append(el('span', 'rux--type-body-compact-01', where),
+        el('span', 'rux--type-body-compact-01 scheduler-send__meta', [l.bus ? `Bus ${l.bus}` : 'Bus not set', roleLabel(l.role),
+          STATUS_WORDS[statusOf(l)] || 'Not sent', l.trip.confirmed === false ? 'Not confirmed' : null].filter(Boolean).join(' · ')));
+      const on = onPage.has(l.key);
+      const toggle = el('div', 'rux--toggle');
+      const button = el('button', 'rux--toggle__button');
+      Object.assign(button, { id, type: 'button' });
+      button.setAttribute('role', 'switch');
+      button.setAttribute('aria-checked', String(on));
+      button.setAttribute('aria-labelledby', `${id}-l`);
+      const label = el('label', 'rux--toggle__label');
       label.htmlFor = id;
-      const text = el('div', 'rux--checkbox-label-text scheduler-send__leg');
-      text.append(el('span', null, `${messageDate(l.start, l.end)} · ${clean(l.trip.destination) || 'Trip'}`),
-        el('span', 'scheduler-send__meta', [l.bus ? `Bus ${l.bus}` : 'Bus not set', roleLabel(l.role), STATUS_WORDS[statusOf(l)] || 'Not sent'].join(' · ')));
-      label.appendChild(text);
-      item.append(box, label);
-      list.appendChild(item);
+      label.id = `${id}-l`;
+      const look = el('div', 'rux--toggle__appearance');
+      const text2 = el('span', 'rux--toggle__text', on ? 'On' : 'Off');
+      text2.setAttribute('aria-hidden', 'true');
+      look.append(el('div', on ? 'rux--toggle__switch rux--toggle__switch--checked' : 'rux--toggle__switch'), text2);
+      label.append(el('span', 'rux--toggle__label-text rux--visually-hidden', `On ${nameOf(driver)}'s page: ${where}`), look);
+      toggle.append(button, label);
+      // Design's form-controls.js flips the switch and says so; the save follows it.
+      toggle.addEventListener('rux:toggle', e => switched(l, e.detail.on));
+      row.append(text, toggle);
+      list.appendChild(row);
     }
   }
 
   // -- the message ----------------------------------------------------------------------
   function message() {
-    const chosen = tickedLegs();
+    const chosen = onPageLegs();
     const first = nameOf(driver).split(/\s+/)[0];
     // In the driver's language, which their profile holds.
     const lang = driver?.language;
@@ -173,35 +191,24 @@
   }
 
   // -- the link -------------------------------------------------------------------------
-  const refKey = r => `${r.tripId}:${r.legId}`;
-  const matchesLink = () => {
-    if (!link) return false;
-    const a = [...ticked].sort().join('|');
-    const b = (link.assignmentRefs || []).map(refKey).sort().join('|');
-    return a === b;
-  };
-  // A link that shows other trips would send the driver to a page without
-  // these, so the message waits for the link to be updated.
-  const sendable = () => ticked.size > 0 && (!link || matchesLink());
-  // The ticked legs a mark would change: not answered, and not marked already.
-  const unanswered = () => tickedLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
+  // The message goes while any trip is on the driver's page.
+  const sendable = () => onPage.size > 0 && !!link;
+  // The legs on the page a mark would change: not answered, and not marked already.
+  const unanswered = () => onPageLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
   // Mark as sent shows while the message can go and a mark would change a
   // trip, however the text was copied.
   const offerMark = () => { $('scheduler-send-mark').hidden = !sendable() || !unanswered().length; };
   function refresh() {
-    const count = ticked.size;
-    const save = $('scheduler-send-save');
-    save.textContent = link ? 'Update link' : 'Create link';
-    save.disabled = !count || count > MAX_LEGS || matchesLink();
+    const count = onPage.size;
     $('scheduler-send-revoke').hidden = !link;
     $('scheduler-send-replace').hidden = !link;
-    $('scheduler-send-state').textContent = count > MAX_LEGS ? `A link holds at most ${MAX_LEGS} trips. Untick some.`
-      : !link ? (count ? `No link yet. ${count} ${count === 1 ? 'trip is' : 'trips are'} ticked.` : 'No link yet. Tick the trips to send.')
-      : matchesLink() ? 'The link shows these trips.'
-      : 'The link shows different trips. Update it to match.';
+    $('scheduler-send-state').textContent = count
+      ? `${count} ${count === 1 ? 'trip is' : 'trips are'} on ${nameOf(driver)}'s page.`
+      : link ? `${nameOf(driver)}'s page shows no trips. Switch on the ones they should see.`
+        : 'No link yet. Switch on a trip to make one.';
     $('scheduler-send-text').value = message();
     $('scheduler-send-copy').disabled = !sendable();
-    // A change of ticks or of the link changes the message, so what was said
+    // A change of trips or of the link changes the message, so what was said
     // of the last copy goes.
     $('scheduler-send-copied').textContent = '';
     offerMark();
@@ -213,23 +220,39 @@
   }
   const problem = text => { const e = $('scheduler-send-error'); e.textContent = text || ''; e.hidden = !text; };
 
-  async function save() {
-    const chosen = tickedLegs();
-    if (!chosen.length) return;
-    const from = iso(chosen.reduce((a, l) => (l.start < a ? l.start : a), chosen[0].start));
-    const to = iso(chosen.reduce((a, l) => (l.end > a ? l.end : a), chosen[0].end));
-    const ids = chosen.map(l => l.assignmentId);
-    const button = $('scheduler-send-save');
-    button.disabled = true;
+  /* A SWITCH SAVES AT ONCE. Saves run one after another, each sending the
+     whole list as it stands when it runs, so a quick run of switches ends
+     with the page showing the last of them. A switch past the link's limit,
+     or a save that fails, puts the switches back as the link has them. */
+  let saving = Promise.resolve();
+  function switched(l, on) {
     problem('');
+    if (on && onPage.size >= MAX_LEGS) {
+      problem(`A driver's page holds at most ${MAX_LEGS} trips. Switch one off first.`);
+      drawList();
+      return;
+    }
+    on ? onPage.add(l.key) : onPage.delete(l.key);
+    refresh();
+    saving = saving.then(save).catch(() => {
+      problem("The change didn't save. The switches show the driver's page as it is.");
+      onPage = new Set(legs.filter(x => (link?.assignmentRefs || []).some(r => refKey(r) === x.key)).map(x => x.key));
+      drawList();
+      refresh();
+    });
+  }
+  const refKey = r => `${r.tripId}:${r.legId}`;
+  async function save() {
+    const chosen = onPageLegs();
+    // No link and nothing on: there is nothing to keep.
+    if (!link && !chosen.length) return;
+    const from = chosen.length ? iso(chosen.reduce((a, l) => (l.start < a ? l.start : a), chosen[0].start)) : today();
+    const to = chosen.length ? iso(chosen.reduce((a, l) => (l.end > a ? l.end : a), chosen[0].end)) : today();
+    const ids = chosen.map(l => l.assignmentId);
     const r = link
       ? await client.rpc('update_driver_schedule_share', { p_token: link.token, p_assignment_ids: ids, p_range_start: from, p_range_end: to })
       : await client.rpc('create_driver_schedule_share', { p_driver_id: driver.id, p_assignment_ids: ids, p_range_start: from, p_range_end: to });
-    if (r.error || !r.data?.token) {
-      problem("The link didn't save. Try again.");
-      refresh();
-      return;
-    }
+    if (r.error || !r.data?.token) throw r.error || new Error('No link');
     link = r.data;
     refresh();
     await page.show(link.token);
@@ -278,7 +301,7 @@
     note.textContent = n ? `Copied. Once the text has gone, mark ${tripsWord(n)} as sent.` : 'Copied.';
   }
 
-  /* Marks each ticked leg the driver has not answered Pending response. The
+  /* Marks each leg on the driver's page they have not answered Pending response. The
      answers are read once more first, since the driver may have answered
      since the page read them. The whole crew of each trip is sent, as
      sync_trip_driver_statuses asks, with only those legs marked dirty, and
@@ -341,9 +364,9 @@
     const s = share.data;
     const live = s?.token && (!s.expiresAt || new Date(s.expiresAt) > new Date());
     link = live ? s : null;
-    // The legs already on the link start ticked; with no link, every leg does.
+    // The legs on the link start on; a new leg, or every leg with no link, starts off.
     const onLink = new Set((link?.assignmentRefs || []).map(refKey));
-    ticked = new Set(legs.filter(l => (link ? onLink.has(l.key) : true)).map(l => l.key));
+    onPage = new Set(legs.filter(l => onLink.has(l.key)).map(l => l.key));
     drawList();
     refresh();
     $('scheduler-send').hidden = false;
@@ -362,7 +385,6 @@
     const drivers = data || [];
     for (const d of drivers) picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));
     picker.addEventListener('change', () => pick(picker.value, drivers).catch(() => page.say('error', 'Something went wrong', 'Pick the driver again.')));
-    $('scheduler-send-save').addEventListener('click', () => save().catch(() => { problem("The link didn't save. Try again."); refresh(); }));
     $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
     $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
     $('scheduler-send-revoke').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-revoke-modal'), e.currentTarget));

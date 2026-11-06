@@ -5095,7 +5095,10 @@ html[data-scheduler-takeover] {
 .scheduler-send__trips > legend { margin-block-end: var(--rux-spacing-03); }
 .scheduler-send__list { display: grid; gap: var(--rux-spacing-03); max-block-size: 28rem; overflow-y: auto; }
 .scheduler-send__month { margin: var(--rux-spacing-03) 0 0; color: var(--rux-text-secondary); }
-.scheduler-send__leg { display: grid; }
+/* A trip and its switch on one row, the switch at the right. */
+.scheduler-send__row { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
+.scheduler-send__leg { display: grid; min-inline-size: 0; }
+.scheduler-send__row > .rux--toggle { flex: none; }
 .scheduler-send__meta,
 .scheduler-send__note { color: var(--rux-text-secondary); }
 .scheduler-send__note { margin: 0; }
@@ -5128,6 +5131,9 @@ html[data-scheduler-takeover] {
 .scheduler-driver-row { display: flex; align-items: center; gap: var(--rux-spacing-04); }
 .scheduler-driver-row > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-driver-row > .rux--tag { flex: none; margin: 0; }
+/* A row's two tags, its answer over Not confirmed yet. */
+.scheduler-driver-row__tags { flex: none; display: grid; justify-items: end; gap: var(--rux-spacing-02); }
+.scheduler-driver-row__tags > .rux--tag { margin: 0; }
 .scheduler-driver-row__words { flex: 1 1 auto; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); overflow-wrap: anywhere; }
 .scheduler-driver-row__icon { flex: none; display: inline-flex; color: var(--rux-icon-primary); }
 /* A leg's day at its row's left: the weekday small over the date large. */

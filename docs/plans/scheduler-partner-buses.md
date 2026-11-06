@@ -14,9 +14,9 @@ when they give them. The leg reads as fully covered, the board shows the
 bar, the trip's price is set against what it pays out, and nothing asks for
 our envelope, our driver's link or our fuel card for a coach that never
 comes to our yard. Each partner has a profile the office keeps up, with its
-details, its papers, such as its insurance certificate, and the trips it has
-covered, and the board warns before a partner whose insurance has run out
-covers a bus.
+details, its people, its drivers, its papers, such as its insurance
+certificate, and the trips it has covered, and the board warns before a
+partner whose insurance has run out covers a bus.
 
 Today the office writes "outsourced" in an update and leaves the vehicle
 empty, so the leg reads as short of a bus and the Tasks list keeps asking for
@@ -28,10 +28,10 @@ driver pickers, links and forms as if it were a person.
 ### The partner
 
 - **A partner is a company, or an owner-operator, that covers a whole bus,**
-  coach and driver, kept in a `partners` list: name, phone, email, its
-  dispatch contact, its USDOT number, notes, and Active or Inactive, because
-  the same few partners cover again and again, and a carrier is looked up by
-  its USDOT number.
+  coach and driver, kept in a `partners` list: name, the company's phone and
+  email, its USDOT number, notes, and Active or Inactive, because the same
+  few partners cover again and again, and a carrier is looked up by its
+  USDOT number.
 - **A partner is not a customer and not a driver,** because a customer is
   who pays and a driver is a person we seat; a company that is both a
   partner and a customer is one row in each.
@@ -45,6 +45,29 @@ driver pickers, links and forms as if it were a person.
 - **The profile is the office's alone,** and a partner gets no link of its
   own, because the office takes its details and papers by email and keeps
   them itself.
+
+### A partner's people
+
+- **A partner's people are contacts,** in the Contacts list, each linked to
+  its partner by `contacts.partner_id` as a contact is linked to its
+  customer, because one list of people with phones and emails serves every
+  page that calls someone.
+- **A contact has a title,** such as Owner, Dispatch or Billing, shown beside
+  its name wherever contacts are listed, a customer's people too, because a
+  company's several people are told apart by what they do.
+- **One contact is the partner's main contact,** `partners.main_contact_id`,
+  shown on the Partners list and called from the partner's tip, in place of
+  the Dispatch contact field.
+- **The profile gains a Contacts tab,** its people, the main one first, with
+  Add contact, which opens the Contacts page with the partner filled in and
+  comes back to the tab.
+- **A partner keeps a list of its drivers,** `partner_drivers`: name, phone,
+  notes and Active or Inactive, on a Drivers tab of its profile, because the
+  same few drive for a partner again and again. They are never rows of
+  `drivers`, so no seat, picker, driver's link, form or availability ever
+  offers one.
+- **A partner driver's changes write the partner's History,** as a driver's
+  time off writes the driver's.
 
 ### A partner's papers
 
@@ -76,17 +99,22 @@ driver pickers, links and forms as if it were a person.
   since a trip of several legs may be covered on some days and not others.
 - **It carries when the partner confirmed and who marked it,** because
   "waiting on them" is the state the office chases.
-- **It carries their coach and their driver's name and phone as typed,** each
-  optional, because partners give them late and the office needs the
-  driver's phone on the day.
+- **It carries their coach as typed and their driver from the partner's
+  list,** `trip_assignments.partner_driver_id`, each optional, because
+  partners give them late and the office needs the driver's phone on the
+  day; the driver's phone is read from the list, so a new number reaches
+  every trip.
 - **A vehicle's needs and type are what was asked of the partner,** shown
   on the card and never compared, because we hold no record of their coach.
 
 ### The editor
 
 - **The vehicle's window chooses Our bus or Partner.** Partner shows the
-  partner picker, the price, Confirmed, and their coach, driver and phone,
-  and hides the bus, the seats and Add co-driver.
+  partner picker, the price, Confirmed, their coach, and their driver picked
+  from the partner's drivers, and hides the bus, the seats and Add
+  co-driver.
+- **A driver name typed that the partner's list lacks joins the list on
+  Save,** with the phone typed beside it, so a driver is typed once.
 - **Turning a vehicle with drivers seated to a partner names them in the
   window,** because Done takes them off the trip, and Save sends their
   statuses as it does for any driver taken off.
@@ -159,10 +187,24 @@ driver pickers, links and forms as if it were a person.
 
 ## Questions
 
-None open.
+- Should a partner's driver go out in the Driver info message the booking
+  contact is sent, as our drivers' names and phones do?
 
 ## Tasks
 
+- [ ] Write the SQL: `contacts.partner_id` and `title`,
+      `partners.main_contact_id`, `partner_drivers` with its history trigger
+      and grants, and `trip_assignments.partner_driver_id`, each typed
+      driver moved into its partner's list; show it to rux and apply it on a
+      yes, and drop `partners.contact_name` and the typed driver columns once
+      no page reads them.
+- [ ] Let the Contacts page link a contact to a partner and give it a title,
+      and show titles wherever contacts are listed.
+- [ ] Give the partner's profile its Contacts and Drivers tabs and its main
+      contact, and the Partners list the main contact.
+- [ ] Let the vehicle's window pick the partner's driver, adding a typed one
+      on Save, and read the driver from the list in the tip, the sheet,
+      Departures and the components page.
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
 - [ ] Give trip 100783's outsourced bus to its partner, confirmed at its

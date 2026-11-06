@@ -691,6 +691,10 @@ button.scheduler-row-head__num::after {
    stays marked while its tip is open. */
 .scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
 .scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
+/* Keyboard focus on the number rings the whole head, the thing a press
+   takes, in Carbon's 2px focus ring inside its edge. */
+button.scheduler-row-head__num:focus { outline: none; }
+.scheduler-row-head:has(button.scheduler-row-head__num:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 
 /* THE UNASSIGNED ROW IS THE PAGE SHOWING THROUGH THE BOARD: its head and
    track are Carbon's base layer, `--rux-background`, the one under the
@@ -754,8 +758,8 @@ button.scheduler-row-head__num::after {
    is the bus's type in the secondary ink, where its picture will go,
    beside its number, the type turning to its warning while the bus has a
    mark. Its readings stand in a 64px square of their own on the next
-   layer, 6px in, centred between that line and the foot: the state, its
-   reading at 18px over its unit, and the fuel, a 6px meter across it, its
+   layer, 8px in, centred between that line and the foot: the state, its
+   reading at 16px over its unit, and the fuel, a 4px meter across it, its
    percent beside it only while low, a low DEF under them, which lets the square grow. Its kit is
    at its foot, or none while DEF is low, its seats left to the tip. A view with fewer bar
    rows folds it: five drop the foot, four the fuel, three set the state
@@ -811,11 +815,14 @@ button.scheduler-row-head__num::after {
   inline-size: 64px;
   min-block-size: 64px;
   margin-block: auto;
-  padding: 6px;
+  padding: var(--rux-spacing-03);
   background: var(--rux-layer-02);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 4px; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: 2px; font-size: 1.125rem; line-height: 20px; }
+/* The number and the state's reading share Carbon's heading-compact-02,
+   16px semibold, the number leading by standing first. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__num { font-size: var(--rux-heading-compact-02-font-size); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: 22px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: 12px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: 12px; }
@@ -824,7 +831,11 @@ button.scheduler-row-head__num::after {
    tank is low or critical, when the percent stands beside it in the tank's
    colour, a reading as well as a colour. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:not([data-level="low"], [data-level="critical"]) .scheduler-row-head__fuel-pct { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 6px; border-radius: 3px; }
+/* The meter is Carbon's small progress bar: 4px, square, on the subtle
+   border's track for the square's layer, the second, which a theme that
+   sets its own track keeps. */
+:where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 4px; border-radius: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 12px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: 16px; }

@@ -243,7 +243,9 @@
       if (!b.bus && !b.partner) out.push(name);
       for (const n of b.needs.filter(x => !x.met)) out.push(`${name}: ${n.label}`);
       for (const c of b.crew) {
-        for (const l of c.lines.filter(x => x.state !== 'done')) out.push(`${name}, ${c.name ?? c.role}: ${said(l)}`);
+        // A partner's lines are the bus's own, already named by the partner.
+        const who = c.partnerId ? name : `${name}, ${c.name ?? c.role}`;
+        for (const l of c.lines.filter(x => x.state !== 'done')) out.push(`${who}: ${said(l)}`);
       }
     }
     return out;

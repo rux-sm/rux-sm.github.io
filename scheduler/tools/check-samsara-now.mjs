@@ -207,6 +207,12 @@ expect('a driver resting has when the rest began, and one driving has none',
   a.buses[0].drivers.map(x => [x.name, x.rest_since]), [['Ana Ruiz', null], ['Ben Ortiz', ago(5 * 60)]]);
 expect('a driver in the sleeper has when that run began, and no split without an earlier period',
   a.buses[0].drivers.map(x => [x.name, x.berth_since, x.split_ms]), [['Ana Ruiz', null, null], ['Ben Ortiz', ago(3 * 60), null]]);
+expect('every scheduler driver with a clock comes back, in a bus or not, and nobody the scheduler lacks',
+  a.drivers.map(x => [x.driver_id, x.duty, x.rest_since]), [['d1', 'driving', null], ['d2', 'sleeper', ago(5 * 60)]]);
+p = parts();
+const home = await liveFor(BUSES, [...DRIVERS, { id: 'd3', name: 'Cal Diaz' }], p.deps);
+expect('a scheduler driver resting in no bus comes back with their rest asked after',
+  [home.drivers.map(x => [x.driver_id, x.duty]), p.logsAsked[0]], [[['d1', 'driving'], ['d2', 'sleeper'], ['d3', 'off']], ['s-Ben Ortiz', 's-Cal Diaz']]);
 p = parts({ logsFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps);
 expect('logs the key may not read leave the rest unknown, and the drivers still come back',
@@ -214,7 +220,7 @@ expect('logs the key may not read leave the rest unknown, and the drivers still 
 p = parts({ clocksFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps);
 expect('without the hours permission the buses still come back, with no drivers',
-  [a.hours, a.buses.length, a.buses[0].drivers.length, a.buses[0].engine], [false, 2, 0, 'on']);
+  [a.hours, a.buses.length, a.buses[0].drivers.length, a.drivers.length, a.buses[0].engine], [false, 2, 0, 0, 'on']);
 
 // ── who is answered ─────────────────────────────────────────────────────────
 async function post({ auth = 'Bearer staff', method = 'POST', body = '{}', ...opts } = {}) {

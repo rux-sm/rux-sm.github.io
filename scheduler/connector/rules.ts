@@ -407,7 +407,8 @@ const window = {};
      asks for driver forms, who lacks a current one and how many seats have
      theirs not printed, and how many filled seats have no pay yet. Handed `nearby`, the trips, time off and days out
      around it, it also says what stands in its way, as clashes.js's
-     standing rule says it. `declined` names the drivers who said no, and
+     standing rule says it. `declined` names the drivers who said no,
+     `notSent` the drivers seated who have not been sent the leg, and
      `toTell` each confirmed driver the leg changed for since they accepted,
      as driver-job.js reads it, with the lines that say what.
 
@@ -427,7 +428,7 @@ const window = {};
     const ours = Math.max(0, busesNeeded - covered.length);
     const partnerName = a => partnersById.get(a.partner_id)?.name || 'A partner';
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
-      payLeft: 0, declined: [], toTell: [],
+      payLeft: 0, declined: [], notSent: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       covered: covered.length, ours,
       partnersUnconfirmed: covered.filter(a => !a.partner_confirmed).map(partnerName),
@@ -450,6 +451,7 @@ const window = {};
         if (c.status?.value !== 'confirmed') facts.unconfirmed++;
         const name = c.who?.short_name || c.who?.name || 'A driver';
         if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
+        if (c.status?.value === 'off') facts.notSent.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
         const lines = window.SchedulerDriverJob
           ? window.SchedulerDriverJob.changesSince(trip, key, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
           : [];
@@ -2406,6 +2408,13 @@ const window = {};
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line.
 
+   `driverAlerts` reads the same trips for the roster: each driver's legs
+   leaving within 30 days that changed for them since they said yes, and
+   those leaving within the leaving-soon days that they sit on and have not
+   been sent, by driver id; the office sends a week's trips at a time, so a
+   leg further off not yet sent is the usual case. They are no rows of the
+   list, because Send trips and Tell answer them from the driver.
+
    `rows` reads neither the database nor the page. The trip row brings its
    own columns, and the caller hands in what only it can read, as the
    checklist takes it: `factsOf(trip, leg)` for the leg's buses and seats,
@@ -2606,9 +2615,46 @@ const window = {};
     const more = new Map(heavy.map(t => [t.id, t]));
     return light.map(t => ({ ...t, ...more.get(t.id) }));
   };
-  // The rows and the trips, with what they were worked out from, which `readAgain` starts from.
-  const finish = (trips, basics, nearby, statuses) =>
-    ({ rows: rows([...trips.values()], handed({ ...basics, nearby, statuses })), trips, basics, nearby, statuses });
+  /* The rows, each driver's alerts and the trips, with what they were worked
+     out from, which `readAgain` starts from. A leg's facts are worked out
+     once for both. */
+  function finish(trips, basics, nearby, statuses) {
+    const given = handed({ ...basics, nearby, statuses });
+    const known = new Map();
+    const factsOf = (t, leg) => {
+      const key = `${t.id}:${leg}`;
+      if (!known.has(key)) known.set(key, given.factsOf(t, leg));
+      return known.get(key);
+    };
+    const all = [...trips.values()];
+    return { rows: rows(all, { ...given, factsOf }), drivers: driverAlerts(all, { factsOf }), trips, basics, nearby, statuses };
+  }
+
+  /* Each driver's legs within 30 days to tell of a change, and within
+     SOON_DAYS still to send, by driver id: `{ kind: 'tell' | 'unsent', trip, leg, legName, day, lines }`,
+     soonest first. */
+  function driverAlerts(trips, { factsOf = () => ({}) } = {}) {
+    const out = new Map();
+    const add = (id, alert) => {
+      const key = String(id);
+      if (!out.has(key)) out.set(key, []);
+      out.get(key).push(alert);
+    };
+    for (const trip of trips || []) {
+      if (!live(trip)) continue;
+      for (const leg of Checklist.legsOf(trip)) {
+        const day = legDay(trip, leg);
+        if (!within(day, SHORT_DAYS)) continue;
+        const facts = factsOf(trip, leg);
+        const at = { trip, leg: leg || null, legName: leg ? legName(trip, leg) : null, day };
+        for (const d of facts.toTell ?? []) add(d.driverId, { kind: 'tell', ...at, lines: d.lines });
+        if (!within(day, SOON_DAYS)) continue;
+        for (const d of facts.notSent ?? []) add(d.driverId, { kind: 'unsent', ...at, lines: [] });
+      }
+    }
+    for (const list of out.values()) list.sort((a, b) => String(a.day).localeCompare(String(b.day)));
+    return out;
+  }
 
   /* Every row the trips give now, and the trips by id. */
   async function read(client) {
@@ -2640,7 +2686,7 @@ const window = {};
     return finish(new Map(trips.map(t => [t.id, t])), held.basics, nearby, statuses);
   }
 
-  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, TRIP_LEGS, rows, handed, read, readAgain, legDay, legName, hasTimes };
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, TRIP_LEGS, rows, driverAlerts, handed, read, readAgain, legDay, legName, hasTimes };
 })();
 
 // ── departures.js

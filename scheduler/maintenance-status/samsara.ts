@@ -8,6 +8,8 @@
 // on, how fast it is going, where it is and which way it is heading, how
 // much fuel it has and whether its engine reports a fault, and the drivers
 // logged into it with their duty status and the driving hours each has left.
+// Beside the buses it gives every scheduler driver Samsara keeps a clock for,
+// in a bus or not, so the roster can say what each driver is doing now.
 //
 // FUEL is the tank's percent as the engine last reported it. A FAULT is the
 // engine's warning lamp: `stop` when the red stop lamp is on, `check` when an
@@ -148,7 +150,7 @@ export type LiveBus = {
   faults: string[]
   drivers: LiveDriver[]
 }
-export type Answer = { at: string; hours: boolean; buses: LiveBus[] }
+export type Answer = { at: string; hours: boolean; buses: LiveBus[]; drivers: LiveDriver[] }
 
 // The pages that ask: the site, and its log-in preview.
 const ORIGINS = new Set([
@@ -352,15 +354,18 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   const statOf = new Map(stats.map(s => [String(s.id), s]))
   const index = driverIndex(drivers)
   const inVehicle = new Map<string, LiveDriver[]>()
-  // The Samsara driver behind each one resting in a bus answered, whose rest is asked after.
+  // Every scheduler driver Samsara keeps a clock for, in a bus or not.
+  const known: LiveDriver[] = []
+  // The Samsara driver behind each one resting who is answered, in a bus
+  // answered or as a scheduler driver, whose rest is asked after.
   const resting = new Map<string, LiveDriver>()
   const answered = new Set(ids)
   for (const c of clocks) {
     const v = c.currentVehicle?.id ? String(c.currentVehicle.id) : null
-    if (!v) continue
     const d = liveDriver(c, index)
-    if (answered.has(v) && (['sleeper', 'off', 'personal'].includes(d.duty ?? '')) && c.driver?.id) resting.set(String(c.driver.id), d)
-    inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])
+    if (d.driver_id) known.push(d)
+    if ((d.driver_id || (v && answered.has(v))) && ['sleeper', 'off', 'personal'].includes(d.duty ?? '') && c.driver?.id) resting.set(String(c.driver.id), d)
+    if (v) inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])
   }
   /* One read of the resting drivers' logs; logs that cannot be read leave
      each rest unknown, and everything else stands. */
@@ -410,6 +415,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         ...(since.has(vehicle) ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
+    drivers: markWheel(known),
   }
 }
 

@@ -367,7 +367,8 @@
      asks for driver forms, who lacks a current one and how many seats have
      theirs not printed, and how many filled seats have no pay yet. Handed `nearby`, the trips, time off and days out
      around it, it also says what stands in its way, as clashes.js's
-     standing rule says it. `declined` names the drivers who said no, and
+     standing rule says it. `declined` names the drivers who said no,
+     `notSent` the drivers seated who have not been sent the leg, and
      `toTell` each confirmed driver the leg changed for since they accepted,
      as driver-job.js reads it, with the lines that say what.
 
@@ -387,7 +388,7 @@
     const ours = Math.max(0, busesNeeded - covered.length);
     const partnerName = a => partnersById.get(a.partner_id)?.name || 'A partner';
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
-      payLeft: 0, declined: [], toTell: [],
+      payLeft: 0, declined: [], notSent: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       covered: covered.length, ours,
       partnersUnconfirmed: covered.filter(a => !a.partner_confirmed).map(partnerName),
@@ -410,6 +411,7 @@
         if (c.status?.value !== 'confirmed') facts.unconfirmed++;
         const name = c.who?.short_name || c.who?.name || 'A driver';
         if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
+        if (c.status?.value === 'off') facts.notSent.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
         const lines = window.SchedulerDriverJob
           ? window.SchedulerDriverJob.changesSince(trip, key, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
           : [];

@@ -2,7 +2,8 @@
    to-do-rows.js — WHAT THE TRIPS ASK, READ
    --------------------------------------------------------------------------
    Keeps the rows to-do.js's `read` gives: for a task's trip on the Tasks
-   list, and for the Trips page's Show choices. A change to a trip reads that
+   list, and for the Trips page's Show choices; and each driver's alerts, for
+   the roster's marks. A change to a trip reads that
    trip again, and a change that cannot say its trip reads them all; each
    reading says `scheduler:to-do-rows`. On the board the changes come from
    the board's channel; on the Trips page, from `scheduler-to-do-rows`.
@@ -25,6 +26,7 @@
     'trip_driver_statuses', 'trip_legs', 'trip_routes', 'trip_contacts'];
 
   let computed = [];        // to-do.js's rows, every one
+  let alerts = new Map();   // driver id -> their alerts, to-do.js's `driverAlerts`
   let trips = new Map();    // id -> trip, for a task's trip and its Trip choice
   let held = null;          // the last read whole, which a trip read again starts from
   let failure = '';
@@ -59,7 +61,7 @@
       owedAll = true;
       throw e;
     }
-    ({ rows: computed, trips } = held);
+    ({ rows: computed, drivers: alerts, trips } = held);
   }
 
   /* One read at a time, and the newest asked for wins: a second ask while one
@@ -114,5 +116,5 @@
   })();
 
   // Asked from outside, a reading is of everything.
-  window.SchedulerToDoRows = { rows: () => computed, trips: () => trips, failure: () => failure, load: () => { owedAll = true; return load(); } };
+  window.SchedulerToDoRows = { rows: () => computed, drivers: () => alerts, trips: () => trips, failure: () => failure, load: () => { owedAll = true; return load(); } };
 })();

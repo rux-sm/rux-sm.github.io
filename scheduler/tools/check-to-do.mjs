@@ -111,6 +111,15 @@ expect('a driver who declined and a change to tell are each a row, and leaving s
   said(rows([soon], { factsOf: () => ({ ...full, unconfirmed: 1, declined: [{ name: 'Ana' }], toTell: [{ name: 'Rigo', lines: ['Bus: 470 → 763'] }] }), contactOf: () => true }))
     .map(r => r.split(' ')[0]),
   ['declined:a:l1', 'tell:a:l1', 'leaving:a:l1']);
+const alerts = (trips, factsOf) => [...window.SchedulerToDo.driverAlerts(trips.map(withLegs), { factsOf })]
+  .map(([id, list]) => [id, list.map(x => `${x.kind}:${x.trip.id}:${x.leg}${x.lines.length ? ` ${x.lines.join('; ')}` : ''}`)]);
+expect('each driver\'s legs within 30 days to tell of a change, and within two days still to send, by driver id',
+  alerts([good, { ...good, id: 'far', start_date: day(40), end_date: day(40) }, { ...good, id: 'b', start_date: day(1), end_date: day(1) }],
+    (t, leg) => (t.id === 'far' ? { toTell: [{ driverId: 9, lines: ['x'] }] }
+      : { toTell: t.id === 'a' ? [{ driverId: 7, lines: ['Bus: 470 → 763'] }] : [], notSent: [{ driverId: 8 }, { driverId: 7 }] })),
+  [['7', ['unsent:b:l1', 'tell:a:l1 Bus: 470 → 763']], ['8', ['unsent:b:l1']]]);
+expect('a cancelled trip asks nothing of its drivers',
+  alerts([{ ...good, cancelled_at: ago(1) }], () => ({ notSent: [{ driverId: 8 }] })), []);
 
 expect('leaving soon leaves out what the follow-up and Short rows already say',
   said(rows([{ ...soon, confirmed: false, trip_assignments: [], trip_documents: [] },

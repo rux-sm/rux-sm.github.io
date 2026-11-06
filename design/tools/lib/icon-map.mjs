@@ -77,6 +77,7 @@ export const ICONS = {
   'attachment': { material: 'attachment', rux: null },
   'building': { material: 'apartment', rux: null },
   'bus': { material: 'directions_bus', rux: null },
+  'bus--alert': { material: 'bus_alert', rux: null },  // A bus with something wrong, its warning on the bus itself; Carbon has no drawing of it.
   'calculator': { material: 'calculate', rux: null },
   'car': { material: 'directions_car', rux: null },
   'car--front': { material: 'car_repair-fill', rux: null },  // An engine reporting a fault: the car under a wrench.

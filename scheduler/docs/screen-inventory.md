@@ -336,6 +336,7 @@ caret, 14px type, 16px in from its edge and 16px between its parts with no rule 
 288px at most, narrower where what it holds is short. It is laid over the icon pressed, or the time
 row for the route, at Carbon's 13px from it: to its right where it fits the board, else its left,
 else above, else below, each centred, or at its start or end where centred would leave the board.
+A bus number's tip is placed the same way, pointing at the number's line across the head.
 It covers its own trip. It is as tall as what it holds, 33rem at most or the board's room; one that
 fits no side whole goes where it runs least past the board, its body, the updates or the route's
 table, scrolling there. It appears with no motion, as Carbon's popover does. Alerts heads with its count, Alerts for operational problems or Other needs where

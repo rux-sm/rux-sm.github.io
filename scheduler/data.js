@@ -1000,6 +1000,7 @@
       const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
       BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-tip'), waiting: roadWaiting() });
     }
+    placeBusTip();
     drawDriverHeads();
     roadBars(gridEl.querySelectorAll('.scheduler-bar[data-bus-id]'));
     if (busSheetFor) drawBusSheet();
@@ -11787,28 +11788,31 @@
      needs. A tip is 33rem tall at most, or the board's room; one that fits
      no side whole goes where it runs least past the board, its body, the
      updates or the route's table, shortened by that much to scroll under
-     its heading and over its footer. */
+     its heading and over its footer. `tip` is the container, `box` the
+     rectangle on screen it points at; a bus number's tip is placed the same
+     way, `placeBusTip`, its `box` in the sticky column, `inColumn`. */
   const TIP_PLACEMENTS = [
     'rux--popover--right', 'rux--popover--right-start', 'rux--popover--right-end',
     'rux--popover--left', 'rux--popover--left-start', 'rux--popover--left-end',
     'rux--popover--top', 'rux--popover--top-start', 'rux--popover--top-end',
     'rux--popover--bottom', 'rux--popover--bottom-start', 'rux--popover--bottom-end',
   ];
-  let tipPlacement = '';
-  function placeTip(bar) {
+  function placeTip(tip, box, inColumn = false) {
     const pane = schEl.getBoundingClientRect();
     const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const room = { top: (band ? band.bottom : pane.top) + TIP_GAP, bottom: pane.bottom - TIP_GAP,
       left: (column ? column.right : pane.left) + TIP_GAP, right: pane.right - TIP_GAP };
-    const box = cardOrigin(bar).getBoundingClientRect();
-    // An icon scrolled out of the board's room leaves nothing to point at, as a card's trip does.
-    const gone = box.bottom <= room.top || box.top >= room.bottom || box.right <= room.left || box.left >= room.right;
-    barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
+    /* An icon scrolled out of the board's room leaves nothing to point at, as
+       a card's trip does. The column never scrolls across, so a bus number
+       goes only up or down. */
+    const gone = box.bottom <= room.top || box.top >= room.bottom
+      || (!inColumn && (box.right <= room.left || box.left >= room.right));
+    tip.toggleAttribute('data-out', gone && !tip.contains(document.activeElement));
     for (const [name, px] of [['top', box.top], ['start', box.left], ['w', box.width], ['h', box.height]]) {
-      barShortcuts.style.setProperty(`--scheduler-open-${name}`, `${px}px`);
+      tip.style.setProperty(`--scheduler-open-${name}`, `${px}px`);
     }
-    const surface = barShortcuts.querySelector('.rux--popover-content');
+    const surface = tip.querySelector('.rux--popover-content');
     if (!surface) return;
     const body = surface.querySelector(':scope > .scheduler-tip > :is(.scheduler-tip__list, .scheduler-route)');
     // Every tip is 33rem tall at most, or the board's room where that is less.
@@ -11825,12 +11829,11 @@
       return r.top >= room.top && r.bottom <= room.bottom && r.left >= room.left && r.right <= room.right;
     };
     const place = placement => {
-      if (tipPlacement) barShortcuts.classList.remove(tipPlacement);
-      tipPlacement = placement;
-      barShortcuts.classList.add(placement);
+      tip.classList.remove(...TIP_PLACEMENTS);
+      tip.classList.add(placement);
     };
     // The placement it has already, while it still fits, so a scroll does not flip it.
-    if (tipPlacement && fits()) return;
+    if (TIP_PLACEMENTS.some(p => tip.classList.contains(p)) && fits()) return;
     for (const placement of TIP_PLACEMENTS) {
       place(placement);
       if (fits()) return;
@@ -11862,6 +11865,19 @@
     }
     place('rux--popover--right-start');
   }
+  /* A BUS NUMBER'S TIP, the one open, is placed as a trip's is, pointing at
+     the number's line across the whole head, so a tip on a bus low on the
+     board opens upward rather than run past the board's foot. It is placed
+     as it opens, as the board scrolls or changes size, and as Samsara's
+     answer changes what it says. */
+  function placeBusTip() {
+    const tip = gridEl?.querySelector('.scheduler-row-head .rux--toggletip.rux--popover--open');
+    if (!tip) return;
+    const line = tip.querySelector('.scheduler-row-head__num').getBoundingClientRect();
+    const head = tip.closest('.scheduler-row-head').getBoundingClientRect();
+    placeTip(tip, new DOMRect(head.left, line.top, head.width, line.height), true);
+  }
+  gridEl?.addEventListener('rux:popover-opened', e => { if (e.target.closest('.scheduler-row-head')) placeBusTip(); });
   // The icon pressed grows as its tip opens, app.css's lift, so the tip is laid on it again once it has.
   gridEl?.addEventListener('transitionend', e => {
     if (e.propertyName === 'transform' && e.target.matches?.('[data-card-opener][aria-expanded="true"]')
@@ -11968,7 +11984,7 @@
       return;
     }
     clearDocked();
-    if (barShortcuts.classList.contains('scheduler-trip-tip')) { placeTip(bar); pop(); return; }
+    if (barShortcuts.classList.contains('scheduler-trip-tip')) { placeTip(barShortcuts, cardOrigin(bar).getBoundingClientRect()); pop(); return; }
     /* The room is measured on screen, against the pane and the two bands that
        stick to its edges, and then written in the track's own coordinates,
        which is where the bar is laid out. */
@@ -12499,12 +12515,13 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); placeBusTip(); markTripBars(); presenceDraw(); })).observe(gridEl);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
-     again. */
+     again, and an open bus tip with it. */
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
+    requestAnimationFrame(placeBusTip);
   }, { passive: true });
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and
@@ -16820,7 +16837,6 @@
        The live card and the phone's sheet keep the card's frame. */
     const tipped = carded && !docked && !(bar.dataset.road && roadPartOf(bar) === 'road');
     barShortcuts.className = tipped ? Tips.CONTAINER : 'scheduler-bar-shortcuts';
-    tipPlacement = '';
     const tip = !tipped ? null : cardSection.startsWith('route:') ? Tips.route(trip, bar, board)
       : cardSection.startsWith('driver:') ? Tips.driver(trip, bar, cardSection, board)
         : cardSection === 'partner' ? Tips.partner(trip, bar, board) : Tips.card(trip, bar, cardSection, board);

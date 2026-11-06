@@ -742,14 +742,20 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 
 /* A bus number's toggletip opens from anywhere in the row head, so the head,
-   not the container, is the positioned box. The surface then covers only the
-   number's line, the head's top padding down, so the tip still points at the
-   number rather than at the middle of a tall row. */
+   not the container, is the positioned box the press covers. Its popover is
+   placed as a trip's tip is: data.js's `placeBusTip` fixes it to the window
+   across the head at the number's line, so it points at the number rather
+   than at the middle of a tall row, and picks the side where the tip fits
+   the board, which never cuts it. Scrolled out of the board, it hides. */
 .scheduler-row-head .rux--popover-container { position: static; }
 .scheduler-row-head .rux--popover {
-  inset-block: var(--rux-spacing-03) auto;
-  block-size: 1rem;
+  position: fixed;
+  inset-block: var(--scheduler-open-top, 0px) auto;
+  inset-inline: var(--scheduler-open-start, 0px) auto;
+  inline-size: var(--scheduler-open-w, 0px);
+  block-size: var(--scheduler-open-h, 0px);
 }
+.scheduler-row-head .rux--popover-container[data-out] > .rux--popover { visibility: hidden; }
 /* A bus's sheet, a phone's copy of the tip, runs the screen's width. */
 .scheduler-bus-sheet > .scheduler-tip.rux--toggletip-content { max-inline-size: none; }
 

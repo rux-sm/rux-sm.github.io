@@ -139,7 +139,7 @@
     }
     if (first) {
       words.push(more > 0 ? `${first.words} +${more}` : first.words);
-      if (tone === 'quiet' || tone === 'success') tone = problems.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning';
+      if (tone === 'quiet' || tone === 'success') tone = problems.some(a => a.row === 'scheduler-card__error') ? 'error' : 'warning';
     }
     const line = el('div', `scheduler-sheet__now scheduler-sheet__now--${tone}`);
     line.append(el('span', 'scheduler-sheet__pip'), el('span', null, words.join(' · ')));
@@ -282,7 +282,7 @@
       if (a.spot) band.dataset.spot = a.spot;
       const need = other.includes(a);
       if (need) band.classList.add('scheduler-card__row--need');
-      band.append(svgUse(a.row === 'scheduler-card__misfit' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
+      band.append(svgUse(a.row === 'scheduler-card__error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
         el('strong', null, a.words));
       if (a.row === 'scheduler-card__asks' && !reminded) {
         reminded = true;

@@ -686,7 +686,7 @@
       let reminded = false;
       for (const a of [...problems, ...other]) {
         const need = other.includes(a);
-        const tone = a.row === 'scheduler-card__misfit' ? 'error' : 'warning';
+        const tone = a.row === 'scheduler-card__error' ? 'error' : 'warning';
         const row = el('div', need ? 'scheduler-tip__alert scheduler-tip__need'
           : `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
         row.append(svgUse(tone === 'error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),

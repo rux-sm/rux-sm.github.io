@@ -210,7 +210,7 @@
         { name: 'Co-driver and relief', note: 'A driver wears their answer; a relief driver at either end is two arrows.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ bus: 'b101',
             crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'pending-response'], ['d3', 'relief-start', 'confirmed'], ['d6', 'relief-end']] }] }), { span: 3 }))] },
-        { name: 'Empty seats', note: 'Neutral outside fourteen days; yellow Caution minor, the same as the alert, inside the rolling fourteen-day departure window.', days: 3,
+        { name: 'Empty seats', note: 'Neutral outside fourteen days; inside the rolling fourteen-day departure window a person in the error colour, each seat counted in the alert badge, which turns red.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Due now', buses: [{ bus: 'b102', crew: [['d4', 'driver', 'confirmed']], roles: ['driver', 'co-driver', 'relief-end'] }] }))),
             row('103', bar(trip({ customer: 'Next month', start_date: day(30), end_date: day(31), buses: [{ bus: 'b103', roles: ['driver', 'co-driver'] }] })))] },
         { name: 'A crew that does not fit', note: 'Names give way from the end, counted as +1, +2.', days: 3,

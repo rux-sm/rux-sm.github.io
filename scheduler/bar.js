@@ -19,7 +19,8 @@
      staffedUntil             the ISO day the office staffs to, exclusive,
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
-   overSeated, driverAlerts, tells, problems }`, which the trip's card reads.
+   overSeated, emptySeats, driverAlerts, tells, problems }`, which the
+   trip's card reads.
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
@@ -265,7 +266,8 @@
   };
   const ageMark = at => el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
   /* WHAT IS A PROBLEM ON THE BOARD: a bus that does not fit, more passengers
-     than seats, a driver who said no or must be told of a change, and a
+     than seats, a seat with no driver inside fourteen days of departure, a
+     driver who said no or must be told of a change, and a
      confirmed trip with nothing paid, no PO, deposit or payment, which is
      `unpaid`. The rest of the paperwork the office works through on every
      trip -- a confirmation, itinerary or balance waited on, the trip
@@ -273,7 +275,7 @@
      list's to ask for, and marks nothing here, or every bar would carry a
      warning. */
   const PROBLEM_SPOTS = new Set(['seats', 'driver']);
-  const isProblem = a => a.row === 'scheduler-card__misfit' || PROBLEM_SPOTS.has(a.spot) || a.unpaid;
+  const isProblem = a => a.row === 'scheduler-card__error' || PROBLEM_SPOTS.has(a.spot) || a.unpaid;
   /* A confirmed trip with a price and nothing in hand: no PO, no deposit and
      no payment, as billing.js reads it. A placeholder and a cancelled trip
      are owed nothing. */
@@ -359,22 +361,23 @@
 
   /* Carbon status icons identify each driver; relief retains its role arrows.
      A trip that is done has no answer left to wait for, so its drivers carry
-     no status icon, only their names, unless one declined. Empty seats inside
-     fourteen days of departure take Caution minor, the alert badge's yellow
-     triangle, so the bar has one warning colour. A seated driver's icon is
+     no status icon, only their names, unless one declined. An empty seat
+     inside fourteen days of departure is a person in the error colour, a
+     declined driver's red, and turns the alert badge red, so a bus with
+     nobody to drive it is found at a glance. A seated driver's icon is
      the button that opens their tip, as the alert badge opens Alerts, with
      no hover label, since the tip says it; a
      done trip's drivers have none to press, but one who declined. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   /* A seat's glyph: its status icon in its indicator's colour, a relief
-     seat's role arrow, the warning for an empty seat that is due, or none,
+     seat's role arrow, a person for an empty seat that is due, or none,
      for a distant empty seat and for a done trip's driver who did not
      decline. `crewEl` draws it, and the phone's half sheet its seats. */
   function crewGlyph(c, due, done) {
     const dot = !RELIEF_ROLES.has(c.role);
     if (done && dot && !c.needed && c.status?.value !== 'declined') return null;
     if (!dot) return { href: c.icon, box: c.box, indicator: null };
-    if (c.needed) return due ? { href: '#i-warning--alt--filled', box: '0 0 32 32', indicator: 'rux--icon-indicator--caution-minor' } : null;
+    if (c.needed) return due ? { href: '#m-person-fill', box: '0 0 32 32', indicator: 'rux--icon-indicator--failed' } : null;
     return { href: c.status.icon, box: '0 0 32 32', indicator: c.status.indicator };
   }
   const glyphEl = g => {
@@ -383,7 +386,7 @@
     return svg;
   };
   function crewEl(c, due, done) {
-    const tone = c.needed ? (due ? 'warning' : 'off') : c.status.tone;
+    const tone = c.needed ? (due ? 'error' : 'off') : c.status.tone;
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
@@ -424,8 +427,10 @@
      as, where a press on it goes and the field it names. The bar counts
      these and the card draws them, so the two never disagree.
 
-     A bus that does not fit this trip leads: it is a mistake on the board,
-     and it goes when the bus is changed. Then the follow-up reminder, one for
+     The errors lead, each a red row: a bus that does not fit this trip, a
+     mistake on the board that goes when the bus is changed, then each seat
+     of the bus still with nobody in it inside fourteen days of departure,
+     put right on the Buses tab. Then the follow-up reminder, one for
      each thing waited on, which stays while it is true, until the missing
      thing arrives or an update is written; on a confirmed trip with nothing
      paid, the reminder for its money stays until a PO, a deposit or a
@@ -437,7 +442,8 @@
     /* A trip that is back asks nothing on the board: what its record still
        lacks is the editor's Billing tab's Closed list and the Trips page's. */
     if (window.SchedulerCloseOut.isBack(trip)) return [];
-    const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
+    const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__error', go: 'fleet', words }));
+    for (const words of facts?.emptySeats ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', spot: 'driver', words });
     const asks = asksFollowUp(trip);
     const unpaid = nothingPaid(trip);
     for (const w of waitsOf(trip)) {
@@ -474,8 +480,8 @@
 
   /* WHAT ONE BAR KNOWS OF ITS TRIP AND ITS BUS: `facts`, which the trip's
      card reads, the problems the bar's alert badge counts, and the badge's
-     tone, an error where the bus does not fit and a warning otherwise, or
-     none. */
+     tone, an error where the bus does not fit or a due seat is empty and a
+     warning otherwise, or none. */
   function factsOf(b, board) {
     const { trip, leg, assign } = b;
     const { driversById, busesById, statuses } = board;
@@ -536,7 +542,10 @@
        they said yes, as driver-job.js reads it: each a warning, which the
        Contact list puts right. */
     const tells = [];
-    const driverAlerts = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses).flatMap(c => {
+    const crew = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses);
+    // Each seat still empty once the leg is due, named as the seat is: Driver missing, Relief end missing.
+    const emptySeats = staffingDue(leg) ? crew.filter(c => c.needed).map(c => `${c.label} missing`) : [];
+    const driverAlerts = crew.flatMap(c => {
       if (c.needed) return [];
       const name = c.who?.short_name || c.who?.name || 'A driver';
       if (c.status?.value === 'declined') return [`${name} declined`];
@@ -547,16 +556,16 @@
       return [`Tell ${name}: ${lines.join('; ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };
+    const facts = { leg: leg.key, needs, misfits, overSeated, emptySeats, driverAlerts, tells };
 
     // One structured list feeds the badge and the card's Alerts group.
     facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
     /* A later bus wears only its own problems, a bus that does not fit or a
        driver to tell; the trip's are on its first bus, and every bus's card
        lists them all. */
-    const own = later ? facts.problems.filter(a => a.row === 'scheduler-card__misfit' || a.spot === 'driver')
+    const own = later ? facts.problems.filter(a => a.row === 'scheduler-card__error' || a.spot === 'driver')
       : facts.problems;
-    return { facts, problems: own, tone: own.length ? (misfits.length ? 'error' : 'warning') : null };
+    return { facts, problems: own, tone: own.length ? (own.some(a => a.row === 'scheduler-card__error') ? 'error' : 'warning') : null };
   }
 
   function draw(b, board) {

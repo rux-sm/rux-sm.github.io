@@ -1904,16 +1904,17 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-card__asks > svg,
 .scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-footer-warning); }
-/* A bus that does not fit is a row like the reminder's with the red bell,
-   above it: a mistake on the board comes before a job still to do. */
-.scheduler-card__misfit {
+/* An error, a bus that does not fit or a due seat with no driver, is a row
+   like the reminder's with the red mark, above it: what stops the trip
+   comes before a job still to do. */
+.scheduler-card__error {
   display: grid;
   grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
 }
-.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--rux-status-red); }
-:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { min-inline-size: 0; font-weight: 400; }
+.scheduler-card__error > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--rux-status-red); }
+:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__error) > strong { min-inline-size: 0; font-weight: 400; }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
 .scheduler-card__asks-when { flex: none; white-space: nowrap; color: var(--rux-text-secondary); }

@@ -373,14 +373,6 @@
   --rux-field: var(--rux-field-01);
   --rux-field-hover: var(--rux-field-hover-01);
 }
-/* Its toolbar parts its groups, not every button: the week, Today, the two
-   arrows as one, search, the panels as one, and the view menu each stand
-   behind a rule, and a button inside a group has none. The spacer draws no
-   rule, so where it has no room it is not an empty button between two. */
-[data-theme="rux-dark"] .scheduler-page :is(#scheduler-next, #scheduler-prep-toggle, #scheduler-avail-toggle, #scheduler-forms-open, #scheduler-calc-open):not(:focus-visible) {
-  border-inline-start-color: transparent;
-}
-[data-theme="rux-dark"] .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
 [data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
   --rux-layer: var(--rux-background);
   --rux-layer-active: var(--rux-background-active);
@@ -517,19 +509,11 @@
   [data-theme="rux-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 0;
   }
-  /* Buttons that stand apart by a gap take no rule between them: on a 6px
-     corner the toolbar's dividing rule bends into a bracket. The spacer's
-     rule goes with them. */
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
-    border-inline-color: transparent;
-  }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
   /* Geist's bar buttons are its outlined button: the quiet ring Design gives
      the secondary button, on the 1px border a ghost button already carries,
      so each one reads as a button. It gives way to the focus ring, which is
      that same border. */
   [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
-    border-block-width: 1px;
     border-color: var(--rux-border-subtle-02);
   }
   /* The week's name opens the calendar, so it takes the same ring. It has no
@@ -1266,22 +1250,6 @@
    covers that line under the ⋮. */
 [data-theme="rux-100"] :is(.scheduler-toolbar__more, .scheduler-panel-more)[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
 [data-theme="rux-100"] :is(.scheduler-view-menu, .scheduler-panel-menu)[data-attached] { margin-block-start: 1px; }
-/* Carbon's four and Rux 100, whose Geist gives a toolbar no dividers of its
-   own, draw the toolbar as the two Carbon patterns it holds. The
-   week, Today and the arrows step through weeks as Carbon's pagination steps
-   through pages, so each keeps the rule that parts it from the one before,
-   overrides.css's, and the spacer's rule closes the last arrow, where
-   pagination's last arrow is closed by the bar's own edge; the buttons after
-   the spacer are Carbon's table toolbar actions, which carry none, the ⋮
-   with them. */
-:is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"]) .scheduler-page :is(.scheduler-toolbar__spacer ~ .rux--btn--ghost, .scheduler-toolbar > .rux--btn--ghost):not(:focus-visible) { border-inline-color: transparent; }
-/* A narrow toolbar's spacer has no width, and app.css takes its rule away
-   there so it does not stand against the next button's; these themes draw
-   none on the buttons after it, so they keep it, and it still closes the
-   week's controls, on a phone the last of them, Today. */
-@container scheduler-toolbar (max-width: 44.5rem) {
-  :is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"]) .scheduler-toolbar__spacer { border-inline-start: 1px solid var(--rux-border-subtle-01); }
-}
 /* A form's open pick cell does the same with its menu, in the menu's own
    surface and line, Background 1 and gray 400, which Design gives every Rux 100
    menu, on the form's page and in the board's panel alike. */
@@ -1296,13 +1264,11 @@
    two. The calendar is wider than its button, so it hangs 1px lower, its
    own top line lying on the board's top line, and a strip the button's
    width in the button's surface covers that line under the button; only
-   its shadow stops there. The open month's ring stands in for the rule on
-   its leading edge, which would otherwise draw a second line beside it. */
+   its shadow stops there. */
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
   clip-path: inset(-6px -6px 0 -6px);
 }
-[data-theme="rux-100"] .scheduler-weekbtn--month[aria-expanded="true"] { border-inline-start-color: transparent; }
 [data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
   clip-path: inset(-1px -6px -6px -6px);

@@ -178,10 +178,13 @@
          action's place from the start, so nothing that arrives later stands
          right of it to move it. -->
     <div class="rux--inline-loading scheduler-activity" id="scheduler-activity" role="status" aria-live="polite" hidden></div>
-    <!-- On a phone's board, search and New trip stand in the header, where a
-         thumb finds them over every view; the toolbar's own two stand in for
-         them on a wider board, and app.css shows one pair or the other. -->
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only scheduler-header-phone" data-rux-open="scheduler-search-modal" aria-label="Search trips"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
+    <!-- Search finds a trip anywhere, not only in the week on screen, so it
+         is the header's at every width, as Carbon puts a whole app's search
+         among the header's actions. Cmd-K opens it too. -->
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
+    <!-- On a phone's board New trip stands in the header too, where a thumb
+         finds it over every view; the toolbar's own stands in for it on a
+         wider board, and app.css shows one or the other. -->
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only scheduler-header-phone" id="scheduler-header-new" aria-label="New trip"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
   </div>
@@ -400,18 +403,12 @@
                  width, so a wider week does not move the buttons, and DOM
                  order is reading order. -->
             <div class="scheduler-toolbar__spacer"></div>
-            <!-- Search leads the row's right group, apart from the three
-                 buttons after it, which each show and hide a pane. It opens
-                 its own window, so the toolbar keeps one row at every width.
-                 Cmd-K opens it too. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__search" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
             <!-- Tasks and Departures, the board's two lists: each shows and hides
                  its own pane left of the week, so each is a pressed toggle,
                  its glyph filled while its pane is open, and
                  each carries how many are due. Where the row scrolls, a
-                 phone 402px wide shows search and both counts before a swipe,
-                 and one 375px wide search and Tasks. to-do-list.js works
-                 them. -->
+                 phone 375px wide or wider shows both before a swipe.
+                 to-do-list.js works them. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-prep-panel" aria-label="Departures" title="Departures"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
           <!-- Named "Drivers", like the pane's own head, so one

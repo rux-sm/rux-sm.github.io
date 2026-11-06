@@ -3130,16 +3130,15 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-weekbtn__name { grid-area: 1 / 1; }
 .scheduler-weekbtn__sizer { visibility: hidden; }
 .scheduler-weekbtn__short { display: none; }
-/* 44.5rem is where the room runs out in Carbon's own themes, whose buttons
-   touch: there the week takes 221px, the controls after it 406px with the
-   spacer's 1rem, so the rule it draws never stands against the next
-   button's, and New trip and the ⋮ 80px, 708px in all. A theme with larger
-   buttons or gaps between them needs up to 811px, and scrolls its row of
-   controls by the difference rather than have a width of its own to keep.
+/* 41rem is where the room runs out in Carbon's own themes, whose buttons
+   touch: there the week takes 220px, the controls after it 350px, and New
+   trip and the ⋮ 80px, 651px in all. A theme with larger buttons or gaps
+   between them needs up to 780px, and scrolls its row of controls by the
+   difference rather than have a width of its own to keep.
    Below it the month is as wide as its short name. The toolbar is asked, not
    the window, because the roster and the editor beside the schedule are
    what take the room and a window's width cannot see them. */
-@container scheduler-toolbar (max-width: 44.5rem) {
+@container scheduler-toolbar (max-width: 41rem) {
   .scheduler-weekbtn__short { display: grid; }
   .scheduler-weekbtn__long {
     position: absolute;
@@ -4106,10 +4105,9 @@ a.scheduler-tip__go { text-decoration: none; }
    week, so opening a panel never turns it on. */
 /* ITS TOP IS THE MONTH AND TODAY, as the iPhone's Calendar names the
    month, with no arrows, a swipe being the step: the calendar's button
-   gives way, and the month is written in full. Search and New trip are the
-   header's, where a thumb finds them. */
-.scheduler-page[data-board="compact"] .scheduler-toolbar__range,
-.scheduler-page[data-board="compact"] .scheduler-toolbar__search { display: none; }
+   gives way, and the month is written in full. New trip is the header's,
+   where a thumb finds it, beside search, which is the header's everywhere. */
+.scheduler-page[data-board="compact"] .scheduler-toolbar__range { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__short { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__long { position: static; inline-size: auto; block-size: auto; clip-path: none; }
 :root:not([data-scheduler-board="compact"]) .scheduler-header-phone { display: none; }
@@ -4670,7 +4668,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* In the same state, and on the compact board, the calendar's, the month's
    and the year's buttons give up two steps of inset, as the insets come down
    from 16px to 8px and the glyph's gap from 12px to 4px, so "Nov" and "2026"
-   leave a 402px phone room for Today and search beside them. */
+   leave a 402px phone room for Today beside them. */
 .scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-weekbtn {
   padding-inline: var(--rux-spacing-03);
   gap: var(--rux-spacing-02);

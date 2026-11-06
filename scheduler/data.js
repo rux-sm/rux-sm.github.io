@@ -17516,7 +17516,7 @@
   });
 
   /* ── Searching trips ──────────────────────────────────────────────────────
-     The toolbar's search button opens a window that finds trips by
+     The header's search button opens a window that finds trips by
      destination, organization or booking contact across every trip, not only
      the week on screen, and a result closes the window and opens its trip on
      its own week. Design ships no search module, so the results list and its

@@ -4664,8 +4664,9 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
 /* A list that can run past the screen, every bus or driver on the sheet's
-   or every month held, scrolls inside. */
-.scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; }
+   or every month held, scrolls inside, with no scrollbar over its items; the
+   last item cut at the foot shows there is more. */
+.scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; scrollbar-width: none; }
 
 /* ══ Below Carbon's md, 41.98rem ═══════════════════════════════════════════
    42rem is Carbon's md, where `.rux--side-panel` turns on its 75vw limit. Below

@@ -61,9 +61,12 @@ own label shows now.
   Delete, Cancel and Save, as a press on the row does now.
 - **Alerts:** each alert is its icon and its words, the words a Carbon link
   to where it is put right, and a reminder's when stays at its end.
-- **The route tip** keeps its table, at 14px inside 288px, a stop's name
-  wrapping, and a stop a bus out has reached shows Carbon's check and when
-  it got there by Samsara's path. It shows five rows of a longer route:
+- **The route tip** is a column of times: each point its planned time over
+  what happened, beside its word over its place, then when it Departs, under
+  a heading for each day, a place on one line with an ellipsis. Its words are
+  the Route tab's and the itinerary's, Yard out, Spot, Arrives, Departs and
+  Yard back, so a time is called the same everywhere; what happened is
+  `--:--` until Samsara has it. It shows five points of a longer route:
   for a bus out, from the last stop reached on, and otherwise from the
   yard out; its footer's Full route, with the count of stops, a link,
   opens the editor's Route tab, where a long route has room. **A driver's tip** keeps its face, status,

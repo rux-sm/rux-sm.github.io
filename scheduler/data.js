@@ -9248,12 +9248,12 @@
         const fig = RF.legFigures(routeModel());
         const { days, each, total } = fig;
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
-        /* The last day's weekday goes in End's label, so the time itself never
+        /* The last day's weekday goes in Yard back's label, so the time itself never
            wraps: a longer leg's last day, or the next day a one-day leg comes
            back on past midnight. */
         const lastDay = fig.backOn ? ` · ${parseISO(fig.backOn).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
         const times = el('dl', 'scheduler-figures');
-        for (const [label, time] of [['Start', yardOut], ['Spot', spot], [`End${lastDay}`, yardBack]]) {
+        for (const [label, time] of [['Yard out', yardOut], ['Spot', spot], [`Yard back${lastDay}`, yardBack]]) {
           const box = el('div');
           // AM or PM in its own span, smaller, as the board writes its a and p.
           const said = time ? clock(time) : null;

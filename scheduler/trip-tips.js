@@ -147,22 +147,30 @@
   }
 
   /* THE ROUTE TIP: a press on the route mark leading a bar's time row shows the
-     leg's whole route in a tip beside the trip, as the trip's other tips
-     stand, its caret on the time row: the yard out, the pickup, each stop
-     and the yard back, each with its planned time beside what happened.
-     Planned is the route's own time, the pickup's spot and each stop's
-     arrival; Actual is what Samsara recorded on the bus's row, and on a bus
-     out on the leg, a stop reached, the one it is at, or the next one's
-     estimate, faded. The pickup alone says on time or how late, the only
-     stop a bus can be late to. The press selects the trip, as a press on
-     any of its icons does. It is the card's part `route:`. */
+     leg's route in a tip beside the trip, as the trip's other tips stand,
+     its caret on the time row. It reads down a column of times, each point
+     a short block: the planned time and its word, Yard out, Spot or
+     Arrives, then under it what happened beside the place, and, where the
+     bus waits there, when it Departs. The words are the Route tab's and the
+     itinerary's, so a time is called the same thing everywhere. Planned is
+     the route's own time, the pickup's spot and each stop's arrival; what
+     happened is what Samsara recorded on the bus's row, and on a bus out on
+     the leg a stop reached, the bus at one, or the next one's estimate after
+     a tilde, `--:--` until then. The pickup alone says on time or how late,
+     the only stop a bus can be late to. A day heading stands over each
+     day's points, and a departure on a later day names its weekday. The
+     press selects the trip, as a press on any of its icons does. It is the
+     card's part `route:`. */
   const clockOfMs = ms => hhmm(Road.clockOf(ms), true);
   const OFFICE_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' });
-  // A time as the bar writes it, with "+1" after it on a day past the leg's yard-out.
-  const routeClock = (ms, out) => {
-    const w = el('span', 'scheduler-route__time', clockOfMs(ms));
-    const days = out == null ? 0 : Math.round((Date.parse(OFFICE_DATE.format(ms)) - Date.parse(OFFICE_DATE.format(out))) / 864e5);
-    if (days > 0) w.appendChild(el('sup', 'scheduler-route__day', `+${days}`));
+  const OFFICE_DAY = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric' });
+  const OFFICE_WEEKDAY = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short' });
+  const dayOf = ms => OFFICE_DATE.format(ms);
+  // A time as the bar writes it, with "+1" after it on a day past `on`, the day it stands under.
+  const routeClock = (ms, on) => {
+    const w = el('span', 'scheduler-route__clock', clockOfMs(ms));
+    const days = on == null ? 0 : Math.round((Date.parse(dayOf(ms)) - Date.parse(on)) / 864e5);
+    if (days > 0) w.appendChild(el('sup', 'scheduler-route__plus', `+${days}`));
     return w;
   };
   // The pickup's arrival judged: Carbon's green check for on time, its amber warning and the minutes for late.
@@ -171,21 +179,15 @@
     j.append(svgUse(late ? '#i-warning--alt--filled' : '#i-checkmark--filled', '16', late ? '0 0 32 32' : '0 0 16 16'), late ? `${late} min late` : 'On time');
     return j;
   };
-  /* What a bus out says of a stop with no time of its own: the same green
-     check for one reached, then when it got there by Samsara's path, or
-     Reached where that is not known; and the bus where it is now, at the
-     stop or on its way to it. */
-  const routeReached = (at, out) => {
-    const j = el('span', 'scheduler-route__judged scheduler-route__judged--on-time');
-    j.append(svgUse('#i-checkmark--filled', '16', '0 0 16 16'), at != null ? routeClock(at, out) : 'Reached');
-    return j;
+  // A mark standing in the time column, named for a screen reader.
+  const routeMark = (href, box, cls, words) => {
+    const m = svgUse(href, '16', box);
+    m.setAttribute('class', cls);
+    m.setAttribute('role', 'img');
+    m.setAttribute('aria-label', words);
+    return m;
   };
-  const routeBus = () => {
-    const b = svgUse('#m-directions_bus-fill', '16', '0 0 32 32');
-    b.setAttribute('class', 'scheduler-route__bus');
-    return b;
-  };
-  // The leg's points in order, each its key, name, planned and actual times, or what a bus out says of it.
+  // The leg's points in order, each its key, word, place, planned and actual times, or what a bus out says of it.
   function routeOf(trip, bar, board) {
     const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
     const track = bar.querySelector(':scope > .scheduler-bar__time .scheduler-bar__track[data-out]');
@@ -198,29 +200,31 @@
     const said = (row, st, i) => {
       if (row.actual != null || !next) return row;
       if (i === reached && next.at) row.here = true;
-      else if (i <= reached) { row.reached = true; row.reachedAt = next.where.arrived?.[i] ?? null; }
+      else if (i <= reached) { row.reached = true; row.actual = next.where.arrived?.[i] ?? null; }
       else if (next.stop?.key === st.key && next.arrival != null) row.estimate = next.arrival;
       return row;
     };
-    const rows = [{ key: 'yard-out', name: 'Yard out', planned: out, actual: at(assign?.actual_yard_depart_at) }];
+    const rows = [{ key: 'yard-out', word: 'Yard out', place: null, planned: out, actual: at(assign?.actual_yard_depart_at) }];
     stops.forEach((st, i) => {
       if (i === home) return;
       const pickup = st.type === 'pickup';
       const actual = pickup ? at(assign?.pickup_at) : at(assign?.stop_arrivals?.[st.key]);
-      rows.push(said({ key: st.key, name: pickup ? `Pickup · ${st.name || 'Pickup'}` : st.name || 'Stop', planned: st.due, actual,
-        late: pickup && actual != null ? Road.pickupLate(st.due, actual) : null }, st, i));
+      rows.push(said({ key: st.key, word: pickup ? 'Spot' : 'Arrives', place: st.name || (pickup ? 'Pickup' : 'Stop'), planned: st.due,
+        leaves: st.leaves, actual, late: pickup && actual != null ? Road.pickupLate(st.due, actual) : null }, st, i));
     });
-    const back = { key: 'yard-back', name: 'Yard back', planned: track ? Number(track.dataset.back) : stops[home]?.due ?? null,
+    const back = { key: 'yard-back', word: 'Yard back', place: null, planned: track ? Number(track.dataset.back) : stops[home]?.due ?? null,
       actual: at(assign?.actual_yard_return_at) };
     rows.push(home >= 0 ? said(back, stops[home], home) : back);
-    return { rows, out, live: !!next };
+    return { rows, live: !!next };
   }
-  /* A floating route shows five rows of a longer route: for a bus out, from
-     the last point it reached on, so where it has been and where it goes
-     next both show, and otherwise from the yard out. Full route, with the
-     count of stops, opens the editor's Route tab. A route one row longer
-     shows whole rather than hide a row behind a link. The phone's half
-     sheet, with the room, asks for every row, `size` Infinity. */
+  /* A floating route shows five points of a longer route: for a bus out,
+     from the last point it reached on, so where it has been and where it
+     goes next both show, and otherwise from the yard out. Full route, with
+     the count of stops, opens the editor's Route tab. A route one point
+     longer shows whole rather than hide a point behind a link. The phone's
+     half sheet, with the room, asks for every point, `size` Infinity. A
+     place keeps to one line, cut short with an ellipsis, so the column of
+     times reads straight down; its whole name is in the point's label. */
   const ROUTE_ROWS = 5;
   function routeTip(trip, bar, board, size = ROUTE_ROWS) {
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
@@ -229,26 +233,39 @@
     head.append(el('span', 'scheduler-tip__name', 'Route'));
     tip.appendChild(head);
     const route = routeOf(trip, bar, board);
-    const table = el('div', 'scheduler-route');
-    const names = el('div', 'scheduler-route__row scheduler-route__row--head');
-    names.append(el('span'), el('span', null, 'Planned'), el('span', null, 'Actual'));
-    table.append(names);
+    const list = el('div', 'scheduler-route');
     const all = route.rows;
     const cut = all.length > size + 1;
     const done = route.live ? all.findLastIndex(r => r.here || r.reached || r.actual != null) : 0;
     const first = cut ? Math.max(0, Math.min(done, all.length - size)) : 0;
+    let on = null;
     for (const r of cut ? all.slice(first, first + size) : all) {
-      const row = el('div', 'scheduler-tip__row scheduler-route__row');
+      const day = r.planned != null ? dayOf(r.planned) : on;
+      if (day && day !== on) {
+        on = day;
+        list.appendChild(el('div', 'scheduler-route__day', OFFICE_DAY.format(r.planned)));
+      }
+      const point = el('div', 'scheduler-route__point');
+      point.setAttribute('role', 'group');
+      point.setAttribute('aria-label', [r.word, r.place].filter(Boolean).join(' · '));
+      const word = el('span', 'scheduler-route__word', r.word);
+      if (r.late != null) word.append(' ', routeJudged(r.late));
+      point.append(r.planned != null ? routeClock(r.planned, on) : el('span', 'scheduler-route__clock', '--:--'), word);
       const actual = el('span', 'scheduler-route__actual');
-      if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
-      else if (r.here) actual.append(routeBus(), 'Here now');
-      else if (r.reached) actual.append(routeReached(r.reachedAt, route.out));
-      else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--estimate'); actual.append(routeBus(), '~', routeClock(r.estimate, route.out)); }
-      else actual.append('—');
-      row.append(el('span', 'scheduler-route__name', r.name), r.planned != null ? routeClock(r.planned, route.out) : el('span', null, '—'), actual);
-      table.append(row);
+      if (r.here) actual.appendChild(routeMark('#m-directions_bus-fill', '0 0 32 32', 'scheduler-route__bus', 'Here now'));
+      else if (r.actual != null) actual.appendChild(routeClock(r.actual, on));
+      else if (r.reached) actual.appendChild(routeMark('#i-checkmark--filled', '0 0 16 16', 'scheduler-route__reached', 'Reached'));
+      else if (r.estimate != null) actual.append('~', routeClock(r.estimate, on));
+      else actual.append('--:--');
+      point.append(actual, el('span', 'scheduler-route__place', r.place ?? ''));
+      if (r.leaves != null) {
+        const later = dayOf(r.leaves) !== on;
+        point.append(el('span', 'scheduler-route__clock', clockOfMs(r.leaves)),
+          el('span', 'scheduler-route__word', later ? `Departs ${OFFICE_WEEKDAY.format(r.leaves)}` : 'Departs'));
+      }
+      list.appendChild(point);
     }
-    tip.appendChild(table);
+    tip.appendChild(list);
     if (cut) {
       const foot = footer();
       const stopsCount = all.length - 2;

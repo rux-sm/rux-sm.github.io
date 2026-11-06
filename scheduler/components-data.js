@@ -404,6 +404,8 @@
     };
     const longTrip = lengthen(trip({ customer: 'Northside Band', destination: 'San Antonio, TX', back: '21:30', buses: [crewed('b106')] }),
       ['08:30', '08:50', '11:30', '15:45', '17:00', '18:45']);
+    // The band stays two hours at the diner, so the tip says when it departs.
+    longTrip.trip_stops.find(s => s.name === 'Mission Plaza').depart_prev = '13:30';
     const longOut = live('Harbor Tours');
     lengthen(longOut.trip, [-150, -120, -90, -40, 30, 80].map(m => clockAt(now + m * MIN)));
     const longStops = window.SchedulerRoad.stopsOf(longOut.trip, 'outbound');

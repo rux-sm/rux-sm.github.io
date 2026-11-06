@@ -89,14 +89,18 @@
      time before it, by past-midnight.js's rule. A stop is never due before
      the one before it: in the hour the clocks go back it takes the second
      reading of the time, and a dated time that would still be is on the next
-     day, since an older row dates a time past midnight a day early. */
+     day, since an older row dates a time past midnight a day early. `leaves`
+     is when the bus leaves a stop, saved on the stop after it as that one's
+     `depart_prev`, on the first day from its own date, or the stop's, that
+     is not before the arrival, as a due time is; null where the bus leaves
+     as it gets there, as the itinerary prints an arrival alone. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
     const legOf = W.legByKey(trip, leg);
     if (!legOf) return [];
     const { stops, pickup } = W.stopsOfLeg(trip, legOf.key);
     let day = legOf.from, last = null, before = null;
-    return stops.slice(Math.max(stops.indexOf(pickup), 0)).map(s => {
+    return stops.slice(Math.max(stops.indexOf(pickup), 0)).map((s, i, legStops) => {
       const [time, date] = s.type === 'pickup' ? (s.spot ? [s.spot, s.spot_date] : [s.depart_prev, s.depart_prev_date])
         : [s.arrive, s.arrive_date];
       let due = null;
@@ -109,12 +113,21 @@
         while (before != null && due < before) { day = dayFrom(day, 1); due = W.officeInstant(day, time); }
         before = due;
       }
+      const after = legStops[i + 1];
+      let leaves = null;
+      if (due != null && after?.depart_prev) {
+        let on = after.depart_prev_date || day;
+        leaves = W.officeInstant(on, after.depart_prev);
+        while (leaves < due) { on = dayFrom(on, 1); leaves = W.officeInstant(on, after.depart_prev); }
+        if (leaves === due) leaves = null;
+      }
       return {
         key: String(s.id ?? `${leg}-${s.position}`),
         type: s.type,
         name: s.type === 'return' ? 'Yard' : (s.name || s.address || '').trim(),
         point: s.lat != null && s.lng != null ? [Number(s.lat), Number(s.lng)] : null,
         due,
+        leaves,
       };
     });
   }

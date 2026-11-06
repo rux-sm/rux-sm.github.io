@@ -464,50 +464,49 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--tip-rule);
 }
-/* THE ROUTE TIP'S TABLE: each point of the leg a row of three, its name,
-   the planned time and the actual, the columns lined up down the tip by a
-   subgrid, their names over them. The point pressed is lit in the
-   inverse surface's hover tone. A time past the yard-out's day carries its
-   +1 beside it, where a raised mark at the bar's size would fall under
-   Carbon's smallest type, and an estimate leads with the bus and a tilde,
-   since it is not yet a time that happened. */
-/* A name breaks between its words, and inside one only where it must, so
-   its column keeps its longest word and the times give way around it. */
-.scheduler-route { display: grid; grid-template-columns: minmax(min-content, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
-.scheduler-route__row {
+/* THE ROUTE TIP'S POINTS: a column of times down the left and their words
+   and places on the right, lined up down the tip by a subgrid. Each point
+   is its planned time over what happened, beside its word over its place,
+   then its departure; points stand 16px apart and a day heading 8px over
+   its first. A place keeps to one line, cut with an ellipsis. A time past
+   the day it stands under carries its +1, where a raised mark at the bar's
+   size would fall under Carbon's smallest type. Words and day headings are
+   12px in the tip's one ink. */
+.scheduler-route {
   display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: baseline;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--rux-spacing-04);
   font-variant-numeric: tabular-nums;
 }
-.scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); }
-.scheduler-route__name { min-inline-size: 0; overflow-wrap: break-word; }
-.scheduler-route__time { white-space: nowrap; }
-.scheduler-route__day { margin-inline-start: .1em; }
-.scheduler-route__actual { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--rux-spacing-02); }
-/* On the phone's half sheet the column names, a +1 and an estimate are
-   faded; a tip, in one ink, sets its column names in 12px instead. */
-.scheduler-sheet__rest :is(.scheduler-route__row--head > *, .scheduler-route__day, .scheduler-route__actual--estimate) { opacity: .75; }
-/* In a tip the column names stay over the rows as the table scrolls, on the
-   popover's own surface. */
-.scheduler-trip-tip .scheduler-route__row--head {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 1;
-  background: var(--rux-popover-background-color);
+.scheduler-route__day,
+.scheduler-route__word {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
+.scheduler-route__day { grid-column: 1 / -1; margin-block-end: var(--rux-spacing-03); }
+.scheduler-route__point {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+}
+.scheduler-route__point:not(:last-child) { margin-block-end: var(--rux-spacing-05); }
+.scheduler-route__place { min-inline-size: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scheduler-route__clock { white-space: nowrap; }
+.scheduler-route__plus { margin-inline-start: .1em; }
+.scheduler-route__actual { display: inline-flex; align-items: baseline; white-space: nowrap; }
 /* The pickup's on time in Carbon's green check, or late in its amber
    warning, each in the support colour for an inverse surface. */
-.scheduler-route__judged { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); align-self: center; }
+.scheduler-route__judged { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); vertical-align: top; }
 .scheduler-route__judged > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-route__judged--on-time > svg { color: var(--rux-support-success-inverse); }
 .scheduler-route__judged--late > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
-/* The bus where it is now, in the info blue, as a stop's own mark stands. */
-.scheduler-route__bus { flex: none; inline-size: 16px; block-size: 16px; align-self: center; color: var(--rux-support-info-inverse); }
+/* A stop reached with no time of its own is the green check, and the bus at
+   a stop is the bus in the info blue, as a stop's own mark stands. */
+:is(.scheduler-route__bus, .scheduler-route__reached) { flex: none; inline-size: 16px; block-size: 16px; align-self: center; }
+.scheduler-route__bus { color: var(--rux-support-info-inverse); }
+.scheduler-route__reached { color: var(--rux-support-success-inverse); }
 /* Equipment is an icon with its word, so the tip needs no legend. */
 .scheduler-tip__kit { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
 .scheduler-tip__mark { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
@@ -1753,11 +1752,7 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-body-01-line-height);
   letter-spacing: var(--rux-body-01-letter-spacing);
 }
-.scheduler-trip-tip :is(.scheduler-tip__head, .scheduler-tip__row, .scheduler-route__row--head) { padding: 0; border: 0; }
-/* In 288px the route's columns stand 12px apart, and where a table still
-   has too little room the check and its words wrap rather than be cut. */
-.scheduler-trip-tip .scheduler-route { row-gap: var(--rux-spacing-03); column-gap: var(--rux-spacing-04); }
-.scheduler-trip-tip .scheduler-route__judged { flex-wrap: wrap; }
+.scheduler-trip-tip :is(.scheduler-tip__head, .scheduler-tip__row) { padding: 0; border: 0; }
 /* A tall tip's body scrolls with no scrollbar over its rows, as the board's
    long lists do; the row cut at its edge shows there is more. */
 .scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
@@ -3022,9 +3017,6 @@ a.scheduler-tip__go { text-decoration: none; }
      are what take the toolbar's room, and a window's width cannot see them. */
   container: scheduler-toolbar / inline-size;
   background: var(--rux-layer);
-  /* The bar's own fill, held here because an open button inside it is
-     raised to Layer 02 and redefines `--rux-layer`. */
-  --scheduler-toolbar-fill: var(--rux-layer);
   /* The top corners of the week below it, which rounds only its bottom ones. */
   border-start-start-radius: var(--scheduler-inner-radius);
   border-start-end-radius: var(--scheduler-inner-radius);
@@ -3034,22 +3026,6 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* ── Week row ───────────────────────────────────────────────────────────────
    The week range, a date-picker trigger, first in the toolbar. */
-/* The ⋮, the month and the calendar's button join the surface they open as
-   overrides.css draws a joined menu's button. The rule down a joined
-   button's leading edge comes off while it is open, as Carbon's open
-   trigger has no line down its side. */
-.scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible),
-.scheduler-weekbtn--month[data-attached] { border-inline-start-color: transparent; }
-/* The calendar hangs under the month's button as well as its own, so the
-   rule between the two, the month's leading one, would stand on the joined
-   surface; it comes off while they are joined. */
-#scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
-/* The rule down the month's trailing edge is the leading rule of whichever
-   button the width leaves first in the row after it, so the open month
-   covers it with a 1px column in the bar's own fill, under its shadow, and
-   the open trigger has a line down neither side while staying exactly as
-   wide as its list. */
-.scheduler-weekbtn--month[data-attached] { box-shadow: 0 2px 6px var(--rux-shadow), 1px 0 0 var(--scheduler-toolbar-fill); }
 /* The week's calendar joined to its button casts the menus' shadow, not the
    fainter one Carbon's calendar keeps, so the three surfaces the toolbar
    opens read as one kind. */
@@ -3123,9 +3099,6 @@ a.scheduler-tip__go { text-decoration: none; }
   padding-inline: 0;
   justify-content: center;
 }
-/* A rule between the two, the one the toolbar's buttons draw on their
-   leading edge (see overrides.css). */
-.scheduler-weekbtn--month { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* Carbon's own ghost-button feedback, by token rather than by borrowing the
    class: `--rux-background-hover` is what a ghost button takes on hover and
    `--rux-focus` is the 2px inset ring every control on this page draws. */
@@ -3176,21 +3149,8 @@ a.scheduler-tip__go { text-decoration: none; }
     white-space: nowrap;
   }
 }
-/* Everything before this sits left, everything after it right. It is the
-   bar's full height so it can draw the rule that closes the week's controls,
-   the same one overrides.css draws at the start of each button after the
-   week. */
-.scheduler-toolbar__spacer {
-  flex: 1;
-  align-self: stretch;
-  border-inline-start: 1px solid var(--rux-border-subtle-01);
-}
-/* Under the narrow toolbar above, what is left of the spacer may be no width
-   at all, and its rule would stand against the next button's, so it draws
-   none. */
-@container scheduler-toolbar (max-width: 44.5rem) {
-  .scheduler-toolbar__spacer { border-inline-start: 0; }
-}
+/* Everything before this sits left, everything after it right. */
+.scheduler-toolbar__spacer { flex: 1; }
 /* The controls between the week and the menu, as one row: the toolbar's own
    row carried on, so nothing about them changes where they fit. Where they do
    not, on a phone and beside open panels, the row scrolls sideways under a
@@ -4150,7 +4110,6 @@ a.scheduler-tip__go { text-decoration: none; }
    header's, where a thumb finds them. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__range,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__search { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-weekbtn--month { border-inline-start: 0; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__short { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__long { position: static; inline-size: auto; block-size: auto; clip-path: none; }
 :root:not([data-scheduler-board="compact"]) .scheduler-header-phone { display: none; }
@@ -4674,6 +4633,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
+.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__reached { color: var(--rux-support-success); }
 /* A list that can run past the screen, every bus or driver on the sheet's
    or every month held, scrolls inside, with no scrollbar over its items; the
    last item cut at the foot shows there is more. */

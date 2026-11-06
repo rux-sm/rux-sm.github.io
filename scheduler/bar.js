@@ -144,7 +144,7 @@
       before = ms;
       day = iso(new Date(ms));
       const at = (ms - out) / (back - out) * 100;
-      if (at > 0 && at < 100) times.push({ at, ms, id: String(s.id), words: `${s === pickup ? 'Spot' : 'Arrive'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
+      if (at > 0 && at < 100) times.push({ at, ms, id: String(s.id), words: `${s === pickup ? 'Spot' : 'Arrives'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
     }
     const dots = [];
     for (const t of times.sort((a, b) => a.at - b.at)) {

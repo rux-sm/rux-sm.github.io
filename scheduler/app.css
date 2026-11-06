@@ -6503,7 +6503,7 @@ html[data-scheduler-takeover] {
 /* A kind's name, then whether it is kept once for each driver. */
 .scheduler-kinds-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   column-gap: var(--rux-spacing-05);
 }

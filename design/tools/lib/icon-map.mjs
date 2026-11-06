@@ -150,6 +150,7 @@ export const ICONS = {
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
   'paint-brush': { material: 'brush', rux: null },
   'palm-tree': { material: 'beach_access', rux: null },  // Time away: Carbon draws a palm and Material a beach umbrella.
+  'partnership': { material: 'handshake', rux: null },  // A company that covers a bus with its own coach and driver.
   'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },

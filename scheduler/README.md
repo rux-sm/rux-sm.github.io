@@ -54,9 +54,9 @@ pickup is never deleted.
 Locations and a bill-to address only when bills go somewhere else, and edits
 one at `customers.html?id=`. Two customers never share a name, since
 QuickBooks matches on it; renaming one renames the organization text its
-contacts carry.
+contacts carry. `partners.html` lists and edits the partners that cover a bus.
 
-Those five pages save through `pair.js`, which also holds what they show and
+Those six pages save through `pair.js`, which also holds what they show and
 do alike: the notices, search, sort, field errors, the unsaved-changes and
 conflict modals and the staff gate. A new record's id is made before its
 insert, and each write that lands is kept as the page's saved state, so a Save

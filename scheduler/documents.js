@@ -2,17 +2,18 @@
    documents.js — THE DOCUMENTS PAGE
    --------------------------------------------------------------------------
    documents.html lists the office's own paperwork: insurance certificates,
-   the W-9, a driver's background check form. documents.html?id=<id> edits
+   the W-9, a driver's background check form, a partner's papers. documents.html?id=<id> edits
    one, documents.html?new uploads one, and documents.html?open=<id> opens
    its file. They read and write `company_documents` and `document_kinds`,
    and the files live in the private `company-documents` bucket.
 
-   A document is a file and six facts: its kind, the holder named on it, the
-   customer it belongs to, the driver it is about, the day it ends and a note.
+   A document is a file and seven facts: its kind, the holder named on it, the
+   customer it belongs to, the driver it is about, the partner it belongs to,
+   the day it ends and a note.
    A kind with parts, as a certificate has its policies, takes a day for each
    part in place of one Ends day, and its row says which part is ending.
-   The database keeps one current copy for each kind, holder, customer and
-   driver: a new upload makes the one before it old, and deleting the current
+   The database keeps one current copy for each kind, holder, customer,
+   driver and partner: a new upload makes the one before it old, and deleting the current
    one brings the one before back. A new upload takes several files at once,
    each its own document, named for its holder by its file name.
    ========================================================================== */
@@ -33,8 +34,8 @@
   const BUCKET = 'company-documents';
   const LINK_SECONDS = 600;
   const MAX_BYTES = 20 * 1024 * 1024;
-  const COLUMNS = 'id,kind_id,customer_id,driver_id,holder,ends_on,parts,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
-  const KIND_COLUMNS = 'id,name,per_driver,parts,updated_at';
+  const COLUMNS = 'id,kind_id,customer_id,driver_id,partner_id,holder,ends_on,parts,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
+  const KIND_COLUMNS = 'id,name,per_driver,partner_required,parts,updated_at';
   const TYPES = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
 
   const folded = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
@@ -53,6 +54,7 @@
   let customers = new Map();  // customer id → customer
   let parts = new Map();      // customer id → the names of the customers that are part of it
   let drivers = new Map();    // driver id → driver
+  let partners = new Map();   // partner id → partner
 
   // ── reading ─────────────────────────────────────────────────────────────
   const read = async (table, columns, order) => {
@@ -61,11 +63,12 @@
     return data || [];
   };
   async function readAll() {
-    const [k, d, c, p] = await Promise.all([
+    const [k, d, c, p, q] = await Promise.all([
       read('document_kinds', KIND_COLUMNS, 'name'),
       read('company_documents', COLUMNS, 'created_at'),
       read('customers', 'id,name,part_of_id', 'name'),
       read('drivers', 'id,name,short_name,status', 'name'),
+      read('partners', 'id,name,status', 'name'),
     ]);
     kinds = k;
     documents = d;
@@ -77,11 +80,13 @@
       parts.get(row.part_of_id).push(row.name);
     }
     drivers = new Map(p.map(row => [row.id, row]));
+    partners = new Map(q.map(row => [row.id, row]));
   }
 
   const kindOf = doc => kinds.find(k => k.id === doc.kind_id) || null;
   const customerOf = doc => customers.get(doc.customer_id) || null;
   const driverOf = doc => drivers.get(doc.driver_id) || null;
+  const partnerOf = doc => partners.get(doc.partner_id) || null;
   const isOld = doc => !!doc.replaced_at;
 
   /* Whether a document is in force, by document-status.js. `rank` sorts the
@@ -227,13 +232,14 @@
   }
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
-  /* Who a document is for: its driver, the holder named on it and the
-     customer it belongs to. A holder that is the customer's own name is said
-     once. */
+  /* Who a document is for: its driver, its partner, the holder named on it
+     and the customer it belongs to. A holder that is the customer's or the
+     partner's own name is said once. */
   const whoOf = doc => {
     const customer = customerOf(doc)?.name;
-    const holder = folded(doc.holder) === folded(customer) ? null : doc.holder;
-    return [driverOf(doc)?.name, holder, customer].filter(Boolean);
+    const partner = partnerOf(doc)?.name;
+    const holder = [customer, partner].some(n => folded(doc.holder) === folded(n)) ? null : doc.holder;
+    return [driverOf(doc)?.name, partner, holder, customer].filter(Boolean);
   };
   const byKind = (a, b) => folded(kindOf(a)?.name).localeCompare(folded(kindOf(b)?.name))
     || folded(whoOf(a).join(' ')).localeCompare(folded(whoOf(b).join(' ')))
@@ -340,8 +346,8 @@
     await readAll();
     $('scheduler-documents-h').hidden = false;
     $('scheduler-documents-table').hidden = false;
-    // A link from a customer's or a driver's page arrives narrowed to them.
-    const from = customers.get(params.get('customer')) || drivers.get(params.get('driver'));
+    // A link from a customer's, a driver's or a partner's page arrives narrowed to them.
+    const from = customers.get(params.get('customer')) || drivers.get(params.get('driver')) || partners.get(params.get('partner'));
     if (from && !view.query) {
       const search = $('scheduler-documents-search');
       search.value = from.name;
@@ -353,7 +359,7 @@
 
   /* ══ The kinds ══════════════════════════════════════════════════════════
      The list's Kinds button opens every kind to rename, mark as one for each
-     driver, or add to. A kind is never deleted here, because a document or a
+     driver or as one every partner must hold, or add to. A kind is never deleted here, because a document or a
      customer may name it. */
   let kindRows = [];
   const kindSay = text => {
@@ -383,29 +389,34 @@
       outer.appendChild(wrap);
       item.append(lw, outer);
 
-      const check = el('div', 'rux--form-item rux--checkbox-wrapper');
-      const box = el('input', 'rux--checkbox');
-      box.type = 'checkbox';
-      box.id = `scheduler-kind-driver-${i}`;
-      box.checked = row.per_driver;
-      box.addEventListener('change', () => { row.per_driver = box.checked; });
-      const boxLabel = el('label', 'rux--checkbox-label');
-      boxLabel.setAttribute('for', box.id);
-      boxLabel.appendChild(el('div', 'rux--checkbox-label-text', 'One for each driver'));
-      check.append(box, boxLabel);
+      // A checkbox for one of the row's marks.
+      const mark = (id, key, words) => {
+        const check = el('div', 'rux--form-item rux--checkbox-wrapper');
+        const box = el('input', 'rux--checkbox');
+        box.type = 'checkbox';
+        box.id = id;
+        box.checked = row[key];
+        box.addEventListener('change', () => { row[key] = box.checked; });
+        const boxLabel = el('label', 'rux--checkbox-label');
+        boxLabel.setAttribute('for', box.id);
+        boxLabel.appendChild(el('div', 'rux--checkbox-label-text', words));
+        check.append(box, boxLabel);
+        return check;
+      };
 
-      line.append(item, check);
+      line.append(item, mark(`scheduler-kind-driver-${i}`, 'per_driver', 'One for each driver'),
+        mark(`scheduler-kind-partner-${i}`, 'partner_required', 'Every partner holds one'));
       return line;
     }));
   }
   function openKinds() {
-    kindRows = kinds.map(k => ({ id: k.id, name: k.name, per_driver: k.per_driver }));
+    kindRows = kinds.map(k => ({ id: k.id, name: k.name, per_driver: k.per_driver, partner_required: k.partner_required }));
     kindSay('');
     drawKinds();
   }
   $('scheduler-documents-kinds')?.addEventListener('click', openKinds);
   $('scheduler-kinds-add')?.addEventListener('click', () => {
-    kindRows.push({ id: null, name: '', per_driver: false });
+    kindRows.push({ id: null, name: '', per_driver: false, partner_required: false });
     drawKinds();
     $(`scheduler-kind-name-${kindRows.length - 1}`)?.focus();
   });
@@ -419,8 +430,8 @@
     try {
       for (const row of rows) {
         const was = kinds.find(k => k.id === row.id);
-        if (was && was.name === row.name && was.per_driver === row.per_driver) continue;
-        const fields = { name: row.name, per_driver: row.per_driver };
+        if (was && was.name === row.name && was.per_driver === row.per_driver && was.partner_required === row.partner_required) continue;
+        const fields = { name: row.name, per_driver: row.per_driver, partner_required: row.partner_required };
         const { error } = was
           ? await client.from('document_kinds').update(fields).eq('id', row.id)
           : await client.from('document_kinds').insert(fields);
@@ -440,6 +451,7 @@
   const form = $('scheduler-document-form');
   const kindField = $('scheduler-doc-kind');
   const driverField = $('scheduler-doc-driver');
+  const partnerField = $('scheduler-doc-partner');
   const holderField = $('scheduler-doc-holder');
   const endsField = $('scheduler-doc-ends');
   const partsBox = $('scheduler-doc-parts');
@@ -502,6 +514,7 @@
     kind_id: kindField.value || null,
     customer_id: customerId,
     driver_id: perDriver() ? driverField.value || null : null,
+    partner_id: perDriver() ? null : partnerField.value || null,
     holder: clean(holderField.value),
     // The database sets ends_on to the earliest part's day.
     ends_on: partNames.length ? null : fieldDay(endsField.value),
@@ -581,9 +594,21 @@
       option.value = d.id;
       return option;
     }));
+    // The active partners, and whichever the document already names; none is a document of no partner's.
+    const companies = [...partners.values()]
+      .filter(p => p.status === 'active' || p.id === loaded?.partner_id);
+    partnerField.replaceChildren(...[{ id: '', name: 'None' }, ...companies].map(p => {
+      const option = el('option', 'rux--select-option', p.name);
+      option.value = p.id;
+      return option;
+    }));
   }
-  // The driver is asked for only by a kind kept once for each driver.
-  const drawDriver = () => { $('scheduler-doc-driver-item').hidden = !perDriver(); };
+  /* The driver is asked for only by a kind kept once for each driver, and
+     the partner by every other kind. */
+  const drawDriver = () => {
+    $('scheduler-doc-driver-item').hidden = !perDriver();
+    $('scheduler-doc-partner-item').hidden = perDriver();
+  };
   kindField?.addEventListener('change', () => { drawDriver(); keepTyped(); drawParts(partDays); showKindError(''); });
   driverField?.addEventListener('change', () => showDriverError(''));
 
@@ -734,6 +759,7 @@
     customerId = doc.customer_id ?? null;
     customerText = customers.get(customerId)?.name ?? '';
     driverField.value = doc.driver_id ?? '';
+    partnerField.value = doc.partner_id ?? '';
     endsField.value = shownDay(doc.ends_on ? String(doc.ends_on).slice(0, 10) : '');
     partDays = new Map((doc.parts || []).map(p => [p.name, String(p.ends_on).slice(0, 10)]));
     drawParts(partDays);
@@ -821,11 +847,12 @@
     await readAll();
     if (!documentId) {
       loaded = null;
-      // A link from a customer's page or a trip's Forms list arrives filled.
+      // A link from a customer's, a driver's or a partner's page, or a trip's Forms list, arrives filled.
       fillForm({
         kind_id: kinds.find(k => k.id === params.get('kind'))?.id,
         customer_id: customers.get(params.get('customer'))?.id,
         driver_id: drivers.get(params.get('driver'))?.id,
+        partner_id: partners.get(params.get('partner'))?.id,
       });
     } else {
       loaded = documents.find(d => String(d.id) === documentId) || null;
@@ -846,14 +873,14 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'document';
     return ext ? `${base}.${ext}` : base;
   };
-  const SAME = 'Another current document has this kind, holder, customer and driver. Open that one and replace its file.';
+  const SAME = 'Another current document has this kind, holder, customer, driver and partner. Open that one and replace its file.';
 
   /* Several files, one after another: each is uploaded, then written as its
      own document with the form's kind, end dates and note, its holder from its
      name and its customer the holder's. A file that lands leaves the list, so
      a Save that stops partway is finished by the next one. */
   async function saveSeveral() {
-    const { kind_id, ends_on, parts: dates, note } = readForm();
+    const { kind_id, partner_id, ends_on, parts: dates, note } = readForm();
     const saveBtn = $('scheduler-document-save');
     saveBtn.disabled = true;
     const total = several.length;
@@ -870,7 +897,7 @@
         try {
           documents.push(await window.SchedulerPair.saveRecord(client, 'company_documents', {
             id, creating: true, columns: COLUMNS,
-            row: { kind_id, customer_id: customerFor(kind_id, holder), driver_id: null, holder, ends_on, parts: dates, note,
+            row: { kind_id, customer_id: customerFor(kind_id, holder), driver_id: null, partner_id, holder, ends_on, parts: dates, note,
               file_name: file.name, file_path: path, file_size: file.size },
           }));
         } catch (error) {
@@ -937,10 +964,15 @@
         await window.SchedulerPair.saveRecord(client, 'company_documents',
           { id, creating: false, row, columns: COLUMNS });
       }
-      // A new paper uploaded from a driver's page goes back to their documents.
+      // A new paper uploaded from a driver's or a partner's page goes back to their documents.
       const from = drivers.get(params.get('driver'));
       if (!loaded && from && row.driver_id === from.id) {
         guard.leave(`drivers.html?id=${encodeURIComponent(from.id)}#documents`);
+        return true;
+      }
+      const company = partners.get(params.get('partner'));
+      if (!loaded && company && row.partner_id === company.id) {
+        guard.leave(`partners.html?id=${encodeURIComponent(company.id)}#documents`);
         return true;
       }
       history.replaceState(null, '', `documents.html?id=${encodeURIComponent(id)}`);

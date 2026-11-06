@@ -100,6 +100,10 @@
       word: 'Location', page: 'locations.html',
       words: { name: 'Name', address: 'Address', map_point: 'Map point' },
     },
+    partner: {
+      word: 'Partner', page: 'partners.html',
+      words: { name: 'Name', phone: 'Phone', email: 'Email', contact_name: 'Dispatch contact', usdot_number: 'USDOT number', status: 'Status', notes: 'Notes' },
+    },
   };
   const wordFor = (kind, field) => KINDS[kind]?.words[field]
     || String(field || 'Change').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());

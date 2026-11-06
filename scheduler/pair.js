@@ -1,7 +1,7 @@
 /* ==========================================================================
    pair.js — WHAT EVERY PAGE PAIR DOES THE SAME WAY
    --------------------------------------------------------------------------
-   Buses, Drivers, Contacts, Customers, Locations and Documents are each a
+   Buses, Drivers, Contacts, Customers, Partners, Locations and Documents are each a
    list and one record in one file, and Trips and History are each a list
    alone. What they
    do alike lives here, so a fix reaches them all; each page's own script

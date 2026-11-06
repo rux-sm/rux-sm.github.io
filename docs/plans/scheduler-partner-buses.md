@@ -164,10 +164,6 @@ None open.
 
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
-- [ ] Make `partners.html` on `pair.js`, with its side-nav link on every
-      page, and the profile's Details, Documents and Trips tabs; let the
-      Documents page list, upload and filter a partner's papers, and mark a
-      kind as one every partner must hold.
 - [ ] Give the vehicle's window Our bus or Partner, the Billing tab Paid to
       partners, the history its line, and the board's drag its question.
 - [ ] Move the company's driver seat to a partner, and set the upcoming

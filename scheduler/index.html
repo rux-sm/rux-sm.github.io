@@ -414,10 +414,9 @@
             <!-- Tasks and Departures, the board's two lists: each shows and hides
                  its own pane left of the week, so each is a pressed toggle,
                  its glyph filled while its pane is open, and
-                 each carries how many are due. Where the row scrolls, a
-                 phone 375px wide or wider shows both before a swipe.
-                 to-do-list.js works them. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
+                 each carries how many are due. Tasks is hidden, since the
+                 office is not using its pane. to-do-list.js works them. -->
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" hidden aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-prep-panel" aria-label="Departures" title="Departures"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
           <!-- Named "Drivers", like the pane's own head, so one
                control has one name. It stays in the toolbar at every width,

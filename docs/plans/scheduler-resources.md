@@ -8,7 +8,8 @@ type: plan
 
 The board's three things, its trips, buses and drivers, are always on
 screen together, and its two resources read and act alike. A bus's head
-stands at the start of its row in the bus column; a driver's stands in a
+stands at the start of its row in the bus column, the bus's tile; a
+driver's stands in a
 names rail that is always open against the board, and a chevron opens the
 week's squares beside the names when a driver is being found for a trip.
 What a bus or a driver is doing now is their head's, and a trip bar keeps
@@ -28,19 +29,10 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
 - **The board stays laid out by bus.** A trip sits in its bus's row and its
   drivers in its seats; a rows-by-driver view would draw every trip once per
   driver and show buses or drivers, not both.
-- **A bus's head and a driver's are one tile, as narrow as it can be:**
-  9.5rem, 8px in from every edge, three columns 8px apart: the picture,
-  32px, the readings, which take what is left, and the marks, 16px. Each
-  row says the same kind of thing for both, so the tile is learnt once.
-- **The bus column's tile:** the bus's type drawing on a disc in the bus's
-  own colour, as its tip draws it, over its number; beside them, its state,
-  "68 mph" in green while moving, "Idle 12m", "Off 43h"; its fuel, a meter
-  and its percent, the meter grey until low and critical; and the city it
-  is in, "San Marcos", the full place left to its tip. Its foot row is its
-  seats and its sleeper and lift, Carbon's 16px icons. Its marks stand in
-  their own column, the worst first: the engine lamp, the papers, out of
-  service, and DEF only while low, where the kit beside the number holds
-  the papers' and out-of-service marks now.
+- **A driver's head is the bus's tile, as the bus column draws it:**
+  9.5rem, 8px in from every edge, three columns 8px apart, the picture's
+  32px, the readings and the marks' 16px, each row saying the same kind of
+  thing for both, so the tile is learnt once.
 - **The rail's tile is the driver's, two lines, 48px rows:** the most urgent
   mark, their photo or initials, and the name over their tank, the hours
   left on a meter, green and amber under an hour, or while resting "Off
@@ -136,9 +128,6 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
 
 ## Tasks
 
-- [ ] Make the bus column's head the bus tile, 9.5rem, its marks moved from
-      the number's kit to the tile's column, in `scheduler/bus-head.js` and
-      `tools/check-bar.mjs`.
 - [ ] Make the roster a rail always open left of the Mac's board, its rows
       the driver's tile in `scheduler/driver-head.js`, a card of
       its own level with the board's toolbar and day band, closed to its

@@ -243,16 +243,21 @@
   // column both draw.
   const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
     bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
-  function busTip(bus) {
-    const tip = el('div', 'rux--toggletip-content scheduler-tip');
-    const head = el('div', 'scheduler-tip__head');
-    const disc = el('div', 'scheduler-bus-disc');
+  // The bus's disc: its type's drawing, or its letter, on the bus's own colour.
+  function busDisc(bus, cls = '') {
+    const disc = el('div', `scheduler-bus-disc ${cls}`.trim());
     disc.setAttribute('aria-hidden', 'true');
     const ink = window.SchedulerVehicles?.inkOn(bus.color);
     if (ink) { disc.style.background = bus.color; disc.style.color = ink; }
     const icon = window.SchedulerVehicles?.iconOf(bus.type);
     disc.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
+    return disc;
+  }
+  function busTip(bus) {
+    const tip = el('div', 'rux--toggletip-content scheduler-tip');
+    const head = el('div', 'scheduler-tip__head');
+    const disc = busDisc(bus);
     const said = el('div', 'scheduler-tip__said');
     said.appendChild(el('strong', 'scheduler-tip__name', vehicleName(bus)));
     const spec = [bus.capacity ? `${bus.capacity} pax` : null,
@@ -1345,9 +1350,11 @@
       if (r.empty) rowEl.hidden = true;
 
       /* The head is the bus number, its marks and the bus's own state, which
-         bus-head.js draws under them; the rest of what the bus knows is in
-         the number's toggletip and the head's title. */
+         bus-head.js draws under them, and on the Mac's board the bus's disc
+         over the number; the rest of what the bus knows is in the number's
+         toggletip and the head's title. */
       const head = el('div', 'scheduler-row-head');
+      if (r.bus) head.appendChild(busDisc(r.bus, 'scheduler-row-head__disc'));
       const top = el('div', 'scheduler-row-head__top');
       head.appendChild(top);
       if (r.bus) head.dataset.busId = r.bus.id;
@@ -1394,10 +1401,13 @@
 
       /* The bus's kit on the head's last row: its sleeper and its lift,
          each in its own place down the column, and an empty place where the
-         bus lacks one, so the lifts stand in one line. The number's tip and
-         title name them, and the seats, for the reader. */
+         bus lacks one, so the lifts stand in one line, and on the Mac's tile
+         its seats before them. The number's tip and title name them, for the
+         reader. */
       if (r.bus) {
         const equip = el('div', 'scheduler-row-head__equip');
+        // Its seats, which the Mac's tile shows beside the kit.
+        if (r.bus.capacity) equip.appendChild(el('span', 'scheduler-row-head__seats', `${r.bus.capacity} seats`));
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
           const t = el('span', 'scheduler-row-head__tile');
           if (on) {

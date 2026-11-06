@@ -1,26 +1,31 @@
 /* ==========================================================================
    Rux Scheduler — BUS HEAD, what the bus column says of each bus
    --------------------------------------------------------------------------
-   The head of a bus's row on the board keeps its number centred at its
-   top; the type is the number's toggletip's to show. An engine lamp is the number's
-   toggletip's alone, its line led by the lamp. Under them the head draws
-   what belongs to the bus rather than a trip:
+   The head of a bus's row on the board says what belongs to the bus rather
+   than a trip. On the Mac's board it is the bus's tile, app.css's: the
+   bus's disc over its number, the readings beside them, a column of marks
+   and the kit at its foot. On a phone's it is the narrow column, the number
+   centred at its top, the readings under it. What it draws:
    - For a bus Samsara answers for, in whatever week is shown, its
      state under the number: the speed over mph, green while moving,
      or Idle, Off or a dash over how long, amber past SPEEDING or IDLE_MS,
      beside it on one row; then its fuel. DEF is drawn only while it is
      low, since a normal DEF needs nothing of the office, on the row under
-     the fuel. With no signal the state and fuel fade. Where the bus
-     is, when it was last seen and its inspection are the number's
+     the fuel. Under the fuel, the city it is in, the full place left to the
+     tip, or in its place a low DEF. With no signal the state and fuel
+     fade. When it was last seen and its inspection are the number's
      toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
-   - In the kit beside the number, where the out-of-service mark is, one
-     mark for its papers, the insurance, registration and inspection, as the
-     Fleet page compares them: amber while one expires within WARN_DAYS and
-     red once one has expired, as a driver's head marks their licence and
-     medical card. The words of each are the number's toggletip's.
+   - In the kit, with data.js's out-of-service mark, one mark for its
+     papers, the insurance, registration and inspection, as the Fleet page
+     compares them: amber while one expires within WARN_DAYS and red once
+     one has expired, as a driver's head marks their licence and medical
+     card; and the engine's lamp, amber or red, whose codes lead their line
+     in the tip. The words of each are the number's toggletip's. app.css
+     draws the worst first, and on a phone's narrow column the papers' mark
+     alone.
    The fuel is a meter filled to the tank's share over its percent, grey
    until low, orange, or critical, red. Until samsara-now first
    answers, every bus is drawn at rest, Off over an empty fuel meter and a
@@ -184,24 +189,41 @@
     return out.sort((a, b) => a.n - b.n).map(({ tone, words }) => ({ tone, words }));
   }
 
-  // The papers' one mark in the kit, in the worst tone, or none.
-  function drawPapers(head, papers) {
+  /* The kit's marks this draws, the papers' one mark in the worst tone and
+     the engine's lamp, each with its words on its label, or none. */
+  function drawMarks(head, papers, lamp, live) {
     const top = head.querySelector(':scope > .scheduler-row-head__top');
     if (!top) return;
     let kit = top.querySelector(':scope > .scheduler-row-head__kit');
-    kit?.querySelector(':scope > .scheduler-row-head__papers')?.remove();
-    if (!papers.length) {
+    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp)').forEach(m => m.remove());
+    const marks = [];
+    if (papers.length) {
+      const error = papers.some(p => p.tone === 'error');
+      marks.push(['scheduler-row-head__papers', error ? 'error' : 'warning', error ? '#i-error--filled' : '#i-warning--alt--filled',
+        papers.map(p => p.words).join('. ')]);
+    }
+    if (lamp) marks.push(['scheduler-row-head__lamp', lamp.tone, '#m-car_repair-fill', [lamp.word, ...(live?.faults ?? [])].join('. ')]);
+    if (!marks.length) {
       if (kit && !kit.childElementCount) kit.remove();
       return;
     }
     if (!kit) top.appendChild(kit = el('div', 'scheduler-row-head__kit'));
-    const error = papers.some(p => p.tone === 'error');
-    const mark = el('span', 'scheduler-row-head__papers');
-    mark.dataset.tone = error ? 'error' : 'warning';
-    mark.setAttribute('role', 'img');
-    mark.setAttribute('aria-label', papers.map(p => p.words).join('. '));
-    mark.appendChild(svgUse(error ? '#i-error--filled' : '#i-warning--alt--filled', '16', '0 0 32 32'));
-    kit.prepend(mark);
+    for (const [cls, tone, icon, words] of marks) {
+      const mark = el('span', cls);
+      mark.dataset.tone = tone;
+      mark.setAttribute('role', 'img');
+      mark.setAttribute('aria-label', words);
+      mark.appendChild(svgUse(icon, '16', '0 0 32 32'));
+      kit.prepend(mark);
+    }
+  }
+
+  /* The city in Samsara's place, the part before its state:
+     "4015 South Interstate 35, San Marcos, TX, 78666" is San Marcos. */
+  function cityOf(place) {
+    const parts = String(place ?? '').split(',').map(p => p.trim()).filter(Boolean);
+    const at = parts.findIndex(p => /^[A-Z]{2}(\s+\d{5})?$/.test(p));
+    return at > 0 ? parts[at - 1] : parts.filter(p => !/^\d/.test(p)).at(-1) ?? null;
   }
 
   function draw(head, bus, live, opts = {}) {
@@ -211,11 +233,11 @@
       shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp])]);
     if (head.dataset.live === key) return;
     head.dataset.live = key;
-    drawPapers(head, papers);
     head.toggleAttribute('data-signal-lost', !!noSignal(shown));
     const top = head.querySelector('.scheduler-row-head__top');
 
     const lamp = lampOf(shown);
+    drawMarks(head, papers, lamp, shown);
 
     const state = shown ? stateOf(shown) : null;
     // What the engine is doing, for a theme that quiets a bus at rest.
@@ -241,8 +263,11 @@
       const gauges = el('div', 'scheduler-row-head__gauges');
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL));
-      if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
+      const defLow = shown.def != null && levelOf(shown.def, DEF) !== 'normal';
+      if (defLow) gauges.appendChild(level(shown.def, DEF));
       body.appendChild(gauges);
+      const city = defLow ? null : cityOf(shown.place);
+      if (city) body.appendChild(el('span', 'scheduler-row-head__line scheduler-row-head__place', city));
     } else {
       const insp = inspection(bus);
       if (insp) {
@@ -296,5 +321,5 @@
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, papersOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, papersOf, cityOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

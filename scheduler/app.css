@@ -3023,6 +3023,9 @@ a.scheduler-tip__go { text-decoration: none; }
      are what take the toolbar's room, and a window's width cannot see them. */
   container: scheduler-toolbar / inline-size;
   background: var(--rux-layer);
+  /* The bar's own fill, held here because an open button inside it is
+     raised to Layer 02 and redefines `--rux-layer`. */
+  --scheduler-toolbar-fill: var(--rux-layer);
   /* The top corners of the week below it, which rounds only its bottom ones. */
   border-start-start-radius: var(--scheduler-inner-radius);
   border-start-end-radius: var(--scheduler-inner-radius);
@@ -3044,10 +3047,10 @@ a.scheduler-tip__go { text-decoration: none; }
 #scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
 /* The rule down the month's trailing edge is the leading rule of whichever
    button the width leaves first in the row after it, so the open month
-   covers it with a 1px column in its own layer, the way the menu's strip
-   covers the shadow at its foot, and the open trigger has a line down
-   neither side. */
-.scheduler-weekbtn--month[data-attached] { box-shadow: 1px 0 0 var(--rux-layer), 0 2px 6px var(--rux-shadow); }
+   covers it with a 1px column in the bar's own fill, under its shadow, and
+   the open trigger has a line down neither side while staying exactly as
+   wide as its list. */
+.scheduler-weekbtn--month[data-attached] { box-shadow: 0 2px 6px var(--rux-shadow), 1px 0 0 var(--scheduler-toolbar-fill); }
 /* The week's calendar joined to its button casts the menus' shadow, not the
    fainter one Carbon's calendar keeps, so the three surfaces the toolbar
    opens read as one kind. */

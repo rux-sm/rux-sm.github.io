@@ -5107,7 +5107,15 @@ html[data-scheduler-takeover] {
 
 /* The Drivers page's Copy link and See their page, side by side. */
 .scheduler-driver-link-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
-.scheduler-leg-staff { max-inline-size: 25rem; }
+/* The staff view's copy of the driver's page is a Gray 100 zone, which sets
+   the tokens and paints nothing, so it paints its own page and a phone's
+   gutter. */
+.scheduler-leg-staff {
+  max-inline-size: 25rem;
+  padding: var(--rux-spacing-05);
+  background: var(--rux-background);
+  color: var(--rux-text-primary);
+}
 .scheduler-leg-picker { flex: 0 1 20rem; min-inline-size: 12rem; }
 .scheduler-driver-screen :is(h1, h2, p, address) { margin: 0; overflow-wrap: anywhere; }
 .scheduler-driver-screen address { font-style: normal; }

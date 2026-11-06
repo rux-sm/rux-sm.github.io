@@ -6506,13 +6506,16 @@ html[data-scheduler-takeover] {
 .scheduler-quickbooks-quiet { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-quickbooks-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 .scheduler-quickbooks-why { display: block; color: var(--rux-text-secondary); }
-/* A kind's name, then whether it is kept once for each driver. */
+/* A kind's name on its own line, and under it whether it is kept once for
+   each driver and whether every partner holds one, so the name keeps the
+   modal's width. */
 .scheduler-kinds-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--rux-spacing-05);
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
 }
+.scheduler-kinds-row > .rux--text-input-wrapper { flex: 1 1 100%; }
 
 /* A customer's standing notes under a trip's Customer field, its own lines kept. */
 .scheduler-customer-notes { white-space: pre-line; }

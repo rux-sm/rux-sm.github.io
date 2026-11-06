@@ -255,12 +255,22 @@
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
   }
-  // The bus's type's drawing alone, in the head's own ink, where its picture will go.
+  /* The bus's type's drawing alone, in the head's own ink, where its picture
+     will go, and beside it, for app.css to show in its place while the bus
+     has a mark, the same drawing with its warning: Material's Bus Alert for a
+     bus, and for a type with no such drawing, its own with a dot at the
+     corner where Bus Alert has its warning. */
   function busIcon(bus) {
     const mark = el('span', 'scheduler-row-head__icon');
     mark.setAttribute('aria-hidden', 'true');
-    const icon = window.SchedulerVehicles?.iconOf(bus.type);
-    mark.appendChild(icon ? svgUse(icon, '16', '0 0 32 32') : svgUse('#m-directions_bus-fill', '16', '0 0 32 32'));
+    const icon = window.SchedulerVehicles?.iconOf(bus.type) ?? '#m-directions_bus-fill';
+    const type = el('span', 'scheduler-row-head__type');
+    type.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    const alert = el('span', 'scheduler-row-head__alert');
+    const warned = window.SchedulerVehicles?.alertOf(bus.type) ?? (icon === '#m-directions_bus-fill' ? '#m-bus_alert-fill' : null);
+    alert.appendChild(svgUse(warned ?? icon, '16', '0 0 32 32'));
+    if (!warned) alert.appendChild(el('span', 'scheduler-row-head__badge'));
+    mark.append(type, alert);
     return mark;
   }
   function busTip(bus) {

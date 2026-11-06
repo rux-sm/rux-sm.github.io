@@ -24,8 +24,9 @@
      one has expired, as a driver's head marks their licence and medical
      card; and the engine's lamp, amber or red, whose codes lead their line
      in the tip. The words of each are the number's toggletip's. The kit
-     holds them worst first; the Mac's tile shows the first alone, and a
-     phone's narrow column the papers' mark with the out-of-service mark.
+     holds them worst first; the Mac's tile turns the bus's icon to its
+     warning in the worst one's tone, and a phone's narrow column shows the
+     papers' mark with the out-of-service mark.
    The fuel is a meter filled to the tank's share over its percent, grey
    until low, orange, or critical, red. Until samsara-now first
    answers, every bus is drawn at rest, Off over an empty fuel meter and a
@@ -208,8 +209,7 @@
       return;
     }
     if (!kit) top.appendChild(kit = el('div', 'scheduler-row-head__kit'));
-    // The worst first in the kit, before data.js's out-of-service mark, so the
-    // tile's one mark is the worst.
+    // The worst first in the kit, before data.js's out-of-service mark.
     marks.sort((a, b) => (a[1] === b[1] ? 0 : a[1] === 'error' ? -1 : 1)).reverse();
     for (const [cls, tone, icon, words] of marks) {
       const mark = el('span', cls);

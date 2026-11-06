@@ -20,7 +20,8 @@
   // Solid, to match the weight of the semibold headers and the solid
   // equipment marks they sit beside.
   const ICONS = {
-    bus: { href: '#m-directions_bus-fill', label: 'Bus' },
+    // `alert` is the same drawing with its warning on it, where Material has one.
+    bus: { href: '#m-directions_bus-fill', alert: '#m-bus_alert-fill', label: 'Bus' },
     shuttle: { href: '#m-airport_shuttle-fill', label: 'Shuttle' },
     car: { href: '#m-directions_car-fill', label: 'Car' },
     truck: { href: '#m-local_shipping-fill', label: 'Truck' },
@@ -51,6 +52,8 @@
 
   // The drawing for a type, or null where it has none.
   const iconOf = name => ICONS[typeOf(name)?.icon]?.href ?? null;
+  // The type's drawing with its warning on it, or null where there is none.
+  const alertOf = name => ICONS[typeOf(name)?.icon]?.alert ?? null;
 
   /* The ink that reads on a vehicle's colour, black or white, or null where
      the colour is not a six-digit hex and so draws nothing. */
@@ -87,7 +90,7 @@
   }
 
   window.SchedulerVehicles = {
-    ICONS, label, iconOf, inkOn, typeOf, read, save, rename,
+    ICONS, label, iconOf, alertOf, inkOn, typeOf, read, save, rename,
     get types() { return types.map(t => ({ ...t })); },
     set: list => { if (Array.isArray(list) && list.length) types = clean(list); },
   };

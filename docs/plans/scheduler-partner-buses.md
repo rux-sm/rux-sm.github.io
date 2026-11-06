@@ -68,6 +68,9 @@ driver pickers, links and forms as if it were a person.
   offers one.
 - **A partner driver's changes write the partner's History,** as a driver's
   time off writes the driver's.
+- **A partner's driver goes out in the Driver info message** the booking
+  contact is sent, beside ours and named with the partner, because the
+  customer needs the phone of whoever drives the group.
 
 ### A partner's papers
 
@@ -187,8 +190,7 @@ driver pickers, links and forms as if it were a person.
 
 ## Questions
 
-- Should a partner's driver go out in the Driver info message the booking
-  contact is sent, as our drivers' names and phones do?
+None open.
 
 ## Tasks
 
@@ -203,8 +205,9 @@ driver pickers, links and forms as if it were a person.
 - [ ] Give the partner's profile its Contacts and Drivers tabs and its main
       contact, and the Partners list the main contact.
 - [ ] Let the vehicle's window pick the partner's driver, adding a typed one
-      on Save, and read the driver from the list in the tip, the sheet,
-      Departures and the components page.
+      on Save, read the driver from the list in the tip, the sheet,
+      Departures and the components page, and add the partner's driver to
+      the Driver info message, `driverLetter` in `scheduler/data.js`.
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
 - [ ] Give trip 100783's outsourced bus to its partner, confirmed at its

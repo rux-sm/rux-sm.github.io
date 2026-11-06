@@ -20,8 +20,8 @@ them and nothing is entered twice.
 
 ### Order
 
-- **This plan is built next,** ahead of `scheduler-documents.md`, because the
-  office needs trips of several days and routes first.
+- **This plan is built after `scheduler-partner-buses.md`,** because a bus
+  is outsourced most weeks and that plan needs nothing this one has left.
 - **Legs and routes are one change,** because both change how every stop
   and vehicle is tied to its trip, and the same thirty or so readers would
   otherwise be rewritten twice.
@@ -41,8 +41,8 @@ them and nothing is entered twice.
   being a type of its own.
 - **Each leg is round trip or one way,** the choice the trip's Type makes
   now, because a booking can go out and back one day and one way another.
-- **A bus from another company is entered as an added driver,** as the
-  office does now, so outsourcing needs nothing new.
+- **A bus from another company is one of its route's vehicles, covered by a
+  partner,** as `scheduler-partner-buses.md` plans it.
 
 ### What stays the trip's
 

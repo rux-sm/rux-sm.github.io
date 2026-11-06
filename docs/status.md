@@ -16,9 +16,6 @@ done and how.
 
 - The quote calculator's eight spreadsheet quirks are kept until rux and the
   manager decide them. The list is on the calculator's Rules tab.
-- A trip covered by a bus from another company has no way to say so, so it
-  reads as short of a bus. A mark on the bus's seat, naming the company,
-  needs a plan of its own.
 - An uploaded certificate's four part dates are typed by hand. Every
   certificate on file is the same insurance form, so the page could read them.
 - Restyling one element of the board costs about 8µs, most of it rules in

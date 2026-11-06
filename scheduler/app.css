@@ -3143,7 +3143,8 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The month's two names, in full and short. Where the toolbar is too narrow
    the short one shows, and the full one stays for a screen reader, which the
    short one is hidden from. Each is one cell with every month of its year
-   stacked in it, data.js's `sizeMonthNames`, all hidden but the one in view,
+   stacked in it, written in the page and again by data.js's
+   `sizeMonthNames` for the year in view, all hidden but the one in view,
    so the cell is its widest month's width, and a screen reader hears only
    the one shown. Each name sits at the cell's start, after the button's
    inset, as a field's value does, where a button would centre it. */

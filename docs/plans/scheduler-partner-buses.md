@@ -136,18 +136,12 @@ driver pickers, links and forms as if it were a person.
 
 ### How it is kept
 
-- **A `partners` table and seven columns on `trip_assignments`:**
-  `partner_id`, restrict, `partner_price`, `partner_confirmed_at` and
-  `_by`, `partner_vehicle`, `partner_driver_name` and
-  `partner_driver_phone`. Staff only, broadcast on realtime, and `partners`
-  writes `record_history` as the other lists do.
-- **`company_documents` gains `partner_id`, restrict,** and its one-current-copy
-  index counts it, so a partner's new certificate makes its old one old.
+- **The tables are in place,** as the scheduler's database inventory
+  describes them: `partners`, the partner columns on `trip_assignments`
+  and `company_documents.partner_id`.
 - **It ships reader first.** Every existing vehicle has no partner, so the
   readers move first and nothing changes on screen; only then does the
   editor write a partner.
-- **The database change is its own step,** written as SQL, shown to rux and
-  applied on a yes, before the code that reads it is pushed.
 - **The one seat on the driver record made for a company moves to a partner
   of that name,** and the record stays Inactive with no trips.
 
@@ -167,9 +161,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the SQL for `partners`, the `trip_assignments` columns, the check,
-      the seat trigger, the history trigger, `company_documents.partner_id`
-      with its index, and the grants; show it to rux and apply it on a yes.
 - [ ] Teach `leg-facts.js`, `clashes.js` and the connector's `rules.ts` a
       covered bus: counted as assigned, no seats, its partner's certificate
       and status standing in its way, and asking for a confirmation and a
@@ -190,9 +181,9 @@ None open.
 - [ ] Name the partner in the connector's `get_trip` and `needs_attention`,
       find its papers in `find_documents`, and say how to enter one in the
       trips skill.
-- [ ] Describe `partners` and the columns in the database inventory, the
-      page and the changed screens in the screen inventory and the
-      scheduler's `README.md`.
+- [ ] Say which screens read and write `partners` and the partner columns in
+      the database inventory, and describe the page and the changed screens
+      in the screen inventory and the scheduler's `README.md`.
 - [ ] In Chrome on :8641, with the page's writes recorded and not sent, cover
       one bus of three on a trip, confirm it, price it, and see the leg read
       as fully covered, the bar in the Partners row and Billing's Paid to

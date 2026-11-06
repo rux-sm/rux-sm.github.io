@@ -36,8 +36,8 @@ if (!LOCALE?.en || !LOCALE?.es) fail('LOCALE does not name a locale for both lan
 // Every word driver.js asks for, by name, is there.
 const page = readFileSync(new URL('../share/driver.js', import.meta.url), 'utf8');
 const asked = new Set([...page.matchAll(/\bw\.([a-zA-Z]+)/g)].map(m => m[1]));
-// Lines named by a value rather than written out: a card's problem and a place the office left blank.
-for (const key of ['notYours', 'notLoaded', 'yard', 'destination']) asked.add(key);
+// Lines named by a value rather than written out: a place the office left blank.
+for (const key of ['yard', 'destination']) asked.add(key);
 for (const key of asked) if (!(key in en)) fail(`driver.js asks for w.${key}, which is not in the words`);
 
 // Every forms word sign.js asks for, by name, is there.

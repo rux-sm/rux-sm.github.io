@@ -25,7 +25,8 @@
   const form = forms?.FORMS.find(f => f.id === params.get('form') && f.id === 'envelope');
 
   const back = $('scheduler-sheet-back');
-  back.href = `driver.html?s=${encodeURIComponent(token)}`;
+  // Back to the trip the envelope was opened from, as driver.js names its screen.
+  back.href = `driver.html?s=${encodeURIComponent(token)}#trip/${encodeURIComponent(tripId)}/${encodeURIComponent(named)}`;
 
   const say = (title, text) => {
     $('scheduler-sheet-notice-title').textContent = title;

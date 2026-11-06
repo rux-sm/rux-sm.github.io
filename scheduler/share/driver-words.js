@@ -35,9 +35,21 @@
     noTrips: 'No current assignments',
     noTripsText: 'New assignments will appear here after dispatch schedules them.',
     wentWrong: 'Something went wrong',
-    unavailable: 'Assignment unavailable',
-    notLoaded: 'This assignment could not be loaded.',
-    notYours: 'This assignment is no longer assigned to you.',
+
+    // The screens: home, My trips, a trip, its stops, and My documents.
+    home: 'Home',
+    myTrips: 'My trips',
+    myDocuments: 'My documents',
+    allSigned: 'Everything is signed',
+    nextUp: 'Next up',
+    office: 'Office',
+    needsAnswer: 'Needs answer',
+    changedTag: 'Changed',
+    dayTrip: 'Day trip',
+    days: n => `${n} days`,
+    whoToCall: 'Who to call',
+    details: 'Details',
+    stopsTitle: 'Stops',
 
     today: 'Today',
     tomorrow: 'Tomorrow',
@@ -71,9 +83,10 @@
     showAllCrew: n => `Show all crew (${n})`,
     showLessCrew: 'Show less crew',
 
-    viewItinerary: updated => (updated ? 'View itinerary (updated)' : 'View itinerary'),
-    noItinerary: 'No itinerary',
-    viewEnvelope: 'View envelope',
+    itinerary: 'Itinerary',
+    updated: 'Updated',
+    noItinerary: 'Not sent yet',
+    envelope: 'Envelope',
 
     changedTitle: 'This trip changed since you accepted it',
     changedCheck: 'Check the details below, then answer again.',
@@ -107,9 +120,8 @@
     cancel: 'Cancel',
     declineConfirm: 'Decline assignment',
 
-    // The forms the driver signs: the card on the schedule and sign.html.
+    // The forms the driver signs: My documents and sign.html.
     forms: {
-      cardTitle: 'Forms to sign',
       cardText: 'The office keeps a signed copy of each one on your file.',
       toSign: 'To sign',
       signed: 'Signed',
@@ -117,7 +129,7 @@
       signedOn: day => `Signed ${day}`,
       signedUntil: (day, until) => `Signed ${day} · good until ${until}`,
       waiting: n => (n === 1 ? '1 form to sign' : `${n} forms to sign`),
-      back: 'Back to your schedule',
+      back: 'Back to My documents',
       intro: 'Answer every question, check your details, and sign at the bottom.',
       translated: "Each question is the form's own wording, which is what you sign.",
       yes: 'Yes',
@@ -169,9 +181,20 @@
     noTrips: 'No tienes viajes por ahora',
     noTripsText: 'Los viajes nuevos aparecerán aquí cuando despacho te los asigne.',
     wentWrong: 'Algo salió mal',
-    unavailable: 'Viaje no disponible',
-    notLoaded: 'No se pudo cargar este viaje.',
-    notYours: 'Este viaje ya no está asignado a ti.',
+
+    home: 'Inicio',
+    myTrips: 'Mis viajes',
+    myDocuments: 'Mis documentos',
+    allSigned: 'Todo está firmado',
+    nextUp: 'Próximo viaje',
+    office: 'Oficina',
+    needsAnswer: 'Por responder',
+    changedTag: 'Cambió',
+    dayTrip: 'Viaje de un día',
+    days: n => `${n} días`,
+    whoToCall: 'A quién llamar',
+    details: 'Detalles',
+    stopsTitle: 'Paradas',
 
     today: 'Hoy',
     tomorrow: 'Mañana',
@@ -205,9 +228,10 @@
     showAllCrew: n => `Ver todos los choferes (${n})`,
     showLessCrew: 'Ver menos',
 
-    viewItinerary: updated => (updated ? 'Ver itinerario (actualizado)' : 'Ver itinerario'),
-    noItinerary: 'Sin itinerario',
-    viewEnvelope: 'Ver sobre',
+    itinerary: 'Itinerario',
+    updated: 'Actualizado',
+    noItinerary: 'Todavía no se envía',
+    envelope: 'Sobre',
 
     changedTitle: 'Este viaje cambió desde que lo aceptaste',
     changedCheck: 'Revisa los detalles abajo y vuelve a responder.',
@@ -241,7 +265,6 @@
     declineConfirm: 'Rechazar viaje',
 
     forms: {
-      cardTitle: 'Formularios por firmar',
       cardText: 'La oficina guarda una copia firmada de cada uno en tu expediente.',
       toSign: 'Por firmar',
       signed: 'Firmado',
@@ -249,7 +272,7 @@
       signedOn: day => `Firmado el ${day}`,
       signedUntil: (day, until) => `Firmado el ${day} · vale hasta el ${until}`,
       waiting: n => (n === 1 ? '1 formulario por firmar' : `${n} formularios por firmar`),
-      back: 'Volver a tu horario',
+      back: 'Volver a Mis documentos',
       intro: 'Contesta cada pregunta, revisa tus datos y firma al final.',
       translated: 'Las preguntas están en inglés, que es lo que firmas. La traducción está debajo de cada una.',
       yes: 'Sí',

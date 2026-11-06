@@ -1773,3 +1773,9 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 .scheduler-components__tip > .rux--popover { position: relative; inset: auto; }
 .scheduler-components__tip > .rux--popover > .rux--popover-content { position: relative; inset: auto; transform: none; }
 .scheduler-components__tip > .rux--popover > .rux--popover-caret { display: none; }
+
+/* A driver's trip screen: what changed spans the screen, as the tiles under it do. */
+.scheduler-driver-trip .rux--inline-notification { max-inline-size: none; }
+/* The way back on a driver's screen reads arrow first, as it points, so the
+   ghost button's icon keeps its gap on the side the words are. */
+.scheduler-driver-back .rux--btn__icon { margin-inline: 0 var(--rux-spacing-03); }

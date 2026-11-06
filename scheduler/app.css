@@ -5075,12 +5075,11 @@ html[data-scheduler-takeover] {
 .scheduler-maintenance-title .rux--btn[hidden] { display: none; }
 
 /* ── A driver's schedule link (share/driver.html) and its staff view ────────
-   (driver-view.html). A card per trip leg, a tile, sections under the head
-   parted by a rule. Phone first: rows keep their words on the left and their
-   buttons on the right, and wrap under when the screen is too narrow. The
-   staff view holds the cards to the width a phone held sideways gives them,
-   so staff read the page at the size drivers do. */
-.scheduler-leg-list { display: grid; gap: var(--rux-spacing-05); }
+   (driver-view.html). A few screens, each a stack: rows that open something
+   are Carbon's clickable tiles, an icon or a day at the left, the words, a
+   tag and a chevron at the right, set 2px apart so the page between them
+   rules them. Phone first; the staff view holds the screens to a phone's
+   width, so staff read them at the size drivers do. */
 /* Driver view's sending section: the trips to tick beside the message to
    copy, stacked on a narrow screen. The list scrolls inside itself past a
    screen's height, so the message stays in reach. */
@@ -5106,59 +5105,47 @@ html[data-scheduler-takeover] {
 
 /* The Drivers page's Copy link and See their page, side by side. */
 .scheduler-driver-link-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
-.scheduler-leg-list:empty { display: none; }
-.scheduler-leg-staff { max-inline-size: 42rem; }
+.scheduler-leg-staff { max-inline-size: 25rem; }
 .scheduler-leg-picker { flex: 0 1 20rem; min-inline-size: 12rem; }
-.scheduler-leg-card { display: grid; gap: var(--rux-spacing-05); }
-.scheduler-leg-card__head { display: grid; gap: var(--rux-spacing-02); }
-.scheduler-leg-card__head > * { margin: 0; overflow-wrap: anywhere; }
-.scheduler-leg-card__customer,
-.scheduler-leg-card__muted { color: var(--rux-text-secondary); }
-.scheduler-leg-card__tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); margin-block-start: var(--rux-spacing-03); }
-.scheduler-leg-card__response { display: grid; gap: var(--rux-spacing-04); }
-.scheduler-leg-card__buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
-.scheduler-leg-card__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
-.scheduler-leg-card__error { margin: 0; color: var(--rux-text-error); }
-.scheduler-leg-card__changes { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-05); list-style: disc; }
-/* The stops, folded under the card: a count to press, then each stop's name
-   with when the bus gets there and leaves under it. */
-.scheduler-leg-card__stops > summary { cursor: pointer; color: var(--rux-link-primary); padding-block: var(--rux-spacing-02); }
-.scheduler-leg-card__stops > summary:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.scheduler-leg-card__stop-list { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-06); display: grid; gap: var(--rux-spacing-03); }
-.scheduler-leg-card__stop-list > li { display: grid; }
-.scheduler-leg-card__stop-name { font-weight: 600; }
-.scheduler-leg-card__stop-times { color: var(--rux-text-secondary); }
-.scheduler-leg-card__section {
+.scheduler-driver-screen :is(h1, h2, p, address) { margin: 0; overflow-wrap: anywhere; }
+.scheduler-driver-screen address { font-style: normal; }
+/* A screen's heading takes focus when the screen changes, for a screen
+   reader; it is not a control, so it draws no ring. */
+.scheduler-driver-screen h1:focus { outline: none; }
+.scheduler-driver-muted { color: var(--rux-text-secondary); }
+.scheduler-driver-rows { display: grid; gap: var(--rux-spacing-01); }
+.scheduler-driver-rows > [hidden] { display: none; }
+.scheduler-driver-row { display: flex; align-items: center; gap: var(--rux-spacing-04); }
+.scheduler-driver-row > svg { flex: none; color: var(--rux-icon-secondary); }
+.scheduler-driver-row > .rux--tag { flex: none; margin: 0; }
+.scheduler-driver-row__words { flex: 1 1 auto; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); overflow-wrap: anywhere; }
+.scheduler-driver-row__icon { flex: none; display: inline-flex; color: var(--rux-icon-primary); }
+/* A leg's day at its row's left: the weekday small over the date large. */
+.scheduler-driver-day { flex: none; display: grid; justify-items: center; inline-size: 2.5rem; }
+.scheduler-driver-day > :first-child { color: var(--rux-text-secondary); text-transform: uppercase; }
+.scheduler-driver-tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
+.scheduler-driver-changes { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-05); list-style: disc; }
+/* A person, or where to be: the lines on the left, Call and Text or Map on
+   the right. */
+.scheduler-driver-person { display: flex; align-items: center; gap: var(--rux-spacing-04); }
+.scheduler-driver-person__lines { flex: 1 1 auto; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); }
+.scheduler-driver-person__actions { flex: none; display: flex; gap: var(--rux-spacing-03); }
+/* Accept and Decline stay at the foot of the screen while the driver reads
+   the trip above them, on the page's own background. */
+.scheduler-driver-answer {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 1;
   display: grid;
   gap: var(--rux-spacing-03);
-  padding-block-start: var(--rux-spacing-05);
-  border-block-start: 1px solid var(--rux-border-subtle-01);
+  padding-block: var(--rux-spacing-05) max(var(--rux-spacing-05), env(safe-area-inset-bottom));
+  background: var(--rux-background);
 }
-.scheduler-leg-card__section p,
-.scheduler-leg-card__section address { margin: 0; font-style: normal; overflow-wrap: anywhere; }
-.scheduler-leg-card__label {
-  margin: 0;
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  font-weight: var(--rux-label-01-font-weight);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
-.scheduler-leg-card__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
-.scheduler-leg-card__section[hidden] { display: none; }
-/* Where to be and when, under the head and before the answer. */
-.scheduler-leg-card__plan { display: grid; gap: var(--rux-spacing-02); }
-.scheduler-leg-card__plan p,
-.scheduler-leg-card__plan address { margin: 0; font-style: normal; overflow-wrap: anywhere; }
-/* The leg's itinerary and envelope, side by side where each keeps its words
-   on one line, and one above the other on a phone. */
-.scheduler-leg-card__papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--rux-spacing-03); }
-.scheduler-leg-card__papers > .rux--btn { inline-size: 100%; max-inline-size: none; }
-/* A person on one row: name and role or number, then Call and Text at the
-   right. */
-.scheduler-leg-card__person { display: flex; align-items: center; gap: var(--rux-spacing-04); }
-.scheduler-leg-card__person > div:first-child { flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-leg-card__person .scheduler-leg-card__actions { flex-wrap: nowrap; gap: var(--rux-spacing-03); }
+.scheduler-driver-answer__buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
+.scheduler-driver-answer__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
+.scheduler-driver-answer__error { margin: 0; color: var(--rux-text-error); }
+.scheduler-driver-stops { display: grid; gap: var(--rux-spacing-01); margin: 0; padding: 0; list-style: none; }
+.scheduler-driver-stops > li { display: grid; gap: var(--rux-spacing-02); }
 /* Call or Text: the icon with its word under it, in a square the size of a
    thumb, in Carbon's secondary button colours. Carbon's button puts the word
    beside the icon, which leaves a name no room on a phone. */
@@ -5186,22 +5173,10 @@ html[data-scheduler-takeover] {
 }
 
 /* ── Driver forms ────────────────────────────────────────────────────────
-   The Forms to sign card at the top of a driver's link, and share/sign.html,
-   where one form is filled in and signed. A form is a tile for each heading
+   share/sign.html, where one form is filled in and signed, opened from My
+   documents on a driver's link. A form is a tile for each heading
    with its questions parted by a rule; what sits inside a tile is on the
    second layer, so Yes and No, the lines and the pad stand off it. */
-.scheduler-forms-card { display: grid; gap: var(--rux-spacing-05); }
-.scheduler-forms-card__head { display: grid; gap: var(--rux-spacing-02); }
-.scheduler-forms-card__head > * { margin: 0; }
-.scheduler-forms-row {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: var(--rux-spacing-04);
-  padding-block-start: var(--rux-spacing-05);
-  border-block-start: 1px solid var(--rux-border-subtle-01);
-}
-.scheduler-forms-row > div:first-child { flex: 1 1 12rem; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); }
-.scheduler-forms-row p { margin: 0; }
-.scheduler-forms-row > .rux--btn { flex: 1 1 100%; max-inline-size: none; }
 .scheduler-sign-muted { color: var(--rux-text-secondary); }
 #scheduler-sign-form[hidden], #scheduler-sign-done[hidden], .scheduler-sign-error[hidden] { display: none; }
 .scheduler-sign-section { display: grid; gap: var(--rux-spacing-06); }

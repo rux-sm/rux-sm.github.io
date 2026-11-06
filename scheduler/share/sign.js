@@ -55,7 +55,8 @@
     if (lang === 'es' && words?.es) n.appendChild(el('span', 'scheduler-sign-es', words.es));
     return n;
   };
-  const backHref = `driver.html?s=${encodeURIComponent(token)}`;
+  // Back to My documents, the screen the form was opened from.
+  const backHref = `driver.html?s=${encodeURIComponent(token)}#documents`;
   const longDate = iso => new Date(`${iso}T12:00:00`).toLocaleDateString(WORDS.LOCALE[lang], { month: 'long', day: 'numeric', year: 'numeric' });
   const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
 

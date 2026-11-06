@@ -651,7 +651,7 @@
     // The partners that cover a bus with their own coach and driver, each with the papers it must hold, by leg-facts.js.
     partners: () => window.SchedulerLegFacts.readPartners(client).then(byId => [...byId.values()]),
     // Every contact, for the contact search rather than a read on each keystroke.
-    contacts: () => client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(rowsOf),
+    contacts: () => client.from('contacts').select('id,name,title,phone,email,client,customer_id').order('name').then(rowsOf),
     // The customers and the saved places, for the Customer field, the fill
     // it makes into an empty pickup, and the Route tab's address search.
     customers: () => client.from('customers').select('id,name,usual_location_id,notes,usual_reqs,usual_vehicle_type').order('name').then(rowsOf),
@@ -4495,7 +4495,7 @@
       option.dataset.ruxText = c.name ?? '';
       const body = el('div', 'rux--list-box__menu-item__option scheduler-contact-option__body');
       body.appendChild(el('span', 'scheduler-contact-option__name', c.name ?? ''));
-      const detail = [c.client, showPhone(c.phone)].filter(Boolean).join(' · ');
+      const detail = [c.title, c.client, showPhone(c.phone)].filter(Boolean).join(' · ');
       if (detail) body.appendChild(el('span', 'scheduler-contact-option__detail', detail));
       const tick = svgUse('#m-check', '16', '0 0 20 20');
       tick.classList.add('rux--list-box__menu-item__selected-icon');

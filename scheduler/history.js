@@ -94,7 +94,7 @@
     },
     contact: {
       word: 'Contact', page: 'contacts.html',
-      words: { name: 'Name', phone: 'Phone', email: 'Email', customer_id: 'Customer', client: 'Organization' },
+      words: { name: 'Name', title: 'Title', phone: 'Phone', email: 'Email', customer_id: 'Customer', client: 'Organization', partner_id: 'Partner' },
     },
     location: {
       word: 'Location', page: 'locations.html',
@@ -102,7 +102,8 @@
     },
     partner: {
       word: 'Partner', page: 'partners.html',
-      words: { name: 'Name', phone: 'Phone', email: 'Email', contact_name: 'Dispatch contact', usdot_number: 'USDOT number', status: 'Status', notes: 'Notes' },
+      words: { name: 'Name', phone: 'Phone', email: 'Email', contact_name: 'Dispatch contact', usdot_number: 'USDOT number', status: 'Status', notes: 'Notes',
+        main_contact_id: 'Main contact', drivers: 'Drivers' },
     },
   };
   const wordFor = (kind, field) => KINDS[kind]?.words[field]

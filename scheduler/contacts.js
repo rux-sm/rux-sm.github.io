@@ -5,9 +5,13 @@
    and contacts.html?new makes one. Both read and write `contacts`, so both
    show the same people.
 
-   A contact is a person. The school or business they book for is their
-   customer, picked from the Customers list; `client` keeps the customer's
-   name as text.
+   A contact is a person, with a title such as Owner or Dispatch. The school
+   or business they book for is their customer, picked from the Customers
+   list; `client` keeps the customer's name as text. Someone who works for a
+   partner, a company that covers a bus for us, names that partner, picked
+   from the Partners list, beside or in place of a customer.
+   contacts.html?new&partner=<id> starts one for that partner, and its Save
+   goes back to the partner's Contacts tab.
 
    A trip names its contacts in six columns, the booking contact and five
    day-of ones, and keeps its own copy of each name and phone. Editing a
@@ -31,7 +35,7 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-contacts-h').hidden = true;
 
-  const CONTACT_COLUMNS = 'id,name,phone,email,client,customer_id';
+  const CONTACT_COLUMNS = 'id,name,title,phone,email,client,customer_id,partner_id';
   // The six places a trip names a contact; the first is who booked it.
   const SLOTS = ['booking_contact_id', 'trip_contact_1_id', 'trip_contact_2_id',
     'trip_contact_3_id', 'trip_contact_4_id', 'trip_contact_5_id'];
@@ -89,6 +93,11 @@
     if (error) throw error;
     return new Map((data || []).map(c => [c.id, c]));
   };
+  const readPartners = async () => {
+    const { data, error } = await client.from('partners').select('id,name,status').order('name');
+    if (error) throw error;
+    return new Map((data || []).map(p => [p.id, p]));
+  };
   const anyContact = SLOTS.map(s => `${s}.not.is.null`).join(',');
   const readTripLinks = () => readAll(() => client.from('trips')
     .select(`id,start_date,end_date,cancelled_at,${SLOTS.join(',')}`)
@@ -119,11 +128,14 @@
   /* ══ The list ═══════════════════════════════════════════════════════════ */
   let contacts = [];
   let customers = new Map();  // customer id → customer
+  let partners = new Map();   // partner id → partner
   let tripsBy = new Map();
 
   const tripsOf = c => tripsBy.get(c.id) || { n: 0, next: null, last: null };
   // The customer's name, or the old typed organization of a contact not linked.
   const customerName = c => customers.get(c.customer_id)?.name ?? c.client ?? null;
+  // Under a name: the title, then whom they work for, their customer and their partner.
+  const workFor = c => [c.title, customerName(c), partners.get(c.partner_id)?.name].filter(Boolean).join(' · ');
   const byName = (a, b) => folded(a.name).localeCompare(folded(b.name)) || String(a.id).localeCompare(String(b.id));
   // A blank phone or email sorts after every filled one, A to Z.
   const blankLast = (x, y, cmp) => (!x && !y ? 0 : !x ? 1 : !y ? -1 : cmp(x, y));
@@ -146,7 +158,7 @@
 
   const matches = (c, q) => {
     if (!q) return true;
-    const words = [c.name, customerName(c), c.email].filter(Boolean).join(' ').toLowerCase();
+    const words = [c.name, workFor(c), c.email].filter(Boolean).join(' ').toLowerCase();
     if (words.includes(q.toLowerCase())) return true;
     // A phone matches by its digits, however either side was typed.
     const digits = q.replace(/\D/g, '');
@@ -195,7 +207,7 @@
       const link = el('a', 'scheduler-pair-cell__name', c.name || 'Unnamed contact');
       link.href = `contacts.html?id=${encodeURIComponent(c.id)}`;
       lines.appendChild(link);
-      if (customerName(c)) lines.appendChild(el('span', 'scheduler-pair-cell__detail', customerName(c)));
+      if (workFor(c)) lines.appendChild(el('span', 'scheduler-pair-cell__detail', workFor(c)));
       cell.append(avatar, lines);
       who.appendChild(cell);
 
@@ -215,11 +227,13 @@
   const view = pair.table({ sortKey: 'name', draw: drawList });
 
   async function loadList() {
-    const [rows, trips, who] = await Promise.all([
+    const [rows, trips, who, firms] = await Promise.all([
       readContacts(), readTripLinks().catch(() => null), readCustomers().catch(() => new Map()),
+      readPartners().catch(() => new Map()),
     ]);
     contacts = rows;
     customers = who;
+    partners = firms;
     // Trips that would not load leave the list readable, with no counts.
     tripsBy = indexTrips(trips || []);
     $('scheduler-contacts-h').hidden = false;
@@ -247,19 +261,30 @@
      `client` is the customer's name as text. */
   const readForm = () => ({
     name: text('name'),
+    title: text('title'),
     customer_id: customerId,
     client: customers.get(customerId)?.name ?? null,
+    partner_id: field('partner').value || null,
     phone: text('phone'),
     email: text('email'),
   });
-  const WRITTEN = ['name', 'customer_id', 'client', 'phone', 'email'];
+  const WRITTEN = ['name', 'title', 'customer_id', 'client', 'partner_id', 'phone', 'email'];
   // A row reduced to what Save writes, so a read-back compares like with like.
   const comparable = row => JSON.stringify(WRITTEN.map(k => (row?.[k] === '' || row?.[k] == null ? null : row[k])));
   const snapshot = () => comparable(readForm()) + (customerId ? '' : customerText);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
   function fillForm(c) {
-    for (const k of ['name', 'phone', 'email']) field(k).value = c[k] ?? '';
+    for (const k of ['name', 'title', 'phone', 'email']) field(k).value = c[k] ?? '';
+    /* The partner: every active partner and the one the contact has, None
+       for a contact who works for no partner. */
+    const offered = [...partners.values()].filter(p => p.status === 'active' || p.id === c.partner_id);
+    field('partner').replaceChildren(...[{ id: '', name: 'None' }, ...offered].map(p => {
+      const option = el('option', 'rux--select-option', p.name);
+      option.value = p.id;
+      return option;
+    }));
+    field('partner').value = c.partner_id && partners.has(c.partner_id) ? c.partner_id : '';
     customerId = c.customer_id && customers.has(c.customer_id) ? c.customer_id : null;
     // A contact not linked yet shows its old typed organization, to be picked.
     customerText = customers.get(customerId)?.name ?? c.client ?? '';
@@ -455,11 +480,12 @@
     result(null);
     // Every contact is read either way: a new one is checked against them all
     // for someone already here.
-    [contacts, customers] = await Promise.all([readContacts(), readCustomers()]);
+    [contacts, customers, partners] = await Promise.all([readContacts(), readCustomers(), readPartners()]);
     if (!contactId) {
       loaded = null;
       trips = [];
-      fillForm({});
+      // A link from a partner's page arrives with the partner picked.
+      fillForm({ partner_id: params.get('partner') });
     } else {
       loaded = contacts.find(c => String(c.id) === contactId) || null;
       if (!loaded) return false;
@@ -524,6 +550,12 @@
       id = loaded.id;
       wrote = true;
       contacts = [...contacts.filter(c => c.id !== id), loaded];
+      // A new contact made from a partner's page goes back to its Contacts tab.
+      const from = params.get('partner');
+      if (!contactId && from && loaded.partner_id === from) {
+        guard.leave(`partners.html?id=${encodeURIComponent(from)}#contacts`);
+        return true;
+      }
       drawTitle();
       history.replaceState(null, '', `contacts.html?id=${encodeURIComponent(id)}`);
       currentId = id;

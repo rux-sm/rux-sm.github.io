@@ -38,8 +38,8 @@ warns of on one trip, and a Documents tab. A driver is set Inactive, never
 deleted, and the schedule link is made on `driver-view.html`. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
-`contacts.html` lists every contact, the people who book and travel, with
-their customer, phone, email and trips, and edits one at
+`contacts.html` lists every contact, the people who book, travel or work for
+a partner, with their title, customer or partner, phone, email and trips, and edits one at
 `contacts.html?id=`. A contact on any trip is never deleted, and editing one
 never changes a trip, which keeps the phone it was saved with.
 

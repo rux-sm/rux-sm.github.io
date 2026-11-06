@@ -55,7 +55,7 @@
   };
   // Each customer's contacts, by customer id.
   const readContacts = async () => {
-    const { data, error } = await client.from('contacts').select('id,name,phone,email,customer_id')
+    const { data, error } = await client.from('contacts').select('id,name,title,phone,email,customer_id')
       .not('customer_id', 'is', null).order('name');
     if (error) throw error;
     const map = new Map();
@@ -478,7 +478,7 @@
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', c.name || 'Unnamed contact'));
       lines.appendChild(el('span', 'scheduler-pair-item__detail',
-        [showPhone(c.phone), c.email].filter(Boolean).join(' · ') || 'No phone or email'));
+        [c.title, showPhone(c.phone), c.email].filter(Boolean).join(' · ') || 'No phone or email'));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

@@ -198,8 +198,6 @@ None open.
       `partners.contact_name` and `trip_assignments.partner_driver_name` and
       `partner_driver_phone` with their place in the partner fields check;
       show it to rux and apply it on a yes.
-- [ ] Let the Contacts page link a contact to a partner and give it a title,
-      and show titles wherever contacts are listed.
 - [ ] Give the partner's profile its Contacts and Drivers tabs and its main
       contact, and the Partners list the main contact.
 - [ ] Let the vehicle's window pick the partner's driver, adding a typed one

@@ -279,6 +279,13 @@
    the placeholder keeps its yellow there, lightened as that theme's other
    bars without a notification are. */
 [data-theme="apple-light"] { --scheduler-amber-bg: color-mix(in srgb, oklch(92% 0.07 95) 70%, #fff); }
+/* apple-light's Layer 02 is the board's own white, so a trip that is back,
+   with no edge in a theme whose bars wear none, takes the layer's accent
+   grey and its hover instead, the step up the other themes' Layer 02 is. */
+[data-theme="apple-light"] .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) {
+  --scheduler-bg: var(--rux-layer-accent-01);
+  --scheduler-hover: var(--rux-layer-accent-hover-01);
+}
 /* apple-dark's other bars are its tags, each hue at 40% on black, and no
    tag is yellow, so the placeholder is Apple's dark yellow drawn the same
    way: 40% on black, 44% on hover, under the increased-contrast dark
@@ -407,11 +414,10 @@
 }
 /* A BAR'S EDGE is four painted strips in `--scheduler-edge`, so the bar's
    border and shadow stay free for the week's run-on marks and the selection
-   ring: a light theme's every bar wears one, and in every theme a trip that
-   is back, whose edge app.css sets. An end that runs into another week has no
-   edge of its own. */
-:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar,
-[data-theme] .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) {
+   ring: a light theme's every bar wears one, a trip that is back with the
+   rest, and a dark theme's none, its fill alone parting it from the board.
+   An end that runs into another week has no edge of its own. */
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar {
   background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
     linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), var(--scheduler-footer-paint);
   background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%, 100% 100%;
@@ -1484,8 +1490,9 @@
 /* A TRIP IN A GEIST PAIR HAS ITS 400 FOR AN EDGE, as Geist's banners and
    notes draw one: a 1px line inside the bar, so it costs none of its
    writing. At the lowest weight, so the selection, the same trip's ring
-   and focus draw over it. A grey trip, in Carbon's grey, keeps none. */
-:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) {
+   and focus draw over it. A grey trip, in Carbon's grey, keeps none, nor
+   does a trip that is back, which has given its hue up. */
+:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal):where(:not(.scheduler-bar--back:not(.scheduler-bar--road))) {
   outline: 1px solid var(--scheduler-border);
   outline-offset: -1px;
 }

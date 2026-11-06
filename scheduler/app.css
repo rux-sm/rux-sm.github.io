@@ -1043,7 +1043,7 @@ button.scheduler-row-head__num::after {
 /* A TRIP THAT IS BACK HAS ANSWERED WHAT ITS COLOUR ASKED, whether it was
    confirmed, a placeholder or a colour someone gave it, so it gives the
    colour up and stands as Carbon's operable tile one layer above the board:
-   Layer 02's fill and hover, the tile's edge, which theme.css paints, the
+   Layer 02's fill and hover, with the edge every bar in its theme wears, the
    destination in the primary text and every other line in the secondary, so
    the trips still to come carry the colour and one that is back is still
    read whole, at 4.5 to 1, and still opens. Carbon's disabled and read-only
@@ -1058,7 +1058,6 @@ button.scheduler-row-head__num::after {
   --scheduler-strong: var(--rux-icon-secondary);
   --scheduler-dim: initial;
   --scheduler-border: var(--rux-border-tile);
-  --scheduler-edge: var(--rux-border-tile);
 }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-bar__dest { color: var(--rux-text-primary); }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__count,

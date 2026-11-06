@@ -755,8 +755,8 @@ button.scheduler-row-head__num::after {
    beside its number, the type turning to its warning while the bus has a
    mark. Its readings stand in a 64px square of their own on the next
    layer, 6px in, centred between that line and the foot: the state, its
-   reading at 18px over its unit, and the fuel, a 6px meter and its percent
-   on one line, a low DEF under them, which lets the square grow. Its kit is
+   reading at 18px over its unit, and the fuel, a 6px meter across it, its
+   percent beside it only while low, a low DEF under them, which lets the square grow. Its kit is
    at its foot, or none while DEF is low, its seats left to the tip. A view with fewer bar
    rows folds it: five drop the foot, four the fuel, three set the state
    beside its unit at 12px, two drop the square, leaving the state under the
@@ -820,6 +820,10 @@ button.scheduler-row-head__num::after {
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: 12px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { flex: 1; }
+/* The fuel is its bar across the square, its percent the tip's, until the
+   tank is low or critical, when the percent stands beside it in the tank's
+   colour, a reading as well as a colour. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:not([data-level="low"], [data-level="critical"]) .scheduler-row-head__fuel-pct { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 6px; border-radius: 3px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 12px; }

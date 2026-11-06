@@ -1413,13 +1413,10 @@
 
       /* The bus's kit on the head's last row: its sleeper and its lift,
          each in its own place down the column, and an empty place where the
-         bus lacks one, so the lifts stand in one line, and on the Mac's tile
-         its seats before them. The number's tip and title name them, for the
-         reader. */
+         bus lacks one, so the lifts stand in one line. The number's tip and
+         title name them, and its seats, for the reader. */
       if (r.bus) {
         const equip = el('div', 'scheduler-row-head__equip');
-        // Its seats, which the Mac's tile shows beside the kit.
-        if (r.bus.capacity) equip.appendChild(el('span', 'scheduler-row-head__seats', `${r.bus.capacity} pax`));
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
           const t = el('span', 'scheduler-row-head__tile');
           if (on) {

@@ -755,16 +755,16 @@ button.scheduler-row-head__num::after {
    every edge, a stack centred down it. Its first line, the destination's,
    is the bus's type in the secondary ink, where its picture will go,
    beside its number, and at the line's end its worst mark, the tip saying
-   them all. Its readings stand in a tile of their own on the next layer,
-   centred between that line and the foot: the state, its reading at 18px
-   over its unit, and the fuel, a 6px meter and its percent on one line, a
-   low DEF under them. Its seats and kit are at its foot, or none while DEF
-   is low. A view with fewer bar rows folds it: five drop the foot and set
-   the state beside its unit, three drop the fuel, two the readings' tile,
-   leaving the state under the first line, and one is the first line
-   alone. A phone's board keeps the narrow
+   them all. Its readings stand in a 64px square of their own on the next
+   layer, 6px in, centred between that line and the foot: the state, its
+   reading at 18px over its unit, and the fuel, a 6px meter and its percent
+   on one line, a low DEF under them, which lets the square grow. Its kit is
+   at its foot, or none while DEF is low, its seats left to the tip. A view with fewer bar
+   rows folds it: five drop the foot, four the fuel, three set the state
+   beside its unit at 12px, two drop the square, leaving the state under the
+   first line, and one is the first line alone. A phone's board keeps the narrow
    column above, so the parts only the tile shows are drawn here alone. */
-.scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__seats, .scheduler-row-head__lamp) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__lamp) { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: 6rem; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
   display: flex;
@@ -792,12 +792,13 @@ button.scheduler-row-head__num::after {
    track. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:not(:has(.scheduler-row-head__level[data-tank="D"])) { padding-block-end: calc(16px + 2 * var(--rux-spacing-03)); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
-  align-self: stretch;
+  inline-size: 64px;
+  min-block-size: 64px;
   margin-block: auto;
-  padding: var(--rux-spacing-03);
+  padding: 6px;
   background: var(--rux-layer-02);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 4px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: 2px; font-size: 1.125rem; line-height: 20px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: 12px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
@@ -806,7 +807,7 @@ button.scheduler-row-head__num::after {
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 6px; border-radius: 3px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 12px; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: row; justify-content: center; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 16px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: 16px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip {
   display: flex;
@@ -814,14 +815,13 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02);
   inset-block-end: var(--rux-spacing-03);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__seats { display: block; margin-inline-end: var(--rux-spacing-01); font-size: var(--rux-label-01-font-size); line-height: 16px; color: var(--rux-text-secondary); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__tile:empty { display: none; }
 /* A low DEF asks something of the office and the kit does not, so it takes
    the foot's room. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) .scheduler-row-head__equip { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head__equip { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { padding: 0; background: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 16px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head .scheduler-row-head__dial { display: flex; }

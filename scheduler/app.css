@@ -1759,7 +1759,9 @@ button.scheduler-row-head__num::after {
    has too little room the check and its words wrap rather than be cut. */
 .scheduler-trip-tip .scheduler-route { row-gap: var(--rux-spacing-03); column-gap: var(--rux-spacing-04); }
 .scheduler-trip-tip .scheduler-route__judged { flex-wrap: wrap; }
-.scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; }
+/* A tall tip's body scrolls with no scrollbar over its rows, as the board's
+   long lists do; the row cut at its edge shows there is more. */
+.scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 /* A tip's count stands beside its name in the heading's own type. A row
    that is a press takes the inverse hover under the pointer and the
    inverse focus ring, and leads with its 16px icon. */

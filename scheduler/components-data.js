@@ -166,7 +166,7 @@
       id: 'trip-bar', title: 'The trip bar',
       intro: 'One bus on one leg of a trip: where, who booked it, their contact, the times, the newest update and the crew.',
       samples: [
-        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of three colours, or amber while it is a placeholder. A trip that is back gives its colour up and stands outlined on the board.', days: 3, rows: colours },
+        { name: 'Colours', note: 'Standard is blue, or red until the trip is confirmed; the office paints a trip one of three colours, or amber while it is a placeholder. A trip that is back gives its colour up and stands a layer above the board.', days: 3, rows: colours },
         { name: 'A placeholder', note: 'Amber, not a trip yet: no times, no empty seats and no alerts, with a driver someone named still shown.', days: 3,
           rows: [row('104', bar(trip({ trip_bar_color: 'amber', confirmed: false, customer: 'Mesa Robotics Club', destination: 'Houston, TX', depart: null, back: null,
             start_date: day(40), end_date: day(41), buses: [{ bus: 'b104', crew: [['d4', 'driver']], roles: ['driver', 'co-driver'] }] })))] },
@@ -179,7 +179,7 @@
         { name: 'Either side of the week', note: 'A trip from last week runs off the start and says the day it left, one into next week runs off the end and says the day it is back.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
-        { name: 'Back at the yard', note: 'A trip whose bus is back gives its colour up and stands outlined, keeps its regular update row and its driver names without status icons, and says how it closed where an alert badge would stand: Paid in green once it is paid in full, or the warning while a balance is owed with no PO, then the Incomplete button while close-out still asks anything, which opens Updates at the post-trip entry.', days: 3,
+        { name: 'Back at the yard', note: 'A trip whose bus is back gives its colour up and stands a layer above the board, keeps its regular update row and its driver names without status icons, and says how it closed where an alert badge would stand: Paid in green once it is paid in full, or the warning while a balance is owed with no PO, then the Incomplete button while close-out still asks anything, which opens Updates at the post-trip entry.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
             buses: [{ bus: 'b102', crew: [['d2', 'driver', 'pending-response', { pay: null }]] }] }))),
             row('103', bar(trip({ customer: 'Harbor Tours', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850, actual_miles: 412,

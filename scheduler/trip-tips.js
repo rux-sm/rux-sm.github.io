@@ -318,10 +318,13 @@
      doing, the live card's driver with the driver as its head: their duty
      under the name; their Drive, Shift and Cycle time left, each over its
      meter, amber under an hour; their rest while off or in the sleeper; a
-     lamp row for each of the road's warnings; the small map of the leg; the
-     next stop and when the bus gets there; and in its footer Live map and
-     Google Maps, links. The
-     bus's own state, its engine, fuel and place, is the bus tip's. */
+     lamp row for each of the road's warnings; the rest either side, as before
+     the trip, since it is about their next trip; the small map of the leg;
+     the next stop and when the bus gets there; and in its footer Call at the
+     start, since the office calls a driver most while they are out, and Live
+     map at the end, links, Google Maps left to the live card since three
+     links do not fit the footer's one line. The bus's own state, its engine,
+     fuel and place, is the bus tip's. */
 
   const initialsOf = name => String(name || '').trim().split(/\s+/).filter(Boolean)
     .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
@@ -366,6 +369,21 @@
       row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), text);
       tip.appendChild(row);
     };
+    // A back-to-back trip either side with the rest between, amber where the rest is short.
+    const restEitherSide = () => {
+      const fit = found?.range ? board.near(found.range, trip.id) : null;
+      const nearKey = fit && [...fit.near.keys()].find(k => String(k) === driverId);
+      for (const words of nearKey != null ? fit.near.get(nearKey) : []) {
+        if (fit.tight.has(nearKey)) lamp('warning', words);
+        else tip.appendChild(el('div', 'scheduler-tip__row', words));
+      }
+    };
+    const callLink = () => {
+      if (!who?.phone) return null;
+      const call = footLink(`Call ${showPhone(who.phone)}`, `tel:${dial(who.phone)}`);
+      call.setAttribute('aria-label', `Call ${name}, ${showPhone(who.phone)}`);
+      return call;
+    };
     if (d) {
       const clocks = el('div', 'scheduler-tip__row scheduler-tip__clocks');
       for (const [label, field, most] of LIVE_CLOCKS) {
@@ -386,6 +404,7 @@
       }
       const { next, said: told } = road;
       for (const w of told.warnings) lamp(w.tone === 'error' ? 'error' : 'warning', w.title, w.sentence);
+      restEitherSide();
       const mapRow = el('div', 'scheduler-tip__row scheduler-tip__map');
       const holder = el('div', 'scheduler-card__live-map-box');
       mapRow.appendChild(holder);
@@ -399,8 +418,9 @@
         tip.appendChild(row);
       }
       const foot = footer();
+      const call = callLink();
+      if (call) foot.appendChild(call);
       foot.appendChild(footLink('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`));
-      if (bus.lat != null && bus.lng != null) foot.appendChild(footLink('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
       tip.appendChild(foot);
       return tip;
     }
@@ -420,27 +440,20 @@
     for (const x of board.standing(trip, leg)) {
       if (String(x.assignmentId) === String(found.assign.id) && String(x.driverId) === driverId) lamp('error', x.what);
     }
-    const fit = found.range ? board.near(found.range, trip.id) : null;
-    const nearKey = fit && [...fit.near.keys()].find(k => String(k) === driverId);
-    for (const words of nearKey != null ? fit.near.get(nearKey) : []) {
-      if (fit.tight.has(nearKey)) lamp('warning', words);
-      else tip.appendChild(el('div', 'scheduler-tip__row', words));
-    }
-    if (who.phone) {
-      const call = footLink(`Call ${showPhone(who.phone)}`, `tel:${dial(who.phone)}`);
-      call.setAttribute('aria-label', `Call ${name}, ${showPhone(who.phone)}`);
+    restEitherSide();
+    const call = callLink();
+    if (call) {
       const foot = footer();
       foot.appendChild(call);
       tip.appendChild(foot);
     }
     return tip;
   }
-  // A tip's footer, Carbon's toggletip actions, and a Carbon link in it, one that leaves the board opening a tab of its own.
+  // A tip's footer, Carbon's toggletip actions, and a Carbon link in it.
   const footer = () => el('div', 'rux--toggletip-actions scheduler-tip__foot');
-  function footLink(words, href, away = false) {
+  function footLink(words, href) {
     const a = el('a', 'rux--link', words);
     a.href = href;
-    if (away) { a.target = '_blank'; a.rel = 'noopener'; }
     return a;
   }
 

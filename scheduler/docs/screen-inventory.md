@@ -351,8 +351,8 @@ for each thing in the way of the seat, a back-to-back trip either side with the 
 where it is short, and in its footer Call with their phone, a Carbon link. On a bus out on the road, for a driver
 Samsara has in the bus, it says how they are doing instead: their duty under the name, their Drive,
 Shift and Cycle time left side by side, each over its meter, amber under an hour, their rest while
-off or in the sleeper, a line for each of the road's warnings, the leg's map 8rem tall with its credit
-and no zoom buttons, the next stop with when the bus gets there, and in its footer Live map and Google Maps, Carbon links; the
+off or in the sleeper, a line for each of the road's warnings, the rest either side as before the trip, the leg's map 8rem tall with its credit
+and no zoom buttons, the next stop with when the bus gets there, and in its footer Call with their phone and Live map, Carbon links; the
 bus's own engine, fuel and place are the bus tip's. The route tip heads Route over its table, its column names at 12px staying over the rows as they scroll, a name breaking between its words. A route longer than six rows shows five, for a bus out from the last stop it reached and otherwise from the yard out, with Full route and its count of stops in the footer, a link to the editor's Route tab; the phone's half sheet shows every row. A stop a bus out has reached shows Carbon's check and when it got there by Samsara's path, or Reached where that is not known, before the path or never within a quarter mile of it. A wheel
 over any tip scrolls the tip where it has more to show, and never the board behind it. The
 half sheet's pulled-up rest on a phone keeps the card's own bands: the Needs, and the Updates with the two newest

@@ -445,12 +445,15 @@ expect('a driver\'s tip before the trip: their face and seat, their answer, what
     [['Call (956) 555-0188', 'tel:9565550188', null]]]);
 expect('a driver whose leg changed since they said yes is told so in amber',
   tipRows(tipDrawn('A driver to tell')).filter(([kind]) => kind === 'lamp--warning').map(([, words]) => words.startsWith('Changed since they said yes: ')), [true]);
-const onRoad = tipDrawn("A driver's tip on the road");
-expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the map, the next stop, and Live map and Google Maps in its footer',
+const onRoad = tipDrawn("A driver's tip on the road", {
+  near: () => ({ near: new Map([['d3', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d3']) }),
+});
+expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the rest either side, the map, the next stop, and Call and Live map in its footer',
   [text(onRoad, '.scheduler-tip__text > .scheduler-tip__by'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
     tipRows(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
     text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), footLinks(onRoad).map(([words, , target]) => [words, target]), onRoad.querySelector('.scheduler-tip__answer')],
-  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next'], true, 'Next: Alamodome', [['Live map', null], ['Google Maps', '_blank']], null]);
+  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'lamp--warning', 'map', 'next'], true, 'Next: Alamodome',
+    [['Call (956) 555-0142', null], ['Live map', null]], null]);
 const routeTip = tipDrawn('The route');
 expect('the route: its head, a row for the yard out, the pickup with its arrival judged, and the yard back',
   [text(routeTip, '.scheduler-tip__name'), routeTip.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(routeTip, '.scheduler-route__judged')],

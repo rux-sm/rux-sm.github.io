@@ -72,7 +72,9 @@ own label shows now.
   bus,** not two merged: their answer only matters before the trip, and
   their hours left exist only once they are out.
 - **On the road it keeps Call,** at the footer's start, since the office
-  calls a driver most while they are out, **and the rest either side,** a
+  calls a driver most while they are out, with Live map at its end and
+  Google Maps left to the live card, since three links do not fit one line,
+  **and the rest either side,** a
   back-to-back trip with the rest between, amber where it is short, since
   it is about their next trip.
 - **Every hover label on a bar becomes Carbon's tooltip, with the same
@@ -108,8 +110,7 @@ own label shows now.
 
 - **Does a driver's tip on the road keep the leg's map?** The live card,
   Live map and Google Maps already show it. Without it the tip is the
-  person: their hours left, what is wrong, and Call, with Live map beside
-  Call in the footer.
+  person: their hours left, what is wrong, Call and Live map.
 - **Do the labels on marks that cannot take focus stay the pointer's, or
   become Carbon's definition tooltip?** Paid, the balance warning, the −1
   and +1, the contact, the times, the stop ticks, the kind arrow and the
@@ -128,7 +129,6 @@ own label shows now.
 
 ## Tasks
 
-- [ ] Give a driver's tip on the road Call and the rest either side.
 - [ ] Give the bus number's tip Carbon's padding, gap and width back by
       deleting its rule in `overrides.css`, and draw its rows as the others.
 - [ ] Add the board's one tooltip, and give it every label a bar's marks

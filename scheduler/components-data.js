@@ -41,7 +41,7 @@
   const DRIVERS = [
     { id: 'd1', name: 'Marco Ruiz', short_name: 'Marco', phone: '9565550188' },
     { id: 'd2', name: 'Lena Garza', short_name: 'Lena' },
-    { id: 'd3', name: 'Rosa Peña', short_name: 'Rosa' },
+    { id: 'd3', name: 'Rosa Peña', short_name: 'Rosa', phone: '9565550142' },
     { id: 'd4', name: 'Ben Ochoa', short_name: 'Ben' },
     { id: 'd5', name: 'Ivy Tran', short_name: 'Ivy', employment_type: 'part-time' },
     { id: 'd6', name: 'Sam Cole', short_name: 'Sam' },
@@ -427,7 +427,7 @@
         tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a link as an alert\'s words are.', bar(shut), { kind: 'card', section: 'updates' }),
         tipOf("A driver's tip", 'Their face, seat and answer, who gave it and when, and their phone, a press that calls.', bar(routed), { kind: 'driver', section: 'driver:d1:driver' }),
         tipOf('A driver to tell', 'The leg changed since they said yes, in amber.', bar(told), { kind: 'driver', section: 'driver:d4:driver' }),
-        tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop and where to see more.',
+        tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop, and Call and the Live map.',
           live('Harbor Tours', { crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN, drive_ms: 50 * MIN, shift_ms: 4 * HOUR, cycle_ms: 31 * HOUR })] },
             drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
         tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned beside what happened; the pickup alone says on time or how late.', bar(routed), { kind: 'route', section: 'route:' }),

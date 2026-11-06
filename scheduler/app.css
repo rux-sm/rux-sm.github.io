@@ -3040,6 +3040,12 @@ a.scheduler-tip__go { text-decoration: none; }
    rule between the two, the month's leading one, would stand on the joined
    surface; it comes off while they are joined. */
 #scheduler-weekrow:has(#scheduler-range[data-attached]) .scheduler-weekbtn--month { border-inline-start-color: transparent; }
+/* The rule down the month's trailing edge is the leading rule of whichever
+   button the width leaves first in the row after it, so the open month
+   covers it with a 1px column in its own layer, the way the menu's strip
+   covers the shadow at its foot, and the open trigger has a line down
+   neither side. */
+.scheduler-weekbtn--month[data-attached] { box-shadow: 1px 0 0 var(--rux-layer), 0 2px 6px var(--rux-shadow); }
 /* The week's calendar joined to its button casts the menus' shadow, not the
    fainter one Carbon's calendar keeps, so the three surfaces the toolbar
    opens read as one kind. */

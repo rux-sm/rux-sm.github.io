@@ -3212,7 +3212,8 @@ a.scheduler-tip__go { text-decoration: none; }
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
 }
 /* Figures side by side, each a small label over its value, one column each:
-   Billing's Paid and Balance, the Route summary's Start, Spot and End. */
+   Billing's Paid and Balance, the Route summary's Yard out, Spot and Yard
+   back, with the day under Yard back's time where it is not the first. */
 .scheduler-figures {
   display: grid;
   grid-auto-flow: column;
@@ -3239,6 +3240,14 @@ a.scheduler-tip__go { text-decoration: none; }
      AM and PM at the board's smaller size, and a wider theme font runs into
      the gap. */
   white-space: nowrap;
+}
+.scheduler-figures dd.scheduler-figures__day {
+  margin-block-start: var(--rux-spacing-01);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
 }
 
 /* A list of records: tiles 8px apart, then the add. */

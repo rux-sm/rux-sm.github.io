@@ -9248,12 +9248,14 @@
         const fig = RF.legFigures(routeModel());
         const { days, each, total } = fig;
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
-        /* The last day's weekday goes in Yard back's label, so the time itself never
-           wraps: a longer leg's last day, or the next day a one-day leg comes
-           back on past midnight. */
-        const lastDay = fig.backOn ? ` · ${parseISO(fig.backOn).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
+        /* The day the bus is back, where it is not the first, goes under Yard
+           back's time as the route tip heads its days, Sun, Nov 8, so neither
+           the label nor the time wraps: a longer leg's, or the next day a
+           one-day leg comes back on past midnight. */
+        const backDay = fig.backOn
+          ? parseISO(fig.backOn).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : null;
         const times = el('dl', 'scheduler-figures');
-        for (const [label, time] of [['Yard out', yardOut], ['Spot', spot], [`Yard back${lastDay}`, yardBack]]) {
+        for (const [label, time, day] of [['Yard out', yardOut], ['Spot', spot], ['Yard back', yardBack, backDay]]) {
           const box = el('div');
           // AM or PM in its own span, smaller, as the board writes its a and p.
           const said = time ? clock(time) : null;
@@ -9262,6 +9264,7 @@
           if (ampm) value.append(said.slice(0, ampm.index), el('span', 'scheduler-figures__ampm', ampm[0]));
           else value.append(said ?? noFigure());
           box.append(el('dt', null, label), value);
+          if (day) box.appendChild(el('dd', 'scheduler-figures__day', day));
           times.appendChild(box);
         }
         times.title = busSaid;

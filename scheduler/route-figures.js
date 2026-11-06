@@ -80,6 +80,12 @@
     return dayAfter(m.to, -1);
   }
 
+  // A longer leg's yard return: its last day, or the day after where the bus is back earlier on the clock than the trip ends.
+  function backDayOf(m) {
+    const back = toMin(m.times.back), end = toMin(m.times.endtrip);
+    return back != null && end != null && back < end ? dayAfter(m.to, 1) : m.to;
+  }
+
   // A wait runs from the arrival to the leave on the day each falls, which
   // may be the next day or, for a stay of nights, a later one.
   function waitOf(m, st) {
@@ -371,9 +377,11 @@
       dates,
       each,
       total,
-      // The last day's, where it is not the first: a longer leg's last day, or
-      // the next day a one-day leg comes back on past midnight.
-      backOn: many ? m.to : backDays > 0 && m.from ? dayAfter(m.from, backDays) : null,
+      // The day the bus is back, where it is not the first: a longer leg's
+      // last day, or the day after where the yard return is earlier on the
+      // clock than the trip's end, as countsTo reads it; or the next day a
+      // one-day leg comes back on past midnight.
+      backOn: many ? backDayOf(m) : backDays > 0 && m.from ? dayAfter(m.from, backDays) : null,
       // Each day's miles, for the quote calculator the trip opens.
       dayMiles: each ? each.map(c => c.miles) : [total.miles],
       legMiles: Math.round(legs.reduce((n, [, mi]) => n + (Number(mi) || 0), 0)),

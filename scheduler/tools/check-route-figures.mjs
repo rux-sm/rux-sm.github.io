@@ -134,6 +134,18 @@ const night = legFigures(fromStops({ trip_type: 'round_trip', start_date: '2026-
 expect('a two-day leg back before the hour on its second morning is one row',
   [night.days, table(night), night.legDays, night.backOn], [false, ['268 | 4 h 57 | 12 h 40 | 12 h 40'], 1, '2026-10-17']);
 
+/* BACK THE MORNING AFTER. Two days, the group let off at 17:15 on the last
+   and the bus at the yard at 3:59 the next morning, after the office's hour:
+   it is back the day after the trip's last. */
+const after = legFigures(fromStops({ trip_type: 'round_trip', start_date: '2026-11-06', end_date: '2026-11-07' }, 'outbound', rows([
+  ['pickup', 'A', '04:02', '2026-11-06', null, null, 585, '11:18', 'on', '15:20'],
+  ['stop', 'B', '16:15', '2026-11-06', '16:30', '2026-11-06', 5, '0:09', 'off'],
+  ['stop', 'C', '09:45', '2026-11-07', '10:40', '2026-11-07', 58, '0:56', 'sleeper'],
+  ['stop', 'A', '16:15', '2026-11-07', '17:15', '2026-11-07', 56, '0:56', 'on'],
+  ['return', 'Y', '17:15', '2026-11-07', '03:59', null, 594, '10:44', 'on'],
+]), times));
+expect('a longer leg back after midnight of its last day is back the day after', [after.days, after.backOn], [true, '2026-11-08']);
+
 /* A RUN THROUGH THE NIGHT. Out at 17:00, driving all night with short
    stops, at the hotel at 6:00 the next morning and back the day after:
    each date's row is under the rule, but the night is one stretch of 12 h

@@ -20,17 +20,40 @@ and shuts, so the drivers' heads, the 40px two-line cells
 `scheduler/docs/screen-inventory.md` describes, are often off screen, and a
 bar out on the road still carries each seat's duty mark, hours meter and
 rest meter. The mockup rux chose from is `design/m/resources/?layout=4`,
-local and unpublished, served on :8641.
+local and unpublished, and the tiles from its `?layout=5`, both served on
+:8641.
 
 ## Decisions
 
 - **The board stays laid out by bus.** A trip sits in its bus's row and its
   drivers in its seats; a rows-by-driver view would draw every trip once per
   driver and show buses or drivers, not both.
+- **A bus's head and a driver's are one tile, as narrow as it can be:**
+  9.5rem, 8px in from every edge, three columns 8px apart: the picture,
+  32px, the readings, which take what is left, and the marks, 16px. Each
+  row says the same kind of thing for both, so the tile is learnt once.
+- **The bus column's tile:** the bus's type drawing on a disc in the bus's
+  own colour, as its tip draws it, over its number; beside them, its state,
+  "68 mph" in green while moving, "Idle 12m", "Off 43h"; its fuel, a meter
+  and its percent, the meter grey until low and critical; and the city it
+  is in, "San Marcos", the full place left to its tip. Its foot row is its
+  seats and its sleeper and lift, Carbon's 16px icons. Its marks stand in
+  their own column, the worst first: the engine lamp, the papers, out of
+  service, and DEF only while low, where the kit beside the number holds
+  the papers' and out-of-service marks now.
+- **The rail's tile is the driver's, two lines, 48px rows:** the most urgent
+  mark, their photo or initials, and the name over their tank, the hours
+  left on a meter, green and amber under an hour, or while resting "Off
+  18h", "SB 3h" on the rest meter toward eight hours in the rest colour the
+  bars use. The words stay the duty log's short ones, "6:21 left", "On
+  0:36".
+- **The driver's card is the driver's full tile:** the bus tile's rows for a
+  driver, what they are doing now and which bus Samsara has them in, the
+  hours left, then the rest toward eight hours or the week's cycle, and
+  their language, endorsements and Part-time where the bus has its kit.
 - **The roster becomes a rail, always open on the Mac's board.** Closed, it
-  is the name column alone, 7.5rem, each driver's head as now: the name,
-  what Samsara's clock says and the most urgent mark. The toolbar loses its
-  Driver availability toggle.
+  is the driver tiles alone, 9.5rem. The toolbar loses its Driver
+  availability toggle.
 - **The rail stands left of the board, a card of its own beside it.** The
   right is the editor's, and a rail there would stand between the week and
   the trip being edited. Its rows are not the bus rows, so the board's gap
@@ -40,16 +63,17 @@ local and unpublished, served on :8641.
 - **The other left panels open left of the rail,** Tasks, Departures, Forms
   and the rest, so the rail always stands next to the board. The rail is
   counted in the sum `data.js` makes of the week's minimum and the open
-  panels, at its closed width and its gap, 8.5rem, and not in the two
-  panels beside the week. It is never closed for room, as the editor is
+  panels, at its closed width and its gap, 10.5rem, and not in the two
+  panels beside the week. The week's minimum is counted in days, so it
+  grows by the 7rem the bus column grows. It is never closed for room, as the editor is
   not. Where a panel needs room, the rail's open week folds back first, and
   only then does the oldest panel close, as now. On a laptop's 77rem board
   the rail, the week and one list fit, or the rail, the week and the
   editor, but not a list and the editor together, which the roster closed
   allows now: opening a trip closes the list.
 - **A chevron in the rail's head opens the week:** the seven squares of the
-  week in view slide out beside the names, the roster's grid as it is,
-  21.5rem in all, and the chevron turns to close them. It moves as Carbon's
+  week in view slide out beside the tiles, the roster's grid with its rows
+  48px, 23.5rem in all, and the chevron turns to close them. It moves as Carbon's
   side panel does, `design/docs/motion.md`'s expansion, and the browser
   keeps whether it was open, as it keeps the view's options.
 - **The phone's board has no rail.** Its half sheet and live card carry the
@@ -112,7 +136,11 @@ local and unpublished, served on :8641.
 
 ## Tasks
 
-- [ ] Make the roster a rail always open left of the Mac's board, a card of
+- [ ] Make the bus column's head the bus tile, 9.5rem, its marks moved from
+      the number's kit to the tile's column, in `scheduler/bus-head.js` and
+      `tools/check-bar.mjs`.
+- [ ] Make the roster a rail always open left of the Mac's board, its rows
+      the driver's tile in `scheduler/driver-head.js`, a card of
       its own level with the board's toolbar and day band, closed to its
       names, with the chevron that opens the week, kept by the browser; take
       Driver availability out of the toolbar, and count the rail in the

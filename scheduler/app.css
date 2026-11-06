@@ -1042,8 +1042,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
 /* A TRIP THAT IS BACK HAS ANSWERED WHAT ITS COLOUR ASKED, whether it was
    confirmed, a placeholder or a colour someone gave it, so it gives the
-   colour up and stands as Carbon's operable tile on the board's own layer:
-   the layer's fill and hover, the tile's edge, which theme.css paints, the
+   colour up and stands as Carbon's operable tile one layer above the board:
+   Layer 02's fill and hover, the tile's edge, which theme.css paints, the
    destination in the primary text and every other line in the secondary, so
    the trips still to come carry the colour and one that is back is still
    read whole, at 4.5 to 1, and still opens. Carbon's disabled and read-only
@@ -1052,8 +1052,8 @@ button.scheduler-row-head__num::after {
    fade, so none is dimmed twice, and a hue's own track ink goes with the
    hue. A bus still on its live line keeps that line's look until it ends. */
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) {
-  --scheduler-bg: var(--rux-layer);
-  --scheduler-hover: var(--rux-layer-hover);
+  --scheduler-bg: var(--rux-layer-02);
+  --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-fg: var(--rux-text-secondary);
   --scheduler-strong: var(--rux-icon-secondary);
   --scheduler-dim: initial;
@@ -1268,7 +1268,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar :is(.scheduler-bar__chat, .scheduler-bar__route)[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* A TRIP THAT IS BACK'S MARKS, bar.js's `closeMarks`, stand where an alert
    would, 4px apart: Paid in the green Carbon gives a green tag's words,
-   4.5 to 1 or more on the board's layer in every theme, and in a tip the
+   4.5 to 1 or more on Layer 02 in every theme, and in a tip the
    green `.scheduler-tip` mixes for its surface; the warning triangle as the
    alert draws it; and the close-out button, Carbon's Incomplete in the
    status blue, a glyph alone as the alert is. */

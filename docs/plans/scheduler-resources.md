@@ -6,58 +6,85 @@ type: plan
 
 ## Goal
 
-The board's two resources, its buses and its drivers, read and act alike.
-Each has a head that says who it is and warns when its papers are about to
-run out, a card from a press, and a menu from a right-click or a hold whose
-items come in the same order. Days a bus or a driver cannot take a trip are
-drawn the same way. A driver's name on a bar opens a menu for that driver
-on that trip, the link between the two.
+The board's three things, its trips, buses and drivers, are always on
+screen together, and its two resources read and act alike. A bus's head
+stands at the start of its row in the bus column; a driver's stands in a
+names rail that is always open against the board, and a chevron opens the
+week's squares beside the names when a driver is being found for a trip.
+What a bus or a driver is doing now is their head's, and a trip bar keeps
+what is about its trip, as the bus column already took the speed, fuel and
+DEF off the bars.
 
-Today the bus column has the card and the live state but no menu, and the
-roster has the menu but no card and no warning for a licence or medical
-card running out, which shows only in the bar menu's Assign driver list.
-Out of service is a striped span on the bus's row, and time off is a red
-cell in the roster. Setting either means leaving the board for the Fleet or
-Drivers page. A right-click on a driver on a bar opens the trip's menu.
+Today the roster is a panel the toolbar's Driver availability toggle opens
+and shuts, so the drivers' heads, the 40px two-line cells
+`scheduler/docs/screen-inventory.md` describes, are often off screen, and a
+bar out on the road still carries each seat's duty mark, hours meter and
+rest meter. The mockup rux chose from is `design/m/resources/?layout=4`,
+local and unpublished, served on :8641.
 
 ## Decisions
 
 - **The board stays laid out by bus.** A trip sits in its bus's row and its
-  drivers in its seats, and the roster beside the board already shows each
-  driver's days, so the board has no rows-by-driver view, which would draw
-  every trip once per driver.
-- **One head, three parts, the same for both:** who it is, then its state,
-  then a mark for papers. A bus's head keeps what `scheduler/bus-head.js`
-  draws. A driver's head is the roster's name, since the roster's own cells
-  already show where they are each day.
-- **A lapse mark on both heads,** where any paper runs out within 45 days,
-  the threshold the Fleet and Drivers pages already use: amber within 45
-  days and red once it has run out, with the paper and its date in the card.
-  On a bus that means insurance, registration or inspection, the papers
-  `fleet.js` already compares. On a driver it means the licence or the
-  medical card. The bus's mark sits in the head's kit beside the
-  out-of-service mark, and the driver's at the end of their name.
-- **One card from a press.** The bus number's tip stays as it is. A driver's
-  card is the bar's driver tip with nothing about a trip: their photo or
-  initials, name, priority and Part-time, phone, language, licence and
-  medical dates, their next trip, and Call in its footer. It is drawn in
-  `scheduler/trip-tips.js` beside the bar's driver tip, sharing its head.
-  This replaces the inventory's "Driver card, later" row.
-- **One menu, the same items in the same order,** opened by a right-click,
-  the menu key or a finger's hold, placed by `popMenuAt` as the bar's menu
-  is:
-  1. **Open bus** / **Open driver**: the record, in a new tab.
-  2. **Reach:** **Live map** for a bus Samsara reports on; **Call** and
-     **Text** for a driver with a number.
-  3. **Away:** **Mark out of service…** / **Add time off…**.
-  4. **The resource's own actions:** **Send trips** for a driver. A bus has
-     none yet, and Log a repair joins here when `scheduler-maintenance.md`
-     builds entry.
-  5. **Pick out trips** for a driver only. A bus's trips are already its row.
+  drivers in its seats; a rows-by-driver view would draw every trip once per
+  driver and show buses or drivers, not both.
+- **The roster becomes a rail, always open on the Mac's board.** Closed, it
+  is the name column alone, 7.5rem, each driver's head as now: the name,
+  what Samsara's clock says and the most urgent mark. The toolbar loses its
+  Driver availability toggle.
+- **The rail stands left of the board, a card of its own beside it.** The
+  right is the editor's, and a rail there would stand between the week and
+  the trip being edited. Its rows are not the bus rows, so the board's gap
+  parts them rather than a rule that would set a driver beside a bus as if
+  they belonged together; its head stands level with the board's toolbar
+  and its Driver row with the day band, so the two read as one workspace.
+- **The other left panels open left of the rail,** Tasks, Departures, Forms
+  and the rest, so the rail always stands next to the board. The rail is
+  counted in the sum `data.js` makes of the week's minimum and the open
+  panels, at its closed width and its gap, 8.5rem, and not in the two
+  panels beside the week. It is never closed for room, as the editor is
+  not. Where a panel needs room, the rail's open week folds back first, and
+  only then does the oldest panel close, as now. On a laptop's 77rem board
+  the rail, the week and one list fit, or the rail, the week and the
+  editor, but not a list and the editor together, which the roster closed
+  allows now: opening a trip closes the list.
+- **A chevron in the rail's head opens the week:** the seven squares of the
+  week in view slide out beside the names, the roster's grid as it is,
+  21.5rem in all, and the chevron turns to close them. It moves as Carbon's
+  side panel does, `design/docs/motion.md`'s expansion, and the browser
+  keeps whether it was open, as it keeps the view's options.
+- **The phone's board has no rail.** Its half sheet and live card carry the
+  drivers as now.
+- **A driver's state leaves the bars for their head.** A bar out on the road
+  draws its seats as a planned bar does, each name with its answer, and the
+  driver at the wheel keeps the steering wheel's mark and first place, since
+  who drives this bus now is the trip's. The duty mark, the hours-left meter
+  and the rest meter go: the head's line says them, "6:21 left", "SB 3h".
+- **The trip's problems stay on the bar,** in its times row as now: Wrong
+  bus, a driver at the wheel the trip does not name, and Short on hours for
+  the driver at the wheel, live-trip.js's warnings.
+- **The detail stays where it is opened.** The live card and the bar's
+  driver tip keep the three clocks and the rest meter, and the driver's card
+  gains them.
+- **A press on a driver's mark or their line opens their card,** as a bar's
+  marks open its tips; a press on the name picks out their trips. The mark
+  and the line become buttons inside the name's cell, as a bar's marks are
+  inside the bar.
+- **The driver's card** is the bar's driver tip with nothing about one
+  trip: their photo or initials, name, priority and Part-time, what they
+  are doing now with their three clocks and the rest meter, phone,
+  language, licence and medical dates, each mark's words with its action,
+  Tell or Send trips, their next trip, and Call in its footer. It is drawn
+  in `scheduler/trip-tips.js` beside the bar's driver tip, sharing its head,
+  and floats as the bar's tips do, over the rail and the board. This
+  replaces the inventory's "Driver card, later" row.
+- **Both menus gain Away, after Reach:** **Mark out of service…** for a bus
+  and **Add time off…** for a driver, before Send trips.
 - **Away is set from the board in the record pages' own dialog.** The time
   off dialog in `drivers.js` and the out-of-service form in `fleet.js` move
   to one shared file, which the record pages and the board both open, so
   each is written once and saving from the board saves as the page does.
+- **Away keeps its two drawings,** the stripes on a bus's row and the red
+  cell in the roster.
 - **A driver on a bar has a seat menu,** from a right-click or a hold on
   their name in a seat. It does not open the trip's menu, because the name
   is the thing pressed. Its items, in this order:
@@ -76,35 +103,32 @@ Drivers page. A right-click on a driver on a bar opens the trip's menu.
 
 ## Questions
 
-- **What does a press on a driver's name in the roster do?** Today it
-  picks out their trips. To match a bus, it would open their card, with
-  Pick out trips in the card's footer and on the menu. My pick is the card,
-  since a press is a look everywhere else on the board and picking out
-  trips is one more press away.
-- **Which way is away drawn for both?** The board's stripes in the roster's
-  cells, or the roster's red on the board's row. My pick is the stripes:
-  red on the board already means a clash or an error, and stripes read as
-  "not available" without a colour.
-- **Should a bus head's lapse mark replace the inspection date** that a bus
-  Samsara does not report on shows where the live state goes? With the
-  mark, the date is in the card like every other bus's.
+- **Does the closed rail say who is free for the selected trip?** With a
+  trip selected, the open week draws a green slot across its days for each
+  driver free for all of them. Closed, a green check beside those drivers'
+  names could say the same, so finding a driver seldom needs the week
+  opened. My pick is yes, the check in the mark's place before the name,
+  the mark coming back when the trip is put down.
 
 ## Tasks
 
-- [ ] Draw the lapse mark on the bus head and the roster's names, with the
-      paper and date in each card, and draw each state in
+- [ ] Make the roster a rail always open left of the Mac's board, a card of
+      its own level with the board's toolbar and day band, closed to its
+      names, with the chevron that opens the week, kept by the browser; take
+      Driver availability out of the toolbar, and count the rail in the
+      panels' sum as the decision says, its week folding first.
+- [ ] Draw a road bar's seats as a planned bar's, the wheel's mark kept, and
+      take the duty mark and the hours and rest meters off it, in
+      `scheduler/road-bar.js`, `tools/check-bar.mjs` and the components
+      page's samples.
+- [ ] Add the driver's card to `scheduler/trip-tips.js`, opened by a press
+      on the mark or the line in a driver's head, and draw it in
       `tools/check-bar.mjs`.
-- [ ] Add the driver's card to `scheduler/trip-tips.js` and open it from the
-      roster as the first question decides.
-- [ ] Give the bus head its menu in `scheduler/index.html` and `data.js`,
-      and reorder the roster's menu to the shared order.
 - [ ] Move the time off and out-of-service dialogs into one shared file, open
-      it from the Drivers and Fleet pages and from both menus' Away item.
+      it from the Drivers and Fleet pages, and add Away to both menus.
 - [ ] Add the seat menu for a driver's name on a bar, opened by a
       right-click or a hold, out of the way of the drag that carries a
       driver off a bar.
-- [ ] Draw away the same way on the board's rows and the roster's cells in
-      every theme, as the second question decides.
-- [ ] Correct `scheduler/docs/screen-inventory.md`: the bus column, the
-      driver availability grid, the Driver card row and the Assign driver
-      menu.
+- [ ] Correct `scheduler/docs/screen-inventory.md` as each lands: the driver
+      availability grid, the bar out on its trip, the Driver card row and
+      the Assign driver menu.

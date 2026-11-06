@@ -131,13 +131,14 @@ driver pickers, links and forms as if it were a person.
 
 ### The board
 
-- **A covered bus's bar sits in a Partners row,** below the fleet and above
-  No bus, shut until one of its bars is in view, as a bus no longer active
-  is, because the office plans no partner's coaches by row.
+- **A covered bus's bar sits in its partner's row,** one row for each
+  partner, headed with the partner's name on the bus rows' surface, below the
+  fleet and above No bus, shut until one of its bars is in view, as a bus no
+  longer active is.
 - **The bar names the partner where the drivers go,** marked unconfirmed
   until it is, and never says Needs a bus.
 - **It has no live line,** because Samsara knows only our buses.
-- **A covered bar does not lift for a drag, and the Partners row takes no
+- **A covered bar does not lift for a drag, and a partner's row takes no
   drop,** because a drop's Undo could not give a partner back its price and
   confirmation; a partner is let go in its vehicle's window.
 - **The card and the phone's sheet name the partner,** their coach, driver,
@@ -212,6 +213,6 @@ None open.
       in the screen inventory and the scheduler's `README.md`.
 - [ ] In Chrome on :8641, with the page's writes recorded and not sent, cover
       one bus of three on a trip, confirm it, price it, and see the leg read
-      as fully covered, the bar in the Partners row and Billing's Paid to
+      as fully covered, the bar in its partner's row and Billing's Paid to
       partners; then open a saved trip with no partner and see it read as
       before.

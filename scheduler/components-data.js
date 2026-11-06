@@ -134,6 +134,8 @@
     // One bar on one bus, the trip's first bus on its outbound leg unless said.
     const bar = (t, more = {}) => ({ trip: t, leg: 'outbound', slot: 0, start: 0, span: 2, ...more });
     const row = (head, ...bars) => ({ head, bars });
+    // A partner's row, headed with its name.
+    const partnerRowOf = (id, ...bars) => ({ head: partnersById.get(id).name, partner: true, bars });
     const crewed = (bus, status = 'confirmed') => ({ bus, crew: [['d1', 'driver', status]] });
     // Three buses: one of ours, one a partner confirmed with its price, one a partner has not confirmed.
     const covered = trip({ customer: 'Northside Band', destination: 'Austin, TX', bus_count: 3, buses: [crewed('b101'),
@@ -209,8 +211,8 @@
               trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, invoice_number: '4108', buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
         { name: 'Update ages', note: "Age is neutral text before the newest update; the entire row opens Updates, including when none exist.", days: 3, rows: aged },
-        { name: 'A bus a partner covers', note: 'A partner\'s coach and driver in place of a bus of ours, in the Partners row between the fleet and No bus: the partner where the drivers go, its mark its answer. One not confirmed inside fourteen days of departure is an error, as an empty seat is, and so is a partner whose insurance runs out before the trip ends.', days: 3,
-          rows: [row('101', bar(covered)), row('Partners', bar(covered, { slot: 1 }), bar(covered, { slot: 2 }))] },
+        { name: 'A bus a partner covers', note: 'A partner\'s coach and driver in place of a bus of ours, in its partner\'s row, headed with the partner\'s name, between the fleet and No bus: the partner where the drivers go, its mark its answer. One not confirmed inside fourteen days of departure is an error, as an empty seat is, and so is a partner whose insurance runs out before the trip ends.', days: 3,
+          rows: [row('101', bar(covered)), partnerRowOf('p1', bar(covered, { slot: 1 })), partnerRowOf('p2', bar(covered, { slot: 2 }))] },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,
           rows: [row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
       ],
@@ -400,7 +402,8 @@
        tip, `section` the card's part open, and `editor` the trip's updates
        as the office has them open, as trip-tips.js reads them. */
     const tipOf = (name, note, b, tip) => ({ name, note, days: 3,
-      rows: [row(b.trip.trip_assignments[b.slot ?? 0]?.partner_id ? 'Partners' : busesById.get(b.trip.trip_assignments[0]?.bus_id)?.number ?? '101', b)], tip });
+      rows: [b.trip.trip_assignments[b.slot ?? 0]?.partner_id ? partnerRowOf(b.trip.trip_assignments[b.slot ?? 0].partner_id, b)
+        : row(busesById.get(b.trip.trip_assignments[0]?.bus_id)?.number ?? '101', b)], tip });
     const said = [
       update('Gate 4 at the stadium, not the main doors', 2 * HOUR),
       { ...update('Coach Ortiz has the rooming list', DAY), actor_name: 'Luis', edited_at: new Date(now - DAY + HOUR).toISOString() },

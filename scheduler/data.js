@@ -202,7 +202,8 @@
 
   const UNASSIGNED = ' unassigned';
   // The row of the buses partners cover, between the fleet and the unassigned row.
-  const PARTNERS = ' partners';
+  // A partner's row, by the partner's id.
+  const partnerRowId = id => ` partner:${id}`;
 
   // A vehicle as every screen names it, "Coach 218" or "Van 12"; vehicles.js.
   const vehicleName = bus => window.SchedulerVehicles?.label(bus) ?? (String(bus?.number ?? '').trim() || 'Unit');
@@ -244,8 +245,8 @@
   const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
     bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
   // The bus's disc: its type's drawing, or its letter, on the bus's own colour.
-  function busDisc(bus, cls = '') {
-    const disc = el('div', `scheduler-bus-disc ${cls}`.trim());
+  function busDisc(bus) {
+    const disc = el('div', 'scheduler-bus-disc');
     disc.setAttribute('aria-hidden', 'true');
     const ink = window.SchedulerVehicles?.inkOn(bus.color);
     if (ink) { disc.style.background = bus.color; disc.style.color = ink; }
@@ -253,6 +254,14 @@
     disc.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
+  }
+  // The bus's type's drawing alone, in the head's own ink, where its picture will go.
+  function busIcon(bus) {
+    const mark = el('span', 'scheduler-row-head__icon');
+    mark.setAttribute('aria-hidden', 'true');
+    const icon = window.SchedulerVehicles?.iconOf(bus.type);
+    mark.appendChild(icon ? svgUse(icon, '16', '0 0 32 32') : svgUse('#m-directions_bus-fill', '16', '0 0 32 32'));
+    return mark;
   }
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-tip');
@@ -1190,8 +1199,8 @@
         const assigns = (trip.trip_assignments || [])
           .filter(a => legKeyOfVehicle(trip, a) === leg.key)
           .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
-        // A bus a partner covers sits in the partners' row, one with no bus yet in the unassigned row.
-        assigns.forEach(a => push(a.partner_id != null ? PARTNERS : a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
+        // A bus a partner covers sits in its partner's row, one with no bus yet in the unassigned row.
+        assigns.forEach(a => push(a.partner_id != null ? partnerRowId(a.partner_id) : a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
         for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
       }
     }
@@ -1219,10 +1228,13 @@
     // longer active while none of its trips is on screen. A drag has to be
     // able to drop the week's first unassigned trip somewhere, and a row that
     // is not in the document has no rectangle to aim at.
-    /* The partners' row holds every bus a partner covers, each bar naming its
-       partner, since the office plans no partner's coaches by row; it stands
-       shut, as the unassigned row does, until one of its trips is on screen. */
-    rows.push({ id: PARTNERS, bus: null, partners: true, empty: !tracks.has(PARTNERS) });
+    /* Each partner has a row of the buses it covers, headed with its name, in
+       the order of the names, below the fleet; it is hidden while it covers
+       none in the days read, and stands shut, as the unassigned row does,
+       until one of its trips is on screen. */
+    for (const p of [...partnersById.values()].sort((a, b) => String(a.name).localeCompare(String(b.name)))) {
+      rows.push({ id: partnerRowId(p.id), bus: null, partner: p, empty: !tracks.has(partnerRowId(p.id)) });
+    }
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
     /* Which of its leg's buses a bar is, counted down the board, so the
        topmost is the leg's first bus and bar.js tells the rest apart. */
@@ -1346,17 +1358,17 @@
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
       if (bars.length) assignLanes(bars);
-      const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : r.partners ? ' scheduler-row--partners' : ''));
+      const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : r.partner ? ' scheduler-row--partner' : ''));
       if (r.empty) rowEl.hidden = true;
 
       /* The head is the bus number, its marks and the bus's own state, which
-         bus-head.js draws under them, and on the Mac's board the bus's disc
-         over the number; the rest of what the bus knows is in the number's
+         bus-head.js draws under them, and on the Mac's board the bus's type
+         beside the number; the rest of what the bus knows is in the number's
          toggletip and the head's title. */
       const head = el('div', 'scheduler-row-head');
-      if (r.bus) head.appendChild(busDisc(r.bus, 'scheduler-row-head__disc'));
       const top = el('div', 'scheduler-row-head__top');
       head.appendChild(top);
+      if (r.bus) top.appendChild(busIcon(r.bus));
       if (r.bus) head.dataset.busId = r.bus.id;
       // "No bus" wraps in the narrow column, and the head's title carries the sense.
       /* The number is a toggletip trigger, with the structure from
@@ -1381,9 +1393,9 @@
         tip.append(trigger, pop);
         top.appendChild(tip);
       } else {
-        top.append(el('div', 'scheduler-row-head__num', r.partners ? 'Part\u00ADners' : 'No\nbus'));
+        top.append(el('div', 'scheduler-row-head__num', r.partner ? r.partner.name : 'No\nbus'));
       }
-      if (!r.bus) head.title = r.partners ? 'Buses partners cover with their own coach and driver' : 'Trips with no bus yet';
+      if (!r.bus) head.title = r.partner ? `${r.partner.name}, a partner covering buses with its own coach and driver` : 'Trips with no bus yet';
       if (r.bus) {
         head.title = [
           vehicleName(r.bus),
@@ -1407,7 +1419,7 @@
       if (r.bus) {
         const equip = el('div', 'scheduler-row-head__equip');
         // Its seats, which the Mac's tile shows beside the kit.
-        if (r.bus.capacity) equip.appendChild(el('span', 'scheduler-row-head__seats', `${r.bus.capacity} seats`));
+        if (r.bus.capacity) equip.appendChild(el('span', 'scheduler-row-head__seats', `${r.bus.capacity} pax`));
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
           const t = el('span', 'scheduler-row-head__tile');
           if (on) {
@@ -1422,14 +1434,14 @@
 
       const track = el('div', 'scheduler-track');
       if (r.bus) track.dataset.busId = r.bus.id;
-      else if (r.partners) track.dataset.partners = 'true';
+      else if (r.partner) track.dataset.partner = String(r.partner.id);
       else track.dataset.unassigned = 'true';
       if (r.bus && r.bus.status !== 'active') track.dataset.retired = '';
       for (const w of windows) track.appendChild(oosEl(w, clip(w.start_date, w.end_date, weekStart, weekEnd)));
       const items = rowItems(bars, r.bus ? yardGaps(bars) : [], { driversById, busesById, statuses });
       /* A row starts with the fewest lanes it takes, which `fitLanesInView`
          grows for the trips in view once the strip is placed. */
-      const least = track.dataset.retired != null || track.dataset.unassigned || track.dataset.partners ? 0 : 1;
+      const least = track.dataset.retired != null || track.dataset.unassigned || track.dataset.partner ? 0 : 1;
       track.style.setProperty('--scheduler-lanes', least);
       stripRows.push({ track, head, bus: r.bus, items, least, windows });
 
@@ -1531,7 +1543,7 @@
      drawn board rather than the data, because what is drawn near the view
      is exactly the days being asked about. */
   function inTheWay(track, start, span) {
-    if (track.dataset.unassigned || track.dataset.partners) return null;
+    if (track.dataset.unassigned || track.dataset.partner) return null;
     for (const other of track.querySelectorAll('.scheduler-bar')) {
       if (overlaps(start, span, +other.dataset.start, +other.dataset.span)) return other;
     }
@@ -1805,8 +1817,8 @@
   function swapStrip(data, [sameFrom, sameTo]) {
     const days = viewDays();
     const laid = layOutBoard(data, stripStart, stripEnd);
-    const laidRow = r => (r.id === UNASSIGNED || r.id === PARTNERS ? r.id : String(r.id));
-    const drawnRow = row => (row.track.dataset.unassigned ? UNASSIGNED : row.track.dataset.partners ? PARTNERS : row.track.dataset.busId);
+    const laidRow = r => (r.id === UNASSIGNED || r.partner ? r.id : String(r.id));
+    const drawnRow = row => (row.track.dataset.unassigned ? UNASSIGNED : row.track.dataset.partner ? partnerRowId(row.track.dataset.partner) : row.track.dataset.busId);
     if (laid.rows.length !== stripRows.length || laid.rows.some((r, i) => laidRow(r) !== drawnRow(stripRows[i]))) return false;
     // A live read since the strip was drawn changed nothing in it, but the standing rules read the payload in hand.
     if (data !== stripData) { boardNearby = { trips: data.trips, off: data.timeOff, oos: data.oos }; boardPartners = laid.partnersById; standingOf.clear(); }
@@ -1833,7 +1845,7 @@
       row.track.querySelectorAll(':scope > .scheduler-oos').forEach(node => node.remove());
       row.track.prepend(...row.windows.map(w => oosEl(w, clip(w.start_date, w.end_date, stripStart, stripEnd))));
       const rowEl = row.track.parentElement;
-      if ((r.id === UNASSIGNED || r.id === PARTNERS) && rowEl.hidden !== !!r.empty) rowEl.hidden = !!r.empty;
+      if ((r.id === UNASSIGNED || r.partner) && rowEl.hidden !== !!r.empty) rowEl.hidden = !!r.empty;
     });
     // A bar the new layout moved or no longer has goes, and is drawn again as it comes near.
     for (const item of kept.values()) item.el.remove();
@@ -2179,8 +2191,8 @@
         unassignedRow.dataset.opened = 'true';
         markLastRow(gridEl);
       }
-      // The partners' row takes no drop: a partner is given a bus on the Buses tab.
-      tracks = [...gridEl.querySelectorAll('.scheduler-track:not([data-partners])')];
+      // A partner's row takes no drop: a partner is given a bus on the Buses tab.
+      tracks = [...gridEl.querySelectorAll('.scheduler-track:not([data-partner])')];
       /* The press's rise comes off the bar at once, with no settle, so the
          bar is measured at its own size; the copy takes the rise over. */
       const pressed = bar.classList.contains('scheduler-bar--pressed');

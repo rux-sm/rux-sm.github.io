@@ -170,12 +170,11 @@
     const grid = el('div', 'scheduler-grid');
     for (const r of sample.rows) {
       const none = r.head === 'No bus';
-      const partners = r.head === 'Partners';
-      const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : partners ? ' scheduler-row--partners' : ''}`);
+      const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : r.partner ? ' scheduler-row--partner' : ''}`);
       const head = el('div', 'scheduler-row-head');
-      head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : partners ? 'Part\u00ADners' : r.head));
+      head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
       if (none) head.title = 'Trips with no bus yet';
-      if (partners) head.title = 'Buses partners cover with their own coach and driver';
+      if (r.partner) head.title = `${r.head}, a partner covering buses with its own coach and driver`;
       const track = el('div', 'scheduler-track');
       const bars = r.bars.map(placed);
       track.style.setProperty('--scheduler-lanes', assignLanes(bars));

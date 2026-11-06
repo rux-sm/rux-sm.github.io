@@ -667,9 +667,9 @@ const dayIn = n => {
   d.setDate(d.getDate() + n);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
-expect('moving: the speed over mph in a filled green display, the fuel\'s percent and meter, alone while DEF is normal, the city under them, no marks',
+expect('moving: the speed over mph in a filled green display, the fuel\'s percent and meter, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__fuel-pct'), line(h), marks(h)]; })(),
-  [['64mph', 'moving', true], [['F', 'normal']], '72%', 'San Marcos', []]);
+  [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);
 expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
@@ -678,16 +678,14 @@ expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 
 expect('a bus standing with its engine on past 30 minutes is as long idle as one Samsara calls idle',
   [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(dial),
   [['Idle45m', 'warning', true], ['Idle45m', 'warning', true], ['Idle10m', 'quiet', true]]);
-expect('standing: Idle over how long, amber past 30 minutes, or Off over how long the engine has been off; the city it is in, the place left to the tip',
+expect('standing: Idle over how long, amber past 30 minutes, or Off over how long the engine has been off; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', engine_at: ago(130), mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })], [busHead({ engine: 'off', mph: 0, fuel: 50 })]]
     .map(([h]) => [...dial(h), h.querySelector('.scheduler-row-head__dial').getAttribute('aria-label'), line(h)]),
-  [['Idle14m', 'quiet', true, 'Idling 14m', 'Laredo'], ['Idle45m', 'warning', true, 'Idling 45m, past 30 minutes', 'Laredo'], ['Off2h', 'quiet', false, 'Engine off 2h', 'McAllen'], ['Off', 'quiet', false, 'Engine off', null]]);
-expect('a low DEF takes the city\'s place, since it asks something of the office',
-  (() => { const h = busHead({ engine: 'on', mph: 40, fuel: 50, def: 10, place: 'Laredo, TX' }); return [line(h), levels(h)]; })(),
-  [null, [['F', 'normal'], ['D', 'low']]]);
-expect('the city is the part of the place before its state',
-  ['4015 South Interstate 35, San Marcos, TX, 78666', 'Somewhere, TX', 'I-10, Katy, TX 77494', 'Corpus Christi', null].map(BusHead.cityOf),
-  ['San Marcos', 'Somewhere', 'Katy', 'Corpus Christi', null]);
+  [['Idle14m', 'quiet', true, 'Idling 14m', null], ['Idle45m', 'warning', true, 'Idling 45m, past 30 minutes', null], ['Off2h', 'quiet', false, 'Engine off 2h', null], ['Off', 'quiet', false, 'Engine off', null]]);
+const kitOrder = (bus, live) => busHead(live, { id: 'b1', capacity: 52, ...bus }).querySelectorAll('.scheduler-row-head__kit > *').map(m => m.classes().find(c => /__(papers|lamp)$/.test(c)).split('__')[1]);
+expect('the kit holds the worst mark first, which is the one the tile shows',
+  [kitOrder({ insurance_exp: dayIn(-2) }, { engine: 'on', mph: 40, fuel: 50, fault: 'check' }), kitOrder({ insurance_exp: dayIn(20) }, { engine: 'on', mph: 40, fuel: 50, fault: 'stop' })],
+  [['papers', 'lamp'], ['lamp', 'papers']]);
 const lamp = h => { const m = h.querySelector('.scheduler-row-head__lamp'); return m ? [m.dataset.tone, m.getAttribute('aria-label')] : null; };
 expect('the engine lamp is a mark in the kit, amber or red, with its codes on its label',
   [lamp(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check', faults: ['Coolant level: Low'] })), lamp(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), lamp(busHead({ engine: 'on', mph: 40, fuel: 50 }))],

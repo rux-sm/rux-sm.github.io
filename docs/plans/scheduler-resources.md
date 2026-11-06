@@ -29,22 +29,21 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
 - **The board stays laid out by bus.** A trip sits in its bus's row and its
   drivers in its seats; a rows-by-driver view would draw every trip once per
   driver and show buses or drivers, not both.
-- **A driver's head is the bus's tile, as the bus column draws it:**
-  9.5rem, 8px in from every edge, three columns 8px apart, the picture's
-  32px, the readings and the marks' 16px, each row saying the same kind of
-  thing for both, so the tile is learnt once.
-- **The rail's tile is the driver's, two lines, 48px rows:** the most urgent
-  mark, their photo or initials, and the name over their tank, the hours
-  left on a meter, green and amber under an hour, or while resting "Off
-  18h", "SB 3h" on the rest meter toward eight hours in the rest colour the
-  bars use. The words stay the duty log's short ones, "6:21 left", "On
-  0:36".
+- **A driver's head is the bus's tile, as the bus column draws it:** 96px,
+  8px in from every edge, a stack centred down it, its first line a plain
+  icon where a picture will go beside the name, with the worst mark at the
+  line's end, so the tile is learnt once.
+- **The rail's tile is the driver's, two lines, 48px rows:** a person's icon,
+  the name and the worst mark, over their tank, the hours left on a meter,
+  green and amber under an hour, or while resting "Off 18h", "SB 3h" on the
+  rest meter toward eight hours in the rest colour the bars use. The words
+  stay the duty log's short ones, "6:21 left", "On 0:36".
 - **The driver's card is the driver's full tile:** the bus tile's rows for a
   driver, what they are doing now and which bus Samsara has them in, the
   hours left, then the rest toward eight hours or the week's cycle, and
   their language, endorsements and Part-time where the bus has its kit.
 - **The roster becomes a rail, always open on the Mac's board.** Closed, it
-  is the driver tiles alone, 9.5rem. The toolbar loses its Driver
+  is the driver tiles alone, 6rem. The toolbar loses its Driver
   availability toggle.
 - **The rail stands left of the board, a card of its own beside it.** The
   right is the editor's, and a rail there would stand between the week and
@@ -55,9 +54,9 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
 - **The other left panels open left of the rail,** Tasks, Departures, Forms
   and the rest, so the rail always stands next to the board. The rail is
   counted in the sum `data.js` makes of the week's minimum and the open
-  panels, at its closed width and its gap, 10.5rem, and not in the two
+  panels, at its closed width and its gap, 7rem, and not in the two
   panels beside the week. The week's minimum is counted in days, so it
-  grows by the 7rem the bus column grows. It is never closed for room, as the editor is
+  grows by the 3.5rem the bus column grew. It is never closed for room, as the editor is
   not. Where a panel needs room, the rail's open week folds back first, and
   only then does the oldest panel close, as now. On a laptop's 77rem board
   the rail, the week and one list fit, or the rail, the week and the
@@ -65,7 +64,7 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
   allows now: opening a trip closes the list.
 - **A chevron in the rail's head opens the week:** the seven squares of the
   week in view slide out beside the tiles, the roster's grid with its rows
-  48px, 23.5rem in all, and the chevron turns to close them. It moves as Carbon's
+  48px, 20rem in all, and the chevron turns to close them. It moves as Carbon's
   side panel does, `design/docs/motion.md`'s expansion, and the browser
   keeps whether it was open, as it keeps the view's options.
 - **The phone's board has no rail.** Its half sheet and live card carry the
@@ -123,7 +122,7 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
   trip selected, the open week draws a green slot across its days for each
   driver free for all of them. Closed, a green check beside those drivers'
   names could say the same, so finding a driver seldom needs the week
-  opened. My pick is yes, the check in the mark's place before the name,
+  opened. My pick is yes, the check in the mark's place at the name's end,
   the mark coming back when the trip is put down.
 
 ## Tasks

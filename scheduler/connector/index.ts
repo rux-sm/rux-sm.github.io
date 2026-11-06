@@ -240,7 +240,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.7.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.8.0' })
 
         server.registerTool(
           'find_trips',
@@ -281,7 +281,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Departures panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the scheduler\'s to-do rules say of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. The trip\'s start_date and end_date are its first and last day across its legs. trip_legs are the trip\'s legs, each one time a bus leaves the yard and comes back, with its id, its old word (outbound, return, or null for a leg that has none), its kind (round_trip or one_way), its days, its bus_count and its routes; legs run in date order, and a split is a first leg one way with a later one, the pickup. Each stop and bus names its route_id, and is on the leg whose trip_routes hold it. trip_contacts are the day-of contacts in order, each with the leg_id it is for, or null for the whole trip. A document\'s leg_id is the leg it is for, on a trip of more than one; a null leg_id is the first leg\'s, and a later leg with no itinerary of its own is handed the first leg\'s. On a split trip (trip_type dropoff_pickup) each trip_contact_<n>_leg says which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Departures panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the scheduler\'s to-do rules say of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. The trip\'s start_date and end_date are its first and last day across its legs. trip_legs are the trip\'s legs, each one time a bus leaves the yard and comes back, with its id, its old word (outbound, return, or null for a leg that has none), its kind (round_trip or one_way), its days, its bus_count and its routes; legs run in date order, and a split is a first leg one way with a later one, the pickup. Each stop and bus names its route_id, and is on the leg whose trip_routes hold it. trip_contacts are the day-of contacts in order, each with the leg_id it is for, or null for the whole trip. A bus a partner covers, another company with its own coach and driver, has partner (its name and phone), partner_price (what the office pays it), partner_confirmed, partner_vehicle (their coach as typed) and partner_driver (one of the partner\'s own, with phone) in place of a bus and drivers; it counts as one of the leg\'s buses assigned, and asks only that the partner confirm and its price be entered. A document\'s leg_id is the leg it is for, on a trip of more than one; a null leg_id is the first leg\'s, and a later leg with no itinerary of its own is handed the first leg\'s. On a split trip (trip_type dropoff_pickup) each trip_contact_<n>_leg says which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -297,7 +297,7 @@ Deno.serve(
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
 
             const buses = orThrow(await supabase.from('trip_assignments')
-              .select('position, leg, route_id, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, report_time, pay, instructions, drivers(name, short_name, phone))')
+              .select('position, leg, route_id, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, report_time, pay, instructions, drivers(name, short_name, phone)), partner:partner_id(name, phone), partner_price, partner_confirmed, partner_vehicle, partner_driver:partner_driver_id(name, phone)')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             const stops = orThrow(await supabase.from('trip_stops')
@@ -363,7 +363,7 @@ Deno.serve(
           {
             title: 'What needs attention',
             description:
-              'What the scheduler itself says needs doing, by the board\'s own rules. to_do is every row its to-do rules work out from the trips: a follow-up due, a trip short of buses, no times, a clash, a driver who declined or has a change to be told, a leg leaving soon with something open. departures is each day the office preps for, tomorrow and on to the next working day, or the day asked, with every leg leaving that day, whether it is ready, and its gaps as the Departures panel lists them. None of this is a stored row: each goes once its trip is fixed, so never add a task for it. today is the office\'s day.',
+              'What the scheduler itself says needs doing, by the board\'s own rules. to_do is every row its to-do rules work out from the trips: a follow-up due, a trip short of buses, no times, a clash, a driver who declined or has a change to be told, a leg leaving soon with something open. A bus a partner covers counts as assigned and is named by its partner, asking only that the partner confirm and its price be entered. departures is each day the office preps for, tomorrow and on to the next working day, or the day asked, with every leg leaving that day, whether it is ready, and its gaps as the Departures panel lists them. None of this is a stored row: each goes once its trip is fixed, so never add a task for it. today is the office\'s day.',
             inputSchema: z.object({
               day: ISO_DATE.optional().describe('List the legs leaving on this day. Left out, the days the office preps for today.'),
             }),
@@ -546,7 +546,7 @@ Deno.serve(
           'find_documents',
           {
             title: 'Find company documents',
-            description: 'Find the office\'s own paperwork, such as an insurance certificate, the W-9 or a driver\'s background check form, by its kind, the holder named on it, the customer it belongs to, the driver, its file name or its note. A customer that is part of another, as a school is of its district, finds that customer\'s documents too. Every word has to match. Answers with the current copies only, each with the day it ends and a link to the file that lasts ten minutes. Leave search out to list them all.',
+            description: 'Find the office\'s own paperwork, such as an insurance certificate, the W-9 or a driver\'s background check form, by its kind, the holder named on it, the customer it belongs to, the driver, the partner, a company that covers a bus for the office, its file name or its note. A customer that is part of another, as a school is of its district, finds that customer\'s documents too. Every word has to match. Answers with the current copies only, each with the day it ends and a link to the file that lasts ten minutes. Leave search out to list them all.',
             inputSchema: z.object({
               search: z.string().max(80).default(''),
               limit: z.number().int().min(1).max(50).default(10),
@@ -555,7 +555,7 @@ Deno.serve(
           },
           async ({ search, limit }) => {
             const rows = orThrow(await supabase.from('company_documents')
-              .select('id, holder, ends_on, note, file_name, file_path, customer_id, kind:kind_id(name), customer:customer_id(name), driver:driver_id(name)')
+              .select('id, holder, ends_on, note, file_name, file_path, customer_id, kind:kind_id(name), customer:customer_id(name), driver:driver_id(name), partner:partner_id(name)')
               .is('replaced_at', null).order('created_at', { ascending: false })) as Record<string, any>[]
             // A district's certificate covers its schools, so a school's name finds it.
             const parts = orThrow(await supabase.from('customers').select('name, part_of_id')
@@ -563,7 +563,7 @@ Deno.serve(
             const partsOf = (id: string) => parts.filter(p => p.part_of_id === id).map(p => p.name)
             const words = search.toLowerCase().split(/\s+/).filter(Boolean)
             const found = rows.filter(row => {
-              const hay = [row.kind?.name, row.holder, row.customer?.name, row.driver?.name, row.file_name, row.note,
+              const hay = [row.kind?.name, row.holder, row.customer?.name, row.driver?.name, row.partner?.name, row.file_name, row.note,
                 ...(row.customer_id ? partsOf(row.customer_id) : [])]
                 .filter(Boolean).join(' ').toLowerCase()
               return words.every(word => hay.includes(word))
@@ -574,7 +574,7 @@ Deno.serve(
               const { data } = await supabase.storage.from('company-documents').createSignedUrl(row.file_path, 600)
               out.push({
                 id: row.id, kind: row.kind?.name ?? null, holder: row.holder ?? null, customer: row.customer?.name ?? null,
-                driver: row.driver?.name ?? null, ends_on: row.ends_on, note: row.note, file_name: row.file_name,
+                driver: row.driver?.name ?? null, partner: row.partner?.name ?? null, ends_on: row.ends_on, note: row.note, file_name: row.file_name,
                 link: data?.signedUrl ?? null, link_lasts: '10 minutes',
               })
             }

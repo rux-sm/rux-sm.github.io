@@ -204,10 +204,6 @@ None open.
 - [ ] Give trip 100783's outsourced bus to its partner, confirmed at its
       price, once rux has the partner's company name, and trip 100662's two
       outsourced buses once rux says who covers them.
-- [ ] Name the partner in the connector's `get_trip` and `needs_attention`,
-      find its papers in `find_documents`, deploy the connector, whose rules
-      already count a covered bus, and say how to enter one in the trips
-      skill.
 - [ ] Say which screens read and write `partners` and the partner columns in
       the database inventory, and describe the page and the changed screens
       in the screen inventory and the scheduler's `README.md`.

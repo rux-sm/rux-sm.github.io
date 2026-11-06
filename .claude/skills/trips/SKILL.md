@@ -101,7 +101,9 @@ reads only the ones before it. Nothing is written until step 10.
    the fuel card when the tab offers it.
 6. **Buses.** In the vehicle's window turn on any other need the route gave
    it, and Co-driver when rux chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
-   no driver.
+   no driver. A bus another company covers, which rux names, is its partner's: set Runs it to the
+   partner, then their price, Confirmed once they have said yes, their coach, and their driver from
+   the partner's list or New driver; the partner is made on the Partners page first.
 7. **Billing.** Press the Quote card's No quote lines yet row, which adds the
    bus rental and opens its window, and Done. It prices the line at the rate
    the Settings page's Calendar gives the trip's month, and the line names
@@ -164,7 +166,10 @@ reads only the ones before it. Nothing is written until step 10.
   drives, the fuel card and second-driver notices, the stops with their
   waits, Mark route done.
 - **Buses:** each bus, its driver and co-driver or relief seats, a warning
-  when Passengers is above the seats, Mark buses done.
+  when Passengers is above the seats, Mark buses done. A vehicle's window
+  starts with Runs it, our bus and driver or a partner; a partner's bus
+  has no seats, sits in its partner's row on the board, and its itinerary
+  for the partner is Forms' Itinerary for <partner>.
 - **Billing:** a tile of Quoted, Paid and Balance over confirmed or not;
   Quote: one card, a row per line and their total, each row opening that line's
   window and its right-click menu holding Move, Use calculator price and

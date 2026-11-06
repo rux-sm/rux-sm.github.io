@@ -69,8 +69,9 @@ driver pickers, links and forms as if it were a person.
 - **A partner driver's changes write the partner's History,** as a driver's
   time off writes the driver's.
 - **A partner's driver goes out in the Driver info message** the booking
-  contact is sent, beside ours and named with the partner, because the
-  customer needs the phone of whoever drives the group.
+  contact is sent, as ours do, under the partner's name where ours stand
+  under their bus number, because it is their bus and the customer needs the
+  phone of whoever drives the group.
 
 ### A partner's papers
 
@@ -161,8 +162,9 @@ driver pickers, links and forms as if it were a person.
   seat steps.
 - **The week schedule prints it in a Partners row,** and the maintenance
   schedule leaves it out, because the coach never comes to our yard.
-- **The customer's papers never name the partner,** as now: the quote,
-  confirmations and emails speak of the trip's buses.
+- **The customer's quote, confirmations and emails never name the
+  partner,** as now, and speak of the trip's buses; the Driver info message
+  alone does, over the partner's bus.
 - **The connector names the partner and its price** in `get_trip` and
   `needs_attention`, finds a partner's papers in `find_documents`, and the
   trips skill says how to enter one.
@@ -198,10 +200,6 @@ None open.
       `partners.contact_name` and `trip_assignments.partner_driver_name` and
       `partner_driver_phone` with their place in the partner fields check;
       show it to rux and apply it on a yes.
-- [ ] Let the vehicle's window pick the partner's driver, adding a typed one
-      on Save, read the driver from the list in the tip, the sheet,
-      Departures and the components page, and add the partner's driver to
-      the Driver info message, `driverLetter` in `scheduler/data.js`.
 - [ ] Print it: the itinerary headed with the partner, the week schedule's
       Partners row, and no envelope, hours of service or driver's link.
 - [ ] Give trip 100783's outsourced bus to its partner, confirmed at its

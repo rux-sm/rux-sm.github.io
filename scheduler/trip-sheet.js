@@ -221,9 +221,8 @@
       crewWords.append(...sheetCrew(trip, bar, board));
       fact('Partner', crewWords);
       if (assign.partner_vehicle) fact('Coach', assign.partner_vehicle);
-      if (assign.partner_driver_name || assign.partner_driver_phone) {
-        fact('Driver', sheetPerson({ name: assign.partner_driver_name || 'Not named', phone: assign.partner_driver_phone }));
-      }
+      const driver = window.SchedulerLegFacts.partnerDriverOf(assign, partner);
+      if (driver) fact('Driver', sheetPerson({ name: driver.name, phone: driver.phone }));
       if (partner.phone) fact('Call', sheetPerson({ name: partner.name, phone: partner.phone }));
     } else {
       const busWords = el('span', null, bus ? [vehicleName(bus), bus.capacity ? `${bus.capacity} seats` : null].filter(Boolean).join(' · ') : 'No bus');

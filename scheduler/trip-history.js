@@ -117,7 +117,7 @@
     spot: 'Spot', spot_date: 'Spot on', dwell_status: 'Wait', drive: 'Drive', miles: 'Miles',
     bus_id: '', driver_id: 'Driver', active_roles: 'Seats', needs: 'Needs', vehicle_type: 'Vehicle',
     partner_id: 'Partner', partner_price: 'Partner price', partner_confirmed: 'Partner confirmed',
-    partner_vehicle: "Partner's coach", partner_driver_name: "Partner's driver", partner_driver_phone: "Partner's driver phone",
+    partner_vehicle: "Partner's coach", partner_driver_id: "Partner's driver",
     report_time: 'Report time', pay: 'Pay', kind: 'Kind', item: 'Item', quantity: 'Quantity', cost: 'Cost',
     amount: 'Amount', ref: 'Number', number: 'Number', date: 'Date', method: 'Method', leg: 'Day',
     start_date: 'Start', end_date: 'End', bus_count: 'Buses', hotel_booked: 'Hotel booked',
@@ -127,7 +127,7 @@
   // How a row's column is written, where its value alone does not say.
   const ROW_KINDS = {
     amount: 'money', cost: 'money', pay: 'money', rate: 'money', leg: 'leg', bus_id: 'bus', driver_id: 'driver',
-    partner_id: 'partner', partner_price: 'money', partner_confirmed: 'boolean',
+    partner_id: 'partner', partner_price: 'money', partner_confirmed: 'boolean', partner_driver_id: 'partnerDriver',
     role: 'role', active_roles: 'roles', needs: 'needs',
   };
   // A column said only when the one it follows did not change.
@@ -168,7 +168,7 @@
   }
 
   /* A value as a line says it. `names` turns a bus's, a driver's, a
-     partner's and a need's id into its name. */
+     partner's, a partner's driver's and a need's id into its name. */
   function say(value, kind, names = {}) {
     const v = blank(value);
     if (v === null) return null;
@@ -181,6 +181,7 @@
       case 'bus': return names.bus?.(v) ?? `Unit ${v}`;
       case 'driver': return names.driver?.(v) ?? String(v);
       case 'partner': return names.partner?.(v) ?? String(v);
+      case 'partnerDriver': return names.partnerDriver?.(v) ?? String(v);
       case 'role': return ROLES[v] || String(v);
       case 'roles': return (Array.isArray(v) ? v : [v]).map(r => ROLES[r] || r).join(', ') || null;
       default: break;

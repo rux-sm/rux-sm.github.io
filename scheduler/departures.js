@@ -166,7 +166,8 @@
     const crew = [];
     if (covered) {
       const priced = assign.partner_price != null && assign.partner_price !== '';
-      const driver = [assign.partner_driver_name, assign.partner_driver_phone].filter(Boolean).join(' · ');
+      const named = Facts.partnerDriverOf(assign, partner);
+      const driver = named ? [named.name, named.phone].filter(Boolean).join(' · ') : '';
       crew.push({ key: `${assign.id}:partner`, name: partner.name, role: 'Partner', partTime: false, seat: null, partnerId: assign.partner_id,
         lines: [
           assign.partner_confirmed
@@ -269,7 +270,7 @@
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_name,partner_driver_phone,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the to-do rules read for a trip read here.

@@ -238,6 +238,9 @@ const window = {};
      company with its own coach and driver, so it has no bus of ours and no
      seat, which the database holds to. */
   const isCovered = assign => assign?.partner_id != null;
+  // The driver a covered vehicle names, from its partner's own, or null.
+  const partnerDriverOf = (assign, partner) => (assign?.partner_driver_id != null
+    ? partner?.drivers?.find(d => String(d.id) === String(assign.partner_driver_id)) ?? null : null);
 
   /* An assignment's crew in role order: each driver in a role that is on, with
      their status, and each role that is on with nobody in it. Each carries
@@ -323,18 +326,20 @@ const window = {};
      name and the end day of the partner's current copy, or `held` false
      where it has none. A read of the papers that fails leaves `papers` null,
      so a partner is never told it lacks a paper the page could not look
-     for. */
+     for. Each comes with `drivers`, its own, whom a bus it covers names. */
   async function readPartners(client) {
-    const [partners, kinds, papers] = await Promise.all([
+    const [partners, kinds, papers, drivers] = await Promise.all([
       client.from('partners').select('id,name,status,phone'),
       client.from('document_kinds').select('id,name').eq('partner_required', true).order('name'),
       client.from('company_documents').select('partner_id,kind_id,ends_on')
         .is('replaced_at', null).not('partner_id', 'is', null),
+      client.from('partner_drivers').select('id,partner_id,name,phone,status').order('name'),
     ]);
     if (partners.error) throw new Error(partners.error.message);
     const known = !kinds.error && !papers.error;
     return new Map((partners.data ?? []).map(p => [p.id, {
       ...p,
+      drivers: (drivers.data ?? []).filter(d => d.partner_id === p.id),
       papers: known ? kinds.data.map(k => {
         const copy = papers.data.find(d => d.partner_id === p.id && d.kind_id === k.id);
         return { kind: k.name, held: !!copy, ends_on: copy?.ends_on ?? null };
@@ -481,7 +486,7 @@ const window = {};
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
   };
 })();
@@ -2858,7 +2863,8 @@ const window = {};
     const crew = [];
     if (covered) {
       const priced = assign.partner_price != null && assign.partner_price !== '';
-      const driver = [assign.partner_driver_name, assign.partner_driver_phone].filter(Boolean).join(' · ');
+      const named = Facts.partnerDriverOf(assign, partner);
+      const driver = named ? [named.name, named.phone].filter(Boolean).join(' · ') : '';
       crew.push({ key: `${assign.id}:partner`, name: partner.name, role: 'Partner', partTime: false, seat: null, partnerId: assign.partner_id,
         lines: [
           assign.partner_confirmed
@@ -2961,7 +2967,7 @@ const window = {};
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_name,partner_driver_phone,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the to-do rules read for a trip read here.

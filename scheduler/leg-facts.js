@@ -198,6 +198,9 @@
      company with its own coach and driver, so it has no bus of ours and no
      seat, which the database holds to. */
   const isCovered = assign => assign?.partner_id != null;
+  // The driver a covered vehicle names, from its partner's own, or null.
+  const partnerDriverOf = (assign, partner) => (assign?.partner_driver_id != null
+    ? partner?.drivers?.find(d => String(d.id) === String(assign.partner_driver_id)) ?? null : null);
 
   /* An assignment's crew in role order: each driver in a role that is on, with
      their status, and each role that is on with nobody in it. Each carries
@@ -283,18 +286,20 @@
      name and the end day of the partner's current copy, or `held` false
      where it has none. A read of the papers that fails leaves `papers` null,
      so a partner is never told it lacks a paper the page could not look
-     for. */
+     for. Each comes with `drivers`, its own, whom a bus it covers names. */
   async function readPartners(client) {
-    const [partners, kinds, papers] = await Promise.all([
+    const [partners, kinds, papers, drivers] = await Promise.all([
       client.from('partners').select('id,name,status,phone'),
       client.from('document_kinds').select('id,name').eq('partner_required', true).order('name'),
       client.from('company_documents').select('partner_id,kind_id,ends_on')
         .is('replaced_at', null).not('partner_id', 'is', null),
+      client.from('partner_drivers').select('id,partner_id,name,phone,status').order('name'),
     ]);
     if (partners.error) throw new Error(partners.error.message);
     const known = !kinds.error && !papers.error;
     return new Map((partners.data ?? []).map(p => [p.id, {
       ...p,
+      drivers: (drivers.data ?? []).filter(d => d.partner_id === p.id),
       papers: known ? kinds.data.map(k => {
         const copy = papers.data.find(d => d.partner_id === p.id && d.kind_id === k.id);
         return { kind: k.name, held: !!copy, ends_on: copy?.ends_on ?? null };
@@ -441,7 +446,7 @@
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
   };
 })();

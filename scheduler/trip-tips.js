@@ -497,12 +497,14 @@
     tip.appendChild(answer);
     // The coach and driver as the partner gave them, typed as they came.
     if (assign.partner_vehicle) tip.appendChild(el('div', 'scheduler-tip__row', `Coach: ${assign.partner_vehicle}`));
-    if (assign.partner_driver_name || assign.partner_driver_phone) {
+    // Their driver, one of the partner's own, the phone a press that calls.
+    const driver = window.SchedulerLegFacts.partnerDriverOf(assign, partner);
+    if (driver) {
       const row = el('div', 'scheduler-tip__row');
-      row.append(`Driver: ${assign.partner_driver_name || 'not named'}`);
-      if (assign.partner_driver_phone) {
+      row.append(`Driver: ${driver.name}`);
+      if (driver.phone) {
         row.append(' · ');
-        row.appendChild(footLink(showPhone(assign.partner_driver_phone), `tel:${dial(assign.partner_driver_phone)}`));
+        row.appendChild(footLink(showPhone(driver.phone), `tel:${dial(driver.phone)}`));
       }
       tip.appendChild(row);
     }

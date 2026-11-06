@@ -32,7 +32,7 @@
   const {
     setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, crewOf, tripContact, dayContactsOf, dayOfContact,
   } = window.SchedulerLegFacts;
 
   /* A SAVED TRIP IS READ THROUGH trip-shape.js: its legs, each leg's routes,
@@ -436,7 +436,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_name,partner_driver_phone,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks,
     // and the QuickBooks estimate, which the bar menu marks.
     'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
@@ -2874,8 +2874,11 @@
   /* A VEHICLE A PARTNER COVERS holds `partner`: which partner, its price as
      typed, whether it confirmed and when, and its coach and driver as it
      gave them. It has no bus and no seat of ours, which the database holds
-     to. `partnerRow` is the row's columns for it, every one empty for a bus
-     of ours; a price that does not read as dollars is none. */
+     to. Its driver is one of the partner's own, `driverId`, or `newDriver`,
+     `{ id, name, phone }`, one typed in the window that Save adds to the
+     partner's drivers first. `partnerRow` is the row's columns for it, every
+     one empty for a bus of ours; a price that does not read as dollars is
+     none. */
   const partnerName = id => (lists.partners || []).find(p => String(p.id) === String(id))?.name ?? 'A partner';
   const partnerPrice = p => {
     const text = String(p?.price ?? '').replace(/[$,\s]/g, '');
@@ -2887,9 +2890,12 @@
     partner_price: b.partner ? partnerPrice(b.partner) : null,
     partner_confirmed: !!b.partner?.confirmed,
     partner_vehicle: b.partner?.vehicle?.trim() || null,
-    partner_driver_name: b.partner?.driverName?.trim() || null,
-    partner_driver_phone: b.partner?.driverPhone?.trim() || null,
+    partner_driver_id: b.partner?.driverId ?? null,
   });
+  // A partner's own drivers, as the board read them, and the one a covered vehicle names.
+  const partnerDrivers = id => (lists.partners || []).find(p => String(p.id) === String(id))?.drivers ?? [];
+  const partnerDriverName = p => (p?.newDriver ? p.newDriver.name
+    : partnerDrivers(p?.id).find(d => String(d.id) === String(p?.driverId))?.name) || null;
 
   // One bus as the trip holds it: the first row per seat is the seat, and a
   // seat is on when `active_roles` says so, as the bar reads it.
@@ -2901,7 +2907,7 @@
     bus.busId = a.bus_id ?? null;
     bus.partner = a.partner_id != null ? { id: a.partner_id, price: a.partner_price ?? null, confirmed: !!a.partner_confirmed,
       confirmedAt: a.partner_confirmed_at ?? null, vehicle: a.partner_vehicle ?? null,
-      driverName: a.partner_driver_name ?? null, driverPhone: a.partner_driver_phone ?? null } : null;
+      driverId: a.partner_driver_id ?? null, newDriver: null } : null;
     bus.pickupAt = a.pickup_at ?? null;
     bus.stopArrivals = a.stop_arrivals ?? null;
     bus.yardDepartAt = a.actual_yard_depart_at ?? null;
@@ -3162,6 +3168,9 @@
     const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
       || ops.updates.some(u => Object.keys(u.patch).some(k => !SAMSARA_TIMES.has(k)) || !u.seats.every(onlyMiles)));
     work.statuses = moved || statusPicked;
+    // The drivers typed new in a vehicle's window, which Save adds to their partners first.
+    work.newDrivers = fleetLegs().flatMap(leg => now[leg]).map(b => b.partner?.newDriver && { ...b.partner.newDriver, partner_id: b.partner.id })
+      .filter(Boolean);
     work.work = Object.keys(work.trip).length > 0 || work.legs.length > 0 || work.statuses;
     return work;
   }
@@ -3203,6 +3212,12 @@
      them; then every filled seat's status is sent at once, since the function
      deletes a status the list leaves out. */
   async function saveFleet(tripId, write, work) {
+    /* A driver typed new joins its partner's list before a vehicle names
+       it; sent again after a lost answer it is the same driver, by its id. */
+    if (work.newDrivers?.length) {
+      await write('its partner drivers', client.from('partner_drivers')
+        .upsert(work.newDrivers.map(d => ({ id: d.id, partner_id: d.partner_id, name: d.name, phone: d.phone })), { onConflict: 'id', ignoreDuplicates: true }));
+    }
     for (const ops of work.legs) {
       for (const delId of ops.deletes) {
         await write('its buses', client.from('trip_assignments').delete().eq('trip_id', tripId).eq('id', delId));
@@ -3623,7 +3638,7 @@
     const who = el('span', 'scheduler-fleet-seat__who');
     const price = partnerPrice(p);
     who.appendChild(el('span', 'scheduler-fleet-seat__name', [p.confirmed ? 'Confirmed' : 'Not confirmed',
-      price != null ? usd(price) : 'No price', p.driverName].filter(Boolean).join(' · ')));
+      price != null ? usd(price) : 'No price', partnerDriverName(p)].filter(Boolean).join(' · ')));
     line.append(statusIcon(p.confirmed ? 'confirmed' : 'pending-response'), who);
     return line;
   }
@@ -3721,8 +3736,7 @@
         pair(field(moneyField('scheduler-fleet-pprice', 'Their price', bus.partner.price), 'price'),
           field(checkField('scheduler-fleet-pconfirmed', 'Confirmed', bus.partner.confirmed), 'confirmed')),
         full(field(textField('scheduler-fleet-pvehicle', 'Their coach', bus.partner.vehicle), 'vehicle')),
-        pair(field(textField('scheduler-fleet-pdriver', 'Their driver', bus.partner.driverName), 'driverName'),
-          field(textField('scheduler-fleet-pphone', "Driver's phone", bus.partner.driverPhone), 'driverPhone')));
+        driverPick(bus.partner, field));
       const dropped = vehicleEdit.dropped ?? [];
       if (dropped.length) what.appendChild(fleetWarn(`${dropped.join(' and ')} ${dropped.length === 1 ? 'comes' : 'come'} off this bus when you press Done.`));
       vehicleHost.replaceChildren(what);
@@ -3742,9 +3756,36 @@
     if (focusId) document.getElementById(focusId)?.focus();
   }
 
+  /* Their driver: one of the partner's own, active or the one it has, or
+     New driver, which asks a name and phone that Save adds to its list. */
+  function driverPick(p, field) {
+    const offered = partnerDrivers(p.id).filter(d => d.status === 'active' || String(d.id) === String(p.driverId));
+    const pick = selectField('scheduler-fleet-pdriver', 'Their driver', p.newDriver ? 'new' : p.driverId ?? '',
+      [['', 'Not named yet'], ...offered.map(d => [String(d.id), d.name]), ['new', 'New driver…']]);
+    pick.querySelector('select').dataset.fleetPartner = 'driver';
+    if (!p.newDriver) return full(pick);
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    box.append(full(pick), pair(field(textField('scheduler-fleet-pnewname', 'Driver name', p.newDriver.name), 'newName'),
+      field(textField('scheduler-fleet-pnewphone', "Driver's phone", p.newDriver.phone), 'newPhone')));
+    return box;
+  }
+
   document.getElementById('scheduler-vehicle-done')?.addEventListener('click', () => {
     if (!vehicleEdit) return;
     const { leg, bus, index } = vehicleEdit;
+    // A new driver needs a name; one the partner already has is that driver.
+    const typed = bus.partner?.newDriver;
+    if (typed) {
+      typed.name = String(typed.name ?? '').trim().replace(/\s+/g, ' ');
+      typed.phone = String(typed.phone ?? '').trim() || null;
+      if (!typed.name) {
+        toast('error', 'Name their new driver', 'Or pick one of theirs, or Not named yet.');
+        document.getElementById('scheduler-fleet-pnewname')?.focus();
+        return;
+      }
+      const known = partnerDrivers(bus.partner.id).find(d => d.name.trim().toLowerCase() === typed.name.toLowerCase());
+      if (known) Object.assign(bus.partner, { driverId: known.id, newDriver: null });
+    }
     if (bus.partner && String(bus.partner.price ?? '').trim() !== '' && partnerPrice(bus.partner) === null) {
       toast('error', "Their price isn't a dollar amount", 'Type it as 2400, or leave it empty.');
       document.getElementById('scheduler-fleet-pprice')?.focus();
@@ -3765,6 +3806,13 @@
     if (!vehicleEdit) return;
     const { bus } = vehicleEdit;
     if (e.target.dataset?.fleetPartner === 'confirmed') { bus.partner.confirmed = e.target.checked; return; }
+    if (e.target.dataset?.fleetPartner === 'driver') {
+      const value = e.target.value;
+      const fresh = value === 'new' ? (bus.partner.newDriver ?? { id: crypto.randomUUID(), name: '', phone: '' }) : null;
+      Object.assign(bus.partner, { newDriver: fresh, driverId: fresh ? fresh.id : value || null });
+      drawVehicleFields(fresh ? 'scheduler-fleet-pnewname' : e.target.id);
+      return;
+    }
     if (e.target.dataset?.fleetVehicle === 'partner') {
       const id = e.target.value || null;
       if (id && !bus.partner) {
@@ -3777,7 +3825,7 @@
       if (!id) vehicleEdit.dropped = [];
       // Another partner starts unconfirmed with nothing of the last one's.
       bus.partner = id ? (String(bus.partner?.id) === id ? bus.partner
-        : { id, price: null, confirmed: false, confirmedAt: null, vehicle: null, driverName: null, driverPhone: null }) : null;
+        : { id, price: null, confirmed: false, confirmedAt: null, vehicle: null, driverId: null, newDriver: null }) : null;
       drawVehicleFields(e.target.id);
       return;
     }
@@ -3787,8 +3835,10 @@
   });
   vehicleHost?.addEventListener('input', e => {
     const key = e.target.dataset?.fleetPartner;
-    if (!vehicleEdit?.bus.partner || !key || key === 'confirmed') return;
-    vehicleEdit.bus.partner[key] = e.target.value;
+    const p = vehicleEdit?.bus.partner;
+    if (!p || !key || key === 'confirmed' || key === 'driver') return;
+    if (key === 'newName' || key === 'newPhone') p.newDriver[key === 'newName' ? 'name' : 'phone'] = e.target.value;
+    else p[key] = e.target.value;
   });
   vehicleHost?.addEventListener('input', e => {
     const tag = e.target.closest?.('[data-fleet-need], [data-fleet-seat-toggle]');
@@ -16110,7 +16160,8 @@
   const histBusName = id => (panelIndex.buses.get(id) ? vehicleName(panelIndex.buses.get(id)) : `Unit ${id}`);
   const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
   // The names a history line gives a bus, a driver and a need.
-  const HISTORY_NAMES = { bus: histBusName, driver: histDriverName, partner: partnerName, requirement: requirementLabel };
+  const histPartnerDriver = id => (lists.partners || []).flatMap(p => p.drivers ?? []).find(d => String(d.id) === String(id))?.name ?? id;
+  const HISTORY_NAMES = { bus: histBusName, driver: histDriverName, partner: partnerName, partnerDriver: histPartnerDriver, requirement: requirementLabel };
 
   /* A trip and every row a save can change, as the database holds them, each
      whole, with its legs and their routes, which name each row's day. */
@@ -16869,6 +16920,16 @@
       const buses = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map(a => {
+          /* A bus a partner covers is theirs, so it is headed by the
+             partner's name, and their driver is named as ours are once the
+             partner has confirmed. */
+          if (isCovered(a)) {
+            const partner = boardPartners.get(a.partner_id);
+            const driver = a.partner_confirmed ? partnerDriverOf(a, partner) : null;
+            if (driver) named.add(`partner:${driver.id}`); else waiting = true;
+            const head = [`${partner?.name || 'Partner'} bus`, a.partner_vehicle].filter(Boolean).join(', ');
+            return [head, driver ? `${driver.name}${driver.phone ? `, ${showPhone(driver.phone)}` : ''}` : 'Driver to be confirmed'].join('\r\n');
+          }
           const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
           const crew = crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
             .filter(c => c.who && c.status.value === 'confirmed');
@@ -18204,7 +18265,7 @@
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses',
-    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart', 'driver_kept_apart_allowed', 'partners'];
+    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts', 'driver_kept_apart', 'driver_kept_apart_allowed', 'partners', 'partner_drivers'];
 
   /* The to-do list and Departures hear their changes on this channel too,
      rather than each opening one of its own: every change is handed to them
@@ -18225,7 +18286,7 @@
   const liveTrips = new Set();
   const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
   // A pair kept apart, and the trips it is allowed on, are read with the drivers, so a change owes their list.
-  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', partners: 'partners', settings: 'settings', driver_kept_apart: 'drivers', driver_kept_apart_allowed: 'drivers' };
+  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', partners: 'partners', partner_drivers: 'partners', settings: 'settings', driver_kept_apart: 'drivers', driver_kept_apart_allowed: 'drivers' };
   // The tables embedded in a trip whose rows carry `trip_id`.
   const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines',
     'trip_documents', 'trip_contacts', 'trip_legs'];

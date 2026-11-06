@@ -61,8 +61,9 @@
        and one whose ran out last week. */
     const insurance = ends_on => [{ kind: 'Insurance certificate', held: true, ends_on }];
     const partnersById = new Map([
-      { id: 'p1', name: 'Valley Coach Lines', phone: '9565550175', status: 'active', papers: insurance(day(200)) },
-      { id: 'p2', name: 'Delta Motorcoach', phone: null, status: 'active', papers: insurance(day(-7)) },
+      { id: 'p1', name: 'Valley Coach Lines', phone: '9565550175', status: 'active', papers: insurance(day(200)),
+        drivers: [{ id: 'pd1', partner_id: 'p1', name: 'Luis Treviño', phone: '9565550163', status: 'active' }] },
+      { id: 'p2', name: 'Delta Motorcoach', phone: null, status: 'active', papers: insurance(day(-7)), drivers: [] },
     ].map(p => [p.id, p]));
     const statuses = new Map();
     let ids = 0;
@@ -79,8 +80,8 @@
        each `{ bus, crew, roles, needs, type, leg, position, partner }` with
        `crew` a list of `[driver, role, status, more]`, a status row written
        for each status but Not sent, and `partner` a partner covering it in
-       place of a bus and crew, `{ id, confirmed, price, vehicle, driver,
-       phone }`. */
+       place of a bus and crew, `{ id, confirmed, price, vehicle, driver }`,
+       `driver` the id of one of the partner's own. */
     function trip(o = {}) {
       const id = `sample-${++ids}`;
       const { buses = [], depart = '07:30', back = '18:00', returnDepart, returnBack, ...rest } = o;
@@ -116,7 +117,7 @@
         partner_id: b.partner?.id ?? null, partner_confirmed: !!b.partner?.confirmed,
         partner_confirmed_at: b.partner?.confirmed ? new Date(now - 3 * DAY).toISOString() : null,
         partner_price: b.partner?.price ?? null, partner_vehicle: b.partner?.vehicle ?? null,
-        partner_driver_name: b.partner?.driver ?? null, partner_driver_phone: b.partner?.phone ?? null,
+        partner_driver_id: b.partner?.driver ?? null,
       }));
       t.trip_assignments.forEach((a, i) => {
         for (const [driverId, role = 'driver', status, more] of buses[i].crew ?? []) {
@@ -136,7 +137,7 @@
     const crewed = (bus, status = 'confirmed') => ({ bus, crew: [['d1', 'driver', status]] });
     // Three buses: one of ours, one a partner confirmed with its price, one a partner has not confirmed.
     const covered = trip({ customer: 'Northside Band', destination: 'Austin, TX', bus_count: 3, buses: [crewed('b101'),
-      { partner: { id: 'p1', confirmed: true, price: 2400, vehicle: 'Prevost H3-45, unit 52', driver: 'Luis Treviño', phone: '9565550163' } },
+      { partner: { id: 'p1', confirmed: true, price: 2400, vehicle: 'Prevost H3-45, unit 52', driver: 'pd1' } },
       { partner: { id: 'p2' } }] });
 
     // ── The trip bar ────────────────────────────────────────────────────────

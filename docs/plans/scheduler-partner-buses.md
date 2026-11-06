@@ -194,12 +194,10 @@ None open.
 
 ## Tasks
 
-- [ ] Write the SQL: `contacts.partner_id` and `title`,
-      `partners.main_contact_id`, `partner_drivers` with its history trigger
-      and grants, and `trip_assignments.partner_driver_id`, each typed
-      driver moved into its partner's list; show it to rux and apply it on a
-      yes, and drop `partners.contact_name` and the typed driver columns once
-      no page reads them.
+- [ ] Once no page reads them, write the SQL that drops
+      `partners.contact_name` and `trip_assignments.partner_driver_name` and
+      `partner_driver_phone` with their place in the partner fields check;
+      show it to rux and apply it on a yes.
 - [ ] Let the Contacts page link a contact to a partner and give it a title,
       and show titles wherever contacts are listed.
 - [ ] Give the partner's profile its Contacts and Drivers tabs and its main

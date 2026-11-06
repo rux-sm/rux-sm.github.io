@@ -408,10 +408,10 @@ button.scheduler-row-head__num::after {
   position: absolute;
   inset: 0;
 }
-/* A bus number's toggletip reads as the trip card does: 12px type, compact
-   rows with a rule between, in the high-contrast surface's own ink. Start
-   aligned, where the bus column centres its number. overrides.css takes
-   Carbon's prose padding off the content. */
+/* A tip out of Carbon's toggletip, the phone sheet's route, is 12px type
+   in compact rows with a rule between. Start aligned, where the bus column
+   centres its number. In the toggletip every tip, the bus's and the trip's,
+   takes Carbon's body instead, below. */
 .scheduler-tip {
   --tip-rule: color-mix(in srgb, var(--rux-text-inverse) 25%, transparent);
   min-inline-size: 14rem;
@@ -447,8 +447,6 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-03);
   padding: var(--rux-spacing-03) var(--rux-spacing-04);
 }
-.scheduler-tip__said { display: flex; flex-direction: column; min-inline-size: 0; }
-.scheduler-tip__said > span { opacity: .75; }
 .scheduler-tip__name {
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
@@ -1831,19 +1829,19 @@ button.scheduler-row-head__num::after {
   border-inline-start-width: 1px;
   border-block-start-width: 1px;
 }
-/* THE TRIP'S TIPS are Carbon's high-contrast toggletip, trip-tips.js's
-   `CONTAINER`, laid over the icon pressed; overrides.css places it. Inside,
-   Carbon's body: its 14px type, where the bus tip's is 12px, and each
-   part 16px from the next with no rule between, the content's own gap. Past
-   the board's room the body scrolls, the updates or the route's table,
-   under the heading and over the footer. */
-.scheduler-trip-tip .scheduler-tip {
+/* A TIP IN CARBON'S HIGH-CONTRAST TOGGLETIP, a bus number's or one of the
+   trip's, trip-tips.js's `CONTAINER` laid over the icon pressed, which
+   overrides.css places, keeps Carbon's body: its 14px type, its 16px inset,
+   and each part 16px from the next with no rule between, the content's own
+   gap. Past the board's room a trip tip's body scrolls, the updates or the
+   route's table, under the heading and over the footer. */
+.scheduler-tip.rux--toggletip-content {
   min-inline-size: 0;
   font-size: var(--rux-body-01-font-size);
   line-height: var(--rux-body-01-line-height);
   letter-spacing: var(--rux-body-01-letter-spacing);
 }
-.scheduler-trip-tip :is(.scheduler-tip__head, .scheduler-tip__row) { padding: 0; border: 0; }
+.scheduler-tip.rux--toggletip-content :is(.scheduler-tip__head, .scheduler-tip__row) { padding: 0; border: 0; }
 /* A tall tip's body scrolls with no scrollbar over its rows, as the board's
    long lists do; the row cut at its edge shows there is more. */
 .scheduler-trip-tip :is(.scheduler-tip__list, .scheduler-route) { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
@@ -1874,7 +1872,7 @@ a.scheduler-tip__go { text-decoration: none; }
    Carbon link where something puts it right, and a reminder's when at the end. */
 .scheduler-tip__alert { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
 .scheduler-tip__alert > svg { flex: none; inline-size: 16px; block-size: 16px; margin-block-start: 2px; }
-.scheduler-tip--card .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
+:is(.scheduler-tip--card, .scheduler-tip.rux--toggletip-content) .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
 :is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 /* On the road: the three clocks side by side, each its name and the hours
    left over a 3px meter of them in the inverse green, amber and the hours

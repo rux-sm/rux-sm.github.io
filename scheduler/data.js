@@ -267,11 +267,12 @@
     const tip = el('div', 'rux--toggletip-content scheduler-tip');
     const head = el('div', 'scheduler-tip__head');
     const disc = busDisc(bus);
-    const said = el('div', 'scheduler-tip__said');
+    // Its name over its seats and model, as a driver's tip has theirs over their seat.
+    const said = el('div', 'scheduler-tip__text');
     said.appendChild(el('strong', 'scheduler-tip__name', vehicleName(bus)));
     const spec = [bus.capacity ? `${bus.capacity} pax` : null,
       [bus.year, bus.make, bus.model].filter(Boolean).join(' ') || null].filter(Boolean).join(' · ');
-    if (spec) said.appendChild(el('span', null, spec));
+    if (spec) said.appendChild(el('span', 'scheduler-tip__by', spec));
     head.append(disc, said);
     tip.appendChild(head);
 

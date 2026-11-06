@@ -750,14 +750,6 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   inset-block: var(--rux-spacing-03) auto;
   block-size: 1rem;
 }
-/* Its content is ruled rows, not Carbon's prose: the rows carry their own
-   inset, so the content drops its 16px padding and gap. The trip's tips keep
-   Carbon's. */
-:is(.scheduler-row-head, .scheduler-bus-sheet) .scheduler-tip.rux--toggletip-content {
-  padding: 0;
-  row-gap: 0;
-  max-inline-size: 20rem;
-}
 /* A bus's sheet, a phone's copy of the tip, runs the screen's width. */
 .scheduler-bus-sheet > .scheduler-tip.rux--toggletip-content { max-inline-size: none; }
 

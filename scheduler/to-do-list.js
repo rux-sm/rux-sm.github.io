@@ -5,7 +5,8 @@
    pane left of the week. This shows and hides both panes, says on each
    button how many are due, and fills Tasks. Departures is departures-panel.js's.
    A pane stays until its button or its close shuts it, or the board closes
-   it for room as the oldest panel open.
+   it for room as the oldest panel open, and brings it back as it was once
+   the panel it made room for shuts.
 
    Tasks is what people ask of the office, the `to_dos` rows. A Claude
    session adds a row through the connector, made by Ruxbot; nobody adds one
@@ -622,14 +623,20 @@
      pressed, its glyph filled, while its pane is open. Opening asks the board
      for room first, which may close the oldest panel or say why there is
      none; opening reads the list again, since a tab left open all morning is
-     hours behind, and shutting Tasks shuts its open row and its form. The
-     board, told by `scheduler:to-do-pane`, lays the panes out. Nothing keeps
-     whether one was open, so the board always opens on the week alone. */
-  async function setPane(name, on) {
+     hours behind, and shutting Tasks shuts its form. A pane the board closed
+     for room comes back `returning`, its room already found, as it was left:
+     Tasks on the row that was open and Departures on its leg, each scrolled
+     where it stood. Opened from its button, a pane starts with every row
+     shut. The board, told by `scheduler:to-do-pane`, lays the panes out.
+     Nothing keeps whether one was open, so the board always opens on the
+     week alone. */
+  let tasksTop = 0;
+  async function setPane(name, on, { returning = false } = {}) {
     const list = LISTS[name];
     if (!list?.pane || shown[name] === on) return;
-    if (on && !(await (window.SchedulerPanels?.room?.(list.room) ?? true))) return;
+    if (on && !returning && !(await (window.SchedulerPanels?.room?.(list.room) ?? true))) return;
     if (shown[name] === on) return;
+    if (!on && name === 'tasks') tasksTop = body.scrollTop;
     shown[name] = on;
     list.pane.hidden = !on;
     list.button?.setAttribute('aria-pressed', String(on));
@@ -637,12 +644,13 @@
     list.button?.querySelector('use')?.setAttribute('href', on ? `${list.glyph}-fill` : list.glyph);
     if (name === 'tasks') {
       editingId = null;
-      openId = null;
+      if (on && !returning) openId = null;
       if (on) { loadStored(); Rows?.load(); }
       draw();
+      if (on && returning) body.scrollTop = tasksTop;
     } else {
       const prep = window.SchedulerDeparturesPanel;
-      if (on) prep?.open(); else prep?.close();
+      if (on) prep?.open({ resume: returning }); else prep?.close();
     }
     document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
   }
@@ -684,6 +692,7 @@
   })();
 
   /* The way the board shuts a pane, `tasks` or `prep`: with the focus handed
-     back, or without, where it closes one for room. */
-  window.SchedulerToDoList = { shut, close: name => setPane(name, false) };
+     back, or without, where it closes one for room; and how it brings one it
+     closed for room back. */
+  window.SchedulerToDoList = { shut, close: name => setPane(name, false), reopen: name => setPane(name, true, { returning: true }) };
 })();

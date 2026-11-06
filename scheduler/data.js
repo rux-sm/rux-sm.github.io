@@ -12810,6 +12810,11 @@
      past the sum closes the oldest panels with nothing typed in them. Below md
      one panel is open at a time, in front of the board.
 
+     A list closed for room is put away, not dismissed: once the panel it made
+     room for shuts, it comes back in its own place as it was left, where it
+     fits, so a form printed from Departures leaves Departures on the same
+     leg. Another panel asking for room first forgets it.
+
      The board's width is what this reads, never the schedule's: the board is
      the whole content column whichever panels are open, so it holds still when
      one of them closes, while the schedule's width is this decision's own
@@ -12838,6 +12843,12 @@
   let leftOrder = [];
   let leftShown = new Set();
   let replacing = null;
+  /* The lists `makeRoom` put away for a panel: `by`, the panel it opened,
+     `closed`, the lists shut for it, oldest first, and `seen`, whether `by`
+     has shown since, so its shutting is told from its not having opened yet.
+     `returning` holds a list coming back until its place is kept. */
+  let displaced = null;
+  const returning = new Set();
   // The panel in front of the board, where one is: below md, the one open.
   let frontPanel = null;
   // The three document panels, which their block further down makes.
@@ -12857,9 +12868,11 @@
   const ownWidth = (el, name) => (el ? toPx(getComputedStyle(el).getPropertyValue(name).trim()) : 0);
 
   /* EVERY PANEL THE BOARD LAYS OUT: its name, its box, whether it is open,
-     the width it takes, how the board closes it for room, and whether
-     something typed in it would be lost. The trip editor is the exception:
-     it stands right of the week and the board never closes it. */
+     the width it takes, how the board closes it for room, how a list it
+     closed comes back as it was left, and whether something typed in it
+     would be lost. A document panel has no way back, since what it showed was
+     an errand of its own. The trip editor is the exception: it stands right
+     of the week and the board never closes it. */
   const PANEL_NAMES = { roster: 'Drivers', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
     /* The rail is never closed for room and is not one of the two panels
@@ -12867,9 +12880,9 @@
     { name: 'roster', el: asideSlot, open: railShown(), rail: true,
       width: () => panelWidth(railWeek ? '--scheduler-rail-week-w' : '--scheduler-rail-w') },
     { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-list-w'),
-      close: () => window.SchedulerToDoList?.close('tasks') },
+      close: () => window.SchedulerToDoList?.close('tasks'), reopen: () => window.SchedulerToDoList?.reopen('tasks') },
     { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-list-w'),
-      close: () => window.SchedulerToDoList?.close('prep') },
+      close: () => window.SchedulerToDoList?.close('prep'), reopen: () => window.SchedulerToDoList?.reopen('prep') },
     ...Object.values(viewers).map(v => ({ name: v.key, el: v.el, open: !!v.el && !v.el.hidden,
       width: () => ownWidth(v.el, '--scheduler-viewer-w'), close: () => v.close(false), dirty: () => v.dirty })),
     { name: 'editor', el: tripEl, open: !!tripEl && !tripEl.hidden, width: () => panelWidth('--scheduler-editor-w'), editor: true },
@@ -12885,6 +12898,13 @@
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
     return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() > board;
   }
+  /* Beside the editor one panel stays, over the week, from md up: `adding`,
+     or for the editor itself the newest open. The rail is not counted. */
+  const besideEditor = adding => !matchMedia('(max-width: 41.98rem)').matches
+    && (adding === 'editor' || panels().find(p => p.editor)?.open)
+    && panels().filter(p => (p.open || p.name === adding) && !p.editor && !p.rail).length <= 1;
+  // Whether `adding` can open with nothing else closing for it.
+  const hasRoomFor = adding => !overRoom(adding) || besideEditor(adding);
 
   /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
      panel closes, then the next, until the new one fits; one holding typed
@@ -12896,12 +12916,10 @@
   async function makeRoom(name) {
     placeRoom();
     replacing = null;
+    displaced = { by: name, closed: [], seen: false };
     const kept = new Set();
-    const desk = !matchMedia('(max-width: 41.98rem)').matches;
-    // Beside the editor one panel stays, over the week: the new one, or for the editor itself the newest open.
-    const besideEditor = () => desk && (name === 'editor' || panels().find(p => p.editor)?.open)
-      && panels().filter(p => (p.open || p.name === name) && !p.editor && !p.rail).length <= 1;
-    while (overRoom(name) && !besideEditor()) {
+    while (!hasRoomFor(name)) {
+      // The rail's week folds before any panel closes.
       if (railWeek) { setRailWeek(false, { place: false }); continue; }
       const oldest = openOrder.map(n => panels().find(p => p.name === n))
         .find(p => p && p.open && p.name !== name && !p.editor && !p.rail && !kept.has(p.name));
@@ -12911,8 +12929,10 @@
         continue;
       }
       if (name !== 'editor') replacing ??= { name, place: oldest.name };
+      if (oldest.reopen) displaced.closed.push(oldest.name);
       oldest.close();
     }
+    if (!displaced.closed.length) displaced = null;
     if (name === 'editor' || !overRoom(name)) return true;
     /* Where the editor alone stands in the way, the panel opens over the week
        beside it, which `placeRoom` lays out. A panel kept open on a no is
@@ -12920,6 +12940,7 @@
     const editorOpen = panels().find(p => p.editor)?.open;
     if (editorOpen && !kept.size) return true;
     replacing = null;
+    displaced = null;
     const inWay = [...kept].map(n => PANEL_NAMES[n]);
     toast('info', `No room for ${PANEL_NAMES[name]}`,
       inWay.length ? `Close ${inWay.join(' or ')} to make room for it.` : 'Close a panel to make room for it.');
@@ -12944,6 +12965,25 @@
       .concat(names.filter(name => !openOrder.includes(name)));
     const overlay = matchMedia('(max-width: 41.98rem)').matches;
 
+    /* The panel the lists were put away for has shut: each comes back where
+       it fits, oldest first, and its reopening lays the board out again. */
+    if (displaced) {
+      if (names.includes(displaced.by)) displaced.seen = true;
+      else if (displaced.seen) {
+        const back = displaced.closed;
+        displaced = null;
+        let reopened = false;
+        for (const name of back) {
+          const p = panels().find(x => x.name === name);
+          if (!p || p.open || !hasRoomFor(name)) continue;
+          returning.add(name);
+          p.reopen();
+          reopened = true;
+        }
+        if (reopened) return;
+      }
+    }
+
     /* A window narrowed past what fits closes the oldest panels with nothing
        typed in them, one at a time, each close laying the board out again. One
        holding typed input and the editor stay, and the week gives way. */
@@ -12960,10 +13000,13 @@
     /* The panels left of the week stand in `leftOrder`: one just opened goes
        nearest the week, or where the panel closed for it stands, just left of
        it while that one's column closes, so it grows from a still left edge and
-       slides in from the left. Every other panel keeps its place, a closing one
-       included. The editor keeps its own place right of the week. */
+       slides in from the left. A list coming back takes its own place again,
+       beside the shutting panel that stood in it. Every other panel keeps its
+       place, a closing one included. The editor keeps its own place right of
+       the week. */
     const lefts = open.filter(p => !p.editor).map(p => p.name);
     for (const name of lefts.filter(n => !leftShown.has(n))) {
+      if (returning.delete(name) && leftOrder.includes(name)) continue;
       leftOrder = leftOrder.filter(n => n !== name);
       const at = replacing?.name === name ? leftOrder.indexOf(replacing.place) : -1;
       if (at >= 0) leftOrder.splice(at, 0, name);

@@ -7,7 +7,8 @@
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a row of the list that opens: an item of Design's
-   accordion. Closed, as every leg is until it is pressed, it is three
+   accordion. Closed, as every leg is when the list opens until one is
+   pressed, it is three
    lines, as a task is on Tasks: its customer and its spot time; its place;
    then how many lines it has left or Ready in a tag, and the trip's number.
    Open, one at a time, it holds the leg's page as departures.js
@@ -652,18 +653,30 @@
   }
 
   // -- behaviour ------------------------------------------------------------
-  // to-do-list.js opens the list when its button is pressed, on the days to prep for, and shuts it.
-  function open() {
+  /* to-do-list.js opens the list when its button is pressed, on the days to
+     prep for with every leg shut, and shuts it. Shut, the list keeps how it
+     was left, its days, their legs and how far it was scrolled, and the board
+     brings it back so, `resume`, once the panel it was closed for room for
+     shuts: still drawn as it was, on the same leg, read again behind. */
+  let left = null;
+  function open({ resume = false } = {}) {
     shown = true;
-    days = prepDays();
-    openKey = null;
-    unfolded.clear();
-    asking = null;
     body.hidden = false;
-    draw();
+    if (resume && left) {
+      ({ days, pages } = left);
+      body.scrollTop = left.top;
+    } else {
+      days = prepDays();
+      openKey = null;
+      unfolded.clear();
+      asking = null;
+      draw();
+    }
+    left = null;
     load();
   }
   function close() {
+    left = { days, pages, top: body.scrollTop };
     shown = false;
     body.hidden = true;
   }

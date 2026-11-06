@@ -424,7 +424,7 @@
         tipOf('Changing an update', 'Its pencil opens it in its place, with Delete, Cancel and Save.', bar(quiet),
           { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'edit', draft: null } } }),
         tipOf('Deleting an update', 'Delete asks first.', bar(quiet), { kind: 'card', section: 'updates', editor: { editing: { id: said[0].id, mode: 'delete' } } }),
-        tipOf('After the trip', 'A trip that is back opens on what it came to, and each thing close-out still asks, a link as an alert\'s words are.', bar(shut), { kind: 'card', section: 'updates' }),
+        tipOf('Close-out', 'A trip that is back, from its close-out icon: what it came to, and each thing close-out still asks, a link as an alert\'s words are.', bar(shut), { kind: 'card', section: 'close' }),
         tipOf("A driver's tip", 'Their face, seat and answer, who gave it and when, and their phone, a press that calls.', bar(routed), { kind: 'driver', section: 'driver:d1:driver' }),
         tipOf('A driver to tell', 'The leg changed since they said yes, in amber.', bar(told), { kind: 'driver', section: 'driver:d4:driver' }),
         tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop, and Call and the Live map.',

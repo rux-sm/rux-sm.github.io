@@ -425,11 +425,15 @@ expect('changing: the update open in its place as its words in a box, with Delet
   [1, 'Gate 4 at the stadium, not the main doors', [['ask-delete', false], ['cancel', false], ['save', true]]]);
 expect('deleting asks first', [text(tipDrawn('Deleting an update'), '.scheduler-tip__ask'), tipDrawn('Deleting an update').querySelectorAll('[data-editing] [data-edit-act]').map(b => b.dataset.editAct)],
   ['Delete this update?', ['cancel', 'delete']]);
-const after = tipDrawn('After the trip');
-expect('after the trip: the post-trip entry first, back at the yard against the plan, the money and where it is from, then a link for each thing close-out asks',
-  [/^Back at the yard .*, 40 min late$/.test(after.querySelector('.scheduler-tip__post .scheduler-tip__words')?.textContent ?? ''), text(after, '.scheduler-tip__by'),
-    after.querySelectorAll('.scheduler-tip__close a.rux--link').map(a => [a.dataset.go, a.textContent])],
-  [true, 'After the trip · Samsara and Billing', [['billing', 'Actual miles missing'], ['billing', 'Invoice missing'], ['billing', 'Balance due $1,240']]]);
+const after = tipDrawn('Close-out');
+expect('close-out: its heading and count, the post-trip entry, back at the yard against the plan, the money and where it is from, then a link for each thing close-out asks, and no footer',
+  [tipHead(after), /^Back at the yard .*, 40 min late$/.test(after.querySelector('.scheduler-tip__post .scheduler-tip__words')?.textContent ?? ''), text(after, '.scheduler-tip__by'),
+    after.querySelectorAll('.scheduler-tip__close a.rux--link').map(a => [a.dataset.go, a.textContent]), after.querySelector('.rux--toggletip-actions')],
+  [['Close-out', '3'], true, 'After the trip · Samsara and Billing', [['billing', 'Actual miles missing'], ['billing', 'Invoice missing'], ['billing', 'Balance due $1,240']], null]);
+const afterSample = tipSample('Close-out');
+const afterUpdates = Tips.card(afterSample.rows[0].bars[0].trip, drawn('tips', 'Close-out')[0], 'updates', tipBoard(afterSample));
+expect('the same trip\'s Updates holds its updates alone, no post-trip entry or close-out links',
+  [tipHead(afterUpdates)[0], afterUpdates.querySelector('.scheduler-tip__post'), afterUpdates.querySelectorAll('.scheduler-tip__close').length], ['Updates', null, 0]);
 
 // A driver's tip before the trip, with the board saying what stands in the way of the seat and the rest either side.
 const seatTrip = tipSample("A driver's tip").rows[0].bars[0].trip;

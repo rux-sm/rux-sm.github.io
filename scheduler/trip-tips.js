@@ -632,11 +632,13 @@
     return link;
   }
 
-  /* THE TRIP'S TIPS. Floating, Alerts and Updates are each Carbon's
-     toggletip: a heading naming its one subject with its count beside it,
-     then its body, each thing 16px from the next. An alert is its icon and
-     its words, the words a Carbon link to where it is put right; a reminder
-     of a trip leaving soon says when at its end. An update
+  /* THE TRIP'S TIPS. Floating, Alerts, Close-out and Updates are each
+     Carbon's toggletip: a heading naming its one subject with its count
+     beside it, then its body, each thing 16px from the next. An alert is its
+     icon and its words, the words a Carbon link to where it is put right; a
+     reminder of a trip leaving soon says when at its end. Close-out, opened
+     from a trip that is back, is the post-trip entry and then each thing
+     close-out still asks, a link as an alert's words are. An update
      is its words over who wrote it and how long ago, with a pencil at its
      end that opens it in its place to change or delete. The footer acts:
      Show all and Add update, which opens a box in its place, where Save or
@@ -683,19 +685,24 @@
       }
       return tip;
     }
-    const all = updatesOf(trip);
-    const { opened, editing, quick } = board.editor(trip);
-    tip.classList.add('scheduler-tip--updates');
-    tip.appendChild(head('Updates', all.length));
-    // A trip that is back opens on what it came to, each thing still to close a press as an alert's row is.
-    const post = postTripOf(trip);
-    if (post) {
+    if (section === 'close') {
+      const post = postTripOf(trip);
+      tip.appendChild(head('Close-out', post?.asks.length));
+      if (!post) {
+        tip.appendChild(el('p', 'scheduler-tip__none', 'The trip is not back yet.'));
+        return tip;
+      }
       tip.append(...postTripRows(post, 'scheduler-tip', a => {
         const row = el('div', 'scheduler-tip__alert scheduler-tip__close');
         row.append(svgUse('#i-incomplete', '16', '0 0 32 32'), goLink(a.words, a.go, a.id));
         return row;
       }));
+      return tip;
     }
+    const all = updatesOf(trip);
+    const { opened, editing, quick } = board.editor(trip);
+    tip.classList.add('scheduler-tip--updates');
+    tip.appendChild(head('Updates', all.length));
     if (!all.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No updates yet.'));
     const by = u => [u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'), ageShort(u.created_at),
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');

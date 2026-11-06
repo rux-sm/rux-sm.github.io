@@ -775,6 +775,7 @@
   const cardSectionOf = opener => {
     if (opener.matches('.scheduler-bar__route')) return 'route:';
     if (opener.matches('.scheduler-bar__alert')) return 'needs';
+    if (opener.matches('.scheduler-bar__close')) return 'close';
     if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
     const crew = opener.closest('.scheduler-crew');
     const id = crew?.dataset.driverId ?? crew?.dataset.wheelDriver;

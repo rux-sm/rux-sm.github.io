@@ -9,7 +9,7 @@ type: plan
 Every tip a press on the board opens is Carbon's toggletip as Carbon draws
 it: the inverse surface, 14px text, 16px padding and gap, 288px at most,
 13px from the icon pressed, a heading, a body and a footer of a link and a
-button. That is the route tip, Alerts, Updates and a driver's tip, opened
+button. That is the route tip, Alerts, Close-out, Updates and a driver's tip, opened
 from a bar, and the bus number's tip. Every label that shows when the
 pointer rests on something on a bar is Carbon's tooltip, where the browser's
 own label shows now.

@@ -11445,6 +11445,7 @@
     const driver = cardTrigger?.closest('.scheduler-crew')?.dataset.driverId;
     const kind = cardTrigger?.matches('.scheduler-crew__duty') ? '.scheduler-crew__duty' : '.scheduler-crew__mark';
     const selector = cardTrigger?.matches('.scheduler-bar__alert') ? '.scheduler-bar__alert'
+      : cardTrigger?.matches('.scheduler-bar__close') ? '.scheduler-bar__close'
       : cardTrigger?.closest('.scheduler-bar__drivers')
         ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}${kind}[data-card-opener]`
       : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat'

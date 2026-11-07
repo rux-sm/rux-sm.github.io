@@ -4011,10 +4011,7 @@ a.scheduler-tip__go { text-decoration: none; }
    rather than filling it, and takes the theme's mark radius and an edge where
    the theme draws one. Its fill and edge are the two properties below, which
    a theme sets in theme.css. */
-.scheduler-avail__cell {
-  padding: 2px;
-  overflow: hidden;
-}
+.scheduler-avail__cell { overflow: hidden; }
 /* The day rules in the roster: every body cell rules its start edge, the first
    included, so each day's box is the same and every mark is the same size, 2px
    inside the rules on all four sides. Only body rows use `__cell`, so no rule

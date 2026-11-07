@@ -38,12 +38,12 @@ it never calls that the wrong bus.
   trip and leg that the driver covers.
 - **One set of papers names every bus they cover,** and so do the driver's
   job page and schedule.
+- **The customer is billed one Second driver for the co-driver,** however
+  many buses they cover, as they are one person working the trip.
 
 ## Questions
 
-- Is the customer billed one Second driver for the trip, or one for each bus
-  the co-driver covers? Today the quote's quantity is the number of buses
-  with a co-driver seat.
+- None open.
 
 ## Tasks
 
@@ -60,7 +60,8 @@ it never calls that the wrong bus.
   covered buses; `confirmFromSamsara` confirms from any of them.
 - [ ] Papers and the driver: the envelope, itinerary, HOS form,
   `driver-job.js` and the schedule name every bus covered.
-- [ ] Billing: the Second driver quantity, as the question is answered.
+- [ ] Billing: the Second driver quantity counts a co-driver once, not each
+  bus they cover.
 - [ ] Connector: `get_trip` lists the covered buses beside the co-driver.
 - [ ] Departures and to-do: a covered bus shows the co-driver's name, with
   their tasks only on their own bus.

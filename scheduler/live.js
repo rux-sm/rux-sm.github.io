@@ -133,6 +133,7 @@
     s.hue = W.hueFor(leg.trip);
     s.stops = Road.stopsOf(leg.trip, leg.leg);
     s.where = Road.whereOn(s.stops, bus.path, bus);
+    if (!s.where) return s;
     if (s.where.at) s.stop = s.stops[s.where.reached];
     else if (s.where.next >= 0) {
       s.stop = s.stops[s.where.next];
@@ -181,7 +182,7 @@
   }
 
   // The chosen bus's leg, as live-map.js draws it.
-  const legOf = s => ({ path: s.bus.path, here: s.here, stop: s.stop, at: s.where.at, stops: s.stops, reached: s.where.reached, clock });
+  const legOf = s => ({ path: s.bus.path, here: s.here, stop: s.stop, at: !!s.where?.at, stops: s.stops, reached: s.where?.reached ?? -1, clock });
   function drawLeg(s) {
     legLayer?.remove();
     legLayer = s?.out ? LiveMap.drawLeg(map, legOf(s)) : null;

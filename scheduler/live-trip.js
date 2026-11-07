@@ -31,7 +31,9 @@
    bar names, a bus's number by its id, the yard's point [lat, lng], the
    leg's yard-out as an instant, the board's reading of where the bus is on
    its leg (road.js's stops with `where`, `stop`, `at`, `arrival` and
-   `late`), `drives`, { min, rest } for each of those stops, the minutes
+   `late`, or null while the board has no path for the bus, which keeps Not
+   rolling, Late to spot and Short on hours quiet), `drives`, { min, rest }
+   for each of those stops, the minutes
    driven to it from the stop before and whether its wait counts as rest,
    off duty or in the sleeper, and the time now.
    ========================================================================== */
@@ -59,7 +61,7 @@
     && span[0] + Road.MARGIN - BEFORE_MS <= now && now <= span[1] - Road.MARGIN;
 
   function notRolling({ bus, yard, yardOut, next, now }) {
-    if (!bus || !due(yardOut, now) || (next && next.where?.reached >= 0)) return null;
+    if (!bus || !next || !due(yardOut, now) || next.where?.reached >= 0) return null;
     const here = bus.lat != null && bus.lng != null ? [bus.lat, bus.lng] : null;
     const atYard = yard && here ? Road.miles(yard, here) <= Road.NEAR_MILES : null;
     const off = bus.engine === 'off';

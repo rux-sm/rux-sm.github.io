@@ -25,7 +25,7 @@
    by one that stood still five minutes within a mile and a half of it and is
    now more than two and a half miles off, since it loaded at a lot further
    out and drove on. The next stop is the first after the last one reached
-   that has a map point.
+   that has a map point. A bus with no path yet is nowhere known on its leg.
 
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
    Geoapify's drive slowed by the office's percent, asked at most once every
@@ -155,8 +155,12 @@
      and a half of it is two and a half miles off. `bus`, samsara-now's
      reading, ends the path where it stands while it is stopped, idle or
      off, standing as long as its engine has idled or been off by `now`,
-     so a bus that sends no new points still counts its wait. */
+     so a bus that sends no new points still counts its wait. With no
+     `path` at all, as before the board has asked for the bus's, where the
+     bus is on its leg is not known, and the answer is null, so a bus just
+     drawn is never read as one that has reached nothing. */
   function whereOn(stops, path, bus = null, now = Date.now()) {
+    if (!path) return null;
     let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null, waited = -1, waitedAt = null;
     const arrived = [];
     const points = [...(path || [])];

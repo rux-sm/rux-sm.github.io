@@ -77,6 +77,8 @@ const back = [...toArena, ...path(toArena.at(-1)[2] + 6 * 3600e3, [[20, 5]])];
 expect('back at the pickup after the game, it is reached again', where(back), [3, true, 4]);
 const home = [...back, ...path(back.at(-1)[2] + 3600e3, [[5, 0]])];
 expect('home at the yard, every stop is reached and none is next', where(home), [4, true, -1]);
+expect('with no path yet, moving or standing, where the bus is is not known',
+  [whereOn(stops, undefined, { lat: at(12)[0], lng: at(12)[1], mph: 55, engine: 'on' }), whereOn(stops, null, { lat: at(5)[0], lng: at(5)[1], mph: 0, engine: 'idle' })], [null, null]);
 expect('waiting at the pickup does not reach the time it comes back there',
   where([...path(yardOut, [[0, 5]]), ...path(yardOut + 20 * 60e3, [[5, 5], [5, 5], [5, 5]])]), [0, true, 1]);
 

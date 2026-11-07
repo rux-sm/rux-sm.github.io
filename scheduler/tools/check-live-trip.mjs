@@ -52,6 +52,8 @@ expect('engine off at a stop it has reached says nothing',
   kinds(look({ bus: bus({ engine: 'off' }), next: ahead({ where: { reached: 0, at: true, next: 1 }, stop: stops[0], at: true }) })), []);
 expect('with no yard point, an engine off after yard-out still warns', kinds(look({ bus: bus({ engine: 'off' }), yard: null })), ['notRolling']);
 expect('with no yard point, a running engine after yard-out says nothing', kinds(look({ yard: null })), []);
+expect('with no path for the bus yet, an engine off at the yard says nothing',
+  kinds(look({ bus: offAtYard, now: at('14:45'), next: Road.whereOn(stops, undefined, offAtYard) })), []);
 
 console.log('\n  Wrong bus');
 const in746 = { bus_id: 'b746', drivers: [driver('d1', 'Lena Garza')] };

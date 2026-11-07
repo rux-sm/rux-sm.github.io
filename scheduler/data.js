@@ -942,12 +942,14 @@
   const roadEta = Road.arrivals((a, b) => driveBetween(a, b).then(d => d?.min ?? null), () => drawRoad());
 
   /* Where an out bar's bus is on its leg: its stops, the stop it is at or
-     goes to next, and, going, when it gets there and how late that is. */
+     goes to next, and, going, when it gets there and how late that is; null
+     until the board has the bus's path. */
   function roadNext(bar, bus) {
     const trip = heldTrip(bar.dataset.tripId);
     if (!trip || !bus) return null;
     const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
     const where = Road.whereOn(stops, bus.path, bus);
+    if (!where) return null;
     const here = bus.lat != null ? [bus.lat, bus.lng] : null;
     if (where.at) return { stops, where, stop: stops[where.reached], at: true };
     if (where.next < 0) return { stops, where, stop: null };

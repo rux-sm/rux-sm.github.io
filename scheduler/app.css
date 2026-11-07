@@ -1531,15 +1531,13 @@ button.scheduler-row-head__num:focus { outline: none; }
    of their own -- its icons -- and each says so under the pointer with
    its fill; a press on its words, the times and the line between them
    among them, only selects the trip, and a driver's name is pulled to move
-   them. The pointer anywhere on the times row fills the route mark that
-   leads it, so the row shows where its route opens without the wide line
-   taking the press meant for the trip. A touch screen has no pointer to
+   them. A mark fills under the pointer on itself alone, never for the
+   words beside it, so no row's words look as if they open it. A touch screen has no pointer to
    wait for, so it shows no hover; the open and pressed states show on any
    screen. The compact board's and a static week's bars hold none that
    open. */
 @media (hover: hover) {
-  .scheduler-bar [data-card-opener]:hover,
-  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route {
+  .scheduler-bar [data-card-opener]:hover {
     background-color: var(--scheduler-mark-fill);
     box-shadow: 0 0 0 1px var(--scheduler-mark-fill);
   }
@@ -1556,11 +1554,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 :is(.scheduler-bar__line, .scheduler-bar__solid) { transition: opacity 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 @media (hover: hover) {
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    .scheduler-bar [data-card-opener]:hover,
-    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__line { opacity: 0; }
+    .scheduler-bar [data-card-opener]:hover) .scheduler-bar__line { opacity: 0; }
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    .scheduler-bar [data-card-opener]:hover,
-    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__solid { opacity: 1; }
+    .scheduler-bar [data-card-opener]:hover) .scheduler-bar__solid { opacity: 1; }
 }
 .scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
 .scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }

@@ -261,8 +261,10 @@ week folds first.
 
 Shut, the rail is the tiles alone, 96px, the bus tile's width. Its head
 stands level with the board's toolbar and holds a chevron alone; its Driver
-row stands level with the day band, and its rows are 48px on Carbon's 8px
-grid, their rules outside them, in priority order: a rule parts one priority
+row stands level with the day band, and two of its rows are one bus row:
+each is half the bus's row less its own 1px rule, 67px beside the six-line
+board's 136px, and never under 48px, their rules outside them, in priority
+order: a rule parts one priority
 from the next, and a name's title says its priority. The chevron slides the
 week out beside the tiles, seven 32px days, 20rem in all, its title Drivers
 over them, and the browser keeps whether it was open. With a trip selected,
@@ -274,7 +276,8 @@ driver free on only some has nothing drawn, and a driver with an expired
 paper keeps the red mark and has neither, since they cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, two lines 8px in
-from its sides and 8px apart: a person's icon where their picture will go,
+from its sides and 2px apart, centred in the row on whole pixels with the
+odd pixel below: a person's icon where their picture will go,
 the name at 14px and their worst mark at the line's end, every mark's words
 on its label: a licence or medical card expiring within 45 days, amber, or
 expired, red; a leg within 30 days that changed since they said yes; a leg
@@ -284,7 +287,9 @@ bus tile's fuel is: "6:30" driving, "On 0:36" on duty, on a meter of the ten
 hours a driver may drive in the success green, amber with the words under
 an hour left; "Off 14h" or "SB 3h" resting, on the rest meter toward eight
 hours in the rest colour the bars use; and a dash over a dashed empty meter
-with no clock.
+with no clock. Where the board shows five or six lines, the meter leaves the
+words for a third line 4px under them, the tile's full width, as the bus
+tile's fuel stands under its state.
 
 The mark and the hours line are buttons that open the driver's Driver card, and both take Carbon's ghost fill under the pointer and while it is open.
 

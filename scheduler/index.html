@@ -56,6 +56,8 @@
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-chevron--left" viewBox="0 0 16 16"><path d="M5 8 10 3 10.7 3.7 6.4 8 10.7 12.3 10 13z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-checkmark--filled" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" style="fill:var(--rux-icon-path-1)"/><path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-warning--alt--filled" viewBox="0 0 32 32"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z" style="fill:var(--rux-icon-path-2)"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></symbol>
@@ -417,12 +419,6 @@
                  office is not using its pane. to-do-list.js works them. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" hidden aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-prep-panel" aria-label="Departures" title="Departures"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
-          <!-- Named "Drivers", like the pane's own head, so one
-               control has one name. It stays in the toolbar at every width,
-               a swipe along the row away where a phone is too narrow. It sits beside
-               Tasks and Departures, the bar's other panes, and its person is outlined
-               while the pane is shut and filled while it shows, set by data.js. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Drivers"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
           <!-- Forms and the quote calculator each open their own panel left
                of the week, on the selected trip, the editor's, or none; each
                is pressed while its panel is open, and a press then shuts it.
@@ -575,14 +571,15 @@
               </div>
             </div>
           </div>
-          <!-- The driver availability pane. order: -1 draws it left of the
-               board while the markup keeps the schedule first. Its head holds
-               the close control; the toolbar's toggle opens it. -->
+          <!-- The driver rail, always beside the board but on a phone's. data.js
+               orders it next to the week, left of every other open panel. Its
+               head holds the chevron that slides the week out beside the
+               drivers' tiles. -->
           <div class="scheduler-aside" id="scheduler-aside" hidden>
             <div class="scheduler-aside__head">
               <span class="scheduler-aside__title">Drivers</span>
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-close" aria-label="Hide driver availability">
-                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-week" aria-expanded="false" aria-controls="scheduler-avail" aria-label="Show the week" title="Show the week">
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
               </button>
             </div>
           </div>
@@ -708,7 +705,7 @@
                breakpoint up. data.js opens it on any of a trip's files and
                frames the file, with its type in Carbon's label line above the
                destination; narrower, it opens the file in a new tab instead. order: -2
-               in app.css draws it left of the driver availability pane. -->
+               in app.css draws it left of the driver rail. -->
           <div class="scheduler-viewer" id="scheduler-viewer" hidden>
     <aside class="rux--side-panel rux--side-panel--sm rux--side-panel--left-placement" id="scheduler-viewer-panel" aria-label="Document">
       <!-- THE HEAD SAYS WHICH DOCUMENT, in one line. Where it is one of

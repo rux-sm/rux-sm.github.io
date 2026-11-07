@@ -747,9 +747,9 @@ expect('a driver\'s line: the time left driving, the duty log\'s word and the ti
   [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'yard', left_ms: 3 * H },
     { duty: 'off', left_ms: 10 * H, rest_since: ago(14.2 * 60) }, { duty: 'sleeper', left_ms: 4 * H, rest_since: ago(40) },
     { duty: 'off', rest_since: ago(30 * 60) }, { duty: 'off', rest_since: null }, null]
-    .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone]; }),
-  [['6:30 left', 'normal'], ['On 0:36', 'warning'], ['Yard 3:00', 'normal'], ['Off 14h', 'normal'], ['SB 40m', 'normal'],
-    ['Off 24h+', 'normal'], ['Off', 'normal'], ['\u2013', 'quiet']]);
+    .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter?.kind ?? null, st.meter?.share ?? null]; }),
+  [['6:30', 'normal', 'drive', 0.65], ['On 0:36', 'warning', 'drive', 0.06], ['Yard 3:00', 'normal', 'drive', 0.3], ['Off 14h', 'normal', 'rest', 1],
+    ['SB 40m', 'normal', 'rest', 0.08], ['Off 24h+', 'normal', 'rest', 1], ['Off', 'normal', 'rest', 0], ['\u2013', 'quiet', null, null]]);
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
@@ -761,9 +761,10 @@ expect('a card further off than 45 days, or none on file, marks nothing',
   DriverHead.marksOf({ license_exp: dayIn(46), med_card_expiry: null }, [], today), []);
 const cell = document.createElement('div');
 DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'driving', left_ms: 2 * H }, []);
-expect('the head draws the short name over the line, and the most urgent mark before them',
-  [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone],
-  ['Rigo', '2:00 left', 'warning']);
+expect('the tile draws the short name and its most urgent mark over the line and its meter, and a free check to show',
+  [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
+    cell.querySelector('.scheduler-avail__meter').dataset.kind, !!cell.querySelector('.scheduler-avail__free-mark'), cell.hasAttribute('data-cannot')],
+  ['Rigo', '2:00', 'warning', 'drive', true, false]);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

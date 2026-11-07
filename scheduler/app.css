@@ -33,9 +33,13 @@
    `placeRoom` in data.js prices the panels by reading these back off them, so
    the arithmetic and the layout cannot drift. */
 :root {
-  /* The roster, the lists' pane, Tasks and Departures, and the Forms and
-     Quote calculator panels: Carbon's `rux--side-panel--sm`. */
+  /* The lists' pane, Tasks and Departures, and the Forms and Quote
+     calculator panels: Carbon's `rux--side-panel--sm`. */
   --scheduler-list-w: 20rem;
+  /* The driver rail: its tiles alone, 96px as the bus tile is, and with its
+     week open seven 32px days beside them, 20rem in all. */
+  --scheduler-rail-w: var(--rux-spacing-12);
+  --scheduler-rail-week-w: calc(var(--scheduler-rail-w) + 7 * var(--rux-layout-size-height-sm));
   /* The document viewer; opened larger it leaves its column for a window
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
@@ -3807,35 +3811,47 @@ a.scheduler-tip__go { text-decoration: none; }
    fills the window as it did. */
 .scheduler-board { display: flex; align-items: flex-start; justify-content: center; gap: var(--rux-spacing-05); min-inline-size: 0; }
 
-/* ── Drivers ─────────────────────────────────────────────────────────────────
-   Who is free on each day, which the board cannot show. Rows are drivers,
-   columns the same seven days. `.scheduler-avail__grid` also carries
-   `.scheduler-grid` and its column template; these rules add denser rows and
-   the cell states.
-
-   The roster is `--scheduler-list-w` wide, as the lists' panes are. It is
-   fixed so it does not move when the driver list changes; the schedule gives
-   way instead. data.js orders it left of the week among the open panels.
-   `--scheduler-pane-w` is its width to the rules that bring it in front of
-   the week. */
+/* THE DRIVER RAIL stands left of the week, next to it, every other open
+   panel left of it: the drivers' tiles alone, `--scheduler-rail-w`, or with
+   its week open `--scheduler-rail-week-w`, which data.js prices the room by.
+   `--scheduler-pane-w` is its width to the rules that move a pane. */
 .scheduler-aside {
-  --scheduler-pane-w: var(--scheduler-list-w);
-  flex: 0 0 var(--scheduler-list-w);
-  inline-size: var(--scheduler-list-w);
+  --scheduler-pane-w: var(--scheduler-rail-w);
+  flex: 0 0 var(--scheduler-rail-w);
+  inline-size: var(--scheduler-rail-w);
+}
+.scheduler-aside[data-week] {
+  --scheduler-pane-w: var(--scheduler-rail-week-w);
+  flex-basis: var(--scheduler-rail-week-w);
+  inline-size: var(--scheduler-rail-week-w);
+}
+/* Its week shut, the rail is the tiles' one column, and the head keeps the
+   chevron alone, its title for a screen reader. */
+.scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
+.scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
+.scheduler-aside:not([data-week]) .scheduler-aside__head { justify-content: flex-end; padding-inline-start: 0; }
+.scheduler-aside:not([data-week]) .scheduler-aside__title {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* A rule parts two weeks of days. */
 .scheduler-avail__cell--week,
 .scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
 
-/* The roster's rows are Carbon's md height, 40px, room for a driver's head
-   on two lines, as a bus's head stands over its row. */
-.scheduler-week--avail { --scheduler-avail-h: var(--rux-layout-size-height-md); max-block-size: 15rem; }
+/* The rail's rows are 48px, on Carbon's 8px grid, room for a driver's tile
+   on two lines; their rules stand outside the 48px, the one under every row
+   and the one over the first of a priority, so every tile centres whole. */
+.scheduler-week--avail { --scheduler-avail-h: var(--rux-spacing-09); max-block-size: 15rem; }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
 .scheduler-aside .scheduler-week--avail {
-  --scheduler-head-w: minmax(0, 1fr);
+  --scheduler-head-w: var(--scheduler-rail-w);
   /* Each day column is Carbon's sm, 32px, which the day letters fit, and
      leaves the names what they had before the rows grew to two lines. */
   --scheduler-day-track: var(--rux-layout-size-height-sm);
@@ -3858,6 +3874,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name,
 .scheduler-avail__cell,
 .scheduler-avail__day {
+  box-sizing: content-box;
   border-block-end: 1px solid var(--rux-border-subtle-01);
   block-size: var(--scheduler-avail-h);
   display: flex;
@@ -3905,6 +3922,8 @@ a.scheduler-tip__go { text-decoration: none; }
    Its 2rem is explicit so it matches the board's day band whatever the row
    height. */
 .scheduler-avail__days > .scheduler-avail__day {
+  /* The band's 2rem holds its rules, level with the board's band. */
+  box-sizing: border-box;
   block-size: 2rem;
   line-height: 2rem;
   position: sticky;
@@ -3938,10 +3957,47 @@ a.scheduler-tip__go { text-decoration: none; }
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+  gap: var(--rux-spacing-03);
   line-height: normal;
-  padding-inline: var(--rux-spacing-07) var(--rux-spacing-03);
+  padding-inline: var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+/* A DRIVER'S TILE, driver-head.js's, 8px in from its sides: the person,
+   the name and the worst mark on the 18px line, and 8px under it their
+   words beside a 4px meter, the words' 12px line hung on the meter as the
+   bus tile's E and F are, the two centred in the 48px row. */
+.scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
+.scheduler-avail__icon { flex: none; display: block; color: var(--rux-icon-secondary); }
+.scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-avail__line {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  block-size: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+}
+.scheduler-avail__line > .scheduler-avail__state { flex: none; overflow: visible; }
+@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
+  .scheduler-avail__line > .scheduler-avail__state { inline-size: calc-size(fit-content, round(up, size, 1px)); }
+}
+/* The meter is Carbon's small progress bar, as the bus tile's fuel is: the
+   time left of a day's driving in the success green, amber under an hour,
+   or the rest toward eight hours in the rest colour the bars use; with no
+   clock, dashed and empty. */
+.scheduler-avail__meter {
+  --scheduler-meter-ink: var(--scheduler-mark-success);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: var(--rux-spacing-02);
+  background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
+}
+.scheduler-avail__meter[data-kind="rest"] { --scheduler-meter-ink: var(--scheduler-rest-fill); }
+.scheduler-avail__line[data-tone="warning"] > .scheduler-avail__state { color: var(--scheduler-head-low); font-weight: 600; }
+.scheduler-avail__line[data-tone="warning"] > .scheduler-avail__meter { --scheduler-meter-ink: var(--scheduler-head-low); }
+.scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--rux-border-subtle-02) 0 2px, transparent 2px 4px); }
+@supports (inset-inline-start: round(50%, 1px)) {
+  .scheduler-avail__meter { background-size: round(var(--scheduler-share, 0%), 1px) 100%; }
 }
 .scheduler-avail__who,
 .scheduler-avail__state {
@@ -3952,22 +4008,23 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__who { line-height: var(--rux-body-compact-01-line-height); }
 .scheduler-avail__state {
   font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
+  line-height: var(--scheduler-label-h);
   letter-spacing: var(--rux-label-01-letter-spacing);
   font-weight: var(--rux-label-01-font-weight);
   color: var(--rux-text-secondary);
 }
 /* Amber under an hour left, in the bus head's warning ink. */
-.scheduler-avail__state[data-tone="warning"] { color: var(--scheduler-head-low); }
-/* The mark's top puts its 16px level with the name's 18px line, the two
-   lines' 34px centred in the row. */
+/* The worst mark ends the name's line, a status solid in its colour. While
+   the selected trip finds the driver free, data.js's `data-free`, a green
+   check stands in its place, but never for a driver who cannot drive. */
 .scheduler-avail__mark {
-  position: absolute;
-  inset-inline-start: var(--rux-spacing-03);
-  inset-block-start: calc((var(--scheduler-avail-h) - 34px) / 2 + 1px);
+  flex: none;
   display: inline-flex;
   color: var(--scheduler-head-low);
 }
+.scheduler-avail__free-mark { display: none; flex: none; color: var(--rux-support-success); }
+.scheduler-avail__name[data-free] .scheduler-avail__free-mark { display: block; }
+.scheduler-avail__name[data-free] .scheduler-avail__mark { display: none; }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 
 /* The corner stays above the day letters when the roster scrolls sideways.

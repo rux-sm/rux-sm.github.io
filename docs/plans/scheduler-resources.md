@@ -134,12 +134,8 @@ rest meter.
 
 ## Tasks
 
-- [ ] Make the roster a rail always open left of the Mac's board, its rows
-      the driver's tile in `scheduler/driver-head.js`, a card of
-      its own level with the board's toolbar and day band, closed to its
-      names, with the chevron that opens the week, kept by the browser; take
-      Driver availability out of the toolbar, and count the rail in the
-      panels' sum as the decision says, its week folding first.
+- [ ] Count the week's minimum in `data.js` in days, so it grows by the
+      3.5rem the bus column grew, as the decision says; it is still 33rem.
 - [ ] Draw a road bar's seats as a planned bar's, the wheel's mark kept, and
       take the duty mark and the hours and rest meters off it, in
       `scheduler/road-bar.js`, `tools/check-bar.mjs` and the components

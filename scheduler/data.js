@@ -10678,8 +10678,15 @@
   const asideSlot = document.getElementById('scheduler-aside');
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
-  const availToggle = document.getElementById('scheduler-avail-toggle');
-  let availOn = false;
+  /* THE RAIL: the drivers' tiles, always beside the board but on a phone's,
+     and the chevron in its head that slides the week out beside them. The
+     browser keeps whether the week was open, as it keeps the view's options. */
+  const availWeekBtn = document.getElementById('scheduler-avail-week');
+  const RAIL_KEY = 'scheduler.rail';
+  let railWeek = false;
+  try { railWeek = localStorage.getItem(RAIL_KEY) === 'week'; } catch { /* no storage: the week starts shut */ }
+  // A phone's board has no rail: below md, or a board too narrow for three days.
+  const railShown = () => !matchMedia('(max-width: 41.98rem)').matches && pageEl?.getAttribute('data-board') !== 'compact';
   // The pane of the board's two lists, which to-do-list.js shows and hides.
   const toDoPane = document.getElementById('scheduler-to-do-panel');
   /* The roster's rows for the board's whole range, a week, two or the strip,
@@ -11329,8 +11336,7 @@
     carriedName = false;
     if (!carries(down)) return;
     const name = down.target.closest('.scheduler-avail__name[data-driver-id]');
-    // The roster in front of the board has no trip under it to drop on.
-    if (!name || pageEl?.getAttribute('data-takeover') === 'roster') return;
+    if (!name) return;
     carry(down, {
       driverId: name.dataset.driverId, label: name.querySelector('.scheduler-avail__who')?.textContent ?? '', held: name, dim: 'scheduler-avail__name--carried',
       onLift: () => { carriedName = true; },
@@ -11716,6 +11722,7 @@
       c.classList.remove(...OPEN);
     }
     for (const icon of availGrid.querySelectorAll('.scheduler-avail__free')) icon.remove();
+    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-free]')) n.removeAttribute('data-free');
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -11732,11 +11739,16 @@
       const open = [...r.querySelectorAll('.scheduler-avail__cell--on-day')]
         .filter(c => !c.matches('.scheduler-avail__cell--busy, .scheduler-avail__cell--off'));
       if (!open.length) continue;
-      const all = open.length === days;
+      /* A driver with an expired paper cannot drive, so is never offered as
+         free: their tile keeps its red mark and their days no slot. */
+      const name = r.querySelector('.scheduler-avail__name');
+      const cannot = !!name?.hasAttribute('data-cannot');
+      const all = open.length === days && !cannot;
+      if (all) name?.setAttribute('data-free', '');
       for (const c of open) {
         c.classList.add('scheduler-avail__cell--open');
         if (all) c.classList.add('scheduler-avail__cell--whole');
-        c.title = all ? 'Free for the whole trip' : 'Free for part of the trip';
+        c.title = all ? 'Free for the whole trip' : open.length === days ? 'Free, but a paper has expired' : 'Free for part of the trip';
       }
       if (all) {
         const icon = svgUse('#m-check', '16', '0 0 32 32');
@@ -12752,8 +12764,10 @@
      it stands right of the week and the board never closes it. */
   const PANEL_NAMES = { roster: 'Drivers', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
-    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-list-w'),
-      close: () => { availOn = false; placeAvailability(); } },
+    /* The rail is never closed for room and is not one of the two panels
+       beside the week; where room runs short its week folds first. */
+    { name: 'roster', el: asideSlot, open: railShown(), rail: true,
+      width: () => panelWidth(railWeek ? '--scheduler-rail-week-w' : '--scheduler-rail-w') },
     { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('tasks') },
     { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-list-w'),
@@ -12769,7 +12783,7 @@
     if (!board) return false;
     const open = panels().filter(p => p.open || p.name === adding);
     if (matchMedia('(max-width: 41.98rem)').matches) return open.length > 1;
-    if (open.length > PANELS_MAX) return true;
+    if (open.filter(p => !p.rail).length > PANELS_MAX) return true;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
     return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * remPx() > board;
   }
@@ -12788,10 +12802,11 @@
     const desk = !matchMedia('(max-width: 41.98rem)').matches;
     // Beside the editor one panel stays, over the week: the new one, or for the editor itself the newest open.
     const besideEditor = () => desk && (name === 'editor' || panels().find(p => p.editor)?.open)
-      && panels().filter(p => (p.open || p.name === name) && !p.editor).length <= 1;
+      && panels().filter(p => (p.open || p.name === name) && !p.editor && !p.rail).length <= 1;
     while (overRoom(name) && !besideEditor()) {
+      if (railWeek) { setRailWeek(false, { place: false }); continue; }
       const oldest = openOrder.map(n => panels().find(p => p.name === n))
-        .find(p => p && p.open && p.name !== name && !p.editor && !kept.has(p.name));
+        .find(p => p && p.open && p.name !== name && !p.editor && !p.rail && !kept.has(p.name));
       if (!oldest) break;
       if (oldest.dirty?.() && !(await ask(`Close ${PANEL_NAMES[oldest.name]}?`, `To open ${PANEL_NAMES[name]}, ${PANEL_NAMES[oldest.name]} closes, and what was typed in it is not kept.`))) {
         kept.add(oldest.name);
@@ -12836,9 +12851,11 @@
        holding typed input and the editor stay, and the week gives way. */
     // Beside the editor one panel can always stay, over the week.
     const editorOpen = open.some(p => p.editor);
-    if (overRoom() && !(editorOpen && !overlay && open.filter(p => !p.editor).length <= 1)) {
+    if (overRoom() && !(editorOpen && !overlay && open.filter(p => !p.editor && !p.rail).length <= 1)) {
+      // The rail's week folds before any panel closes.
+      if (railWeek) { setRailWeek(false); return; }
       const oldest = openOrder.map(n => open.find(p => p.name === n))
-        .find(p => p && !p.editor && !p.dirty?.() && (!overlay || p.name !== openOrder.at(-1)));
+        .find(p => p && !p.editor && !p.rail && !p.dirty?.() && (!overlay || p.name !== openOrder.at(-1)));
       if (oldest) { oldest.close(); return; }
     }
 
@@ -12856,6 +12873,8 @@
       if (replacing?.name === name) replacing = null;
     }
     leftShown = new Set(lefts);
+    // The rail always stands next to the week; every other panel opens left of it.
+    leftOrder = [...leftOrder.filter(n => n !== 'roster'), ...(lefts.includes('roster') ? ['roster'] : [])];
     leftOrder.forEach((name, i) => {
       const p = all.find(x => x.name === name);
       if (p?.el) p.el.style.order = String(i - 100);
@@ -12866,7 +12885,7 @@
        up, where the editor and one other panel are open and the two do not fit
        beside the week, that panel comes in front of the week alone and the
        editor stays beside it, in use. */
-    const others = open.filter(p => !p.editor);
+    const others = open.filter(p => !p.editor && !p.rail);
     const cover = !overlay && others.length === 1 && open.some(p => p.editor) && overRoom() ? others[0].name : null;
     const front = overlay && openOrder.length ? openOrder.at(-1) : cover;
     frontPanel = front;
@@ -12917,6 +12936,7 @@
     // The menus the view menu holds stand outside the page, so they read it from the root.
     if (compact) document.documentElement.setAttribute('data-scheduler-board', 'compact');
     else document.documentElement.removeAttribute('data-scheduler-board');
+    dressRail();
 
     /* A panel opening or closing moves the board without always resizing its
        grid, so the trip card, fixed to the window, is placed again once the
@@ -13108,38 +13128,53 @@
     window.Rux?.schedule?.fit?.();
   });
 
-  function placeAvailability({ refit = true } = {}) {
-    /* The roster is on screen whenever it is asked for. Where it goes -- beside
-       the week or in front of it -- is `placeRoom`'s, and either way the toggle
-       reads as pressed, because either way the roster is there. */
-    const shown = availOn;
-    // A driver picked out from a roster that has gone would dim the board
+  /* Shows the rail where the board has one and hides it on a phone's, with
+     its week open or shut, without laying the board out again. */
+  function dressRail() {
+    const shown = railShown();
+    // A driver picked out from a rail that has gone would dim the board
     // with nothing on screen to say why, or to undo it.
     if (!shown && focusDriver != null) pickDriver(null);
     if (asideSlot) {
       asideSlot.hidden = !shown;
-      if (shown) asideSlot.appendChild(availEl);
+      if (shown && availEl.parentElement !== asideSlot) asideSlot.appendChild(availEl);
+      asideSlot.toggleAttribute('data-week', railWeek);
     }
     availEl.hidden = !shown;
-    availToggle.setAttribute('aria-pressed', String(shown));
-    // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
-    // Carbon's pressed look.
-    availToggle.classList.toggle('rux--btn--selected', shown);
-    // The glyph says it too: an outlined person while the roster is shut, a
-    // filled one while it shows, as a filled glyph reads as on.
-    availToggle.querySelector('use')?.setAttribute('href', shown ? '#m-person-fill' : '#m-person');
-    /* The room is measured again here: opening the roster is not a resize, so
-       nothing else would ask, and the board would lay out for a panel it no
-       longer has room for. */
+    if (availWeekBtn) {
+      availWeekBtn.setAttribute('aria-expanded', String(railWeek));
+      const words = railWeek ? 'Hide the week' : 'Show the week';
+      availWeekBtn.setAttribute('aria-label', words);
+      availWeekBtn.title = words;
+      availWeekBtn.querySelector('use')?.setAttribute('href', railWeek ? '#i-chevron--left' : '#i-chevron--right');
+    }
+  }
+
+  function placeAvailability({ refit = true } = {}) {
+    dressRail();
+    /* The room is measured again here: the rail's week opening is not a
+       resize, so nothing else would ask, and the board would lay out for a
+       panel it no longer has room for. */
     placeRoom();
     if (refit) window.Rux?.schedule?.fit?.();
   }
 
-  // A press shows the roster or hides it; where it then goes is `placeRoom`'s.
-  availToggle?.addEventListener('click', async () => {
-    if (!availOn && !(await makeRoom('roster'))) return;
-    availOn = !availOn;
-    placeAvailability();
+  /* Opens or shuts the rail's week, kept by the browser; `place` false is
+     for `makeRoom`, which is laying the board out already. */
+  function setRailWeek(open, { place = true } = {}) {
+    railWeek = open;
+    try { localStorage.setItem(RAIL_KEY, open ? 'week' : 'names'); } catch { /* the week is kept for this page alone */ }
+    if (place) placeAvailability();
+    else dressRail();
+  }
+
+  // The chevron opens the week where there is room for it, as a panel opens.
+  availWeekBtn?.addEventListener('click', async () => {
+    if (railWeek) { setRailWeek(false); return; }
+    railWeek = true;
+    const room = await makeRoom('roster');
+    railWeek = false;
+    if (room) setRailWeek(true);
   });
 
   /* ── View options ─────────────────────────────────────────────────────────
@@ -13307,13 +13342,6 @@
   // rather than blinking off after it.
   applyView();
 
-  // The roster's own close button. Focus goes to the toolbar toggle, which
-  // opens the roster again.
-  document.getElementById('scheduler-avail-close')?.addEventListener('click', () => {
-    availOn = false;
-    placeAvailability();
-    availToggle?.focus();
-  });
 
   /* A picked contact links the field and fills from it; typing unlinks it, and
      Save then finds or adds the contact by what was typed (`linkContacts`).
@@ -17916,7 +17944,6 @@
   function leaveFront() {
     if (!frontPanel) return false;
     if (frontPanel === 'editor') whenSafe(() => closePanel());
-    else if (frontPanel === 'roster') { availOn = false; placeAvailability(); availToggle?.focus(); }
     else if (frontPanel === 'to-do') window.SchedulerToDoList?.shut('tasks');
     else if (frontPanel === 'prep') window.SchedulerToDoList?.shut('prep');
     else viewers[frontPanel]?.close();

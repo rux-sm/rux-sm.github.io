@@ -235,11 +235,10 @@
 }
 
 
-/* The roster's close takes the primary text colour, as Carbon gives the side
-   panel's own close; a ghost button's link colour would read as an action
-   rather than a way out. Scoped to the one button, since the page's other
-   ghost buttons are actions. */
-#scheduler-avail-close {
+/* The rail's chevron takes the primary text colour, as Carbon gives a side
+   panel's own controls; a ghost button's link colour would read as an
+   action on a trip rather than the rail's own way open and shut. */
+#scheduler-avail-week {
   color: var(--rux-text-primary);
 }
 

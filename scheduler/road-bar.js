@@ -521,5 +521,5 @@
     ].filter(Boolean).join('\n');
   }
 
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords, restProgress };
+  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, DRIVE, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords, restProgress };
 })();

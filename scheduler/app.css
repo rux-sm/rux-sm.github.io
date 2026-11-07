@@ -1358,37 +1358,22 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
-/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a chip after its
-   destination: the arrow alone in a ring of the destination's ink, as thin
-   as the bar's other marks, so it reads with the name it follows. */
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears its arrow after its
+   destination, in the trip's strong ink: a plain glyph with no ring, so it
+   is never taken for a button, since it opens nothing; its words are its
+   tooltip and its label. */
 .scheduler-bar__row > .scheduler-bar__kind {
   flex: none;
   align-self: center;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  block-size: 16px;
-  padding-inline: 3px 6px;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 45%, transparent);
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: .2px;
-}
-.scheduler-bar__kind > svg { flex: none; }
-.scheduler-bar__row > .scheduler-bar__kind--icon {
   justify-content: center;
-  inline-size: 18px;
-  block-size: 18px;
-  padding: 0;
-  border-radius: 9px;
-  background: none;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
   color: var(--scheduler-ink-strong);
-  box-shadow: inset 0 0 0 1px currentColor;
 }
-.scheduler-bar__kind--icon > svg { inline-size: 12px; block-size: 12px; }
-.scheduler-bar__kind--icon > .scheduler-bar__kind-word { display: none; }
+.scheduler-bar__kind > svg { flex: none; inline-size: 12px; block-size: 12px; }
+.scheduler-bar__kind > .scheduler-bar__kind-word { display: none; }
 
 /* The rows the view menu can turn off. `display: none` rather than
    `visibility: hidden`, so the height comes back: `--scheduler-bar-rows` drops
@@ -1489,25 +1474,19 @@ button.scheduler-row-head__num:focus { outline: none; }
    and never reaches the rows above and below. */
 .scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -1px; }
 .scheduler-bar :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
-/* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them, the glyph alone
-   so the mark's box and its focus ring hold still: under the
-   pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
-   and a bigger mark to press, standing a pixel past the 18px row above and
-   below, a little lighter and over a tight shadow, Carbon's tab tip's in
-   the theme's shadow colour, which stays within the row's 8px margin, as a
-   raised surface is lighter in a dark theme and casts a shadow in a light
-   one. It stays up while its tip is open and settles flat under a
-   press. It grows from its centre, so it stays centred in its box and its
-   ring, 2px out each way at the most, inside the bar's padding. The rows that
-   hold one cut only what passes 8px beyond their edges, the bar's padding,
-   so the icon and its shadow show whole and the bar's own edge is still
-   the last cut; they clip both ways because Chrome keeps a clip's margin
-   only then. The grow is Carbon's moderate-01 on its productive standard
-   curve, a small expansion. */
+/* THE MARKS THAT OPEN A TIP ARE CARBON'S GHOST ICON BUTTONS: nothing
+   behind them at rest, and under the pointer, on keyboard focus and while
+   their tip is open a square of the trip's strong ink at a fifth behind the
+   16px glyph, the 18px of its row, so the fill never reaches past the row;
+   deeper under a press. The fill comes in on Carbon's fast-01, its
+   productive standard curve. The rows that hold a mark cut only what
+   passes 8px beyond their edges, room for the focus ring; they clip both
+   ways because Chrome keeps a clip's margin only then. */
 .scheduler-bar [data-card-opener] {
   /* EVERY MARK THAT OPENS A TIP IS ONE BOX: the 16px glyph's own square,
      centred in its row, square-cornered and never clipping what it holds,
-     so the focus ring and the lift look the same on every one. */
+     so the focus ring and the fill look the same on every one. */
+  --scheduler-mark-fill: color-mix(in srgb, var(--scheduler-ink-strong) 20%, transparent);
   display: inline-flex;
   flex: none;
   align-self: center;
@@ -1522,10 +1501,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   color: inherit;
   font-size: inherit;
   line-height: inherit;
-}
-.scheduler-bar [data-card-opener] > svg {
-  transform-origin: center;
-  transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
+  transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__update, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
@@ -1552,33 +1528,30 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar__run > * { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-bar__run > :last-child { flex: 0 1 auto; min-inline-size: 0; }
 /* MARKS OPEN, WORDS DO NOT. Only a bar's marks are pressed for something
-   of their own -- its icons -- and each says so under
-   the pointer by lifting; a press on its words, the times and the line
-   between them among them, only selects the trip, and a driver's name is
-   pulled to move them. The pointer anywhere on the times row lifts the
-   route mark that leads it, so the row shows where its route opens without the
-   wide line taking the press meant for the trip. A touch screen has no
-   pointer to wait for, so it shows no hover; the open and pressed states
-   show on any screen. The pointer anywhere on a board's bar lifts all its marks
-   a little, so they read as buttons before one is reached; the compact
-   board's and a static week's bars hold none that open. */
+   of their own -- its icons -- and each says so under the pointer with
+   its fill; a press on its words, the times and the line between them
+   among them, only selects the trip, and a driver's name is pulled to move
+   them. The pointer anywhere on the times row fills the route mark that
+   leads it, so the row shows where its route opens without the wide line
+   taking the press meant for the trip. A touch screen has no pointer to
+   wait for, so it shows no hover; the open and pressed states show on any
+   screen. The compact board's and a static week's bars hold none that
+   open. */
 @media (hover: hover) {
-  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener] > svg {
-    transform: scale(1.12);
-  }
-  .scheduler-bar [data-card-opener]:hover > svg,
-  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route > svg {
-    transform: scale(1.25);
-    filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
+  .scheduler-bar [data-card-opener]:hover,
+  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route {
+    background-color: var(--scheduler-mark-fill);
+    box-shadow: 0 0 0 1px var(--scheduler-mark-fill);
   }
 }
-.scheduler-bar [data-card-opener][aria-expanded="true"] > svg {
-  transform: scale(1.25);
-  filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
+.scheduler-bar [data-card-opener]:is([aria-expanded="true"], :focus-visible) {
+  background-color: var(--scheduler-mark-fill);
+  box-shadow: 0 0 0 1px var(--scheduler-mark-fill);
 }
-.scheduler-bar [data-card-opener]:active > svg { transform: none; filter: none; }
-/* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
-   `glyphTo`: the outline fades out as the solid fades in. */
+.scheduler-bar [data-card-opener]:active { --scheduler-mark-fill: color-mix(in srgb, var(--scheduler-ink-strong) 32%, transparent); }
+/* A mark drawn in an outline icon turns solid while the pointer is on its
+   bar, so the bar's buttons show before one is reached, and while it is
+   filled, bar.js's `glyphTo`: the outline fades out as the solid fades in. */
 .scheduler-bar__solid { opacity: 0; }
 :is(.scheduler-bar__line, .scheduler-bar__solid) { transition: opacity 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 @media (hover: hover) {
@@ -1600,9 +1573,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-[data-motion="off"] .scheduler-week :is([data-card-opener] > svg, .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+[data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-week :is([data-card-opener] > svg, .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+  .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
    evening before, raised so the row keeps its height, and never under

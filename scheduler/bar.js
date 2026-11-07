@@ -180,9 +180,9 @@
     }
   };
 
-  /* The chip a one-way trip and each leg of a split wear after the
-     destination: the arrow the way the bus goes, in a high-contrast tag.
-     The word is its tooltip, so the chip is the same width on every bar and
+  /* The arrow a one-way trip and each leg of a split wear after the
+     destination: the way the bus goes, a plain glyph that opens nothing.
+     The word is its tooltip, so the arrow is the same width on every bar and
      never competes with the destination for room. */
   const KINDS = {
     'one way': { icon: '#m-arrow_forward', word: 'One way' },
@@ -191,7 +191,7 @@
   };
   const kindEl = kind => {
     const { icon, word } = KINDS[kind];
-    const pill = el('span', 'scheduler-bar__kind scheduler-bar__kind--icon');
+    const pill = el('span', 'scheduler-bar__kind');
     pill.title = word;
     pill.setAttribute('role', 'img');
     pill.setAttribute('aria-label', word);

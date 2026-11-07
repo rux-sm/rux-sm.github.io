@@ -272,7 +272,10 @@
      the board and the map start two hours before the leg leaves the yard,
      while the bus is still there. It
      resolves to the answer with every bus's `path` whole, or throws the
-     function's error. */
+     function's error. A bus out whose path has never come, because
+     Samsara would not give it, has none, which whereOn reads as not known;
+     once one has come, an answer without it adds nothing, and the next ask
+     goes on from the newest point held, so no stretch is missed. */
   function live(client, now = () => Date.now()) {
     const paths = new Map();   // busId -> { from, points }
     return {
@@ -280,7 +283,7 @@
         const want = {};
         for (const [busId, from] of Object.entries(since)) {
           const had = paths.get(busId);
-          if (!had || had.from !== from) paths.set(busId, { from, points: [] });
+          if (!had || had.from !== from) paths.set(busId, { from, points: [], read: false });
           const last = paths.get(busId).points.at(-1);
           want[busId] = new Date(last ? last[2] + 1 : Math.max(from, now() - PATH_BACK)).toISOString();
         }
@@ -290,8 +293,9 @@
         for (const bus of r.data?.buses ?? []) {
           const held = paths.get(bus.bus_id);
           if (!held) continue;
+          if (Array.isArray(bus.path)) held.read = true;
           held.points.push(...(bus.path ?? []).filter(p => !held.points.length || p[2] > held.points.at(-1)[2]));
-          bus.path = held.points;
+          bus.path = held.read ? held.points : undefined;
         }
         return r.data;
       },

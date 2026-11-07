@@ -44,7 +44,9 @@
 // in the body's `paths`, `{ bus_id: ISO time }`: Samsara's GPS readings since
 // then, thinned to one every tenth of a mile, so the board can tell which of
 // a leg's stops the bus has reached and the map can draw where it went. A
-// path reaches back four days at most.
+// path reaches back four days at most. When Samsara will not give the
+// readings, no bus has a path, so the board knows it does not know where a
+// bus has been, rather than reading an empty path as one that went nowhere.
 
 // A reading older than this says nothing about now.
 export const FRESH_MS = 15 * 60_000
@@ -348,7 +350,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     ids.length ? deps.stats(ids) : Promise.resolve([] as Stat[]),
     deps.clocks().catch(() => { hours = false; return [] as Clock[] }),
     // A path that cannot be read leaves the bus without one, and the rest stands.
-    since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => ({} as Record<string, Fix[]>))
+    since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => null)
       : Promise.resolve({} as Record<string, Fix[]>),
   ])
   const statOf = new Map(stats.map(s => [String(s.id), s]))
@@ -412,7 +414,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         odometer: odometerOf(s),
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
-        ...(since.has(vehicle) ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
+        ...(since.has(vehicle) && history ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
     drivers: markWheel(known),

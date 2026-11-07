@@ -182,8 +182,8 @@ await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(10 * 24 * 60) });
 expect('a path reaches back four days at most', (NOW - p.asked[1]) / H, 96);
 p = parts({ historyFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(60) });
-expect('a path Samsara refuses is an empty one, and the bus still comes back',
-  [a.buses[0].path, a.buses[0].engine], [[], 'on']);
+expect('a path Samsara refuses is no path at all, not an empty one, and the bus still comes back',
+  ['path' in a.buses[0], a.buses[0].engine], [false, 'on']);
 const parked = parts();
 parked.deps.vehicles = async () => [{ id: 'v104', name: '104' }];
 parked.deps.stats = async () => [{ id: 'v104', engineState: { time: ago(300), value: 'Off' }, gps: { time: ago(40), latitude: 26.3, longitude: -98.1, speedMilesPerHour: 0 } }];

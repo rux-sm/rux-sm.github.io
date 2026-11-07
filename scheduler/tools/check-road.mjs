@@ -224,6 +224,13 @@ expect('then from after its newest point, and a point it has is not kept twice',
 a = await road.ask({ b1: 800 });
 expect('a leg that starts at another time starts a new path', [sent[2].paths.b1, a.buses[0].path.map(p => p[2])],
   [new Date(800).toISOString(), [900]]);
+// Samsara refusing the path: none until one comes, then what was held, and the next ask goes on from it.
+const refusals = [{ buses: [{ bus_id: 'b1' }] }, { buses: [{ bus_id: 'b1', path: [[1, 1, 100]] }] }, { buses: [{ bus_id: 'b1' }] }];
+const refusing = live({ functions: { invoke: async (n, { body }) => { sent.push(body); return { data: structuredClone(refusals.shift()) }; } } }, () => 3600e3);
+const refused = [await refusing.ask({ b1: 50 }), await refusing.ask({ b1: 50 }), await refusing.ask({ b1: 50 })];
+expect('a path refused before any came is none, not an empty one; once one came, a refusal keeps it and asks on from its newest point',
+  [refused[0].buses[0].path, refused[1].buses[0].path.length, refused[2].buses[0].path.length, sent.at(-1).paths.b1],
+  [undefined, 1, 1, new Date(101).toISOString()]);
 await live({ functions: { invoke: async (n, { body }) => { sent.push(body); return { data: { buses: [] } }; } } }).ask({});
 expect('with no bus out, no path is asked', sent.at(-1), {});
 const far = live({ functions: { invoke: async (n, { body }) => { sent.push(body); return { data: { buses: [] } }; } } }, () => 20 * 3600e3);

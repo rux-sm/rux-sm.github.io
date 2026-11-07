@@ -1497,8 +1497,8 @@ button.scheduler-row-head__num:focus { outline: none; }
    the theme's shadow colour, which stays within the row's 8px margin, as a
    raised surface is lighter in a dark theme and casts a shadow in a light
    one. It stays up while its tip is open and settles flat under a
-   press. It grows toward the inside of the bar, the alert to its left and
-   the rest to their right, so the bar's edge never cuts it. The rows that
+   press. It grows from its centre, so it stays centred in its box and its
+   ring, 2px out each way at the most, inside the bar's padding. The rows that
    hold one cut only what passes 8px beyond their edges, the bar's padding,
    so the icon and its shadow show whole and the bar's own edge is still
    the last cut; they clip both ways because Chrome keeps a clip's margin
@@ -1524,10 +1524,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   line-height: inherit;
 }
 .scheduler-bar [data-card-opener] > svg {
-  transform-origin: left center;
+  transform-origin: center;
   transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.scheduler-bar .scheduler-bar__alert > svg { transform-origin: right center; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__update, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }

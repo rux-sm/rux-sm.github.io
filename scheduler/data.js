@@ -934,6 +934,8 @@
       const driver = availAll?.rows.find(r => String(r.driver.id) === n.dataset.driverId)?.driver;
       if (driver) DriverHead.draw(n, driver, liveDriverOf(driver.id), driverAlertsOf(driver.id));
     }
+    const open = availGrid?.querySelector('.scheduler-avail__card.rux--popover--open')?.closest('.scheduler-avail__name');
+    if (open) { fillDriverCard(open); placeDriverCard(); }
   }
   document.addEventListener('scheduler:to-do-rows', () => drawDriverHeads());
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
@@ -10717,10 +10719,13 @@
     }
     // Written only when it changes: this runs at every scroll's end, and each
     // attribute written has the page's style worked out again.
-    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-driver-id]')) {
-      const pressed = String(n.dataset.driverId === id);
-      if (n.getAttribute('aria-pressed') !== pressed) n.setAttribute('aria-pressed', pressed);
-    }
+    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-driver-id]')) pickedTo(n, n.dataset.driverId === id);
+  }
+  // A tile's name pressed while its driver is picked out, and the tile marked for app.css; written only when it changes.
+  function pickedTo(tile, picked) {
+    const name = tile.querySelector('.scheduler-avail__who');
+    if (name && name.getAttribute('aria-pressed') !== String(picked)) name.setAttribute('aria-pressed', String(picked));
+    if (tile.hasAttribute('data-picked') !== picked) tile.toggleAttribute('data-picked', picked);
   }
 
   /* Picking a driver puts down the selected trip, and with it its card and
@@ -10748,6 +10753,10 @@
   }
 
   availGrid?.addEventListener('click', e => {
+    // The mark opens the driver's card as the line does; the card and the line are js/popover.js's.
+    const mark = e.target.closest('.scheduler-avail__mark');
+    if (mark) { mark.closest('.scheduler-avail__name')?.querySelector('.scheduler-avail__line')?.click(); return; }
+    if (e.target.closest('.scheduler-avail__card')) return;
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
     if (name) {
       // The second press of a double-click opens the record, so it picks no one.
@@ -10767,15 +10776,15 @@
   // A double-click on a name opens the driver's record, as one on a trip opens the trip.
   availGrid?.addEventListener('dblclick', e => {
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
-    if (!name) return;
+    if (!name || e.target.closest('.scheduler-avail__card, .scheduler-avail__mark')) return;
     window.getSelection?.()?.removeAllRanges();
     follow(`drivers.html?id=${encodeURIComponent(name.dataset.driverId)}`, true);
   });
+  // The name is a button, so Enter and Space press it; Escape on a tile puts the driver down.
   availGrid?.addEventListener('keydown', e => {
     const name = e.target.closest?.('.scheduler-avail__name[data-driver-id]');
-    if (!name) return;
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickDriver(name.dataset.driverId); }
-    else if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
+    if (!name || e.target.closest('.scheduler-avail__card')) return;
+    if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
   });
 
   /* A NAME'S MENU, from a right-click, the menu key or a finger's hold, in
@@ -11336,7 +11345,8 @@
     carriedName = false;
     if (!carries(down)) return;
     const name = down.target.closest('.scheduler-avail__name[data-driver-id]');
-    if (!name) return;
+    // The card's line and the mark are buttons of their own, which carry no one.
+    if (!name || down.target.closest('.scheduler-avail__card, .scheduler-avail__mark')) return;
     carry(down, {
       driverId: name.dataset.driverId, label: name.querySelector('.scheduler-avail__who')?.textContent ?? '', held: name, dim: 'scheduler-avail__name--carried',
       onLift: () => { carriedName = true; },
@@ -11654,11 +11664,9 @@
          screen-reader user tell two similar names apart. */
       const nameEl = el('div', 'scheduler-avail__name');
       DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id));
-      // A press picks out the driver's trips on the board; see `markDriverTrips`.
-      nameEl.setAttribute('role', 'button');
-      nameEl.tabIndex = 0;
-      nameEl.setAttribute('aria-pressed', String(row.driver.id === focusDriver));
+      // The name is a toggle that picks out the driver's trips on the board; see `markDriverTrips`.
       nameEl.dataset.driverId = row.driver.id;
+      pickedTo(nameEl, String(row.driver.id) === String(focusDriver));
       r.appendChild(nameEl);
       row.days.slice(first, first + count).forEach((day, j) => {
         const i = first + j;
@@ -11915,11 +11923,12 @@
     'rux--popover--top', 'rux--popover--top-start', 'rux--popover--top-end',
     'rux--popover--bottom', 'rux--popover--bottom-start', 'rux--popover--bottom-end',
   ];
-  function placeTip(tip, box, inColumn = false) {
+  function placeTip(tip, box, inColumn = false, roomIn = null) {
     const pane = schEl.getBoundingClientRect();
     const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
-    const room = { top: (band ? band.bottom : pane.top) + TIP_GAP, bottom: pane.bottom - TIP_GAP,
+    // The board's room, right of its bus column and under its day band, unless the tip is given its own.
+    const room = roomIn ?? { top: (band ? band.bottom : pane.top) + TIP_GAP, bottom: pane.bottom - TIP_GAP,
       left: (column ? column.right : pane.left) + TIP_GAP, right: pane.right - TIP_GAP };
     /* An icon scrolled out of the board's room leaves nothing to point at, as
        a card's trip does. The column never scrolls across, so a bus number
@@ -11996,6 +12005,52 @@
     placeTip(tip, new DOMRect(head.left, line.top, head.width, line.height), true);
   }
   gridEl?.addEventListener('rux:popover-opened', e => { if (e.target.closest('.scheduler-row-head')) placeBusTip(); });
+
+  /* A DRIVER'S CARD, from their tile in the rail: trip-tips.js's, filled as
+     it opens and again as Samsara's answer changes it, and placed as a bus
+     number's tip is, beside the tile and fixed to the window, in the room
+     under the rail's day band, so it floats over the rail and the board. */
+  function driverInfo(id) {
+    const driver = availAll?.rows.find(r => String(r.driver.id) === String(id))?.driver;
+    if (!driver) return null;
+    const live = liveDriverOf(id);
+    const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(id)));
+    const bus = inBus ? panelIndex.buses?.get(inBus.bus_id)?.number ?? null : null;
+    return { driver, live, bus, marks: DriverHead.marksOf(driver, driverAlertsOf(id)), next: nextTripOf(id) };
+  }
+  // The driver's next trip in the board's range, today's or later: its words and its day.
+  function nextTripOf(id) {
+    const row = availAll?.rows.find(r => String(r.driver.id) === String(id));
+    if (!row) return null;
+    const today = daysBetween(availAll.weekStart, new Date(new Date().setHours(0, 0, 0, 0)));
+    const i = row.days.findIndex((day, n) => n >= today && day.trips.length);
+    if (i < 0) return null;
+    const when = addDays(availAll.weekStart, i).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    return `${row.days[i].trips[0]}, ${when}`;
+  }
+  function fillDriverCard(tile) {
+    const info = driverInfo(tile.dataset.driverId);
+    const content = tile.querySelector('.scheduler-avail__card .rux--popover-content');
+    if (!info || !content) return;
+    content.replaceChildren(window.SchedulerTripTips.driverCard(info, tipBoard()));
+  }
+  function placeDriverCard() {
+    const tip = availGrid?.querySelector('.scheduler-avail__card.rux--popover--open');
+    if (!tip) return;
+    const tile = tip.closest('.scheduler-avail__name');
+    const band = availGrid.querySelector('.scheduler-avail__days')?.getBoundingClientRect() ?? availEl.getBoundingClientRect();
+    const pane = availEl.getBoundingClientRect();
+    placeTip(tip, tile.getBoundingClientRect(), true,
+      { top: band.bottom + TIP_GAP, bottom: Math.min(pane.bottom, innerHeight) - TIP_GAP, left: TIP_GAP, right: innerWidth - TIP_GAP });
+  }
+  availGrid?.addEventListener('rux:popover-opened', e => {
+    const tile = e.target.closest('.scheduler-avail__name');
+    if (!tile) return;
+    fillDriverCard(tile);
+    placeDriverCard();
+  });
+  availEl?.addEventListener('scroll', () => placeDriverCard(), { passive: true });
+  addEventListener('resize', () => placeDriverCard());
   // The icon pressed grows as its tip opens, app.css's lift, so the tip is laid on it again once it has.
   gridEl?.addEventListener('transitionend', e => {
     if (e.propertyName === 'transform' && e.target.matches?.('[data-card-opener][aria-expanded="true"]')

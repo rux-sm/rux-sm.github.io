@@ -54,7 +54,7 @@ The side nav lists only pages that exist; each view is added when its page is. D
 | Print schedule | drop | The office does not use it. |
 | Needs | keep | The Settings page's Office tab: a row a need, its name, Bus or Trip, and In use, with Add need under them. A need is turned off, never removed, since saved trips name it; a new one takes an id from its name and no icon, so a bar shows its initial. |
 | Notifications | drop | The office does not use it. |
-| Driver card | later | Popover from a driver's tile in the rail. |
+| Driver card | new | A press on the worst mark or the hours line of a driver's tile in the rail opens their card beside the tile, over the board, as a bar's driver tip floats: their photo or initials, name, priority and Part-time; what they are doing now, the bus Samsara has them in and whether they are at the wheel; their drive, shift and cycle clocks and their rest toward eight hours, as the driver tip draws them; each mark's words in its colour; phone, language, licence and medical dates; their next trip; and Call, Send trips and Open driver at its foot. It keeps up with Samsara while open and closes on Escape or a press elsewhere. `driverCard` in `scheduler/trip-tips.js` draws it. |
 
 Dropped: dev notes and the old profile menu (the Design account panel
 replaces it). Presence is kept: faces in the header show who else has
@@ -256,7 +256,7 @@ week folds first.
 |---|---|
 | **In the trip panel** | Nothing. The panel carries the trip's own drivers. |
 | **On the Drivers page** | The same week, nothing highlighted. |
-| **A popover** | The per-driver card (photo, city, phone, licence and medical expiry), from a tile, later. |
+| **A popover** | The Driver card, from a tile's mark or hours line. |
 
 Shut, the rail is the tiles alone, 96px, the bus tile's width. Its head
 stands level with the board's toolbar and holds a chevron alone; its Driver
@@ -284,6 +284,8 @@ hours a driver may drive in the success green, amber with the words under
 an hour left; "Off 14h" or "SB 3h" resting, on the rest meter toward eight
 hours in the rest colour the bars use; and a dash over a dashed empty meter
 with no clock.
+
+The mark and the hours line are buttons that open the driver's Driver card, and both take Carbon's ghost fill under the pointer and while it is open.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

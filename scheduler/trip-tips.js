@@ -361,6 +361,39 @@
 
   const initialsOf = name => String(name || '').trim().split(/\s+/).filter(Boolean)
     .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
+  // A driver's face: their photo, or their initials until it comes.
+  function faceOf(name, photoPath, board) {
+    const face = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm scheduler-tip__face', initialsOf(name));
+    face.setAttribute('aria-hidden', 'true');
+    board.photo(photoPath).then(url => {
+      if (!url || !face.isConnected) return;
+      const img = el('img', 'rux--user-avatar__photo rux--user-avatar__photo--sm');
+      img.alt = '';
+      img.src = url;
+      img.addEventListener('error', () => { face.textContent = initialsOf(name); }, { once: true });
+      face.replaceChildren(img);
+    });
+    return face;
+  }
+  // A live driver's Drive, Shift and Cycle time left, each over its meter, amber under an hour; null with none.
+  function clocksOf(d) {
+    const clocks = el('div', 'scheduler-tip__row scheduler-tip__clocks');
+    for (const [label, field, most] of LIVE_CLOCKS) {
+      const ms = d[field];
+      if (ms == null) continue;
+      const clock = el('div', `scheduler-tip__clock${ms < ROAD_HOUR ? ' scheduler-tip__clock--low' : ''}`);
+      const top = el('span', 'scheduler-tip__clock-top');
+      top.append(el('span', null, label), el('span', 'scheduler-tip__left', roadHours(ms)));
+      const meter = el('span', 'scheduler-tip__meter');
+      meter.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, ms / most) * 100)}%`);
+      clock.append(top, meter);
+      clocks.appendChild(clock);
+    }
+    return clocks.children.length ? clocks : null;
+  }
+  // A resting driver's rest so far of the eight hours, or null while they work.
+  const restRowOf = d => (['sleeper', 'off'].includes(d.duty)
+    ? el('div', 'scheduler-tip__row', roadRest(d) ? `${roadRest(d)} of 8h` : 'Continuous rest unknown') : null);
   function driverTip(trip, bar, section, board) {
     const [, driverId, role] = section.split(':');
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
@@ -380,16 +413,7 @@
       return tip;
     }
     const name = who?.name || d?.name || who?.short_name || 'Unnamed driver';
-    const face = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm scheduler-tip__face', initialsOf(name));
-    face.setAttribute('aria-hidden', 'true');
-    board.photo(who?.photo_path).then(url => {
-      if (!url || !face.isConnected) return;
-      const img = el('img', 'rux--user-avatar__photo rux--user-avatar__photo--sm');
-      img.alt = '';
-      img.src = url;
-      img.addEventListener('error', () => { face.textContent = initialsOf(name); }, { once: true });
-      face.replaceChildren(img);
-    });
+    const face = faceOf(name, who?.photo_path, board);
     const said = el('div', 'scheduler-tip__text');
     said.append(el('strong', 'scheduler-tip__name', name), el('span', 'scheduler-tip__by', d
       ? [(ROAD_DUTY[d.duty] ?? ROAD_DUTY.unknown).word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')
@@ -418,23 +442,10 @@
       return call;
     };
     if (d) {
-      const clocks = el('div', 'scheduler-tip__row scheduler-tip__clocks');
-      for (const [label, field, most] of LIVE_CLOCKS) {
-        const ms = d[field];
-        if (ms == null) continue;
-        const clock = el('div', `scheduler-tip__clock${ms < ROAD_HOUR ? ' scheduler-tip__clock--low' : ''}`);
-        const top = el('span', 'scheduler-tip__clock-top');
-        top.append(el('span', null, label), el('span', 'scheduler-tip__left', roadHours(ms)));
-        const meter = el('span', 'scheduler-tip__meter');
-        meter.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, ms / most) * 100)}%`);
-        clock.append(top, meter);
-        clocks.appendChild(clock);
-      }
-      if (clocks.children.length) tip.appendChild(clocks);
-      if (['sleeper', 'off'].includes(d.duty)) {
-        const rest = roadRest(d);
-        tip.appendChild(el('div', 'scheduler-tip__row', rest ? `${rest} of 8h` : 'Continuous rest unknown'));
-      }
+      const clocks = clocksOf(d);
+      if (clocks) tip.appendChild(clocks);
+      const rest = restRowOf(d);
+      if (rest) tip.appendChild(rest);
       const { next, said: told } = road;
       for (const w of told.warnings) lamp(w.tone === 'error' ? 'error' : 'warning', w.title, w.sentence);
       restEitherSide();
@@ -936,8 +947,63 @@
     return pop;
   }
 
+  /* A DRIVER'S CARD, from their tile in the driver rail: the bar's driver
+     tip with nothing about one trip. Its head is the tip's, their face, their
+     name and under it their priority and Part-time; then what they are doing
+     now and which bus Samsara has them in, their three clocks and their
+     rest; each of their marks' words in its tone; their phone, language and
+     papers; their next trip in view; and in its footer Call, Send trips and
+     Open driver, links. `info` is what data.js holds of them: `{ driver,
+     live, bus, marks, next }`, `live` their entry in samsara-now's drivers
+     or null, `bus` the number of the bus it has them in, `marks` driver-
+     head.js's, and `next` their next trip's words or null. */
+  function driverCard({ driver, live, bus, marks = [], next = null }, board) {
+    const tip = el('div', 'rux--toggletip-content scheduler-tip scheduler-tip--driver');
+    tip.dataset.driverId = driver.id;
+    const name = driver.name || driver.short_name || 'Unnamed driver';
+    const head = el('div', 'scheduler-tip__head');
+    const said = el('div', 'scheduler-tip__text');
+    said.append(el('strong', 'scheduler-tip__name', name), el('span', 'scheduler-tip__by',
+      [driver.priority == null ? 'No priority' : `Priority ${driver.priority}`, driver.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
+    head.append(faceOf(name, driver.photo_path, board), said);
+    tip.appendChild(head);
+    tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__now', live?.duty
+      ? [(ROAD_DUTY[live.duty] ?? ROAD_DUTY.unknown).word, bus ? `in ${bus}` : null, live.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')
+      : 'No hours-of-service clock from Samsara'));
+    if (live) {
+      const clocks = clocksOf(live);
+      if (clocks) tip.appendChild(clocks);
+      const rest = restRowOf(live);
+      if (rest) tip.appendChild(rest);
+    }
+    for (const m of marks) {
+      const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${m.tone}`);
+      row.append(svgUse(m.tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', m.words));
+      tip.appendChild(row);
+    }
+    const day = v => (v ? new Date(`${String(v).slice(0, 10)}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : null);
+    const facts = [driver.phone ? showPhone(driver.phone) : null, driver.language ? `Speaks ${({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language}` : null,
+      driver.license_exp ? `Licence to ${day(driver.license_exp)}` : null, driver.med_card_expiry ? `Medical card to ${day(driver.med_card_expiry)}` : null];
+    for (const words of facts.filter(Boolean)) tip.appendChild(el('div', 'scheduler-tip__row', words));
+    if (next) tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__next', `Next: ${next}`));
+    const foot = footer();
+    if (driver.phone) {
+      const call = footLink('Call', `tel:${dial(driver.phone)}`);
+      call.setAttribute('aria-label', `Call ${name}, ${showPhone(driver.phone)}`);
+      foot.appendChild(call);
+    }
+    for (const [words, href] of [['Send trips', `driver-view.html?driver=${encodeURIComponent(driver.id)}`], ['Open driver', `drivers.html?id=${encodeURIComponent(driver.id)}`]]) {
+      const a = footLink(words, href);
+      a.target = '_blank';
+      a.rel = 'noopener';
+      foot.appendChild(a);
+    }
+    tip.appendChild(foot);
+    return tip;
+  }
+
   window.SchedulerTripTips = {
-    route: routeTip, driver: driverTip, partner: partnerTip, live: liveCard, card: cardTip, CONTAINER, surface,
+    route: routeTip, driver: driverTip, driverCard, partner: partnerTip, live: liveCard, card: cardTip, CONTAINER, surface,
     updateFace, ageShort, cardTitle, postTripOf, postTripRows, markSave, WARN_GO,
   };
 })();

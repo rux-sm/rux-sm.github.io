@@ -735,6 +735,22 @@ expect('the tile draws the short name and its most urgent mark over the line and
   [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
     cell.querySelector('.scheduler-avail__meter').dataset.kind, !!cell.querySelector('.scheduler-avail__free-mark'), cell.hasAttribute('data-cannot')],
   ['Rigo', '2:00', 'warning', 'drive', true, false]);
+expect('the tile\'s line is the toggletip button of the driver\'s card, and its name a button of its own',
+  [cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null, cell.querySelector('button.scheduler-avail__who') != null,
+    cell.querySelector('.scheduler-avail__card .rux--popover-content') != null],
+  [true, true, true]);
+DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'off', left_ms: 2 * H, rest_since: ago(90) }, []);
+expect('a live answer changes the tile\'s words in place, so a card open from it stays open',
+  [text(cell, '.scheduler-avail__state'), cell.querySelectorAll('.scheduler-avail__line').length], ['Off 1h', 1]);
+const card = Tips.driverCard({
+  driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
+  live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',
+  marks: DriverHead.marksOf({ license_exp: dayIn(5) }, [], today), next: 'Galveston, Sat, Nov 7' }, { photo: () => Promise.resolve('') });
+expect('a driver\'s card: their name over their priority, what they do now and in which bus, their clocks, their marks, their facts, their next trip, and Call, Send trips and Open driver',
+  [text(card, '.scheduler-tip__name'), text(card, '.scheduler-tip__by'), text(card, '.scheduler-tip__now'), card.querySelectorAll('.scheduler-tip__clock').length,
+    card.querySelectorAll('.scheduler-tip__lamp--warning').length, [...card.querySelectorAll('.scheduler-tip__row')].filter(r => !String(r.className).includes('scheduler-tip__lamp')).map(r => r.textContent).filter(t => /^(Speaks|Licence|\(956\))/.test(t)).length,
+    text(card, '.scheduler-tip__next'), [...card.querySelectorAll('.scheduler-tip__foot a')].map(a => a.textContent)],
+  ['Rigoberto Soto', 'Priority 2 · Part-time', 'Driving · in 218 · at the wheel', 3, 1, 3, 'Next: Galveston, Sat, Nov 7', ['Call', 'Send trips', 'Open driver']]);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

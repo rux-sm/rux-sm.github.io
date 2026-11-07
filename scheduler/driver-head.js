@@ -25,8 +25,12 @@
      the driver's tip has it. The full words are the line's label. A driver
      Samsara keeps no clock for has a quiet dash over an empty meter, as a
      bus with no signal does.
+   The name is a button that picks out the driver's trips; the mark and the
+   line are buttons, the line the trigger of the driver's card, a Carbon
+   toggletip that data.js fills from trip-tips.js's `driverCard`.
 
-   `draw(cell, driver, live, alerts)` draws it: `driver` is the driver's row,
+   `draw(cell, driver, live, alerts)` draws it, its parts once and their
+   words as they change: `driver` is the driver's row,
    `live` their entry in samsara-now's `drivers` or null, and `alerts` their
    list from to-do.js's `driverAlerts`. It draws again only when what it
    shows has changed. `stateOf(live)` and `marksOf(driver, alerts, today)`
@@ -123,6 +127,39 @@
     return marks.sort((a, b) => (a.tone === b.tone ? 0 : a.tone === 'error' ? -1 : 1));
   }
 
+  /* THE TILE'S PARTS, made once, so a live answer changes their words in
+     place and a card open from the tile stays open: the name, a button
+     that picks out the driver's trips; the worst mark, a button that opens
+     their card; the free check; and the line, the button of the card's
+     toggletip, with the structure from `carbon-ibm-products-dom.json` that
+     js/popover.js opens, its content data.js's, filled as it opens. */
+  function build(cell) {
+    const top = el('span', 'scheduler-avail__top');
+    const who = svgUse('#m-person', '16', '0 0 32 32');
+    who.classList.add('scheduler-avail__icon');
+    const name = el('button', 'scheduler-avail__who');
+    name.type = 'button';
+    const mark = el('button', 'scheduler-avail__mark');
+    mark.type = 'button';
+    mark.hidden = true;
+    /* The check a selected trip's free drivers wear in the mark's place,
+       shown by app.css while data.js marks the tile free. */
+    const free = svgUse('#i-checkmark--filled', '16', '0 0 32 32');
+    free.classList.add('scheduler-avail__free-mark');
+    top.append(who, name, mark, free);
+    const card = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--right-start rux--toggletip scheduler-avail__card');
+    const line = el('button', 'rux--toggletip-button scheduler-avail__line');
+    line.type = 'button';
+    line.setAttribute('aria-expanded', 'false');
+    const meter = el('span', 'scheduler-avail__meter');
+    meter.setAttribute('aria-hidden', 'true');
+    line.append(el('span', 'scheduler-avail__state'), meter);
+    const pop = el('span', 'rux--popover');
+    pop.append(el('span', 'rux--popover-content'), el('span', 'rux--popover-caret'));
+    card.append(line, pop);
+    cell.replaceChildren(top, card);
+  }
+
   function draw(cell, driver, live, alerts = []) {
     const state = stateOf(live);
     const marks = marksOf(driver, alerts);
@@ -130,41 +167,32 @@
     const key = JSON.stringify([name, state.line, state.tone, state.meter, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
     cell.dataset.head = key;
-    cell.replaceChildren();
-    const top = el('span', 'scheduler-avail__top');
-    const who = svgUse('#m-person', '16', '0 0 32 32');
-    who.classList.add('scheduler-avail__icon');
-    top.append(who, el('span', 'scheduler-avail__who', name));
+    if (!cell.querySelector(':scope > .scheduler-avail__top')) build(cell);
+    const full = driver.name || name;
+    const who = cell.querySelector('.scheduler-avail__who');
+    who.textContent = name;
+    const mark = cell.querySelector('.scheduler-avail__mark');
+    mark.hidden = !marks.length;
     if (marks.length) {
-      const worst = marks[0];
-      const mark = el('span', 'scheduler-avail__mark');
-      mark.dataset.tone = worst.tone;
-      mark.setAttribute('role', 'img');
-      mark.setAttribute('aria-label', marks.map(m => m.words).join('. '));
-      mark.appendChild(svgUse(worst.icon, '16', '0 0 32 32'));
-      top.appendChild(mark);
+      mark.dataset.tone = marks[0].tone;
+      mark.setAttribute('aria-label', `${marks.map(m => m.words).join('. ')}: ${full}'s card`);
+      mark.replaceChildren(svgUse(marks[0].icon, '16', '0 0 32 32'));
     }
-    /* The check a selected trip's free drivers wear in the mark's place,
-       drawn on every tile and shown by app.css while data.js marks the tile
-       free. A driver whose worst mark is red cannot drive, so is never
-       marked free. */
-    const free = svgUse('#i-checkmark--filled', '16', '0 0 32 32');
-    free.classList.add('scheduler-avail__free-mark');
-    top.appendChild(free);
+    // A driver whose worst mark is red cannot drive, so is never marked free.
     cell.toggleAttribute('data-cannot', marks[0]?.tone === 'error');
-    const line = el('span', 'scheduler-avail__line');
-    const words = el('span', 'scheduler-avail__state', state.line);
+    const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
-    words.setAttribute('aria-label', state.words);
-    const meter = el('span', 'scheduler-avail__meter');
+    line.setAttribute('aria-label', `${state.words}: ${full}'s card`);
+    line.querySelector('.scheduler-avail__state').textContent = state.line;
+    const meter = line.querySelector('.scheduler-avail__meter');
     if (state.meter) {
       meter.dataset.kind = state.meter.kind;
       meter.style.setProperty('--scheduler-share', `${Math.round(state.meter.share * 100)}%`);
+    } else {
+      delete meter.dataset.kind;
+      meter.style.removeProperty('--scheduler-share');
     }
-    meter.setAttribute('aria-hidden', 'true');
-    line.append(words, meter);
-    cell.append(top, line);
-    cell.title = [`${driver.name || name} · ${driver.priority == null ? 'No priority' : `Priority ${driver.priority}`}`,
+    cell.title = [`${full} · ${driver.priority == null ? 'No priority' : `Priority ${driver.priority}`}`,
       state.words, ...marks.map(m => m.words)].join('\n');
   }
 

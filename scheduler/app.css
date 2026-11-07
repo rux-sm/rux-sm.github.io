@@ -3821,6 +3821,10 @@ a.scheduler-tip__go { text-decoration: none; }
   display: block;
   line-height: var(--scheduler-avail-h);
 }
+/* A tile whose card is open rises over the board's bus column and day header,
+   as a trip's shortcuts do, because the card is fixed beside the tile and
+   would otherwise sit under the board. */
+.scheduler-avail__name:has(.rux--popover--open) { z-index: 6; }
 /* The header row sticks to the top of the pane on the header band's accent.
    Its 2rem is explicit so it matches the board's day band whatever the row
    height. */
@@ -3860,16 +3864,37 @@ a.scheduler-tip__go { text-decoration: none; }
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  gap: var(--rux-spacing-03);
+  gap: var(--rux-spacing-01);
   line-height: normal;
   padding-inline: var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* A DRIVER'S TILE, driver-head.js's, 8px in from its sides: the person,
-   the name and the worst mark on the 18px line, and 8px under it their
-   words beside a 4px meter, the words' 12px line hung on the meter as the
-   bus tile's E and F are, the two centred in the 48px row. */
+   the name and the worst mark on the 18px line, and 2px under it their
+   words' 16px line with a 4px meter beside them, centred on it, the two
+   lines centred in the 48px row. The name is a button that picks out the
+   driver's trips; the mark and the line are buttons that open their card,
+   Carbon's ghost fill under the pointer, as a bar's marks are. */
+:is(.scheduler-avail__who, .scheduler-avail__mark, .scheduler-avail__line) {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scheduler-avail__card { display: block; }
+:is(.scheduler-avail__mark, .scheduler-avail__line) { --scheduler-mark-fill: color-mix(in srgb, var(--rux-text-primary) 20%, transparent); }
+@media (hover: hover) {
+  :is(.scheduler-avail__mark, .scheduler-avail__line):hover { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
+}
+:is(.scheduler-avail__mark, .scheduler-avail__line):is([aria-expanded="true"], :focus-visible) { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
+:is(.scheduler-avail__mark, .scheduler-avail__line):focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -1px; }
+.scheduler-avail__name:has(.scheduler-avail__line[aria-expanded="true"]) .scheduler-avail__mark { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
 .scheduler-avail__icon { flex: none; display: block; color: var(--rux-icon-secondary); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
@@ -3877,7 +3902,8 @@ a.scheduler-tip__go { text-decoration: none; }
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-02);
-  block-size: var(--rux-spacing-02);
+  inline-size: 100%;
+  block-size: var(--scheduler-label-h);
   color: var(--rux-text-secondary);
 }
 .scheduler-avail__line > .scheduler-avail__state { flex: none; overflow: visible; }
@@ -4111,12 +4137,15 @@ a.scheduler-tip__go { text-decoration: none; }
   user-select: none;
 }
 .scheduler-avail__name:hover { background: var(--rux-layer-hover); }
-.scheduler-avail__name[aria-pressed="true"] {
+.scheduler-avail__name[data-picked] {
   background: var(--rux-layer-selected);
   color: var(--rux-text-primary);
 }
-.scheduler-avail__name[aria-pressed="true"] .scheduler-avail__who { font-weight: var(--rux-heading-compact-01-font-weight); }
-.scheduler-avail__name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-avail__name[data-picked] .scheduler-avail__who { font-weight: var(--rux-heading-compact-01-font-weight); }
+/* Keyboard focus on the name rings the whole tile, the thing its press
+   picks out, in Carbon's 2px ring inside its edge, as a bus head's does. */
+.scheduler-avail__who:focus { outline: none; }
+.scheduler-avail__name:has(.scheduler-avail__who:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-avail__cell--busy { cursor: pointer; }
 
 /* A driver carried to a trip, from the roster or off another bar, is a figure

@@ -136,14 +136,13 @@ rest meter.
 
 - [ ] Count the week's minimum in `data.js` in days, so it grows by the
       3.5rem the bus column grew, as the decision says; it is still 33rem.
-- [ ] Add the driver's card to `scheduler/trip-tips.js`, opened by a press
-      on the mark or the line in a driver's head, and draw it in
-      `tools/check-bar.mjs`.
+- [ ] Give the driver's card Tell beside a changed leg's mark, as the trip
+      editor's Contacts offer it, asking first.
 - [ ] Move the time off and out-of-service dialogs into one shared file, open
       it from the Drivers and Fleet pages, and add Away to both menus.
 - [ ] Add the seat menu for a driver's name on a bar, opened by a
       right-click or a hold, out of the way of the drag that carries a
       driver off a bar.
 - [ ] Correct `scheduler/docs/screen-inventory.md` as each lands: the driver
-      availability grid, the bar out on its trip, the Driver card row and
-      the Assign driver menu.
+      availability grid, the bar out on its trip and the Assign driver
+      menu.

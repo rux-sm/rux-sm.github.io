@@ -238,6 +238,27 @@
 .rux--side-nav--hidden a.rux--header__menu-item:hover { background-color: var(--rux-layer-hover); }
 .rux--side-nav--hidden a.rux--header__menu-item:active { background-color: var(--rux-layer-active); }
 
+/* THE HEADER'S NAME AND ITS RIGHT-HAND GROUP STAND THE BAR'S FULL 48PX from
+   its top, over its 1px bottom line, as its buttons already do. Carbon sizes
+   them to the 47px the line leaves, an odd height, so a 16px mark or a 24px
+   face centred in them stood on half pixels; in 48px they centre whole. A
+   theme whose bar is taller centres the 48px in it instead, below. */
+a.rux--header__name,
+.rux--header__global { block-size: 3rem; align-self: flex-start; }
+/* The name is its words' or mark's width rounded up to a whole pixel, so the
+   right-hand group after it starts on one. */
+@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
+  a.rux--header__name { inline-size: calc-size(fit-content, round(up, size, 1px)); }
+}
+
+/* A BUTTON SIZED BY ITS LABEL IS A WHOLE NUMBER OF PIXELS WIDE. Carbon gives
+   it its label's width, a fraction of a pixel, so it and every button after
+   it in a row stood between pixels. Its least width is that width rounded
+   up, under Carbon's 20rem cap, so a button with a set width keeps it. */
+@supports (min-inline-size: calc-size(max-content, round(up, size, 1px))) {
+  .rux--btn { min-inline-size: calc-size(max-content, min(round(up, size, 1px), 20rem)); }
+}
+
 /* AN OPEN HEADER BUTTON AND ITS PANEL ARE ONE SURFACE. Carbon draws the open
    button as a tab: its layer, a line down each side and, below it, the
    header's own bottom line, so the button and the panel it opened read as
@@ -722,6 +743,9 @@
 .rux--header[data-theme="geist-dark"] {
   block-size: calc(4rem + 1px);
   padding-inline: var(--rux-spacing-05);
+}
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) :is(.rux--header__name, .rux--header__global) {
+  align-self: center;
 }
 :is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__global {
   align-items: center;

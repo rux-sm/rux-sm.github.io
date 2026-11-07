@@ -40,13 +40,14 @@ one does not, so it stays that way.
 ## Tasks
 
 - [ ] Write `tools/check-pixels.mjs` and add it to `npm run check`.
-- [ ] Design's header: the logo's width at 16px tall, and the 24px avatar
-  centred in a 47px bar at 11.5px.
-- [ ] Design's text-sized boxes: tags, buttons, pills, the select field.
+- [ ] Design's text-sized boxes: tags, pills, the select field, and the
+  combo button's main action, whose own least width overrides the buttons'.
+- [ ] Design's modal: its width is a share of the window, so the two
+  buttons in its footer split a fraction.
 - [ ] Design's data table: whole-pixel columns and row tops.
 - [ ] Design's tiles and progress bar, which LN Guide, Coins and Pixels show.
-- [ ] Scheduler board: stops and tracks, the road strip, and the bar's kind
-  icon.
+- [ ] Scheduler board: stops and tracks, the road strip, the crew's rest
+  meters and the marks after a driver's name.
 - [ ] Scheduler lists, records, forms, chat and print pages.
 - [ ] LN Guide's status icons, Pixels' header menu, Sevens' and Coins'
   buttons.

@@ -1470,7 +1470,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   --scheduler-mark-warning: var(--scheduler-footer-warning);
 }
 .scheduler-bar {
-  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px)), transparent 0);
+  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), transparent 0);
   background-image: var(--scheduler-footer-paint);
   background-size: 100% 100%;
   background-position: 0 0;
@@ -1483,11 +1483,14 @@ button.scheduler-row-head__num:focus { outline: none; }
    reads as every other. */
 .scheduler-bar__dest, .scheduler-bar__time, .scheduler-road__times { font-size: var(--rux-body-compact-01-font-size); }
 .scheduler-bar [data-card-opener] { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
-/* Carbon's 2px focus ring, a pixel clear of the icon all round, square:
-   inside the 16px square it would cover the glyph's edge. */
-.scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: 1px; }
+/* Carbon's 2px focus ring, square, the 18px of the row the mark stands
+   in: a pixel out from the 16px mark, over the pixel of air every glyph
+   keeps inside its own square, so it touches the ink without covering it
+   and never reaches the rows above and below. */
+.scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -1px; }
 .scheduler-bar :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
-/* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
+/* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them, the glyph alone
+   so the mark's box and its focus ring hold still: under the
    pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
    and a bigger mark to press, standing a pixel past the 18px row above and
    below, a little lighter and over a tight shadow, Carbon's tab tip's in
@@ -1519,10 +1522,12 @@ button.scheduler-row-head__num:focus { outline: none; }
   color: inherit;
   font-size: inherit;
   line-height: inherit;
+}
+.scheduler-bar [data-card-opener] > svg {
   transform-origin: left center;
   transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.scheduler-bar .scheduler-bar__alert { transform-origin: right center; }
+.scheduler-bar .scheduler-bar__alert > svg { transform-origin: right center; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__update, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
@@ -1559,20 +1564,20 @@ button.scheduler-row-head__num:focus { outline: none; }
    a little, so they read as buttons before one is reached; the compact
    board's and a static week's bars hold none that open. */
 @media (hover: hover) {
-  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener] {
+  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener] > svg {
     transform: scale(1.12);
   }
-  .scheduler-bar [data-card-opener]:hover,
-  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route {
+  .scheduler-bar [data-card-opener]:hover > svg,
+  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route > svg {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
   }
 }
-.scheduler-bar [data-card-opener][aria-expanded="true"] {
+.scheduler-bar [data-card-opener][aria-expanded="true"] > svg {
   transform: scale(1.25);
   filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
-.scheduler-bar [data-card-opener]:active { transform: none; filter: none; }
+.scheduler-bar [data-card-opener]:active > svg { transform: none; filter: none; }
 /* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
    `glyphTo`: the outline fades out as the solid fades in. */
 .scheduler-bar__solid { opacity: 0; }
@@ -1596,9 +1601,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-[data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+[data-motion="off"] .scheduler-week :is([data-card-opener] > svg, .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+  .scheduler-week :is([data-card-opener] > svg, .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
    evening before, small and raised so the row keeps its height. */
@@ -2757,12 +2762,11 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-week--no-time .scheduler-road__times { display: none; }
 /* Where the view has turned the update row off, a live bar's drivers keep
    one row, 4px taller, `--scheduler-road-lift`, so the names stand clear of
-   the hours bars under them; the times row gives up the 4px, an even row
-   its 2px track centres in on whole pixels, and the footer's fill and rule
-   start that much higher. With the update row on, the drivers take its
-   place instead, below. */
+   the hours bars under them. The 4px comes from the bar's padding below
+   it, 7px or more in every view that turns the update row off, so every
+   row above keeps its 18px and the marks in it fit whole. With the update
+   row on, the drivers take its place instead, below. */
 .scheduler-week--no-update:not(.scheduler-week--no-time, .scheduler-week--no-drivers) .scheduler-bar--road { --scheduler-road-lift: var(--rux-spacing-02); }
-.scheduler-bar--road > .scheduler-road__times { block-size: calc(var(--scheduler-row-h) - var(--scheduler-road-lift, 0px)); }
 .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift, 0px)); }
 
 /* A single driver keeps icon, name and reading on one line above the tracks.

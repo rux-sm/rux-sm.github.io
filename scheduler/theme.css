@@ -1462,21 +1462,21 @@
 [data-theme="rux-100"] .scheduler-bar--amber { --scheduler-dim: var(--geist-amber-600); --scheduler-border: var(--geist-amber-400); --scheduler-strong: var(--geist-amber-1000); }
 /* The destination in the trip's 1000; a grey trip keeps its own ink. */
 [data-theme="rux-100"] .scheduler-bar > .scheduler-bar__dest { color: var(--scheduler-strong, inherit); }
-/* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its drivers' duty marks
-   flash on the beat the board's red road warning blinks to, so the buses
-   out now show by the one thing moving, at the wheel, resting or parked.
-   It dims to 60% and no further, so the driver's duty is always in sight.
+/* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its steering wheel
+   flashes on the beat the board's red road warning blinks to, so the buses
+   out now show by the one thing moving. It dims to 60% and no further, so
+   the wheel is always in sight.
    The flash holds still where Motion is calm or off, and where the
    computer asks for less motion. */
 @keyframes scheduler-road-beacon { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .6; } }
-[data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty {
+[data-theme="rux-100"] .scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty {
   animation: scheduler-road-beacon 1.4s linear infinite;
 }
-[data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty {
+[data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty {
   animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  [data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
+  [data-theme="rux-100"] .scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty { animation: none; }
 }
 /* A PANEL'S TILES ARE THE SAME CARD: a tile in the trip editor or the
    document panel is the raised surface inside the board's line with the

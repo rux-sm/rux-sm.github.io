@@ -1058,9 +1058,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    clock over the hours, centred, so a short bar keeps the hours and loses the
    clock first. Under four hours, unknown, or
    overlapping, it takes the warning tone the driver grid's short rest uses. */
-/* As wide as a roster day's mark, 27px, which holds "21h" at the bar's own
-   12px, so the bars give up as little as they can. */
-.scheduler-week { --scheduler-yard-w: 27px; }
+/* As wide as a roster day's mark, 28px, which holds "21h" at the bar's own
+   12px, so the bars give up as little as they can, and even, so each gives
+   up a whole half. */
+.scheduler-week { --scheduler-yard-w: 28px; }
 .scheduler-yard {
   display: none;
   position: absolute;
@@ -2460,11 +2461,10 @@ a.scheduler-tip__go { text-decoration: none; }
 @supports (inline-size: calc-size(max-content, round(up, size, 1px))) {
   .scheduler-bar__dest > :first-child { inline-size: calc-size(max-content, round(up, size, 1px)); }
 }
-/* Every driver's duty mark on a live bar pulses gently, whatever the duty,
-   the one thing moving on the bars that are out; a driver Samsara has in
-   another bus keeps their red stop sign still. */
+/* The steering wheel before the driver at the wheel of a live bar pulses
+   gently, the one thing moving on the bars that are out. */
 @keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
-.scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: scheduler-road-pulse 3s ease-in-out infinite; }
+.scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty { animation: scheduler-road-pulse 3s ease-in-out infinite; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
    tab's name while it holds. */
@@ -2592,12 +2592,12 @@ a.scheduler-tip__go { text-decoration: none; }
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
 .scheduler-bar--road[data-alarm] > .scheduler-bar__dest > .scheduler-bar__alert { animation: scheduler-road-alarm 1.4s linear infinite; }
-/* The duty marks hold still, fully visible, when Motion is calm or off or
-   the computer asks for less motion. */
+/* The steering wheel and the alarm hold still, fully visible, when Motion
+   is calm or off or the computer asks for less motion. */
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road > .scheduler-bar__dest > .scheduler-bar__alert,
-:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty,
+  .scheduler-bar--road .scheduler-crew--wheel > .scheduler-crew__duty,
   .scheduler-bar--road > .scheduler-bar__dest > .scheduler-bar__alert { animation: none; }
 }
 
@@ -2757,7 +2757,7 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* Duty replaces the assignment mark with its own icon and semantic colour.
    A ring, when used, shows driving availability and turns amber under one hour. */
-.scheduler-crew[data-duty]:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
+.scheduler-crew--wheel:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
 .scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty--ring {
@@ -3758,10 +3758,17 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__cell--week,
 .scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
 
-/* The rail's rows are 48px, on Carbon's 8px grid, room for a driver's tile
-   on two lines; their rules stand outside the 48px, the one under every row
-   and the one over the first of a priority, so every tile centres whole. */
-.scheduler-week--avail { --scheduler-avail-h: var(--rux-spacing-09); max-block-size: 15rem; }
+/* Two of the rail's rows are one of the board's bus rows: half the bus's
+   bar and the 8px clear above and below it, less the 1px rule each driver's
+   row has, so a six-line board's 136px is two 67px tiles. Under 48px, the
+   room the tile's two lines need on Carbon's 8px grid, a row stays 48px.
+   Their rules stand outside that height, the one under every row and the
+   one over the first of a priority. data.js gives the rail the board's
+   line count, which sets the bar. */
+.scheduler-week--avail {
+  --scheduler-avail-h: max(var(--rux-spacing-09), calc((var(--scheduler-bar-h) + 2 * var(--scheduler-row-clear)) / 2 - 1px));
+  max-block-size: 15rem;
+}
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
@@ -3884,8 +3891,11 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* A DRIVER'S TILE, driver-head.js's, 8px in from its sides: the person,
    the name and the worst mark on the 18px line, and 2px under it their
-   words' 16px line with a 4px meter beside them, centred on it, the two
-   lines centred in the 48px row. The name is a button that picks out the
+   words' 16px line with a 4px meter beside them, centred on it. Where the
+   board shows five or six lines the row has room for a third, and the
+   meter leaves the words for its own line 4px under them, the tile's full
+   width, as the bus tile's fuel stands under its state. The lines are
+   centred in the row on whole pixels, the odd pixel below. The name is a button that picks out the
    driver's trips; the mark and the line are buttons that open their card,
    Carbon's ghost fill under the pointer, as a bar's marks are. */
 :is(.scheduler-avail__who, .scheduler-avail__mark, .scheduler-avail__line) {
@@ -3908,6 +3918,21 @@ a.scheduler-tip__go { text-decoration: none; }
 :is(.scheduler-avail__mark, .scheduler-avail__line):focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -1px; }
 .scheduler-avail__name:has(.scheduler-avail__line[aria-expanded="true"]) .scheduler-avail__mark { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
+.scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--rux-spacing-01) + var(--scheduler-label-h)); }
+.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__name {
+  --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--scheduler-label-h) + 3 * var(--rux-spacing-02));
+  gap: var(--rux-spacing-02);
+}
+.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__line {
+  flex-direction: column;
+  align-items: stretch;
+  block-size: auto;
+}
+.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__meter { flex: none; }
+@supports (block-size: round(1px, 1px)) {
+  .scheduler-avail__name { justify-content: flex-start; }
+  .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - var(--scheduler-tile-h)) / 2), 1px); }
+}
 .scheduler-avail__icon { flex: none; display: block; color: var(--rux-icon-secondary); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-avail__line {

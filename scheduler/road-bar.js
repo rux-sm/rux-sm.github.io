@@ -165,7 +165,6 @@
     item.querySelector(':scope > .scheduler-crew__duty')?.remove();
     item.querySelector(':scope > .scheduler-crew__away')?.remove();
     item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--riding');
-    delete item.dataset.duty;
     item.removeAttribute('title');
     if (elsewhere) {
       item.classList.add('scheduler-crew--away');
@@ -181,7 +180,6 @@
     }
     if (!d?.wheel) return;
     item.classList.add('scheduler-crew--wheel');
-    item.dataset.duty = 'driving';
     item.prepend(wheelMark(d.left_ms));
   }
 

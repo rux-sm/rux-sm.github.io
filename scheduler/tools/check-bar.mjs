@@ -613,7 +613,7 @@ console.log('\n  Icons and pills');
 expect('every status icon has a labeled specimen', window.SchedulerLegFacts.DRIVER_STATUSES.map(({ label, icon: href }) =>
   drawn('icons', `${label} icon`).some(b => has(b, `.scheduler-crew use[href="${href}"]`))),
   window.SchedulerLegFacts.DRIVER_STATUSES.map(() => true));
-expect('the steering wheel has its own specimen', (([b]) => b.querySelector('.scheduler-crew').dataset.duty === 'driving'
+expect('the steering wheel has its own specimen', (([b]) => b.querySelector('.scheduler-crew').classList.contains('scheduler-crew--wheel')
   && has(b, `.scheduler-crew__duty use[href="${RoadBar.DUTY.driving.icon}"]`))(drawn('icons', 'At the wheel')), true);
 expect('every state the bus icon says has a specimen',
   ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal']

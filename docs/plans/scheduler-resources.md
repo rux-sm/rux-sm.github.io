@@ -136,8 +136,6 @@ rest meter.
 
 - [ ] Give the driver's card Tell beside a changed leg's mark, as the trip
       editor's Contacts offer it, asking first.
-- [ ] Move the time off and out-of-service dialogs into one shared file, open
-      it from the Drivers and Fleet pages, and add Away to both menus.
 - [ ] Add the seat menu for a driver's name on a bar, opened by a
       right-click or a hold, out of the way of the drag that carries a
       driver off a bar.

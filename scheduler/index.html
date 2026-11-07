@@ -109,6 +109,8 @@
 <symbol id="m-edit" viewBox="0 -960 960 960"><path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l617-616 128 128-617 616H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
 <symbol id="m-mail" viewBox="0 -960 960 960"><path d="M80-160v-640h800v640H80Zm400-302L140-685v465h680v-465L480-462Zm0-60 336-218H145l335 218ZM140-685v-55 520-465Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
+<symbol id="m-block" viewBox="0 -960 960 960"><path d="M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880t156 31.5Q709-817 763-763t85.5 127Q880-563 880-480t-31.5 156Q817-251 763-197t-127 85.5Q563-80 480-80t-156-31.5ZM480-140q61.01 0 117.51-20.5Q654-181 699-220L220-699q-38 46-59 102.17T140-480q0 142.37 98.81 241.19Q337.63-140 480-140Zm259-121q37-45 59-101.49 22-56.5 22-117.51 0-142.38-98.81-241.19T480-820q-60.66 0-116.83 21T261-739l478 478ZM480-480Z"/></symbol>
+<symbol id="m-event_busy" viewBox="0 -960 960 960"><path d="m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
 <symbol id="m-airline_seat_flat-fill" viewBox="0 -960 960 960"><path d="M360-400v-280h519v280H360ZM80-280v-60h800v60H80Zm35-155q-35-35-35-85t35-85q35-35 85-35t85 35q35 35 35 85t-35 85q-35 35-85 35t-85-35Z"/></symbol>
 <symbol id="m-info-fill" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
 <symbol id="m-open_in_new" viewBox="0 -960 960 960"><path d="M120-120v-720h339v60H180v600h600v-279h60v339H120Zm262-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"/></symbol>
@@ -1059,6 +1061,10 @@
       <div class="rux--menu-item__label">Text</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-away">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-event_busy"/></svg></div>
+      <div class="rux--menu-item__label">Add time off…</div>
+    </li>
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-send">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
       <div class="rux--menu-item__label">Send trips</div>
@@ -1069,8 +1075,8 @@
     </li>
   </ul>
 
-  <!-- A bus head's menu, in the driver menu's order: the record, then where
-       it is. -->
+  <!-- A bus head's menu, in the driver menu's order: the record, where it
+       is, then its days out. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-bus-menu" role="menu" tabindex="-1" hidden>
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bus-menu-open">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
@@ -1080,6 +1086,11 @@
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bus-menu-map">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
       <div class="rux--menu-item__label">Show on map</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bus-menu-away">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-block"/></svg></div>
+      <div class="rux--menu-item__label">Mark out of service…</div>
     </li>
   </ul>
 
@@ -1986,6 +1997,8 @@
 <script src="driver-head.js"></script>
 <script src="trip-tips.js"></script>
 <script src="trip-sheet.js"></script>
+<script src="pair.js"></script>
+<script src="away.js"></script>
 <script src="data.js"></script>
 <script src="to-do.js"></script>
 <script src="departures.js"></script>

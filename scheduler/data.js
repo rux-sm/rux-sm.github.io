@@ -11390,6 +11390,7 @@
       if (textsInMessages(driver)) follow(driver.texting_url, true);
       else follow(`sms:${dial(driver.phone)}`);
     } else if (item.id === 'scheduler-driver-menu-pick') pickDriver(id);
+    else if (item.id === 'scheduler-driver-menu-away') addAway('driver', id, driver.short_name || driver.name || 'this driver');
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
@@ -11462,7 +11463,26 @@
     const ref = encodeURIComponent(busMenuFor);
     if (item.id === 'scheduler-bus-menu-open') follow(`fleet.html?id=${ref}`, true);
     else if (item.id === 'scheduler-bus-menu-map') location.href = `live.html?bus=${ref}`;
+    else if (item.id === 'scheduler-bus-menu-away') {
+      addAway('bus', busMenuFor, panelIndex.buses?.get(busMenuFor)?.number ?? 'this bus');
+    }
   });
+
+  /* AWAY FROM THE BOARD: a driver's time off or a bus's days out, in
+     away.js's dialog, the one the Drivers and Fleet pages open. Done saves
+     the range at once as the record page's Save writes it, and the board
+     reads it back as it reads any change to them. */
+  function addAway(kind, owner, who) {
+    const driver = kind === 'driver';
+    window.SchedulerAway?.open(kind, {
+      title: driver ? `Add time off for ${who}` : `Mark ${who} out of service`,
+      done: async row => {
+        await window.SchedulerAway.add(client, kind, owner, row);
+        liveSoon({ table: driver ? 'driver_time_off' : 'bus_out_of_service' });
+        toast('success', driver ? 'Time off saved' : 'Days out saved', String(who));
+      },
+    });
+  }
   busMenu?.addEventListener('rux:menu-closed', e => { if (e.target === busMenu) busMenu.hidden = true; });
 
   /* The roster shows the week the board does. Under a strip it shows the

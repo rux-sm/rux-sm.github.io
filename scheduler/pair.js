@@ -23,7 +23,8 @@
    `customers` and `customer`, which name its element ids and its messages,
    and returns the notices, the list's search, sort and row click, the
    fields' error states, the unsaved-changes and conflict modals, the record's
-   History link, and the staff gate at start-up. `$`, `el` and `svgUse` build the rest.
+   History link, and the staff gate at start-up. `$`, `el` and `svgUse` build the rest,
+   and `textField`, `selectField`, `dateRange` and `dialogError` a dialog's fields.
    ========================================================================== */
 (() => {
   'use strict';
@@ -120,6 +121,112 @@
     svg.appendChild(use);
     return svg;
   };
+
+  /* ══ A dialog's fields ═════════════════════════════════════════════════
+     Carbon's markup, built on each open, because a claimed date picker
+     cannot be claimed again: a text field, a select of `[value, text]`
+     pairs, and a range picker of a first and last day, which takes and shows
+     ISO days as mm/dd/yyyy. A dialog's error line is `dialogError`. */
+  function textField(id, label, value, placeholder) {
+    const item = el('div', 'rux--form-item rux--text-input-wrapper');
+    const lw = el('div', 'rux--text-input__label-wrapper');
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    lw.appendChild(lab);
+    const outer = el('div', 'rux--text-input__field-outer-wrapper');
+    const wrap = el('div', 'rux--text-input__field-wrapper');
+    const input = el('input', 'rux--text-input');
+    input.type = 'text';
+    input.id = id;
+    input.autocomplete = 'off';
+    if (placeholder) input.placeholder = placeholder;
+    input.value = value || '';
+    wrap.appendChild(input);
+    outer.appendChild(wrap);
+    item.append(lw, outer);
+    return item;
+  }
+  function selectField(id, label, value, options) {
+    const item = el('div', 'rux--form-item');
+    const box = el('div', 'rux--select');
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const wrap = el('div', 'rux--select-input__wrapper');
+    const sel = el('select', 'rux--select-input');
+    sel.id = id;
+    for (const [v, t] of options) {
+      const o = el('option', 'rux--select-option', t);
+      o.value = v;
+      o.selected = v === value;
+      sel.appendChild(o);
+    }
+    wrap.append(sel, svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16', 'rux--select__arrow'));
+    box.append(lab, wrap);
+    item.appendChild(box);
+    return item;
+  }
+  // Each container class is written out in full for the class sweep.
+  const DP_CONTAINER = {
+    from: 'rux--date-picker-container rux--date-picker-container--from',
+    to: 'rux--date-picker-container rux--date-picker-container--to',
+  };
+  function dpContainer(which, id, label, value) {
+    const c = el('div', DP_CONTAINER[which]);
+    const lab = el('label', 'rux--label', label);
+    lab.setAttribute('for', id);
+    const wrap = el('div', 'rux--date-picker-input__wrapper');
+    const span = el('span');
+    const input = el('input', 'rux--date-picker__input');
+    input.type = 'text';
+    input.id = id;
+    input.autocomplete = 'off';
+    input.placeholder = 'mm/dd/yyyy';
+    input.value = window.Rux?.datePicker?.format?.(value ?? '') ?? (value || '');
+    const icon = el('button', 'rux--date-picker__icon');
+    icon.type = 'button';
+    icon.setAttribute('aria-label', 'Open calendar');
+    icon.tabIndex = -1;
+    icon.appendChild(svgUse('#m-calendar_month', '16', '0 0 32 32'));
+    span.append(input, icon);
+    wrap.appendChild(span);
+    c.append(lab, wrap);
+    return c;
+  }
+  function calendarBody() {
+    const cc = el('div', 'rux--date-picker__calendar-container rux--layer-two');
+    cc.hidden = true;
+    const cal = el('div', 'rux--date-picker__calendar');
+    cal.setAttribute('role', 'grid');
+    cal.setAttribute('aria-label', 'Calendar');
+    cal.tabIndex = 0;
+    const month = el('div', 'rux--date-picker__month');
+    const prev = el('button', 'rux--date-picker__month-nav');
+    prev.type = 'button'; prev.setAttribute('aria-label', 'Previous month');
+    prev.appendChild(svgUse('#m-keyboard_arrow_left', '16', '0 0 16 16'));
+    const next = el('button', 'rux--date-picker__month-nav');
+    next.type = 'button'; next.setAttribute('aria-label', 'Next month');
+    next.appendChild(svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
+    month.append(prev, el('div', 'rux--date-picker__current-month'), next);
+    const weekdays = el('div', 'rux--date-picker__weekdays');
+    for (let i = 0; i < 7; i++) weekdays.appendChild(el('div', 'rux--date-picker__weekday'));
+    cal.append(month, weekdays, el('div', 'rux--date-picker__days'));
+    cc.appendChild(cal);
+    return cc;
+  }
+  function dateRange(fromId, toId, fromLabel, toLabel, fromVal, toVal) {
+    const range = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--range');
+    range.append(dpContainer('from', fromId, fromLabel, fromVal), dpContainer('to', toId, toLabel, toVal), calendarBody());
+    const item = el('div', 'rux--form-item');
+    item.appendChild(range);
+    return item;
+  }
+  function dialogError(id) {
+    const error = el('div', 'rux--form__helper-text scheduler-dialog-error');
+    error.id = id;
+    error.hidden = true;
+    error.setAttribute('role', 'alert');
+    return error;
+  }
 
   // Every class is written out in full: the class sweep reads the source.
   const NOTE = {
@@ -368,5 +475,5 @@
     return { say, result, table, textError, comboError, guard, start, historyLink };
   }
 
-  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse };
+  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse, textField, selectField, dateRange, dialogError };
 })();

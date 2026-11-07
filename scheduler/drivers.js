@@ -20,7 +20,8 @@
 (() => {
   'use strict';
 
-  const { $, el, svgUse } = window.SchedulerPair;
+  const { $, el, svgUse, textField, selectField, dialogError } = window.SchedulerPair;
+  const { reasonText } = window.SchedulerAway;
   const showPhone = window.SchedulerPhone.format;
   const pair = window.SchedulerPair.page({ list: 'drivers', one: 'driver' });
   const { say, result } = pair;
@@ -471,8 +472,6 @@
   }
 
   // ── time off ──
-  const REASONS = [['vacation', 'Vacation'], ['sick', 'Sick'], ['personal', 'Personal'], ['suspended', 'Suspended'], ['other', 'Other']];
-  const reasonText = r => REASONS.find(([v]) => v === r)?.[1] || (r ? r : 'Time off');
 
   function drawOff() {
     // The upcoming trips say which the time off on the page now covers.
@@ -510,146 +509,21 @@
     });
   }
 
-  /* The dialog's fields are built on each open, because a claimed date picker
-     cannot be claimed again. The markup is Carbon's range picker, as the trip
-     editor writes it. */
-  const dpIcon = () => {
-    const b = el('button', 'rux--date-picker__icon');
-    b.type = 'button';
-    b.setAttribute('aria-label', 'Open calendar');
-    b.tabIndex = -1;
-    b.appendChild(svgUse('#m-calendar_month', '16', '0 0 32 32'));
-    return b;
-  };
-  const DP_CONTAINER = {
-    from: 'rux--date-picker-container rux--date-picker-container--from',
-    to: 'rux--date-picker-container rux--date-picker-container--to',
-  };
-  const dpContainer = (which, id, label, value) => {
-    const c = el('div', DP_CONTAINER[which]);
-    const lab = el('label', 'rux--label', label);
-    lab.setAttribute('for', id);
-    const wrap = el('div', 'rux--date-picker-input__wrapper');
-    const span = el('span');
-    const input = el('input', 'rux--date-picker__input');
-    input.type = 'text';
-    input.id = id;
-    input.autocomplete = 'off';
-    input.placeholder = 'mm/dd/yyyy';
-    input.value = shownDay(value);
-    span.append(input, dpIcon());
-    wrap.appendChild(span);
-    c.append(lab, wrap);
-    return c;
-  };
-  function calendarBody() {
-    const cc = el('div', 'rux--date-picker__calendar-container rux--layer-two');
-    cc.hidden = true;
-    const cal = el('div', 'rux--date-picker__calendar');
-    cal.setAttribute('role', 'grid');
-    cal.setAttribute('aria-label', 'Calendar');
-    cal.tabIndex = 0;
-    const month = el('div', 'rux--date-picker__month');
-    const prev = el('button', 'rux--date-picker__month-nav');
-    prev.type = 'button'; prev.setAttribute('aria-label', 'Previous month');
-    prev.appendChild(svgUse('#m-keyboard_arrow_left', '16', '0 0 16 16'));
-    const next = el('button', 'rux--date-picker__month-nav');
-    next.type = 'button'; next.setAttribute('aria-label', 'Next month');
-    next.appendChild(svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
-    month.append(prev, el('div', 'rux--date-picker__current-month'), next);
-    const weekdays = el('div', 'rux--date-picker__weekdays');
-    for (let i = 0; i < 7; i++) weekdays.appendChild(el('div', 'rux--date-picker__weekday'));
-    cal.append(month, weekdays, el('div', 'rux--date-picker__days'));
-    cc.appendChild(cal);
-    return cc;
-  }
-  function selectField(id, label, value, options) {
-    const item = el('div', 'rux--form-item');
-    const box = el('div', 'rux--select');
-    const lab = el('label', 'rux--label', label);
-    lab.setAttribute('for', id);
-    const wrap = el('div', 'rux--select-input__wrapper');
-    const sel = el('select', 'rux--select-input');
-    sel.id = id;
-    for (const [v, t] of options) {
-      const o = el('option', 'rux--select-option', t);
-      o.value = v;
-      o.selected = v === value;
-      sel.appendChild(o);
-    }
-    wrap.append(sel, svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16', 'rux--select__arrow'));
-    box.append(lab, wrap);
-    item.appendChild(box);
-    return item;
-  }
-  function textField(id, label, value) {
-    const item = el('div', 'rux--form-item rux--text-input-wrapper');
-    const lw = el('div', 'rux--text-input__label-wrapper');
-    const lab = el('label', 'rux--label', label);
-    lab.setAttribute('for', id);
-    lw.appendChild(lab);
-    const outer = el('div', 'rux--text-input__field-outer-wrapper');
-    const wrap = el('div', 'rux--text-input__field-wrapper');
-    const input = el('input', 'rux--text-input');
-    input.type = 'text';
-    input.id = id;
-    input.autocomplete = 'off';
-    input.value = value || '';
-    wrap.appendChild(input);
-    outer.appendChild(wrap);
-    item.append(lw, outer);
-    return item;
-  }
-
-  let offEditing = null;
+  /* A range is added or edited in away.js's dialog; Done keeps it on the
+     page, in date order, and Save writes it. */
   function openOff(index, trigger) {
-    offEditing = index;
-    const r = index === null ? { reason: 'vacation' } : off[index];
-    $('scheduler-off-h').textContent = index === null ? 'Add time off' : 'Edit time off';
-    const range = el('div', 'rux--date-picker rux--date-picker--next rux--date-picker--range');
-    range.append(dpContainer('from', 'scheduler-off-start', 'First day', r.start_date),
-      dpContainer('to', 'scheduler-off-end', 'Last day', r.end_date), calendarBody());
-    const rangeItem = el('div', 'rux--form-item');
-    rangeItem.appendChild(range);
-    const error = el('div', 'rux--form__helper-text scheduler-off-error');
-    error.id = 'scheduler-off-error';
-    error.hidden = true;
-    error.setAttribute('role', 'alert');
-
-    const host = $('scheduler-off-fields');
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    stack.append(rangeItem, error, selectField('scheduler-off-reason', 'Reason', r.reason || 'other', REASONS),
-      textField('scheduler-off-notes', 'Notes', r.notes));
-    host.replaceChildren(stack);
-    window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-off-modal', trigger);
+    window.SchedulerAway.open('driver', {
+      row: index === null ? null : off[index], trigger,
+      done: row => {
+        if (index === null) off.push(row);
+        else off[index] = { ...off[index], ...row };
+        off.sort((a, b) => a.start_date.localeCompare(b.start_date));
+        drawOff();
+        changed();
+      },
+    });
   }
-
   $('scheduler-driver-off-add')?.addEventListener('click', e => openOff(null, e.currentTarget));
-  $('scheduler-off-done')?.addEventListener('click', () => {
-    const start = fieldDay($('scheduler-off-start').value);
-    // A blank last day is the first day: the picker clears it on a first pick.
-    const endText = $('scheduler-off-end').value.trim();
-    const end = endText ? fieldDay(endText) : start;
-    const error = $('scheduler-off-error');
-    if (!start || !end) {
-      error.textContent = 'Pick the first and last day.';
-      error.hidden = false;
-      return;
-    }
-    const row = {
-      start_date: start <= end ? start : end,
-      end_date: start <= end ? end : start,
-      reason: $('scheduler-off-reason').value || null,
-      notes: $('scheduler-off-notes').value.trim() || null,
-    };
-    if (offEditing === null) off.push(row);
-    else off[offEditing] = { ...off[offEditing], ...row };
-    off.sort((a, b) => a.start_date.localeCompare(b.start_date));
-    window.Rux?.modal?.close?.('scheduler-off-modal');
-    drawOff();
-    changed();
-  });
 
   // ── kept apart ──
   /* A pair is stored once, the smaller id first, so this driver is on
@@ -712,10 +586,7 @@
       .filter(([id, d]) => id === r.other || (id !== self && !listed.has(id) && d.status !== 'inactive'))
       .map(([id, d]) => [id, d.name || 'Unnamed driver'])
       .sort((a, b) => a[1].localeCompare(b[1]));
-    const error = el('div', 'rux--form__helper-text scheduler-off-error');
-    error.id = 'scheduler-apart-error';
-    error.hidden = true;
-    error.setAttribute('role', 'alert');
+    const error = dialogError('scheduler-apart-error');
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
     if (options.length) stack.append(selectField('scheduler-apart-driver', 'Driver', r.other ?? options[0][0], options), error);
     else stack.append(el('p', null, 'Every other active driver is on the list already.'));

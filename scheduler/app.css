@@ -682,6 +682,8 @@ button.scheduler-row-head__num::after {
   border-radius: 2px;
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--scheduler-head-track) 0);
 }
+/* The gauge's E and F are the Mac's tile's alone. */
+.scheduler-row-head__fuel-end { display: none; }
 /* A low DEF is its name and percent 4px under the fuel. */
 .scheduler-row-head__level[data-tank="D"] { align-self: center; margin-block-start: 4px; white-space: nowrap; }
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
@@ -760,8 +762,8 @@ button.scheduler-row-head__num:focus { outline: none; }
    beside its number, the type turning to its warning while the bus has a
    mark. Its readings stand in a 64px square of their own on the next
    layer, 8px in, centred between that line and the foot: the state, its
-   reading at 16px over its unit, and the fuel, a 4px meter across it, its
-   percent beside it only while low, a low DEF under them, which lets the square grow. Its kit is
+   reading at 16px over its unit, and the fuel, a 4px meter across it between
+   E and F, its percent the tip's, a low DEF under them, which lets the square grow. Its kit is
    at its foot, or none while DEF is low, its seats left to the tip. A view with fewer bar
    rows folds it: five drop the foot, four the fuel, three set the state
    beside its unit at 12px, two drop the square, leaving the state under the
@@ -826,15 +828,17 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: var(--rux-heading-compact-02-line-height); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
-/* The fuel's row is its meter's 4px, and a low tank's percent beside it
-   hangs its label-01 line centred on the meter, so the state stands where
-   it does whether or not the percent shows. */
+/* The fuel's row is its meter's 4px, between a fuel gauge's E and F,
+   whose label-01 lines hang centred on it, so the state over it keeps its
+   place. They stay the secondary ink in every level: the meter alone takes
+   the tank's colour. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; block-size: var(--rux-spacing-02); gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { flex: 1; }
-/* The fuel is its bar across the square, its percent the tip's, until the
-   tank is low or critical, when the percent stands beside it in the tank's
-   colour, a reading as well as a colour. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:not([data-level="low"], [data-level="critical"]) .scheduler-row-head__fuel-pct { display: none; }
+/* The fuel is its meter across the square in every level, its percent the
+   tip's: a low tank's meter, short by E and in the tank's colour, says it
+   without the row changing shape. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-end { display: inline; flex: none; color: var(--rux-text-secondary); font-weight: 400; }
 /* The meter is Carbon's small progress bar: 4px, square, on the subtle
    border's track for the square's layer, the second, which a theme that
    sets its own track keeps. */

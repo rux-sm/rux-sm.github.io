@@ -28,7 +28,8 @@
      warning in the worst one's tone, and a phone's narrow column shows the
      papers' mark with the out-of-service mark.
    The fuel is a meter filled to the tank's share over its percent, grey
-   until low, orange, or critical, red. Until samsara-now first
+   until low, orange, or critical, red; on the Mac's tile the meter stands
+   between E and F and the percent is the tip's. Until samsara-now first
    answers, every bus is drawn at rest, Off over an empty fuel meter and a
    dash for its percent, so the column has its shape while it loads.
 
@@ -123,13 +124,15 @@
   }
 
   // The fuel: a meter filled to the tank's share over its percent, grey
-  // until low or critical.
+  // until low or critical. The Mac's tile draws the meter between E and F,
+  // a fuel gauge's ends, and leaves the percent to the tip.
   function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
     box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
-    box.append(el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
+    box.append(el('span', 'scheduler-row-head__fuel-end', 'E'), el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-end', 'F'),
+      el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
     return box;
   }
 

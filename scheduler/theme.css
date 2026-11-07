@@ -1432,7 +1432,6 @@
 [data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel :is(.rux--side-panel__header, .rux--side-panel__title, .rux--side-panel__subtitle-text, .rux--side-panel__action-toolbar, .rux--side-panel__actions-container) {
   background-color: var(--rux-layer);
 }
-[data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
 /* The raised surface a panel's tiles and fields take: Geist's Background

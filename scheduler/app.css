@@ -711,18 +711,8 @@ button.scheduler-row-head__num::after {
 button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-row-head:has(button.scheduler-row-head__num:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 
-/* THE UNASSIGNED ROW IS THE PAGE SHOWING THROUGH THE BOARD: its head and
-   track are Carbon's base layer, `--rux-background`, the one under the
-   board's, so it reads as a gap no bus fills. In a dark theme that is a step
-   below the board, where its trips stand two steps above it; in a light
-   theme it is the White or Gray 10 the board alternates with, as Carbon's
-   light layers do, and each trip keeps its own edge. A grey a step up, which
-   it was, sat at a bar's own lightness, and the board mixed toward black
-   went below the page in the dark themes and to a mid-grey in the light
-   ones, which Carbon's layering has neither of. The head stays opaque,
-   because bars scroll under it, and its label takes the primary text. */
-.scheduler-row--unassigned { --scheduler-unassigned: var(--rux-background); }
-.scheduler-row--unassigned .scheduler-row-head { background: var(--scheduler-unassigned); }
+/* THE UNASSIGNED ROW stands on the same surface as every bus's row; only
+   its label, "No bus" in italic, says no bus fills it. */
 .scheduler-row--unassigned .scheduler-row-head__num {
   /* Always two lines, "No" over "bus", so the label is no wider than the bus
      numbers. */
@@ -734,7 +724,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   line-height: var(--rux-helper-text-01-line-height);
   letter-spacing: var(--rux-helper-text-01-letter-spacing);
 }
-.scheduler-row--unassigned .scheduler-track { background-color: var(--scheduler-unassigned); }
 /* A partner's row is a row of coaches as a bus's is, on the bus rows'
    surface, headed with the partner's name in the number's type, on as many
    lines as it takes, a long word broken in the phone's narrow column. */
@@ -2473,6 +2462,11 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
+/* The name is its words' width rounded up to a whole pixel, shrinking under
+   it when the row is short, so the chip after it starts on a whole pixel. */
+@supports (inline-size: calc-size(max-content, round(up, size, 1px))) {
+  .scheduler-bar__dest > :first-child { inline-size: calc-size(max-content, round(up, size, 1px)); }
+}
 /* Every driver's duty mark on a live bar pulses gently, whatever the duty,
    the one thing moving on the bars that are out; a driver Samsara has in
    another bus keeps their red stop sign still. */
@@ -3277,6 +3271,11 @@ a.scheduler-tip__go { text-decoration: none; }
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+/* Its least width is its contents' rounded up to a whole pixel, as Design's
+   buttons are, so the buttons after it start on whole pixels. */
+@supports (min-inline-size: calc-size(max-content, round(up, size, 1px))) {
+  .scheduler-weekbtn { min-inline-size: calc-size(max-content, round(up, size, 1px)); }
 }
 /* The calendar's is a square at the toolbar's height, its glyph centred,
    as an icon-only button is. */
@@ -6946,6 +6945,11 @@ html[data-scheduler-takeover] {
   min-inline-size: 0;
   margin-inline-end: var(--rux-spacing-05);
   color: var(--rux-text-secondary);
+}
+/* Its width, its longest phrase's, rounded up to a whole pixel, so the
+   faces beside it stand on whole pixels. */
+@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
+  .scheduler-activity { inline-size: calc-size(fit-content, round(up, size, 1px)); }
 }
 .scheduler-activity[hidden] { display: none; }
 .scheduler-activity > .rux--inline-loading__text {

@@ -1101,6 +1101,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   inline-size: auto;
 }
 [data-theme="geist-dark"] .scheduler-logo { block-size: 1.25rem; }
+/* Its width, from the file's aspect, rounded up to a whole pixel, the
+   drawing held to its aspect inside, so what follows it in the bar starts
+   on a whole pixel. */
+@supports (inline-size: calc-size(auto, round(up, size, 1px))) {
+  .scheduler-logo { inline-size: calc-size(auto, round(up, size, 1px)); object-fit: contain; }
+}
 
 /* WHO ELSE HAS THE SCHEDULER OPEN, in the header beside the Account action's
    own face and at its size, so the row reads as the people here. This app's

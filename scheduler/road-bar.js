@@ -441,7 +441,7 @@
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, with its next-day mark, at either end of a
      track filled as far as the time between them has gone, carrying the
-     stops' dots, the next one ringed. A bus running late back
+     stops' ticks. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, the planned return itself, with how long past it on
@@ -480,10 +480,6 @@
         if (!(at > 0 && at < 100)) continue;
         dot.style.setProperty('--scheduler-at', `${Math.round(at * 10) / 10}%`);
         dot.classList.toggle('scheduler-bar__stop--ahead', !drawn.dataset.stops.split(' ').every(k => reached.has(k)));
-        /* The next stop's tick is ringed, so the stop the bus is heading for
-           shows on the line; when it gets there is that tick's to tell,
-           pressed, which data.js's stop tip does. */
-        dot.classList.toggle('scheduler-bar__stop--next', !!next?.stop && !next.at && drawn.dataset.stops.split(' ').includes(next.stop.key));
         track.append(dot);
       }
       parts.push(track);

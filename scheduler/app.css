@@ -1667,13 +1667,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   background: var(--scheduler-strong, currentColor);
 }
 .scheduler-bar__stop--ahead { background: var(--scheduler-stop-ahead, color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent))); }
-/* The stop a bus out on the leg is heading for wears a ring in the line's
-   ink, 2px out from its tick. */
-.scheduler-bar__stop--next {
-  outline: 1.5px solid currentColor;
-  outline-offset: 2px;
-  border-radius: 50%;
-}
 /* A tick's hover names its stop and time, so a tick answers to 8px either
    side and to the bar's line height, more than its 2px. */
 .scheduler-bar__stop::before {

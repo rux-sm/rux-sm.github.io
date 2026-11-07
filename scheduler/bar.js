@@ -219,7 +219,7 @@
     const m = el('button', 'scheduler-bar__msg scheduler-bar__alert');
     m.type = 'button';
     m.setAttribute('aria-expanded', 'false');
-    m.append(svgUse(ALERT_ICON[tone], '16', '0 0 32 32'));
+    m.append(svgUse(ALERT_ICON[tone ?? 'warning'], '16', '0 0 32 32'));
     m.dataset.cardOpener = '';
     if (tone) { m.dataset.tone = tone; m.dataset.words = words; }
     alertTo(m, tone ?? 'warning', words);

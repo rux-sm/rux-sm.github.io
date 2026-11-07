@@ -446,6 +446,9 @@
         tipOf('Alerts', 'Each alert its icon and its words, a link to where it is put right: a mistake in red, an alert in amber, a need dashed.',
           bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })), { kind: 'card', section: 'needs' }),
         tipOf('No alerts', 'A trip with nothing to put right.', bar(trip({ customer: 'Lakeview High School', buses: [crewed('b101')] })), { kind: 'card', section: 'needs' }),
+        tipOf('Alerts on the road', 'A bus out\'s warnings lead the Alerts its badge opens, each in its sentence.', live('Riverbend Seniors', {
+          next: (() => { const stops = liveStops(); stops[0].due = now + 6 * MIN; return { stops, where: { reached: -1, at: false, next: 0 }, stop: stops[0], at: false, arrival: now + 25 * MIN, late: 19 }; })() }),
+          { kind: 'card', section: 'needs' }),
         tipOf('Updates', 'Each update its words over who wrote it and how long ago, newest first, then Add update.', bar(quiet), { kind: 'card', section: 'updates' }),
         tipOf('No updates', 'Said so, over Add update.', bar(trip({ customer: 'Harbor Tours', buses: [crewed('b103')] })), { kind: 'card', section: 'updates' }),
         tipOf('More than five', 'The newest five, and the rest behind Show all.', bar(chatty), { kind: 'card', section: 'updates' }),

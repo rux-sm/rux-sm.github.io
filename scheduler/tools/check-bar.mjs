@@ -461,6 +461,10 @@ expect('a driver\'s tip on the road: their duty, the three clocks amber under an
     text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), footLinks(onRoad).map(([words, , target]) => [words, target]), onRoad.querySelector('.scheduler-tip__answer')],
   ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'lamp--warning', 'map', 'next'], true, 'Next: Alamodome',
     [['Call (956) 555-0142', null], ['Live map', null]], null]);
+const roadAlerts = tipDrawn('Alerts on the road');
+expect('a bus out\'s warning leads its Alerts, in its colour and its sentence',
+  [roadAlerts.querySelector('.scheduler-tip__alert')?.classes().find(c => c.startsWith('scheduler-tip__lamp--')), text(roadAlerts, '.scheduler-tip__alert .scheduler-tip__words')?.startsWith('Late to spot: The bus gets to')],
+  ['scheduler-tip__lamp--warning', true]);
 const routeTip = tipDrawn('The route');
 const routeNames = tip => tip.querySelectorAll('.scheduler-route__point').map(p => p.getAttribute('aria-label'));
 const routeDays = tip => tip.querySelectorAll('.scheduler-route__day').map(d => /^[A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}$/.test(d.textContent));
@@ -547,11 +551,11 @@ expect('a trip in progress wears no bus icon, and its drivers\' marks open the l
   }),
   ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting'].map(() => [false, false, true]).concat([[false, false, false]]));
 expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
-const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__msg--'))?.slice(20), m.getAttribute('aria-label').split(':')[1]?.trim()] : null; };
+const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__msg--'))?.slice(20), m.getAttribute('aria-label').split(':')[1]?.trim(), m.querySelector('use')?.getAttribute('href')] : null; };
 expect('each warning is the alert badge in its colour, its name leading the badge\'s words, and the times stay',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => [badge(lit(n)), say(lit(n)), has(row(lit(n)), '.scheduler-road__track')]), [
-    [['error', 'Stop lamp'], null, true], [['error', 'Not rolling'], null, true], [['error', 'Wrong bus'], null, true],
-    [['warning', 'Late to spot'], null, true], [['warning', 'Short on hours'], null, true]]);
+    [['error', 'Stop lamp', '#m-error-fill'], null, true], [['error', 'Not rolling', '#m-error-fill'], null, true], [['error', 'Wrong bus', '#m-error-fill'], null, true],
+    [['warning', 'Late to spot', '#i-warning--alt--filled'], null, true], [['warning', 'Short on hours', '#i-warning--alt--filled'], null, true]]);
 expect('a bar with no warning and no problem of its own has no badge', badge(lit('At highway speed')), null);
 expect('an engine warning lamp is said on the tooltip only',
   [say(lit('Engine warning lamp')), row(lit('Engine warning lamp')).title.includes('Engine warning lamp on')], [null, true]);

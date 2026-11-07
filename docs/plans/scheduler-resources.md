@@ -20,9 +20,7 @@ Today the roster is a panel the toolbar's Driver availability toggle opens
 and shuts, so the drivers' heads, the 40px two-line cells
 `scheduler/docs/screen-inventory.md` describes, are often off screen, and a
 bar out on the road still carries each seat's duty mark, hours meter and
-rest meter. The mockup rux chose from is `design/m/resources/?layout=4`,
-local and unpublished, and the tiles from its `?layout=5`, both served on
-:8641.
+rest meter.
 
 ## Decisions
 
@@ -42,6 +40,11 @@ local and unpublished, and the tiles from its `?layout=5`, both served on
   driver, what they are doing now and which bus Samsara has them in, the
   hours left, then the rest toward eight hours or the week's cycle, and
   their language, endorsements and Part-time where the bus has its kit.
+- **The rail is held to the bus column's rules:** its rows are 48px, on
+  Carbon's 8px grid, every box it paints stands on whole pixels, and its
+  marks follow the bar's: a status solid and in colour, a button an
+  outline, Carbon's ghost fill under the pointer, as
+  `scheduler/docs/screen-inventory.md`'s Marks on the bar says.
 - **The roster becomes a rail, always open on the Mac's board.** Closed, it
   is the driver tiles alone, 6rem. The toolbar loses its Driver
   availability toggle.

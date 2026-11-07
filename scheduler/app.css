@@ -1417,7 +1417,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    which keeps it 4.5 to 1 on the brightest dark trip. */
 .scheduler-bar__time { gap: calc(1.5 * var(--rux-spacing-02)); font-variant-numeric: tabular-nums; }
 .scheduler-bar__ampm,
-.scheduler-figures__ampm { font-size: .85em; opacity: .85; }
+.scheduler-figures__ampm { font-size: max(.85em, var(--rux-label-01-font-size)); opacity: .85; }
 .scheduler-figures__none { color: var(--rux-text-placeholder); font-weight: var(--rux-body-compact-01-font-weight); }
 .scheduler-bar__phone { flex: none; }
 /* The phone sits straight after the name rather than at the bar's far end.
@@ -1605,8 +1605,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   .scheduler-week :is([data-card-opener] > svg, .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
-   evening before, small and raised so the row keeps its height. */
-.scheduler-bar__next-day, .scheduler-bar__day-before { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+   evening before, raised so the row keeps its height, and never under
+   Carbon's 12px, as the am and pm beside a time are not. */
+.scheduler-bar__next-day, .scheduler-bar__day-before { font-size: max(.75em, var(--rux-label-01-font-size)); line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
    at 12px, and between them the track, 2px, centred on the figures with 6px
    either side, the trip's ink as far as its time has gone and a fifth of it
@@ -1716,9 +1717,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    what the trip does -- where it goes, when, what to know on the day and who
    drives it -- and dim is who it is for. */
 .scheduler-bar__client, .scheduler-bar__contact { opacity: .85; }
-/* "No times" is dimmer still, so a leg with no times yet reads quieter than
-   one that has them. */
-.scheduler-bar__none { opacity: .6; }
+/* "No times", and a seat no one fills, are as quiet as the client, the
+   faintest a bar's words go, and in the times row at the times' own 12px. */
+.scheduler-bar__none { opacity: .85; }
+.scheduler-bar__time > .scheduler-bar__none { font-size: var(--rux-label-01-font-size); }
 /* A tag after the destination, the maintenance page's Return: plain weight,
    dim as the client is, and never cut short. */
 .scheduler-bar__ref { flex: none; font-weight: 400; opacity: .85; }

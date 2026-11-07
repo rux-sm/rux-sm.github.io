@@ -824,7 +824,6 @@
    down the bars. A driver in another bus keeps the red. */
 [data-theme="rux-100"] .scheduler-bar .scheduler-crew:not(.scheduler-crew--away) > .scheduler-crew__name { color: var(--geist-gray-1000); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
-[data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* The count of a leg's buses is Geist's gray 900 on every trip, a figure
    beside the destination rather than part of its name. */
 [data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: var(--geist-gray-900); }

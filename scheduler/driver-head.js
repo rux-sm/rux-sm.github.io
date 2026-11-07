@@ -3,8 +3,8 @@
    --------------------------------------------------------------------------
    A driver's name cell in the rail is their tile, as a bus's is in the
    bus column, drawn inside the cell data.js makes, on two lines:
-   - A person's icon where their picture will go, the name at 14px, then
-     the driver's most urgent mark, 16px, with every mark's
+   - A person's icon where their picture will go, the name at 14px, and at
+     the line's end the driver's most urgent mark, 16px, with every mark's
      words on its label, or while a selected trip finds them free on every
      day of it, a green check in its place:
        papers  the licence or medical card running out within WARN_DAYS,
@@ -14,22 +14,21 @@
        unsent  a leg leaving within two days they sit on and have not
                been sent, amber
      The tile is too narrow for a row of them, so one stands for all.
-     At the line's end, at 12px in the secondary grey, what Samsara's
-     hours-of-service clock says now: driving, the time left, "6:30"; on
-     duty, a yard move or personal conveyance, the duty log's own short word
-     and the time left, "On 0:36"; off or in the sleeper berth, the word and
-     the whole hours rested, "Off 14h", "SB 3h". The time left is the least
-     of the drive, shift and cycle clocks, amber under an hour as the
-     driver's tip has it. The full words are its label.
-   - Under it, the tile's full width, a meter of the clock, as the bus
-     tile's fuel stands under its state: the ten hours a passenger carrier's
-     driver may drive, or while resting the rest toward eight hours, in the
-     rest colour the bars use while a trip of theirs is under way and in the
-     secondary grey with none, where the rest is their own time. A driver
-     Samsara keeps no clock for has a quiet dash over an empty meter, as a
-     bus with no signal does.
+   - Under it, a meter of Samsara's hours-of-service clock, as the bus
+     tile's fuel is, and at the line's end, at 12px in the secondary grey,
+     what the clock says now: driving, the time left, "6:30", on a meter of
+     the ten hours a passenger carrier's driver may drive; on duty, a yard
+     move or personal conveyance, the duty log's own short word and the time
+     left, "On 0:36", on the same meter; off or in the sleeper berth, the
+     word and the whole hours rested, "Off 14h", "SB 3h", on the rest meter
+     toward eight hours, in the rest colour the bars use while a trip of
+     theirs is under way and in a quiet grey with none, where the rest is
+     their own time. The time left is the least of the drive, shift and
+     cycle clocks, amber under an hour as the driver's tip has it. The full
+     words are the line's label. A driver Samsara keeps no clock for has a
+     quiet dash beside an empty meter, as a bus with no signal does.
    The name is a button that picks out the driver's trips; the mark and the
-   words are buttons, the words the trigger of the driver's card, a Carbon
+   line are buttons, the line the trigger of the driver's card, a Carbon
    toggletip that data.js fills from trip-tips.js's `driverCard`.
 
    `draw(cell, driver, live, alerts, onTrip)` draws it, its parts once and
@@ -157,14 +156,13 @@
     const line = el('button', 'rux--toggletip-button scheduler-avail__line');
     line.type = 'button';
     line.setAttribute('aria-expanded', 'false');
-    line.append(el('span', 'scheduler-avail__state'));
+    const meter = el('span', 'scheduler-avail__meter');
+    meter.setAttribute('aria-hidden', 'true');
+    line.append(meter, el('span', 'scheduler-avail__state'));
     const pop = el('span', 'rux--popover');
     pop.append(el('span', 'rux--popover-content'), el('span', 'rux--popover-caret'));
     card.append(line, pop);
-    top.append(card);
-    const meter = el('span', 'scheduler-avail__meter');
-    meter.setAttribute('aria-hidden', 'true');
-    cell.replaceChildren(top, meter);
+    cell.replaceChildren(top, card);
   }
 
   function draw(cell, driver, live, alerts = [], onTrip = false) {
@@ -191,7 +189,7 @@
     line.dataset.tone = state.tone;
     line.setAttribute('aria-label', `${state.words}: ${full}'s card`);
     line.querySelector('.scheduler-avail__state').textContent = state.line;
-    const meter = cell.querySelector(':scope > .scheduler-avail__meter');
+    const meter = line.querySelector('.scheduler-avail__meter');
     meter.dataset.tone = state.tone;
     if (state.meter) {
       meter.dataset.kind = state.meter.kind;

@@ -3873,28 +3873,28 @@ a.scheduler-tip__go { text-decoration: none; }
    driver-head.js's, is two lines centred in the row: the name, read rather
    than scanned like the board's labels, in Carbon's `body-compact-01`, 14px,
    over what Samsara's clock says in its `label-01`, 12px, the bus head's
-   reading size. It starts 32px in, under the pane's title, and keeps 8px
-   before the first day; the most urgent mark stands in those 32px, level
-   with the name. */
+   reading size. Its parts stand 16px in from its sides, as the bus tile's
+   do. */
 .scheduler-avail__name {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  gap: var(--rux-spacing-02);
+  gap: var(--rux-spacing-01);
   line-height: normal;
-  padding-inline: var(--rux-spacing-03);
+  padding-inline: var(--rux-spacing-05);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-/* A DRIVER'S TILE, driver-head.js's, 8px in from its sides: the person,
-   the name, the worst mark and at the line's end their words on the 18px
-   line, and 4px under it a 4px meter the tile's full width, as the bus
-   tile's fuel stands under its state. The two are centred in the row above
+/* A DRIVER'S TILE, driver-head.js's: the person, the name and at the
+   line's end the worst mark on the 18px line; 2px under it the 4px meter,
+   64px as the bus tile's square is so every driver's reads alike, with
+   their words ending the 16px line, so the name has the width the words
+   do not take. The two lines are centred in the row above
    its line on whole pixels, the odd pixel below. The name is a button that
-   picks out the driver's trips; the mark and the words are buttons that
-   open their card, Carbon's ghost fill under the pointer, as a bar's marks
-   are. */
+   picks out the driver's trips; the mark and the meter's line are buttons
+   that open their card, Carbon's ghost fill under the pointer, as a bar's
+   marks are. */
 :is(.scheduler-avail__who, .scheduler-avail__mark, .scheduler-avail__line) {
   padding: 0;
   border: 0;
@@ -3906,7 +3906,7 @@ a.scheduler-tip__go { text-decoration: none; }
   cursor: pointer;
 }
 .scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.scheduler-avail__card { display: block; flex: none; }
+.scheduler-avail__card { display: block; }
 :is(.scheduler-avail__mark, .scheduler-avail__line) { --scheduler-mark-fill: color-mix(in srgb, var(--rux-text-primary) 20%, transparent); }
 @media (hover: hover) {
   :is(.scheduler-avail__mark, .scheduler-avail__line):hover { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
@@ -3915,7 +3915,7 @@ a.scheduler-tip__go { text-decoration: none; }
 :is(.scheduler-avail__mark, .scheduler-avail__line):focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -1px; }
 .scheduler-avail__name:has(.scheduler-avail__line[aria-expanded="true"]) .scheduler-avail__mark { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
-.scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + 2 * var(--rux-spacing-02)); }
+.scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--rux-spacing-01) + var(--scheduler-label-h)); }
 @supports (block-size: round(1px, 1px)) {
   .scheduler-avail__name { justify-content: flex-start; }
   .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-tile-h)) / 2), 1px); }
@@ -3925,13 +3925,12 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__line {
   display: flex;
   align-items: center;
-  block-size: var(--scheduler-row-h);
+  gap: var(--rux-spacing-03);
+  inline-size: 100%;
+  block-size: var(--scheduler-label-h);
   color: var(--rux-text-secondary);
 }
-.scheduler-avail__line > .scheduler-avail__state { flex: none; overflow: visible; }
-@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
-  .scheduler-avail__line > .scheduler-avail__state { inline-size: calc-size(fit-content, round(up, size, 1px)); }
-}
+.scheduler-avail__line > .scheduler-avail__state { flex: 1 1 auto; min-inline-size: 0; text-align: end; }
 /* The meter is Carbon's small progress bar, as the bus tile's fuel is: the
    time left of a day's driving in the success green, amber under an hour,
    or the rest toward eight hours in the rest colour the bars use; with no
@@ -3939,6 +3938,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
   flex: none;
+  inline-size: var(--rux-spacing-10);
   block-size: var(--rux-spacing-02);
   background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
 }
@@ -3966,15 +3966,15 @@ a.scheduler-tip__go { text-decoration: none; }
   font-weight: var(--rux-label-01-font-weight);
   color: var(--rux-text-secondary);
 }
-/* Amber under an hour left, in the bus head's warning ink. */
 /* The worst mark ends the name's line, a status solid in its colour. While
    the selected trip finds the driver free, data.js's `data-free`, a green
-   check stands in its place, but never for a driver who cannot drive. */
+   check stands in its place, but never for a driver who cannot drive. A
+   driver with no mark has none drawn, and the name takes its room. */
 .scheduler-avail__mark {
   flex: none;
-  display: inline-flex;
   color: var(--scheduler-head-low);
 }
+.scheduler-avail__mark:not([hidden]) { display: inline-flex; }
 .scheduler-avail__free-mark { display: none; flex: none; color: var(--rux-support-success); }
 .scheduler-avail__name[data-free] .scheduler-avail__free-mark { display: block; }
 .scheduler-avail__name[data-free] .scheduler-avail__mark { display: none; }

@@ -274,23 +274,23 @@ and on their tile a green check in the worst mark's place, shut or open; a
 driver free on only some has nothing drawn, and a driver with an expired
 paper keeps the red mark and has neither, since they cannot drive.
 
-A driver's tile is drawn by `scheduler/driver-head.js`, two lines 8px in
-from its sides and 4px apart, centred above the row's line on whole pixels
-with the odd pixel below. The first is a person's icon where their picture
-will go, the name at 14px, their worst mark, every mark's words on its
-label: a licence or medical card expiring within 45 days, amber, or
-expired, red; a leg within 30 days that changed since they said yes; a leg
-leaving within two days they have not been sent; and at the line's end, at
-12px, what Samsara's hours-of-service clock says now: "6:30" driving, "On
-0:36" on duty, amber under an hour left, "Off 14h" or "SB 3h" resting, and a
-dash with no clock. The second is a 4px meter of it the tile's full width,
-as the bus tile's fuel stands under its state: the ten hours a driver may
-drive in the success green, amber under an hour; resting, the rest toward
-eight hours, in the rest colour the bars use while a trip of theirs is under
-way, from its yard-out to its return, and in Carbon's strong border grey with
-none; and dashed and empty with no clock.
+A driver's tile is drawn by `scheduler/driver-head.js`, two lines 16px in
+from its sides, as the bus tile's parts are, and 2px apart, centred above
+the row's line on whole pixels with the odd pixel below. The first is a
+person's icon where their picture will go, the name at 14px, and at the
+line's end their worst mark, every mark's words on its label: a licence or
+medical card expiring within 45 days, amber, or expired, red; a leg within
+30 days that changed since they said yes; a leg leaving within two days
+they have not been sent. The second is a 4px meter of Samsara's
+hours-of-service clock, 64px as the bus tile's square is, and at the line's
+end, at 12px, what the clock says now: "6:30" driving or "On 0:36" on duty
+on a meter of the ten hours a driver may drive in the success green, both
+amber under an hour left; "Off 14h" or "SB 3h" resting, on the rest meter
+toward eight hours, in the rest colour the bars use while a trip of theirs
+is under way, from its yard-out to its return, and in Carbon's strong border
+grey with none; and a dash beside a dashed empty meter with no clock.
 
-The mark and the hours words are buttons that open the driver's Driver card, and both take Carbon's ghost fill under the pointer and while it is open.
+The mark and the meter's line are buttons that open the driver's Driver card, and both take Carbon's ghost fill under the pointer and while it is open.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

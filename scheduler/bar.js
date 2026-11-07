@@ -784,7 +784,7 @@
     if (trip.route_done_at) bar.dataset.routeDone = '';
 
     // The crew in role order, the partner covering the bus, or what the bar needs before it can have one.
-    const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
+    const crew = assign ? crewOf(trip, assign, driversById, statuses, { riders: true }).filter(c => !(placeholder && c.needed)) : [];
     const partner = isCovered(assign) ? board.partnersById?.get(assign.partner_id) ?? null : null;
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     /* A leg is due from today to the end of the stretch the office staffs:

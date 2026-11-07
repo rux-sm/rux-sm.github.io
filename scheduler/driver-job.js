@@ -138,28 +138,36 @@
     if (!mine) return { error: 'notYours' };
     const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
     const role = seat.role || 'driver';
+    /* A co-driver who moves between the leg's buses rides the ones their
+       seat lists as well, and each of those buses has them aboard. */
+    const alsoOn = d => (d.role === 'co-driver' && Array.isArray(d.also_on) ? d.also_on.map(String) : []);
+    const rides = assignments.filter(a => alsoOn(seat).includes(String(a.id)));
+    const aboard = a => [...activeSeats(a), ...assignments.filter(b => b !== a).flatMap(b => activeSeats(b))
+      .filter(d => alsoOn(d).includes(String(a.id)))];
+    const numberOf = a => (a.buses?.number != null ? String(a.buses.number) : '');
     const inbound = SHAPE.isPickup(trip, shaped?.id);
     const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
     const start = shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date;
     const end = shaped ? shaped.end : inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date);
-    const crew = assignments.map(a => ({
-      bus: a.buses?.number != null ? String(a.buses.number) : '',
-      mine: a === mine,
-      people: activeSeats(a).filter(d => String(d.driver_id) !== String(driverId)).map(d => ({
+    // Their own bus first, then each they ride, then the leg's others.
+    const crew = [mine, ...rides, ...assignments.filter(a => a !== mine && !rides.includes(a))].map(a => ({
+      bus: numberOf(a),
+      mine: a === mine || rides.includes(a),
+      people: aboard(a).filter(d => String(d.driver_id) !== String(driverId)).map(d => ({
         name: d.drivers?.short_name || d.drivers?.name || '',
         role: roleKey(d.role),
         phone: clean(d.drivers?.phone),
       })),
-    })).filter(b => b.people.length).sort((a, b) => (a.mine ? -1 : b.mine ? 1 : 0));
+    })).filter(b => b.people.length);
     return {
       trip, leg, word, role, start, end,
       destination: inbound ? (back.name || back.address || 'Yard') : (trip.destination || 'Destination'),
       // Which of the two the page wrote, where the office named no place.
       destinationWord: inbound ? (back.name || back.address ? null : 'yard') : (trip.destination ? null : 'destination'),
       customer: clean(trip.customer),
-      bus: mine.buses?.number != null ? String(mine.buses.number) : '',
+      bus: [mine, ...rides].map(numberOf).filter(Boolean).join(' · '),
       time: isRelief(role) ? (seat.report_time || pickup.spot || trip.spot_time) : (pickup.spot || trip.spot_time),
       place: { name: clean(pickup.name), address: clean(pickup.address) },
       stops,

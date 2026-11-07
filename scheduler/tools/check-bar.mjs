@@ -152,7 +152,7 @@ function drawn(sectionId, name, later = false) {
     factsByBar.set(bar, facts);
     if (spec.live) {
       const { bus, look, before } = spec.live;
-      const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
+      const said = Live.saidOf;
       if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now });
       RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, day: look.day });
     }
@@ -350,7 +350,7 @@ function tipBoard(sample, more = {}) {
     facts: b => factsByBar.get(b) ?? null,
     road: b => {
       const look = roadLooks.get(b);
-      return look ? { bus: look.bus, next: look.next, said: { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) } } : null;
+      return look ? { bus: look.bus, next: look.next, said: Live.saidOf(look) } : null;
     },
     seat: (b, role) => {
       const trip = sample.rows[0].bars[0].trip;
@@ -556,6 +556,10 @@ expect('an engine warning lamp is said on the tooltip only',
 expect('a red warning blinks for its first minute', lit('Not rolling').hasAttribute('data-alarm'), true);
 const wrong = lit('Wrong bus').querySelector('.scheduler-crew');
 expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.duty, text(wrong, '.scheduler-crew__away')], ['away', 'in 119']);
+const riding = [...lit('Co-driver in another bus they ride').querySelectorAll('.scheduler-crew')].find(c => c.dataset.driverId === 'd2');
+expect('a co-driver in another bus they ride: that bus said quietly, their status mark kept, no warning',
+  [riding.dataset.duty, text(riding, '.scheduler-crew__away'), has(riding, '.scheduler-crew__duty'), has(riding, '.scheduler-crew__mark'), say(lit('Co-driver in another bus they ride'))],
+  ['riding', 'in 119', false, true, null]);
 expect('under an hour left, the bar and the hours are amber',
   [has(lit('Short on hours'), '.scheduler-crew__left--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50 left']);
 expect('every driver wears their duty, the one at the wheel the steering wheel',

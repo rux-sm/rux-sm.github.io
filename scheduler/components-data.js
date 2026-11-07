@@ -332,7 +332,7 @@
       const bus = samsara({ bus_id: busId, ...o.bus });
       const look = {
         bus, next: o.next ?? toStop(), named: (o.crew ?? [['d1']]).map(c => c[0]), now, yard, yardOut: out,
-        others: o.others ?? [], numberOf: id => busesById.get(id)?.number ?? null, drives: o.drives ?? [], day: o.day ?? 0,
+        others: o.others ?? [], buses: o.buses ?? new Map(), numberOf: id => busesById.get(id)?.number ?? null, drives: o.drives ?? [], day: o.day ?? 0,
       };
       return bar(t, { span: o.span ?? 2, live: { bus, look, before: o.before ? samsara({ bus_id: busId, ...o.bus, ...o.before }) : null } });
     }
@@ -384,6 +384,9 @@
           next: { stops: liveStops(), where: { reached: -1, at: false, next: 0 }, stop: liveStops()[0], at: false, arrival: null, late: 0 } }), { replay: true }),
         one('Wrong bus', 'Red: a driver the bar names is logged into another bus, marked in the crew with that bus.', live('Coastal Youth Choir', {
           crew: [['d2', 'driver', 'confirmed']], bus: { drivers: [] }, others: [{ bus_id: 'b119', drivers: [driver('d2')] }] })),
+        one('Co-driver in another bus they ride', 'A co-driver who moves between the trip\'s buses, in one of the others: that bus on an empty meter, in the row\'s ink, and no warning.', live('Coastal Youth Choir', {
+          crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], bus: { drivers: [driver('d1')] },
+          others: [{ bus_id: 'b119', drivers: [driver('d2', { wheel: false, duty: 'on' })] }], buses: new Map([['d2', ['b119']]]) })),
         one('Late to spot', 'Amber: the pickup is next and the bus will reach it after its spot.', live('Riverbend Seniors', {
           next: (() => { const stops = liveStops(); stops[0].due = now + 6 * MIN; return { stops, where: { reached: -1, at: false, next: 0 }, stop: stops[0], at: false, arrival: now + 25 * MIN, late: 19 }; })() })),
         one('Short on hours', 'Amber: the hours left in the bus fall short of the drive before the next rest; the driver\'s bar is amber under an hour.', live('Harbor Tours', {

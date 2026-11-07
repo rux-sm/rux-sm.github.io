@@ -296,9 +296,20 @@ Deno.serve(
             )
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
 
-            const buses = orThrow(await supabase.from('trip_assignments')
-              .select('position, leg, route_id, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, report_time, pay, instructions, drivers(name, short_name, phone)), partner:partner_id(name, phone), partner_price, partner_confirmed, partner_vehicle, partner_driver:partner_driver_id(name, phone)')
+            const rows = orThrow(await supabase.from('trip_assignments')
+              .select('id, position, leg, route_id, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, also_on, report_time, pay, instructions, drivers(name, short_name, phone)), partner:partner_id(name, phone), partner_price, partner_confirmed, partner_vehicle, partner_driver:partner_driver_id(name, phone)')
               .eq('trip_id', trip.id).order('leg').order('position'))
+            /* A co-driver who moves between the leg's buses is listed once, on
+               their own bus, with the numbers of the others they ride; their
+               pay is the one pay. */
+            const busNumber = new Map(rows.map((a: Row) => [String(a.id), a.buses?.number ?? null]))
+            const buses = rows.map(({ id: _id, ...a }: Row) => ({
+              ...a,
+              trip_drivers: (a.trip_drivers ?? []).map(({ also_on, ...d }: Row) => ({
+                ...d,
+                ...(also_on?.length ? { also_rides: also_on.map((x: string) => busNumber.get(String(x)) ?? 'a bus with no number yet') } : {}),
+              })),
+            }))
 
             const stops = orThrow(await supabase.from('trip_stops')
               .select('id, leg, route_id, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')

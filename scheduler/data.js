@@ -32,7 +32,7 @@
   const {
     setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, crewOf, tripContact, dayContactsOf, dayOfContact,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, ridersOf, alsoOnOf, crewOf, tripContact, dayContactsOf, dayOfContact,
   } = window.SchedulerLegFacts;
 
   /* A SAVED TRIP IS READ THROUGH trip-shape.js: its legs, each leg's routes,
@@ -456,7 +456,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,also_on,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks,
     // and the QuickBooks estimate, which the bar menu marks.
     'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
@@ -1026,13 +1026,15 @@
     .map(c => c.dataset.driverId).filter(Boolean));
 
   /* What live-trip.js says of an out bar's bus: its warnings, worst first,
-     and where it is on its leg. Handed the drivers the bar names, every bus
-     in Samsara's answer, the yard's point and the leg's yard-out, and each
+     where it is on its leg, and the co-drivers the bar names who are in
+     another of the buses they ride. Handed the drivers the bar names, the
+     buses each may be in, every bus in Samsara's answer, the yard's point and the leg's yard-out, and each
      stop's drive and whether its wait is rest, from the trip's own stops. */
   function roadLook(bar, bus, next, named) {
     const rows = new Map((heldTrip(bar.dataset.tripId)?.trip_stops ?? []).map(s => [String(s.id), s]));
     const look = {
       bus, next, named: [...named], now: Date.now(),
+      buses: new Map((barCrew(bar, { riders: true })?.crew ?? []).filter(c => c.driverId != null).map(c => [c.driverId, c.buses])),
       others: roadAnswer?.buses ?? [],
       numberOf: id => panelIndex.buses.get(id)?.number ?? null,
       yard: yardPlace ? [Number(yardPlace.lat), Number(yardPlace.lng)] : null,
@@ -1042,7 +1044,7 @@
         return { min: driveMin(row?.drive), rest: ['off', 'sleeper'].includes(row?.dwell_status) };
       }),
     };
-    return { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) };
+    return Live.saidOf(look);
   }
 
   /* Today's column counted from the bar's first day, held to the bar, so a
@@ -1072,7 +1074,8 @@
      confirmed while the bus is out, road-bar.js's; and when Samsara has them
      logged into this leg's bus within CONFIRM_NEAR of its yard-out, their
      status is saved Confirmed, as the office would, with a history line
-     saying Samsara saw them. Once a page load each, so several office
+     saying Samsara saw them; a co-driver riding the bus from another of the
+     leg's is confirmed from it too. Once a page load each, so several office
      screens on the board save it once each at most, and a save that fails
      is left for the next page load. */
   const CONFIRM_NEAR = 60 * 60e3;
@@ -1080,7 +1083,7 @@
   async function confirmFromSamsara(bar, bus) {
     const yardOut = Number(bar.dataset.roadFrom) + Road.MARGIN;
     if (!Number.isFinite(yardOut) || Math.abs(Date.now() - yardOut) > CONFIRM_NEAR) return;
-    const found = barCrew(bar);
+    const found = barCrew(bar, { riders: true });
     if (!found) return;
     const inBus = new Set(bus.drivers.map(d => d.driver_id).filter(Boolean).map(String));
     const due = found.crew.filter(c => !c.needed && inBus.has(String(c.driverId)) && c.status.value !== 'confirmed'
@@ -2881,7 +2884,7 @@
   const RELIEF = new Set(['relief-start', 'relief-end']);
   let fleetSeq = 0;
 
-  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, miles: null, pay: null, status: 'off', statusDirty: false });
+  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, miles: null, pay: null, status: 'off', statusDirty: false, alsoOn: [] });
   /* A vehicle not yet on a row. `seed` is the needs and type it starts with:
      an empty slot of a trip takes the trip's, so it still asks for them, and
      only a change from them makes it worth a row. */
@@ -2950,6 +2953,7 @@
       seat.note = row.instructions ?? null;
       seat.miles = row.miles ?? null;
       seat.pay = row.pay ?? null;
+      seat.alsoOn = alsoOnOf(row).map(id => `a-${id}`);
       const saved = row.driver_id ? statuses?.get(statusKey(trip.id, row.driver_id, leg, r.role)) : null;
       const value = saved ? saved.status : on.get(r.role);
       seat.status = DRIVER_STATUSES.some(s => s.value === value) ? value : 'off';
@@ -2977,6 +2981,21 @@
 
   const cloneFleet = legs => JSON.parse(JSON.stringify(legs));
   const seatFilled = s => s.on && !!s.driverId;
+  /* A CO-DRIVER ALSO ON the leg's other vehicles lists them by key in their
+     seat's `alsoOn`, the row's `also_on`. `riderOf` is the vehicle whose
+     co-driver rides `bus`, or null; `rideable`, the leg's other vehicles of
+     ours that `bus`'s co-driver may ride: none with a co-driver of its own,
+     or one another vehicle's co-driver rides. */
+  const alsoOnKeys = bus => bus.seats['co-driver']?.alsoOn ?? [];
+  const riderOf = (legBuses, bus) => legBuses.find(b => b.key !== bus.key && seatFilled(b.seats['co-driver'])
+    && alsoOnKeys(b).includes(bus.key)) ?? null;
+  const rideable = (legBuses, bus) => legBuses.filter(b => b.key !== bus.key && !b.partner
+    && !seatFilled(b.seats['co-driver']) && [null, bus.key].includes(riderOf(legBuses, b)?.key ?? null));
+  // A vehicle as the tab names it: its place on the leg, and its bus's number.
+  const vehicleWord = (legBuses, b) => {
+    const number = b.busId != null ? panelIndex.buses.get(b.busId)?.number : null;
+    return `Vehicle ${legBuses.indexOf(b) + 1}${number ? ` · ${number}` : ''}`;
+  };
   const sameNeeds = (a, b) => needIds(a).join() === needIds(b).join();
   // A bus with nothing on it is only a count, so it gets no row until it has:
   // no bus, no driver, no other seat, and the needs and type it started with.
@@ -3191,10 +3210,18 @@
     const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
       || ops.updates.some(u => Object.keys(u.patch).some(k => !SAMSARA_TIMES.has(k)) || !u.seats.every(onlyMiles)));
     work.statuses = moved || statusPicked;
+    // The vehicles each co-driver also rides, changed, which Save writes once every vehicle has its row.
+    work.alsoOn = fleetLegs().flatMap(leg => now[leg].flatMap(b => {
+      const s = b.seats['co-driver'];
+      const keys = seatFilled(s) && !b.partner ? (s.alsoOn ?? []).filter(k => now[leg].some(x => x.key === k)).sort() : [];
+      const prev = before[leg].find(x => x.key === b.key)?.seats['co-driver'];
+      const was = s.rowId && prev && seatFilled(prev) ? [...(prev.alsoOn ?? [])].sort() : [];
+      return keys.join() === was.join() ? [] : [{ leg, bus: b, keys }];
+    }));
     // The drivers typed new in a vehicle's window, which Save adds to their partners first.
     work.newDrivers = fleetLegs().flatMap(leg => now[leg]).map(b => b.partner?.newDriver && { ...b.partner.newDriver, partner_id: b.partner.id })
       .filter(Boolean);
-    work.work = Object.keys(work.trip).length > 0 || work.legs.length > 0 || work.statuses;
+    work.work = Object.keys(work.trip).length > 0 || work.legs.length > 0 || work.statuses || work.alsoOn.length > 0;
     return work;
   }
 
@@ -3233,10 +3260,17 @@
   /* Writes the fleet after the trip. New buses are inserted with their seats,
      changed ones updated, removed ones deleted, which takes their seats with
      them; then every filled seat's status is sent at once, since the function
-     deletes a status the list leaves out. */
+     deletes a status the list leaves out. A co-driver's other buses come off
+     their row first, so a bus they leave can take a co-driver of its own, and
+     go on last, once every bus they ride has its row. */
   async function saveFleet(tripId, write, work) {
     /* A driver typed new joins its partner's list before a vehicle names
        it; sent again after a lost answer it is the same driver, by its id. */
+    for (const a of work.alsoOn ?? []) {
+      const rowId = a.bus.seats['co-driver'].rowId;
+      if (rowId) await write('its drivers', client.from('trip_drivers').update({ also_on: [] }).eq('id', rowId));
+    }
+    const madeIds = new Map();
     if (work.newDrivers?.length) {
       await write('its partner drivers', client.from('partner_drivers')
         .upsert(work.newDrivers.map(d => ({ id: d.id, partner_id: d.partner_id, name: d.name, phone: d.phone })), { onConflict: 'id', ignoreDuplicates: true }));
@@ -3263,9 +3297,18 @@
       for (const ins of ops.inserts) {
         const made = await write('its buses', client.from('trip_assignments')
           .insert({ trip_id: tripId, ...onRoute(ops.leg), ...ins.row }).select('id').single());
+        madeIds.set(ins.bus.key, made.id);
         const rows = ROLES.filter(r => seatFilled(ins.bus.seats[r.role]))
           .map(r => ({ assignment_id: made.id, ...seatRow(r.role, ins.bus.seats[r.role]) }));
         if (rows.length) await write('its drivers', client.from('trip_drivers').insert(rows));
+      }
+    }
+    for (const a of (work.alsoOn ?? []).filter(x => x.keys.length)) {
+      const idOf = key => editing.fleet[a.leg].find(x => x.key === key)?.id ?? madeIds.get(key) ?? null;
+      const own = idOf(a.bus.key);
+      const ids = a.keys.map(idOf).filter(Boolean);
+      if (own && ids.length) {
+        await write('its drivers', client.from('trip_drivers').update({ also_on: ids }).eq('assignment_id', own).eq('role', 'co-driver'));
       }
     }
     if (!work.statuses) return;
@@ -3539,6 +3582,7 @@
       root.appendChild(statusBtn);
     }
     const line = picker;
+    if (role === 'co-driver') return alsoRides(leg, bus, line);
     if (!RELIEF.has(role)) return line;
     const box = el('div', 'rux--stack-vertical rux--stack-scale-5');
     const time = timeField(`${id}-time`, 'Swap time', seat.reportTime);
@@ -3555,6 +3599,32 @@
     }
     // Stacked, since the tile leaves each too narrow for a pair.
     box.append(line, time, note);
+    return box;
+  }
+
+  /* The co-driver's seat, and under it, once it has a driver, the leg's
+     other vehicles they may also ride, as Needs are picked: one co-driver
+     moving between the buses, paid and told once. */
+  function alsoRides(leg, bus, line) {
+    const seat = bus.seats['co-driver'];
+    const legBuses = editing.fleet[leg].map(b => (b.key === bus.key ? bus : b));
+    if (!legBuses.includes(bus)) legBuses.push(bus);
+    const offered = seat.driverId ? rideable(legBuses, bus) : [];
+    if (!offered.length) return line;
+    const group = el('div', 'scheduler-needs');
+    const label = el('div', 'rux--label', 'Also rides');
+    label.id = `scheduler-fleet-${leg}-${bus.key}-also-label`;
+    const row = el('div', 'scheduler-needs__tags');
+    row.setAttribute('role', 'group');
+    row.setAttribute('aria-labelledby', label.id);
+    for (const b of offered) {
+      const tag = tagField(`scheduler-fleet-${leg}-${bus.key}-also-${b.key}`, vehicleWord(legBuses, b), (seat.alsoOn ?? []).includes(b.key));
+      tag.dataset.fleetAlsoOn = b.key;
+      row.appendChild(tag);
+    }
+    group.append(label, row);
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    box.append(line, group);
     return box;
   }
 
@@ -3611,7 +3681,11 @@
       seat.driverId != null ? (driver?.name || driver?.short_name || 'Unnamed driver') : 'No driver yet'));
     if (role !== 'driver') {
       const swap = seat.reportTime ? `, swap ${hhmm(seat.reportTime)}` : '';
-      who.appendChild(el('span', 'scheduler-fleet-seat__role', `${SEAT_LABEL[role].toLowerCase()}${swap}`));
+      // A co-driver who also rides the leg's other vehicles names them by place.
+      const legBuses = editing.fleet[leg];
+      const also = role === 'co-driver' ? legBuses.filter(b => (seat.alsoOn ?? []).includes(b.key)).map(b => legBuses.indexOf(b) + 1) : [];
+      const rides = also.length ? `, also on ${also.join(', ')}` : '';
+      who.appendChild(el('span', 'scheduler-fleet-seat__role', `${SEAT_LABEL[role].toLowerCase()}${swap}${rides}`));
     }
     line.append(mark, who);
     const dup = seat.driverId != null && dups.has(`${leg}:${seat.driverId}`);
@@ -3652,7 +3726,20 @@
     for (const r of ROLES) {
       if (r.role === 'driver' || bus.seats[r.role].on) tile.appendChild(seatLine(leg, bus, r.role, dups));
     }
+    const rider = riderOf(list, bus);
+    if (rider) tile.appendChild(riderLine(list, rider));
     return li;
+  }
+  // The co-driver who rides a vehicle from another, on its tile in a seat's place.
+  function riderLine(list, rider) {
+    const seat = rider.seats['co-driver'];
+    const driver = panelIndex.driversById.get(seat.driverId);
+    const line = el('span', 'scheduler-fleet-seat');
+    const who = el('span', 'scheduler-fleet-seat__who');
+    who.append(el('span', 'scheduler-fleet-seat__name', driver?.name || driver?.short_name || 'Unnamed driver'),
+      el('span', 'scheduler-fleet-seat__role', `co-driver, from vehicle ${list.indexOf(rider) + 1}`));
+    line.append(statusIcon(DRIVER_STATUSES.some(st => st.value === seat.status) ? seat.status : 'off'), who);
+    return line;
   }
   /* A covered vehicle's line on its tile, in a seat's place: the partner's
      answer as a driver's is marked, its price, and the driver it gave. */
@@ -3738,12 +3825,19 @@
     const crewRow = el('div', 'scheduler-needs__tags');
     crewRow.setAttribute('role', 'group');
     crewRow.setAttribute('aria-labelledby', crewLabel.id);
-    for (const r of ROLES.filter(x => x.role !== 'driver')) {
+    // A vehicle another's co-driver rides has that co-driver, and no seat of its own for one.
+    const rider = riderOf(legNow, bus);
+    for (const r of ROLES.filter(x => x.role !== 'driver' && !(rider && x.role === 'co-driver'))) {
       const tag = tagField(`scheduler-fleet-seat-${r.role}`, SEAT_LABEL[r.role], bus.seats[r.role].on);
       tag.dataset.fleetSeatToggle = r.role;
       crewRow.appendChild(tag);
     }
     crew.append(crewLabel, crewRow);
+    if (rider) {
+      const who = panelIndex.driversById.get(rider.seats['co-driver'].driverId);
+      crew.appendChild(el('div', 'rux--form__helper-text',
+        `Co-driver ${who?.name || who?.short_name || 'unnamed'} rides from ${vehicleWord(legNow, rider).toLowerCase()}.`));
+    }
 
     /* What the vehicle is and needs, then who drives it, 16px apart within
        each, 24px between; each relief, with its swap time and note, is a
@@ -3816,6 +3910,11 @@
     }
     const list = editing.fleet[leg];
     if (index === null) list.push(bus); else list[index] = bus;
+    // The co-driver rides the vehicles still free to ride, each of which has no co-driver seat of its own.
+    const co = bus.seats['co-driver'];
+    const free = new Set(rideable(list, bus).map(b => b.key));
+    co.alsoOn = seatFilled(co) ? (co.alsoOn ?? []).filter(k => free.has(k)) : [];
+    for (const b of list) if (co.alsoOn.includes(b.key)) b.seats['co-driver'].on = false;
     vehicleEdit = null;
     window.Rux?.modal?.close?.('scheduler-vehicle-modal');
     drawFleet();
@@ -3864,10 +3963,15 @@
     else p[key] = e.target.value;
   });
   vehicleHost?.addEventListener('input', e => {
-    const tag = e.target.closest?.('[data-fleet-need], [data-fleet-seat-toggle]');
+    const tag = e.target.closest?.('[data-fleet-need], [data-fleet-seat-toggle], [data-fleet-also-on]');
     if (!vehicleEdit || !tag) return;
     const on = tag.getAttribute('aria-pressed') === 'true';
-    if (tag.dataset.fleetNeed) {
+    if (tag.dataset.fleetAlsoOn) {
+      const seat = vehicleEdit.bus.seats['co-driver'];
+      const next = new Set(seat.alsoOn ?? []);
+      if (on) next.add(tag.dataset.fleetAlsoOn); else next.delete(tag.dataset.fleetAlsoOn);
+      seat.alsoOn = [...next];
+    } else if (tag.dataset.fleetNeed) {
       const next = new Set(needIds(vehicleEdit.bus.needs));
       if (on) next.add(tag.dataset.fleetNeed); else next.delete(tag.dataset.fleetNeed);
       vehicleEdit.bus.needs = needsObject(next);
@@ -6345,8 +6449,8 @@
     }
     let kept = 0;
     for (const b of buses) {
-      // A partner's bus has a driver of its own.
-      if (b.partner) continue;
+      // A partner's bus has a driver of its own, and one another's co-driver rides has theirs.
+      if (b.partner || riderOf(buses, b)) continue;
       const seat = b.seats?.['co-driver'];
       if (!seat) continue;
       if (!on && seat.driverId) { kept++; continue; }
@@ -14075,11 +14179,11 @@
     }
   }
 
-  // The bar's crew, read again from the trip the board holds.
-  function barCrew(bar) {
+  // The bar's crew, read again from the trip the board holds; `opts` as `crewOf` takes them.
+  function barCrew(bar, opts) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const assign = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
-    return assign ? { trip, crew: crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses) } : null;
+    return assign ? { trip, assign, crew: crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses, opts) } : null;
   }
 
   /* One item per driver on the bar, after Call or text and Assign driver: the
@@ -14258,15 +14362,20 @@
   let assignSeq = 0;
 
   /* The bar's trip, its bus row, the leg's dates and the row of one seat:
-     the Driver seat's unless `role` names another. `ref` finds the bar again
+     the Driver seat's unless `role` names another. A co-driver seat the bus
+     has none of its own in, which a co-driver on another of the leg's buses
+     rides, is that co-driver's row, on their bus. `ref` finds the bar again
      once a read has drawn it afresh. */
   function barSeat(bar, role = 'driver') {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    const assign = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
-    if (!assign) return null;
+    const ridden = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
+    if (!ridden) return null;
+    const own = (ridden.trip_drivers || []).find(d => (d.role || 'driver') === role) ?? null;
+    const rider = own ? null : ridersOf(trip, ridden).find(r => r.d.role === role) ?? null;
+    const assign = rider?.from ?? ridden;
     const leg = assign.leg || 'outbound';
     const range = legByKey(trip, legKeyOfVehicle(trip, assign));
-    const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === role) ?? null;
+    const seat = rider?.d ?? own;
     return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays, departDays: range.departDays } : null, seat };
   }
   const driverById = id => [...panelIndex.driversById.values()].find(d => String(d.id) === String(id));

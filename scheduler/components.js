@@ -84,7 +84,7 @@
     for (const c of spec.state?.classes ?? []) bar.classList.add(c);
     if (spec.live) {
       const { bus, look, before } = spec.live;
-      const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
+      const said = Live.saidOf;
       if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now, motion: view.motion });
       RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, motion: view.motion, day: look.day });
     }
@@ -112,7 +112,7 @@
       facts: bar => drawnBars.get(bar)?.facts ?? null,
       road: bar => {
         const look = drawnBars.get(bar)?.spec.live?.look;
-        return look ? { bus: look.bus, next: look.next, said: { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) } } : null;
+        return look ? { bus: look.bus, next: look.next, said: Live.saidOf(look) } : null;
       },
       seat: (bar, role) => {
         const { trip } = drawnBars.get(bar).spec;

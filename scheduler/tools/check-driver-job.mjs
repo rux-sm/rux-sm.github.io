@@ -40,6 +40,19 @@ expect('the leg as the driver works it', [l.role, l.bus, l.time, l.place.name, l
   ['driver', '763', '06:30', 'Lone Oak HS', 'Austin, TX', ['Sleeper berth'], 'Ana', 'Pat Lee']);
 expect('a driver on no bus of the leg is told it is not theirs', legOf(ref, trip, 'd9'), { error: 'notYours' });
 
+// A co-driver on bus 763 who also rides 470, where Raul drives.
+const shared = { ...trip, trip_assignments: [
+  { id: 'a1', leg: 'outbound', active_roles: null, buses: { number: 763 }, trip_drivers: [
+    { driver_id: 'd1', role: 'driver', drivers: { short_name: 'Rigo' } },
+    { driver_id: 'd2', role: 'co-driver', also_on: ['a2'], drivers: { short_name: 'Ana' } }] },
+  { id: 'a2', leg: 'outbound', active_roles: ['driver'], buses: { number: 470 }, trip_drivers: [
+    { driver_id: 'd3', role: 'driver', drivers: { short_name: 'Raul' } }] }] };
+const ana = legOf(ref, shared, 'd2');
+const raul = legOf(ref, shared, 'd3');
+expect('a co-driver who also rides another bus has both buses and both drivers',
+  [ana.bus, ana.crew.map(b => [b.bus, b.mine, b.people.map(p => p.name)])], ['763 · 470', [['763', true, ['Rigo']], ['470', true, ['Raul']]]]);
+expect('and the driver of a bus they ride has them aboard', raul.crew.find(b => b.mine).people.map(p => p.name), ['Ana']);
+
 // A split trip whose customer sent each day its own paper and contacts,
 // read with its legs as the driver's link reads it: each leg named by its
 // id, with its route, its contacts in trip_contacts and its files by leg_id.

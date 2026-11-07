@@ -209,7 +209,7 @@
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
+    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,also_on,envelope_printed,report_time,instructions))',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 
   // What the rules are handed from a read's buses, drivers, statuses and what is around.

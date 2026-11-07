@@ -242,28 +242,55 @@ const window = {};
   const partnerDriverOf = (assign, partner) => (assign?.partner_driver_id != null
     ? partner?.drivers?.find(d => String(d.id) === String(assign.partner_driver_id)) ?? null : null);
 
+  /* A CO-DRIVER ALSO ON OTHER BUSES moves between the leg's buses, giving
+     each driver a break. Their one row sits on the bus they start in and
+     lists the leg's other buses they ride in `also_on`, which the database
+     keeps to the same trip and leg, so they are paid, papered, told and
+     confirmed once, on that row. `ridersOf` is the co-driver rows on the
+     trip's other buses that ride `assign`, each as { d, from }, the row and
+     the bus it sits on. A bus ridden has no co-driver of its own. */
+  const alsoOnOf = d => (d?.role === 'co-driver' && Array.isArray(d.also_on) ? d.also_on.map(String) : []);
+  const ridersOf = (trip, assign) => (assign?.id == null ? [] : (trip.trip_assignments || [])
+    .filter(a => String(a.id) !== String(assign.id))
+    .flatMap(a => (a.trip_drivers || [])
+      .filter(d => d.driver_id && alsoOnOf(d).includes(String(assign.id)))
+      .map(d => ({ d, from: a }))));
+  // The buses a row's driver may be in: their own and every one they also ride.
+  const busesOfRow = (trip, assign, d) => [assign.bus_id, ...alsoOnOf(d)
+    .map(id => (trip.trip_assignments || []).find(a => String(a.id) === id)?.bus_id)].filter(id => id != null);
+
   /* An assignment's crew in role order: each driver in a role that is on, with
      their status, and each role that is on with nobody in it. Each carries
-     its leg's key in `legKey` and the old word in `leg`. A covered vehicle
-     has none, so it never shows a seat open. */
-  function crewOf(trip, assign, driversById, statuses) {
+     its leg's key in `legKey`, the old word in `leg`, and `buses`, the bus ids
+     the driver may be in. A covered vehicle has none, so it never shows a
+     seat open. A co-driver riding the bus from another fills its co-driver
+     seat, so that seat is never open; with `riders`, for what draws a bus,
+     they are in the crew too, with `rides`, the bus their row sits on, which
+     anything that counts or acts on a row passes over, since the row is
+     counted on that bus. */
+  function crewOf(trip, assign, driversById, statuses, { riders = false } = {}) {
     if (isCovered(assign)) return [];
     const on = activeRolesOf(assign);
     const leg = assign.leg || 'outbound';
     const legKey = window.SchedulerWeek?.legKeyOfVehicle(trip, assign) ?? leg;
+    const riding = ridersOf(trip, assign);
+    const seatOf = (r, d, rides = null) => {
+      const row = statuses?.get(statusKey(trip.id, d.driver_id, legKey, r.role)) ?? null;
+      const value = row ? row.status : (rides ? activeRolesOf(rides) : on).get(r.role);
+      return {
+        ...r, leg, legKey, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
+        status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
+        buses: busesOfRow(trip, rides ?? assign, d), ...(rides ? { rides } : {}),
+      };
+    };
     const crew = [];
     for (const r of ROLES) {
+      const rides = r.role === 'co-driver' ? riding : [];
+      if (riders) crew.push(...rides.map(({ d, from }) => seatOf(r, d, from)));
       if (!on.has(r.role)) continue;
       const filled = (assign.trip_drivers || []).filter(d => d.driver_id && (d.role || 'driver') === r.role);
-      for (const d of filled) {
-        const row = statuses?.get(statusKey(trip.id, d.driver_id, legKey, r.role)) ?? null;
-        const value = row ? row.status : on.get(r.role);
-        crew.push({
-          ...r, leg, legKey, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
-          status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
-        });
-      }
-      if (!filled.length) crew.push({ ...r, leg, legKey, needed: true });
+      crew.push(...filled.map(d => seatOf(r, d)));
+      if (!filled.length && !rides.length) crew.push({ ...r, leg, legKey, needed: true });
     }
     return crew;
   }
@@ -486,7 +513,7 @@ const window = {};
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, alsoOnOf, ridersOf, busesOfRow, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
   };
 })();
@@ -1827,28 +1854,36 @@ const window = {};
     if (!mine) return { error: 'notYours' };
     const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
     const role = seat.role || 'driver';
+    /* A co-driver who moves between the leg's buses rides the ones their
+       seat lists as well, and each of those buses has them aboard. */
+    const alsoOn = d => (d.role === 'co-driver' && Array.isArray(d.also_on) ? d.also_on.map(String) : []);
+    const rides = assignments.filter(a => alsoOn(seat).includes(String(a.id)));
+    const aboard = a => [...activeSeats(a), ...assignments.filter(b => b !== a).flatMap(b => activeSeats(b))
+      .filter(d => alsoOn(d).includes(String(a.id)))];
+    const numberOf = a => (a.buses?.number != null ? String(a.buses.number) : '');
     const inbound = SHAPE.isPickup(trip, shaped?.id);
     const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
     const start = shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date;
     const end = shaped ? shaped.end : inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date);
-    const crew = assignments.map(a => ({
-      bus: a.buses?.number != null ? String(a.buses.number) : '',
-      mine: a === mine,
-      people: activeSeats(a).filter(d => String(d.driver_id) !== String(driverId)).map(d => ({
+    // Their own bus first, then each they ride, then the leg's others.
+    const crew = [mine, ...rides, ...assignments.filter(a => a !== mine && !rides.includes(a))].map(a => ({
+      bus: numberOf(a),
+      mine: a === mine || rides.includes(a),
+      people: aboard(a).filter(d => String(d.driver_id) !== String(driverId)).map(d => ({
         name: d.drivers?.short_name || d.drivers?.name || '',
         role: roleKey(d.role),
         phone: clean(d.drivers?.phone),
       })),
-    })).filter(b => b.people.length).sort((a, b) => (a.mine ? -1 : b.mine ? 1 : 0));
+    })).filter(b => b.people.length);
     return {
       trip, leg, word, role, start, end,
       destination: inbound ? (back.name || back.address || 'Yard') : (trip.destination || 'Destination'),
       // Which of the two the page wrote, where the office named no place.
       destinationWord: inbound ? (back.name || back.address ? null : 'yard') : (trip.destination ? null : 'destination'),
       customer: clean(trip.customer),
-      bus: mine.buses?.number != null ? String(mine.buses.number) : '',
+      bus: [mine, ...rides].map(numberOf).filter(Boolean).join(' · '),
       time: isRelief(role) ? (seat.report_time || pickup.spot || trip.spot_time) : (pickup.spot || trip.spot_time),
       place: { name: clean(pickup.name), address: clean(pickup.address) },
       stops,
@@ -2595,7 +2630,7 @@ const window = {};
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
+    'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,also_on,envelope_printed,report_time,instructions))',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 
   // What the rules are handed from a read's buses, drivers, statuses and what is around.
@@ -2875,7 +2910,16 @@ const window = {};
           ...(driver ? [line('partner-driver', 'done', 'Driver', { value: driver })] : []),
         ] });
     }
-    for (const c of Facts.crewOf(trip, assign, driversById, statuses)) {
+    for (const c of Facts.crewOf(trip, assign, driversById, statuses, { riders: true })) {
+      /* A co-driver riding this bus from another is named here, and their
+         lines are on the bus their row is on, so each step is done once. */
+      if (c.rides) {
+        const from = c.rides.bus_id != null ? busesById.get(c.rides.bus_id)?.number : null;
+        crew.push({ key: `${assign.id}:rides:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
+          role: c.label, partTime: false, seat: null, driverId: c.driverId,
+          lines: [line('rides', 'done', from ? `Rides from bus ${from}` : 'Rides from another bus')] });
+        continue;
+      }
       if (c.needed) {
         crew.push({ key: `${assign.id}:${c.role}`, name: null, role: c.label, partTime: false, seat: null,
           lines: [line('seat', 'warn', `${c.label} needed`)] });
@@ -2969,7 +3013,7 @@ const window = {};
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,also_on,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the to-do rules read for a trip read here.

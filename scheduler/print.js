@@ -396,7 +396,15 @@
     const frag = document.createDocumentFragment();
     const seats = seatsOf(assignment);
     const driver = seats.find(s => (s.role || 'driver') === 'driver');
-    const relief = seats.find(s => isRelief(s.role)) || seats.find(s => s.role === 'co-driver');
+    /* A co-driver who moves between the leg's buses has one envelope, on
+       their own bus, naming each bus they also ride; a bus they ride names
+       them as its co-driver. */
+    const others = trip?.trip_assignments || [];
+    const rider = others.flatMap(a => a.trip_drivers || [])
+      .find(d => d.role === 'co-driver' && (d.also_on || []).map(String).includes(String(assignment?.id))) ?? null;
+    const relief = seats.find(s => isRelief(s.role)) || seats.find(s => s.role === 'co-driver') || rider;
+    const also = (seat?.role === 'co-driver' ? seat.also_on || [] : [])
+      .map(id => unitNumber(others.find(a => String(a.id) === String(id))?.buses)).filter(Boolean);
 
     const mine = seat && (seat.role || 'driver') !== 'driver'
       ? { label: roleName(seat.role), name: nameOf(seat) }
@@ -406,7 +414,7 @@
       : { label: roleName(relief?.role || 'co-driver'), name: nameOf(relief) };
 
     frag.appendChild(row(
-      cell(unitWord(assignment.buses?.type), unitNumber(assignment.buses)),
+      cell(unitWord(assignment.buses?.type), [unitNumber(assignment.buses), ...also].filter(Boolean).join(' · ')),
       cell(mine.label, mine.name),
       cell(other.label, other.name),
     ));
@@ -2668,7 +2676,7 @@
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'route_id', 'position', 'bus_id', 'fuel_card_number',
     'buses:bus_id(number,type)', 'partner_id', 'partner:partner_id(name)',
-    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,drivers:driver_id(name,short_name,employment_type))',
+    'trip_drivers(id,driver_id,role,also_on,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,drivers:driver_id(name,short_name,employment_type))',
   ].join(',');
 
   /* Outbound before return, then along the trip: the order the hub lists a
@@ -2695,6 +2703,8 @@
       'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
       'trip_contacts(id,position,leg_id,contact_id,name,phone)',
       'trip_stops(id,leg,route_id,position,type,address,spot)',
+      // The trip's buses, for a co-driver who moves between them: the ones they ride, and who rides this one.
+      'trip_assignments(id,buses:bus_id(number,type),trip_drivers(role,also_on,drivers:driver_id(name,short_name)))',
       ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
     ].join(',') + ')',
   ].join(',');

@@ -178,7 +178,16 @@
           ...(driver ? [line('partner-driver', 'done', 'Driver', { value: driver })] : []),
         ] });
     }
-    for (const c of Facts.crewOf(trip, assign, driversById, statuses)) {
+    for (const c of Facts.crewOf(trip, assign, driversById, statuses, { riders: true })) {
+      /* A co-driver riding this bus from another is named here, and their
+         lines are on the bus their row is on, so each step is done once. */
+      if (c.rides) {
+        const from = c.rides.bus_id != null ? busesById.get(c.rides.bus_id)?.number : null;
+        crew.push({ key: `${assign.id}:rides:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
+          role: c.label, partTime: false, seat: null, driverId: c.driverId,
+          lines: [line('rides', 'done', from ? `Rides from bus ${from}` : 'Rides from another bus')] });
+        continue;
+      }
       if (c.needed) {
         crew.push({ key: `${assign.id}:${c.role}`, name: null, role: c.label, partTime: false, seat: null,
           lines: [line('seat', 'warn', `${c.label} needed`)] });
@@ -272,7 +281,7 @@
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,also_on,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the to-do rules read for a trip read here.

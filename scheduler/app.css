@@ -2754,6 +2754,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-crew--away > .scheduler-crew__name,
 .scheduler-crew__away { color: var(--scheduler-age-old); font-weight: 600; }
 .scheduler-crew__away { flex: none; }
+/* A co-driver in another of the buses they ride: that bus in the row's ink. */
+.scheduler-crew--riding > .scheduler-crew__away { color: inherit; font-weight: inherit; }
 /* A driver at the wheel the bar does not name, a seat in the drivers row,
    first as the one at the wheel always is. Beside it the bar's own drivers
    take an equal share each, so neither name is cut for the other's room. */
@@ -6308,19 +6310,24 @@ html[data-scheduler-takeover] {
   min-inline-size: 0;
 }
 .scheduler-fleet-seat__nobody { flex: none; color: var(--rux-icon-secondary); }
+/* The name and its seat share the line beside the mark, the seat cut short
+   first, so a long seat never moves the name under the mark. */
 .scheduler-fleet-seat__who {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   align-items: baseline;
   gap: var(--rux-spacing-03);
   min-inline-size: 0;
 }
-.scheduler-fleet-seat__name {
+.scheduler-fleet-seat__name,
+.scheduler-fleet-seat__role {
+  flex: 0 1 auto;
+  min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.scheduler-fleet-seat__role { white-space: nowrap; }
+.scheduler-fleet-seat__role { flex-shrink: 100; }
 /* A seat's warning takes the line under the driver, set in to the name, so a
    long one never squeezes the name. */
 .scheduler-fleet-seat > .scheduler-fleet-warn {

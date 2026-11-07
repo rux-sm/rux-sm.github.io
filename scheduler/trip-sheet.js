@@ -162,7 +162,7 @@
       seat.append(el('span', null, partner.name));
       return [seat];
     }
-    return (assign ? crewOf(trip, assign, board.driversById, board.statuses) : []).map(c => {
+    return (assign ? crewOf(trip, assign, board.driversById, board.statuses, { riders: true }) : []).map(c => {
       const seat = el('span', 'scheduler-sheet__seat');
       const glyph = Bar.crewGlyph(c, due, done);
       if (glyph) seat.append(Bar.glyphEl(glyph));

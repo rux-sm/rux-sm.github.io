@@ -64,6 +64,12 @@ expect('it names the driver and the other bus, for the crew\'s mark',
   warningsOf(look({ bus: lena, others: [in746] })).map(w => [w.driver, w.bus]), [['d1', '746']]);
 expect('the driver in this bus as well says nothing', kinds(look({ bus: bus(), others: [in746] })), []);
 expect('before the ten minutes ahead of yard-out says nothing', kinds(look({ bus: lena, others: [in746], now: at('13:00') })), []);
+const rides = new Map([['d1', ['b218', 'b746']]]);
+expect('a co-driver in another bus they ride is not the wrong bus, and is said to be in it',
+  [kinds(look({ bus: lena, others: [in746], buses: rides })), window.SchedulerLiveTrip.ridingOf(look({ bus: lena, others: [in746], buses: rides }))],
+  [[], [{ driver: 'd1', bus: '746' }]]);
+expect('in a bus they do not ride, they still are', [kinds(look({ bus: lena, others: [in746], buses: new Map([['d1', ['b218', 'b119']]]) })),
+  window.SchedulerLiveTrip.ridingOf(look({ bus: lena, others: [in746], buses: new Map([['d1', ['b218', 'b119']]]) }))], [['wrongBus'], []]);
 
 console.log('\n  Late to spot');
 const late = ahead({ arrival: at('15:19'), late: 19 });

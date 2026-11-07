@@ -13,22 +13,27 @@
        off, or once yard-out has passed the bus is still at the yard, before
        it has reached any stop.
      wrongBus, red: from the same ten minutes, a driver the bar names whom
-       Samsara has logged into another bus; it also carries `driver`, that
-       driver's id, and `bus`, the other bus's number, for the crew's mark.
+       Samsara has logged into another bus, not one of the leg's buses a
+       co-driver also rides; it also carries `driver`, that driver's id, and
+       `bus`, the other bus's number, for the crew's mark.
      lateToSpot, amber: the next stop is the pickup and the bus gets there
        more than road.js's LATE_MIN after its spot.
      shortOnHours, amber: the driving hours left in the bus, every driver's
        added, do not cover the drive still planned before the next rest.
    `phaseOf(look)` says where the bus is when nothing is wrong: At a stop, To
-   the next one with when it gets there, or To the yard.
+   the next one with when it gets there, or To the yard. `ridingOf(look)` is
+   each driver the bar names whom Samsara has in another bus they ride, as
+   { driver, bus }, the bus's number, which the crew says quietly; `saidOf`
+   is all three, as a bar is handed them.
    `watching(bus, span, now)` is whether a bar whose bus Samsara knows counts
    as out from ten minutes before its yard-out whatever the engine does, so
    Not rolling has a line to stand on; road.js's isOut asks a running engine
    before yard-out.
 
-   `look` is { bus, others, named, numberOf, yard, yardOut, next, drives,
-   now }: samsara-now's bus and every bus in its answer, the driver ids the
-   bar names, a bus's number by its id, the yard's point [lat, lng], the
+   `look` is { bus, others, named, buses, numberOf, yard, yardOut, next,
+   drives, now }: samsara-now's bus and every bus in its answer, the driver
+   ids the bar names, the bus ids each may be in by driver id, leg-facts.js's
+   `buses`, a bus's number by its id, the yard's point [lat, lng], the
    leg's yard-out as an instant, the board's reading of where the bus is on
    its leg (road.js's stops with `where`, `stop`, `at`, `arrival` and
    `late`, or null while the board has no path for the bus, which keeps Not
@@ -77,13 +82,21 @@
     };
   }
 
-  function wrongBus({ bus, others = [], named = [], numberOf = () => null, yardOut, now }) {
+  // The bus other than this one Samsara has a driver in, and whether they may be in it.
+  const elsewhere = ({ bus, others = [], buses }, id) => {
+    const other = others.find(b => b.bus_id !== bus.bus_id && b.drivers.some(d => d.driver_id === id)) ?? null;
+    const theirs = (buses?.get(id) ?? []).map(String);
+    return other ? { other, rides: theirs.includes(String(other.bus_id)) } : null;
+  };
+
+  function wrongBus(look) {
+    const { bus, named = [], numberOf = () => null, yardOut, now } = look;
     if (!bus || !due(yardOut, now)) return null;
     const inBus = new Set(bus.drivers.map(d => d.driver_id).filter(Boolean));
     for (const id of named) {
       if (!id || inBus.has(id)) continue;
-      const other = others.find(b => b.bus_id !== bus.bus_id && b.drivers.some(d => d.driver_id === id));
-      if (!other) continue;
+      const { other, rides } = elsewhere(look, id) ?? {};
+      if (!other || rides) continue;
       const d = other.drivers.find(x => x.driver_id === id);
       const number = numberOf(other.bus_id) ?? 'another bus';
       return {
@@ -150,5 +163,18 @@
     return { title: `To ${name(next.stop)}`, detail: next.arrival != null ? `~${clock(next.arrival)}` : '' };
   }
 
-  window.SchedulerLiveTrip = { BEFORE_MS, clock, hours, watching, warningsOf, phaseOf };
+  function ridingOf(look) {
+    const { bus, named = [], numberOf = () => null } = look;
+    if (!bus) return [];
+    const inBus = new Set(bus.drivers.map(d => d.driver_id).filter(Boolean));
+    return named.filter(id => id && !inBus.has(id)).flatMap(id => {
+      const { other, rides } = elsewhere(look, id) ?? {};
+      return other && rides ? [{ driver: id, bus: numberOf(other.bus_id) ?? 'another bus' }] : [];
+    });
+  }
+
+  // All a bar says of its bus, as road-bar.js draws it.
+  const saidOf = look => ({ warnings: warningsOf(look), phase: phaseOf(look), riding: ridingOf(look) });
+
+  window.SchedulerLiveTrip = { BEFORE_MS, clock, hours, watching, warningsOf, phaseOf, ridingOf, saidOf };
 })();

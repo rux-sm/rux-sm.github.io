@@ -157,10 +157,12 @@
   };
   /* Each seat has a solid duty icon, its name and a labeled time. Availability
      comes from Samsara's clocks; an off-duty or sleeper seat also shows a
-     separate rest track, with a dash when its duty logs cannot be read. */
-  function crewOn(item, d, elsewhere) {
+     separate rest track, with a dash when its duty logs cannot be read. A
+     co-driver in another of the buses they ride, `riding`, keeps their
+     status mark and says that bus on an empty meter, in the row's ink. */
+  function crewOn(item, d, elsewhere, riding = null) {
     for (const part of ['duty', 'hours', 'away', 'left', 'rest', 'rest-time']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
-    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
+    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--riding', 'scheduler-crew--seat');
     item.style.removeProperty('--scheduler-seat-fill');
     item.removeAttribute('data-fill-short');
     delete item.dataset.duty;
@@ -185,6 +187,16 @@
       item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`), leftBar(null, true));
       item.style.setProperty('--scheduler-seat-fill', '100%');
       item.title = `Samsara: ${elsewhere.sentence}`;
+      return;
+    }
+    if (riding) {
+      item.dataset.duty = 'riding';
+      item.classList.add('scheduler-crew--riding', 'scheduler-crew--seat');
+      const meter = el('span', 'scheduler-crew__left');
+      meter.style.setProperty('--scheduler-left', '0%');
+      item.append(el('span', 'scheduler-crew__away', `in ${riding.bus}`), meter);
+      item.style.setProperty('--scheduler-seat-fill', '0%');
+      item.title = `Samsara: in ${riding.bus}, another bus they ride on this trip`;
       return;
     }
     if (!d) return;
@@ -287,7 +299,7 @@
     const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
     const key = bus ? JSON.stringify([bus.engine, bus.engine_at && ago(bus.engine_at), bus.mph, bus.heading, bus.place,
       bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
-      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase,
+      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase, said.riding,
       overBy(bar, Date.now()), bus.drivers.some(resting) ? Math.floor(Date.now() / 60e3) : null]) : '';
     // The day the rows stand on, counted from the bar's first: today while out.
     if (bus && live.day > 0) bar.style.setProperty('--scheduler-today', live.day);
@@ -317,7 +329,8 @@
     const away = said?.warnings.find(w => w.kind === 'wrongBus') ?? null;
     for (const item of crew) {
       const id = item.dataset.driverId;
-      crewOn(item, bus?.drivers.find(d => d.driver_id && d.driver_id === id) ?? null, away && away.driver === id ? away : null);
+      crewOn(item, bus?.drivers.find(d => d.driver_id && d.driver_id === id) ?? null, away && away.driver === id ? away : null,
+        said?.riding?.find(r => r.driver === id) ?? null);
     }
     wheelOn(bar, bus, named);
     liveOpener(bar, bus);

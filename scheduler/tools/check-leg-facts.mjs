@@ -58,5 +58,26 @@ expect('each partner not confirmed and each with no price is named',
 expect('a partner the page did not read is still named as a partner',
   factsOf(coveredTrip, 'outbound', { busesById: buses }).partnersUnconfirmed, ['A partner']);
 
+// A leg of three buses and one co-driver, seated on the first and also on the other two.
+const sharedTrip = { start_date: '2026-11-20', end_date: '2026-11-20', bus_count: 3, trip_type: 'round_trip',
+  trip_assignments: [
+    { id: 's1', leg: 'outbound', bus_id: 'b56', active_roles: ['driver', 'co-driver'], trip_drivers: [
+      { driver_id: 'd1', role: 'driver', pay: 300 }, { driver_id: 'd9', role: 'co-driver', pay: null, also_on: ['s2', 's3'] }] },
+    { id: 's2', leg: 'outbound', bus_id: 'b36', active_roles: ['driver'], trip_drivers: [{ driver_id: 'd2', role: 'driver', pay: 300 }] },
+    { id: 's3', leg: 'outbound', bus_id: 'bx', active_roles: ['driver', 'co-driver'], trip_drivers: [{ driver_id: 'd3', role: 'driver', pay: 300 }] }] };
+const seatsOn = (i, opts) => crewOf(sharedTrip, sharedTrip.trip_assignments[i], new Map(), null, opts)
+  .map(c => [c.role, c.driverId ?? null, c.rides?.id ?? null, !!c.needed]);
+expect('a bus the co-driver rides draws them in its co-driver seat, from the bus their row is on',
+  seatsOn(1, { riders: true }), [['driver', 'd2', null, false], ['co-driver', 'd9', 's1', false]]);
+expect('and anything that counts rows does not see them there', seatsOn(1), [['driver', 'd2', null, false]]);
+expect('a ridden bus with its co-driver seat still on shows no seat open', seatsOn(2), [['driver', 'd3', null, false]]);
+expect('the co-driver may be in any bus they ride, from their own seat or a ridden one',
+  [crewOf(sharedTrip, sharedTrip.trip_assignments[0], new Map()).find(c => c.driverId === 'd9').buses,
+    crewOf(sharedTrip, sharedTrip.trip_assignments[2], new Map(), null, { riders: true }).find(c => c.driverId === 'd9').buses],
+  [['b56', 'b36', 'bx'], ['b56', 'b36', 'bx']]);
+const shared = factsOf(sharedTrip, 'outbound', { busesById: buses });
+expect('the leg counts the co-driver once: one seat, one pay to set, one envelope',
+  [shared.seats, shared.seatsOpen, shared.payLeft, shared.envelopesLeft], [4, 0, 1, 4]);
+
 console.log(failed ? `\n  ${failed} fault(s) in leg facts` : '\n  leg facts: every case passed');
 process.exit(failed ? 1 : 0);

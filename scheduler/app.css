@@ -89,6 +89,9 @@
   /* Compact 14px times need an 18px row. Whole-pixel snapping below keeps
      stacked bars and their gaps aligned when a theme changes the type scale. */
   --scheduler-row-h: calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height));
+  /* Carbon's label-01 line, 12px at 1.33333, which is 15.99996px until the
+     snapping below makes it 16. */
+  --scheduler-label-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
   /* THE GLYPH INSIDE A MARK, one number for the bar's marks and its crew. The
      box around it is a row high whatever this is, so it changes the ink and
      not the row.
@@ -140,7 +143,10 @@
   border-end-end-radius: var(--scheduler-inner-radius);
 }
 @supports (block-size: round(1px, 1px)) {
-  .scheduler-week { --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px); }
+  .scheduler-week {
+    --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px);
+    --scheduler-label-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px);
+  }
 }
 /* The board is the Scheduler's frame, overrides.css's 82rem, which seven of
    the strip's days fill, so a panel opening beside the week leaves fewer of
@@ -770,7 +776,9 @@ button.scheduler-row-head__num:focus { outline: none; }
    first line, and one is the first line alone. A phone's board keeps the narrow
    column above, so the parts only the tile shows are drawn here alone. */
 .scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__lamp) { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: 6rem; }
+/* The tile's surface is Carbon's 96px, an even width its parts centre in on
+   whole pixels, and the column's 1px rule stands beside it. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: calc(var(--rux-spacing-12) + 1px); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
   display: flex;
   flex-direction: column;
@@ -826,27 +834,30 @@ button.scheduler-row-head__num:focus { outline: none; }
    16px semibold, the number leading by standing first. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__num { font-size: var(--rux-heading-compact-02-font-size); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: var(--rux-heading-compact-02-line-height); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
 /* The fuel's row is its meter's 4px, between a fuel gauge's E and F,
    whose label-01 lines hang centred on it, so the state over it keeps its
    place. They stay the secondary ink in every level: the meter alone takes
    the tank's colour. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; block-size: var(--rux-spacing-02); gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; block-size: var(--rux-spacing-02); gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { flex: 1; }
 /* The fuel is its meter across the square in every level, its percent the
    tip's: a low tank's meter, short by E and in the tank's colour, says it
    without the row changing shape. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-end { display: inline; flex: none; color: var(--rux-text-secondary); font-weight: 400; }
+/* E and F each stand in a box a whole pixel wider than its letter, F at
+   its box's end, so the meter between them starts and ends on whole pixels. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-end { display: inline; flex: none; inline-size: round(up, 1ch, 1px); color: var(--rux-text-secondary); font-weight: 400; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter + .scheduler-row-head__fuel-end { text-align: end; }
 /* The meter is Carbon's small progress bar: 4px, square, on the subtle
    border's track for the square's layer, the second, which a theme that
    sets its own track keeps. */
 :where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 4px; border-radius: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip {
   display: flex;
@@ -862,12 +873,30 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { padding: 0; background: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head .scheduler-row-head__dial { display: flex; }
 /* The number on one line, cut short with an ellipsis, a long one such as a
    sold bus's in its title. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .rux--popover-container { min-inline-size: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll button.scheduler-row-head__num { display: block; max-inline-size: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* The first line's drawing, gap and number add to an even width, the
+   number's own rounded up to an even pixel, so the line centres on whole
+   pixels whatever the digits measure. */
+@supports (inline-size: calc-size(fit-content, round(up, size, 2px))) {
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll button.scheduler-row-head__num { inline-size: calc-size(fit-content, round(up, size, 2px)); }
+}
+/* THE STATE READS AS ONE: its reading and its word stand 4px apart and the
+   fuel 12px under them, so the word belongs to its reading and not to the
+   fuel. Each line is trimmed to its letters, from the cap height to the
+   baseline, since Carbon's line boxes add air that would push the word
+   away, and its box rounded up to an even pixel, so the stack centres in
+   the square on whole pixels. A browser that cannot trim keeps the lines
+   whole. */
+@supports (text-box: trim-both cap alphabetic) and (block-size: round(up, 1cap, 2px)) {
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__speed { gap: var(--rux-spacing-02); }
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__speed > * { text-box: trim-both cap alphabetic; block-size: round(up, 1cap, 2px); }
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__dial + .scheduler-row-head__level { margin-block-start: var(--rux-spacing-03); }
+}
 
 
 /* The loading skeleton. index.html ships it inside the grid and render()

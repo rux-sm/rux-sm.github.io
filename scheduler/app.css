@@ -576,8 +576,9 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 /* The bus's kit on its own row: two of Carbon's 16px icons 2px apart, its
-   sleeper and its lift, each in one place down the column, in the primary
-   ink where the bus has it and an empty place where it lacks it. Its seats
+   sleeper and its lift, each in one place down the column, in Carbon's
+   secondary icon ink, as the bus's type is, since they inform and ask
+   nothing, where the bus has it and an empty place where it lacks it. Its seats
    are in the number's tip and title, where presses go through to. */
 /* The kit stands in the head's foot, centred, as far above the row's rule as
    it is from the head's sides, so its two outer tiles sit evenly in the
@@ -599,7 +600,7 @@ button.scheduler-row-head__num::after {
   display: grid;
   place-items: center;
   block-size: 16px;
-  color: var(--rux-text-primary);
+  color: var(--rux-icon-secondary);
 }
 .scheduler-row-head__equip svg { display: block; }
 /* THE STATE, quiet as the rest of the head: its reading in 12px semibold
@@ -812,20 +813,23 @@ button.scheduler-row-head__num:focus { outline: none; }
    track. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:not(:has(.scheduler-row-head__level[data-tank="D"])) { padding-block-end: calc(16px + 2 * var(--rux-spacing-03)); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
-  inline-size: 64px;
-  min-block-size: 64px;
+  inline-size: var(--rux-spacing-10);
+  min-block-size: var(--rux-spacing-10);
   margin-block: auto;
   padding: var(--rux-spacing-03);
   background: var(--rux-layer-02);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 4px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: var(--rux-spacing-02); }
 /* The number and the state's reading share Carbon's heading-compact-02,
    16px semibold, the number leading by standing first. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__num { font-size: var(--rux-heading-compact-02-font-size); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: 22px; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: 12px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: var(--rux-heading-compact-02-line-height); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: 12px; }
+/* The fuel's row is its meter's 4px, and a low tank's percent beside it
+   hangs its label-01 line centred on the meter, so the state stands where
+   it does whether or not the percent shows. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; block-size: var(--rux-spacing-02); gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { flex: 1; }
 /* The fuel is its bar across the square, its percent the tip's, until the
    tank is low or critical, when the percent stands beside it in the tank's
@@ -837,8 +841,8 @@ button.scheduler-row-head__num:focus { outline: none; }
 :where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 4px; border-radius: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 12px; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: 16px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip {
   display: flex;
@@ -854,7 +858,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { padding: 0; background: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: 16px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head .scheduler-row-head__dial { display: flex; }
 /* The number on one line, cut short with an ellipsis, a long one such as a
    sold bus's in its title. */

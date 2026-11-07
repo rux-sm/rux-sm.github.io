@@ -1435,7 +1435,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   align-self: center;
   inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
-  border-radius: 50%;
 }
 .scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
 /* THE TRIP'S STRONGEST INK: the theme's own for the bar's colour,
@@ -1452,7 +1451,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    green `.scheduler-tip` mixes for its surface; the warning triangle as the
    alert draws it; and the close-out button, Carbon's Incomplete in the
    status blue, a glyph alone as the alert is. */
-.scheduler-bar__marks { flex: none; display: inline-flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); }
+.scheduler-bar__marks { flex: none; display: inline-flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); overflow: visible; }
 .scheduler-bar__paid {
   color: var(--scheduler-paid, var(--rux-tag-color-green));
   font-size: var(--rux-label-01-font-size);
@@ -1464,7 +1463,6 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar .scheduler-bar__close { display: inline-flex; align-items: center; }
 .scheduler-bar :is(.scheduler-bar__owed, .scheduler-bar__close) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-bar__close > svg { color: var(--rux-status-blue); }
-.scheduler-bar .scheduler-bar__close:focus-visible { outline-offset: 2px; }
 /* The footer spans the trip. */
 .scheduler-bar__update, .scheduler-bar__drivers { background: var(--scheduler-footer); color: var(--scheduler-footer-fg); }
 .scheduler-bar__update, .scheduler-bar__drivers {
@@ -1485,7 +1483,9 @@ button.scheduler-row-head__num:focus { outline: none; }
    reads as every other. */
 .scheduler-bar__dest, .scheduler-bar__time, .scheduler-road__times { font-size: var(--rux-body-compact-01-font-size); }
 .scheduler-bar [data-card-opener] { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
-.scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
+/* Carbon's 2px focus ring, a pixel clear of the icon all round, square:
+   inside the 16px square it would cover the glyph's edge. */
+.scheduler-bar [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: 1px; }
 .scheduler-bar :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
 /* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
    pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
@@ -1502,6 +1502,18 @@ button.scheduler-row-head__num:focus { outline: none; }
    only then. The grow is Carbon's moderate-01 on its productive standard
    curve, a small expansion. */
 .scheduler-bar [data-card-opener] {
+  /* EVERY MARK THAT OPENS A TIP IS ONE BOX: the 16px glyph's own square,
+     centred in its row, square-cornered and never clipping what it holds,
+     so the focus ring and the lift look the same on every one. */
+  display: inline-flex;
+  flex: none;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+  border-radius: 0;
+  overflow: visible;
   padding: 0;
   background: none;
   color: inherit;
@@ -1514,19 +1526,12 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
-.scheduler-bar__alert:focus-visible { outline-offset: 2px; }
 /* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
 .scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--rux-spacing-02);
   padding: 0;
   border-radius: 0;
   background: none;
   color: var(--scheduler-fg);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--scheduler-row-h);
-  block-size: var(--scheduler-row-h);
 }
 .scheduler-bar__alert > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--rux-status-red); }
@@ -2594,7 +2599,7 @@ a.scheduler-tip__go { text-decoration: none; }
   align-items: center;
   justify-content: center;
   inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-row-h);
+  block-size: var(--scheduler-mark-glyph);
 }
 .scheduler-crew__mark svg {
   display: block;

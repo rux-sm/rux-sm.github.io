@@ -10699,12 +10699,10 @@
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
   /* THE RAIL: the drivers' tiles, always beside the board but on a phone's,
-     and the chevron in its head that slides the week out beside them. The
-     browser keeps whether the week was open, as it keeps the view's options. */
+     and the chevron in its head that slides the week out beside them. Every
+     page load starts with the week shut, the tiles alone. */
   const availWeekBtn = document.getElementById('scheduler-avail-week');
-  const RAIL_KEY = 'scheduler.rail';
   let railWeek = false;
-  try { railWeek = localStorage.getItem(RAIL_KEY) === 'week'; } catch { /* no storage: the week starts shut */ }
   // A phone's board has no rail: below md, or a board too narrow for three days.
   const railShown = () => !matchMedia('(max-width: 41.98rem)').matches && pageEl?.getAttribute('data-board') !== 'compact';
   // The pane of the board's two lists, which to-do-list.js shows and hides.
@@ -11667,7 +11665,8 @@
        rows are in priority order, each priority parted from the last by a
        rule, and the priority is on the name's title. */
     const head = el('div', 'scheduler-avail__days');
-    const corner = el('div', 'scheduler-avail__day scheduler-avail__day--head', 'Driver');
+    // Empty, as the board's corner over its buses is: the pane's title names them.
+    const corner = el('div', 'scheduler-avail__day scheduler-avail__day--head');
     head.appendChild(corner);
     for (let i = first; i < first + count; i++) {
       const d = addDays(weekStart, i);
@@ -13272,11 +13271,10 @@
     if (refit) window.Rux?.schedule?.fit?.();
   }
 
-  /* Opens or shuts the rail's week, kept by the browser; `place` false is
-     for `makeRoom`, which is laying the board out already. */
+  /* Opens or shuts the rail's week for this page; `place` false is for
+     `makeRoom`, which is laying the board out already. */
   function setRailWeek(open, { place = true } = {}) {
     railWeek = open;
-    try { localStorage.setItem(RAIL_KEY, open ? 'week' : 'names'); } catch { /* the week is kept for this page alone */ }
     if (place) placeAvailability();
     else dressRail();
   }

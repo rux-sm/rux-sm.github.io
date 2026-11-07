@@ -957,7 +957,7 @@
      live, bus, marks, next }`, `live` their entry in samsara-now's drivers
      or null, `bus` the number of the bus it has them in, `marks` driver-
      head.js's, and `next` their next trip's words or null. */
-  function driverCard({ driver, live, bus, marks = [], next = null }, board) {
+  function driverCard({ driver, live, bus, marks = [], tells = [], next = null }, board) {
     const tip = el('div', 'rux--toggletip-content scheduler-tip scheduler-tip--driver');
     tip.dataset.driverId = driver.id;
     const name = driver.name || driver.short_name || 'Unnamed driver';
@@ -976,10 +976,23 @@
       const rest = restRowOf(live);
       if (rest) tip.appendChild(rest);
     }
-    for (const m of marks) {
-      const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${m.tone}`);
-      row.append(svgUse(m.tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', m.words));
+    const lamp = (tone, words) => {
+      const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
+      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', words));
       tip.appendChild(row);
+      return row;
+    };
+    /* A change to tell is a row a leg, each with Tell at its end, which
+       opens the leg on the board and presses the Contact list's Tell for the
+       driver's seat, asking first as it does; the other marks are words. */
+    for (const m of marks) {
+      if (m.kind !== 'tell' || !tells.length) { lamp(m.tone, m.words); continue; }
+      for (const t of tells) {
+        const tell = footLink('Tell', t.href);
+        tell.dataset.tellLeg = '';
+        tell.setAttribute('aria-label', `Tell ${name} of the change to ${t.words}`);
+        lamp('warning', `Tell of a change: ${t.words}`).appendChild(tell);
+      }
     }
     const day = v => (v ? new Date(`${String(v).slice(0, 10)}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : null);
     const facts = [driver.phone ? showPhone(driver.phone) : null, driver.language ? `Speaks ${({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language}` : null,

@@ -10759,6 +10759,15 @@
     // The mark opens the driver's card as the line does; the card and the line are js/popover.js's.
     const mark = e.target.closest('.scheduler-avail__mark');
     if (mark) { mark.closest('.scheduler-avail__name')?.querySelector('.scheduler-avail__line')?.click(); return; }
+    /* The card's Tell is the board's own address, taken here as a Departures
+       line's is, so the leg opens in place and the card shuts. */
+    const tell = e.target.closest('.scheduler-avail__card a[data-tell-leg]');
+    if (tell && !document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href: tell.href }, cancelable: true }))) {
+      e.preventDefault();
+      const line = tell.closest('.scheduler-avail__name')?.querySelector('.scheduler-avail__line[aria-expanded="true"]');
+      line?.click();
+      return;
+    }
     if (e.target.closest('.scheduler-avail__card')) return;
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
     if (name) {
@@ -12039,7 +12048,20 @@
     const live = liveDriverOf(id);
     const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(id)));
     const bus = inBus ? panelIndex.buses?.get(inBus.bus_id)?.number ?? null : null;
-    return { driver, live, bus, marks: DriverHead.marksOf(driver, driverAlertsOf(id)), next: nextTripOf(id) };
+    const alerts = driverAlertsOf(id);
+    return { driver, live, bus, marks: DriverHead.marksOf(driver, alerts), tells: alerts.filter(a => a.kind === 'tell').map(a => tellOf(id, a)), next: nextTripOf(id) };
+  }
+  /* A leg to tell a driver of, as its card offers it: its words, and the
+     board's address for the leg with the Contact list's Tell pressed for the
+     driver's seat, as a Departures line asks for it; with no seat found, the
+     address opens the list. */
+  function tellOf(id, a) {
+    const seat = (a.trip.trip_assignments || []).filter(as => legKeyOfVehicle(a.trip, as) === a.leg)
+      .flatMap(as => as.trip_drivers || []).find(d => String(d.driver_id) === String(id));
+    const words = [a.trip.destination || a.trip.trip_ref || 'A trip', a.legName].filter(Boolean).join(', ');
+    const href = `./?trip=${encodeURIComponent(a.trip.id)}&date=${encodeURIComponent(a.day || a.trip.start_date || '')}`
+      + `${a.leg ? `&leg=${encodeURIComponent(a.leg)}` : ''}&open=contacts${seat?.id ? `&press=${encodeURIComponent(seat.id)}` : ''}`;
+    return { words, href };
   }
   // The driver's next trip in the board's range, today's or later: its words and its day.
   function nextTripOf(id) {

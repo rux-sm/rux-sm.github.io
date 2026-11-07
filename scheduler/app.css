@@ -557,6 +557,8 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02);
 }
 .scheduler-tip__lamp > svg { flex: none; }
+/* A lamp's action, such as a driver's card's Tell, at the row's end. */
+.scheduler-tip__lamp > .rux--link { flex: none; margin-inline-start: auto; }
 .scheduler-tip__lamp--warning > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
 .scheduler-tip__lamp--error > svg { color: var(--rux-support-error-inverse); --rux-icon-inner: var(--rux-text-on-color); }
 .scheduler-row-head__num {

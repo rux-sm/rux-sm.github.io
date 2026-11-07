@@ -134,8 +134,6 @@ rest meter.
 
 ## Tasks
 
-- [ ] Give the driver's card Tell beside a changed leg's mark, as the trip
-      editor's Contacts offer it, asking first.
 - [ ] Correct `scheduler/docs/screen-inventory.md` as each lands: the driver
       availability grid, the bar out on its trip and the Assign driver
       menu.

@@ -752,5 +752,19 @@ expect('a driver\'s card: their name over their priority, what they do now and i
     text(card, '.scheduler-tip__next'), [...card.querySelectorAll('.scheduler-tip__foot a')].map(a => a.textContent)],
   ['Rigoberto Soto', 'Priority 2 · Part-time', 'Driving · in 218 · at the wheel', 3, 1, 3, 'Next: Galveston, Sat, Nov 7', ['Call', 'Send trips', 'Open driver']]);
 
+const tellAlerts = [
+  { kind: 'tell', trip: { destination: 'Galveston' }, legName: 'Outbound' },
+  { kind: 'tell', trip: { destination: 'Austin' }, legName: null },
+];
+const told = Tips.driverCard({
+  driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2 }, live: null, bus: null,
+  marks: DriverHead.marksOf({}, tellAlerts, today),
+  tells: [{ words: 'Galveston, Outbound', href: './?trip=t1&open=contacts&press=s1' }, { words: 'Austin', href: './?trip=t2&open=contacts&press=s2' }] },
+  { photo: () => Promise.resolve('') });
+expect('a change to tell is a row a leg on the driver\'s card, each ending in Tell, which asks the board for that leg\'s Contact list pressed for their seat',
+  [[...told.querySelectorAll('.scheduler-tip__lamp')].map(r => r.textContent),
+    [...told.querySelectorAll('a[data-tell-leg]')].map(a => a.href)],
+  [['Tell of a change: Galveston, OutboundTell', 'Tell of a change: AustinTell'], ['./?trip=t1&open=contacts&press=s1', './?trip=t2&open=contacts&press=s2']]);
+
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

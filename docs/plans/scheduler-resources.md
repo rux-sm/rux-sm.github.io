@@ -31,11 +31,14 @@ rest meter.
   8px in from every edge, a stack centred down it, its first line a plain
   icon where a picture will go beside the name, with the worst mark at the
   line's end, so the tile is learnt once.
-- **The rail's tile is the driver's, two lines, 48px rows:** a person's icon,
-  the name and the worst mark, over their tank, the hours left on a meter,
-  green and amber under an hour, or while resting "Off 18h", "SB 3h" on the
-  rest meter toward eight hours in the rest colour the bars use. The words
-  stay the duty log's short ones, "6:21 left", "On 0:36".
+- **The rail's tile is the driver's, 96px wide, two lines in a 48px row:**
+  a person's icon, the name and the worst mark, 10px from the row's top,
+  and under them, 6px down, their words beside a 4px meter, the words' 12px
+  line hung on the meter as the bus tile's E and F are: driving, the hours
+  left, "6:21", on a meter green and amber under an hour; on duty, "On
+  0:36"; resting, "Off 18h" or "SB 3h" on the rest meter toward eight hours
+  in the rest colour the bars use; with no clock, a dash over a dashed empty
+  meter. A 7-letter name fits; a longer one ends in "…".
 - **The driver's card is the driver's full tile:** the bus tile's rows for a
   driver, what they are doing now and which bus Samsara has them in, the
   hours left, then the rest toward eight hours or the week's cycle, and
@@ -119,14 +122,15 @@ rest meter.
      the drop does.
   It is hidden on the trip open in the editor, as the bar's menu is.
 
+- **The closed rail says who is free for the selected trip:** a green
+  check in the mark's place at the name's end for each driver free on every
+  day of the trip, as the open week draws them a green slot; the mark comes
+  back when the trip is put down. A driver with a red mark, an expired
+  paper, keeps it and gets no check and no slot, since they cannot drive.
+
 ## Questions
 
-- **Does the closed rail say who is free for the selected trip?** With a
-  trip selected, the open week draws a green slot across its days for each
-  driver free for all of them. Closed, a green check beside those drivers'
-  names could say the same, so finding a driver seldom needs the week
-  opened. My pick is yes, the check in the mark's place at the name's end,
-  the mark coming back when the trip is put down.
+- None open.
 
 ## Tasks
 

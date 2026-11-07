@@ -46,8 +46,9 @@ one does not, so it stays that way.
   buttons in its footer split a fraction.
 - [ ] Design's data table: whole-pixel columns and row tops.
 - [ ] Design's tiles and progress bar, which LN Guide, Coins and Pixels show.
-- [ ] Scheduler board: stops and tracks, the road strip, the crew's rest
-  meters and the marks after a driver's name.
+- [ ] Give `scheduler/tools/check-strip.mjs`'s invented trips drivers, stops
+  and two-driver live bars, so its bar check measures the track, the stops
+  and the seats; without them it passes the layout before they were whole.
 - [ ] Scheduler lists, records, forms, chat and print pages.
 - [ ] LN Guide's status icons, Pixels' header menu, Sevens' and Coins'
   buttons.

@@ -1619,13 +1619,22 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar > .scheduler-bar__time,
 .scheduler-bar > .scheduler-bar__time > .scheduler-bar__span { overflow: visible; }
 .scheduler-bar__when { flex: none; }
-.scheduler-bar__span > .scheduler-bar__when:last-child { margin-inline-start: auto; }
+.scheduler-bar__span > .scheduler-bar__when:last-child { margin-inline-start: auto; text-align: end; }
+/* THE TRACK STANDS ON WHOLE PIXELS: the times either side are their figures'
+   width rounded up, the last held to its end, so the track between them
+   starts and ends on whole pixels. Its stops and its fill are rounded below
+   the road's track, after the rules they round. */
+@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
+  :is(.scheduler-bar__when, .scheduler-road__when) { inline-size: calc-size(fit-content, round(up, size, 1px)); }
+}
 .scheduler-bar__track {
   position: relative;
   flex: 1 1 auto;
   min-inline-size: var(--rux-spacing-05);
-  /* A pixel down, to the middle of the figures rather than of their line. */
-  margin-block-start: 1px;
+  /* A pixel down, to the middle of the figures rather than of their line:
+     moved after it is centred, so it stays on whole pixels, where a 1px
+     margin centred it at half of one. */
+  inset-block-start: 1px;
   block-size: var(--scheduler-track);
   border-radius: calc(var(--scheduler-track) / 2);
   font-size: 0;
@@ -2711,7 +2720,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* Never cut short, even first in the row, where a row's first part gives way. */
 .scheduler-bar__row.scheduler-road__times > .scheduler-road__when { flex: none; }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
-.scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
+.scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; text-align: end; }
 /* Running late back: the expected return, or the time past the plan, amber. */
 .scheduler-road__when--late { color: var(--scheduler-age-week); }
 /* The track between out and back: 2px, centred on the figures, filled as
@@ -2721,7 +2730,7 @@ a.scheduler-tip__go { text-decoration: none; }
   position: relative;
   flex: 1 1 auto;
   min-inline-size: var(--rux-spacing-05);
-  margin-block-start: 1px;
+  inset-block-start: 1px;
   block-size: var(--scheduler-track);
   border-radius: calc(var(--scheduler-track) / 2);
   /* Its stops' dots stand past it either side, which a row's parts would clip. */
@@ -2730,17 +2739,24 @@ a.scheduler-tip__go { text-decoration: none; }
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     var(--scheduler-track-base, color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent));
 }
+/* Each stop stands at its time to the nearest pixel, and a track is filled
+   to the nearest pixel, so their edges fall on whole pixels. */
+@supports (inset-inline-start: round(50%, 1px)) {
+  .scheduler-bar__stop { inset-inline-start: round(var(--scheduler-at), 1px); }
+  :is(.scheduler-bar__track, .scheduler-road__track) { background-size: round(var(--scheduler-done, 0%), 1px) 100%; }
+}
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__say--quiet { opacity: .7; }
 
 /* With the time row off, the times go with it. */
 .scheduler-week--no-time .scheduler-road__times { display: none; }
 /* Where the view has turned the update row off, a live bar's drivers keep
-   one row, 3px taller, `--scheduler-road-lift`, so the names stand clear of
-   the hours bars under them; the times row gives up the 3px, and the
-   footer's fill and rule start that much higher. With the update row on, the
-   drivers take its place instead, below. */
-.scheduler-week--no-update:not(.scheduler-week--no-time, .scheduler-week--no-drivers) .scheduler-bar--road { --scheduler-road-lift: 3px; }
+   one row, 4px taller, `--scheduler-road-lift`, so the names stand clear of
+   the hours bars under them; the times row gives up the 4px, an even row
+   its 2px track centres in on whole pixels, and the footer's fill and rule
+   start that much higher. With the update row on, the drivers take its
+   place instead, below. */
+.scheduler-week--no-update:not(.scheduler-week--no-time, .scheduler-week--no-drivers) .scheduler-bar--road { --scheduler-road-lift: var(--rux-spacing-02); }
 .scheduler-bar--road > .scheduler-road__times { block-size: calc(var(--scheduler-row-h) - var(--scheduler-road-lift, 0px)); }
 .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift, 0px)); }
 
@@ -2748,8 +2764,20 @@ a.scheduler-tip__go { text-decoration: none; }
    Multiple drivers keep only their icons, names and meter tracks. */
 .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; align-items: stretch; }
 .scheduler-crew--seat { position: relative; flex: 1 1 0; align-self: stretch; display: flex; align-items: flex-start; gap: var(--rux-spacing-02); line-height: calc(var(--scheduler-row-h) - 3px); min-inline-size: 0; }
+/* Seats share the row in whole pixels: each but the last takes its share
+   rounded down, the last what is left, so their meters and marks start on
+   whole pixels. */
+@supports (flex-basis: round(down, calc(100% / sibling-count()), 1px)) {
+  .scheduler-crew--seat:not(:last-child) { flex: 0 0 round(down, calc((100% - (sibling-count() - 1) * var(--rux-spacing-03)) / sibling-count()), 1px); }
+}
 .scheduler-crew--seat > .scheduler-crew__name { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
+/* A driver's name is its words' width rounded up to a whole pixel, still
+   giving way where the row is short, so the mark and the next driver after
+   it start on whole pixels. */
+@supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
+  .scheduler-crew__name { inline-size: calc-size(fit-content, round(up, size, 1px)); }
+}
 .scheduler-crew--seat:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
 .scheduler-crew--seat > .scheduler-crew__hours { display: block; margin-inline-start: auto; font-size: var(--rux-label-01-font-size); }
 .scheduler-crew--seat:has(> .scheduler-crew__rest-time) > .scheduler-crew__hours { display: none; }

@@ -1523,7 +1523,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar .scheduler-bar__alert { transform-origin: right center; }
-.scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__drivers),
+.scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__update, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
 /* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */

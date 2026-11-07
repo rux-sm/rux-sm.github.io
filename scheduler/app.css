@@ -185,13 +185,21 @@
      trip running on into the days in view. Under the band and at the foot
      a row's own 8px clear space is that edge already. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN 41PX, whatever the window
-     or the panels beside the week, so a change of width shows more of the
-     strip or less and moves no trip. */
-  --scheduler-day-w: 175px;
+  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 97PX, 41px on
+     a compact board, whatever the window or the panels beside the week, so a
+     change of width shows more of the strip or less and moves no trip. */
+  --scheduler-strip-day: 175px;
+  --scheduler-tile-head: calc(var(--rux-spacing-12) + 1px);
+  --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
+  /* THE WEEK'S LEAST WIDTH, counted in days: the tile's bus column and three
+     of the strip's days, with their 4px clear space either side, so it grows
+     with either. data.js closes panels for room beside it, and a board
+     narrower than it is compact. Registered, so it reads back in pixels. */
+  --scheduler-week-min: calc(var(--scheduler-tile-head) + 2 * var(--scheduler-edge) + 3 * var(--scheduler-strip-day));
 }
+@property --scheduler-week-min { syntax: '<length>'; inherits: false; initial-value: 0px; }
 /* A revealed bar stands its row's clear space below the band, where the row
    itself begins for the first lane. */
 .scheduler-week--scroll .scheduler-track > .scheduler-bar:not([data-folded]) {
@@ -787,7 +795,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__lamp) { display: none; }
 /* The tile's surface is Carbon's 96px, an even width its parts centre in on
    whole pixels, and the column's 1px rule stands beside it. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: calc(var(--rux-spacing-12) + 1px); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: var(--scheduler-tile-head); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
   display: flex;
   flex-direction: column;

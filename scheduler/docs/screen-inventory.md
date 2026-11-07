@@ -200,8 +200,8 @@ Three homes, and one rule for choosing.
   they opened, oldest farthest left, except that one opened in place of a panel
   closed for room takes that panel's place and slides in from the left there,
   nothing else moving; the trip editor stands right of it. While
-  the board holds the open panels and the week's minimum, 33rem for one week
-  and 56rem for two, up to two of them show, so with the editor open one list
+  the board holds the open panels and the week's minimum, the bus column and
+  three of its 175px days, 630px, up to two of them show, so with the editor open one list
   stands left of the week. Opening one past either closes the
   oldest, then the next, without a word,
   except one with something typed in it, which asks first and stays on a no.

@@ -61,9 +61,9 @@ rest meter.
   and the rest, so the rail always stands next to the board. The rail is
   counted in the sum `data.js` makes of the week's minimum and the open
   panels, at its closed width and its gap, 7rem, and not in the two
-  panels beside the week. The week's minimum is counted in days, so it
-  grows by the 3.5rem the bus column grew. It is never closed for room, as the editor is
-  not. Where a panel needs room, the rail's open week folds back first, and
+  panels beside the week, and it is never closed for room, as the editor is
+  not. The week's minimum is counted in days, the bus column and three of
+  the strip's days, 630px, so it grows with either. Where a panel needs room, the rail's open week folds back first, and
   only then does the oldest panel close, as now. On a laptop's 77rem board
   the rail, the week and one list fit, or the rail, the week and the
   editor, but not a list and the editor together, which the roster closed
@@ -134,8 +134,6 @@ rest meter.
 
 ## Tasks
 
-- [ ] Count the week's minimum in `data.js` in days, so it grows by the
-      3.5rem the bus column grew, as the decision says; it is still 33rem.
 - [ ] Give the driver's card Tell beside a changed leg's mark, as the trip
       editor's Contacts offer it, asking first.
 - [ ] Move the time off and out-of-service dialogs into one shared file, open

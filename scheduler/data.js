@@ -12770,17 +12770,15 @@
      one of them closes, while the schedule's width is this decision's own
      outcome and reading it back would flip-flop.
 
-     `WEEK_MIN` is 33rem, wide enough to read a week's bars by, which leaves a
-     20rem list and the 22rem editor beside it, gaps and all, on a 77rem board,
-     a laptop's. It stays well over the 19.5rem the tight toolbar is measured
-     to read at in app.css, the week's own floor. `SCHEDULE_FLOOR` is a different question
-     -- whether the board can show three readable days, three of app.css's
-     10rem day floor and the bus column -- and only the compact week asks it. A toolbar under 30rem is one `Today`
-     will not fit in beside its week's months, measured in app.css's terms. */
-  const WEEK_MIN = 33;
+     `weekMin` is app.css's `--scheduler-week-min`, the bus column and three
+     of the strip's days, wide enough to read a week's bars by, which leaves
+     the rail and one list or the editor beside it on a 77rem board, a
+     laptop's. The board itself asks it too: one that cannot show those three
+     days is compact. A toolbar under 30rem is one `Today` will not fit in
+     beside its week's months, measured in app.css's terms. */
   const PANELS_MAX = 2;
-  const SCHEDULE_FLOOR = 33;
   const TOOLBAR_TIGHT = 30;
+  const weekMin = () => (schEl ? toPx(getComputedStyle(schEl).getPropertyValue('--scheduler-week-min')) : 0);
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
   /* The panels open, oldest first. It is kept from what each pass finds open
@@ -12840,7 +12838,7 @@
     if (matchMedia('(max-width: 41.98rem)').matches) return open.length > 1;
     if (open.filter(p => !p.rail).length > PANELS_MAX) return true;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
-    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * remPx() > board;
+    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() > board;
   }
 
   /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
@@ -12979,7 +12977,7 @@
        app.js fits to the pane. It
        asks the board rather than the room, because a panel over the week
        never makes the week itself a different week. */
-    const compact = board < SCHEDULE_FLOOR * rem;
+    const compact = board < weekMin();
     if (compact !== (pageEl.getAttribute('data-board') === 'compact')) {
       if (compact) pageEl.setAttribute('data-board', 'compact');
       else pageEl.removeAttribute('data-board');
@@ -15583,7 +15581,7 @@
     const board = boardEl?.getBoundingClientRect().width ?? 0;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
     const open = panels().filter(p => p.open);
-    const used = open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * rem;
+    const used = open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin();
     const max = Math.max(RESIZE_MIN * rem, Math.min(RESIZE_MAX * rem, viewerWidth() + board - used));
     return { min: RESIZE_MIN * rem, max };
   }

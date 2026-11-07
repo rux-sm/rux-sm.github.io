@@ -36,9 +36,10 @@
   /* The lists' pane, Tasks and Departures, and the Forms and Quote
      calculator panels: Carbon's `rux--side-panel--sm`. */
   --scheduler-list-w: 20rem;
-  /* The driver rail: its tiles alone, 96px as the bus tile is, and with its
-     week open seven 32px days beside them, 20rem in all. */
-  --scheduler-rail-w: var(--rux-spacing-12);
+  /* The driver rail: its tiles alone, 160px, Carbon's spacing 13, room for
+     a name and its status on one line, and with its week open seven 32px
+     days beside them, 24rem in all. */
+  --scheduler-rail-w: var(--rux-spacing-13);
   --scheduler-rail-week-w: calc(var(--scheduler-rail-w) + 7 * var(--rux-layout-size-height-sm));
   /* The document viewer; opened larger it leaves its column for a window
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
@@ -113,7 +114,7 @@
      either side of them, chosen against 4px all round by looking at the
      board, the words clear of the bar's edge without the bar standing
      taller than its lines need. On the Mac's board the bar's height is
-     rounded up to the next 8px below, and its padding is what that leaves
+     rounded up to the next 16px below, and its padding is what that leaves
      either side of its lines, as Carbon fits its 18px line in a control. */
   --scheduler-bar-lines-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h));
   --scheduler-bar-h: calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02));
@@ -128,9 +129,11 @@
      spacing 03: a bar keeps `--scheduler-gap-clear`, 4px, clear of its days'
      edges, and `--scheduler-lane-gap` parts its lanes. A bus's row keeps
      `--scheduler-row-clear`, 8px, above its first lane and below its last,
-     so two buses' bars stand 8px either side of the 1px line between their
-     rows. No rule runs between the days, so `--scheduler-gap`, what a bar's
-     end gives up at a day's edge, is that clear space alone. */
+     the row's 1px line inside the last of those, so two buses' bars stand
+     16px apart across it. On the Mac's board stacked lanes stand as far
+     apart, below, so each lane is one bus row's height. No rule runs between
+     the days, so `--scheduler-gap`, what a bar's end gives up at a day's
+     edge, is that clear space alone. */
   --scheduler-gap-clear: var(--rux-spacing-02);
   --scheduler-gap: var(--scheduler-gap-clear);
   --scheduler-lane-gap: var(--rux-spacing-03);
@@ -154,10 +157,17 @@
     --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px);
     --scheduler-label-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px);
   }
-  /* The Mac's board on Carbon's 8px grid: a bar is a whole number of 8px,
-     so is the row of its lanes and their 8px clear space, in every view. */
-  .scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-bar-h: round(up, calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02)), var(--rux-spacing-03)); }
+  /* The Mac's board on Carbon's 8px grid: a bar is a whole number of 16px,
+     Carbon's spacing 05, so a row of one lane, the bar and its 8px clear
+     space with the row's line inside it, is too, 144px for six lines, and
+     holds a whole number of the driver rail's 48px rows wherever it is a
+     multiple of 48: three at six lines, two at three, one at one. */
+  .scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-bar-h: round(up, calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02)), var(--rux-spacing-05)); }
 }
+/* A lane on the Mac's board is a bus row's height: its lanes stand 16px
+   apart, as two buses' bars do across their line, so a bus with two trips
+   stacked is two rows of the driver rail's grid as one with one trip is. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-lane-gap: calc(2 * var(--scheduler-row-clear)); }
 /* The board is the Scheduler's frame, overrides.css's 82rem, which seven of
    the strip's days fill, so a panel opening beside the week leaves fewer of
    them in view and no edge of the page moves. Fill the window, in the view
@@ -761,10 +771,10 @@ button.scheduler-row-head__num:focus { outline: none; }
      and below the lanes count only while there is a lane. */
   min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (2 * var(--scheduler-row-clear) - var(--scheduler-lane-gap))
     + var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
-  /* The line under the row is added to that, so a row whose line a theme
-     gives up to the board's own edge is that much shorter, and its last
-     bar stands the same 8px from the edge. */
-  box-sizing: content-box;
+  /* The line under the row is inside that height, as a Carbon table row's
+     is, so a row is its lanes and clear space to the pixel and lines up with
+     the driver rail's rows beside it; the last 8px under a bar holds it. */
+  box-sizing: border-box;
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* A finger holding an empty cell opens the cell menu, so the browser's own
      hold gestures, the callout and text selection, are off. Safari reads only
@@ -840,22 +850,25 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
 /* THE SQUARE CENTRES ON WHOLE PIXELS between the number's line and the
    row's foot: the head keeps the same 8px at its foot as under the line, so
-   the square's two auto margins split what is left. A bar's padding is odd
-   with five, three or one lines, which leaves an odd number of pixels to
-   split, so the head takes that one pixel at its foot too, and the square
-   stands a pixel nearer the number than the foot. On an open row only: a
-   shut one stands no taller than its track. */
+   the square's two auto margins split what is left. The row's line is
+   inside the head, so a bar's padding that is even leaves an odd number of
+   pixels to split, and the head takes that one pixel at its foot too, and
+   the square stands a pixel nearer the number than the foot. On an open row
+   only: a shut one stands no taller than its track. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row:not([data-shut]) > .scheduler-row-head,
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) { padding-block-end: var(--rux-spacing-03); }
 @supports (padding: mod(1px, 1px)) {
   .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row:not([data-shut]) > .scheduler-row-head,
-  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) { padding-block-end: calc(var(--rux-spacing-03) + mod(var(--scheduler-bar-pad-block), 2px)); }
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) { padding-block-end: calc(var(--rux-spacing-03) + mod(var(--scheduler-bar-pad-block) + 1px, 2px)); }
 }
 /* With one line the tile is its number alone, and the empty square goes too. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
 /* Room for the foot, on an open row: a shut one stands no taller than its
    track. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:not(:has(.scheduler-row-head__level[data-tank="D"])) { padding-block-end: calc(16px + 2 * var(--rux-spacing-03)); }
+@supports (padding: mod(1px, 1px)) {
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:not(:has(.scheduler-row-head__level[data-tank="D"])) { padding-block-end: calc(16px + 2 * var(--rux-spacing-03) + mod(var(--scheduler-bar-pad-block) + 1px, 2px)); }
+}
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
   inline-size: var(--rux-spacing-10);
   min-block-size: var(--rux-spacing-10);
@@ -3758,17 +3771,11 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__cell--week,
 .scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
 
-/* Two of the rail's rows are one of the board's bus rows: half the bus's
-   bar and the 8px clear above and below it, less the 1px rule each driver's
-   row has, so a six-line board's 136px is two 67px tiles. Under 48px, the
-   room the tile's two lines need on Carbon's 8px grid, a row stays 48px.
-   Their rules stand outside that height, the one under every row and the
-   one over the first of a priority. data.js gives the rail the board's
-   line count, which sets the bar. */
-.scheduler-week--avail {
-  --scheduler-avail-h: max(var(--rux-spacing-09), calc((var(--scheduler-bar-h) + 2 * var(--scheduler-row-clear)) / 2 - 1px));
-  max-block-size: 15rem;
-}
+/* The rail's rows are 48px, Carbon's table row, their lines inside them as
+   a Carbon table row's are: the one under every row and the one over the
+   first of a priority. Three stand beside a six-line board's 144px bus row,
+   which the board's rows are sized for. */
+.scheduler-week--avail { --scheduler-avail-h: var(--rux-spacing-09); max-block-size: 15rem; }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
@@ -3796,7 +3803,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name,
 .scheduler-avail__cell,
 .scheduler-avail__day {
-  box-sizing: content-box;
+  box-sizing: border-box;
   border-block-end: 1px solid var(--rux-border-subtle-01);
   block-size: var(--scheduler-avail-h);
   display: flex;
@@ -3883,21 +3890,20 @@ a.scheduler-tip__go { text-decoration: none; }
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  gap: var(--rux-spacing-01);
+  gap: var(--rux-spacing-02);
   line-height: normal;
   padding-inline: var(--rux-spacing-03);
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* A DRIVER'S TILE, driver-head.js's, 8px in from its sides: the person,
-   the name and the worst mark on the 18px line, and 2px under it their
-   words' 16px line with a 4px meter beside them, centred on it. Where the
-   board shows five or six lines the row has room for a third, and the
-   meter leaves the words for its own line 4px under them, the tile's full
-   width, as the bus tile's fuel stands under its state. The lines are
-   centred in the row on whole pixels, the odd pixel below. The name is a button that picks out the
-   driver's trips; the mark and the line are buttons that open their card,
-   Carbon's ghost fill under the pointer, as a bar's marks are. */
+   the name, the worst mark and at the line's end their words on the 18px
+   line, and 4px under it a 4px meter the tile's full width, as the bus
+   tile's fuel stands under its state. The two are centred in the row above
+   its line on whole pixels, the odd pixel below. The name is a button that
+   picks out the driver's trips; the mark and the words are buttons that
+   open their card, Carbon's ghost fill under the pointer, as a bar's marks
+   are. */
 :is(.scheduler-avail__who, .scheduler-avail__mark, .scheduler-avail__line) {
   padding: 0;
   border: 0;
@@ -3909,7 +3915,7 @@ a.scheduler-tip__go { text-decoration: none; }
   cursor: pointer;
 }
 .scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.scheduler-avail__card { display: block; }
+.scheduler-avail__card { display: block; flex: none; }
 :is(.scheduler-avail__mark, .scheduler-avail__line) { --scheduler-mark-fill: color-mix(in srgb, var(--rux-text-primary) 20%, transparent); }
 @media (hover: hover) {
   :is(.scheduler-avail__mark, .scheduler-avail__line):hover { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
@@ -3918,29 +3924,17 @@ a.scheduler-tip__go { text-decoration: none; }
 :is(.scheduler-avail__mark, .scheduler-avail__line):focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -1px; }
 .scheduler-avail__name:has(.scheduler-avail__line[aria-expanded="true"]) .scheduler-avail__mark { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
-.scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--rux-spacing-01) + var(--scheduler-label-h)); }
-.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__name {
-  --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--scheduler-label-h) + 3 * var(--rux-spacing-02));
-  gap: var(--rux-spacing-02);
-}
-.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__line {
-  flex-direction: column;
-  align-items: stretch;
-  block-size: auto;
-}
-.scheduler-week--avail:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-avail__meter { flex: none; }
+.scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + 2 * var(--rux-spacing-02)); }
 @supports (block-size: round(1px, 1px)) {
   .scheduler-avail__name { justify-content: flex-start; }
-  .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - var(--scheduler-tile-h)) / 2), 1px); }
+  .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-tile-h)) / 2), 1px); }
 }
 .scheduler-avail__icon { flex: none; display: block; color: var(--rux-icon-secondary); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-avail__line {
   display: flex;
   align-items: center;
-  gap: var(--rux-spacing-02);
-  inline-size: 100%;
-  block-size: var(--scheduler-label-h);
+  block-size: var(--scheduler-row-h);
   color: var(--rux-text-secondary);
 }
 .scheduler-avail__line > .scheduler-avail__state { flex: none; overflow: visible; }
@@ -3953,17 +3947,16 @@ a.scheduler-tip__go { text-decoration: none; }
    clock, dashed and empty. */
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
-  flex: 1 1 auto;
-  min-inline-size: 0;
+  flex: none;
   block-size: var(--rux-spacing-02);
   background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
 }
 .scheduler-avail__meter[data-kind="rest"] { --scheduler-meter-ink: var(--scheduler-rest-fill); }
-/* Resting with no trip under way is the driver's own time, in the grey the
-   bus tile's fuel is drawn in while it asks nothing. */
-.scheduler-avail__meter[data-kind="off"] { --scheduler-meter-ink: var(--rux-icon-secondary); }
+/* Resting with no trip under way is the driver's own time, in Carbon's
+   strong border grey, quieter than any meter that says something. */
+.scheduler-avail__meter[data-kind="off"] { --scheduler-meter-ink: var(--rux-border-strong-01); }
 .scheduler-avail__line[data-tone="warning"] > .scheduler-avail__state { color: var(--scheduler-head-low); font-weight: 600; }
-.scheduler-avail__line[data-tone="warning"] > .scheduler-avail__meter { --scheduler-meter-ink: var(--scheduler-head-low); }
+.scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--rux-border-subtle-02) 0 2px, transparent 2px 4px); }
 @supports (inset-inline-start: round(50%, 1px)) {
   .scheduler-avail__meter { background-size: round(var(--scheduler-share, 0%), 1px) 100%; }

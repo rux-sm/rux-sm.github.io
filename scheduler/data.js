@@ -13361,11 +13361,8 @@
     // One for the destination, which never goes, plus whatever is left on;
     // the bus heads lay out their parts by the count, from app.css.
     const barRows = String(1 + VIEW_ROWS.filter(rowShown).length);
-    // The rail too, whose rows are half a bus's and whose tiles fold with it.
-    for (const el of [schEl, availEl]) {
-      el.style.setProperty('--scheduler-bar-rows', barRows);
-      el.dataset.barRows = barRows;
-    }
+    schEl.style.setProperty('--scheduler-bar-rows', barRows);
+    schEl.dataset.barRows = barRows;
     markLeads();
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.

@@ -8,8 +8,10 @@
 // days, lane, classes and words, and the out-of-service marks and stripes.
 // Says too where a bar is drawn twice. Then turns the bar's rows off one by
 // one, six lines to one, as the view menu does, and in each says whether
-// every bar and every open bus row is a whole number of 8px, Carbon's grid,
-// and every box a bus's head or a bar in view paints stands on whole pixels.
+// every bar is a whole number of 16px and every open bus row, its line
+// inside it, of 8px, Carbon's grid, whether every box a bus's head or a bar
+// in view paints stands on whole pixels, and at six lines whether the driver
+// rail's rows are 48px and three of them stand level with a one-lane bus row.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
 import { spawn } from 'node:child_process';
@@ -275,18 +277,36 @@ const VIEWS = `(async () => {
     const v = { lines, bars: [], rows: [], boxes: [], heads: 0, inView: 0, painted: 0, height: null };
     for (const b of sch.querySelectorAll('.scheduler-bar')) {
       const r = b.getBoundingClientRect();
-      if (r.height && r.height % 8) v.bars.push(+r.height.toFixed(2));
+      if (r.height && r.height % 16) v.bars.push(+r.height.toFixed(2));
       if (r.height && inView(r)) { v.inView++; measure(b, 'the bar ' + (b.querySelector('.scheduler-bar__dest')?.textContent ?? '').replace(/\\s+/g, ' ').trim().slice(0, 24), v); }
     }
     for (const head of sch.querySelectorAll('.scheduler-row:not([data-shut]) > .scheduler-row-head')) {
       const box = head.getBoundingClientRect();
       if (!box.height) continue;
       const bus = (head.querySelector('.scheduler-row-head__num')?.textContent ?? '').replace(/\\s+/g, ' ').trim() || 'a head';
-      const h = box.height - parseFloat(getComputedStyle(head).borderBlockEndWidth);
+      const h = box.height;
       v.heads++;
       v.height = v.height === null ? h : Math.min(v.height, h);
       if (h % 8) v.rows.push({ bus, h: +h.toFixed(2) });
       measure(head, bus, v);
+    }
+    /* The rail beside six lines: every row 48px, and a one-lane bus row,
+       144px, three of them, its top level with a driver row's. */
+    if (lines === 6) {
+      const tops = new Set();
+      for (const n of document.querySelectorAll('.scheduler-avail__name')) {
+        const b = n.getBoundingClientRect();
+        if (!b.height) continue;
+        tops.add(b.top);
+        if (b.height !== 48) v.rows.push({ bus: 'a driver', h: b.height });
+      }
+      const first = [...tops].length ? Math.min(...tops) : null;
+      for (const head of sch.querySelectorAll('.scheduler-row:not([data-shut]) > .scheduler-row-head')) {
+        const b = head.getBoundingClientRect();
+        if (first == null || b.height !== 144 || b.top < first || b.top > Math.max(...tops)) continue;
+        if (!tops.has(b.top)) v.rows.push({ bus: 'a bus level with no driver row', h: b.top });
+      }
+      v.rail = tops.size;
     }
     out.push(v);
   }
@@ -375,7 +395,7 @@ async function main() {
     for (const v of views) {
       const bad = [...v.bars.map(h => `a bar ${h}px tall`), ...v.rows.map(r => `${r.bus}'s row ${r.h}px tall`), ...v.boxes.map(x => `${x.bus}: ${x.part} at ${x.box}`)];
       if (bad.length) { fail('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${bad.length} off the grid or off whole pixels`); for (const w of bad.slice(0, 6)) console.log(`          ${w}`); }
-      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the 8px grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels`);
+      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels${v.rail ? `, ${v.rail} driver rows of 48px level with the buses` : ''}`);
     }
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }

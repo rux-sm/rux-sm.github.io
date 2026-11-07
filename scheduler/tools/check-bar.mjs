@@ -718,8 +718,12 @@ expect('a driver\'s line: the time left driving, the duty log\'s word and the ti
     { duty: 'off', left_ms: 10 * H, rest_since: ago(14.2 * 60) }, { duty: 'sleeper', left_ms: 4 * H, rest_since: ago(40) },
     { duty: 'off', rest_since: ago(30 * 60) }, { duty: 'off', rest_since: null }, null]
     .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter?.kind ?? null, st.meter?.share ?? null]; }),
-  [['6:30', 'normal', 'drive', 0.65], ['On 0:36', 'warning', 'drive', 0.06], ['Yard 3:00', 'normal', 'drive', 0.3], ['Off 14h', 'normal', 'rest', 1],
-    ['SB 40m', 'normal', 'rest', 0.08], ['Off 24h+', 'normal', 'rest', 1], ['Off', 'normal', 'rest', 0], ['\u2013', 'quiet', null, null]]);
+  [['6:30', 'normal', 'drive', 0.65], ['On 0:36', 'warning', 'drive', 0.06], ['Yard 3:00', 'normal', 'drive', 0.3], ['Off 14h', 'normal', 'off', 1],
+    ['SB 40m', 'normal', 'off', 0.08], ['Off 24h+', 'normal', 'off', 1], ['Off', 'normal', 'off', 0], ['\u2013', 'quiet', null, null]]);
+expect('a rest is the rest meter only while a trip of theirs is under way; driving keeps the drive meter either way',
+  [[{ duty: 'off', rest_since: ago(5 * 60) }, true], [{ duty: 'sleeper', rest_since: ago(60) }, true], [{ duty: 'off', rest_since: ago(5 * 60) }, false],
+    [{ duty: 'driving', left_ms: 6 * H }, true]].map(([l, on]) => DriverHead.stateOf(l, on).meter.kind),
+  ['rest', 'rest', 'off', 'drive']);
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },

@@ -20,7 +20,10 @@
      driver may drive; on duty, a yard move or personal conveyance, the duty
      log's own short word and the time left, "On 0:36", on the same meter;
      off or in the sleeper berth, the word and the whole hours rested, "Off
-     14h", "SB 3h", on the rest meter toward eight hours. The time left is
+     14h", "SB 3h", on the rest meter toward eight hours, in the rest colour
+     the bars use while they are out on a trip of theirs and resting
+     between its days, and in the secondary grey with no trip under way,
+     where the rest is their own time. The time left is
      the least of the drive, shift and cycle clocks, amber under an hour as
      the driver's tip has it. The full words are the line's label. A driver
      Samsara keeps no clock for has a quiet dash over an empty meter, as a
@@ -29,11 +32,13 @@
    line are buttons, the line the trigger of the driver's card, a Carbon
    toggletip that data.js fills from trip-tips.js's `driverCard`.
 
-   `draw(cell, driver, live, alerts)` draws it, its parts once and their
-   words as they change: `driver` is the driver's row,
-   `live` their entry in samsara-now's `drivers` or null, and `alerts` their
-   list from to-do.js's `driverAlerts`. It draws again only when what it
-   shows has changed. `stateOf(live)` and `marksOf(driver, alerts, today)`
+   `draw(cell, driver, live, alerts, onTrip)` draws it, its parts once and
+   their words as they change: `driver` is the driver's row,
+   `live` their entry in samsara-now's `drivers` or null, `alerts` their
+   list from to-do.js's `driverAlerts`, and `onTrip` whether a trip of
+   theirs is under way now, between its yard-out and its return. It draws
+   again only when what it shows has changed. `stateOf(live, onTrip)` and
+   `marksOf(driver, alerts, today)`
    are what it shows, for tools/check-bar.mjs.
    Needs leg-facts.js and road-bar.js loaded first.
    ========================================================================== */
@@ -76,10 +81,11 @@
 
   /* What the clock says: `{ line, tone, words, meter }`, the line the head
      shows, its tone, quiet, normal or warning, the words for its label, and
-     its meter, `{ kind, share }`, the drive or rest meter and how full it is
-     from 0 to 1, or null with no clock. */
+     its meter, `{ kind, share }`, how full it is from 0 to 1 and its kind:
+     `drive`, `rest` during a trip, or `off` with none under way; or null
+     with no clock. */
   const fill = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 100) / 100;
-  function stateOf(live) {
+  function stateOf(live, onTrip = false) {
     if (!live?.duty) return { line: '–', tone: 'quiet', words: 'No hours-of-service clock from Samsara', meter: null };
     const left = live.left_ms;
     const low = left != null && left < HOUR;
@@ -88,7 +94,7 @@
       const { ms } = restProgress(live);
       const word = SHORT[live.duty];
       const rested = ms == null ? null : ms >= REST_LOOK ? `${spell(REST_LOOK)}+` : spell(ms);
-      return { line: rested ? `${word} ${rested}` : word, tone: 'normal', words, meter: { kind: 'rest', share: fill(ms ?? 0, REST) } };
+      return { line: rested ? `${word} ${rested}` : word, tone: 'normal', words, meter: { kind: onTrip ? 'rest' : 'off', share: fill(ms ?? 0, REST) } };
     }
     const time = left == null ? null : hours(left);
     const line = live.duty === 'driving' ? time ?? 'Driving' : [SHORT[live.duty] ?? 'On', left == null ? null : hours(left)].filter(Boolean).join(' ');
@@ -160,8 +166,8 @@
     cell.replaceChildren(top, card);
   }
 
-  function draw(cell, driver, live, alerts = []) {
-    const state = stateOf(live);
+  function draw(cell, driver, live, alerts = [], onTrip = false) {
+    const state = stateOf(live, onTrip);
     const marks = marksOf(driver, alerts);
     const name = driver.short_name || driver.name || 'Driver';
     const key = JSON.stringify([name, state.line, state.tone, state.meter, marks.map(m => [m.kind, m.tone, m.words])]);

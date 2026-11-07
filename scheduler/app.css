@@ -3959,6 +3959,9 @@ a.scheduler-tip__go { text-decoration: none; }
   background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
 }
 .scheduler-avail__meter[data-kind="rest"] { --scheduler-meter-ink: var(--scheduler-rest-fill); }
+/* Resting with no trip under way is the driver's own time, in the grey the
+   bus tile's fuel is drawn in while it asks nothing. */
+.scheduler-avail__meter[data-kind="off"] { --scheduler-meter-ink: var(--rux-icon-secondary); }
 .scheduler-avail__line[data-tone="warning"] > .scheduler-avail__state { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-avail__line[data-tone="warning"] > .scheduler-avail__meter { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--rux-border-subtle-02) 0 2px, transparent 2px 4px); }

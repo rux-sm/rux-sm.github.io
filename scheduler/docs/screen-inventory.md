@@ -286,7 +286,8 @@ Samsara's hours-of-service clock says now beside a 4px meter of it, as the
 bus tile's fuel is: "6:30" driving, "On 0:36" on duty, on a meter of the ten
 hours a driver may drive in the success green, amber with the words under
 an hour left; "Off 14h" or "SB 3h" resting, on the rest meter toward eight
-hours in the rest colour the bars use; and a dash over a dashed empty meter
+hours, in the rest colour the bars use while a trip of theirs is under way,
+from its yard-out to its return, and in the secondary grey with none; and a dash over a dashed empty meter
 with no clock. Where the board shows five or six lines, the meter leaves the
 words for a third line 4px under them, the tile's full width, as the bus
 tile's fuel stands under its state.

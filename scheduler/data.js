@@ -2150,6 +2150,9 @@
       if (down.button !== 0 || down.target.closest('[data-card-opener]')) return;
       // A press on the driver's name lifts the driver, not the trip.
       if (liftsFrom(down)) return;
+      // A finger's hold on a driver's name opens their seat menu instead.
+      const seat = down.pointerType === 'touch' ? seatUnder(down.target) : null;
+      if (seat) { holdSeat(seat, down); return; }
       carryTrip(bar, down);
     });
   }
@@ -14035,6 +14038,9 @@
     // On touch a hold lifts the bar for dragging and can also fire this event,
     // so the menu stays shut while a finger carries a bar.
     if (touchDragging) return;
+    // A driver's name opens their seat menu, which a finger's hold has opened already.
+    const seat = seatUnder(e.target);
+    if (seat) { if (!(heldSeat && e.pointerType === 'touch')) openSeatMenu(seat, e); return; }
     /* The menu acts on the bar under the pointer, so that bar is the one
        picked, and its card waits until the menu shuts, so one thing floats
        over the week at a time. */
@@ -15138,8 +15144,8 @@
      seat, unless `role` names another. A driver who has been sent the trip
      or has confirmed it is asked about first, because removing them here
      tells them nothing. `thrown` is the driver carried off the bar and let go
-     clear of every other, who has to be in the seat still: their name
-     slides back into the roster, and the notice offers to undo it. */
+     clear of every other, who has to be in the seat still, and whose name
+     slides back into the roster. The notice offers to undo every removal. */
   const unassignModal = document.getElementById('scheduler-unassign-modal');
   let unassignAfter = null;
   async function removeDriver(bar, asked, thrown, role = 'driver') {
@@ -15174,12 +15180,10 @@
       return;
     }
     const said = told ? 'Remember to let them know.' : undefined;
-    if (!thrown) { toast('success', `${name} is off this bus.`, said); return; }
-    nameBack(driverId);
-    /* A throw is easier to make by accident than a pick from the menu, so it
-       can be undone: the driver takes the seat again, with the status they
-       had and what their row held, because a new seat starts at Not sent
-       with nothing handed over. */
+    if (thrown) nameBack(driverId);
+    /* Every removal can be undone: the driver takes the seat again, with the
+       status they had and what their row held, because a new seat starts at
+       Not sent with nothing handed over. */
     toast('success', `${name} is off this bus.`, said, {
       label: 'Undo',
       onClick: () => undoSeats([{ ref, role, expect: null, driverId, status, keep: row }], `${name} is back on this bus.`),
@@ -15196,6 +15200,128 @@
     unassignAfter = null;
     document.getElementById('scheduler-unassign-ok').textContent = 'Remove';
   });
+
+  /* A DRIVER'S SEAT MENU, from a right-click or a finger's hold on their name
+     in a seat on a bar, in place of the bar's menu, because the name is what
+     was pressed. Open driver, Call and Text as the roster's menu has them,
+     and Remind, or Tell while the leg changed for them since they said yes,
+     which press the Contact list's button for their seat, asking first as it
+     does; then their answer, the five dispatch sets on the Buses tab, saved
+     at once; then Move to seat, the bus's other seats that are on, which is
+     a drop on that seat, and Take off this bus, which is Remove driver. The
+     trip open in the editor keeps the bar's menu, whose drivers it holds. */
+  const seatMenu = document.getElementById('scheduler-seat-menu');
+  let seatMenuFor = null;
+  const seatUnder = target => {
+    const crew = target.closest?.('.scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id]');
+    const bar = crew?.closest('.scheduler-bar');
+    return bar?.dataset.tripId && gridEl.contains(bar) && !isEditorTrip(bar) && seatMenu ? crew : null;
+  };
+  function openSeatMenu(crew, e) {
+    const bar = crew.closest('.scheduler-bar');
+    const role = crew.dataset.seat;
+    const found = barCrew(bar);
+    const c = found?.crew.find(x => !x.needed && String(x.driverId) === crew.dataset.driverId && x.role === role);
+    const driver = c?.who ?? driverById(crew.dataset.driverId);
+    if (!c || !driver) return;
+    seatMenuFor = { ref: barRef(bar), role, driverId: String(c.driverId), driver };
+    seatMenu.setAttribute('aria-label', crewName(c));
+    const byId = id => document.getElementById(`scheduler-seat-menu-${id}`);
+    byId('call').hidden = !driver.phone;
+    byId('text').hidden = !driver.phone && !textsInMessages(driver);
+    byId('phone').textContent = driver.phone ? showPhone(driver.phone) : '';
+    const changed = window.SchedulerDriverJob?.changesSince(found.trip, c.legKey, c.driverId, c.row,
+      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel }) ?? [];
+    const reached = !!client && (!!driver.phone || textsInMessages(driver));
+    byId('remind').hidden = !reached || changed.length > 0;
+    byId('tell').hidden = !reached || !changed.length;
+
+    // Their answer, a radio group of the five, theirs checked; it saves, so it needs the log-in.
+    const answers = byId('answers');
+    answers.replaceChildren(...DRIVER_STATUSES.map(st => {
+      const on = st.value === c.status.value;
+      const opt = el('li', 'rux--menu-item');
+      opt.setAttribute('role', 'menuitemradio');
+      opt.setAttribute('aria-checked', String(on));
+      opt.tabIndex = -1;
+      opt.dataset.driverStatus = st.value;
+      const check = el('div', 'rux--menu-item__selection-icon');
+      if (on) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
+      const mark = el('div', 'rux--menu-item__icon');
+      mark.appendChild(statusIcon(st.value));
+      opt.append(check, mark, el('div', 'rux--menu-item__label', st.label));
+      return opt;
+    }));
+    answers.parentElement.hidden = !client;
+
+    // The bus's other seats that are on, each with who is in it now.
+    const writes = seatsDriver(bar);
+    const seats = writes ? ROLES.filter(r => r.role !== role && activeRolesOf(found.assign).has(r.role)) : [];
+    byId('seats').replaceChildren(...seats.map(r => {
+      const now = (found.assign.trip_drivers || []).find(d => (d.role || 'driver') === r.role)?.driver_id;
+      const item = el('li', 'rux--menu-item');
+      item.setAttribute('role', 'menuitem');
+      item.tabIndex = -1;
+      item.dataset.seatRole = r.role;
+      const icon = el('div', 'rux--menu-item__icon');
+      icon.appendChild(svgUse(r.icon, '16', r.box));
+      item.append(el('div', 'rux--menu-item__selection-icon'), icon,
+        el('div', 'rux--menu-item__label', now != null ? `${r.label} · ${histDriverName(now)}` : r.label));
+      return item;
+    }));
+    byId('move').hidden = !seats.length;
+    byId('remove').hidden = !writes;
+    tidyRules(seatMenu);
+    popMenuAt(seatMenu, e);
+  }
+  seatMenu?.addEventListener('click', e => {
+    const item = e.target.closest('.rux--menu-item');
+    if (!item || !seatMenuFor || item.getAttribute('aria-haspopup') === 'true') return;
+    const { ref, role, driverId, driver } = seatMenuFor;
+    window.Rux?.menu?.close?.(seatMenu);
+    seatMenu.hidden = true;
+    const bar = findBar(ref);
+    if (item.id === 'scheduler-seat-menu-open') follow(`drivers.html?id=${encodeURIComponent(driverId)}`, true);
+    else if (item.id === 'scheduler-seat-menu-call') follow(`tel:${dial(driver.phone)}`);
+    else if (item.id === 'scheduler-seat-menu-text') {
+      if (textsInMessages(driver)) follow(driver.texting_url, true);
+      else follow(`sms:${dial(driver.phone)}`);
+    } else if (!bar) toast('info', 'That trip is no longer on the board.');
+    else if (item.id === 'scheduler-seat-menu-remind' || item.id === 'scheduler-seat-menu-tell') {
+      openContactsFrom(bar, bar, barSeat(bar, role)?.seat?.id ?? null);
+    } else if (item.dataset.driverStatus) setDriverStatus(bar, driverId, role, item.dataset.driverStatus);
+    else if (item.dataset.seatRole) dropDriver(bar, driverId, false, { ...ref, role }, item.dataset.seatRole);
+    else if (item.id === 'scheduler-seat-menu-remove') removeDriver(bar, false, null, role);
+  });
+  seatMenu?.addEventListener('rux:menu-closed', e => { if (e.target === seatMenu) seatMenu.hidden = true; });
+  /* A finger holding still on a name in a seat opens its menu, timed and
+     bounded as a bar's hold is, in place of lifting the bar; `installDrag`
+     hands the press here. The tap that ends the hold selects nothing. */
+  let heldSeat = false;
+  function holdSeat(crew, down) {
+    heldSeat = false;
+    const mine = ev => ev.pointerId === down.pointerId;
+    const move = ev => {
+      if (mine(ev) && Math.hypot(ev.clientX - down.clientX, ev.clientY - down.clientY) > TOUCH_SLOP) end();
+    };
+    const up = ev => { if (mine(ev)) end(); };
+    const end = () => {
+      clearTimeout(hold);
+      gridEl.removeEventListener('pointermove', move);
+      gridEl.removeEventListener('pointerup', up);
+      gridEl.removeEventListener('pointercancel', up);
+    };
+    const hold = setTimeout(() => { end(); heldSeat = true; openSeatMenu(crew, down); }, TOUCH_HOLD_MS);
+    gridEl.addEventListener('pointermove', move);
+    gridEl.addEventListener('pointerup', up);
+    gridEl.addEventListener('pointercancel', up);
+  }
+  gridEl.addEventListener('click', e => {
+    if (!heldSeat || !seatUnder(e.target)) return;
+    heldSeat = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
 
   // Opens the bar's trip on its Buses tab, for every driver and every seat.
   function openOnFleet(bar) {

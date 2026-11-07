@@ -136,9 +136,6 @@ rest meter.
 
 - [ ] Give the driver's card Tell beside a changed leg's mark, as the trip
       editor's Contacts offer it, asking first.
-- [ ] Add the seat menu for a driver's name on a bar, opened by a
-      right-click or a hold, out of the way of the drag that carries a
-      driver off a bar.
 - [ ] Correct `scheduler/docs/screen-inventory.md` as each lands: the driver
       availability grid, the bar out on its trip and the Assign driver
       menu.

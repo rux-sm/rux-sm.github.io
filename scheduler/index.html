@@ -90,6 +90,7 @@
 <symbol id="m-calendar_month" viewBox="0 -960 960 960"><path d="M440-400v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM440-240v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
 <symbol id="m-arrow_right" viewBox="0 -960 960 960"><path d="M400-280v-400l200 200-200 200Z"/></symbol>
 <symbol id="m-warning" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm104-60h672L480-760 144-180Zm361.5-65.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Zm26-122Z"/></symbol>
+<symbol id="m-swap_horiz" viewBox="0 -960 960 960"><path d="M273-160 80-353l193-193 42 42-121 121h316v60H194l121 121-42 42Zm414-254-42-42 121-121H450v-60h316L645-758l42-42 193 193-193 193Z"/></symbol>
 <symbol id="m-swap_horiz-fill" viewBox="0 -960 960 960"><path d="M273-160 80-353l193-193 42 42-121 121h316v60H194l121 121-42 42Zm414-254-42-42 121-121H450v-60h316L645-758l42-42 193 193-193 193Z"/></symbol>
 <symbol id="m-chat" viewBox="0 -960 960 960"><path d="M80-80v-800h800v640H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Zm100-99h313v-60H240v60Zm0-130h480v-60H240v60Zm0-130h480v-60H240v60Z"/></symbol>
 <symbol id="m-check" viewBox="0 -960 960 960"><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/></symbol>
@@ -1091,6 +1092,55 @@
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bus-menu-away">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-block"/></svg></div>
       <div class="rux--menu-item__label">Mark out of service…</div>
+    </li>
+  </ul>
+
+  <!-- A driver's seat menu, opened by right-clicking or holding their name
+       on a bar: the driver, then reaching them, then their answer, then
+       their seat. data.js fills the answers and the other seats, names
+       Remind Tell while the leg changed for them, and hides what cannot act. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-seat-menu" role="menu" tabindex="-1" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-seat-menu-open">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></div>
+      <div class="rux--menu-item__label">Open driver</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-seat-menu-call">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></div>
+      <div class="rux--menu-item__label">Call</div>
+      <div class="rux--menu-item__shortcut" id="scheduler-seat-menu-phone"></div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-seat-menu-text">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-chat"/></svg></div>
+      <div class="rux--menu-item__label">Text</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-seat-menu-remind">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-notifications"/></svg></div>
+      <div class="rux--menu-item__label">Remind</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-seat-menu-tell">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-notification_important"/></svg></div>
+      <div class="rux--menu-item__label">Tell</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item-radio-group" role="none"><ul role="group" aria-label="Their answer" id="scheduler-seat-menu-answers"></ul></li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" aria-haspopup="true" aria-expanded="false" id="scheduler-seat-menu-move">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_horiz"/></svg></div>
+      <div class="rux--menu-item__label">Move to seat</div>
+      <div class="rux--menu-item__shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_right"/></svg></div>
+      <ul class="rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items" role="menu" aria-label="Seats" tabindex="-1" id="scheduler-seat-menu-seats"></ul>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-seat-menu-remove">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-remove"/></svg></div>
+      <div class="rux--menu-item__label">Take off this bus</div>
     </li>
   </ul>
 

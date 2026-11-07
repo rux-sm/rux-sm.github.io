@@ -6,7 +6,10 @@
 // within two weeks of the view with those of the page loaded again and
 // brought to the same day: the bar's row, trip, leg, assignment, slot,
 // days, lane, classes and words, and the out-of-service marks and stripes.
-// Says too where a bar is drawn twice.
+// Says too where a bar is drawn twice. Then turns the bar's rows off one by
+// one, six lines to one, as the view menu does, and in each says whether
+// every bar and every open bus row is a whole number of 8px, Carbon's grid,
+// and every box a bus's head paints stands on whole pixels.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
 import { spawn } from 'node:child_process';
@@ -78,12 +81,24 @@ function invented() {
   }
   // One bus out of service for five days, two weeks back, where the check scrolls to.
   const out = [{ bus_id: 'b-3', start_date: iso(day(-17)), end_date: iso(day(-13)), reason: 'Brakes' }];
-  return { buses, drivers, trips, contacts: [], customers: [], locations: [], settings: [], bus_out_of_service: out, driver_time_off: [] };
+  /* What samsara-now says of each bus, in turn moving, idling on a low tank,
+     off on a critical tank with a low DEF, and with no signal, so every
+     head draws its readings in each of their shapes. */
+  const ago = min => new Date(Date.now() - min * 60e3).toISOString();
+  const states = [
+    { engine: 'on', mph: 52, fuel: 68, def: 80 },
+    { engine: 'idle', mph: 0, fuel: 22, def: 80 },
+    { engine: 'off', mph: 0, fuel: 8, def: 4 },
+    { engine: null, mph: 0, fuel: 55, def: 80 },
+  ];
+  const live = { buses: buses.map((b, i) => ({ bus_id: b.id, ...states[i % states.length], engine_at: ago(12), seen: ago(90), drivers: [] })), drivers: [] };
+  return { buses, drivers, trips, contacts: [], customers: [], locations: [], settings: [], bus_out_of_service: out, driver_time_off: [], live };
 }
 
 /* The account and database stand-in, run in the page before its scripts:
-   every table read answers from the invented rows, every write and call
-   answers empty, and the log-in is a staff member called Preview. */
+   every table read answers from the invented rows, samsara-now from the
+   invented readings, every write and other call answers empty, and the
+   log-in is a staff member called Preview. */
 const stub = data => `(() => {
   const rows = ${JSON.stringify(data)};
   const answer = table => ({ data: rows[table] ?? [], error: null });
@@ -99,7 +114,7 @@ const stub = data => `(() => {
   const client = {
     from: table => query(table), rpc: () => query('rpc'), channel, removeChannel() {}, schema: () => client,
     storage: { from: () => ({ getPublicUrl: () => ({ data: { publicUrl: '' } }), createSignedUrl: async () => ({ data: null, error: null }), upload: async () => ({ data: null, error: null }) }) },
-    functions: { invoke: async () => ({ data: null, error: null }) }, auth: { getSession: async () => ({ data: { session: null } }), onAuthStateChange() { return { data: { subscription: { unsubscribe() {} } } }; } },
+    functions: { invoke: async name => ({ data: name === 'samsara-now' ? rows.live : null, error: null }) }, auth: { getSession: async () => ({ data: { session: null } }), onAuthStateChange() { return { data: { subscription: { unsubscribe() {} } } }; } },
   };
   window.Rux = window.Rux || {};
   window.Rux.account = { client, staffProfile: async () => ({ id: 'p-1', name: 'Preview', staff: true }), person: async () => ({ id: 'p-1', name: 'Preview', staff: true }), drawAvatar() {}, onAuthChange() {}, getSession: async () => null, signOut() {} };
@@ -222,6 +237,56 @@ function connect(url) {
   return new Promise((done, failed) => { ws.addEventListener('open', () => done({ send, on, close: () => ws.close() })); ws.addEventListener('error', () => failed(new Error(`could not open ${url}`))); });
 }
 
+/* What runs in the page for the views: the bar's rows turned off in the
+   view menu's order, written as applyView in data.js writes them, the week's
+   class for each row, its count and its data attribute, and the view the
+   page had put back after. A box paints when it has a background, a border,
+   a shadow or is a drawing; text is drawn at its font's own widths and is
+   not measured, and a box clipped away, as a screen reader's words are,
+   paints nothing. */
+const VIEWS = `(async () => {
+  const sch = document.getElementById('scheduler-week');
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const ROWS = ['update', 'contact', 'client', 'time', 'drivers'];
+  const before = { cls: sch.className, rows: sch.style.getPropertyValue('--scheduler-bar-rows'), data: sch.dataset.barRows };
+  const whole = v => Math.abs(v - Math.round(v)) < 0.01;
+  const paints = (e, cs) => e.tagName.toLowerCase() === 'svg' || cs.backgroundColor !== 'rgba(0, 0, 0, 0)' || cs.backgroundImage !== 'none' || cs.boxShadow !== 'none'
+    || ['Top', 'Right', 'Bottom', 'Left'].some(side => parseFloat(cs['border' + side + 'Width']) > 0);
+  const clipped = (e, head) => { for (let a = e; a && a !== head; a = a.parentElement) if (getComputedStyle(a).clipPath !== 'none') return true; return false; };
+  const out = [];
+  for (let off = 0; off < ROWS.length + 1; off++) {
+    const lines = 6 - off;
+    for (const r of ROWS) sch.classList.toggle('scheduler-week--no-' + r, ROWS.indexOf(r) < off);
+    sch.style.setProperty('--scheduler-bar-rows', String(lines));
+    sch.dataset.barRows = String(lines);
+    await wait(400);
+    const v = { lines, bars: [], rows: [], boxes: [], heads: 0, painted: 0, height: null };
+    for (const b of sch.querySelectorAll('.scheduler-bar')) { const h = b.getBoundingClientRect().height; if (h && h % 8) v.bars.push(+h.toFixed(2)); }
+    for (const head of sch.querySelectorAll('.scheduler-row:not([data-shut]) > .scheduler-row-head')) {
+      const box = head.getBoundingClientRect();
+      if (!box.height) continue;
+      const bus = (head.querySelector('.scheduler-row-head__num')?.textContent ?? '').replace(/\s+/g, ' ').trim() || 'a head';
+      const h = box.height - parseFloat(getComputedStyle(head).borderBlockEndWidth);
+      v.heads++;
+      v.height = v.height === null ? h : Math.min(v.height, h);
+      if (h % 8) v.rows.push({ bus, h: +h.toFixed(2) });
+      for (const e of [head, ...head.querySelectorAll('*')]) {
+        const cs = getComputedStyle(e);
+        if (!e.checkVisibility() || !paints(e, cs) || clipped(e, head)) continue;
+        const r = e.getBoundingClientRect();
+        if (!r.width && !r.height) continue;
+        v.painted++;
+        if (![r.left, r.top, r.width, r.height].every(whole)) v.boxes.push({ bus, part: (e.className.baseVal ?? e.className).split(' ')[0] || e.tagName.toLowerCase(), box: [r.left, r.top, r.width, r.height].map(n => +n.toFixed(2)).join(', ') });
+      }
+    }
+    out.push(v);
+  }
+  sch.className = before.cls;
+  sch.style.setProperty('--scheduler-bar-rows', before.rows);
+  sch.dataset.barRows = before.data;
+  return out;
+})()`;
+
 async function main() {
   const chrome = CHROMES.find(p => existsSync(p));
   if (!chrome) { ok('strip', 'skipped: no Chrome here (set CHROME to one) to grow the strip in'); return; }
@@ -283,6 +348,7 @@ async function main() {
     const off = await run(`window.__strip.short(${first.left})`);
     if (Math.abs(off) >= 1) await swipe(there, Math.sign(off) * 25, Math.floor(Math.abs(off) / 25), Math.sign(off) * (Math.abs(off) % 25));
     const second = await run('window.__strip.snap()');
+    const views = await run(VIEWS);
     page.close();
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
     const r = compare('on two weeks and back four', first, second);
@@ -297,6 +363,11 @@ async function main() {
     if (r.yardDiffs.length) { bad = true; fail('strip', `${r.name}: the yard cards differ from a whole draw`); for (const y of r.yardDiffs) console.log(`          ${y}`); }
     if (r.diffs.length) { bad = true; fail('strip', `${r.name}: ${r.diffs.length} bars differ from a whole draw`); for (const d of r.diffs.slice(0, 8)) console.log(`          ${JSON.stringify(d)}`); }
     if (!bad) ok('strip', `${r.name}: ${r.compared} bars and ${r.yards} yard cards near the view the same as a whole draw`);
+    for (const v of views) {
+      const bad = [...v.bars.map(h => `a bar ${h}px tall`), ...v.rows.map(r => `${r.bus}'s row ${r.h}px tall`), ...v.boxes.map(x => `${x.bus}: ${x.part} at ${x.box}`)];
+      if (bad.length) { fail('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${bad.length} off the grid or off whole pixels`); for (const w of bad.slice(0, 6)) console.log(`          ${w}`); }
+      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the 8px grid, ${v.painted} painted boxes in the heads on whole pixels`);
+    }
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }
     if (!bad && !noise.length) ok('strip', `scrolled by the browser and drawn whole in ${seconds}s; frames while scrolling, headless: p50 ${frames.p50}ms, p90 ${frames.p90}ms, worst ${frames.max}ms of ${frames.n}`);

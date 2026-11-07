@@ -142,7 +142,7 @@ A bus out on its trip opens its live card from its drivers' rows, and its moveme
 From the repository root, one level up:
 
     npm run check        # Design's shared check, the sprite, the print rule, the rules' sample trips, and every page's scripts parsed and loaded
-    node scheduler/tools/check-strip.mjs   # the strip grown each way against a whole draw, in headless Chrome on invented trips; twenty seconds
+    node scheduler/tools/check-strip.mjs   # the strip grown each way against a whole draw, then every view's rows on the 8px grid and the bus heads on whole pixels, in headless Chrome on invented trips; thirty seconds
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root
 `README.md` describes; the pages link `/design/…` absolutely, so this folder is

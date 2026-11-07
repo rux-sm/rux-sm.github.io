@@ -105,13 +105,16 @@
      It fills the box, so the air between marks is the gap alone -- which is
      why that gap is a step wider than the row's own. */
   --scheduler-mark-glyph: 16px;
-  /* A BAR'S OWN SPACE: 6px above and below its lines and 8px either side of
-     them, chosen against 4px all round by looking at the board, the words
-     clear of the bar's edge without the bar standing taller than its six
-     lines need. */
-  --scheduler-bar-pad-block: calc(1.5 * var(--rux-spacing-02));
+  /* A BAR'S OWN SPACE: at least 6px above and below its lines and 8px
+     either side of them, chosen against 4px all round by looking at the
+     board, the words clear of the bar's edge without the bar standing
+     taller than its lines need. On the Mac's board the bar's height is
+     rounded up to the next 8px below, and its padding is what that leaves
+     either side of its lines, as Carbon fits its 18px line in a control. */
+  --scheduler-bar-lines-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h));
+  --scheduler-bar-h: calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02));
+  --scheduler-bar-pad-block: calc((var(--scheduler-bar-h) - var(--scheduler-bar-lines-h)) / 2);
   --scheduler-bar-pad-inline: var(--rux-spacing-03);
-  --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--scheduler-bar-pad-block));
   /* One square slot on the selected trip's shortcut bar: Carbon's md control
      height, as the board's toolbar buttons are. The bar floats clear of the
      trip, so nothing about the trip caps this the way the old tab's width
@@ -147,6 +150,9 @@
     --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px);
     --scheduler-label-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px);
   }
+  /* The Mac's board on Carbon's 8px grid: a bar is a whole number of 8px,
+     so is the row of its lanes and their 8px clear space, in every view. */
+  .scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-bar-h: round(up, calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02)), var(--rux-spacing-03)); }
 }
 /* The board is the Scheduler's frame, overrides.css's 82rem, which seven of
    the strip's days fill, so a panel opening beside the week leaves fewer of
@@ -819,6 +825,21 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__lamp { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
+/* THE SQUARE CENTRES ON WHOLE PIXELS between the number's line and the
+   row's foot: the head keeps the same 8px at its foot as under the line, so
+   the square's two auto margins split what is left. A bar's padding is odd
+   with five, three or one lines, which leaves an odd number of pixels to
+   split, so the head takes that one pixel at its foot too, and the square
+   stands a pixel nearer the number than the foot. On an open row only: a
+   shut one stands no taller than its track. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row:not([data-shut]) > .scheduler-row-head,
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) { padding-block-end: var(--rux-spacing-03); }
+@supports (padding: mod(1px, 1px)) {
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row:not([data-shut]) > .scheduler-row-head,
+  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) { padding-block-end: calc(var(--rux-spacing-03) + mod(var(--scheduler-bar-pad-block), 2px)); }
+}
+/* With one line the tile is its number alone, and the empty square goes too. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
 /* Room for the foot, on an open row: a shut one stands no taller than its
    track. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row:not([data-shut]) > .scheduler-row-head:not(:has(.scheduler-row-head__level[data-tank="D"])) { padding-block-end: calc(16px + 2 * var(--rux-spacing-03)); }
@@ -879,6 +900,9 @@ button.scheduler-row-head__num:focus { outline: none; }
    sold bus's in its title. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .rux--popover-container { min-inline-size: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll button.scheduler-row-head__num { display: block; max-inline-size: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* "No bus" stands in the tile's 16px on the 18px line every number has,
+   its two lines on whole pixels, as a partner's name is. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--unassigned .scheduler-row-head__num { line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
 /* The first line's drawing, gap and number add to an even width, the
    number's own rounded up to an even pixel, so the line centres on whole
    pixels whatever the digits measure. */

@@ -2697,12 +2697,12 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
-/* A bar's times run its whole length, out at its start and back at its
-   end, so the track between them crosses every day the trip takes and its
-   dot stands at now; on a live bar the rows above and below stay in today's
-   column. */
-.scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) { max-inline-size: none; }
-.scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
+/* A planned bar's times run its whole length, out at its start and back at
+   its end, so the track between them crosses every day the trip takes. A
+   live bar's stand in today's column with its other rows, the route mark
+   leading them as it leads every bar's, the track the whole trip drawn in a
+   day's width. */
+.scheduler-bar > .scheduler-bar__time { max-inline-size: none; }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 
 /* THE TIMES: out at the start, the track, and back at the end, amber when

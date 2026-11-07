@@ -158,8 +158,10 @@
      the route's own time, the pickup's spot and each stop's arrival; what
      happened is what Samsara recorded on the bus's row, and on a bus out on
      the leg a stop reached, the bus at one, or the next one's estimate after
-     a tilde, `--:--` until then. The pickup alone says on time or how late,
-     the only stop a bus can be late to. A day heading stands over each
+     a tilde, `--:--` until then. Planned is in the tip's quiet ink and what
+     happened in its own, an estimate quiet and slanted. The pickup alone,
+     the only stop a bus can be late to, says on time with a check, or late
+     in red with the minutes after its time, reached or expected. A day heading stands over each
      day's points, and a departure on a later day names its weekday. The
      press selects the trip, as a press on any of its icons does. It is the
      card's part `route:`. */
@@ -175,11 +177,18 @@
     if (days > 0) w.appendChild(el('sup', 'scheduler-route__plus', `+${days}`));
     return w;
   };
-  // The pickup's arrival judged: Carbon's green check for on time, its amber warning and the minutes for late.
-  const routeJudged = late => {
-    const j = el('span', `scheduler-route__judged scheduler-route__judged--${late ? 'late' : 'on-time'}`);
-    j.append(svgUse(late ? '#i-warning--alt--filled' : '#i-checkmark--filled', '16', late ? '0 0 32 32' : '0 0 16 16'), late ? `${late} min late` : 'On time');
+  // A pickup reached on time: Carbon's green check and the words.
+  const routeOnTime = () => {
+    const j = el('span', 'scheduler-route__judged');
+    j.append(svgUse('#i-checkmark--filled', '16', '0 0 16 16'), 'On time');
     return j;
+  };
+  // A late pickup's minutes after its time, said in full for a screen reader.
+  const routeLate = (actual, late) => {
+    actual.classList.add('scheduler-route__actual--late');
+    const by = el('span', 'scheduler-route__late', `+${late}`);
+    by.append(el('span', 'rux--visually-hidden', ' minutes late'));
+    actual.append(by);
   };
   // A mark standing in the time column, named for a screen reader.
   const routeMark = (href, box, cls, words) => {
@@ -202,8 +211,12 @@
     const said = (row, st, i) => {
       if (row.actual != null || !next) return row;
       if (i === reached && next.at) row.here = true;
-      else if (i <= reached) { row.reached = true; row.actual = next.where.arrived?.[i] ?? null; }
-      else if (next.stop?.key === st.key && next.arrival != null) row.estimate = next.arrival;
+      else if (i <= reached) {
+        row.reached = true;
+        row.actual = next.where.arrived?.[i] ?? null;
+        if (st.type === 'pickup' && row.actual != null) row.late = Road.pickupLate(st.due, row.actual);
+      }
+      else if (next.stop?.key === st.key && next.arrival != null) { row.estimate = next.arrival; if (next.late) row.late = next.late; }
       return row;
     };
     const rows = [{ key: 'yard-out', word: 'Yard out', place: null, planned: out, actual: at(assign?.actual_yard_depart_at) }];
@@ -251,14 +264,15 @@
       point.setAttribute('role', 'group');
       point.setAttribute('aria-label', [r.word, r.place].filter(Boolean).join(' · '));
       const word = el('span', 'scheduler-route__word', r.word);
-      if (r.late != null) word.append(' ', routeJudged(r.late));
+      if (r.late === 0) word.append(' ', routeOnTime());
       point.append(r.planned != null ? routeClock(r.planned, on) : el('span', 'scheduler-route__clock', '--:--'), word);
       const actual = el('span', 'scheduler-route__actual');
       if (r.here) actual.appendChild(routeMark('#m-directions_bus-fill', '0 0 32 32', 'scheduler-route__bus', 'Here now'));
       else if (r.actual != null) actual.appendChild(routeClock(r.actual, on));
       else if (r.reached) actual.appendChild(routeMark('#i-checkmark--filled', '0 0 16 16', 'scheduler-route__reached', 'Reached'));
-      else if (r.estimate != null) actual.append('~', routeClock(r.estimate, on));
-      else actual.append('--:--');
+      else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--expected'); actual.append('~', routeClock(r.estimate, on)); }
+      else { actual.classList.add('scheduler-route__actual--none'); actual.append('--:--'); }
+      if (r.late > 0 && (r.actual != null || r.estimate != null)) routeLate(actual, r.late);
       point.append(actual, el('span', 'scheduler-route__place', r.place ?? ''));
       if (r.leaves != null) {
         const later = dayOf(r.leaves) !== on;
@@ -741,8 +755,17 @@
       const facts = bar ? board.facts(bar) : null;
       const problems = facts?.problems ?? [];
       const other = alertsOf(trip, facts).filter(a => !problems.some(p => p.words === a.words && p.go === a.go));
-      tip.appendChild(head(problems.length || !other.length ? 'Alerts' : 'Other needs', problems.length || other.length));
-      if (!problems.length && !other.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No alerts.'));
+      // A bus out's warnings lead, live-trip.js's, as the badge counts them, each in its sentence.
+      const live = bar?.dataset.road ? board.road(bar)?.said?.warnings ?? [] : [];
+      const raised = live.length + problems.length;
+      tip.appendChild(head(raised || !other.length ? 'Alerts' : 'Other needs', raised || other.length));
+      if (!raised && !other.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No alerts.'));
+      for (const w of live) {
+        const row = el('div', `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${w.tone}`);
+        row.append(svgUse(w.tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'),
+          el('span', 'scheduler-tip__words', `${w.title}: ${w.sentence}`));
+        tip.appendChild(row);
+      }
       let reminded = false;
       for (const a of [...problems, ...other]) {
         const need = other.includes(a);

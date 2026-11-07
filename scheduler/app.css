@@ -448,6 +448,9 @@ button.scheduler-row-head__num::after {
   /* Paid's words are the inverse green taken toward the tip's ink, which
      holds them at 4.5 to 1 where the green alone, a mark's, does not. */
   --scheduler-paid: color-mix(in oklab, var(--rux-support-success-inverse) 60%, var(--rux-text-inverse));
+  /* The route's planned times and estimates, the tip's ink taken toward its
+     surface, which holds them at 4.5 to 1. */
+  --scheduler-route-quiet: color-mix(in srgb, var(--rux-text-inverse) 65%, var(--rux-background-inverse));
 }
 .scheduler-tip svg:has(> use[href="#i-warning--alt--filled"]) {
   fill: color-mix(in srgb, var(--rux-support-warning-inverse) 50%, var(--rux-icon-inverse));
@@ -507,12 +510,19 @@ button.scheduler-row-head__num::after {
 .scheduler-route__clock { white-space: nowrap; }
 .scheduler-route__plus { margin-inline-start: .1em; }
 .scheduler-route__actual { display: inline-flex; align-items: baseline; white-space: nowrap; }
-/* The pickup's on time in Carbon's green check, or late in its amber
-   warning, each in the support colour for an inverse surface. */
+/* Planned in the quiet ink and what happened in the tip's own, semibold, so
+   the two read apart down the column; an estimate quiet and slanted, `--:--`
+   quiet, and a late pickup in red with its minutes after it. */
+.scheduler-route__point > .scheduler-route__clock { color: var(--scheduler-route-quiet); }
+.scheduler-route__actual { font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-route__actual:is(.scheduler-route__actual--expected, .scheduler-route__actual--none) { color: var(--scheduler-route-quiet); font-weight: 400; }
+.scheduler-route__actual--expected { font-style: italic; }
+.scheduler-route__actual.scheduler-route__actual--late { color: var(--rux-status-red); font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-route__late { margin-inline-start: var(--rux-spacing-02); }
+/* The pickup on time in Carbon's green check, in the support colour for an
+   inverse surface. */
 .scheduler-route__judged { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); vertical-align: top; }
-.scheduler-route__judged > svg { flex: none; inline-size: 16px; block-size: 16px; }
-.scheduler-route__judged--on-time > svg { color: var(--rux-support-success-inverse); }
-.scheduler-route__judged--late > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
+.scheduler-route__judged > svg { flex: none; inline-size: 16px; block-size: 16px; color: var(--rux-support-success-inverse); }
 /* A stop reached with no time of its own is the green check, and the bus at
    a stop is the bus in the info blue, as a stop's own mark stands. */
 :is(.scheduler-route__bus, .scheduler-route__reached) { flex: none; inline-size: 16px; block-size: 16px; align-self: center; }
@@ -2593,17 +2603,20 @@ a.scheduler-tip__go { text-decoration: none; }
    the colours the update's age is written in, which every theme sets to read
    on its bars. How much moves is the view menu's Motion, `data-motion` on
    the page: at full, a bar coming on the road shudders as a bus starts and
-   a red warning's words blink for their first minute; calm and off hold all
+   a red warning's badge blinks for its first minute; calm and off hold all
    of it still. */
-/* A red warning blinks for the first minute the page has seen it,
+/* A red warning's badge blinks for the first minute the page has seen it,
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
-.scheduler-bar--road[data-alarm] .scheduler-road__say--error { animation: scheduler-road-alarm 1.4s linear infinite; }
+.scheduler-bar--road[data-alarm] > .scheduler-bar__dest > .scheduler-bar__alert { animation: scheduler-road-alarm 1.4s linear infinite; }
 /* The duty marks hold still, fully visible, when Motion is calm or off or
    the computer asks for less motion. */
-:is([data-motion="calm"], [data-motion="off"]) .scheduler-road__say--error,
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road > .scheduler-bar__dest > .scheduler-bar__alert,
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
-@media (prefers-reduced-motion: reduce) { .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty,
+  .scheduler-bar--road > .scheduler-bar__dest > .scheduler-bar__alert { animation: none; }
+}
 
 /* THE LEGEND, the view menu's What the colours mean: a bus head's level bar
    in each colour it takes. */
@@ -2718,8 +2731,6 @@ a.scheduler-tip__go { text-decoration: none; }
     var(--scheduler-track-base, color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent));
 }
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.scheduler-road__say--error { color: var(--scheduler-age-old); font-weight: 600; }
-.scheduler-road__say--warning { color: var(--scheduler-age-week); font-weight: 600; }
 .scheduler-road__say--quiet { opacity: .7; }
 
 /* With the time row off, the times go with it. */
@@ -4846,6 +4857,7 @@ a.scheduler-tip__go { text-decoration: none; }
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   --tip-rule: var(--rux-border-subtle-01);
+  --scheduler-route-quiet: var(--rux-text-secondary);
   --rux-status-green: inherit;
   --rux-status-red: inherit;
   --rux-status-blue: inherit;
@@ -4856,8 +4868,7 @@ a.scheduler-tip__go { text-decoration: none; }
   fill: currentColor;
   --rux-icon-path-2: initial;
 }
-.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
-.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
+.scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__judged > svg { color: var(--rux-support-success); }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__bus { color: var(--rux-support-info); }
 .scheduler-sheet__rest > .scheduler-tip--card .scheduler-route__reached { color: var(--rux-support-success); }
 /* A list that can run past the screen, every bus or driver on the sheet's

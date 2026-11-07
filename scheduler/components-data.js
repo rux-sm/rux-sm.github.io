@@ -379,7 +379,7 @@
               drivers: [driver('d1', { duty: duty === 'unknown' ? null : duty, wheel: duty === 'driving', rest_since: ['sleeper', 'off'].includes(duty) ? new Date(now - 3 * HOUR - 15 * MIN).toISOString() : null })] }, next: atStop() }))),
         one('No signal', 'Samsara has not heard from the bus: a grey dash, and No signal in place of the times.', live('Mesa Robotics Club', { bus: { engine: null, mph: null, heading: null, fuel: null, seen: new Date(now - 25 * MIN).toISOString(), drivers: [] } })),
         one('Starting', 'Coming on the road, the bar shudders while its engine cranks, once a page load, at Full motion.', live('Lakeview High School'), { replay: true }),
-        one('Not rolling', 'Red: the engine still off at the yard from ten minutes before yard-out. A red warning\'s bars blink for their first minute.', live('Northside Band', {
+        one('Not rolling', 'Red: the engine still off at the yard from ten minutes before yard-out. A red warning\'s badge blinks for its first minute.', live('Northside Band', {
           yardOut: now + 5 * MIN, bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), lat: yard[0], lng: yard[1], drivers: [] },
           next: { stops: liveStops(), where: { reached: -1, at: false, next: 0 }, stop: liveStops()[0], at: false, arrival: null, late: 0 } }), { replay: true }),
         one('Wrong bus', 'Red: a driver the bar names is logged into another bus, marked in the crew with that bus.', live('Coastal Youth Choir', {
@@ -464,7 +464,7 @@
         tipOf("A driver's tip on the road", 'Their duty, Drive, Shift and Cycle left, the road\'s warnings, the map, the next stop, and Call and the Live map.',
           live('Harbor Tours', { crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN, drive_ms: 50 * MIN, shift_ms: 4 * HOUR, cycle_ms: 31 * HOUR })] },
             drives: [{}, { min: 270 }, { min: 300 }] }), { kind: 'driver', section: 'driver:d3:driver' }),
-        tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned beside what happened; the pickup alone says on time or how late.', bar(routed), { kind: 'route', section: 'route:' }),
+        tipOf('The route', 'The yard out, the pickup, each stop and the yard back, planned in grey beside what happened; the pickup alone says on time, or how late in red.', bar(routed), { kind: 'route', section: 'route:' }),
         tipOf('The route on the road', 'A stop reached, a check and when the bus got there by Samsara\'s path, and the next one\'s estimate after the bus.', onRoute, { kind: 'route', section: 'route:' }),
         tipOf('A long route', 'Five rows of a longer route, from the yard out, and Full route with the count of stops, which opens the editor\'s Route tab.',
           bar(longTrip), { kind: 'route', section: 'route:' }),

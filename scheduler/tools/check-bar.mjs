@@ -464,13 +464,13 @@ expect('a driver\'s tip on the road: their duty, the three clocks amber under an
 const routeTip = tipDrawn('The route');
 const routeNames = tip => tip.querySelectorAll('.scheduler-route__point').map(p => p.getAttribute('aria-label'));
 const routeDays = tip => tip.querySelectorAll('.scheduler-route__day').map(d => /^[A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}$/.test(d.textContent));
-expect('the route: its head, a heading for each of its two days, a point for the yard out, the pickup\'s spot with its arrival judged, and the yard back',
-  [text(routeTip, '.scheduler-tip__name'), routeDays(routeTip), routeNames(routeTip), text(routeTip, '.scheduler-route__judged'),
+expect('the route: its head, a heading for each of its two days, a point for the yard out, the pickup\'s spot late in red with its minutes, and the yard back',
+  [text(routeTip, '.scheduler-tip__name'), routeDays(routeTip), routeNames(routeTip), text(routeTip, '.scheduler-route__actual--late .scheduler-route__late'),
     routeTip.querySelectorAll('.scheduler-route__point').map(p => p.querySelectorAll('.scheduler-route__word').map(w => w.childNodes[0]?.textContent))],
-  ['Route', [true, true], ['Yard out', 'Spot · Lakeview High School', 'Yard back'], '4 min late', [['Yard out'], ['Spot'], ['Yard back']]]);
-expect('the route on the road: what happened under each planned time, the pickup\'s time by Samsara\'s path, and the next stop\'s estimate after a tilde',
-  tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => a.textContent.replace(/[\d:]+[ap]/, 'T')),
-  ['--:--', 'T', '~T']);
+  ['Route', [true, true], ['Yard out', 'Spot · Lakeview High School', 'Yard back'], '+4 minutes late', [['Yard out'], ['Spot'], ['Yard back']]]);
+expect('the route on the road: what happened under each planned time, the pickup\'s time by Samsara\'s path judged late, and the next stop\'s estimate after a tilde',
+  tipDrawn('The route on the road').querySelectorAll('.scheduler-route__actual').map(a => [a.textContent.replace(/[\d:]+[ap]/, 'T'), a.classes().filter(c => c.includes('--')).map(c => c.split('--')[1])]),
+  [['--:--', ['none']], ['T+64 minutes late', ['late']], ['~T', ['expected']]]);
 const fullRoute = tip => tip.querySelectorAll(':scope > .rux--toggletip-actions > a.rux--link').map(a => [a.textContent, a.dataset.go]);
 const longTip = tipDrawn('A long route');
 expect('a long route shows five points from the yard out, a stop the band stays at with when it departs, and Full route with the count of stops, a link to the editor\'s Route tab',
@@ -547,10 +547,12 @@ expect('a trip in progress wears no bus icon, and its drivers\' marks open the l
   }),
   ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting'].map(() => [false, false, true]).concat([[false, false, false]]));
 expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
-expect('each warning its name in its colour in place of the times',
-  ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => say(lit(n))), [
-    ['error', 'Stop lamp'], ['error', 'Not rolling'], ['error', 'Wrong bus'],
-    ['warning', 'Late to spot'], ['warning', 'Short on hours']]);
+const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__msg--'))?.slice(20), m.getAttribute('aria-label').split(':')[1]?.trim()] : null; };
+expect('each warning is the alert badge in its colour, its name leading the badge\'s words, and the times stay',
+  ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => [badge(lit(n)), say(lit(n)), has(row(lit(n)), '.scheduler-road__track')]), [
+    [['error', 'Stop lamp'], null, true], [['error', 'Not rolling'], null, true], [['error', 'Wrong bus'], null, true],
+    [['warning', 'Late to spot'], null, true], [['warning', 'Short on hours'], null, true]]);
+expect('a bar with no warning and no problem of its own has no badge', badge(lit('At highway speed')), null);
 expect('an engine warning lamp is said on the tooltip only',
   [say(lit('Engine warning lamp')), row(lit('Engine warning lamp')).title.includes('Engine warning lamp on')], [null, true]);
 expect('a red warning blinks for its first minute', lit('Not rolling').hasAttribute('data-alarm'), true);

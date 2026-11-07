@@ -205,14 +205,24 @@
      with an exclamation mark for a bus that does not fit and Carbon's Warning triangle for the rest,
      alone, the problems' words in its accessible name and the Alerts tip it opens, with no hover label to
      repeat them. It stands in the same place on every bar, and a bar with no problem has none. A press on
-     it opens the trip's Alerts tip, so it is one of the bar's card openers. */
+     it opens the trip's Alerts tip, so it is one of the bar's card openers. It keeps the tone and words
+     it was drawn with on `data-tone` and `data-words`, which a live warning, road-bar.js's, adds to
+     with `alertTo` and leaves again once it has gone. */
+  const ALERT_ICON = { error: '#m-error-fill', warning: '#i-warning--alt--filled' };
+  const alertTo = (m, tone, words) => {
+    m.classList.remove('scheduler-bar__msg--error', 'scheduler-bar__msg--warning');
+    m.classList.add(`scheduler-bar__msg--${tone}`);
+    m.querySelector('use')?.setAttribute('href', ALERT_ICON[tone]);
+    m.setAttribute('aria-label', `Alerts: ${words}`);
+  };
   const alertMark = (tone, words) => {
-    const m = el('button', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
+    const m = el('button', 'scheduler-bar__msg scheduler-bar__alert');
     m.type = 'button';
     m.setAttribute('aria-expanded', 'false');
-    m.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'));
+    m.append(svgUse(ALERT_ICON[tone], '16', '0 0 32 32'));
     m.dataset.cardOpener = '';
-    m.setAttribute('aria-label', `Alerts: ${words}`);
+    if (tone) { m.dataset.tone = tone; m.dataset.words = words; }
+    alertTo(m, tone ?? 'warning', words);
     return m;
   };
   /* A TRIP THAT IS BACK SAYS HOW IT CLOSED where a trip still to come wears
@@ -831,6 +841,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, crewGlyph, glyphEl, glyphTo, staffingDue, partnerEl, partnerText, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp, tripDone, fillTracks,
+    draw, crewGlyph, glyphEl, glyphTo, alertMark, alertTo, staffingDue, partnerEl, partnerText, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, dayWords, updateStamp, tripDone, fillTracks,
   };
 })();

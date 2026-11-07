@@ -11,9 +11,11 @@
      while the trip is out. What the bus is doing is the bus column's, so
      the icon says it only on its tooltip.
    - The times, in the time row's place: out and back either end of a
-     track filled to now; a problem's words in its colour instead, Late to
-     spot among them, the worst of live-trip.js's warnings or No signal.
-     Its tooltip says what Samsara says of the bus and its drivers.
+     track filled to now, or No signal and how long. Its tooltip says what
+     Samsara says of the bus and its drivers, each warning in a sentence.
+   - live-trip.js's warnings, Late to spot among them, on the alert badge
+     at the destination row's end, in its colour, as the trip's other
+     problems are, and in the Alerts tip it opens.
    - The contact row stays, as on any bar. What belongs to the bus, its
      speed, fuel and DEF, is the bus column's, bus-head.js's.
    - The drivers, in the update row's place too, a seat for each driver:
@@ -48,7 +50,7 @@
   'use strict';
 
   const Road = window.SchedulerRoad;
-  const { clockEl, hhmm, routeMark, glyphTo } = window.SchedulerBar;
+  const { clockEl, hhmm, routeMark, glyphTo, alertMark, alertTo } = window.SchedulerBar;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -310,9 +312,8 @@
     const worst = said?.warnings[0] ?? null;
     /* THE BUS'S STATE, `data-light`: run while it moves, idle with the
        engine running and the bus still, off with the engine off, scan with no signal.
-       The bars take the worst warning's colour; driver rest is shown on each driver. A red
-       warning's bars blink for the first minute this page has seen it,
-       `data-alarm`. */
+       Driver rest is shown on each driver. A red warning's badge blinks for
+       the first minute this page has seen it, `data-alarm`. */
     if (bus && !bar.dataset.light) start(bar, bus, live.motion ?? 'full');
     if (!bus) {
       delete bar.dataset.light;
@@ -334,7 +335,8 @@
     }
     wheelOn(bar, bus, named);
     liveOpener(bar, bus);
-    times(bar, bus, next, said, worst, live.at);
+    times(bar, bus, next, said, live.at);
+    badgeOn(bar, said?.warnings ?? []);
   }
 
   /* A driver at the wheel the bar does not name, a seat at the drivers
@@ -358,8 +360,26 @@
     row.appendChild(who);
   }
 
-  // What the bar says of a problem: the worst warning's name, or No signal and how long.
-  const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
+  // What the times row says in their place: No signal and how long, while Samsara hears nothing.
+  const sayOf = bus => (bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
+
+  /* A LIVE WARNING IS THE ALERT BADGE'S, as the trip's other problems are,
+     so the times row always says the times: the badge at the destination
+     row's end takes the worse of the tone bar.js drew it in and the
+     warnings', the warnings' names leading its words, and goes back to how
+     bar.js drew it once they have gone. A bar with no badge of its own has
+     one only while warned. The sentences are on the times row's tooltip and
+     in the Alerts tip the badge opens. */
+  function badgeOn(bar, warnings) {
+    const row = bar.querySelector(':scope > .scheduler-bar__dest');
+    let m = row?.querySelector(':scope > .scheduler-bar__alert') ?? null;
+    if (!row || (!m && !warnings.length)) return;
+    if (!m) { m = alertMark(null, ''); row.appendChild(m); }
+    const own = m.dataset.tone ? { tone: m.dataset.tone, words: m.dataset.words } : null;
+    if (!warnings.length) { if (own) alertTo(m, own.tone, own.words); else m.remove(); return; }
+    const tone = own?.tone === 'error' || warnings.some(w => w.tone === 'error') ? 'error' : 'warning';
+    alertTo(m, tone, [...warnings.map(w => `${w.title}: ${w.detail}`), own?.words].filter(Boolean).join(' · '));
+  }
 
   const VEHICLE_STATES = {
     moving: { word: 'Moving' },
@@ -427,7 +447,7 @@
      return has passed, the planned return itself, with how long past it on
      its tooltip, so lateness takes no room on the row. A problem takes the
      row instead, its words in its colour. */
-  function times(bar, bus, next, said, worst, at) {
+  function times(bar, bus, next, said, at) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
     if (!bus) { row?.remove(); return; }
     if (!row) {
@@ -435,8 +455,8 @@
       bar.insertBefore(row, bar.querySelector(':scope > .scheduler-bar__update') ?? bar.querySelector(':scope > .scheduler-bar__drivers'));
     }
     row.title = tipOf(bar, bus, next, said, at);
-    const say = sayOf(bus, worst);
-    if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
+    const say = sayOf(bus);
+    if (say) { row.replaceChildren(el('span', 'scheduler-road__say scheduler-road__say--quiet', say)); return; }
     /* The times and the track between them are the trip's, as a planned
        bar's are; the route mark bar.js leads the row with opens the route tip. */
     const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };

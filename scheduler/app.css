@@ -2477,7 +2477,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* Six pixels between crew members, a step under the row's usual eight, so a
    driver and a relief read as one crew rather than a list. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: calc(var(--rux-spacing-02) + var(--rux-spacing-01)); min-inline-size: 0; overflow: hidden; }
-.scheduler-bar__crew > .scheduler-crew:not(:only-child, .scheduler-crew--seat) { flex: none; }
+.scheduler-bar__crew > .scheduler-crew:not(:only-child) { flex: none; }
 
 /* WHO ELSE IS ON THIS TRIP: a 16px face for each person at the end of the
    destination row, before the live dot and the alert count, the count's own
@@ -2714,68 +2714,36 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* With the time row off, the times go with it. */
 .scheduler-week--no-time .scheduler-road__times { display: none; }
-/* Where the view has turned the update row off, a live bar's drivers keep
-   one row, 4px taller, `--scheduler-road-lift`, so the names stand clear of
-   the hours bars under them. The 4px comes from the bar's padding below
-   it, 7px or more in every view that turns the update row off, so every
-   row above keeps its 18px and the marks in it fit whole. With the update
-   row on, the drivers take its place instead, below. */
-.scheduler-week--no-update:not(.scheduler-week--no-time, .scheduler-week--no-drivers) .scheduler-bar--road { --scheduler-road-lift: var(--rux-spacing-02); }
-.scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift, 0px)); }
-
-/* A single driver keeps icon, name and reading on one line above the tracks.
-   Multiple drivers keep only their icons, names and meter tracks. */
-.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; align-items: stretch; }
-.scheduler-crew--seat { position: relative; flex: 1 1 0; align-self: stretch; display: flex; align-items: flex-start; gap: var(--rux-spacing-02); line-height: calc(var(--scheduler-row-h) - 3px); min-inline-size: 0; }
-/* Seats share the row in whole pixels: each but the last takes its share
-   rounded down, the last what is left, so their meters and marks start on
-   whole pixels. */
-@supports (flex-basis: round(down, calc(100% / sibling-count()), 1px)) {
-  .scheduler-crew--seat:not(:last-child) { flex: 0 0 round(down, calc((100% - (sibling-count() - 1) * var(--rux-spacing-03)) / sibling-count()), 1px); }
-}
-.scheduler-crew--seat > .scheduler-crew__name { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
-.scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
+/* The driver at the wheel stands first in their row. */
+.scheduler-crew--wheel { order: -1; }
 /* A driver's name is its words' width rounded up to a whole pixel, still
    giving way where the row is short, so the mark and the next driver after
    it start on whole pixels. */
 @supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
   .scheduler-crew__name { inline-size: calc-size(fit-content, round(up, size, 1px)); }
 }
-.scheduler-crew--seat:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
-.scheduler-crew--seat > .scheduler-crew__hours { display: block; margin-inline-start: auto; font-size: var(--rux-label-01-font-size); }
-.scheduler-crew--seat:has(> .scheduler-crew__rest-time) > .scheduler-crew__hours { display: none; }
-.scheduler-crew__rest-time { flex: none; margin-inline-start: auto; font-size: var(--rux-label-01-font-size); white-space: nowrap; }
-.scheduler-crew__left, .scheduler-crew__rest {
+/* THE REST METER, which the live card draws: the rest so far toward eight
+   hours in the rest colour, dashed where the duty logs cannot say. */
+.scheduler-crew__rest {
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
   block-size: 2px;
   border-radius: 1px;
-  background: linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent));
+  background: linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent));
 }
-.scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { inset-block-end: 3px; }
-.scheduler-crew__rest { background: linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent)); }
 .scheduler-crew__rest--unknown { background: repeating-linear-gradient(to right, var(--rux-status-gray) 0 2px, transparent 2px 4px); }
 /* A SPLIT REST IS ONE FILL IN TWO PARTS: the earlier sleeper period and this
    one in the same colour, parted by a 1px gap in what the meter stands on,
-   the seat's footer or, below, the card's surface, where the earlier one
-   ends. road-bar.js marks a split and says where. */
+   the card's surface, where the earlier one ends. road-bar.js marks a split
+   and says where. */
 .scheduler-crew__rest[data-split] {
-  --scheduler-rest-gap: var(--scheduler-footer);
+  --scheduler-rest-gap: var(--card-surface, var(--rux-layer));
   background:
     linear-gradient(var(--scheduler-rest-gap), var(--scheduler-rest-gap)) var(--scheduler-rest-split) 0 / 1px 100% no-repeat,
     linear-gradient(var(--scheduler-rest-fill), var(--scheduler-rest-fill)) 0 0 / var(--scheduler-rest) 100% no-repeat,
     var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent));
 }
-.scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, var(--scheduler-meter-base, color-mix(in srgb, currentColor 20%, transparent)); }
-.scheduler-crew__left--away { background: var(--scheduler-mark-error); }
-.scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.scheduler-crew__hours--low { color: var(--scheduler-age-week); }
-/* Multiple seats omit numeric readings; exact values remain in their tooltips. */
-.scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time) { display: none; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar__crew > .scheduler-crew--seat { display: flex; align-items: flex-start; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { display: none; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time, .scheduler-crew__away) { display: none; }
 
 /* Duty replaces the assignment mark with its own icon and semantic colour.
    A ring, when used, shows driving availability and turns amber under one hour. */
@@ -2812,71 +2780,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar__drivers:has(> .scheduler-road__who) > .scheduler-bar__crew { flex: 1 1 0; }
 .scheduler-bar__drivers:has(> .scheduler-road__who) > .scheduler-bar__crew:has(> .scheduler-crew:nth-child(2)) { flex-grow: 2; }
 
-/* A LIVE BAR'S DRIVERS TAKE THE UPDATE ROW'S PLACE, whose updates the live
-   card keeps under its Updates tab, so each seat has two lines: its duty's
-   16px icon and the name, then a 16px meter of what the driver has, filled
-   in the duty's colour, its reading written inside. A driver on duty or
-   driving has the hours left of ten, amber under one; one resting has the
-   rest so far of eight; one in another bus is red and full, with that bus.
-   The reading is dark over the fill, in the footer's colour or a theme's
-   `--scheduler-seat-ink`, and the row's ink past it, from road-bar.js's
-   `--scheduler-seat-fill`; under half full it stands just after the fill,
-   all in the row's ink, so no word is cut in two colours. Two seats split
-   the row. */
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__update { display: none; }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(2 * var(--scheduler-row-h)); }
-/* A driver Samsara has no reading for has no meter, so their name stands
-   on the first row with the seats' names, not centred across both. */
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew > .scheduler-crew:not(.scheduler-crew--seat) { align-self: flex-start; block-size: var(--scheduler-row-h); }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: var(--scheduler-row-h) var(--scheduler-row-h);
-  align-items: center;
-  gap: 0 var(--rux-spacing-02);
-  line-height: var(--scheduler-row-h);
-}
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat::before {
-  content: '';
-  grid-column: 1 / -1;
-  grid-row: 2;
-  block-size: 16px;
-  background: color-mix(in srgb, currentColor 15%, transparent);
-}
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > :is(.scheduler-crew__duty, .scheduler-crew__name) { grid-row: 1; }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > :is(.scheduler-crew__left, .scheduler-crew__rest) {
-  position: static;
-  grid-column: 1 / -1;
-  grid-row: 2;
-  block-size: 16px;
-  border-radius: 0;
-}
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { display: none; }
-/* Rest the duty logs cannot say is the empty track, under its dash. */
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > .scheduler-crew__rest--unknown { background: none; }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat:not(:has(> .scheduler-crew__rest-time)) > .scheduler-crew__hours,
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > :is(.scheduler-crew__rest-time, .scheduler-crew__away) {
-  display: block;
-  z-index: 1;
-  grid-column: 1 / -1;
-  grid-row: 2;
-  min-inline-size: 0;
-  margin: 0;
-  padding-inline: var(--rux-spacing-02);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--rux-label-01-font-size);
-  line-height: 16px;
-  background: linear-gradient(to right, var(--scheduler-seat-ink, var(--scheduler-footer)) var(--scheduler-seat-fill, 0%), var(--scheduler-footer-fg) var(--scheduler-seat-fill, 0%));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat[data-fill-short] > :is(.scheduler-crew__hours, .scheduler-crew__rest-time) {
-  background-image: none;
-  background-color: var(--scheduler-footer-fg);
-  padding-inline-start: calc(var(--scheduler-seat-fill) + var(--rux-spacing-02));
-}
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
    seat they are in, so it shows the open hand; the trip in the editor and a
    trip that is back give no driver up. While the figure is out the seat is dimmed, as a carried bar
@@ -4472,7 +4375,7 @@ a.scheduler-tip__go { text-decoration: none; }
    its bus count, its mark and its colour, the times out and back, and the
    drivers. The customer, the contact, the update, the trip's kind and a
    driver's rest are its sheet's. */
-.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__kind, .scheduler-crew__rest) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar .scheduler-bar__kind { display: none; }
 /* A tap anywhere on a trip is the trip's, and opens its sheet: nothing
    inside a bar takes a press of its own, its marks being too small for a
    thumb. */

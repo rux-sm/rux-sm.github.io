@@ -136,10 +136,6 @@ rest meter.
 
 - [ ] Count the week's minimum in `data.js` in days, so it grows by the
       3.5rem the bus column grew, as the decision says; it is still 33rem.
-- [ ] Draw a road bar's seats as a planned bar's, the wheel's mark kept, and
-      take the duty mark and the hours and rest meters off it, in
-      `scheduler/road-bar.js`, `tools/check-bar.mjs` and the components
-      page's samples.
 - [ ] Add the driver's card to `scheduler/trip-tips.js`, opened by a press
       on the mark or the line in a driver's head, and draw it in
       `tools/check-bar.mjs`.

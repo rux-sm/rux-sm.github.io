@@ -339,44 +339,29 @@
     const one = (name, note, b, more = {}) => ({ name, note, days: 3, rows: [row('101', b)], ...more });
     const road = {
       id: 'road', title: 'Out on the road',
-      intro: 'While its bus is out, a bar lights from Samsara: the times, the speed with its bars beside the tank, and a seat for each driver. Motion above sets how much it moves.',
+      intro: 'While its bus is out, a bar lights from Samsara: its times and its warnings, its drivers drawn as a planned bar draws them, the one at the wheel first behind the steering wheel. What the bus and each driver are doing is the bus column\'s and the driver rail\'s. Motion above sets how much it moves.',
       samples: [
         one('At highway speed', 'The speed, and a green bar lit for every 16 mph, rising like a phone\'s signal.', live('Lakeview High School')),
         one('One day wide', 'The narrowest a bar gets: the rows are laid out for it.', live('Northside Band', { span: 1 })),
-        one('Two drivers', 'Each driver has their own icon and availability meter; the sleeper also has a purple rest meter. Two drivers omit time labels; tooltips give exact values.', live('Riverbend Seniors', {
+        one('Two drivers', 'Both in the row with their answers, the one at the wheel first behind the steering wheel, amber under an hour; their hours and rest are their tiles\' in the driver rail.', live('Riverbend Seniors', {
           span: 1, crew: [['d2', 'driver', 'confirmed'], ['d3', 'co-driver', 'confirmed']],
           bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR, rest_since: new Date(now - 3 * HOUR - 15 * MIN).toISOString() })] },
           next: toStop({ arrival: now + 2 * HOUR + 22 * MIN }) })),
-        ...[
-          ['Rest at eight hours', 'The rest meter is full at the eight-hour reference; availability remains the Samsara clock value.', 8 * HOUR],
-          ['Rest beyond eight hours', 'Rest stays full rather than wrapping to zero; the elapsed label continues.', 10 * HOUR],
-          ['Rest duration unknown', 'Missing duty logs show Rest — and a dashed track, never a made-up zero.', null],
-        ].map(([name, note, elapsed]) => one(name, note, live('Coastal Youth Choir', {
-          bus: { engine: 'off', mph: 0, drivers: [driver('d1', { duty: 'off', wheel: false, left_ms: 4 * HOUR,
-            rest_since: elapsed == null ? null : new Date(now - elapsed).toISOString() })] }, next: atStop() }))),
-        ...[
-          ['Split rest', 'Back in the sleeper two hours or more after a drive, with an earlier sleeper period of two hours or more: the two count together toward the eight hours, one fill parted by a 1px gap, and the seat says Split.', 3 * HOUR, 2 * HOUR + 40 * MIN],
-          ['Split rest, second period short', 'A second sleeper period counts only once it reaches two hours, so until then the seat shows the rest as it stands.', 5 * HOUR, 25 * MIN],
-        ].map(([name, note, earlier, berth]) => one(name, note, live('Coastal Youth Choir', {
-          bus: { engine: 'off', mph: 0, drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 6 * HOUR,
-            rest_since: new Date(now - berth).toISOString(), berth_since: new Date(now - berth).toISOString(), split_ms: earlier })] }, next: atStop() }))),
         one('Late back to the yard', 'Heading for the yard and due there more than ten minutes after the plan: when it is now expected, in amber, in place of the planned return.', live('Harbor Tours', {
           span: 1, back: now + 20 * MIN, next: (() => { const stops = liveStops(); return { stops, where: { reached: 1, at: false, next: 2 }, stop: stops[2], at: false, arrival: now + 65 * MIN, late: 0 }; })() })),
         one('Past its return', 'Still out after the planned return: the track full, and the return time in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
         one('On its second day', 'A trip longer than a day stands its rows in today\'s column while the bus is out, and on its first day before and after.', live('Coastal Youth Choir', { span: 3, day: 1 })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
         one('Idling', 'The bus column says Idle and how long; the bar\'s bus icon says it on its tooltip.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
-        one('Resting', 'The sleeper icon is purple beside that driver; the bus column describes the bus.', live('Riverbend Seniors', {
+        one('Resting', 'Neither driver at the wheel, so each seat keeps its answer; their rest is their tile\'s in the driver rail.', live('Riverbend Seniors', {
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),
         one('Idling a long time', 'Past 30 minutes the bus column\'s Idle turns amber; the bus icon\'s tooltip gives the idle duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
         one('Engine off', 'The bus column says Off and how long; the bus icon\'s tooltip says Engine off.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
         one('Stopped', 'Engine on with a fresh zero-speed reading: the bus icon\'s tooltip says Engine on.', live('Harbor Tours', { bus: { engine: 'on', mph: 0 }, next: atStop() })),
         one('Running without a speed reading', 'Engine on without a speed reading: the bus icon\'s tooltip says Engine on.', live('Riverbend Seniors', { bus: { engine: 'on', mph: null } })),
-        ...Object.entries(window.SchedulerRoadBar.DUTY).map(([duty, { word }]) =>
-          one(`${word} icon`, `The ${word.toLowerCase()} icon beside the driver's name, with their remaining driving hours.`, live('Lakeview High School', {
-            bus: { engine: duty === 'driving' ? 'on' : 'idle', mph: duty === 'driving' ? 64 : 0,
-              drivers: [driver('d1', { duty: duty === 'unknown' ? null : duty, wheel: duty === 'driving', rest_since: ['sleeper', 'off'].includes(duty) ? new Date(now - 3 * HOUR - 15 * MIN).toISOString() : null })] }, next: atStop() }))),
+        one('At the wheel', 'The steering wheel before the name of the driver at the wheel, in green, amber under an hour left; it opens their tip.', live('Lakeview High School', {
+          bus: { engine: 'on', mph: 64, drivers: [driver('d1', { duty: 'driving', wheel: true })] }, next: atStop() })),
         one('No signal', 'Samsara has not heard from the bus: a grey dash, and No signal in place of the times.', live('Mesa Robotics Club', { bus: { engine: null, mph: null, heading: null, fuel: null, seen: new Date(now - 25 * MIN).toISOString(), drivers: [] } })),
         one('Starting', 'Coming on the road, the bar shudders while its engine cranks, once a page load, at Full motion.', live('Lakeview High School'), { replay: true }),
         one('Not rolling', 'Red: the engine still off at the yard from ten minutes before yard-out. A red warning\'s badge blinks for its first minute.', live('Northside Band', {
@@ -384,17 +369,17 @@
           next: { stops: liveStops(), where: { reached: -1, at: false, next: 0 }, stop: liveStops()[0], at: false, arrival: null, late: 0 } }), { replay: true }),
         one('Wrong bus', 'Red: a driver the bar names is logged into another bus, marked in the crew with that bus.', live('Coastal Youth Choir', {
           crew: [['d2', 'driver', 'confirmed']], bus: { drivers: [] }, others: [{ bus_id: 'b119', drivers: [driver('d2')] }] })),
-        one('Co-driver in another bus they ride', 'A co-driver who moves between the trip\'s buses, in one of the others: that bus on an empty meter, in the row\'s ink, and no warning.', live('Coastal Youth Choir', {
+        one('Co-driver in another bus they ride', 'A co-driver who moves between the trip\'s buses, in one of the others: that bus in the row\'s ink, and no warning.', live('Coastal Youth Choir', {
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], bus: { drivers: [driver('d1')] },
           others: [{ bus_id: 'b119', drivers: [driver('d2', { wheel: false, duty: 'on' })] }], buses: new Map([['d2', ['b119']]]) })),
         one('Late to spot', 'Amber: the pickup is next and the bus will reach it after its spot.', live('Riverbend Seniors', {
           next: (() => { const stops = liveStops(); stops[0].due = now + 6 * MIN; return { stops, where: { reached: -1, at: false, next: 0 }, stop: stops[0], at: false, arrival: now + 25 * MIN, late: 19 }; })() })),
-        one('Short on hours', 'Amber: the hours left in the bus fall short of the drive before the next rest; the driver\'s bar is amber under an hour.', live('Harbor Tours', {
+        one('Short on hours', 'Amber: the hours left in the bus fall short of the drive before the next rest; the steering wheel is amber under an hour.', live('Harbor Tours', {
           crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN })] }, drives: [{}, { min: 270 }, { min: 300 }] })),
         one('Low fuel', 'Under a quarter of a tank, the tank amber.', live('Northside Band', { bus: { fuel: 18 } })),
         one('Engine warning lamp', 'Said only on the tooltip and the live card, since a warning lamp can stay lit for days.', live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'] } })),
         one('Stop lamp', 'Red: the engine\'s stop lamp is a warning, its codes on the tooltip.', live('Riverbend Seniors', { bus: { fault: 'stop', faults: ['Coolant temperature high'], mph: 0, engine: 'idle' }, next: atStop() }), { replay: true }),
-        one('In the bus, not yet confirmed', 'Samsara has the driver in the bus, so the bar reads them confirmed; near yard-out the board saves it.', live('Northside Band', {
+        one('In the bus, not yet confirmed', 'Samsara has the driver in the bus; the seat keeps their answer, and near yard-out the board saves them Confirmed by Samsara.', live('Northside Band', {
           crew: [['d1', 'driver', 'pending-response']] })),
         one('Someone else at the wheel', 'A driver the bar does not name joins the end of the drivers row.', live('Harbor Tours', { bus: { drivers: [driver('d9', { name: 'Omar Diaz', left_ms: 6 * HOUR })] } })),
       ],
@@ -501,9 +486,9 @@
         { ...sample(alerts, 'No one to call on the day'), name: 'Amber warning and count' },
         { ...sample(alerts, 'The wrong type of bus'), name: 'Red error and count' },
         ...['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal'].map(name => sample(road, name)),
-        ...Object.values(window.SchedulerRoadBar.DUTY).map(({ word }) => sample(road, `${word} icon`)),
+        sample(road, 'At the wheel'),
         sample(road, 'Wrong bus'), sample(road, 'Low fuel'), sample(road, 'Short on hours'),
-        ...['Two drivers', 'Rest at eight hours', 'Rest beyond eight hours', 'Rest duration unknown'].map(name => sample(road, name)),
+        sample(road, 'Two drivers'),
       ],
     };
     return { busesById, driversById, partnersById, statuses, sections: [icons, tripBar, crew, alerts, handled, road, tips] };

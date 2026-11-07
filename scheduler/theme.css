@@ -818,7 +818,6 @@
   --scheduler-meter-base: var(--scheduler-border, var(--geist-gray-400));
   --scheduler-stop-ahead: var(--scheduler-dim, var(--geist-gray-600));
 }
-[data-theme="rux-100"] .scheduler-crew--seat:has(> .scheduler-crew__rest) { --scheduler-seat-ink: var(--scheduler-footer-fg); }
 /* Its drivers' names are Geist's white, its gray 1000, as every other
    theme writes them near-white on its footer, so who drives reads first
    down the bars. A driver in another bus keeps the red. */
@@ -1097,7 +1096,7 @@
 }
 /* rux-dark squares this app's pills too: a bar's kind label, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
-[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-bar__track, .scheduler-crew__left) {
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-bar__track) {
   border-radius: 0;
 }
 

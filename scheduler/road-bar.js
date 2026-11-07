@@ -16,18 +16,16 @@
    - live-trip.js's warnings, Late to spot among them, on the alert badge
      at the destination row's end, in its colour, as the trip's other
      problems are, and in the Alerts tip it opens.
-   - The contact row stays, as on any bar. What belongs to the bus, its
+   - The contact and update rows stay, as on any bar. What belongs to the bus, its
      speed, fuel and DEF, is the bus column's, bus-head.js's.
-   - The drivers, in the update row's place too, a seat for each driver:
-     the one at the wheel first, behind the steering wheel; every
-     seat with its duty mark, with no duty reading an Unknown duty question
-     mark, and under it a meter of the driving hours left, amber under one,
-     or while resting of the rest so far, its reading inside. A driver
-     Samsara has in another bus is the red stop sign, their name red and a
-     full red meter with that bus. A driver at the wheel the bar does not
-     name joins the end of the row. Two drivers split the rows half and
-     half. app.css lays the seats out, and keeps them to one row where the
-     view has turned the update row off.
+   - The drivers, as a planned bar draws them, each name with its answer:
+     what a driver is doing, their hours and their rest, is their tile's in
+     the driver rail, and the tip their mark opens says it in full. The one
+     at the wheel stands first, behind the steering wheel, the driving mark
+     in green, amber under an hour. A driver Samsara has in another bus says
+     that bus in red; a co-driver in another of the buses they ride says it
+     in the row's ink. A driver at the wheel the bar does not name joins the
+     end of the row.
    The bar wears no edge, border or light of its own: how the bus is doing
    is the bus column's, and a problem's words in the times row. With the time row off the board the
    times go too; app.css does that from the view's toggles.
@@ -50,7 +48,7 @@
   'use strict';
 
   const Road = window.SchedulerRoad;
-  const { clockEl, hhmm, routeMark, glyphTo, alertMark, alertTo } = window.SchedulerBar;
+  const { clockEl, hhmm, routeMark, alertMark, alertTo } = window.SchedulerBar;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -71,8 +69,6 @@
 
   const HOUR = 3600e3;
   const { DRIVER_STATUSES } = window.SchedulerLegFacts;
-  const CONFIRMED_STATUS = DRIVER_STATUSES.find(s => s.value === 'confirmed');
-  const CONFIRMED_ICON = CONFIRMED_STATUS.icon;
   const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
   const DUTY = {
     driving: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Driving', tone: 'success' },
@@ -129,9 +125,9 @@
     const parts = String(name).trim().split(/\s+/);
     return parts.length > 1 ? `${parts[0]} ${parts.at(-1)[0]}.` : parts[0];
   };
-  /* A duty's mark; given the hours left, ringed by them, the ring's share set
-     as a custom property app.css draws. A seat's mark is a button, which
-     `liveOpener` makes the live card's opener. */
+  /* A duty's mark, as the live card draws a driver's; given the hours left,
+     ringed by them, the ring's share set as a custom property app.css
+     draws. */
   const mark = (duty, left, press = false) => {
     const m = el(press ? 'button' : 'span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
     const status = DUTY[duty] ?? DUTY.unknown;
@@ -146,110 +142,47 @@
     }
     return m;
   };
-  // The hours a driver may still drive, amber under one.
-  const hoursEl = ms => {
-    const label = el('span', `scheduler-crew__hours${ms != null && ms < HOUR ? ' scheduler-crew__hours--low' : ''}`, ms == null ? '— left' : `${hours(ms)} left`);
-    label.title = ms == null ? 'Driving availability unknown' : `${hours(ms)} driving availability from Samsara`;
-    return label;
+  /* The steering wheel on a bar, the driving mark of the driver at the
+     wheel, amber under an hour left: a button, which `liveOpener` makes the
+     opener of their tip. */
+  const wheelMark = left => {
+    const m = mark('driving', null, true);
+    if (left != null && left < HOUR) m.dataset.tone = 'warning';
+    m.setAttribute('aria-label', 'At the wheel');
+    return m;
   };
   // How long since an instant, "12m", "3h" or "2d".
   const ago = at => {
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
     return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
   };
-  /* Each seat has a solid duty icon, its name and a labeled time. Availability
-     comes from Samsara's clocks; an off-duty or sleeper seat also shows a
-     separate rest track, with a dash when its duty logs cannot be read. A
-     co-driver in another of the buses they ride, `riding`, keeps their
-     status mark and says that bus on an empty meter, in the row's ink. */
+  /* Each seat is a planned bar's, its name with its answer. The driver at
+     the wheel stands first behind the steering wheel, which stands in their
+     answer's place. A driver Samsara has in another bus says that bus in
+     red; a co-driver in another of the buses they ride says it in the
+     row's ink. */
   function crewOn(item, d, elsewhere, riding = null) {
-    for (const part of ['duty', 'hours', 'away', 'left', 'rest', 'rest-time']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
-    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--riding', 'scheduler-crew--seat');
-    item.style.removeProperty('--scheduler-seat-fill');
-    item.removeAttribute('data-fill-short');
+    item.querySelector(':scope > .scheduler-crew__duty')?.remove();
+    item.querySelector(':scope > .scheduler-crew__away')?.remove();
+    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--riding');
     delete item.dataset.duty;
-    // A driver Samsara has in the bus is on the trip: their mark reads
-    // confirmed while the bus is out, whatever they answered.
-    const statusMark = item.querySelector(':scope > .scheduler-crew__mark');
-    const statusGlyph = statusMark?.classList.contains('scheduler-crew__mark--dot') ? statusMark.querySelector('svg') : null;
-    if (statusMark?.dataset.baseClass != null) { statusMark.className = statusMark.dataset.baseClass; delete statusMark.dataset.baseClass; }
-    if (statusGlyph && statusMark.dataset.baseIcon != null) { glyphTo(statusGlyph, statusMark.dataset.baseIcon); delete statusMark.dataset.baseIcon; }
-    if (statusGlyph && statusMark.dataset.baseIndicator != null) { statusGlyph.setAttribute('class', statusMark.dataset.baseIndicator); delete statusMark.dataset.baseIndicator; }
-    item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
-    delete item.dataset.baseDeclined;
-    // A seat's hover label is only where its driver is away; the live tip says the rest.
     item.removeAttribute('title');
     if (elsewhere) {
-      const m = el('button', 'scheduler-crew__duty scheduler-crew__duty--away');
-      m.type = 'button';
-      m.appendChild(svgUse('#m-report-fill', '16', '0 0 16 16'));
-      item.prepend(m);
-      item.dataset.duty = 'away';
-      item.classList.add('scheduler-crew--away', 'scheduler-crew--seat');
-      item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`), leftBar(null, true));
-      item.style.setProperty('--scheduler-seat-fill', '100%');
+      item.classList.add('scheduler-crew--away');
+      item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`));
       item.title = `Samsara: ${elsewhere.sentence}`;
       return;
     }
     if (riding) {
-      item.dataset.duty = 'riding';
-      item.classList.add('scheduler-crew--riding', 'scheduler-crew--seat');
-      const meter = el('span', 'scheduler-crew__left');
-      meter.style.setProperty('--scheduler-left', '0%');
-      item.append(el('span', 'scheduler-crew__away', `in ${riding.bus}`), meter);
-      item.style.setProperty('--scheduler-seat-fill', '0%');
+      item.classList.add('scheduler-crew--riding');
+      item.append(el('span', 'scheduler-crew__away', `in ${riding.bus}`));
       item.title = `Samsara: in ${riding.bus}, another bus they ride on this trip`;
       return;
     }
-    if (!d) return;
-    item.classList.add('scheduler-crew--seat');
-    if (statusMark) {
-      statusMark.dataset.baseClass = statusMark.className;
-      statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|major|normal|error|success)\b/, 'scheduler-crew__mark--success');
-      if (statusGlyph) {
-        statusMark.dataset.baseIcon = statusGlyph.querySelector('use').getAttribute('href');
-        glyphTo(statusGlyph, CONFIRMED_ICON);
-        statusMark.dataset.baseIndicator = statusGlyph.getAttribute('class') || '';
-        statusGlyph.setAttribute('class', CONFIRMED_STATUS.indicator);
-      }
-    }
-    item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
-    item.classList.remove('scheduler-crew--declined');
-    item.dataset.duty = d.duty ?? 'unknown';
-    const dutyMark = mark(d.duty ?? 'unknown', null, true);
-    item.prepend(dutyMark);
-    item.classList.toggle('scheduler-crew--wheel', d.wheel);
-    item.append(hoursEl(d.left_ms));
-    if (d.left_ms != null) item.appendChild(leftBar(d.left_ms));
-    if (resting(d)) {
-      const rest = restProgress(d);
-      const label = el('span', 'scheduler-crew__rest-time', rest.ms == null ? 'Rest —' : `${rest.earlier == null ? 'Rest' : 'Split'} ${hours(rest.ms)}`);
-      label.title = rest.ms == null ? 'Continuous rest unknown: duty logs unavailable' : `${restTitle(rest)}; availability comes from Samsara's HOS clocks`;
-      item.append(label, restMeter(d));
-    }
-    // How far the seat's meter is filled, where app.css turns its reading
-    // from dark to the row's ink: the rest so far while resting, else the
-    // hours left. Under half, the reading stands after the fill instead, so
-    // no word is cut in two colours.
-    const elapsed = resting(d) ? restProgress(d).ms : null;
-    const fill = resting(d) ? (elapsed == null ? 0 : share(elapsed, REST)) : d.left_ms != null ? share(d.left_ms, DRIVE) : 0;
-    item.style.setProperty('--scheduler-seat-fill', `${fill}%`);
-    item.toggleAttribute('data-fill-short', fill < 50);
-  }
-  // The bar of driving hours left under a seat; red and full for the wrong bus.
-  function leftBar(ms, away) {
-    const b = el('span', `scheduler-crew__left${away ? ' scheduler-crew__left--away' : ms < HOUR ? ' scheduler-crew__left--low' : ''}`);
-    b.style.setProperty('--scheduler-left', `${away ? 100 : share(ms, DRIVE)}%`);
-    if (!away) {
-      b.setAttribute('role', 'meter');
-      b.setAttribute('aria-label', 'Driving availability');
-      b.setAttribute('aria-valuemin', '0');
-      b.setAttribute('aria-valuemax', String(DRIVE / HOUR));
-      b.setAttribute('aria-valuenow', String(Math.min(DRIVE, ms) / HOUR));
-      b.setAttribute('aria-valuetext', `${hours(ms)} left, reported by Samsara`);
-      b.title = `${hours(ms)} driving availability`;
-    }
-    return b;
+    if (!d?.wheel) return;
+    item.classList.add('scheduler-crew--wheel');
+    item.dataset.duty = 'driving';
+    item.prepend(wheelMark(d.left_ms));
   }
 
   // A full rest meter is a completed reference period, not a reset of every HOS clock.
@@ -346,7 +279,7 @@
     row?.querySelector(':scope > .scheduler-road__who')?.remove();
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
-    const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
+    const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--wheel');
     // Whose tip the mark opens; not `data-driver-id`, which names a seat's driver.
     if (wheel.driver_id != null) who.dataset.wheelDriver = wheel.driver_id;
     // Not sent's circle in the slot every driver has, so the name lines

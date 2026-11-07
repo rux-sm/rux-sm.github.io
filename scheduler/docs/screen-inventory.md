@@ -247,7 +247,9 @@ Three homes, and one rule for choosing.
 ### The driver rail
 
 The drivers' tiles, always open left of the week on the Mac's board, next to
-it, every other open panel left of the rail; a phone's board has none, and
+it, every other open panel left of the rail, and there from the first paint,
+grey skeleton tiles until the drivers load, so nothing moves as the page
+comes up; a phone's board has none, and
 its half sheet and live card carry the drivers. Dispatch reads the schedule
 and the drivers together, so the rail is part of the workspace rather than a
 panel: it is never closed for room, and where a panel needs room its open

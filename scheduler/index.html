@@ -574,16 +574,45 @@
               </div>
             </div>
           </div>
-          <!-- The driver rail, always beside the board but on a phone's. data.js
-               orders it next to the week, left of every other open panel. Its
-               head holds the chevron that slides the week out beside the
-               drivers' tiles. -->
-          <div class="scheduler-aside" id="scheduler-aside" hidden>
+          <!-- The driver rail, always beside the board but on a phone's, where
+               app.css hides it. It is in the page from the first paint, so the
+               board is laid out beside it from the start. data.js orders it
+               next to the week, left of every other open panel. Its head holds
+               the chevron that slides the week out beside the drivers' tiles.
+               Until data.js draws the drivers, the grid holds a skeleton of
+               their tiles in the tile's own classes, the person's name and the
+               meter in grey. -->
+          <div class="scheduler-aside" id="scheduler-aside">
             <div class="scheduler-aside__head">
               <span class="scheduler-aside__title">Drivers</span>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-week" aria-expanded="false" aria-controls="scheduler-avail" aria-label="Show the week" title="Show the week">
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
               </button>
+            </div>
+            <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Drivers" aria-busy="true">
+              <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid">
+                <div class="scheduler-avail__days"><div class="scheduler-avail__day scheduler-avail__day--head"></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+                <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="scheduler-avail__top"><span class="rux--skeleton__text scheduler-skeleton-who"></span></span><span class="scheduler-skeleton-line"><span class="rux--skeleton__text scheduler-skeleton-meter"></span></span></div></div>
+              </div>
             </div>
           </div>
           <!-- The panes of the board's two lists, Tasks and Departures, each left of
@@ -779,9 +808,6 @@
           </div>
         </div>
 
-        <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Drivers" hidden>
-          <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid"></div>
-        </div>
       </div>
       </div>
     </div>

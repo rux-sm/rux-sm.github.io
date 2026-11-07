@@ -11656,7 +11656,9 @@
      keeps the board's own day number, so the selected trip's days light the
      same columns whichever week is shown. */
   function drawAvailability(rows, weekStart, first, count, days) {
+    // The drivers replace index.html's skeleton of their tiles.
     availGrid.textContent = '';
+    availEl.removeAttribute('aria-busy');
     availEl.style.setProperty('--scheduler-days', String(count));
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
@@ -13249,7 +13251,6 @@
     if (!shown && focusDriver != null) pickDriver(null);
     if (asideSlot) {
       asideSlot.hidden = !shown;
-      if (shown && availEl.parentElement !== asideSlot) asideSlot.appendChild(availEl);
       asideSlot.toggleAttribute('data-week', railWeek);
     }
     availEl.hidden = !shown;
@@ -13294,15 +13295,8 @@
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */
-  const VIEW_ROWS = ['client', 'contact', 'time', 'update', 'drivers'];
-  // The class that hides each row, written out in full so the check can read it.
-  const HIDE_ROW = {
-    client: 'scheduler-week--no-client',
-    contact: 'scheduler-week--no-contact',
-    time: 'scheduler-week--no-time',
-    update: 'scheduler-week--no-update',
-    drivers: 'scheduler-week--no-drivers',
-  };
+  // The bar's rows, which view.js names and sets on the week before the first paint.
+  const { ROWS: VIEW_ROWS, COMPACT, dress: dressRows } = window.SchedulerView;
   /* `motion` is how much a bus out on its trip moves on its bar: full,
      calm, every light held still, or off, the edge alone. It starts calm
      for a computer set to reduce motion. */
@@ -13313,11 +13307,10 @@
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
     yard: false, fill: false, grayConfirmed: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
-  /* Compact is the rows' own switches set to the destination, the times and
-     the drivers, about half a bar's height; it is not saved on its own, but
-     ticked while the rows stand so, and pressed again it turns every row back
-     on. */
-  const COMPACT = { client: false, contact: false, time: true, update: false, drivers: true };
+  /* Compact is the rows' own switches set to view.js's compact set, the
+     destination, the times and the drivers, about half a bar's height; it is
+     not saved on its own, but ticked while the rows stand so, and pressed
+     again it turns every row back on. */
   const isCompact = () => VIEW_ROWS.every(r => view[r] === COMPACT[r]);
   /* A compact board, a phone's, draws those three rows whatever the view
      holds, since the rest of what a trip says is its sheet's: the view keeps
@@ -13350,7 +13343,6 @@
     weekStart = view.weekStart;
     view.sunday = weekStart === 'sunday';
     dressWeekPicker();
-    for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !rowShown(r));
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
     // Fill the window, set on the root as view.js sets it before the first
@@ -13358,9 +13350,7 @@
     document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
     // One for the destination, which never goes, plus whatever is left on;
     // the bus heads lay out their parts by the count, from app.css.
-    const barRows = String(1 + VIEW_ROWS.filter(rowShown).length);
-    schEl.style.setProperty('--scheduler-bar-rows', barRows);
-    schEl.dataset.barRows = barRows;
+    dressRows(schEl, rowShown);
     markLeads();
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.

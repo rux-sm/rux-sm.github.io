@@ -971,6 +971,12 @@ button.scheduler-row-head__num:focus { outline: none; }
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
 }
+/* A driver tile's skeleton stands in the tile's own classes, which place
+   it: the name's line and, on the line under it, the 64px meter. */
+.scheduler-avail__name .rux--skeleton__text { margin-block-end: 0; }
+.scheduler-skeleton-who { inline-size: 5rem; block-size: var(--rux-spacing-05); }
+.scheduler-skeleton-line { display: flex; align-items: center; block-size: var(--scheduler-label-h); }
+.scheduler-skeleton-meter { inline-size: var(--rux-spacing-10); block-size: var(--rux-spacing-02); }
 /* On the strip the skeleton is three weeks of days, so a board Fill the
    window has widened loads full to its edge, and the pane cuts the days it
    cannot hold. render() takes the grid's skeleton class off as it draws the
@@ -3739,11 +3745,17 @@ a.scheduler-tip__go { text-decoration: none; }
    fills the window as it did. */
 .scheduler-board { display: flex; align-items: flex-start; justify-content: center; gap: var(--rux-spacing-05); min-inline-size: 0; }
 
+/* A phone's board has no rail, data.js's `railShown`: this keeps it out of
+   the first paint there too, before data.js has run. */
+@media (max-width: 41.98rem) { .scheduler-aside { display: none; } }
 /* THE DRIVER RAIL stands left of the week, next to it, every other open
    panel left of it: the drivers' tiles alone, `--scheduler-rail-w`, or with
    its week open `--scheduler-rail-week-w`, which data.js prices the room by.
    `--scheduler-pane-w` is its width to the rules that move a pane. */
 .scheduler-aside {
+  /* Next to the week from the first paint; data.js orders every open panel
+     the same way once it runs. */
+  order: -1;
   --scheduler-pane-w: var(--scheduler-rail-w);
   flex: 0 0 var(--scheduler-rail-w);
   inline-size: var(--scheduler-rail-w);
@@ -5087,7 +5099,7 @@ html[data-scheduler-takeover] {
   .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-viewer:has(> .scheduler-viewer__resize[data-dragging]) { transition: none; }
   /* Shut, and the place a column opens from: no width, and the 16px beside
      it taken back, on the week's side of it. */
-  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-viewer, .scheduler-aside, .scheduler-to-do--pane)[hidden] {
+  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-viewer, .scheduler-to-do--pane)[hidden] {
     flex-basis: 0;
     min-inline-size: 0;
     margin-inline-end: calc(-1 * var(--rux-spacing-05));
@@ -5098,7 +5110,7 @@ html[data-scheduler-takeover] {
     margin-inline-start: calc(-1 * var(--rux-spacing-05));
   }
   @starting-style {
-    .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-viewer, .scheduler-aside, .scheduler-to-do--pane) {
+    .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-viewer, .scheduler-to-do--pane) {
       flex-basis: 0;
       min-inline-size: 0;
       margin-inline-end: calc(-1 * var(--rux-spacing-05));
@@ -5109,18 +5121,20 @@ html[data-scheduler-takeover] {
       margin-inline-start: calc(-1 * var(--rux-spacing-05));
     }
   }
-  /* What the roster and the lists' pane hold slides in from the left and
-     fades up, as a left-placed side panel does, and leaves the same way. */
-  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-aside, .scheduler-to-do--pane) > * {
+  /* What the lists' pane holds slides in from the left and fades up, as a
+     left-placed side panel does, and leaves the same way. The driver rail
+     never opens or shuts beside the week: it is there from the first paint,
+     and only its week's width moves. */
+  .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-to-do--pane > * {
     transition: opacity 150ms cubic-bezier(0, 0, .38, .9), transform 150ms cubic-bezier(0, 0, .38, .9);
   }
-  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-aside, .scheduler-to-do--pane)[hidden] > * {
+  .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-to-do--pane[hidden] > * {
     opacity: 0;
     transform: translateX(-320px);
     transition-timing-function: cubic-bezier(.2, 0, 1, .9);
   }
   @starting-style {
-    .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-aside, .scheduler-to-do--pane) > * {
+    .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-to-do--pane > * {
       opacity: 0;
       transform: translateX(-320px);
     }

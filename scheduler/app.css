@@ -1547,19 +1547,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   box-shadow: 0 0 0 1px var(--scheduler-mark-fill);
 }
 .scheduler-bar [data-card-opener]:active { --scheduler-mark-fill: color-mix(in srgb, var(--scheduler-ink-strong) 32%, transparent); }
-/* A mark drawn in an outline icon turns solid while the pointer is on its
-   bar, so the bar's buttons show before one is reached, and while it is
-   filled, bar.js's `glyphTo`: the outline fades out as the solid fades in. */
-.scheduler-bar__solid { opacity: 0; }
-:is(.scheduler-bar__line, .scheduler-bar__solid) { transition: opacity 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-@media (hover: hover) {
-  :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    .scheduler-bar [data-card-opener]:hover) .scheduler-bar__line { opacity: 0; }
-  :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
-    .scheduler-bar [data-card-opener]:hover) .scheduler-bar__solid { opacity: 1; }
-}
-.scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
-.scheduler-bar [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
 /* The time line lifts as a line does while the route is open, data.js's
    `data-route-open`: from 2px to 4px, and its part still to go from a fifth
    of the ink to half. The ticks keep a pixel past the line either side. */
@@ -1569,9 +1556,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-[data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+[data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+  .scheduler-week :is([data-card-opener], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
    evening before, raised so the row keeps its height, and never under

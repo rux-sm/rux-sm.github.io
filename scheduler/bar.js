@@ -53,19 +53,11 @@
     if (text != null) n.textContent = text;
     return n;
   };
-  /* An outline icon's solid one, which a bar's mark is drawn in as well, so
-     app.css can turn the mark solid while it lifts. */
-  const SOLID = { '#m-route': '#m-route-fill', '#m-chat': '#m-chat-fill' };
-  // Draws `href` in an icon's svg, with its solid icon over it where it has one.
+  // Draws `href` in an icon's svg, in place of what it drew.
   const glyphTo = (svg, href) => {
-    svg.replaceChildren();
-    for (const [at, cls] of [[href, SOLID[href] && 'scheduler-bar__line'], [SOLID[href], 'scheduler-bar__solid']]) {
-      if (!at) continue;
-      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-      use.setAttribute('href', at);
-      if (cls) use.setAttribute('class', cls);
-      svg.appendChild(use);
-    }
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', href);
+    svg.replaceChildren(use);
   };
   const svgUse = (href, size, box) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

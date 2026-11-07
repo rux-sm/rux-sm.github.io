@@ -27,9 +27,9 @@
      cycle clocks, amber under an hour as the driver's tip has it. The full
      words are the line's label. A driver Samsara keeps no clock for has a
      quiet dash beside an empty meter, as a bus with no signal does.
-   The name is a button that picks out the driver's trips; the mark and the
-   line are buttons, the line the trigger of the driver's card, a Carbon
-   toggletip that data.js fills from trip-tips.js's `driverCard`.
+   A press anywhere on the tile opens the driver's card, a Carbon toggletip
+   that data.js fills from trip-tips.js's `driverCard`, as a press anywhere
+   on a bus's tile opens its tip.
 
    `draw(cell, driver, live, alerts, onTrip)` draws it, its parts once and
    their words as they change: `driver` is the driver's row,
@@ -133,19 +133,20 @@
   }
 
   /* THE TILE'S PARTS, made once, so a live answer changes their words in
-     place and a card open from the tile stays open: the name, a button
-     that picks out the driver's trips; the worst mark, a button that opens
-     their card; the free check; and the line, the button of the card's
-     toggletip, with the structure from `carbon-ibm-products-dom.json` that
-     js/popover.js opens, its content data.js's, filled as it opens. */
+     place and a card open from the tile stays open: the name; the worst
+     mark; the free check; and the line, the button of the card's toggletip,
+     with the structure from `carbon-ibm-products-dom.json` that
+     js/popover.js opens, its content data.js's, filled as it opens. The
+     whole tile is that button's to press, as the whole bus tile is its
+     number's: app.css spreads its press over the tile, so the name and the
+     mark are words in it and the button's label says them all. */
   function build(cell) {
     const top = el('span', 'scheduler-avail__top');
     const who = svgUse('#m-person', '16', '0 0 32 32');
     who.classList.add('scheduler-avail__icon');
-    const name = el('button', 'scheduler-avail__who');
-    name.type = 'button';
-    const mark = el('button', 'scheduler-avail__mark');
-    mark.type = 'button';
+    const name = el('span', 'scheduler-avail__who');
+    const mark = el('span', 'scheduler-avail__mark');
+    mark.setAttribute('aria-hidden', 'true');
     mark.hidden = true;
     /* The check a selected trip's free drivers wear in the mark's place,
        shown by app.css while data.js marks the tile free. */
@@ -169,7 +170,7 @@
     const state = stateOf(live, onTrip);
     const marks = marksOf(driver, alerts);
     const name = driver.short_name || driver.name || 'Driver';
-    const key = JSON.stringify([name, state.line, state.tone, state.meter, marks.map(m => [m.kind, m.tone, m.words])]);
+    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
     cell.dataset.head = key;
     if (!cell.querySelector(':scope > .scheduler-avail__top')) build(cell);
@@ -180,14 +181,13 @@
     mark.hidden = !marks.length;
     if (marks.length) {
       mark.dataset.tone = marks[0].tone;
-      mark.setAttribute('aria-label', `${marks.map(m => m.words).join('. ')}: ${full}'s card`);
       mark.replaceChildren(svgUse(marks[0].icon, '16', '0 0 32 32'));
     }
     // A driver whose worst mark is red cannot drive, so is never marked free.
     cell.toggleAttribute('data-cannot', marks[0]?.tone === 'error');
     const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
-    line.setAttribute('aria-label', `${state.words}: ${full}'s card`);
+    line.setAttribute('aria-label', [`${full}'s card`, state.words, ...marks.map(m => m.words)].join('. '));
     line.querySelector('.scheduler-avail__state').textContent = state.line;
     const meter = line.querySelector('.scheduler-avail__meter');
     meter.dataset.tone = state.tone;
@@ -198,8 +198,12 @@
       delete meter.dataset.kind;
       meter.style.removeProperty('--scheduler-share');
     }
-    cell.title = [`${full} · ${driver.priority == null ? 'No priority' : `Priority ${driver.priority}`}`,
-      state.words, ...marks.map(m => m.words)].join('\n');
+    /* The tile's hover words are the driver's own, on one line as the bus
+       tile's are the bus's: the full name, their priority, Part-time and
+       their language. What the clock and the marks say is the card's. */
+    cell.title = [full, driver.priority == null ? 'No priority' : `Priority ${driver.priority}`,
+      driver.employment_type === 'part-time' ? 'Part-time' : null,
+      driver.language ? ({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language : null].filter(Boolean).join(' · ');
   }
 
   window.SchedulerDriverHead = { draw, stateOf, marksOf, WARN_DAYS };

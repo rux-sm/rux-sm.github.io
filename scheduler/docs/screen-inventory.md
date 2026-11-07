@@ -54,7 +54,7 @@ The side nav lists only pages that exist; each view is added when its page is. D
 | Print schedule | drop | The office does not use it. |
 | Needs | keep | The Settings page's Office tab: a row a need, its name, Bus or Trip, and In use, with Add need under them. A need is turned off, never removed, since saved trips name it; a new one takes an id from its name and no icon, so a bar shows its initial. |
 | Notifications | drop | The office does not use it. |
-| Driver card | new | A press on the worst mark or the hours line of a driver's tile in the rail opens their card beside the tile, over the board, as a bar's driver tip floats: their photo or initials, name, priority and Part-time; what they are doing now, the bus Samsara has them in and whether they are at the wheel; their drive, shift and cycle clocks and their rest toward eight hours, as the driver tip draws them; each mark's words in its colour, a change to tell a row a leg ending in Tell, which opens that leg on the board and presses the Contact list's Tell for their seat, asking first as it does; phone, language, licence and medical dates; their next trip; and Call, Send trips and Open driver at its foot. It keeps up with Samsara while open and closes on Escape or a press elsewhere. `driverCard` in `scheduler/trip-tips.js` draws it. |
+| Driver card | new | A press anywhere on a driver's tile in the rail opens their card beside the tile, over the board, as a bar's driver tip floats: their photo or initials, name, priority and Part-time; what they are doing now, the bus Samsara has them in and whether they are at the wheel; their drive, shift and cycle clocks and their rest toward eight hours, as the driver tip draws them; each mark's words in its colour, a change to tell a row a leg ending in Tell, which opens that leg on the board and presses the Contact list's Tell for their seat, asking first as it does; phone, language, licence and medical dates; their next trip; and Call, Send trips and Open driver at its foot. It keeps up with Samsara while open and closes on Escape or a press elsewhere. `driverCard` in `scheduler/trip-tips.js` draws it. |
 
 Dropped: dev notes and the old profile menu (the Design account panel
 replaces it). Presence is kept: faces in the header show who else has
@@ -259,7 +259,7 @@ week folds first.
 |---|---|
 | **In the trip panel** | Nothing. The panel carries the trip's own drivers. |
 | **On the Drivers page** | The same week, nothing highlighted. |
-| **A popover** | The Driver card, from a tile's mark or hours line. |
+| **A popover** | The Driver card, from a press anywhere on a tile. |
 
 Shut, the rail is the tiles alone, 160px. Its head stands level with the
 board's toolbar and holds its title, Drivers, and a chevron; its band, empty over the tiles as
@@ -292,19 +292,22 @@ toward eight hours, in the rest colour the bars use while a trip of theirs
 is under way, from its yard-out to its return, and in Carbon's strong border
 grey with none; and a dash beside a dashed empty meter with no clock.
 
-The mark and the meter's line are buttons that open the driver's Driver card, and both take Carbon's ghost fill under the pointer and while it is open.
-
-A driver's name is a toggle: pressed, it puts down the selected trip and its
-card, every bar but that driver's dims on the board, and their name is set in
-semibold on their own bars. Selecting one of their trips keeps them picked;
-selecting a dimmed trip, the same name again, or Escape puts the board back. A double-click opens their record in a new tab, as one on a
-trip opens the trip. Right-click or hold a name for its menu, in the bus
-head menu's order: Open driver opens their record in a new tab; Call and
-Text, shown with a number, reach them as a trip's Contacts do; Add time
-off… opens the Drivers page's time off dialog and saves the range at once;
-Send trips
-opens the Driver view for that driver in a new tab; and Pick out trips, or
-Show every trip while they are picked, is the name's own press. A busy day selects its
+A press anywhere on a tile opens the driver's Driver card, as a press
+anywhere on a bus's tile opens its tip: the whole tile lights under the
+pointer, stays selected while the card is open, and takes Carbon's 2px focus
+ring inside its edge with keyboard focus. Its hover words are the driver's
+own on one line, as the bus tile's are the bus's: the full name, priority,
+Part-time and language. A double-click opens their record in a new tab, as
+one on a bus opens its Fleet record, and a press that moves carries the
+driver to a trip. Right-click or hold a tile for its menu, in the bus head
+menu's order: Open driver opens their record in a new tab; Call and Text,
+shown with a number, reach them as a trip's Contacts do; Add time off…
+opens the Drivers page's time off dialog and saves the range at once; Send
+trips opens the Driver view for that driver in a new tab; and Pick out
+trips puts down the selected trip and its card, dims every bar but that
+driver's on the board and sets their name in semibold on their own bars,
+until Show every trip, a dimmed trip or Escape puts the board back;
+selecting one of their trips keeps them picked. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
 yard to the later one's departure: "15h", in the warning tone under 10 hours and the danger tone under 8, except in Rux 100, whose solid marks write every rest in one colour,

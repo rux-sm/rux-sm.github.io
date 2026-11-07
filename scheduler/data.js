@@ -10737,10 +10737,8 @@
     // attribute written has the page's style worked out again.
     for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-driver-id]')) pickedTo(n, n.dataset.driverId === id);
   }
-  // A tile's name pressed while its driver is picked out, and the tile marked for app.css; written only when it changes.
+  // A tile marked for app.css while its driver is picked out; written only when it changes.
   function pickedTo(tile, picked) {
-    const name = tile.querySelector('.scheduler-avail__who');
-    if (name && name.getAttribute('aria-pressed') !== String(picked)) name.setAttribute('aria-pressed', String(picked));
     if (tile.hasAttribute('data-picked') !== picked) tile.toggleAttribute('data-picked', picked);
   }
 
@@ -10768,10 +10766,17 @@
     schEl.scrollTo({ left: schEl.scrollLeft + acrossBy(bar), top: schEl.scrollTop + downBy(bar), behavior: 'instant' });
   }
 
+  /* A press on a tile opens the driver's card, js/popover.js's, by the tile's
+     one button. The press that ends a finger's hold opened the tile's menu,
+     and the one that ends a carry dropped the driver; neither opens it, so
+     they are taken here, before js/popover.js hears them. */
   availGrid?.addEventListener('click', e => {
-    // The mark opens the driver's card as the line does; the card and the line are js/popover.js's.
-    const mark = e.target.closest('.scheduler-avail__mark');
-    if (mark) { mark.closest('.scheduler-avail__name')?.querySelector('.scheduler-avail__line')?.click(); return; }
+    if (!(heldName || carriedName) || !e.target.closest('.scheduler-avail__name') || e.target.closest('.rux--popover')) return;
+    heldName = carriedName = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+  availGrid?.addEventListener('click', e => {
     /* The card's Tell is the board's own address, taken here as a Departures
        line's is, so the leg opens in place and the card shuts. */
     const tell = e.target.closest('.scheduler-avail__card a[data-tell-leg]');
@@ -10781,34 +10786,24 @@
       line?.click();
       return;
     }
-    if (e.target.closest('.scheduler-avail__card')) return;
-    const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
-    if (name) {
-      // The second press of a double-click opens the record, so it picks no one.
-      if (e.detail > 1) return;
-      // The tap that ends a hold opened the name's menu, and the press that
-      // ends a carry dropped the name; neither picks anyone.
-      if (heldName || carriedName) { heldName = carriedName = false; return; }
-      pickDriver(name.dataset.driverId);
-      return;
-    }
+    if (e.target.closest('.scheduler-avail__name')) return;
     const cell = e.target.closest('.scheduler-avail__cell');
     if (!cell) return;
     // An empty day puts a picked driver down, as empty board space does.
     if (!availRefs.get(cell)?.length && focusDriver != null) pickDriver(null);
     else selectDayTrip(cell);
   });
-  // A double-click on a name opens the driver's record, as one on a trip opens the trip.
+  // A double-click on a tile opens the driver's record, as one on a bus's opens its Fleet record.
   availGrid?.addEventListener('dblclick', e => {
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
-    if (!name || e.target.closest('.scheduler-avail__card, .scheduler-avail__mark')) return;
+    if (!name || e.target.closest('.rux--popover')) return;
     window.getSelection?.()?.removeAllRanges();
     follow(`drivers.html?id=${encodeURIComponent(name.dataset.driverId)}`, true);
   });
-  // The name is a button, so Enter and Space press it; Escape on a tile puts the driver down.
+  // Enter and Space press the tile's button; Escape on a tile puts a picked driver down.
   availGrid?.addEventListener('keydown', e => {
     const name = e.target.closest?.('.scheduler-avail__name[data-driver-id]');
-    if (!name || e.target.closest('.scheduler-avail__card')) return;
+    if (!name || e.target.closest('.rux--popover')) return;
     if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
   });
 
@@ -10817,8 +10812,8 @@
      record in a new tab, so the board stays as it is, as a double-click on
      the name does; Call and Text reach the driver as a trip's Contacts do,
      shown only with a number; Send trips opens the Driver view in a new tab;
-     Pick out trips is the name's own press. Placed and opened as the bar's
-     menu is. */
+     Pick out trips dims every trip but the driver's. Placed and opened as
+     the bar's menu is. */
   const driverMenu = document.getElementById('scheduler-driver-menu');
   let driverMenuFor = null;
   let heldName = false;
@@ -11370,8 +11365,8 @@
     carriedName = false;
     if (!carries(down)) return;
     const name = down.target.closest('.scheduler-avail__name[data-driver-id]');
-    // The card's line and the mark are buttons of their own, which carry no one.
-    if (!name || down.target.closest('.scheduler-avail__card, .scheduler-avail__mark')) return;
+    // The open card's own controls carry no one.
+    if (!name || down.target.closest('.rux--popover')) return;
     carry(down, {
       driverId: name.dataset.driverId, label: name.querySelector('.scheduler-avail__who')?.textContent ?? '', held: name, dim: 'scheduler-avail__name--carried',
       onLift: () => { carriedName = true; },

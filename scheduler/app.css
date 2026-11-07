@@ -3902,12 +3902,12 @@ a.scheduler-tip__go { text-decoration: none; }
    line's end the worst mark on the 18px line; 2px under it the 4px meter,
    64px as the bus tile's square is so every driver's reads alike, with
    their words ending the 16px line, so the name has the width the words
-   do not take. The two lines are centred in the row above
-   its line on whole pixels, the odd pixel below. The name is a button that
-   picks out the driver's trips; the mark and the meter's line are buttons
-   that open their card, Carbon's ghost fill under the pointer, as a bar's
-   marks are. */
-:is(.scheduler-avail__who, .scheduler-avail__mark, .scheduler-avail__line) {
+   do not take. The two lines are centred in the row above its line on
+   whole pixels, the odd pixel below. The line is the card's button, and
+   its press covers the whole tile, as a bus number's covers the bus tile:
+   this layer spans the tile, the nearest positioned box once overrides.css
+   makes the card's container static. */
+.scheduler-avail__line {
   padding: 0;
   border: 0;
   background: none;
@@ -3917,15 +3917,13 @@ a.scheduler-tip__go { text-decoration: none; }
   text-align: start;
   cursor: pointer;
 }
+.scheduler-avail__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
 .scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .scheduler-avail__card { display: block; }
-:is(.scheduler-avail__mark, .scheduler-avail__line) { --scheduler-mark-fill: color-mix(in srgb, var(--rux-text-primary) 20%, transparent); }
-@media (hover: hover) {
-  :is(.scheduler-avail__mark, .scheduler-avail__line):hover { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
-}
-:is(.scheduler-avail__mark, .scheduler-avail__line):is([aria-expanded="true"], :focus-visible) { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
-:is(.scheduler-avail__mark, .scheduler-avail__line):focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -1px; }
-.scheduler-avail__name:has(.scheduler-avail__line[aria-expanded="true"]) .scheduler-avail__mark { background-color: var(--scheduler-mark-fill); box-shadow: 0 0 0 1px var(--scheduler-mark-fill); }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
 .scheduler-avail__name { --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--rux-spacing-01) + var(--scheduler-label-h)); }
 @supports (block-size: round(1px, 1px)) {
@@ -4156,11 +4154,10 @@ a.scheduler-tip__go { text-decoration: none; }
   color: var(--rux-text-primary);
 }
 
-/* A driver's name is a toggle that picks out their trips, so it takes the
-   hover and pressed surfaces of Carbon's selectable rows and the focus ring
-   inside its own edge, where the pane does not clip it. Pressed, it reads
-   in primary text at semibold. A busy day selects its trip, so it shows the
-   hand. */
+/* A driver's tile takes the hover and selected surfaces of Carbon's
+   selectable rows: selected while its card is open, and while the menu's
+   Pick out trips has picked the driver out, when the name reads in primary
+   text at semibold. A busy day selects its trip, so it shows the hand. */
 /* A finger holding a name opens its menu, so the browser's own callout and
    text selection are off there, as on the board's cells. */
 .scheduler-avail__name {
@@ -4169,16 +4166,18 @@ a.scheduler-tip__go { text-decoration: none; }
   -webkit-user-select: none;
   user-select: none;
 }
+/* The whole tile opens the card, so the whole tile answers the pointer and
+   stays marked while its card is open, as a bus head does. */
 .scheduler-avail__name:hover { background: var(--rux-layer-hover); }
+.scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) { background: var(--rux-layer-selected); }
 .scheduler-avail__name[data-picked] {
-  background: var(--rux-layer-selected);
   color: var(--rux-text-primary);
 }
 .scheduler-avail__name[data-picked] .scheduler-avail__who { font-weight: var(--rux-heading-compact-01-font-weight); }
-/* Keyboard focus on the name rings the whole tile, the thing its press
-   picks out, in Carbon's 2px ring inside its edge, as a bus head's does. */
-.scheduler-avail__who:focus { outline: none; }
-.scheduler-avail__name:has(.scheduler-avail__who:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+/* Keyboard focus on the card's button rings the whole tile, the thing its
+   press takes, in Carbon's 2px ring inside its edge, as a bus head's does. */
+.scheduler-avail__line:focus { outline: none; }
+.scheduler-avail__name:has(.scheduler-avail__line:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-avail__cell--busy { cursor: pointer; }
 
 /* A driver carried to a trip, from the roster or off another bar, is a figure

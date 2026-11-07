@@ -739,10 +739,10 @@ expect('the tile draws the short name and its most urgent mark over the line and
   [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
     cell.querySelector('.scheduler-avail__meter').dataset.kind, !!cell.querySelector('.scheduler-avail__free-mark'), cell.hasAttribute('data-cannot')],
   ['Rigo', '2:00', 'warning', 'drive', true, false]);
-expect('the tile\'s line is the toggletip button of the driver\'s card, and its name a button of its own',
-  [cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null, cell.querySelector('button.scheduler-avail__who') != null,
-    cell.querySelector('.scheduler-avail__card .rux--popover-content') != null],
-  [true, true, true]);
+expect('the tile\'s one button is the toggletip button of the driver\'s card, labelled with the name, the clock and the marks; the name and mark are words, and the hover is the driver\'s own',
+  [cell.querySelectorAll('button').length, cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null,
+    cell.querySelector('.scheduler-avail__card .rux--popover-content') != null, cell.querySelector('.scheduler-avail__line').getAttribute('aria-label'), cell.title],
+  [1, true, true, 'Rigoberto Soto\'s card. Driving · 2:00 driving left. Licence expires in 5 days', 'Rigoberto Soto · Priority 2']);
 DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'off', left_ms: 2 * H, rest_since: ago(90) }, []);
 expect('a live answer changes the tile\'s words in place, so a card open from it stays open',
   [text(cell, '.scheduler-avail__state'), cell.querySelectorAll('.scheduler-avail__line').length], ['Off 1h', 1]);

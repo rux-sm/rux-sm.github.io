@@ -329,7 +329,7 @@ until Show every trip, a dimmed trip or Escape puts the board back;
 selecting one of their trips keeps them picked. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
-yard to the later one's departure: "15h", in the warning tone under 10 hours and the danger tone under 8, except in Rux 100, whose solid marks write every rest in one colour,
+yard to the later one's departure: "15h", its words yellow on the same blue under 10 hours, except in Rux 100, whose solid marks write every rest in one colour,
 "!" where the two overlap, and "?" until both trips have times.
 
 ### Time at the yard

@@ -4142,9 +4142,8 @@ a.scheduler-tip__go { text-decoration: none; }
 /* THE REST BETWEEN BACK-TO-BACK DAYS is the one word a mark carries: the
    hours off before that day's trip, "15h", or "?" until both trips have
    times. Centred, in tabular figures so a column of them lines up, and over
-   the mark. Under 10 hours the mark turns the warning tone, the one the
-   board's drop warning uses, mixed into the surface so the primary text reads
-   on it; it comes after `--busy` to take that cell's colours. */
+   the mark. Under 10 hours its words turn yellow on the mark's own blue, in
+   theme.css, since each theme's blue carries a different yellow. */
 .scheduler-avail__cell--rest { justify-content: center; }
 .scheduler-avail__cell--rest > span {
   visibility: visible;
@@ -4153,10 +4152,6 @@ a.scheduler-tip__go { text-decoration: none; }
   z-index: 1;
   inline-size: auto;
   font-variant-numeric: tabular-nums;
-}
-.scheduler-avail__cell--tight {
-  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 40%, transparent);
-  color: var(--rux-text-primary);
 }
 
 /* A driver's tile takes the hover and selected surfaces of Carbon's

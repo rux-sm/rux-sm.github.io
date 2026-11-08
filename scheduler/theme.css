@@ -738,27 +738,22 @@
   --scheduler-avail-fill: oklch(27% 0.1084 19.02);
   --scheduler-avail-edge: oklch(69.96% 0.2136 22.03);
 }
-/* A rest under 10 hours is Geist's amber badge, after busy, which it also is. */
-[data-theme="geist-dark"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: oklch(27% 0.07 75);
-  --scheduler-avail-edge: oklch(81.87% 0.1584 76.5);
-}
-/* g90's panel is lighter than g100's, so a rest under 10 hours takes the
-   warning at 32% there, where the primary text holds 5.2 to 1 as it does in
-   g100, and not the 40% every other theme starts from, where it fell to 4.4. */
-[data-theme="g90"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 32%, transparent);
-}
-/* The roster's marks in rux-dark are the blue and red containers, as its
-   bars are, with no edge, so a run of days reads as one stretch and the grid
-   stays quiet; a short rest is the same blue with its hours in the warning
-   yellow, and a shorter one the same blue with them in a light red, the error
-   red lifted enough to read on the blue. Rux 100 draws its own marks below. */
+/* A REST UNDER 10 HOURS stays the booked day it is, one blue bar with the
+   days beside it, and only its hours turn yellow: the theme's warning where
+   its blue holds that at 4.5 to 1, Carbon's yellow 80 on a light theme's pale
+   blue, and yellow 10 on Ant's brighter blue. It follows every theme's busy
+   rule above, so the words win; Rux 100's, below it, writes every rest in
+   one colour. */
+[data-theme] .scheduler-avail__cell--tight { color: var(--scheduler-rest-tight-ink, var(--rux-support-warning)); }
+[data-theme="white"],
+[data-theme="g10"],
+[data-theme="apple-light"] { --scheduler-rest-tight-ink: var(--rux-yellow-80); }
+[data-theme="ant-dark"],
+[data-theme="pixel-dark"] { --scheduler-rest-tight-ink: var(--rux-yellow-10); }
+/* rux-dark's short-rest yellow, which the yard tile below fills with. */
 [data-theme="rux-dark"] {
   --scheduler-rest-tone: #d2a106;
 }
-[data-theme="rux-dark"] .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--rux-tag-background-blue); color: var(--rux-support-warning); }
-[data-theme="rux-dark"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
 /* The time at the yard is drawn as the roster's marks are: a solid tile with
    no edge, grey for a normal gap and the short rest's yellow, in dark text,
    for a short one. */
@@ -933,18 +928,6 @@
    every side panel in this theme a line, for a panel that slides over a page
    of its own colour, and here the grey page already shows each one's shape. */
 [data-theme^="apple-"] .scheduler-page .rux--side-panel { border: 0; }
-/* A rest under 10 hours is a mark like the busy ones beside it, in orange and
-   mixed as the theme's tags are: 14% on the raised surface in apple-light,
-   under the orange a word takes on a tint, and 40% on black in apple-dark,
-   under Apple's increased-contrast dark orange. */
-[data-theme^="apple-"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 14%, var(--rux-layer-01));
-  color: var(--scheduler-age-week);
-}
-[data-theme="apple-dark"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 40%, #000);
-  color: #ffa056;
-}
 /* A panel brought in front of the board floats, and takes this theme's lift
    in place of the hard shadow Carbon casts. */
 [data-theme^="apple-"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,

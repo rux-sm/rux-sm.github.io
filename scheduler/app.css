@@ -793,7 +793,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* ── The bus tile ───────────────────────────────────────────────────────────
    ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 96px, 8px in from
    every edge, a stack centred down it. Its first line, the destination's,
-   is its number, centred, and before it the alert while the bus has a mark,
+   is its number, centred, and after it the alert while the bus has a mark,
    the type being the tip's. Its readings stand in a 64px square of their own on the next
    layer, 8px in, centred between that line and the foot: the state, its
    reading at 16px over its unit, and the fuel, a 4px meter across it between
@@ -815,11 +815,11 @@ button.scheduler-row-head__num:focus { outline: none; }
   padding-inline: var(--rux-spacing-03);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; margin-block-start: -1px; }
-/* WHILE THE BUS HAS A MARK, THE ALERT LEADS ITS NUMBER, the warning
+/* WHILE THE BUS HAS A MARK, THE ALERT FOLLOWS ITS NUMBER, the warning
    triangle in amber, or the error circle in red where a mark is red, the
    two every trip bar and driver tile wear, so one mark means one thing on
    the board. With no mark it keeps its room unseen, and the line keeps the
-   same room after the number, so the number stands at the tile's centre
+   same room before the number, so the number stands at the tile's centre
    and never moves. The marks themselves are not
    drawn on the tile but stay for a screen reader, each with its words, and
    the tip says them all. */
@@ -829,7 +829,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   visibility: hidden;
   color: var(--scheduler-head-low);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] > .scheduler-row-head__top::after {
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] > .scheduler-row-head__top::before {
   content: "";
   flex: none;
   inline-size: 16px;
@@ -2468,22 +2468,16 @@ a.scheduler-tip__go { text-decoration: none; }
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
-/* The alert leads the row, before the name, as every row's icon leads it,
-   so the name stands where the rows' words do. The name, and the trip's
-   pill after it, take the row's spare room and give way when it is short,
-   so the faces and how a trip closed sit at the end. Its parts stand 4px
-   apart, as the update row's mark and words do, so the name starts where
-   their words do. */
-.scheduler-bar__dest { justify-content: flex-start; gap: var(--rux-spacing-02); }
-.scheduler-bar__dest > .scheduler-bar__alert { flex: none; }
-.scheduler-bar__dest > .scheduler-bar__place { flex: 0 1 auto; min-inline-size: 0; }
-.scheduler-bar__dest > .scheduler-bar__place:not(:has(+ .scheduler-bar__kind)),
+/* The name, and the trip's pill after it, take the row's spare room, so
+   the faces and the alert sit at the end. */
+.scheduler-bar__dest { justify-content: flex-start; }
+.scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
-.scheduler-bar__dest > :not(.scheduler-bar__alert, .scheduler-bar__place, .scheduler-bar__kind):last-child { margin-inline-end: var(--scheduler-day-one-end); }
+.scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
 /* The name is its words' width rounded up to a whole pixel, shrinking under
    it when the row is short, so the chip after it starts on a whole pixel. */
 @supports (inline-size: calc-size(max-content, round(up, size, 1px))) {
-  .scheduler-bar__dest > .scheduler-bar__place { inline-size: calc-size(max-content, round(up, size, 1px)); }
+  .scheduler-bar__dest > :first-child { inline-size: calc-size(max-content, round(up, size, 1px)); }
 }
 /* The steering wheel before the driver at the wheel of a live bar pulses
    gently, the one thing moving on the bars that are out. */
@@ -2699,7 +2693,7 @@ a.scheduler-tip__go { text-decoration: none; }
    leading them as it leads every bar's, the track the whole trip drawn in a
    day's width. */
 .scheduler-bar > .scheduler-bar__time { max-inline-size: none; }
-.scheduler-bar > .scheduler-bar__dest > :not(.scheduler-bar__alert, .scheduler-bar__place, .scheduler-bar__kind):last-child { margin-inline-end: 0; }
+.scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 
 /* THE TIMES: out at the start, the track, and back at the end, amber when
    the bus is late back, at 12px in one line, as a planned bar's are; after
@@ -3970,16 +3964,13 @@ a.scheduler-tip__go { text-decoration: none; }
   font-weight: var(--rux-label-01-font-weight);
   color: var(--rux-text-secondary);
 }
-/* The worst mark leads the name's line, a status solid in its colour, as
-   an alert leads a trip's destination and a bus's number. A driver with no
-   mark keeps its room unseen, so every name stands in one column. */
+/* The worst mark ends the name's line, a status solid in its colour. A
+   driver with no mark has none drawn, and the name takes its room. */
 .scheduler-avail__mark {
-  display: inline-flex;
   flex: none;
-  inline-size: var(--rux-spacing-05);
   color: var(--scheduler-head-low);
 }
-.scheduler-avail__mark[hidden] { visibility: hidden; }
+.scheduler-avail__mark:not([hidden]) { display: inline-flex; }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* With no mark, what a driver is doing on their trip: driving in the trip
    bar's green, amber under two hours as its arrow is; on or off duty in the

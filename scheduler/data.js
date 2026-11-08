@@ -253,7 +253,7 @@
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
   }
-  /* Before the number, the one alert every bar and driver tile wears: the
+  /* After the number, the one alert every bar and driver tile wears: the
      warning triangle while the bus has a mark, the error circle while one is
      red. app.css shows the one the kit's worst mark asks for, and keeps its
      room when there is none, so the number never moves; the kit's own marks
@@ -1423,7 +1423,7 @@
         // The caret is the popover's own last child, where Carbon draws it.
         pop.append(content, el('span', 'rux--popover-caret'));
         tip.append(trigger, pop);
-        top.append(busAlert(), tip);
+        top.append(tip, busAlert());
       } else {
         top.append(el('div', 'scheduler-row-head__num', r.partner ? r.partner.name : 'No\nbus'));
       }
@@ -18987,7 +18987,7 @@
         box.appendChild(face);
       }
       if (here.length > shown) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - shown}`));
-      row.appendChild(box);
+      row.insertBefore(box, row.querySelector(':scope > .scheduler-bar__alert'));
     }
   }
 

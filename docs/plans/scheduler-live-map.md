@@ -41,9 +41,11 @@ only what the board already works out, so the two never disagree.
   shared function,** which the board then uses too, because the board builds
   it now from the bar on the page (`roadLook` in `scheduler/data.js`), which
   the map does not have.
-- **A tile says both times,** "Due 6:00p · arrives 6:25p", the arrival
-  being road.js's own estimate; which stops can be late stays road.js's
-  rule.
+- **Only the spot time is held to,** because getting to the customer on time
+  is what counts and every other stop moves with the customer's day. On the
+  way to a pickup a tile says both, "Spot 6:00p · arrives 6:25p", amber when
+  late as road.js rules; on the way to any other stop it says only when the
+  bus arrives, road.js's estimate, and is never late.
 - **A reading older than `samsara-now`'s FRESH_MS is faded,** pin and tile,
   with "Last seen 1:20p", so an old position is never read as now.
 - **Pressing a bus opens the board's live card beside the map,** the same
@@ -55,9 +57,6 @@ only what the board already works out, so the two never disagree.
 
 ## Questions
 
-- Should a bus arriving late at a stop that is not a pickup, such as a
-  hotel, show amber too? road.js now warns only for pickups, because every
-  other stop moves with the day.
 - Is one hour the right length for the tail?
 
 ## Tasks
@@ -67,7 +66,8 @@ only what the board already works out, so the two never disagree.
   `scheduler/tools/check-bar.mjs`'s cases still passing.
 - [ ] Show each bus's warnings on its tile and pin, sort them first, and add
   the summary line and last-answer time.
-- [ ] Show due and arrival times on every tile, and fade old readings.
+- [ ] Show the spot and arrival times on the way to a pickup and the arrival
+  alone on the way to any other stop, and fade old readings.
 - [ ] Put every bus on the map, the grey pins for buses not on a trip, and
   fit the opening view to all of them, with Show all.
 - [ ] Draw the last hour's tail for every bus out.

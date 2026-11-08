@@ -1777,3 +1777,9 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 /* The way back on a driver's screen reads arrow first, as it points, so the
    ghost button's icon keeps its gap on the side the words are. */
 .scheduler-driver-back .rux--btn__icon { margin-inline: 0 var(--rux-spacing-03); }
+
+/* THE MARK INSIDE EVERY FILLED STATUS ICON, the alerts' "!", the confirmed
+   check's tick and the unknown duty's "?", is one dark ink, the ink on a
+   warning fill, as Carbon fills it on yellow, so none shows the bar, tile or
+   tip under it through itself and they read as one set wherever they stand. */
+use:is([href="#i-warning--alt--filled"], [href="#i-warning--filled"], [href="#i-checkmark--filled"], [href="#i-unknown--filled"]) { --rux-icon-inner: var(--scheduler-on-warning); }

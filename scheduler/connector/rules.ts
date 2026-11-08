@@ -2348,9 +2348,9 @@ const window = {};
     const fit = fitFor(nearby, range, { tripId: trip.id });
     const crew = tripCrew(trip, range).map(c => driversById.get(c.driverId)).filter(Boolean);
     const out = [];
-    const put = (a, driverId, subject, what) => {
+    const put = (a, driverId, subject, what, extra = {}) => {
       if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
-        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, partnerId: a.partner_id ?? null, what, words: `${subject}: ${what}` });
+        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, partnerId: a.partner_id ?? null, what, words: `${subject}: ${what}`, ...extra });
       }
     };
     for (const a of (trip.trip_assignments || []).filter(x => legKeyOfVehicle(trip, x) === range.key)) {
@@ -2377,7 +2377,8 @@ const window = {};
         const lapse = who ? cardLapse(who, range) : '';
         if (lapse) put(a, d.driver_id, name, lapse);
         const apart = who ? apartWords(who, crew, trip.id) : '';
-        if (apart) put(a, d.driver_id, name, apart);
+        // `apart` marks it as one the office may allow on the trip.
+        if (apart) put(a, d.driver_id, name, apart, { apart: true });
       }
     }
     return out;

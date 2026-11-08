@@ -472,6 +472,7 @@
        lacks is the editor's Billing tab's Closed list and the Trips page's. */
     if (window.SchedulerCloseOut.isBack(trip)) return [];
     const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__error', go: 'fleet', words }));
+    for (const p of facts?.apart ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', words: p.words, allow: p.driverId });
     for (const words of facts?.emptySeats ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', spot: 'driver', words });
     // A partner not yet confirmed once the leg is due is the empty seat of a bus it covers.
     for (const words of facts?.partnerUnconfirmed ?? []) list.push({ row: 'scheduler-card__error', go: 'fleet', spot: 'partner', words });
@@ -564,8 +565,12 @@
        that runs out. Each is a mistake to put right, so a misfit. */
     const standing = board.standing
       ?? ((t, l) => window.SchedulerClashes.standing(t, l, board.nearby ?? NOBODY_NEAR, { driversById, busesById, partnersById: board.partnersById }));
-    const clashes = placeholder || !assign ? []
-      : standing(trip, leg.key).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
+    const standingHere = placeholder || !assign ? []
+      : standing(trip, leg.key).filter(c => String(c.assignmentId) === String(assign.id));
+    const clashes = standingHere.filter(c => !c.apart).map(c => c.words);
+    /* A driver kept apart from one on the trip is a mistake the office may
+       allow instead, so it carries the driver for the Alerts tip's Allow. */
+    const apart = standingHere.filter(c => c.apart).map(c => ({ driverId: c.driverId, words: c.words }));
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
     // More passengers than the leg's buses seat, a warning on every bar of the leg.
     const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.key, busesById));
@@ -589,7 +594,7 @@
       return [`Tell ${name}: ${lines.join('; ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    const facts = { leg: leg.key, needs, misfits, overSeated, emptySeats, partnerUnconfirmed, driverAlerts, tells };
+    const facts = { leg: leg.key, needs, misfits, apart, overSeated, emptySeats, partnerUnconfirmed, driverAlerts, tells };
 
     // One structured list feeds the badge and the card's Alerts group.
     facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
@@ -809,6 +814,7 @@
       ...crew.map(crewText),
       isCovered(assign) ? partnerText(assign, partner) : null,
       ...facts.misfits,
+      ...facts.apart.map(p => p.words),
       asksFollowUp(trip) ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return { bar, facts };

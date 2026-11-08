@@ -785,6 +785,14 @@
           : `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
         row.append(svgUse(tone === 'error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
           goLink(a.words, a.go, a.spot));
+        /* A driver kept apart from one on the trip ends in Allow, which asks
+           first, as Assign anyway does, and allows the pair on this trip. */
+        if (a.allow != null) {
+          const allow = footLink('Allow', '#');
+          allow.dataset.allowApart = String(a.allow);
+          allow.setAttribute('aria-label', `Allow on this trip: ${a.words}`);
+          row.appendChild(allow);
+        }
         if (a.row === 'scheduler-card__asks' && !reminded) {
           reminded = true;
           if (dueFollowUp(trip)) {

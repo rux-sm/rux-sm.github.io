@@ -12618,17 +12618,45 @@
      apart from asks first, naming each pair and its note. Assign anyway
      answers true and Cancel false. `picks` is a list of `{ driver, pairs }`,
      each `pairs` as `apartPairs` gives it, and `from` the control that
-     asked, as `ask` takes it. */
+     asked, as `ask` takes it. With `seated`, the drivers are on the trip
+     already, so it asks to allow them, as an alert's Allow does. */
   const calledBy = d => d?.short_name || d?.name || 'A driver';
-  function askApart(picks, from = null) {
+  function askApart(picks, from = null, { seated = false } = {}) {
     const seen = new Set();
     const lines = picks.flatMap(({ driver, pairs }) => pairs.filter(p => !seen.has(p.pairId) && seen.add(p.pairId))
       .map(p => `${calledBy(driver)} and ${calledBy(p.other)} are kept apart${p.note ? `: ${p.note.trim().replace(/\.+$/, '')}` : ''}.`));
     const [one] = picks;
-    const question = picks.length === 1 ? `Assign ${calledBy(one.driver)} with ${one.pairs.map(p => calledBy(p.other)).join(' and ')}?`
-      : 'Assign drivers kept apart?';
-    return ask(question, `${lines.join(' ')} Assigning anyway allows them together on this trip, and its alert goes.`, null,
-      { yes: 'Assign anyway', no: 'Cancel', from });
+    const verb = seated ? 'Allow' : 'Assign';
+    const question = picks.length === 1 ? `${verb} ${calledBy(one.driver)} with ${one.pairs.map(p => calledBy(p.other)).join(' and ')}?`
+      : `${verb} drivers kept apart?`;
+    const then = seated ? 'They stay together on this trip only, and its alert goes.'
+      : 'Assigning anyway allows them together on this trip, and its alert goes.';
+    return ask(question, `${lines.join(' ')} ${then}`, null,
+      { yes: seated ? 'Allow together' : 'Assign anyway', no: 'Cancel', from });
+  }
+
+  /* ALLOW FROM THE ALERT: a pair seated before they were kept apart, or by
+     any path that did not ask, is allowed from the trip's Alerts, asking
+     first as Assign anyway does: the driver `driverId` with each driver on
+     the trip `tripId` they are kept apart from. The board is read again, so
+     the alert goes. */
+  async function allowApartOn(tripId, driverId, from = null) {
+    const trip = heldTrip(tripId);
+    const driver = driverById(driverId);
+    if (!trip || !driver) return;
+    const crew = (trip.trip_assignments || []).flatMap(a => a.trip_drivers || [])
+      .map(d => (d.driver_id != null ? driverById(d.driver_id) : null)).filter(Boolean);
+    const pairs = apartPairs(driver, crew, trip.id);
+    if (!pairs.length || !(await askApart([{ driver, pairs }], from, { seated: true }))) return;
+    toast('working', 'Allowing them together…');
+    try {
+      await allowPairs(trip.id, [{ driver, pairs }]);
+      assignRead = null;
+      await show();
+      toast('success', `${calledBy(driver)} and ${pairs.map(p => calledBy(p.other)).join(' and ')} are allowed together on this trip.`);
+    } catch (err) {
+      toast('error', `They were not allowed together. ${err.message}`);
+    }
   }
 
   /* Allows each pair of `picks`, as `askApart` takes them, on the trip
@@ -17880,6 +17908,13 @@
         return;
       }
       openQuick(action.closest('[data-trip-id]')?.dataset.tripId ?? null);
+      return;
+    }
+    // An alert's Allow lets a pair kept apart ride the trip together.
+    const allow = e.target.closest('[data-allow-apart]');
+    if (allow) {
+      e.preventDefault();
+      allowApartOn(allow.closest('[data-trip-id]')?.dataset.tripId ?? selectedBar()?.dataset.tripId ?? null, allow.dataset.allowApart, allow);
       return;
     }
     // A warning goes where it is put right; an alert's link goes nowhere else.

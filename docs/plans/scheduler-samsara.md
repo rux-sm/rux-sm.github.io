@@ -59,5 +59,7 @@ None open.
 
 ## Tasks
 
-- [ ] Confirm the Samsara key may make live sharing links, add
-      `samsara-share`, and add Copy tracking link to the bar's menu.
+- [ ] Give the Samsara API token Write Live Sharing Links, under Driver
+      Workflow in Samsara's API token settings; `samsara-share` is deployed
+      and answers no-permission until then.
+- [ ] Add Copy tracking link to the bar's menu, calling `samsara-share`.

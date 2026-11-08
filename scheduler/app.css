@@ -3780,8 +3780,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-aside .scheduler-week--avail {
   --scheduler-head-w: var(--scheduler-rail-w);
   /* Each day column is Carbon's sm, 32px, which the day letters fit, and
-     leaves the names what they had before the rows grew to two lines. */
+     leaves the names the room their widest line takes. A mark is as tall as
+     it is wide, the day less 2px either side, so a one-day mark is square. */
   --scheduler-day-track: var(--rux-layout-size-height-sm);
+  --scheduler-mark-h: calc(var(--scheduler-day-track) - 2 * var(--rux-spacing-01));
   /* Takes what the head leaves of the height app.js gives the aside: a short
      list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`
      viewport cap. */
@@ -4025,15 +4027,15 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* The two marks. Free is the one being looked for, so it is empty; busy and
    off are Carbon's tag tints, the palette the trip bar uses. A mark is a
-   pseudo-element 2px inside its day's rules and 24px tall, Carbon's spacing
-   06, centred in the row on the same whole pixel as the name tile beside it,
-   so it reads as a bar across the days rather than a slab filling them, and
+   pseudo-element 2px inside its day either side and as tall as a day is wide
+   less those 2px, so one day is a square, centred in the row on the same
+   whole pixel as the name tile beside it, a bar across the days rather than
+   a slab filling them, and
    takes the theme's mark radius and an edge where the theme draws one. Its
    fill and edge are the two properties below, which a theme sets in
    theme.css. */
 .scheduler-avail__cell {
   overflow: hidden;
-  --scheduler-mark-h: var(--rux-spacing-06);
   --scheduler-mark-top: calc((var(--scheduler-avail-h) - 1px - var(--scheduler-mark-h)) / 2);
 }
 @supports (block-size: round(1px, 1px)) {

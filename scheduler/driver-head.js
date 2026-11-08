@@ -3,8 +3,7 @@
    --------------------------------------------------------------------------
    A driver's name cell in the rail is their tile, as a bus's is in the
    bus column, drawn inside the cell data.js makes, on two lines:
-   - A person's icon where their picture will go, the name at 14px, and at
-     the line's end the driver's most urgent mark, 16px, with every mark's
+   - The name at 14px, and at the line's end the driver's most urgent mark, 16px, with every mark's
      words on its label, or while a selected trip finds them free on every
      day of it, a green check in its place:
        papers  the licence or medical card running out within WARN_DAYS,
@@ -142,8 +141,6 @@
      mark are words in it and the button's label says them all. */
   function build(cell) {
     const top = el('span', 'scheduler-avail__top');
-    const who = svgUse('#m-person', '16', '0 0 32 32');
-    who.classList.add('scheduler-avail__icon');
     const name = el('span', 'scheduler-avail__who');
     const mark = el('span', 'scheduler-avail__mark');
     mark.setAttribute('aria-hidden', 'true');
@@ -152,7 +149,7 @@
        shown by app.css while data.js marks the tile free. */
     const free = svgUse('#i-checkmark--filled', '16', '0 0 32 32');
     free.classList.add('scheduler-avail__free-mark');
-    top.append(who, name, mark, free);
+    top.append(name, mark, free);
     const card = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--right-start rux--toggletip scheduler-avail__card');
     const line = el('button', 'rux--toggletip-button scheduler-avail__line');
     line.type = 'button';

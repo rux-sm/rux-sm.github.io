@@ -278,8 +278,8 @@ paper keeps the red mark and has neither, since they cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, two lines 16px in
 from its sides, as the bus tile's parts are, and 2px apart, centred above
-the row's line on whole pixels with the odd pixel below. The first is a
-person's icon where their picture will go, the name at 14px, and at the
+the row's line on whole pixels with the odd pixel below. The first is the
+name at 14px, its photo left to the card, and at the
 line's end their worst mark, every mark's words on its label: a licence or
 medical card expiring within 45 days, amber, or expired, red; a leg within
 30 days that changed since they said yes; a leg leaving within two days

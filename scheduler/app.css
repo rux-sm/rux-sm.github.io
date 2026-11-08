@@ -3898,7 +3898,7 @@ a.scheduler-tip__go { text-decoration: none; }
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-/* A DRIVER'S TILE, driver-head.js's: the person, the name and at the
+/* A DRIVER'S TILE, driver-head.js's: the name and at the
    line's end the worst mark on the 18px line; 2px under it the 4px meter,
    64px as the bus tile's square is so every driver's reads alike, with
    their words ending the 16px line, so the name has the width the words
@@ -3930,7 +3930,6 @@ a.scheduler-tip__go { text-decoration: none; }
   .scheduler-avail__name { justify-content: flex-start; }
   .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-tile-h)) / 2), 1px); }
 }
-.scheduler-avail__icon { flex: none; display: block; color: var(--rux-icon-secondary); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-avail__line {
   display: flex;

@@ -60,26 +60,8 @@ None open.
 
 ## Tasks
 
-- [ ] Set the bus number and the driver name in the destination's 14px
-  semibold, and take semibold off as the picked-out driver's own mark.
-- [ ] Set a driver tile's status line at 18px and centre its two lines in
-  the row.
-- [ ] Narrow the driver tile to 128px, run its meter across the line in
-  place of the time, and shorten an expired medical card's words to Medical
-  expired.
-- [ ] Stand the bus tile's square and kit on the bar's lines, in the full
-  view and every folded one, keeping each number centred.
-- [ ] Move a low DEF to line 6 of the bus tile and hold the square at 64px.
-- [ ] Hold the bus tile to the first lane of a row of stacked trips.
-- [ ] Write the board's geometry as one reference,
-  `scheduler/docs/board-layout.md`: for each tile its size, insets, gaps,
-  type and alignment, and for each view, six lines down to one and the
-  phone's board, which parts show on which lines, the bus column and driver
-  tile lines in `scheduler/docs/screen-inventory.md` linking to it in place
-  of their measures.
-- [ ] Draw the content states on `scheduler/components.html` with invented
-  content: a low DEF, no signal, a long name, a bus with an inspection date
-  only, a partner's bus and No bus, and measure each there.
-- [ ] Measure each tile in Chrome on :8641 in every row view and in Gray 100
-  and Rux 100, and update the comments in `scheduler/app.css` with each
-  change.
+- [ ] Draw the bus tile's states on `scheduler/components.html` with
+  invented content, on a Mac board of six lines: a low DEF, no signal, a
+  long name, a bus with an inspection date only, a partner's bus, No bus and
+  a row of stacked trips, and measure each there.
+- [ ] Add the phone's board to the views in `scheduler/docs/board-layout.md`.

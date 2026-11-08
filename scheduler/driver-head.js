@@ -24,19 +24,17 @@
      is on no trip. The tile is too narrow for a row of icons, so one
      stands for all.
    - Under it, the driving time Samsara says they have left, the least of
-     the drive, shift and cycle clocks: a 48px meter of the ten hours a
-     passenger carrier's driver may drive, as the bus tile's fuel is, and
-     at the line's end, at 12px in the secondary grey, "6:30 left". Low, under
-     RoadBar's LOW, the meter and words are amber and at none red, the words
-     semibold. A driver on no trip
-     with all ten hours is free and the line is empty, so the drivers who
-     matter stand out. On a trip, Not logged in in amber or "in 133" in red
-     stands alone in the line's place, and over hours it is "Over 0:25" in
-     red; else an expired paper stands there in red, "Licence expired",
-     since that driver cannot drive. A driver Samsara keeps no clock for, or whose app is not connected
-     off a trip, has a quiet dash beside an empty meter, as a bus with no
-     signal does. The full words, their duty and rest among them, are the
-     line's label and the card's.
+     the drive, shift and cycle clocks, as a meter alone across the line, of
+     the ten hours a passenger carrier's driver may drive, as the bus tile's
+     fuel is; amber when low, under RoadBar's LOW. A driver on no trip with
+     all ten hours is free and the line is empty, so the drivers who matter
+     stand out. Words stand alone in the meter's place, semibold, where a
+     meter cannot say it: on a trip, Not logged in in amber or "in 133" in
+     red; "Over 0:25" or Out of hours in red; else an expired paper in red,
+     "Licence expired", since that driver cannot drive. A driver Samsara
+     keeps no clock for, or whose app is not connected off a trip, has the
+     meter dashed and empty, as a bus with no signal does. The time in
+     words, their duty and rest are the line's label and the card's.
    A press anywhere on the tile opens the driver's card, a Carbon toggletip
    that data.js fills from trip-tips.js's `driverCard`, as a press anywhere
    on a bus's tile opens its tip.
@@ -103,26 +101,26 @@
      - on a trip with their app not connected, Not logged in, amber;
      - on a trip in another bus, "in 133", red;
      - over their hours, "Over 0:25", red, as long as Samsara counts it;
-     - else the driving time left, "6:30 left", amber when low and red
-       under a minute. */
+     - under a minute left, Out of hours, red;
+     - else the driving time left on the meter alone, amber when low. */
   const fill = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 100) / 100;
   function stateOf(live, trip = null) {
     const quiet = { tone: 'quiet', meter: null, bare: false, trip: null, free: false, mark: null };
-    if (!live) return { ...quiet, line: '–', words: 'No hours-of-service clock from Samsara' };
+    if (!live) return { ...quiet, line: '', words: 'No hours-of-service clock from Samsara' };
     const away = trip?.away ?? null;
     if (!live.duty) {
       return trip ? { ...quiet, line: 'Not logged in', tone: 'warning', bare: true, words: 'Not logged in to Samsara', mark: NOW_MARKS.unlogged }
-        : { ...quiet, line: '–', words: 'Not logged in to Samsara' };
+        : { ...quiet, line: '', words: 'Not logged in to Samsara' };
     }
     const words = RoadBar.words(live);
     const doing = trip ? (live.wheel ? 'driving' : TRIP_OF[live.duty] ?? null) : null;
     if (away) return { ...quiet, line: `in ${away}`, tone: 'error', bare: true, trip: doing, words: `Logged into ${away}, not their bus. ${words}`, mark: NOW_MARKS.away };
-    if (live.over_ms > 0) return { ...quiet, line: `Over ${hours(live.over_ms)}`, tone: 'error', meter: 0, trip: doing, words: `Over hours by ${hours(live.over_ms)}. ${words}`, mark: NOW_MARKS.over };
+    if (live.over_ms > 0) return { ...quiet, line: `Over ${hours(live.over_ms)}`, tone: 'error', bare: true, trip: doing, words: `Over hours by ${hours(live.over_ms)}. ${words}`, mark: NOW_MARKS.over };
     const left = live.left_ms;
-    if (left == null) return { ...quiet, line: '–', words, trip: doing };
+    if (left == null) return { ...quiet, line: '', words, trip: doing };
     if (!trip && left >= DRIVE) return { ...quiet, line: '', words, free: true };
-    const tone = left < 60e3 ? 'error' : left < LOW ? 'warning' : 'normal';
-    return { ...quiet, line: `${hours(left)} left`, tone, words, meter: fill(left, DRIVE), trip: doing, mark: tone === 'error' ? NOW_MARKS.out : null };
+    if (left < 60e3) return { ...quiet, line: 'Out of hours', tone: 'error', bare: true, words, trip: doing, mark: NOW_MARKS.out };
+    return { ...quiet, line: '', tone: left < LOW ? 'warning' : 'normal', words, meter: fill(left, DRIVE), trip: doing };
   }
 
   const dayOf = v => {
@@ -132,7 +130,8 @@
     return new Date(y, m - 1, d);
   };
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-  const PAPERS = [['license_exp', 'Licence'], ['med_card_expiry', 'Medical card']];
+  // Each paper's field, its name in a sentence and the shorter one its tile's line has room for.
+  const PAPERS = [['license_exp', 'Licence', 'Licence'], ['med_card_expiry', 'Medical card', 'Medical']];
 
   /* The driver's marks, the most urgent first: `{ kind, tone, icon, words }`,
      tone `error` or `warning`, and an expired paper's `line`, the short words
@@ -147,7 +146,7 @@
     if (rules.length && !rules.every(r => /passenger/i.test(r))) {
       marks.push({ kind: 'rules', tone: 'error', icon: '#i-warning--filled', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
     }
-    for (const [field, word] of PAPERS) {
+    for (const [field, word, short] of PAPERS) {
       const when = dayOf(driver?.[field]);
       if (!when) continue;
       const n = Math.round((when - today) / DAY);
@@ -156,7 +155,7 @@
       const words = n < 0 ? `${word} expired ${plural(-n, 'day')} ago`
         : n === 0 ? `${word} expires today` : `${word} expires in ${plural(n, 'day')}`;
       marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#i-warning--filled' : '#i-warning--alt--filled', words,
-        ...(n < 0 ? { line: `${word} expired` } : {}) });
+        ...(n < 0 ? { line: `${short} expired` } : {}) });
     }
     const of = kind => alerts.filter(a => a.kind === kind);
     const legs = list => list.map(a => [a.trip?.destination || a.trip?.trip_ref || 'A trip', a.legName].filter(Boolean).join(', ')).join('; ');

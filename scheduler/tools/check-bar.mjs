@@ -732,24 +732,24 @@ expect('the tip words each paper in the inspection\'s place',
 
 console.log('\n  The roster');
 const H = 3600e3;
-expect('a driver\'s line: the driving time left in any duty, amber under two hours and red at none; empty for a driver free with all ten hours; a dash with no clock',
+expect('a driver\'s line: the driving time left in any duty on the meter alone, amber under two hours, Out of hours in red at none; empty for a driver free with all ten hours; no words with no clock',
   [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'driving', left_ms: 1.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'on', left_ms: 0 },
     { duty: 'off', left_ms: 4 * H, rest_since: ago(3 * 60) }, { duty: 'off', left_ms: 10 * H, rest_since: ago(14 * 60) },
     { duty: 'off', rest_since: ago(30 * 60) }, null]
     .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter, st.free]; }),
-  [['6:30 left', 'normal', 0.65, false], ['1:30 left', 'warning', 0.15, false], ['0:36 left', 'warning', 0.06, false], ['0:00 left', 'error', 0, false],
-    ['4:00 left', 'normal', 0.4, false], ['', 'quiet', null, true], ['\u2013', 'quiet', null, false], ['\u2013', 'quiet', null, false]]);
+  [['', 'normal', 0.65, false], ['', 'warning', 0.15, false], ['', 'warning', 0.06, false], ['Out of hours', 'error', null, false],
+    ['', 'normal', 0.4, false], ['', 'quiet', null, true], ['', 'quiet', null, false], ['', 'quiet', null, false]]);
 expect('on a trip under way, what the driver is doing: at the wheel, on duty with a yard move, off duty with personal conveyance, in the berth; on none, nothing, and never free',
   [[{ duty: 'driving', left_ms: 6 * H }, true], [{ duty: 'on', left_ms: 6 * H, wheel: true }, true], [{ duty: 'yard', left_ms: 6 * H }, true],
     [{ duty: 'off', left_ms: 10 * H }, true], [{ duty: 'personal', left_ms: 6 * H }, true], [{ duty: 'sleeper', left_ms: 6 * H }, true],
     [{ duty: 'driving', left_ms: 6 * H }, false]].map(([l, on]) => { const st = DriverHead.stateOf(l, on); return [st.trip, st.free]; }),
   [['driving', false], ['driving', false], ['on', false], ['off', false], ['off', false], ['sleeper', false], [null, false]]);
-expect('what Samsara says now: not logged in on a trip and a quiet dash off one, another bus on a trip, over hours, and out of hours, each with its mark',
+expect('what Samsara says now: not logged in on a trip and nothing off one, another bus on a trip, over hours, and out of hours, each in words alone with its mark',
   [[{ duty: null, left_ms: 4 * H }, true], [{ duty: null, left_ms: 4 * H }, null], [{ duty: 'driving', left_ms: 4 * H }, { away: '133' }],
     [{ duty: 'driving', left_ms: 0, over_ms: 25 * 60e3 }, true], [{ duty: 'on', left_ms: 0 }, true]]
     .map(([l, t]) => { const st = DriverHead.stateOf(l, t); return [st.line, st.tone, st.bare, st.mark?.kind ?? null]; }),
-  [['Not logged in', 'warning', true, 'unlogged'], ['\u2013', 'quiet', false, null], ['in 133', 'error', true, 'away'],
-    ['Over 0:25', 'error', false, 'over'], ['0:00 left', 'error', false, 'out']]);
+  [['Not logged in', 'warning', true, 'unlogged'], ['', 'quiet', false, null], ['in 133', 'error', true, 'away'],
+    ['Over 0:25', 'error', true, 'over'], ['Out of hours', 'error', true, 'out']]);
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
@@ -768,14 +768,14 @@ DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', pr
 expect('the tile draws the short name and its most urgent mark over the line and its meter, and no check of its own for a trip it is free for',
   [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
     cell.querySelector('.scheduler-avail__meter').dataset.kind, cell.querySelectorAll('.scheduler-avail__top svg').length, cell.hasAttribute('data-cannot')],
-  ['Rigo', '2:00 left', 'warning', 'drive', 1, false]);
+  ['Rigo', '', 'warning', 'drive', 1, false]);
 expect('the tile\'s one button is the toggletip button of the driver\'s card, labelled with the name, the clock and the marks; the name and mark are words, and the hover is the driver\'s own',
   [cell.querySelectorAll('button').length, cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null,
     cell.querySelector('.scheduler-avail__card .rux--popover-content') != null, cell.querySelector('.scheduler-avail__line').getAttribute('aria-label'), cell.title],
   [1, true, true, 'Rigoberto Soto\'s card. Driving · 2:00 driving left. Licence expires in 5 days', 'Rigoberto Soto · Priority 2']);
 DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'off', left_ms: 1.5 * H, rest_since: ago(90) }, []);
-expect('a live answer changes the tile\'s words in place, so a card open from it stays open',
-  [text(cell, '.scheduler-avail__state'), cell.querySelectorAll('.scheduler-avail__line').length], ['1:30 left', 1]);
+expect('a live answer changes the tile\'s meter in place, so a card open from it stays open',
+  [cell.querySelector('.scheduler-avail__meter').style.getPropertyValue('--scheduler-share'), cell.querySelectorAll('.scheduler-avail__line').length], ['15%', 1]);
 const tripCell = document.createElement('div');
 const tripTile = (live, onTrip, driver = { id: 'd2', name: 'Ana Ruiz' }) => {
   DriverHead.draw(tripCell, driver, live, [], onTrip);
@@ -786,15 +786,15 @@ expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon
   [tripTile({ duty: 'driving', left_ms: 6 * H, wheel: true }, true), tripTile({ duty: 'off', left_ms: 5 * H }, true),
     tripTile({ duty: 'sleeper', left_ms: 8 * H }, true), tripTile({ duty: 'on', left_ms: 0 }, true),
     tripTile({ duty: 'off', left_ms: 5 * H }, true, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }), tripTile({ duty: 'off', left_ms: 10 * H }, false)],
-  [['#i-BPMN-link--fill', 'driving', '6:00 left', false], ['#i-pause--outline--filled', 'off', '5:00 left', false],
-    ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#i-warning--filled', null, '0:00 left', false],
-    ['#i-warning--alt--filled', null, '5:00 left', false], [null, null, '', true]]);
+  [['#i-BPMN-link--fill', 'driving', '', false], ['#i-pause--outline--filled', 'off', '', false],
+    ['#i-asleep--filled', 'sleeper', '', false], ['#i-warning--filled', null, 'Out of hours', true],
+    ['#i-warning--alt--filled', null, '', false], [null, null, '', true]]);
 expect('an expired paper: the red mark, and the paper in red alone in the line\'s place, free or not, unless Samsara has words of its own',
   [tripTile({ duty: 'off', left_ms: 10 * H }, false, { id: 'd2', name: 'Ana Ruiz', med_card_expiry: dayIn(-3) }),
     tripCell.querySelector('.scheduler-avail__line').dataset.tone, tripCell.hasAttribute('data-cannot'),
     tripTile({ duty: 'off', left_ms: 4 * H }, false, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) }),
     tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) })],
-  [['#i-warning--filled', null, 'Medical card expired', true], 'error', true,
+  [['#i-warning--filled', null, 'Medical expired', true], 'error', true,
     ['#i-warning--filled', null, 'Licence expired', true], ['#i-warning--filled', null, 'in 133', true]]);
 expect('a red mark from Samsara stands before an amber one of the papers, and its line has no meter',
   tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }),

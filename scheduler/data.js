@@ -12067,7 +12067,7 @@
     const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(id)));
     const bus = inBus ? panelIndex.buses?.get(inBus.bus_id)?.number ?? null : null;
     const alerts = driverAlertsOf(id);
-    return { driver, live, bus, marks: DriverHead.marksOf(driver, alerts), tells: alerts.filter(a => a.kind === 'tell').map(a => tellOf(id, a)), next: nextTripOf(id) };
+    return { driver, live, bus, marks: DriverHead.marksOf(driver, alerts, live), tells: alerts.filter(a => a.kind === 'tell').map(a => tellOf(id, a)), next: nextTripOf(id) };
   }
   /* A leg to tell a driver of, as its card offers it: its words, and the
      board's address for the leg with the Contact list's Tell pressed for the

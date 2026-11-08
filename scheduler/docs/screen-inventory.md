@@ -281,8 +281,9 @@ from its sides, as the bus tile's parts are, and 2px apart, centred above
 the row's line on whole pixels with the odd pixel below. The first is the
 name at 14px, its photo left to the card, and at the
 line's end one icon, every mark's words on its label. Their worst mark
-stands there: a licence or medical card expiring within 45 days, amber, or
-expired, red; a leg within 30 days that changed since they said yes; a leg
+stands there: Samsara keeping them to hours rules that are not a
+passenger carrier's, red, since every clock it gives is then wrong; a
+licence or medical card expiring within 45 days, amber, or expired, red; a leg within 30 days that changed since they said yes; a leg
 leaving within two days they have not been sent. What Samsara says now
 earns one too, and the worse stands: on a trip, their app not connected,
 the amber warning; on a trip, logged into a bus that is none of the ones

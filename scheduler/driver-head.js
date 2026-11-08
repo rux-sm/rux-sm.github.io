@@ -5,6 +5,8 @@
    bus column, drawn inside the cell data.js makes, on two lines:
    - The name at 14px, and at the line's end one 16px icon, every mark's
      words on its label. The driver's most urgent mark stands there:
+       rules   Samsara keeping them to hours rules that are not a
+               passenger carrier's, red
        papers  the licence or medical card running out within WARN_DAYS,
                amber, or run out, red, as the Drivers page warns
        tell    a leg within 30 days that changed for them since they said
@@ -44,7 +46,7 @@
    null with no trip of theirs under way, between its yard-out and its
    return, or `{ away }`. It draws again only when what it shows has
    changed. `stateOf(live, trip)` and
-   `marksOf(driver, alerts, today)`
+   `marksOf(driver, alerts, live, today)`
    are what it shows, for tools/check-bar.mjs.
    Needs leg-facts.js and road-bar.js loaded first.
    ========================================================================== */
@@ -132,9 +134,17 @@
   const PAPERS = [['license_exp', 'Licence'], ['med_card_expiry', 'Medical card']];
 
   /* The driver's marks, the most urgent first: `{ kind, tone, icon, words }`,
-     tone `error` or `warning`. `today` is a Date at the office's midnight. */
-  function marksOf(driver, alerts = [], today = new Date(new Date().setHours(0, 0, 0, 0))) {
+     tone `error` or `warning`. `live` is their entry in samsara-now's
+     `drivers`, for the hours rules Samsara keeps them to, and `today` a
+     Date at the office's midnight. */
+  function marksOf(driver, alerts = [], live = null, today = new Date(new Date().setHours(0, 0, 0, 0))) {
     const marks = [];
+    /* Rules that are not a passenger carrier's make every clock Samsara
+       gives for them wrong; the fix is the driver's settings in Samsara. */
+    const rules = live?.rules ?? [];
+    if (rules.length && !rules.every(r => /passenger/i.test(r))) {
+      marks.push({ kind: 'rules', tone: 'error', icon: '#i-error--filled', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
+    }
     for (const [field, word] of PAPERS) {
       const when = dayOf(driver?.[field]);
       if (!when) continue;
@@ -188,7 +198,7 @@
 
   function draw(cell, driver, live, alerts = [], trip = null) {
     const state = stateOf(live, trip);
-    const marks = marksOf(driver, alerts);
+    const marks = marksOf(driver, alerts, live);
     const name = driver.short_name || driver.name || 'Driver';
     const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, state.bare, state.trip, state.free, state.mark?.kind, !!trip, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
@@ -213,8 +223,8 @@
       mark.dataset.tone = state.tone;
       mark.replaceChildren(svgUse(TRIP_ICON[state.trip], '16', '0 0 32 32'));
     }
-    // A driver whose worst mark is red cannot drive, so is never marked free.
-    cell.toggleAttribute('data-cannot', marks[0]?.tone === 'error');
+    // A driver with an expired paper cannot drive, so is never marked free.
+    cell.toggleAttribute('data-cannot', marks.some(m => m.kind === 'papers' && m.tone === 'error'));
     const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
     line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));

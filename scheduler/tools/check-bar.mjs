@@ -734,12 +734,16 @@ expect('what Samsara says now: not logged in on a trip and a quiet dash off one,
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
-    [{ kind: 'unsent', trip: { destination: 'McAllen' }, legName: null }, { kind: 'tell', trip: { destination: 'Austin' }, legName: 'Return' }], today)
+    [{ kind: 'unsent', trip: { destination: 'McAllen' }, legName: null }, { kind: 'tell', trip: { destination: 'Austin' }, legName: 'Return' }], null, today)
     .map(m => [m.kind, m.tone, m.words]),
   [['papers', 'error', 'Medical card expired 2 days ago'], ['papers', 'warning', 'Licence expires in 12 days'],
     ['tell', 'warning', 'Tell of a change: Austin, Return'], ['unsent', 'warning', 'Not sent: McAllen']]);
+expect('hours rules that are not a passenger carrier\'s are a red mark first; passenger rules or none read mark nothing',
+  [DriverHead.marksOf({}, [], { rules: ['US Interstate Property, USA 70 hour / 8 day'] }, today).map(m => [m.kind, m.tone, m.words]),
+    DriverHead.marksOf({}, [], { rules: ['US Interstate Passenger, USA 70 hour / 8 day'] }, today), DriverHead.marksOf({}, [], { rules: null }, today)],
+  [[['rules', 'error', 'Samsara keeps them to US Interstate Property, USA 70 hour / 8 day, not a bus driver\'s hours rules']], [], []]);
 expect('a card further off than 45 days, or none on file, marks nothing',
-  DriverHead.marksOf({ license_exp: dayIn(46), med_card_expiry: null }, [], today), []);
+  DriverHead.marksOf({ license_exp: dayIn(46), med_card_expiry: null }, [], null, today), []);
 const cell = document.createElement('div');
 DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'driving', left_ms: 2 * H }, []);
 expect('the tile draws the short name and its most urgent mark over the line and its meter, and a free check to show',
@@ -772,7 +776,7 @@ expect('a red mark from Samsara stands before an amber one of the papers, and it
 const card = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
   live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',
-  marks: DriverHead.marksOf({ license_exp: dayIn(5) }, [], today), next: 'Galveston, Sat, Nov 7' }, { photo: () => Promise.resolve('') });
+  marks: DriverHead.marksOf({ license_exp: dayIn(5) }, [], null, today), next: 'Galveston, Sat, Nov 7' }, { photo: () => Promise.resolve('') });
 expect('a driver\'s card: their name over their priority, what they do now and in which bus, their clocks, their marks, their facts, their next trip, and Call, Send trips and Open driver',
   [text(card, '.scheduler-tip__name'), text(card, '.scheduler-tip__by'), text(card, '.scheduler-tip__now'), card.querySelectorAll('.scheduler-tip__clock').length,
     card.querySelectorAll('.scheduler-tip__lamp--warning').length, [...card.querySelectorAll('.scheduler-tip__row')].filter(r => !String(r.className).includes('scheduler-tip__lamp')).map(r => r.textContent).filter(t => /^(Speaks|Licence|\(956\))/.test(t)).length,
@@ -785,7 +789,7 @@ const tellAlerts = [
 ];
 const told = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2 }, live: null, bus: null,
-  marks: DriverHead.marksOf({}, tellAlerts, today),
+  marks: DriverHead.marksOf({}, tellAlerts, null, today),
   tells: [{ words: 'Galveston, Outbound', href: './?trip=t1&open=contacts&press=s1' }, { words: 'Austin', href: './?trip=t2&open=contacts&press=s2' }] },
   { photo: () => Promise.resolve('') });
 expect('a change to tell is a row a leg on the driver\'s card, each ending in Tell, which asks the board for that leg\'s Contact list pressed for their seat',

@@ -31,10 +31,11 @@ bus on a link the office sends. What `samsara-now` reads today is in
   `violations` gives the shift-driving and cycle time a driver is over now;
   over zero is the red mark and "Over 0:25" in red, and "0:00 left" stays
   red for a driver Samsara counts no violation for yet.
-- **Each driver's hours rules are checked against the bus rules.** One read
-  of Samsara's drivers gives each one's rules; a driver whose rules are not
-  a passenger carrier's, 10 hours driving after 8 off, has a red mark on
-  their tile and on the Drivers page, since every clock they show is wrong.
+- **Each driver's hours rules are checked against the bus rules.**
+  `samsara-now` reads Samsara's drivers for each one's rules; a driver whose
+  rules are not a passenger carrier's has a red mark on their tile and its
+  words on their card, since every clock they show is wrong, and the fix
+  is their settings in Samsara.
 - **Samsara's inspections are read, not re-entered.** Each pre-trip and
   post-trip inspection a driver files in Samsara, safe, unsafe or resolved,
   is read from its inspections feed against the bus and the day: a pre-trip
@@ -58,7 +59,6 @@ None open.
 
 ## Tasks
 
-- [ ] Read each driver's hours rules and mark a driver on the wrong ones.
 - [ ] Read Samsara's inspections, tick the pre-trip on the seat and mark an
       unsafe one on the bus.
 - [ ] Confirm the Samsara key may make live sharing links, add

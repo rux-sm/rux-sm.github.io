@@ -4030,14 +4030,23 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* The two marks. Free is the one being looked for, so it is empty; busy and
    off are Carbon's tag tints, the palette the trip bar uses. A mark is a
-   pseudo-element 2px inside its cell's rules, so it sits within its cell
-   rather than filling it, and takes the theme's mark radius and an edge where
-   the theme draws one. Its fill and edge are the two properties below, which
-   a theme sets in theme.css. */
-.scheduler-avail__cell { overflow: hidden; }
+   pseudo-element 2px inside its day's rules and 24px tall, Carbon's spacing
+   06, centred in the row on the same whole pixel as the name tile beside it,
+   so it reads as a bar across the days rather than a slab filling them, and
+   takes the theme's mark radius and an edge where the theme draws one. Its
+   fill and edge are the two properties below, which a theme sets in
+   theme.css. */
+.scheduler-avail__cell {
+  overflow: hidden;
+  --scheduler-mark-h: var(--rux-spacing-06);
+  --scheduler-mark-top: calc((var(--scheduler-avail-h) - 1px - var(--scheduler-mark-h)) / 2);
+}
+@supports (block-size: round(1px, 1px)) {
+  .scheduler-avail__cell { --scheduler-mark-top: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-mark-h)) / 2), 1px); }
+}
 /* The day rules in the roster: every body cell rules its start edge, the first
    included, so each day's box is the same and every mark is the same size, 2px
-   inside the rules on all four sides. Only body rows use `__cell`, so no rule
+   inside the rules either side. Only body rows use `__cell`, so no rule
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
@@ -4052,7 +4061,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__cell--whole::after {
   content: '';
   position: absolute;
-  inset: 2px;
+  inset-block-start: var(--scheduler-mark-top);
+  inset-inline: 2px;
+  block-size: var(--scheduler-mark-h);
+  box-sizing: border-box;
   border: 1px solid var(--scheduler-free-edge, var(--rux-support-success));
   border-radius: var(--scheduler-mark-radius, 0);
   background: var(--scheduler-free-fill, color-mix(in oklab, var(--rux-support-success) 12%, transparent));
@@ -4076,7 +4088,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__free {
   position: absolute;
   z-index: 1;
-  inset-block-start: 50%;
+  inset-block-start: calc(var(--scheduler-mark-top) + var(--scheduler-mark-h) / 2);
   inset-inline-start: calc(var(--scheduler-free-days, 1) * 50%);
   translate: -50% -50%;
   fill: var(--scheduler-free-ink, var(--rux-support-success));
@@ -4091,7 +4103,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__cell--off::after {
   content: '';
   position: absolute;
-  inset: 2px;
+  inset-block-start: var(--scheduler-mark-top);
+  inset-inline: 2px;
+  block-size: var(--scheduler-mark-h);
+  box-sizing: border-box;
   border: 1px solid var(--scheduler-avail-edge, transparent);
   border-radius: var(--scheduler-mark-radius, 0);
   background: var(--scheduler-avail-fill);

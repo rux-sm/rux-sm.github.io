@@ -272,9 +272,10 @@ order the office calls drivers in, a name's title saying it; Time left puts
 the most driving time Samsara says a driver has first and a driver with no
 clock last, taken as the rail is drawn, so the rows hold still between
 Samsara's answers. The chevron slides the
-week out beside the tiles, seven 32px days, 24rem in all, and every page load starts with it shut. With a trip selected,
+week out beside the tiles, seven 32px days, 24rem in all, and every page load starts with it shut. A trip or time off is a
+bar 24px tall across its days, centred in the row. With a trip selected,
 its days are shaded in the week's band, and each driver free on every one of
-them has an open slot across them, a box in the success tint with a success
+them has an open slot across them, a bar the same height in the success tint with a success
 edge and one check at its middle, Geist's green 100, 400 and 900 in Rux 100;
 their tile shows no check of its own; a driver free on only some has
 nothing drawn, and a driver with an expired paper has no slot, since they

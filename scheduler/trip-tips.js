@@ -328,7 +328,7 @@
     slot.live.pin?.remove();
     slot.live.pin = here ? window.L.marker(here, { keyboard: false, interactive: false, icon: window.L.divIcon({
       className: 'scheduler-live-pin-box', iconSize: null,
-      html: LiveMap.pinHtml({ number: board.busesById.get(busId)?.number ?? '', hue, heading: bus.heading, moving: bus.mph > 0 }),
+      html: LiveMap.pinHtml({ id: busId, number: board.busesById.get(busId)?.number ?? '', paint: board.busesById.get(busId)?.color, heading: bus.heading, hue }),
     }) }).addTo(map) : null;
     if (slot.live.busId !== bus.bus_id) {
       slot.live.busId = bus.bus_id;

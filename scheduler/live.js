@@ -6,15 +6,16 @@
    buses are out, how many need attention and how many are on no trip, and
    when Samsara last answered.
 
-   A bus out is a pin in its trip's colour with an arrow the way it is
-   heading, a faint tail of where it went in the last hour, and a tile under
+   A bus is its drawing in its own paint, facing the way it heads, live-map.js's,
+   with its number beside it. A bus out wears its trip's colour on the number,
+   leaves a faint tail of where it went in the last hour, and has a tile under
    On the road. The tile says what its bar on the board says: its warnings,
    live-trip.js's, worst first, its driver with the hours they may still
    drive, its speed, and its next stop. On the way to a pickup it gives the
    spot and when the bus arrives; on the way to any other stop, only when it
    arrives, since only the spot is held to. Buses with a warning come first,
-   and a pin takes its worst warning's colour. A bus on no trip is a small
-   grey pin, and a small tile under Not on a trip. A bus Samsara has heard
+   and its number takes its worst warning's colour. A bus on no trip has a
+   small grey number, and a small tile under Not on a trip. A bus Samsara has heard
    nothing fresh from since it was last seen running, which the board says
    is No signal, is faded, and says when it was last seen; a bus last seen
    with its engine off is parked, however old the reading, as samsara-now
@@ -50,8 +51,8 @@
 
   const ASK_EVERY = 60e3;
   const TRIPS_EVERY = 5 * 60e3;
-  // A pin's size, near enough, so pins that would overlap are joined.
-  const PIN_BOX = [56, 26];
+  // A pin's size, its drawing and number, near enough, so pins that would overlap are joined.
+  const PIN_BOX = [60, 28];
   const TONE_RANK = { error: 0, warning: 1 };
 
   let client = null, road = null, map = null, slow = 0, yard = null;
@@ -181,13 +182,14 @@
     if (map && want !== style) { style = want; map.style(want); }
   }
 
-  const pinOf = s => LiveMap.pinHtml({ number: s.number, hue: s.hue, heading: s.bus.heading, moving: s.bus.mph > 0,
+  const paintOf = s => busesById.get(s.bus.bus_id)?.color ?? null;
+  const pinOf = s => LiveMap.pinHtml({ id: s.bus.bus_id, number: s.number, paint: paintOf(s), heading: s.bus.heading, hue: s.hue,
     chosen: s.bus.bus_id === chosen, light: s.out ? LiveMap.lightOf(s.bus) : null, tone: s.tone, parked: !s.out, stale: s.stale });
   const worst = list => list.map(s => s.tone).filter(Boolean).sort((a, b) => TONE_RANK[a] - TONE_RANK[b])[0] ?? null;
   function groupOf(list) {
     const sorted = [...list].sort(byNumber);
     return LiveMap.groupHtml({
-      members: sorted.map(s => ({ id: s.bus.bus_id, number: s.number, chosen: s.bus.bus_id === chosen })),
+      members: sorted.map(s => ({ id: s.bus.bus_id, number: s.number, paint: paintOf(s), heading: s.bus.heading, chosen: s.bus.bus_id === chosen })),
       hue: sorted[0].hue, tone: worst(sorted), parked: !sorted[0].out, stale: sorted.every(s => s.stale),
     });
   }
@@ -434,7 +436,7 @@
   pair.start(async signedIn => {
     client = signedIn;
     const [busRows, settings, driverRows] = await Promise.all([
-      client.from('buses').select('id,number'),
+      client.from('buses').select('id,number,color'),
       client.from('settings').select('key,value').in('key', ['route-times-v1', 'yard-location-v1']),
       client.from('drivers').select('id,name,phone'),
       Places.init(client),
@@ -455,6 +457,8 @@
     if (!map) { say('error', "The map didn't load", Places.unavailable() || 'Reload the page to try again.'); return; }
     style = LiveMap.style();
     map.setView(yard ?? [26.2, -98.2], 9);
+    // The bus drawings, before the first pins.
+    await LiveMap.load();
     // Pins join and part as the map zooms.
     map.on('zoomend', () => { if (answer) drawPins(); });
     $('scheduler-live-all').addEventListener('click', showAll);

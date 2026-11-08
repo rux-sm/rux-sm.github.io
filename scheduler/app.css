@@ -6868,15 +6868,43 @@ html[data-scheduler-takeover] {
 .scheduler-live__yard-tile > .scheduler-live__line { white-space: normal; }
 .scheduler-live__hours, .scheduler-live__when { font-variant-numeric: tabular-nums; }
 .scheduler-live__hours--low, .scheduler-live__late { color: var(--rux-text-primary); font-weight: 600; }
-/* A pin: its number on the trip's colour, centred on where the bus is, the
-   chosen one ringed. Leaflet's own box around it is emptied. */
+/* A pin: the bus's drawing centred on where it is, and its number beside it
+   on the trip's colour, the chosen one ringed. Leaflet's own box around it
+   is emptied. */
 .scheduler-live-pin-box { background: none; border: 0; }
+.scheduler-live-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-01);
+  inline-size: max-content;
+  translate: -14px -50%;
+  cursor: pointer;
+}
+/* One Samsara has no fresh reading of, faded. */
+.scheduler-live-mark--stale { opacity: .55; }
+/* The drawing at its own 28px, whole pixels kept whole, ringed 1px in the
+   page's icon ink: four offset shadows of no blur, each over the last, make
+   the eight pixels round every pixel of the coach. Facing left, it is the
+   right-facing view mirrored. */
+.scheduler-live-bus {
+  --scheduler-live-outline: var(--rux-icon-primary);
+  display: block;
+  flex: none;
+  inline-size: 28px;
+  block-size: 28px;
+  filter: drop-shadow(1px 0 0 var(--scheduler-live-outline)) drop-shadow(-1px 0 0 var(--scheduler-live-outline))
+    drop-shadow(0 1px 0 var(--scheduler-live-outline)) drop-shadow(0 -1px 0 var(--scheduler-live-outline));
+}
+.scheduler-live-bus > svg { display: block; }
+.scheduler-live-bus--mirrored { scale: -1 1; }
+/* Joined buses stand one behind the next, 10px apart. */
+.scheduler-live-mark__buses { display: flex; flex: none; }
+.scheduler-live-mark__buses > .scheduler-live-bus + .scheduler-live-bus { margin-inline-start: -18px; }
 .scheduler-live-pin {
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-01);
   inline-size: max-content;
-  translate: -50% -50%;
   padding: 0 var(--rux-spacing-03) 0 var(--rux-spacing-02);
   background: var(--scheduler-bg);
   color: var(--scheduler-fg);
@@ -6888,7 +6916,7 @@ html[data-scheduler-takeover] {
   cursor: pointer;
 }
 .scheduler-live-pin--chosen { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
-/* A bus on no trip, small and grey; one Samsara has no fresh reading of, faded. */
+/* A bus on no trip, its number small and grey. */
 .scheduler-live-pin--parked {
   padding-inline: var(--rux-spacing-02);
   background: var(--rux-layer-accent-01);
@@ -6896,7 +6924,6 @@ html[data-scheduler-takeover] {
   font-size: var(--rux-label-01-font-size);
   line-height: 1.25rem;
 }
-.scheduler-live-pin--stale { opacity: .55; }
 /* Buses too close to tell apart, one pin with every number, each a press of its own. */
 .scheduler-live-pin--group { gap: 0; padding: 0; }
 .scheduler-live-pin__member { padding-inline: var(--rux-spacing-02); }
@@ -6923,7 +6950,6 @@ html[data-scheduler-takeover] {
 .scheduler-live-pin[data-light="scan"] { opacity: .7; outline: 2px dashed var(--scheduler-road-scan); outline-offset: 2px; }
 [data-motion="calm"] .scheduler-live-pin[data-light]:not([data-light="off"], [data-light="scan"]) { animation: none; box-shadow: 0 0 0 4px var(--scheduler-road-light); }
 [data-motion="off"] .scheduler-live-pin[data-light] { animation: none; box-shadow: none; }
-.scheduler-live-pin__arrow { display: block; flex: none; }
 /* The last hour's tail of every bus out, faint under the pins. */
 .scheduler-live-trail { stroke: var(--rux-support-info); stroke-width: 3; stroke-opacity: .45; fill: none; }
 /* The chosen bus's leg: the path it drove, the dashed road on to its next

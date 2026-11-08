@@ -6,19 +6,31 @@
    in classes app.css colours.
 
    `load()` loads Leaflet the first time a page without it asks, from
-   jsdelivr at the version and hash live.html links, and resolves once
-   `window.L` is there.
+   jsdelivr at the version and hash live.html links, and the bus drawings,
+   and resolves once both are there.
+   THE BUS DRAWINGS are five 28px pixel views of the coach in `brand/`, up,
+   up-right, right, down-right and down, the three facing left their
+   mirrors, picked by heading to the nearest 45°, so a drawing is never
+   turned and stays sharp; a bus with no heading keeps the last it had, and
+   faces right until it has one. Their paint is drawn in key colours, which
+   each bus's own paint from the Fleet page takes the place of: roof #FF00FF
+   the paint, side #CC00CC, front and back #990099 and roof details #660066
+   shaded from it, darker for a light paint and lighter for a dark one, so a
+   black coach keeps its form. app.css rings each with a 1px outline in the
+   page's icon ink, light on the dark map and dark on the light one.
    `style()` is the tiles for the page's own background: the light street
    map on a light page and the dark one on a dark page.
-   `pinHtml({ number, hue, heading, moving, chosen, light, tone, parked,
-   stale })` is a bus's pin: its number on its trip's colour, with an arrow
-   turned the way it heads while it moves, ringed by the light its bar casts,
-   `light` the bar's `data-light` and `tone` its worst warning's, error or
-   warning, as app.css draws them; a bus on no trip is `parked`, small and
-   grey, and one Samsara has no fresh reading of is `stale`, faded.
+   `pinHtml({ id, number, paint, heading, hue, chosen, light, tone, parked,
+   stale })` is a bus's pin: its drawing in its paint, centred on where it
+   is, and beside it its number on its trip's colour, ringed by the light its
+   bar casts, `light` the bar's `data-light` and `tone` its worst warning's,
+   error or warning, as app.css draws them; a bus on no trip is `parked`,
+   its number small and grey, and one Samsara has no fresh reading of is
+   `stale`, faded.
    `groupHtml({ members, hue, tone, parked, stale })` is one pin for buses
-   too close to tell apart: each number in it, `members` { id, number,
-   chosen }, a press on a number being a press on that bus.
+   too close to tell apart: their drawings one behind the next and every
+   number in one label, `members` { id, number, paint, heading, chosen }, a
+   press on a drawing or a number being a press on that bus.
    `groups(points, [w, h])` joins the buses whose pins overlap, standing
    less than `w` pixels apart across and `h` down, `points` { id, xy } in
    screen pixels, into lists of ids.
@@ -50,7 +62,7 @@
   const CSS_HASH = 'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H';
   const JS_HASH = 'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH';
   let loading = null;
-  function load() {
+  function leaflet() {
     if (window.L) return Promise.resolve(window.L);
     loading ??= new Promise((resolve, reject) => {
       const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${LEAFLET}leaflet.css`, integrity: CSS_HASH, crossOrigin: 'anonymous' });
@@ -62,6 +74,56 @@
     return loading;
   }
 
+  // The five views, read once, each as markup with its ids and prolog gone, or '' where one did not come.
+  const VIEWS = ['bus-1-up', 'bus-2-up-right', 'bus-3-right', 'bus-4-down-right', 'bus-5-down'];
+  const BRAND = new URL('brand/', document.currentScript?.src ?? location.href);
+  let views = null, viewing = null;
+  function readViews() {
+    viewing ??= Promise.all(VIEWS.map(name => fetch(new URL(`${name}.svg`, BRAND))
+      .then(r => (r.ok ? r.text() : ''))
+      .then(text => {
+        const svg = new DOMParser().parseFromString(text, 'image/svg+xml').documentElement;
+        if (svg.nodeName !== 'svg') return '';
+        for (const n of svg.querySelectorAll('[id]')) n.removeAttribute('id');
+        svg.removeAttribute('id');
+        Object.entries({ width: 28, height: 28, 'shape-rendering': 'crispEdges', 'aria-hidden': 'true' }).forEach(([k, v]) => svg.setAttribute(k, v));
+        return svg.outerHTML;
+      })
+      .catch(() => ''))).then(list => { views = list; });
+    return viewing;
+  }
+  const load = () => Promise.all([leaflet(), readViews()]).then(() => window.L);
+
+  /* A paint taken k of the way to black, or for a near-black paint, whose
+     every channel is low, to white; a strong red is low in green and blue
+     but is no dark paint. */
+  const shade = (hex, k) => {
+    const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+    const dark = Math.max(...c) < 80;
+    const to = dark ? 255 : 0;
+    const amount = dark ? { side: 0.14, end: 0.08, detail: 0.24 }[k] : { side: 0.12, end: 0.24, detail: 0.3 }[k];
+    return `#${c.map(v => Math.round(v + (to - v) * amount).toString(16).padStart(2, '0')).join('')}`;
+  };
+  const KEYS = { ff00ff: null, cc00cc: 'side', '990099': 'end', '660066': 'detail' };
+  const NO_PAINT = '#8d8d8d';
+  function painted(markup, paint) {
+    const p = /^#[0-9a-f]{6}$/i.test(paint ?? '') ? paint.toLowerCase() : NO_PAINT;
+    return markup.replace(/#(ff00ff|cc00cc|990099|660066)\b/gi, (_, key) => {
+      const k = KEYS[key.toLowerCase()];
+      return k ? shade(p, k) : p;
+    });
+  }
+
+  // The way each bus last faced, by its id, for a reading with no heading.
+  const facing = new Map();
+  function busHtml(id, paint, heading) {
+    if (heading != null) facing.set(id, heading);
+    const turn = Math.round((facing.get(id) ?? 90) / 45) % 8;
+    const view = views?.[turn <= 4 ? turn : 8 - turn];
+    if (!view) return '';
+    return `<span class="scheduler-live-bus${turn > 4 ? ' scheduler-live-bus--mirrored' : ''}" data-bus-id="${id}">${painted(view, paint)}</span>`;
+  }
+
   const TRAIL_MS = 3600e3;
   const AHEAD_MS = 5 * 60e3;
 
@@ -70,22 +132,19 @@
     return 0.2126 * r + 0.7152 * g + 0.0722 * b < 128 ? 'dark-matter-brown' : 'osm-bright';
   };
 
-  /* The arrow is the sprite's glyph copied in, since Chrome paints no `<use>`
-     of the hidden sprite inside Leaflet's layers. */
-  const ARROW = '#m-arrow_upward-fill';
-  const glyph = () => document.getElementById(ARROW.slice(1))?.innerHTML ?? '';
-  const pinClass = ({ hue, chosen, parked, stale }) => ['scheduler-live-pin',
+  const pinClass = ({ hue, chosen, parked }) => ['scheduler-live-pin',
     parked ? 'scheduler-live-pin--parked' : `scheduler-bar--${hue}`,
-    chosen && 'scheduler-live-pin--chosen', stale && 'scheduler-live-pin--stale'].filter(Boolean).join(' ');
-  function pinHtml({ number, hue, heading, moving, chosen, light, tone, parked, stale }) {
-    const arrow = heading != null && moving
-      ? `<svg class="scheduler-live-pin__arrow" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" style="rotate:${heading}deg">${glyph()}</svg>` : '';
+    chosen && 'scheduler-live-pin--chosen'].filter(Boolean).join(' ');
+  const markClass = (stale, more = '') => `scheduler-live-mark${more}${stale ? ' scheduler-live-mark--stale' : ''}`;
+  function pinHtml({ id, number, paint, heading, hue, chosen, light, tone, parked, stale }) {
     const lit = `${light ? ` data-light="${light}"` : ''}${tone ? ` data-tone="${tone}"` : ''}`;
-    return `<div class="${pinClass({ hue, chosen, parked, stale })}"${lit}>${arrow}<span>${number}</span></div>`;
+    return `<div class="${markClass(stale)}">${busHtml(id, paint, heading)}<div class="${pinClass({ hue, chosen, parked })}"${lit}><span>${number}</span></div></div>`;
   }
   function groupHtml({ members, hue, tone, parked, stale }) {
+    const buses = members.map(m => busHtml(m.id, m.paint, m.heading)).join('');
     const numbers = members.map(m => `<span class="scheduler-live-pin__member${m.chosen ? ' scheduler-live-pin__member--chosen' : ''}" data-bus-id="${m.id}">${m.number}</span>`).join('');
-    return `<div class="${pinClass({ hue, parked, stale })} scheduler-live-pin--group"${tone ? ` data-tone="${tone}"` : ''}>${numbers}</div>`;
+    return `<div class="${markClass(stale, ' scheduler-live-mark--group')}"><span class="scheduler-live-mark__buses">${buses}</span>`
+      + `<div class="${pinClass({ hue, parked })} scheduler-live-pin--group"${tone ? ` data-tone="${tone}"` : ''}>${numbers}</div></div>`;
   }
 
   /* Each pin joins the first group with a pin it overlaps, so a convoy

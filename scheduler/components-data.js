@@ -500,12 +500,12 @@
     const tileLive = o => ({ engine: 'off', engine_at: new Date(now - 6 * HOUR).toISOString(), fuel: 80, def: 60, fault: null, faults: [], ...o });
     const busTile = {
       id: 'bus-tile', title: 'The bus tile',
-      intro: 'A bus\'s head on the Mac\'s board, on its bar\'s six lines: the number on line 1, the readings square on lines 2 to 5, and the lift, the sleeper or a low DEF on line 6.',
+      intro: 'A bus on the Mac\'s board is a tile the size and place of its bar, its parts on the bar\'s six lines: the number on line 1, the readings on lines 2 to 5, and the lift, the sleeper or a low DEF on line 6, an alert on the tile\'s top-right corner.',
       samples: [
         { name: 'Moving', note: 'The speed in green over mph and the fuel, the lift and sleeper on line 6.', days: 3, tiles: true,
           rows: [tile('b101', tileLive({ engine: 'on', engine_at: new Date(now - 2 * HOUR).toISOString(), mph: 58, fuel: 70 }),
             bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [crewed('b101')] })))] },
-        { name: 'A low DEF', note: 'Idling past 30 minutes in amber, a low tank in orange, and DEF on line 6 in the kit\'s place, the square kept at 64px.', days: 3, tiles: true,
+        { name: 'A low DEF', note: 'Idling past 30 minutes in amber, a low tank in orange, and DEF on line 6 in the kit\'s place, the readings kept to lines 2 to 5.', days: 3, tiles: true,
           rows: [tile('b106', tileLive({ engine: 'idle', engine_at: new Date(now - 34 * MIN).toISOString(), fuel: 22, def: 9 }),
             bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b106')] })))] },
         { name: 'No signal', note: 'A dash over how long since Samsara last heard the bus, the state and fuel faded.', days: 3, tiles: true,
@@ -513,7 +513,7 @@
             bar(trip({ customer: 'Harbor Tours', destination: 'Galveston, TX', buses: [crewed('b103')] })))] },
         { name: 'A long number', note: 'Cut short with an ellipsis on line 1, the whole of it in the tip and title.', days: 3, tiles: true,
           rows: [tile('b120', tileLive({}), bar(trip({ customer: 'Northside Band', destination: 'Austin, TX', buses: [crewed('b120')] })))] },
-        { name: 'An inspection date only', note: 'A bus Samsara does not answer for holds its inspection in the square, amber within 45 days.', days: 3, tiles: true,
+        { name: 'An inspection date only', note: 'A bus Samsara does not answer for holds its inspection in the readings\' place, amber within 45 days.', days: 3, tiles: true,
           rows: [tile('b121', null, bar(trip({ customer: 'Mesa Robotics Club', destination: 'Houston, TX', buses: [crewed('b121')] })))] },
         { name: 'A partner\'s bus and No bus', note: 'A partner\'s row is headed with its name and No bus with its words, neither with a tile.', days: 3, tiles: true,
           rows: [partnerRowOf('p1', bar(covered, { slot: 1 })), row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },

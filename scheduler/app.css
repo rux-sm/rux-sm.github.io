@@ -811,23 +811,39 @@ button.scheduler-row-head__num:focus { outline: none; }
   gap: var(--rux-spacing-02);
   padding-inline: var(--rux-spacing-03);
 }
+/* A bus's parts stand inside its card, the card's clear space and the bar's
+   own inset in from the column's sides. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] { padding-inline: calc(var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline)); }
+/* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
+   size and place, as tall as the bar, its clear space above it and at its
+   sides, and the bar's corners, so the bus and its trips read as one kind of
+   thing across the row. Its parts stand inside it on the bar's lines and
+   insets. A shut row draws none. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id]::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block-start: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-gap-clear);
+  block-size: var(--scheduler-bar-h);
+  border-radius: var(--scheduler-bar-radius, 0);
+  background: var(--rux-layer-02);
+}
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; }
-/* WHILE THE BUS HAS A MARK, ITS ALERT HANGS ON THE BOX'S TOP-RIGHT CORNER,
-   the tile's own top right, so the number, the box and the kit all stand
-   centred: the warning triangle in amber, or the error circle in red where
-   a mark is red, the two every trip bar and driver tile wear, so one mark
-   means one thing on the board. It stands on a 20px disc of the tile's
-   surface, which parts it from the box and the number, centred 2px inside
-   the box's corner so the disc ends at the tile's edge. With three lines
-   the box holds its words on one line, which the disc would cover, and with
-   two or one there is no box, so there it ends line 1. The marks themselves are not
+/* WHILE THE BUS HAS A MARK, ITS ALERT HANGS ON THE TILE'S TOP-RIGHT CORNER,
+   so the number, the readings and the kit all stand centred: the warning
+   triangle in amber, or the error circle in red where a mark is red, the
+   two every trip bar and driver tile wear, so one mark means one thing on
+   the board. It stands on a 20px disc of the column's surface, which parts
+   it from the tile, the disc ending at the column's edge and 2px under the
+   row's line, in every view. The marks themselves are not
    drawn on the tile but stay for a screen reader, each with its words, and
    the tip says them all. */
 .scheduler-row-head__alert { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__alert {
   position: absolute;
   inset-inline-end: 0;
-  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + var(--scheduler-row-h) + var(--rux-spacing-02) - 10px);
+  inset-block-start: calc(var(--scheduler-row-clear) - 6px);
   z-index: 1;
   display: flex;
   padding: 2px;
@@ -835,9 +851,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   background: var(--rux-layer);
   visibility: hidden;
   color: var(--scheduler-head-low);
-}
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__alert {
-  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) - 1px);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > *) .scheduler-row-head__alert { visibility: visible; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > [data-tone="error"]) .scheduler-row-head__alert { color: var(--scheduler-head-critical); }
@@ -862,15 +875,15 @@ button.scheduler-row-head__num:focus { outline: none; }
    lift and sleeper, or a low DEF in their place. */
 /* With one line the tile is its number alone, and the empty square goes too. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
-/* The box runs the tile inside its insets and fills the lines under the
-   number, four at most, less 4px at each end: 64px tall on six lines and on
-   five, 46px on four, 28px on three. A low DEF on five grows it. */
+/* The readings run the tile inside its insets and are centred on the lines
+   under the number, four at most, less 4px at each end: 64px tall on six
+   lines and on five, 46px on four, 28px on three. A low DEF on five grows
+   them. They stand on the tile's own surface, in no box of their own. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
   align-self: stretch;
   min-block-size: calc(min(var(--scheduler-bar-rows) - 1, 4) * var(--scheduler-row-h) - 2 * var(--rux-spacing-02));
   margin-block: 0;
-  padding: var(--rux-spacing-03);
-  background: var(--rux-layer-02);
+  padding: 0;
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: var(--rux-spacing-02); }
 /* The number is a name, so it is every name's style on the board, Carbon's
@@ -931,11 +944,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) .scheduler-row-head__equip { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head__equip { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { padding-block: 0; }
-/* On two lines the state is line 2's words alone, with no square, on the
-   line itself. */
+/* On two lines the state is line 2's words alone, on the line itself. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { gap: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: var(--scheduler-row-h); padding: 0; background: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head .scheduler-row-head__dial { display: flex; }
 /* The number on one line, cut short with an ellipsis, a long one such as a

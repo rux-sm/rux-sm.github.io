@@ -37,22 +37,24 @@ and is what `scheduler/app.css` draws; what each part says is in
 
 ## The bus tile, on six lines
 
-64px, Carbon's spacing 10, and the column's 1px rule, 8px in from its
-sides, its parts centred. Its alert hangs on the box's top-right corner, the
-tile's own top right, on a 20px disc of the tile's surface that ends at the
-tile's edge, so it takes none of line 1's room. It is measured from the top,
-so a row of stacked trips keeps it on the first trip's lines.
+The column is 64px, Carbon's spacing 10, and its 1px rule. In it each bus
+is a tile as a trip is a bar: a card of the second layer the bar's size and
+place, 56px wide, as tall as the bar and 8px under the row's line, 4px clear
+at its sides, with the bar's corners. Its parts stand centred inside it, the
+bar's 8px in from its sides, on the bar's lines. Its alert hangs on the
+card's top-right corner, on a 20px disc of the column's surface that ends at
+the column's edge, 2px under the row's line. It is measured from the top, so
+a row of stacked trips keeps it on the first trip's lines.
 
 | Line | Holds |
 | :--- | :--- |
 | 1 | The number, centred, a longer one cut short |
-| 2 to 5 | The readings box across the tile, 48px wide and 64px tall, 4px clear of the lines: the state's 16px semibold reading over its unit, and the fuel's meter alone across it, 32px |
+| 2 to 5 | The readings, 40px wide and centred on the lines, 4px clear of them: the state's 16px semibold reading over its unit, and the fuel's meter alone across them, 40px |
 | 6 | The lift and the sleeper, 16px icons, centred, or a low DEF in their place, its name alone in the low or critical colour |
 
-At this width the widest words in the box, an inspection date such as Nov 20,
-stand 4px from its sides, and a four-figure number is cut short. On three
-lines, where the box holds its words on one line, and on two and one, where
-there is no box, the alert ends line 1 instead.
+At this width the widest words, an inspection date such as Nov 20, fill the
+40px, a four-figure number is cut short, and on three and two lines, where
+the state stands beside its unit, they stand 6px inside the card.
 
 ## The driver tile
 
@@ -66,18 +68,18 @@ then 6px above the row's line.
 
 ## Each view
 
-A view with fewer bar lines keeps the number level with the destination,
-and the box fills the lines under the number, four at most, less 4px at
-each end. The driver rows stay 48px, so they line up with the bus rows on
+A view with fewer bar lines keeps the card the bar's size, the number level
+with the destination, and the readings on the lines under the number, four
+at most, less 4px at each end. The driver rows stay 48px, so they line up with the bus rows on
 six lines alone.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 144px | Number; box 64px tall; lift, sleeper or low DEF on line 6 |
-| 5 | 112px, 11px | 128px | Number; box 64px tall, grown by a low DEF |
-| 4 | 96px, 12px | 112px | Number; box 46px tall, no fuel |
-| 3 | 80px, 13px | 96px | Number; box 28px tall, the state beside its unit |
-| 2 | 48px, 6px | 64px | Number; the state on line 2, no box |
+| 6 | 128px, 10px | 144px | Number; readings 64px tall; lift, sleeper or low DEF on line 6 |
+| 5 | 112px, 11px | 128px | Number; readings 64px tall, grown by a low DEF |
+| 4 | 96px, 12px | 112px | Number; readings 46px tall, no fuel |
+| 3 | 80px, 13px | 96px | Number; the state beside its unit |
+| 2 | 48px, 6px | 64px | Number; the state on line 2 |
 | 1 | 32px, 7px | 48px | The number alone |
 
 ## The phone's board

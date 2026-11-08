@@ -23,6 +23,11 @@ only what the board already works out, so the two never disagree.
   show without lines piling up; a whole trip's path stays for the bus that
   is pressed, as now, since five buses on one highway would draw five lines
   on top of each other.
+- **A pressed bus shows the rest of its route along the roads,** dashed,
+  from where it is through each stop still ahead to the yard, in place of
+  today's straight dashed line to the next stop alone. The road's shape
+  comes from the Geoapify route `drive` in `scheduler/places.js` already asks
+  for, which it now drops.
 - **A bus not on a trip is a small grey pin with its number,** at its last
   position however old, which `samsara-now` already returns, and its
   panel group is called Not on a trip, since a parked bus is not always at
@@ -57,7 +62,7 @@ only what the board already works out, so the two never disagree.
 
 ## Questions
 
-- Is one hour the right length for the tail?
+None open.
 
 ## Tasks
 
@@ -71,6 +76,8 @@ only what the board already works out, so the two never disagree.
 - [ ] Put every bus on the map, the grey pins for buses not on a trip, and
   fit the opening view to all of them, with Show all.
 - [ ] Draw the last hour's tail for every bus out.
+- [ ] Keep the road's shape in `drive`'s answer, and draw a pressed bus's
+  route ahead along it through every stop still to come.
 - [ ] Join pins too close to tell apart, splitting as the map zooms in.
 - [ ] Make the board's live card drawable on the map, with Call driver, Open
   trip, Copy tracking link and Open in Samsara.

@@ -31,7 +31,8 @@
      with all ten hours is free and the line is empty, so the drivers who
      matter stand out. On a trip, Not logged in in amber or "in 133" in red
      stands alone in the line's place, and over hours it is "Over 0:25" in
-     red. A driver Samsara keeps no clock for, or whose app is not connected
+     red; else an expired paper stands there in red, "Licence expired",
+     since that driver cannot drive. A driver Samsara keeps no clock for, or whose app is not connected
      off a trip, has a quiet dash beside an empty meter, as a bus with no
      signal does. The full words, their duty and rest among them, are the
      line's label and the card's.
@@ -134,7 +135,8 @@
   const PAPERS = [['license_exp', 'Licence'], ['med_card_expiry', 'Medical card']];
 
   /* The driver's marks, the most urgent first: `{ kind, tone, icon, words }`,
-     tone `error` or `warning`. `live` is their entry in samsara-now's
+     tone `error` or `warning`, and an expired paper's `line`, the short words
+     the tile's line says in its place. `live` is their entry in samsara-now's
      `drivers`, for the hours rules Samsara keeps them to, and `today` a
      Date at the office's midnight. */
   function marksOf(driver, alerts = [], live = null, today = new Date(new Date().setHours(0, 0, 0, 0))) {
@@ -153,7 +155,8 @@
       // The Drivers page's words.
       const words = n < 0 ? `${word} expired ${plural(-n, 'day')} ago`
         : n === 0 ? `${word} expires today` : `${word} expires in ${plural(n, 'day')}`;
-      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#i-error--filled' : '#i-warning--alt--filled', words });
+      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#i-error--filled' : '#i-warning--alt--filled', words,
+        ...(n < 0 ? { line: `${word} expired` } : {}) });
     }
     const of = kind => alerts.filter(a => a.kind === kind);
     const legs = list => list.map(a => [a.trip?.destination || a.trip?.trip_ref || 'A trip', a.legName].filter(Boolean).join(', ')).join('; ');
@@ -193,8 +196,13 @@
   }
 
   function draw(cell, driver, live, alerts = [], trip = null) {
-    const state = stateOf(live, trip);
     const marks = marksOf(driver, alerts, live);
+    /* A driver with an expired paper cannot drive, so is never marked free,
+       and their line says which paper in red, alone in the clock's place, as
+       Not logged in does, unless Samsara has words of its own for now. */
+    const expired = marks.find(m => m.line);
+    const now = stateOf(live, trip);
+    const state = expired && !now.mark ? { ...now, line: expired.line, tone: 'error', bare: true, free: false } : now;
     const name = driver.short_name || driver.name || 'Driver';
     const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, state.bare, state.trip, state.free, state.mark?.kind, !!trip, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
@@ -219,8 +227,7 @@
       mark.dataset.tone = state.tone;
       mark.replaceChildren(svgUse(TRIP_ICON[state.trip], '16', '0 0 32 32'));
     }
-    // A driver with an expired paper cannot drive, so is never marked free.
-    cell.toggleAttribute('data-cannot', marks.some(m => m.kind === 'papers' && m.tone === 'error'));
+    cell.toggleAttribute('data-cannot', !!expired);
     const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
     line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));

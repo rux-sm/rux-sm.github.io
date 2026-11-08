@@ -262,7 +262,7 @@ week folds first.
 | **A popover** | The Driver card, from a press anywhere on a tile. |
 
 Shut, the rail is the tiles alone, 160px. Its head stands level with the
-board's toolbar and holds its title, Drivers, and a chevron; its band stands level with the day
+board's toolbar and holds its title, Drivers, 16px in over the names, and a chevron; its band stands level with the day
 band and holds Sort, a ghost button naming the rail's order in the text colour with Carbon's sort arrows, which
 opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 48px, Carbon's table row, each line inside
 its row as a Carbon table's is, so three stand beside each lane of a
@@ -305,7 +305,9 @@ least of the drive, shift and cycle clocks: a 4px meter of the ten hours,
 amber, the words semibold, under two hours and red at none. A driver on no trip with
 all ten hours is free, and the line is empty. On a trip the line is Not
 logged in in amber, or "in 133" in red, with no meter, and over hours it is
-"Over 0:25" in red, as long as Samsara counts it. A driver with no clock,
+"Over 0:25" in red, as long as Samsara counts it. Unless Samsara has words of
+its own, a driver with an expired paper has the paper in red alone in the
+line's place, "Medical card expired". A driver with no clock,
 or not logged in off a trip, has a dash beside a dashed empty meter. Their
 duty and rest are the card's.
 

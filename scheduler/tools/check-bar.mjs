@@ -789,6 +789,13 @@ expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon
   [['#i-BPMN-link--fill', 'driving', '6:00 left', false], ['#i-pause--outline--filled', 'off', '5:00 left', false],
     ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#i-error--filled', null, '0:00 left', false],
     ['#i-warning--alt--filled', null, '5:00 left', false], [null, null, '', true]]);
+expect('an expired paper: the red mark, and the paper in red alone in the line\'s place, free or not, unless Samsara has words of its own',
+  [tripTile({ duty: 'off', left_ms: 10 * H }, false, { id: 'd2', name: 'Ana Ruiz', med_card_expiry: dayIn(-3) }),
+    tripCell.querySelector('.scheduler-avail__line').dataset.tone, tripCell.hasAttribute('data-cannot'),
+    tripTile({ duty: 'off', left_ms: 4 * H }, false, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) }),
+    tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) })],
+  [['#i-error--filled', null, 'Medical card expired', true], 'error', true,
+    ['#i-error--filled', null, 'Licence expired', true], ['#m-bus_alert-fill', null, 'in 133', true]]);
 expect('a red mark from Samsara stands before an amber one of the papers, and its line has no meter',
   tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }),
   ['#m-bus_alert-fill', null, 'in 133', true]);

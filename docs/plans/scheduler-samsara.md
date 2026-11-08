@@ -18,20 +18,19 @@ bus on a link the office sends. What `samsara-now` reads today is in
 
 - **A driver on a trip whose app is disconnected says Not logged in.**
   Samsara's clocks list every driver and give a disconnected one an empty
-  duty, which `samsara-now` reads as no duty today, the same "–" as a
-  driver Samsara does not know. `samsara-now` keeps the two apart, and on
-  a trip under way the tile has the amber warning mark and "Not logged in"
-  in its line; off a trip it stays the quiet dash.
-- **A driver logged into the wrong bus says so on their tile.**
-  `samsara-now` gives each driver in its `drivers` list the bus Samsara has
-  them in, from the clock's `currentVehicle`, as it already does for a
-  bus's crew. On a trip under way, a driver in a bus that is not their
-  leg's has the red bus alert mark and "in 133" in red, as the trip bar's
-  Wrong bus says it.
+  duty, so `samsara-now` answers them with no duty, where a driver Samsara
+  does not have is absent. On a trip under way the tile has the amber
+  warning mark and "Not logged in" in its line; off a trip it stays the
+  quiet dash.
+- **A driver logged into the wrong bus says so on their tile.** The rail
+  finds the bus in `samsara-now`'s buses whose crew holds the driver, as a
+  trip bar's Wrong bus does, and on a trip under way a bus that is none of
+  the ones they ride on it, a co-driver's other buses among them, gives the
+  red bus alert mark and "in 133" in red.
 - **Over hours comes from Samsara's own violation.** The clock's
   `violations` gives the shift-driving and cycle time a driver is over now;
-  over zero is the red mark, with the words Over hours, in place of
-  guessing from "0:00 left".
+  over zero is the red mark and "Over 0:25" in red, and "0:00 left" stays
+  red for a driver Samsara counts no violation for yet.
 - **Each driver's hours rules are checked against the bus rules.** One read
   of Samsara's drivers gives each one's rules; a driver whose rules are not
   a passenger carrier's, 10 hours driving after 8 off, has a red mark on
@@ -59,14 +58,6 @@ None open.
 
 ## Tasks
 
-- [ ] Confirm in the live `samsara-now` answer that a disconnected driver's
-      duty comes back empty and a driver in no bus has no `currentVehicle`,
-      before building on either.
-- [ ] Keep Not logged in apart from no clock in `samsara-now`, and draw it
-      on the driver tile.
-- [ ] Add each driver's bus to `samsara-now`'s `drivers`, carry each leg's
-      bus on the rail's rows, and draw the wrong bus on the tile.
-- [ ] Read the clock's violations into `samsara-now` and draw Over hours.
 - [ ] Read each driver's hours rules and mark a driver on the wrong ones.
 - [ ] Read Samsara's inspections, tick the pre-trip on the seat and mark an
       unsafe one on the bus.

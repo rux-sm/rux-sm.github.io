@@ -11,9 +11,11 @@
                yes, amber
        unsent  a leg leaving within two days they sit on and have not
                been sent, amber
-     With none, a driver out of hours has the red error mark; with none
-     of those, a driver on a trip under way has what they are doing on it,
-     so a dispatcher knows whom not to call: driving, the trip bar's arrow
+     What Samsara says now can earn one too, and the worse stands: on a
+     trip, their app not connected, amber; on a trip, logged into a bus not
+     theirs, Material's bus alert, red; over or out of hours, the red error
+     mark. With no mark, a driver on a trip under way has what they are
+     doing on it, so a dispatcher knows whom not to call: driving, the trip bar's arrow
      in green, amber under an hour; on duty, a clock; off duty, a pause;
      in the sleeper berth, a moon in the rest colour. A driver with no icon
      is on no trip. While a selected trip finds them free on every day of
@@ -25,20 +27,23 @@
      at the line's end, at 12px in the secondary grey, "6:30 left". Under an
      hour it is amber and at none red, both semibold. A driver on no trip
      with all ten hours is free and the line is empty, so the drivers who
-     matter stand out. A driver Samsara keeps no clock for has a quiet
-     dash beside an empty meter, as a bus with no signal does. The full
-     words, their duty and rest among them, are the line's label and the
-     card's.
+     matter stand out. On a trip, Not logged in in amber or "in 133" in red
+     stands alone in the line's place, and over hours it is "Over 0:25" in
+     red. A driver Samsara keeps no clock for, or whose app is not connected
+     off a trip, has a quiet dash beside an empty meter, as a bus with no
+     signal does. The full words, their duty and rest among them, are the
+     line's label and the card's.
    A press anywhere on the tile opens the driver's card, a Carbon toggletip
    that data.js fills from trip-tips.js's `driverCard`, as a press anywhere
    on a bus's tile opens its tip.
 
-   `draw(cell, driver, live, alerts, onTrip)` draws it, its parts once and
+   `draw(cell, driver, live, alerts, trip)` draws it, its parts once and
    their words as they change: `driver` is the driver's row,
    `live` their entry in samsara-now's `drivers` or null, `alerts` their
-   list from to-do.js's `driverAlerts`, and `onTrip` whether a trip of
-   theirs is under way now, between its yard-out and its return. It draws
-   again only when what it shows has changed. `stateOf(live, onTrip)` and
+   list from to-do.js's `driverAlerts`, and `trip` data.js's `tripNow`,
+   null with no trip of theirs under way, between its yard-out and its
+   return, or `{ away }`. It draws again only when what it shows has
+   changed. `stateOf(live, trip)` and
    `marksOf(driver, alerts, today)`
    are what it shows, for tools/check-bar.mjs.
    Needs leg-facts.js and road-bar.js loaded first.
@@ -58,8 +63,14 @@
      hours rules count them. */
   const TRIP_OF = { driving: 'driving', on: 'on', yard: 'on', personal: 'off', off: 'off', sleeper: 'sleeper' };
   const TRIP_ICON = { driving: '#i-BPMN-link--fill', on: '#i-time--filled', off: '#i-pause--outline--filled', sleeper: '#i-asleep--filled' };
-  // The mark of a driver with no driving time left.
-  const OUT = { kind: 'hours', tone: 'error', icon: '#i-error--filled' };
+  /* The marks what Samsara says now earns a driver, in the same place as
+     the marks of their papers and legs. */
+  const NOW_MARKS = {
+    unlogged: { kind: 'unlogged', tone: 'warning', icon: '#i-warning--alt--filled' },
+    away: { kind: 'away', tone: 'error', icon: '#m-bus_alert-fill' },
+    over: { kind: 'over', tone: 'error', icon: '#i-error--filled' },
+    out: { kind: 'out', tone: 'error', icon: '#i-error--filled' },
+  };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -76,23 +87,39 @@
     return svg;
   };
 
-  /* What the clock says: `{ line, tone, words, meter, trip, free }`, the
-     line the head shows, its tone, quiet, normal, warning under an hour or
-     error under a minute, the words for its label, its meter's share of
-     the ten hours from 0 to 1 or null with no clock, what the driver is
-     doing on a trip under way, `driving`, `on`, `off` or `sleeper`, or
-     null on none, and whether they are free, on no trip with all ten
-     hours, when the line is empty. */
+  /* What Samsara says now: `{ line, tone, words, meter, bare, trip, free,
+     mark }`, the line the head shows; its tone, quiet, normal, warning or
+     error; the words for its label; its meter's share of the ten hours from
+     0 to 1, or null for the dashed empty meter of no clock; `bare` when the
+     line is words alone with no meter; what the driver is doing on a trip
+     under way, `driving`, `on`, `off` or `sleeper`, or null; whether they
+     are free, on no trip with all ten hours, when the line is empty; and
+     the mark it earns, or null. `trip` is data.js's `tripNow`, null on no
+     trip under way or `{ away }`, the bus Samsara has them in when it is
+     not theirs; `true` stands for a trip with no bus to say. In order:
+     - on a trip with their app not connected, Not logged in, amber;
+     - on a trip in another bus, "in 133", red;
+     - over their hours, "Over 0:25", red, as long as Samsara counts it;
+     - else the driving time left, "6:30 left", amber under an hour and red
+       under a minute. */
   const fill = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 100) / 100;
-  function stateOf(live, onTrip = false) {
-    if (!live?.duty) return { line: '–', tone: 'quiet', words: 'No hours-of-service clock from Samsara', meter: null, trip: null, free: false };
+  function stateOf(live, trip = null) {
+    const quiet = { tone: 'quiet', meter: null, bare: false, trip: null, free: false, mark: null };
+    if (!live) return { ...quiet, line: '–', words: 'No hours-of-service clock from Samsara' };
+    const away = trip?.away ?? null;
+    if (!live.duty) {
+      return trip ? { ...quiet, line: 'Not logged in', tone: 'warning', bare: true, words: 'Not logged in to Samsara', mark: NOW_MARKS.unlogged }
+        : { ...quiet, line: '–', words: 'Not logged in to Samsara' };
+    }
     const words = RoadBar.words(live);
-    const trip = onTrip ? (live.wheel ? 'driving' : TRIP_OF[live.duty] ?? null) : null;
+    const doing = trip ? (live.wheel ? 'driving' : TRIP_OF[live.duty] ?? null) : null;
+    if (away) return { ...quiet, line: `in ${away}`, tone: 'error', bare: true, trip: doing, words: `Logged into ${away}, not their bus. ${words}`, mark: NOW_MARKS.away };
+    if (live.over_ms > 0) return { ...quiet, line: `Over ${hours(live.over_ms)}`, tone: 'error', meter: 0, trip: doing, words: `Over hours by ${hours(live.over_ms)}. ${words}`, mark: NOW_MARKS.over };
     const left = live.left_ms;
-    if (left == null) return { line: '–', tone: 'quiet', words, meter: null, trip, free: false };
-    if (!onTrip && left >= DRIVE) return { line: '', tone: 'quiet', words, meter: null, trip: null, free: true };
+    if (left == null) return { ...quiet, line: '–', words, trip: doing };
+    if (!trip && left >= DRIVE) return { ...quiet, line: '', words, free: true };
     const tone = left < 60e3 ? 'error' : left < HOUR ? 'warning' : 'normal';
-    return { line: `${hours(left)} left`, tone, words, meter: fill(left, DRIVE), trip, free: false };
+    return { ...quiet, line: `${hours(left)} left`, tone, words, meter: fill(left, DRIVE), trip: doing, mark: tone === 'error' ? NOW_MARKS.out : null };
   }
 
   const dayOf = v => {
@@ -159,21 +186,23 @@
     cell.replaceChildren(top, card);
   }
 
-  function draw(cell, driver, live, alerts = [], onTrip = false) {
-    const state = stateOf(live, onTrip);
+  function draw(cell, driver, live, alerts = [], trip = null) {
+    const state = stateOf(live, trip);
     const marks = marksOf(driver, alerts);
     const name = driver.short_name || driver.name || 'Driver';
-    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, state.trip, state.free, marks.map(m => [m.kind, m.tone, m.words])]);
+    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, state.bare, state.trip, state.free, state.mark?.kind, !!trip, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
     cell.dataset.head = key;
     if (!cell.querySelector(':scope > .scheduler-avail__top')) build(cell);
     const full = driver.name || name;
     const who = cell.querySelector('.scheduler-avail__who');
     who.textContent = name;
-    /* The one icon: the worst mark, else the out-of-hours mark, else what
-       they are doing on their trip, `data-trip`, in its own colour. */
+    /* The one icon: the worse of the mark what Samsara says now earns and
+       their worst mark, the first on a tie, else what they are doing on
+       their trip, `data-trip`, in its own colour. */
     const mark = cell.querySelector('.scheduler-avail__mark');
-    const shown = marks[0] ?? (state.tone === 'error' ? OUT : null);
+    const rank = m => (!m ? 0 : m.tone === 'error' ? 2 : 1);
+    const shown = rank(state.mark) >= rank(marks[0]) ? state.mark : marks[0];
     mark.hidden = !shown && !state.trip;
     if (shown) {
       delete mark.dataset.trip;
@@ -188,10 +217,10 @@
     cell.toggleAttribute('data-cannot', marks[0]?.tone === 'error');
     const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
-    line.setAttribute('aria-label', [`${full}'s card`, state.trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
+    line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
     line.querySelector('.scheduler-avail__state').textContent = state.line;
     const meter = line.querySelector('.scheduler-avail__meter');
-    meter.hidden = state.free;
+    meter.hidden = state.free || state.bare;
     meter.dataset.tone = state.tone;
     if (state.meter != null) {
       meter.dataset.kind = 'drive';

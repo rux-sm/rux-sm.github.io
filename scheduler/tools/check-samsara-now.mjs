@@ -55,6 +55,11 @@ expect('a short shift is the hours left', [d.duty, d.left_ms], ['sleeper', 2 * H
 d = liveDriver(clock('Dee Moss', '', null, null, null), index);
 expect('a driver the office does not have keeps the Samsara name, with nothing known',
   [d.driver_id, d.name, d.duty, d.left_ms], [null, 'Dee Moss', null, null]);
+expect('a driver whose app is not connected comes back with no duty and their clocks',
+  (({ driver_id, duty, left_ms }) => [driver_id, duty, left_ms])(liveDriver(clock('Ana Ruiz', '', 4 * H, 6 * H, 30 * H), index)), ['d1', null, 4 * H]);
+expect('over is the longer of the driving and cycle violations running now, and 0 with none',
+  [liveDriver({ ...clock('Ana Ruiz', 'driving', 0, 0, 0), violations: { shiftDrivingViolationDurationMs: 20 * 60e3, cycleViolationDurationMs: 5 * 60e3 } }, index).over_ms,
+    liveDriver(clock('Ana Ruiz', 'driving', 2 * H, 4 * H, 30 * H), index).over_ms], [20 * 60e3, 0]);
 
 const wheel = list => markWheel(list.map(([name, status, drive]) => liveDriver(clock(name, status, drive, 14 * H, 60 * H), index)))
   .filter(x => x.wheel).map(x => x.name);

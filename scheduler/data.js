@@ -32,7 +32,7 @@
   const {
     setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, ridersOf, alsoOnOf, crewOf, tripContact, dayContactsOf, dayOfContact,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, ridersOf, alsoOnOf, busesOfRow, crewOf, tripContact, dayContactsOf, dayOfContact,
   } = window.SchedulerLegFacts;
 
   /* A SAVED TRIP IS READ THROUGH trip-shape.js: its legs, each leg's routes,
@@ -933,21 +933,27 @@
      before its first day for a bus that leaves the night before, to its
      return to the yard, on the day it is back at the return time. A leg
      missing a time counts from the start of its first day or to the end of
-     its last. */
-  function onTripNow(row, now = new Date()) {
+     its last. Null on none; on one, `{ away }`, the number of the bus
+     Samsara has them logged into when it is none of the buses they ride on
+     the legs under way, as a trip bar's Wrong bus says, or null. */
+  function tripNow(row, now = new Date()) {
     const at = (day, t, end) => {
       const m = window.SchedulerPastMidnight.minutesOf(t);
       const d = parseISO(day);
       return m == null ? (end ? addDays(d, 1) : d) : new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, m);
     };
-    return (row?.legs ?? []).some(l => at(iso(addDays(parseISO(l.from), -(l.departDays ?? 0))), l.depart) <= now
+    const under = (row?.legs ?? []).filter(l => at(iso(addDays(parseISO(l.from), -(l.departDays ?? 0))), l.depart) <= now
       && now < at(iso(addDays(parseISO(l.to), l.backDays ?? 0)), l.back, true));
+    if (!under.length) return null;
+    const theirs = new Set(under.flatMap(l => l.buses ?? []));
+    const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(row.driver.id)));
+    return { away: inBus && !theirs.has(String(inBus.bus_id)) ? panelIndex.buses.get(inBus.bus_id)?.number ?? 'another bus' : null };
   }
   // Each roster head again, with what Samsara and the trips say now.
   function drawDriverHeads() {
     for (const n of availGrid?.querySelectorAll('.scheduler-avail__name[data-driver-id]') ?? []) {
       const row = availAll?.rows.find(r => String(r.driver.id) === n.dataset.driverId);
-      if (row) DriverHead.draw(n, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), onTripNow(row));
+      if (row) DriverHead.draw(n, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row));
     }
     const open = availGrid?.querySelector('.scheduler-avail__card.rux--popover--open')?.closest('.scheduler-avail__name');
     if (open) { fillDriverCard(open); placeDriverCard(); }
@@ -11578,7 +11584,12 @@
               if (i === 0 && place.fromPrev) day.fromPrev = true;
               if (i === place.span - 1 && place.toNext) day.toNext = true;
             }
-            if (!row.legs.some(l => l.tripId === ref.tripId && l.key === ref.legKey)) row.legs.push({ ...leg, tripId: ref.tripId, what });
+            /* The leg once, with every bus the driver may be in on it: the
+               one their row sits on and each a co-driver also rides. */
+            const had = row.legs.find(l => l.tripId === ref.tripId && l.key === ref.legKey);
+            const rides = busesOfRow(trip, a, td).map(String);
+            if (!had) row.legs.push({ ...leg, tripId: ref.tripId, what, buses: rides });
+            else had.buses.push(...rides.filter(id => !had.buses.includes(id)));
           }
         }
       }
@@ -11702,7 +11713,7 @@
       /* The cell is the driver's head, driver-head.js's: the name, its one
          icon and the driving time Samsara says they have left. */
       const nameEl = el('div', 'scheduler-avail__name');
-      DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), onTripNow(row));
+      DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row));
       // The name is a toggle that picks out the driver's trips on the board; see `markDriverTrips`.
       nameEl.dataset.driverId = row.driver.id;
       pickedTo(nameEl, String(row.driver.id) === String(focusDriver));

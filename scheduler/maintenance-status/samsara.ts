@@ -28,6 +28,10 @@
 // HOURS LEFT is the least of the three clocks Samsara keeps, driving, shift and
 // cycle, which is how long the driver may still drive. Without the key's hours
 // permission the buses still come back, with no drivers and `hours` false.
+// OVER is how long a driver has been past their driving or cycle hours, from
+// the violation Samsara counts while it runs. A driver whose app is not
+// connected is still on Samsara's clocks with an empty duty, so comes back
+// with `duty` null, apart from a driver Samsara does not have, who is absent.
 //
 // REST SINCE is the start of the current stretch of off duty, sleeper or personal
 // conveyance in Samsara's duty logs. The REST_LOOK_MS lookback bounds elapsed
@@ -94,6 +98,7 @@ export type Clock = {
     shift?: { shiftRemainingDurationMs?: number }
     cycle?: { cycleRemainingDurationMs?: number }
   }
+  violations?: { shiftDrivingViolationDurationMs?: number; cycleViolationDurationMs?: number }
 }
 
 export type Deps = {
@@ -123,6 +128,9 @@ export type LiveDriver = {
   drive_ms: number | null
   shift_ms: number | null
   cycle_ms: number | null
+  // How long the driver has been over their driving or cycle hours, as
+  // Samsara counts a violation running now, or 0.
+  over_ms: number
   // When the stretch of rest a resting driver is in began, or null.
   rest_since: string | null
   // When a driver in the sleeper went into it, and how long the earlier
@@ -216,6 +224,7 @@ export function liveDriver(c: Clock, index: Map<string, string>): LiveDriver {
     duty: DUTY[c.currentDutyStatus?.hosStatusType ?? ''] ?? null,
     left_ms: known.length ? Math.min(...known) : null,
     drive_ms: drive, shift_ms: shift, cycle_ms: cycle,
+    over_ms: Math.max(0, ms(c.violations?.shiftDrivingViolationDurationMs) ?? 0, ms(c.violations?.cycleViolationDurationMs) ?? 0),
     rest_since: null,
     berth_since: null,
     split_ms: null,

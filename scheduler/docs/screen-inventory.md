@@ -283,9 +283,12 @@ name at 14px, its photo left to the card, and at the
 line's end one icon, every mark's words on its label. Their worst mark
 stands there: a licence or medical card expiring within 45 days, amber, or
 expired, red; a leg within 30 days that changed since they said yes; a leg
-leaving within two days they have not been sent. With none, a driver out
-of hours has the red error mark, and a driver on a trip under way, from its
-yard-out to its return, has what they are doing on it: the trip bar's
+leaving within two days they have not been sent. What Samsara says now
+earns one too, and the worse stands: on a trip, their app not connected,
+the amber warning; on a trip, logged into a bus that is none of the ones
+they ride on it, as a trip bar's Wrong bus says, Material's red bus alert;
+over or out of hours, the red error mark. With no mark, a driver on a trip
+under way, from its yard-out to its return, has what they are doing on it: the trip bar's
 arrow in green while driving, amber under an hour; a grey clock on duty,
 a yard move with it; a grey pause off duty, personal conveyance with it;
 a moon in the rest colour in the sleeper berth. No icon means no trip.
@@ -293,8 +296,11 @@ The second line is the driving time Samsara says they have left, the
 least of the drive, shift and cycle clocks: a 4px meter of the ten hours,
 48px, in the success green, and at the line's end, at 12px, "6:30 left",
 amber and semibold under an hour and red at none. A driver on no trip with
-all ten hours is free, and the line is empty; a driver with no clock has a
-dash beside a dashed empty meter. Their duty and rest are the card's.
+all ten hours is free, and the line is empty. On a trip the line is Not
+logged in in amber, or "in 133" in red, with no meter, and over hours it is
+"Over 0:25" in red, as long as Samsara counts it. A driver with no clock,
+or not logged in off a trip, has a dash beside a dashed empty meter. Their
+duty and rest are the card's.
 
 A press anywhere on a tile opens the driver's Driver card, as a press
 anywhere on a bus's tile opens its tip: the whole tile lights under the

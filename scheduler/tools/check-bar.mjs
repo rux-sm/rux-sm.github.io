@@ -725,6 +725,12 @@ expect('on a trip under way, what the driver is doing: at the wheel, on duty wit
     [{ duty: 'off', left_ms: 10 * H }, true], [{ duty: 'personal', left_ms: 6 * H }, true], [{ duty: 'sleeper', left_ms: 6 * H }, true],
     [{ duty: 'driving', left_ms: 6 * H }, false]].map(([l, on]) => { const st = DriverHead.stateOf(l, on); return [st.trip, st.free]; }),
   [['driving', false], ['driving', false], ['on', false], ['off', false], ['off', false], ['sleeper', false], [null, false]]);
+expect('what Samsara says now: not logged in on a trip and a quiet dash off one, another bus on a trip, over hours, and out of hours, each with its mark',
+  [[{ duty: null, left_ms: 4 * H }, true], [{ duty: null, left_ms: 4 * H }, null], [{ duty: 'driving', left_ms: 4 * H }, { away: '133' }],
+    [{ duty: 'driving', left_ms: 0, over_ms: 25 * 60e3 }, true], [{ duty: 'on', left_ms: 0 }, true]]
+    .map(([l, t]) => { const st = DriverHead.stateOf(l, t); return [st.line, st.tone, st.bare, st.mark?.kind ?? null]; }),
+  [['Not logged in', 'warning', true, 'unlogged'], ['\u2013', 'quiet', false, null], ['in 133', 'error', true, 'away'],
+    ['Over 0:25', 'error', false, 'over'], ['0:00 left', 'error', false, 'out']]);
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
@@ -760,6 +766,9 @@ expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon
   [['#i-BPMN-link--fill', 'driving', '6:00 left', false], ['#i-pause--outline--filled', 'off', '5:00 left', false],
     ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#i-error--filled', null, '0:00 left', false],
     ['#i-warning--alt--filled', null, '5:00 left', false], [null, null, '', true]]);
+expect('a red mark from Samsara stands before an amber one of the papers, and its line has no meter',
+  tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }),
+  ['#m-bus_alert-fill', null, 'in 133', true]);
 const card = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
   live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',

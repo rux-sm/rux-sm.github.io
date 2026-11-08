@@ -657,6 +657,15 @@ const dayIn = n => {
       BusHead.unsafeOf({ inspections: [{ ...unsafe, status: 'resolved' }] })],
     ['error', true, true, null]);
 }
+{
+  const due = [{ title: 'Oil change', status: 'overdue', words: 'Overdue by 2,533 mi' }, { title: 'Brakes', status: 'upcoming', words: 'Due in 900 mi' }];
+  const head = busHead({ engine: 'off', mph: 0, due });
+  const mark = head.querySelector('.scheduler-row-head__due');
+  expect('maintenance Samsara counts overdue is an amber mark on the bus and a line of the tip; upcoming is neither',
+    [mark?.dataset.tone, mark?.getAttribute('aria-label'), BusHead.tipOf({}, { engine: 'off', mph: 0, due }).includes('Oil change: overdue by 2,533 mi'),
+      BusHead.overdueOf({ due: [due[1]] })],
+    ['warning', 'Oil change: overdue by 2,533 mi', true, null]);
+}
 expect('moving: the speed over mph in a filled green display, the fuel\'s percent and meter, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__fuel-pct'), line(h), marks(h)]; })(),
   [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);

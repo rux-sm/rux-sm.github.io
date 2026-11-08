@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-now/handler.ts', import.meta.url
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-now-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf, restSince, splitOf } = await import(pathToFileURL(file).href);
+const { handle, dueTitle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf, restSince, splitOf } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -244,6 +244,11 @@ expect('a bus\'s inspections, newest first, each once as Samsara last changed it
 expect('each bus\'s maintenance, overdue first, named by its schedule, in miles to go, and an unknown schedule named plainly',
   [a.maintenance, a.buses[0].due.map(d => [d.title, d.status, d.miles, d.hours, d.last_miles]), a.buses[1].due.map(d => [d.title, d.days])],
   [true, [['Oil change', 'overdue', -2457, -40, null], ['Brake check', 'upcoming', 5000, null, 100_000]], [['Maintenance', 12]]]);
+expect('each item in words: overdue by, or due in, the miles, else the days',
+  [...a.buses[0].due, ...a.buses[1].due].map(d => d.words), ['Overdue by 2,457 mi', 'Due in 5,000 mi', 'Due in 12 days']);
+expect('a title loses the bus number the office writes before it and is in sentence case',
+  [dueTitle('763-Oil Change', '763'), dueTitle('218 oil change', '218'), dueTitle('Brake check', '763'), dueTitle('', '763')],
+  ['Oil change', 'Oil change', 'Brake check', 'Maintenance']);
 {
   const q = parts({ pmFail: true });
   const b = await liveFor(BUSES, DRIVERS, q.deps);

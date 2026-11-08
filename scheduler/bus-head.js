@@ -23,8 +23,9 @@
      compares them: amber while one expires within WARN_DAYS and red once
      one has expired, as a driver's head marks their licence and medical
      card; the engine's lamp, amber or red, whose codes lead their line
-     in the tip; and an inspection in Samsara that marked the bus unsafe,
-     red, until a mechanic resolves it there. The words of each are the number's toggletip's. The kit
+     in the tip; an inspection in Samsara that marked the bus unsafe,
+     red, until a mechanic resolves it there; and maintenance Samsara counts
+     overdue, amber, each item's words in the tip. The words of each are the number's toggletip's. The kit
      holds them worst first; the Mac's tile turns the bus's icon to its
      warning in the worst one's tone, and a phone's narrow column shows the
      papers' mark with the out-of-service mark.
@@ -115,6 +116,11 @@
     const defects = i.defects ? `, ${i.defects} defect${i.defects === 1 ? '' : 's'}` : '';
     const kind = KIND_WORD[i.kind] ? `${KIND_WORD[i.kind]} ` : '';
     return { tone: 'error', word: `Unsafe on its ${kind}inspection, ${when}${defects}` };
+  }
+  // The maintenance Samsara counts overdue, as `{ tone, word }`, or null.
+  function overdueOf(live) {
+    const late = (live?.due ?? []).filter(d => d.status === 'overdue');
+    return late.length ? { tone: 'warning', word: late.map(d => `${d.title}: ${d.words.toLowerCase()}`).join('. ') } : null;
   }
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
@@ -207,11 +213,11 @@
 
   /* The kit's marks this draws, the papers' one mark in the worst tone and
      the engine's lamp, each with its words on its label, or none. */
-  function drawMarks(head, papers, lamp, live, unsafe = null) {
+  function drawMarks(head, papers, lamp, live, unsafe = null, overdue = null) {
     const top = head.querySelector(':scope > .scheduler-row-head__top');
     if (!top) return;
     let kit = top.querySelector(':scope > .scheduler-row-head__kit');
-    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe)').forEach(m => m.remove());
+    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due)').forEach(m => m.remove());
     const marks = [];
     if (papers.length) {
       const error = papers.some(p => p.tone === 'error');
@@ -220,6 +226,7 @@
     }
     if (lamp) marks.push(['scheduler-row-head__lamp', lamp.tone, '#m-car_repair-fill', [lamp.word, ...(live?.faults ?? [])].join('. ')]);
     if (unsafe) marks.push(['scheduler-row-head__unsafe', unsafe.tone, '#i-error--filled', unsafe.word]);
+    if (overdue) marks.push(['scheduler-row-head__due', overdue.tone, '#i-warning--alt--filled', overdue.word]);
     if (!marks.length) {
       if (kit && !kit.childElementCount) kit.remove();
       return;
@@ -241,7 +248,7 @@
   function draw(head, bus, live, opts = {}) {
     const shown = live ?? (opts.waiting ? WAITING : null);
     const papers = papersOf(bus);
-    const key = JSON.stringify([papers, ...(shown ? [shown.waiting, shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault, unsafeOf(shown)?.word,
+    const key = JSON.stringify([papers, ...(shown ? [shown.waiting, shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault, unsafeOf(shown)?.word, overdueOf(shown)?.word,
       shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp])]);
     if (head.dataset.live === key) return;
     head.dataset.live = key;
@@ -249,7 +256,7 @@
     const top = head.querySelector('.scheduler-row-head__top');
 
     const lamp = lampOf(shown);
-    drawMarks(head, papers, lamp, shown, unsafeOf(shown));
+    drawMarks(head, papers, lamp, shown, unsafeOf(shown), overdueOf(shown));
 
     const state = shown ? stateOf(shown) : null;
     // What the engine is doing, for a theme that quiets a bus at rest.
@@ -328,8 +335,9 @@
       ...(papers.length ? papers : [inspection(bus)?.words]),
       live.fault ? [lampOf(live).word, ...(live.faults ?? [])].join(' · ') : null,
       unsafeOf(live)?.word,
+      overdueOf(live)?.word,
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, papersOf, unsafeOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, papersOf, unsafeOf, overdueOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

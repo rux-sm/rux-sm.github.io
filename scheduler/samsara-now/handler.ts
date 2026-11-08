@@ -37,8 +37,11 @@
 // names. A bus's `inspections` is null, and the answer's `inspections`
 // false, when the key may not read them.
 // DUE is each bus's preventive maintenance as Samsara schedules it: each
-// item's title, overdue or upcoming, the miles, engine hours or days still to
-// go, negative once past, and when and at what mileage it was last done. A
+// item's title, in sentence case without the bus number the office writes
+// before it, "Oil change"; overdue or upcoming; the miles, engine hours or
+// days still to go, negative once past; those in words, "Overdue by 2,533
+// mi" or "Due in 6,266 mi", as the board and the Fleet page show them; and
+// when and at what mileage it was last done. A
 // bus's `due` is null, and the answer's `maintenance` false, when the key may
 // not read them.
 // OVER is how long a driver has been past their driving or cycle hours, from
@@ -216,6 +219,7 @@ export type LiveBus = {
 export type Due = {
   title: string
   status: 'overdue' | 'upcoming' | null
+  words: string
   miles: number | null
   hours: number | null
   days: number | null
@@ -543,7 +547,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
         inspections: inspected ? inspectionsOf(dvirs, vehicle, driverOfSigner) : null,
-        due: maintained && upcoming ? dueOf(upcoming[1], vehicle, titleOf) : null,
+        due: maintained && upcoming ? dueOf(upcoming[1], vehicle, titleOf, bus.number) : null,
         ...(since.has(vehicle) && history ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
@@ -557,21 +561,41 @@ const METERS_PER_MILE = 1609.344
 const milesOf = (m: unknown) => (typeof m === 'number' && Number.isFinite(m) ? Math.round(m / METERS_PER_MILE) : null)
 const numberOr = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
 
+/* A schedule's title as the board shows it: without the bus's number the
+   office writes before it, "763-Oil Change" or "218 oil change", and in
+   sentence case. */
+export function dueTitle(title: string, number: string | null): string {
+  const n = String(number ?? '').trim()
+  const bare = (n && title.trim().toLowerCase().startsWith(n.toLowerCase()) ? title.trim().slice(n.length) : title)
+    .replace(/^[\s\-–:]+/, '').trim().toLowerCase()
+  return bare ? bare[0].toUpperCase() + bare.slice(1) : 'Maintenance'
+}
+
+// What is still to go, in words: the miles, else the days, else the engine hours.
+function dueWords(status: Due['status'], miles: number | null, days: number | null, hours: number | null): string {
+  const over = status === 'overdue'
+  const [n, unit] = miles != null ? [miles, 'mi'] : days != null ? [days, Math.abs(days) === 1 ? 'day' : 'days']
+    : hours != null ? [hours, Math.abs(hours) === 1 ? 'engine hour' : 'engine hours'] : [null, '']
+  if (n == null) return over ? 'Overdue' : 'Upcoming'
+  return `${over ? 'Overdue by' : 'Due in'} ${Math.abs(n).toLocaleString('en-US')} ${unit}`
+}
+
 /* A bus's preventive maintenance, overdue first and then the nearest, each
    named by its schedule. */
-export function dueOf(upcoming: Upcoming[], vehicle: string, titleOf: Map<string, string>): Due[] {
+export function dueOf(upcoming: Upcoming[], vehicle: string, titleOf: Map<string, string>, number: string | null = null): Due[] {
   const rank = (d: Due) => (d.status === 'overdue' ? 0 : 1)
   return upcoming
     .filter(u => String(u.asset?.id ?? '') === vehicle)
-    .map(u => ({
-      title: titleOf.get(String(u.schedule?.id ?? '')) || 'Maintenance',
-      status: u.status === 'overdue' || u.status === 'upcoming' ? u.status : null,
-      miles: milesOf(u.dueInOdometer),
-      hours: numberOr(u.dueInEngineHours),
-      days: numberOr(u.dueInDays),
-      last_at: typeof u.lastResolvedAt === 'string' ? u.lastResolvedAt : null,
-      last_miles: milesOf(u.lastResolvedAtOdometer),
-    } as Due))
+    .map(u => {
+      const status = u.status === 'overdue' || u.status === 'upcoming' ? u.status : null
+      const miles = milesOf(u.dueInOdometer), hours = numberOr(u.dueInEngineHours), days = numberOr(u.dueInDays)
+      return {
+        title: dueTitle(titleOf.get(String(u.schedule?.id ?? '')) ?? '', number),
+        status, words: dueWords(status, miles, days, hours), miles, hours, days,
+        last_at: typeof u.lastResolvedAt === 'string' ? u.lastResolvedAt : null,
+        last_miles: milesOf(u.lastResolvedAtOdometer),
+      }
+    })
     .sort((a, b) => rank(a) - rank(b) || (a.miles ?? Infinity) - (b.miles ?? Infinity))
 }
 

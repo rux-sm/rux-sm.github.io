@@ -723,7 +723,9 @@
   };
   let maint = [];        // { id (records only), date, kind, text, odometer, open, at }, newest first
   let maintFailed = false;
+  let maintFor = null;   // the unit whose records `maint` holds
   async function loadMaintenance() {
+    const id = loaded.id;
     const [insp, recs] = await Promise.all([
       client.from('bus_inspections').select('id,kind,inspected_on,odometer,results,created_at').eq('bus_id', loaded.id),
       client.from('bus_maintenance_records').select('id,kind,performed_on,summary,odometer,closed_on,created_at').eq('bus_id', loaded.id),
@@ -738,10 +740,30 @@
       ...(recs.data || []).map(r => ({ id: r.id, date: day(r.performed_on), kind: r.kind, text: r.summary,
         odometer: r.odometer, open: r.kind === 'defect' && !r.closed_on, at: r.created_at })),
     ].sort((a, b) => b.date.localeCompare(a.date) || String(b.at).localeCompare(String(a.at)));
+    maintFor = id;
     drawMaintenance();
   }
 
+  /* What Samsara schedules for the unit, overdue first, from samsara-now's
+     `due`: null while it is asked, false when Samsara cannot say. Asked once
+     as the profile opens, apart from the records, so they never wait on it. */
+  let due = null;
+  async function loadDue() {
+    const id = loaded?.id;
+    due = null;
+    let found = false;
+    try {
+      const r = await client.functions.invoke('samsara-now', { body: {} });
+      found = r.data?.buses?.find(b => b.bus_id === id)?.due ?? false;
+    } catch { /* Samsara cannot say */ }
+    if (loaded?.id !== id) return;
+    due = found;
+    // The records draw it with them when they come later.
+    if (maintFor === id) drawMaintenance();
+  }
+
   // A defect is closed by dating it; the record stays in the history.
+
   async function closeDefect(m, button) {
     button.disabled = true;
     result(null);
@@ -770,7 +792,14 @@
     const seen = maint.find(m => m.odometer != null);
     const lastCheck = maint.find(m => /inspection$/.test(KIND[m.kind] || ''));
     const open = maint.filter(m => m.open).length;
+    /* Each item Samsara schedules, its words and when it was last done; one
+       row saying so while Samsara is asked or cannot say. */
+    const dueRows = due === null ? [['Maintenance due', 'Asking Samsara…']]
+      : due === false ? [['Maintenance due', "Samsara didn't answer"]]
+      : !due.length ? [['Maintenance due', 'Nothing scheduled in Samsara']]
+      : due.map(d => [d.title, [d.words, d.last_at ? `last done ${shownDay(iso(new Date(d.last_at)))}` : null].filter(Boolean).join(', ')]);
     for (const [label, value] of [
+      ...dueRows,
       ['Odometer', seen ? `${miles(seen.odometer)} on ${shownDay(seen.date)}` : 'None recorded'],
       ['Last inspection', lastCheck ? `${KIND[lastCheck.kind]}, ${shownDay(lastCheck.date)}` : 'None recorded'],
       ['Open defects', String(open)],
@@ -1072,7 +1101,7 @@
     drawTitle();
     baseline = snapshot();
     $('scheduler-bus').hidden = false;
-    if (loaded) { loadTrips(); loadMaintenance(); }
+    if (loaded) { loadTrips(); loadMaintenance(); loadDue(); }
     return true;
   }
 
@@ -1182,6 +1211,7 @@
     baseline = snapshot();
     loadTrips();
     loadMaintenance();
+    loadDue();
   }
 
   form?.addEventListener('submit', e => {

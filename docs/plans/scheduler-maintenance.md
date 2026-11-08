@@ -65,8 +65,6 @@ each bus's odometer and inspections.
 
 ## Tasks
 
-- [ ] Show what is due on the Maintenance tab and mark an overdue bus on
-      its tile, from Samsara.
 - [ ] Take Add repair off the Maintenance tab and link to the bus's service
       log in Samsara.
 - [ ] Make Details' mileage and service dates read-only, from Samsara.

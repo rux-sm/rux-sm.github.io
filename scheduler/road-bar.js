@@ -14,7 +14,7 @@
      track filled to now, or No signal and how long. Its tooltip says what
      Samsara says of the bus and its drivers, each warning in a sentence.
    - live-trip.js's warnings, Late to spot among them, on the alert badge
-     at the destination row's end, in its colour, as the trip's other
+     that leads the destination row, in its colour, as the trip's other
      problems are, and in the Alerts tip it opens.
    - The contact and update rows stay, as on any bar. What belongs to the bus, its
      speed, fuel and DEF, is the bus column's, bus-head.js's.
@@ -296,8 +296,8 @@
   const sayOf = bus => (bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
 
   /* A LIVE WARNING IS THE ALERT BADGE'S, as the trip's other problems are,
-     so the times row always says the times: the badge at the destination
-     row's end takes the worse of the tone bar.js drew it in and the
+     so the times row always says the times: the badge that leads the
+     destination row takes the worse of the tone bar.js drew it in and the
      warnings', the warnings' names leading its words, and goes back to how
      bar.js drew it once they have gone. A bar with no badge of its own has
      one only while warned. The sentences are on the times row's tooltip and
@@ -306,7 +306,7 @@
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
     let m = row?.querySelector(':scope > .scheduler-bar__alert') ?? null;
     if (!row || (!m && !warnings.length)) return;
-    if (!m) { m = alertMark(null, ''); row.appendChild(m); }
+    if (!m) { m = alertMark(null, ''); row.prepend(m); }
     const own = m.dataset.tone ? { tone: m.dataset.tone, words: m.dataset.words } : null;
     if (!warnings.length) { if (own) alertTo(m, own.tone, own.words); else m.remove(); return; }
     const tone = own?.tone === 'error' || warnings.some(w => w.tone === 'error') ? 'error' : 'warning';

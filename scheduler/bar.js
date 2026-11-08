@@ -670,16 +670,18 @@
 
     const { facts, problems, tone } = factsOf(b, board);
     const alert = tone ? alertMark(tone, problems.map(a => a.words).join(' · ')) : null;
-    // A trip that is back raises no alert, and says how it closed in the alert's place.
+    // A trip that is back raises no alert, and says how it closed at the row's end.
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
     const closed = alert ? null : closeMarks(window.SchedulerCloseOut.report(trip));
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', String(count)));
-    /* The destination row holds what the trip is on the left, and only what
-       is happening now on the right: the faces of whoever else has it, which
-       data.js adds, and Live while the bus is out, road-bar.js's. */
-    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? closed);
+    dest.classList.add('scheduler-bar__place');
+    /* The destination row leads with the alert, as every row below leads with
+       its icon, then holds what the trip is, and on the right only what is
+       happening now: the faces of whoever else has it, which data.js adds,
+       and how a trip that is back closed. */
+    addRow(bar, 'scheduler-bar__dest', alert, dest, kind ? kindEl(kind) : null, closed);
     // The words in a run, which spans the trip's length; see app.css's row widths.
     const runOf = (...parts) => {
       const run = el('span', 'scheduler-bar__run');

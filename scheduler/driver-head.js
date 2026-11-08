@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    A driver's name cell in the rail is their tile, as a bus's is in the
    bus column, drawn inside the cell data.js makes, on two lines:
-   - The name at 14px, and at the line's end one 16px icon, every mark's
-     words on its label. The driver's most urgent mark stands there, the
+   - One 16px icon and then the name at 14px, every mark's words on its
+     label; the icon's spot is kept when there is none, so the names stand
+     in one column. The driver's most urgent mark stands there, the
      warning triangle for an amber one and the error circle for a red one,
      the two every trip bar and bus tile wear:
        rules   Samsara keeping them to hours rules that are not a
@@ -181,7 +182,7 @@
     const mark = el('span', 'scheduler-avail__mark');
     mark.setAttribute('aria-hidden', 'true');
     mark.hidden = true;
-    top.append(name, mark);
+    top.append(mark, name);
     const card = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--right-start rux--toggletip scheduler-avail__card');
     const line = el('button', 'rux--toggletip-button scheduler-avail__line');
     line.type = 'button';

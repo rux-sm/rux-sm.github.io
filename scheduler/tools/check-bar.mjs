@@ -276,7 +276,7 @@ expect('a later bus of a leg wears only its own problems: a misfit or a driver, 
   null, null, null, 'amber Rosa declined', 'amber Tell Ben: New pickup: Lakeview High School (was Riverside Middle School)', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
 expect('each empty seat inside fourteen days is an alert the badge counts, and none further off',
   drawn('crew', 'Empty seats').map(b => mark(b)), ['red Co-driver missing · Relief end missing', null]);
-expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
+expect('the alert badge leads the destination row, before the name', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children[0]?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('a seated driver\'s icon opens their own tip, an empty seat\'s opens nothing, and a done trip\'s drivers have none to press',
   [drawn('crew', 'Empty seats').flatMap(b => [...b.querySelectorAll('.scheduler-crew')]).map(c => [!!c.querySelector(':scope > button.scheduler-crew__mark[data-card-opener]'), !!c.querySelector('.scheduler-bar__none')])

@@ -118,7 +118,7 @@ const DRIVERS = [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Or
 // a hundredth of a mile apart, from two hours ago.
 const fix = (min, lng) => ({ time: ago(min), latitude: 26.2, longitude: lng });
 const DRIVE = Array.from({ length: 241 }, (_, i) => fix(120 - i / 2, -97.9 + i * 0.000163));
-function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false, logsFail = false, rulesFail = false, dvirsFail = false } = {}) {
+function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false, logsFail = false, rulesFail = false, dvirsFail = false, pmFail = false } = {}) {
   let calls = 0, asked = null, logsAsked = null;
   return {
     get calls() { return calls; },
@@ -146,6 +146,16 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
       rules: async () => { calls++; if (rulesFail) throw new Error('403'); return [
         { id: 's-Ana Ruiz', eldSettings: { rulesets: [{ shift: 'US Interstate Passenger', cycle: 'USA 70 hour / 8 day' }] } },
         { id: 's-Ben Ortiz', eldSettings: { rulesets: [{ shift: 'US Interstate Property', cycle: 'USA 70 hour / 8 day' }] } },
+      ]; },
+      schedules: async () => { calls++; if (pmFail) throw new Error('403'); return [{ id: 's1', title: 'Oil change' }, { id: 's2', title: 'Brake check' }]; },
+      upcoming: async () => { calls++; if (pmFail) throw new Error('403'); return [
+        { asset: { id: 'v101' }, schedule: { id: 's2' }, status: 'upcoming', dueInOdometer: 16_093.44 * 500, lastResolvedAt: ago(30 * 24 * 60), lastResolvedAtOdometer: 1_609_344 * 100 },
+        { asset: { id: 'v101' }, schedule: { id: 's1' }, status: 'overdue', dueInOdometer: -1_609.344 * 2457, dueInEngineHours: -40 },
+        { asset: { id: 'v102' }, schedule: { id: 's9' }, status: 'upcoming', dueInDays: 12 },
+      ]; },
+      workOrders: async (vehicle, from) => { calls++; asked = ['work', vehicle, from]; return [
+        { id: 'w1', status: 'Completed', category: 'PREVENTIVE', description: 'Oil changed ', createdAtTime: ago(60 * 24 * 60), completedAtTime: ago(59 * 24 * 60), odometerMeters: 1_609.344 * 200 },
+        { id: 'w2', status: 'Open', description: '', createdAtTime: ago(60) },
       ]; },
       dvirs: async (from, to, unsafe) => { calls++; if (dvirsFail) throw new Error('403'); if (unsafe) return [
         { id: 'r0', type: 'postTrip', safetyStatus: 'unsafe', dvirSubmissionTime: ago(5 * 24 * 60), vehicle: { id: 'v102' }, defectIds: ['z'] },
@@ -234,6 +244,23 @@ expect('a bus\'s inspections, newest first, each once as Samsara last changed it
   const b = await liveFor(BUSES, DRIVERS, q.deps);
   expect('inspections that cannot be read leave every bus\'s null, say so, and the rest still comes',
     [b.inspections, b.buses.map(x => x.inspections), b.buses[0].engine], [false, [null, null], 'on']);
+}
+expect('each bus\'s maintenance, overdue first, named by its schedule, in miles to go, and an unknown schedule named plainly',
+  [a.maintenance, a.buses[0].due.map(d => [d.title, d.status, d.miles, d.hours, d.last_miles]), a.buses[1].due.map(d => [d.title, d.days])],
+  [true, [['Oil change', 'overdue', -2457, -40, null], ['Brake check', 'upcoming', 5000, null, 100_000]], [['Maintenance', 12]]]);
+expect('no bus has a service log unless the body names it', a.buses.map(b => 'service' in b), [false, false]);
+{
+  const q = parts();
+  const b = await liveFor(BUSES, DRIVERS, q.deps, {}, 'b1');
+  expect('the bus the body names has its work orders, newest first, its words trimmed, a blank one empty',
+    [b.buses[0].service.map(x => [x.status, x.what, x.miles]), 'service' in b.buses[1]],
+    [[['Open', null, null], ['Completed', 'Oil changed', 200]], false]);
+}
+{
+  const q = parts({ pmFail: true });
+  const b = await liveFor(BUSES, DRIVERS, q.deps);
+  expect('maintenance that cannot be read leaves every bus\'s due null, says so, and the rest still comes',
+    [b.maintenance, b.buses.map(x => x.due), b.buses[0].engine], [false, [null, null], 'on']);
 }
 expect('each driver has the hours rules Samsara keeps them to, in its words, and null where it lists none',
   a.drivers.map(x => x.rules), [['US Interstate Passenger, USA 70 hour / 8 day'], ['US Interstate Property, USA 70 hour / 8 day']]);

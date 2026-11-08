@@ -36,6 +36,14 @@
 // scheduler driver who signed it where they match, and how many defects it
 // names. A bus's `inspections` is null, and the answer's `inspections`
 // false, when the key may not read them.
+// DUE is each bus's preventive maintenance as Samsara schedules it: each
+// item's title, overdue or upcoming, the miles, engine hours or days still to
+// go, negative once past, and when and at what mileage it was last done. A
+// bus's `due` is null, and the answer's `maintenance` false, when the key may
+// not read them. SERVICE is the bus the body names in `service`: its work
+// orders in Samsara from the last two years, newest first, each its date,
+// status, what it was for and its closing notes, and its mileage, or null
+// when they cannot be read.
 // OVER is how long a driver has been past their driving or cycle hours, from
 // the violation Samsara counts while it runs. A driver whose app is not
 // connected is still on Samsara's clocks with an empty duty, so comes back
@@ -73,6 +81,8 @@ export const SPLIT_MIN_MS = 2 * 3600_000
 // stand until a mechanic resolves them.
 export const INSPECT_LOOK_MS = 24 * 3600_000
 export const UNSAFE_LOOK_MS = 30 * 24 * 3600_000
+// How far back a bus's service log is read.
+export const SERVICE_LOOK_MS = 2 * 365 * 24 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
 
@@ -105,6 +115,27 @@ export type Dvir = {
   vehicle?: { id?: string }
   authorSignature?: { signatoryUser?: { id?: string }; type?: string }
   defectIds?: string[]
+}
+export type Schedule = { id?: string; title?: string }
+export type Upcoming = {
+  asset?: { id?: string }
+  schedule?: { id?: string }
+  status?: string
+  dueInOdometer?: number
+  dueInEngineHours?: number
+  dueInDays?: number
+  lastResolvedAt?: string
+  lastResolvedAtOdometer?: number
+}
+export type WorkOrder = {
+  id?: string
+  status?: string
+  category?: string
+  description?: string
+  closingNotes?: string
+  createdAtTime?: string
+  completedAtTime?: string
+  odometerMeters?: number
 }
 export type SamsaraDriver = {
   id?: string
@@ -141,6 +172,11 @@ export type Deps = {
   // The inspection reports submitted or changed between two instants, or
   // only the unsafe ones.
   dvirs(from: number, to: number, unsafe?: boolean): Promise<Dvir[]>
+  // Every preventive maintenance schedule, and each vehicle's upcoming items.
+  schedules(): Promise<Schedule[]>
+  upcoming(): Promise<Upcoming[]>
+  // One vehicle's work orders changed since an instant.
+  workOrders(vehicleId: string, from: number): Promise<WorkOrder[]>
   // Each vehicle's GPS readings between two instants, by vehicle id.
   history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
   // The duty logs of the Samsara drivers named, between two instants.
@@ -192,6 +228,25 @@ export type LiveBus = {
   faults: string[]
   drivers: LiveDriver[]
   inspections: Inspection[] | null
+  due: Due[] | null
+  service?: Service[] | null
+}
+export type Due = {
+  title: string
+  status: 'overdue' | 'upcoming' | null
+  miles: number | null
+  hours: number | null
+  days: number | null
+  last_at: string | null
+  last_miles: number | null
+}
+export type Service = {
+  at: string
+  status: string | null
+  category: string | null
+  what: string | null
+  notes: string | null
+  miles: number | null
 }
 export type Inspection = {
   id: string
@@ -201,7 +256,7 @@ export type Inspection = {
   driver_id: string | null
   defects: number
 }
-export type Answer = { at: string; hours: boolean; inspections: boolean; buses: LiveBus[]; drivers: LiveDriver[] }
+export type Answer = { at: string; hours: boolean; inspections: boolean; maintenance: boolean; buses: LiveBus[]; drivers: LiveDriver[] }
 
 // The pages that ask: the site, and its log-in preview.
 const ORIGINS = new Set([
@@ -413,7 +468,7 @@ const engineOf = (s: Stat | undefined, fresh: boolean) => {
 }
 const nameOf = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
 
-export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths: Record<string, string> = {}): Promise<Answer> {
+export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths: Record<string, string> = {}, service: string | null = null): Promise<Answer> {
   const now = deps.now()
   const vehicles = await deps.vehicles()
   const vehicleOf = new Map(vehicles.map(v => [nameOf(v.name), v.id]))
@@ -429,7 +484,9 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   }
   let hours = true
   let inspected = true
-  const [stats, clocks, samsaraDrivers, dvirs, history] = await Promise.all([
+  let maintained = true
+  const serviced = service ? pairs.find(p => p.bus.id === service)?.vehicle ?? null : null
+  const [stats, clocks, samsaraDrivers, dvirs, history, upcoming, workOrders] = await Promise.all([
     ids.length ? deps.stats(ids) : Promise.resolve([] as Stat[]),
     deps.clocks().catch(() => { hours = false; return [] as Clock[] }),
     // Rules that cannot be read leave every driver's null, and the rest stands.
@@ -440,7 +497,13 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     // A path that cannot be read leaves the bus without one, and the rest stands.
     since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => null)
       : Promise.resolve({} as Record<string, Fix[]>),
+    // Maintenance that cannot be read leaves every bus's due null, and says so.
+    ids.length ? Promise.all([deps.schedules(), deps.upcoming()]).catch(() => { maintained = false; return null })
+      : Promise.resolve(null),
+    // A service log that cannot be read is null on its bus.
+    serviced ? deps.workOrders(serviced, now - SERVICE_LOOK_MS).catch(() => null) : Promise.resolve(null),
   ])
+  const titleOf = new Map((upcoming?.[0] ?? []).map(x => [String(x.id ?? ''), String(x.title ?? '')]))
   const statOf = new Map(stats.map(s => [String(s.id), s]))
   const index = driverIndex(drivers)
   const inVehicle = new Map<string, LiveDriver[]>()
@@ -478,6 +541,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     at: new Date(now).toISOString(),
     hours,
     inspections: inspected,
+    maintenance: maintained,
     buses: pairs.map(({ bus, vehicle }) => {
       const s = statOf.get(vehicle)
       const engineAt = s?.engineState ? Date.parse(s.engineState.time) : NaN
@@ -508,6 +572,8 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
         inspections: inspected ? inspectionsOf(dvirs, vehicle, driverOfSigner) : null,
+        due: maintained && upcoming ? dueOf(upcoming[1], vehicle, titleOf) : null,
+        ...(vehicle === serviced ? { service: workOrders ? serviceOf(workOrders) : null } : {}),
         ...(since.has(vehicle) && history ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
@@ -518,6 +584,43 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
 // The odometer in whole miles, from the engine's reading where the bus reports
 // one, else the GPS's, else null.
 const METERS_PER_MILE = 1609.344
+const milesOf = (m: unknown) => (typeof m === 'number' && Number.isFinite(m) ? Math.round(m / METERS_PER_MILE) : null)
+const numberOr = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+
+/* A bus's preventive maintenance, overdue first and then the nearest, each
+   named by its schedule. */
+export function dueOf(upcoming: Upcoming[], vehicle: string, titleOf: Map<string, string>): Due[] {
+  const rank = (d: Due) => (d.status === 'overdue' ? 0 : 1)
+  return upcoming
+    .filter(u => String(u.asset?.id ?? '') === vehicle)
+    .map(u => ({
+      title: titleOf.get(String(u.schedule?.id ?? '')) || 'Maintenance',
+      status: u.status === 'overdue' || u.status === 'upcoming' ? u.status : null,
+      miles: milesOf(u.dueInOdometer),
+      hours: numberOr(u.dueInEngineHours),
+      days: numberOr(u.dueInDays),
+      last_at: typeof u.lastResolvedAt === 'string' ? u.lastResolvedAt : null,
+      last_miles: milesOf(u.lastResolvedAtOdometer),
+    } as Due))
+    .sort((a, b) => rank(a) - rank(b) || (a.miles ?? Infinity) - (b.miles ?? Infinity))
+}
+
+// A bus's work orders, each once as last changed, newest first.
+export function serviceOf(orders: WorkOrder[]): Service[] {
+  const byId = new Map<string, WorkOrder>()
+  for (const o of orders) if (o.id) byId.set(String(o.id), o)
+  return [...byId.values()]
+    .map(o => ({
+      at: o.completedAtTime ?? o.createdAtTime ?? '',
+      status: o.status ?? null,
+      category: o.category ?? null,
+      what: o.description?.trim() || null,
+      notes: o.closingNotes?.trim() || null,
+      miles: milesOf(o.odometerMeters),
+    }))
+    .filter(x => x.at)
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
+}
 function odometerOf(s?: Stat): number | null {
   const meters = s?.obdOdometerMeters?.value ?? s?.gpsOdometerMeters?.value
   return typeof meters === 'number' && meters > 0 ? Math.round(meters / METERS_PER_MILE) : null
@@ -543,17 +646,20 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   if (!buses.length) return reply(404, { error: 'not-found' })
   if (!deps.keyed) return reply(503, { error: 'no-key' })
 
-  // The body may name the buses to give a path of; anything else asks for none.
+  // The body may name the buses to give a path of, and one bus to give its
+  // service log; anything else asks for neither.
   let paths: Record<string, string> = {}
+  let service: string | null = null
   try {
     const body = await req.json()
     if (body?.paths && typeof body.paths === 'object') {
       paths = Object.fromEntries(Object.entries(body.paths).filter((e): e is [string, string] => typeof e[1] === 'string'))
     }
+    if (typeof body?.service === 'string' && body.service) service = body.service
   } catch { /* no body */ }
 
   try {
-    return reply(200, await liveFor(buses, drivers, deps, paths))
+    return reply(200, await liveFor(buses, drivers, deps, paths, service))
   } catch {
     return reply(502, { error: 'samsara' })
   }

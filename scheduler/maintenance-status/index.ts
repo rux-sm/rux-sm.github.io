@@ -105,10 +105,13 @@ Deno.serve(req => handle(req, {
         return rows.map(v => ({ id: String(v.id), name: String(v.name ?? '') }))
       },
       stats: vehicleIds => samsara<Stat>('/fleet/vehicles/stats', { types: 'engineStates,gps', vehicleIds: vehicleIds.join(',') }),
-      // No driver or inspection leaves this function, so none is asked.
+      // No driver, inspection or maintenance leaves this function, so none is asked.
       clocks: async () => [] as Clock[],
       rules: async () => [],
       dvirs: async () => [],
+      schedules: async () => [],
+      upcoming: async () => [],
+      workOrders: async () => [],
       // With no clocks there is no resting driver, so no duty logs are asked.
       logs: async () => [],
       async history(vehicleIds, from, to) {

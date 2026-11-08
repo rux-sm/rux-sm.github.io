@@ -63,4 +63,5 @@ None open.
       Sharing Links alone, under Driver Workflow, and put its full
       `samsara_api_` value in the `SAMSARA_SHARE_TOKEN` secret, which holds a
       value Samsara calls invalid, so `samsara-share` answers no-permission.
-- [ ] Add Copy tracking link to the bar's menu, calling `samsara-share`.
+- [ ] Add Copy tracking link to the bar's menu and to the Live map's card
+  links, calling `samsara-share`.

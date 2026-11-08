@@ -33,9 +33,12 @@
    of a straight one, and the drives after are a fainter dotted line under
    it, since a way home that retraces the road would otherwise hide the
    dashes.
-   `aheadOf(s)` works that road out from places.js's drives, resolving to
-   one line of [lat, lng] points for each drive, or null when one is missing;
-   the first, from where the bus was, is drawn from the bus on.
+   `ahead(busId, s, redraw)` is that road for a bus, one line of [lat, lng]
+   points for each drive from places.js, or null until it comes or when a
+   drive is missing; it is kept for the bus and worked out again when its
+   next stop changes or every `AHEAD_MS`, as road.js's arrivals are, and
+   `redraw` is called when new lines come. The first line, from where the
+   bus was, is drawn from the bus on.
    `trailOf(path, now)` is the last `TRAIL_MS` of a path, the faint tail
    every bus out leaves on the Live map.
    `pointsOf(s)` is every point of the leg, for the view to hold.
@@ -60,6 +63,7 @@
   }
 
   const TRAIL_MS = 3600e3;
+  const AHEAD_MS = 5 * 60e3;
 
   const style = () => {
     const [r, g, b] = (getComputedStyle(document.body).backgroundColor.match(/\d+/g) || [255, 255, 255]).map(Number);
@@ -149,7 +153,22 @@
     return lines.map(d => d.line);
   }
 
+  const aheads = new Map();
+  function ahead(busId, s, redraw) {
+    const key = `${s.stop?.key ?? ''}|${s.at ? 'at' : ''}`;
+    const had = aheads.get(busId);
+    if (had && had.key === key && Date.now() - had.at < AHEAD_MS) return had.lines;
+    const entry = { key, at: Date.now(), lines: had?.key === key ? had.lines : null };
+    aheads.set(busId, entry);
+    aheadOf(s).then(lines => {
+      if (aheads.get(busId) !== entry) return;
+      entry.lines = lines;
+      redraw();
+    }, () => {});
+    return entry.lines;
+  }
+
   const trailOf = (path, now = Date.now()) => (path || []).filter(p => p[2] >= now - TRAIL_MS).map(p => [p[0], p[1]]);
 
-  window.SchedulerLiveMap = { TRAIL_MS, load, style, pinHtml, groupHtml, groups, lightOf, drawLeg, pointsOf, aheadOf, trailOf };
+  window.SchedulerLiveMap = { TRAIL_MS, load, style, pinHtml, groupHtml, groups, lightOf, drawLeg, pointsOf, ahead, trailOf };
 })();

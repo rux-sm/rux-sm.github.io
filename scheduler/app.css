@@ -2234,7 +2234,9 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The two links are secondary buttons, the outlined one in rux-dark as the
    editor's Cancel trip is, side by side in equal halves of the tile, each
    word centred. */
-.scheduler-card__live-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--rux-spacing-03); }
+/* Its buttons share the tile's width, two to a row at most, so a third
+   wraps rather than squeezing its words out of the tile. */
+.scheduler-card__live-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(max(6rem, calc(50% - var(--rux-spacing-03))), 1fr)); gap: var(--rux-spacing-03); }
 .scheduler-card__live-link.rux--btn { max-inline-size: none; inline-size: 100%; justify-content: center; padding-inline: var(--rux-spacing-03); }
 .scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
@@ -6810,6 +6812,22 @@ html[data-scheduler-takeover] {
 .scheduler-live__summary { margin-block-end: var(--rux-spacing-05); }
 .scheduler-live__counts { font-weight: 600; }
 .scheduler-live__need { color: var(--rux-text-error); }
+/* A pressed bus: All buses at the top, its number and destination laid out
+   as a tile's, and the board's live card under them, its tiles a step apart
+   in the panel's own 16px, inked as the docked card is. */
+.scheduler-live__back { margin-block-end: var(--rux-spacing-03); }
+.scheduler-live__head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--rux-spacing-03); }
+.scheduler-live__card {
+  margin-block-start: var(--rux-spacing-03);
+  --card-ink: var(--rux-text-primary);
+  --card-surface: var(--rux-layer-01);
+  --card-icon: var(--rux-icon-primary);
+  --card-hover: var(--rux-layer-hover-01);
+  --card-focus: var(--rux-focus);
+  --card-error: var(--rux-support-error);
+  --card-warning: var(--rux-support-warning);
+}
+.scheduler-live__card > .scheduler-card.scheduler-card--live { padding: 0; }
 /* On the road: a tile a bus, a step apart, its number beside its words. */
 .scheduler-live__tiles, .scheduler-live__yard { margin: 0; padding: 0; list-style: none; }
 .scheduler-live__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }

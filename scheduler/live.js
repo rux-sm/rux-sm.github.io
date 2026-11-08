@@ -24,9 +24,11 @@
    The map opens fitted to every bus and then stays where it is put; Show
    all fits them again. Pressing a bus, on the map or its tile, shows it:
    for a bus out, its leg, the path it has driven since it left the yard,
-   its stops, filled once reached, and the road on through every stop still
-   to come, dashed. live.html?bus=<bus id> opens on that bus, as the board's
-   Show on map does. road.js says which stop is next and when the bus gets
+   its stops, filled once reached, the road on to its next stop dashed and
+   on through the stops after dotted, and in the panel the board's live card
+   with Call, Open trip and Google Maps, All buses going back to the list.
+   live.html?bus=<bus id> opens on that bus, as the board's Show on map
+   does. road.js says which stop is next and when the bus gets
    there, so the map and the board always agree.
 
    samsara-now is asked once a minute while the page is in view, and the
@@ -43,22 +45,21 @@
   const W = window.SchedulerWeek;
   const Places = window.SchedulerPlaces;
   const LiveMap = window.SchedulerLiveMap;
+  const Tips = window.SchedulerTripTips;
+  const { format: showPhone, dial } = window.SchedulerPhone;
 
   const ASK_EVERY = 60e3;
   const TRIPS_EVERY = 5 * 60e3;
-  // The road ahead of the pressed bus is worked out again this often, as road.js's arrivals are.
-  const AHEAD_EVERY = 5 * 60e3;
   // A pin's size, near enough, so pins that would overlap are joined.
   const PIN_BOX = [56, 26];
   const TONE_RANK = { error: 0, warning: 1 };
 
   let client = null, road = null, map = null, slow = 0, yard = null;
-  let busesById = new Map(), legsByBus = new Map(), answer = null;
+  let busesById = new Map(), driversById = new Map(), legsByBus = new Map(), answer = null;
   let tripsRead = 0, asked = 0, asking = false, stopped = false;
   let chosen = new URLSearchParams(location.search).get('bus');
   const pins = new Map();
   let legLayer = null, trailLayer = null, fitted = false, states = [];
-  let ahead = { busId: null, key: null, at: 0, lines: null };
 
   const { clock, hours } = Live;
   // A driver by their first name, so their hours and the speed fit the tile.
@@ -157,10 +158,11 @@
     s.hue = W.hueFor(leg.trip);
     s.stops = Road.stopsOf(leg.trip, leg.leg);
     s.next = Road.nextOn(s.stops, bus, arrivals);
-    s.warnings = Live.warningsOf(Live.lookOf({
+    s.said = Live.saidOf(Live.lookOf({
       trip: leg.trip, assign: leg.assign, span: leg.span, bus, next: s.next,
       others: answer?.buses ?? [], numberOf: id => busesById.get(id)?.number ?? null, yard,
     }));
+    s.warnings = s.said.warnings;
     s.tone = s.warnings[0]?.tone ?? null;
     return s;
   }
@@ -238,29 +240,18 @@
     }
   }
 
-  // The chosen bus's leg, as live-map.js draws it.
+  // A bus's leg, as live-map.js draws it.
   const legOf = s => ({ path: s.bus.path, here: s.here, stop: s.next?.stop ?? null, at: !!s.next?.at, stops: s.stops,
-    reached: s.next?.where?.reached ?? -1, clock, ahead: ahead.busId === s.bus.bus_id ? ahead.lines : null });
+    reached: s.next?.where?.reached ?? -1, clock });
 
-  /* The road ahead of the chosen bus, worked out again when its next stop
-     changes or every AHEAD_EVERY, and drawn once it comes. */
-  function askAhead(s) {
-    const key = `${s.next?.stop?.key ?? ''}|${s.next?.at ? 'at' : ''}`;
-    if (ahead.busId === s.bus.bus_id && ahead.key === key && Date.now() - ahead.at < AHEAD_EVERY) return;
-    const mine = { busId: s.bus.bus_id, key, at: Date.now(), lines: ahead.busId === s.bus.bus_id ? ahead.lines : null };
-    ahead = mine;
-    LiveMap.aheadOf(legOf(s)).then(lines => {
-      if (ahead !== mine) return;
-      mine.lines = lines;
-      drawLeg();
-    }, () => {});
-  }
-
+  // The chosen bus's leg, with the road ahead once live-map.js has it.
   function drawLeg() {
     legLayer?.remove();
     const s = states.find(x => x.out && x.bus.bus_id === chosen);
-    legLayer = s?.next ? LiveMap.drawLeg(map, legOf(s)) : null;
-    if (s?.next) askAhead(s);
+    if (!s?.next) { legLayer = null; return; }
+    const leg = legOf(s);
+    leg.ahead = LiveMap.ahead(s.bus.bus_id, leg, drawLeg);
+    legLayer = LiveMap.drawLeg(map, leg);
   }
 
   // ── the panel ───────────────────────────────────────────────────────────
@@ -346,7 +337,43 @@
     return box;
   }
 
+  /* A pressed bus has the panel to itself: All buses back to the list, then
+     for a bus out its number, destination and what it is doing over the
+     board's live card, trip-tips.js's, which says the rest, with Call for
+     the driver at the wheel, Open trip and Google Maps where the board's
+     card has its map; for a bus on no trip, its tile. */
+  function drawChosen(s) {
+    const back = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-live__back', 'All buses');
+    back.type = 'button';
+    back.addEventListener('click', () => choose(chosen));
+    const parts = [back];
+    if (!s.out) {
+      const list = el('ul', 'scheduler-live__yard');
+      list.appendChild(parkedTile(s));
+      parts.push(list);
+    } else {
+      const head = el('div', 'scheduler-live__head');
+      const said = el('span', 'scheduler-live__said');
+      said.append(el('span', 'scheduler-live__dest', s.leg.trip.destination || 'Trip'), el('span', 'scheduler-live__line', doing(s)));
+      head.append(el('span', `scheduler-live__num scheduler-bar--${s.hue}`, s.number), said);
+      parts.push(head);
+      const inBus = [...s.bus.drivers].sort((a, b) => b.wheel - a.wheel);
+      const caller = inBus.map(d => ({ d, who: driversById.get(d.driver_id) })).find(x => x.who?.phone);
+      const links = [
+        ...(caller ? [{ words: `Call ${short(caller.d.name)}`, href: `tel:${dial(caller.who.phone)}` }] : []),
+        { words: 'Open trip', href: `./?trip=${encodeURIComponent(s.leg.trip.id)}&date=${iso(new Date())}` },
+      ];
+      const card = el('div', 'scheduler-live__card');
+      card.appendChild(Tips.liveOn(s.leg.trip, { bus: s.bus, next: s.next, said: s.said }, s.bus.bus_id, { busesById }, { links }));
+      if (caller) card.querySelector('a[href^="tel:"]')?.setAttribute('aria-label', `Call ${caller.d.name}, ${showPhone(caller.who.phone)}`);
+      parts.push(card);
+    }
+    $('scheduler-live-panel').replaceChildren(...parts);
+  }
+
   function drawPanel(out, parked) {
+    const shown = chosen && states.find(s => s.bus.bus_id === chosen);
+    if (shown) { drawChosen(shown); return; }
     const parts = [summary(out, parked), group('On the road')];
     if (out.length) {
       const list = el('ul', 'scheduler-live__tiles');
@@ -406,13 +433,16 @@
   // ── start ───────────────────────────────────────────────────────────────
   pair.start(async signedIn => {
     client = signedIn;
-    const [busRows, settings] = await Promise.all([
+    const [busRows, settings, driverRows] = await Promise.all([
       client.from('buses').select('id,number'),
       client.from('settings').select('key,value').in('key', ['route-times-v1', 'yard-location-v1']),
+      client.from('drivers').select('id,name,phone'),
       Places.init(client),
     ]);
     if (busRows.error) throw busRows.error;
     busesById = new Map((busRows.data || []).map(b => [b.id, b]));
+    // Without the drivers the card has no Call, and the rest stands.
+    driversById = new Map((driverRows.data || []).map(d => [d.id, d]));
     const setting = key => settings.data?.find(r => r.key === key)?.value;
     slow = Number(setting('route-times-v1')?.drive_slowdown_percent) || 0;
     const yardRow = setting('yard-location-v1');

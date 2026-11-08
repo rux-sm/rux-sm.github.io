@@ -33,7 +33,9 @@
    being `driver:<id>:<seat>`, `partner(trip, bar, board)`, the partner
    covering the bar's bus, `live(trip, bar, board)` and `card(trip, bar,
    section, board)`, Alerts for the section `needs` and Updates for any
-   other, each hand back one element. `updateFace(u, size, staff)`,
+   other, each hand back one element. `liveOn(trip, road, busId, board,
+   { links })` is the live card from `road(bar)`'s answer and the bus id,
+   which the Live map draws beside its map with no bar. `updateFace(u, size, staff)`,
    `ageShort(at)`, `cardTitle(name, count, action)`, `postTripOf(trip)`,
    `postTripRows(post, cls, pressOf)`, `markSave(save, ready)` and `WARN_GO`
    are the parts the half sheet's card and the Updates window share.
@@ -296,7 +298,7 @@
      after, so a card drawn again with each answer keeps the office's own
      zoom; it fits the leg afresh only for another bus. live-map.js loads
      Leaflet and draws the pin and the leg, as the Live map page does. */
-  async function mapInto(holder, bar, bus, next, hue, board) {
+  async function mapInto(holder, busId, bus, next, hue, board) {
     const slot = board.map;
     const none = words => holder.isConnected && holder.replaceWith(el('p', 'scheduler-card__live-none', words));
     try { await LiveMap.load(); } catch { none("The map didn't load. Show on Live map opens it."); return; }
@@ -315,12 +317,18 @@
     const here = bus.lat != null && bus.lng != null ? [bus.lat, bus.lng] : null;
     const leg = { path: bus.path, here, stop: next?.stop ?? null, at: !!next?.at, stops: next?.stops ?? [],
       reached: next?.where.reached ?? -1, clock: ms => hhmm(Road.clockOf(ms), true) };
-    slot.live.layer?.remove();
-    slot.live.layer = LiveMap.drawLeg(map, leg);
+    /* The road ahead once live-map.js has it, as the Live map draws it,
+       redrawn when it comes only while this is still the leg shown. */
+    slot.live.leg = leg;
+    const draw = () => {
+      slot.live.layer?.remove();
+      slot.live.layer = LiveMap.drawLeg(map, { ...leg, ahead: LiveMap.ahead(bus.bus_id, leg, () => slot.live.leg === leg && draw()) });
+    };
+    draw();
     slot.live.pin?.remove();
     slot.live.pin = here ? window.L.marker(here, { keyboard: false, interactive: false, icon: window.L.divIcon({
       className: 'scheduler-live-pin-box', iconSize: null,
-      html: LiveMap.pinHtml({ number: board.busesById.get(bar.dataset.busId)?.number ?? '', hue, heading: bus.heading, moving: bus.mph > 0 }),
+      html: LiveMap.pinHtml({ number: board.busesById.get(busId)?.number ?? '', hue, heading: bus.heading, moving: bus.mph > 0 }),
     }) }).addTo(map) : null;
     if (slot.live.busId !== bus.bus_id) {
       slot.live.busId = bus.bus_id;
@@ -453,7 +461,7 @@
       const holder = el('div', 'scheduler-card__live-map-box');
       mapRow.appendChild(holder);
       tip.appendChild(mapRow);
-      mapInto(holder, bar, bus, next, hueFor(trip), board);
+      mapInto(holder, bar.dataset.busId, bus, next, hueFor(trip), board);
       if (next?.stop) {
         const words = next.at ? 'Here now' : [next.stop.due != null ? `due ${hhmm(Road.clockOf(next.stop.due), true)}` : null,
           next.arrival != null ? `arrives ${hhmm(Road.clockOf(next.arrival), true)}` : null, next.late ? `${next.late} min late` : null].filter(Boolean).join(' · ');
@@ -559,12 +567,16 @@
     return a;
   }
 
-  function liveCard(trip, bar, board) {
+  const liveCard = (trip, bar, board) => liveOn(trip, board.road(bar), bar.dataset.busId, board);
+  /* The live card from the bus's `{ bus, next, said }` and its id, which the
+     Live map draws with no bar. `links`, the Live map's, stand in the map
+     tile in place of its map and its Live map button, since there the page
+     is the map. */
+  function liveOn(trip, road, busId, board, { links = null } = {}) {
     const card = el('div', 'scheduler-card scheduler-card--live');
     card.dataset.tripId = trip.id;
     // Each part of the live card is a tile of its own.
     const tile = cls => el('div', `rux--tile scheduler-card__live-tile ${cls}`);
-    const road = board.road(bar);
     if (!road?.bus) { card.appendChild(el('p', 'scheduler-card__row scheduler-card__live-none', 'Samsara has no reading for this bus now.')); return card; }
     const { bus, next, said } = road;
     // Each warning in a band of its colour: its mark, its name and why.
@@ -578,7 +590,8 @@
        it, then where to see more of it. */
     const mapRow = tile('scheduler-card__live-map');
     const holder = el('div', 'scheduler-card__live-map-box');
-    const links = el('div', 'scheduler-card__live-links');
+    const extra = links;
+    const buttons = el('div', 'scheduler-card__live-links');
     const link = (words, href, away) => {
       const a = el('a', 'rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
       a.href = href;
@@ -586,14 +599,15 @@
       return a;
     };
     // Two secondary buttons sharing the tile's width, outlined in this app's own theme.
-    if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
-    links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
+    for (const l of extra ?? []) buttons.appendChild(link(l.words, l.href, l.away));
+    if (bus.lat != null && bus.lng != null) buttons.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
+    if (!extra) buttons.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(busId)}`, false));
     const foot = el('div', 'scheduler-card__live-foot');
     foot.append(el('span', 'scheduler-card__live-place', bus.place || (bus.lat != null ? 'Place unknown' : 'No position')),
       el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
-    mapRow.append(holder, foot, links);
+    mapRow.append(...(extra ? [] : [holder]), foot, buttons);
     card.appendChild(mapRow);
-    mapInto(holder, bar, bus, next, hueFor(trip), board);
+    if (!extra) mapInto(holder, busId, bus, next, hueFor(trip), board);
     /* The stops still to come, each a dot, its name and the time it is due,
        the next with a green dot and when the bus gets there and how late. */
     const toCome = next ? next.stops.filter((st, i) => i > next.where.reached || (next.at && i === next.where.reached)) : [];
@@ -1024,7 +1038,7 @@
   }
 
   window.SchedulerTripTips = {
-    route: routeTip, driver: driverTip, driverCard, partner: partnerTip, live: liveCard, card: cardTip, CONTAINER, surface,
+    route: routeTip, driver: driverTip, driverCard, partner: partnerTip, live: liveCard, liveOn, card: cardTip, CONTAINER, surface,
     updateFace, ageShort, cardTitle, postTripOf, postTripRows, markSave, WARN_GO,
   };
 })();

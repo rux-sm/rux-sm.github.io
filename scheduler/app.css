@@ -199,7 +199,7 @@
      a compact board, whatever the window or the panels beside the week, so a
      change of width shows more of the strip or less and moves no trip. */
   --scheduler-strip-day: 175px;
-  --scheduler-tile-head: calc(var(--rux-spacing-11) + 1px);
+  --scheduler-tile-head: calc(var(--rux-spacing-10) + 1px);
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
@@ -791,9 +791,10 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-aside[data-week] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
-   ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 80px, Carbon's
-   spacing 11, 8px in from its sides, the width its 64px readings square
-   takes, the square as tall as four of the bar's lines less 8px. Its parts
+   ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 64px, Carbon's
+   spacing 10, 8px in from its sides: the 48px between them holds a
+   three-figure number, the 4px gap and its 16px alert, and the readings box
+   across it, as tall as four of the bar's lines less 8px. Its parts
    stand on the bar's lines, `scheduler/docs/board-layout.md` the measures:
    the number and its alert on line 1, the square under it, the fuel a meter
    across it with its percent the tip's, and the kit or a low DEF on line 6;
@@ -848,11 +849,11 @@ button.scheduler-row-head__num:focus { outline: none; }
    their place. */
 /* With one line the tile is its number alone, and the empty square goes too. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
-/* The square fills the lines under the number, four at most, less 4px at
-   each end: 64px on six lines and on five, 46px on four, 28px on three. A
-   low DEF on five grows it. */
+/* The box runs the tile inside its insets and fills the lines under the
+   number, four at most, less 4px at each end: 64px tall on six lines and on
+   five, 46px on four, 28px on three. A low DEF on five grows it. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
-  inline-size: var(--rux-spacing-10);
+  align-self: stretch;
   min-block-size: calc(min(var(--scheduler-bar-rows) - 1, 4) * var(--scheduler-row-h) - 2 * var(--rux-spacing-02));
   margin-block: 0;
   padding: var(--rux-spacing-03);
@@ -899,9 +900,11 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* Line 6's top, from the head's own: the bar's clear space and padding, and
    five lines. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head { --scheduler-line-six: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 5 * var(--scheduler-row-h)); }
-/* A low DEF on six lines stands on line 6 in the kit's place, its name and
-   percent, so the square keeps its 64px. On five, with no line 6, it stays
+/* A low DEF on six lines stands on line 6 in the kit's place, its name
+   alone in the low or critical colour, its percent the tip's and the
+   label's, so the square keeps its 64px. On five, with no line 6, it stays
    under the fuel in the square, which grows for it. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level-pct { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] {
   position: absolute;
   inset-inline: var(--rux-spacing-03) auto;
@@ -970,11 +973,11 @@ button.scheduler-row-head__num:focus { outline: none; }
   block-size: var(--scheduler-bar-h);
 }
 /* A driver tile's skeleton stands in the tile's own classes, which place
-   it: the name's line and, on the line under it, the 64px meter. */
+   it: the name's line and, on the line under it, the meter across it. */
 .scheduler-avail__name .rux--skeleton__text { margin-block-end: 0; }
 .scheduler-skeleton-who { inline-size: 5rem; block-size: var(--rux-spacing-05); }
-.scheduler-skeleton-line { display: flex; align-items: center; block-size: var(--scheduler-label-h); }
-.scheduler-skeleton-meter { inline-size: var(--rux-spacing-10); block-size: var(--rux-spacing-02); }
+.scheduler-skeleton-line { display: flex; align-items: center; block-size: var(--scheduler-row-h); }
+.scheduler-skeleton-meter { flex: 1 1 auto; block-size: var(--rux-spacing-02); }
 /* On the strip the skeleton is three weeks of days, so a board Fill the
    window has widened loads full to its edge, and the pane cuts the days it
    cannot hold. render() takes the grid's skeleton class off as it draws the

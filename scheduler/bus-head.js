@@ -168,7 +168,7 @@
       return g;
     }
     const reading = el('span', 'scheduler-row-head__reading');
-    reading.append(el('span', null, tank.word), el('span', null, pct == null ? '\u2013' : `${pct}%`));
+    reading.append(el('span', null, tank.word), el('span', 'scheduler-row-head__level-pct', pct == null ? '\u2013' : `${pct}%`));
     g.appendChild(reading);
     return g;
   }

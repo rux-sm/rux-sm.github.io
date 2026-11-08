@@ -1,0 +1,77 @@
+---
+type: plan
+---
+
+# Plan: More from Samsara
+
+## Goal
+
+The scheduler reads more of what Samsara already knows, so the office sees
+trouble on the board without opening Samsara: a driver on a trip who is
+not logged in, in the wrong bus, over hours or on the wrong hours rules;
+a bus's arrival at the yard and its pickup as Samsara sees it; and each
+pre-trip inspection, safe or not. What `samsara-now` reads today is in
+`scheduler/docs/database-inventory.md` §8, and the driver tile it feeds in
+`scheduler/docs/screen-inventory.md`.
+
+## Decisions
+
+- **A driver on a trip whose app is disconnected says Not logged in.**
+  Samsara's clocks list every driver and give a disconnected one an empty
+  duty, which `samsara-now` reads as no duty today, the same "–" as a
+  driver Samsara does not know. `samsara-now` keeps the two apart, and on
+  a trip under way the tile has the amber warning mark and "Not logged in"
+  in its line; off a trip it stays the quiet dash.
+- **A driver logged into the wrong bus says so on their tile.**
+  `samsara-now` gives each driver in its `drivers` list the bus Samsara has
+  them in, from the clock's `currentVehicle`, as it already does for a
+  bus's crew. On a trip under way, a driver in a bus that is not their
+  leg's has the red bus alert mark and "in 133" in red, as the trip bar's
+  Wrong bus says it.
+- **Over hours comes from Samsara's own violation.** The clock's
+  `violations` gives the shift-driving and cycle time a driver is over now;
+  over zero is the red mark, with the words Over hours, in place of
+  guessing from "0:00 left".
+- **Each driver's hours rules are checked against the bus rules.** One read
+  of Samsara's drivers gives each one's rules; a driver whose rules are not
+  a passenger carrier's, 10 hours driving after 8 off, has a red mark on
+  their tile and on the Drivers page, since every clock they show is wrong.
+- **Samsara's inspections are read, not re-entered.** Each pre-trip and
+  post-trip inspection a driver files in Samsara, safe, unsafe or resolved,
+  is read from its inspections feed against the bus and the day: a pre-trip
+  ticks on the driver's seat, and an unsafe one is a red mark on the bus
+  tile and a defect on the bus's Fleet profile, as
+  `docs/plans/scheduler-maintenance.md` keeps defects.
+- **Safety events stay in Samsara.** Hard braking, speeding and phone use
+  are the office's to review there, not the board's.
+- **Each database change is its own step,** SQL shown to rux and applied on
+  his yes before the code that reads it is pushed.
+
+## Questions
+
+- Should the yard and the pickups become Samsara geofences, so Samsara
+  tells the scheduler the moment a bus arrives? It would give
+  `docs/plans/scheduler-on-time-pickup.md` its arrival as it happens,
+  where that plan reads it from the GPS history after the leg, and it
+  needs a new Edge Function that Samsara calls.
+- Should a trip's stops become a Samsara route? Samsara would give each
+  stop's arrival estimate, its actual arrival and departure, and a live
+  link a customer could follow; the scheduler works out its own estimates
+  today, so the two would have to agree.
+- Should Send trips also send the trip to the driver's Samsara app, where
+  Samsara says whether they read it?
+
+## Tasks
+
+- [ ] Confirm in the live `samsara-now` answer that a disconnected driver's
+      duty comes back empty and a driver in no bus has no `currentVehicle`,
+      before building on either.
+- [ ] Keep Not logged in apart from no clock in `samsara-now`, and draw it
+      on the driver tile.
+- [ ] Add each driver's bus to `samsara-now`'s `drivers`, carry each leg's
+      bus on the rail's rows, and draw the wrong bus on the tile.
+- [ ] Read the clock's violations into `samsara-now` and draw Over hours.
+- [ ] Read each driver's hours rules and mark a driver on the wrong ones.
+- [ ] Read Samsara's inspections, tick the pre-trip on the seat and mark an
+      unsafe one on the bus.
+- [ ] Answer the three questions, and add their tasks or delete them.

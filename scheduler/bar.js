@@ -200,7 +200,7 @@
      it opens the trip's Alerts tip, so it is one of the bar's card openers. It keeps the tone and words
      it was drawn with on `data-tone` and `data-words`, which a live warning, road-bar.js's, adds to
      with `alertTo` and leaves again once it has gone. */
-  const ALERT_ICON = { error: '#m-error-fill', warning: '#i-warning--alt--filled' };
+  const ALERT_ICON = { error: '#i-warning--filled', warning: '#i-warning--alt--filled' };
   const alertTo = (m, tone, words) => {
     m.classList.remove('scheduler-bar__msg--error', 'scheduler-bar__msg--warning');
     m.classList.add(`scheduler-bar__msg--${tone}`);

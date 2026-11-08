@@ -26,7 +26,7 @@
 
 /* The pair a trip bar's marks are drawn from, both of them text-primary and
    text-inverse the way round the theme puts them: `on-warning` is the dark one,
-   the ink on a warning fill, and `mark-blank` is the light one, the fill of a
+   the ink on a warning fill and the "!" of every alert, and `mark-blank` is the light one, the fill of a
    mark that stands for nothing having happened yet. Light themes take them one
    way and dark themes the other, so both are the same colour in every theme. */
 :root,

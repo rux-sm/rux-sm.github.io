@@ -70,9 +70,9 @@
      the marks of their papers and legs. */
   const NOW_MARKS = {
     unlogged: { kind: 'unlogged', tone: 'warning', icon: '#i-warning--alt--filled' },
-    away: { kind: 'away', tone: 'error', icon: '#m-error-fill' },
-    over: { kind: 'over', tone: 'error', icon: '#m-error-fill' },
-    out: { kind: 'out', tone: 'error', icon: '#m-error-fill' },
+    away: { kind: 'away', tone: 'error', icon: '#i-warning--filled' },
+    over: { kind: 'over', tone: 'error', icon: '#i-warning--filled' },
+    out: { kind: 'out', tone: 'error', icon: '#i-warning--filled' },
   };
 
   const el = (tag, cls, text) => {
@@ -145,7 +145,7 @@
        gives for them wrong; the fix is the driver's settings in Samsara. */
     const rules = live?.rules ?? [];
     if (rules.length && !rules.every(r => /passenger/i.test(r))) {
-      marks.push({ kind: 'rules', tone: 'error', icon: '#m-error-fill', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
+      marks.push({ kind: 'rules', tone: 'error', icon: '#i-warning--filled', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
     }
     for (const [field, word] of PAPERS) {
       const when = dayOf(driver?.[field]);
@@ -155,7 +155,7 @@
       // The Drivers page's words.
       const words = n < 0 ? `${word} expired ${plural(-n, 'day')} ago`
         : n === 0 ? `${word} expires today` : `${word} expires in ${plural(n, 'day')}`;
-      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#m-error-fill' : '#i-warning--alt--filled', words,
+      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#i-warning--filled' : '#i-warning--alt--filled', words,
         ...(n < 0 ? { line: `${word} expired` } : {}) });
     }
     const of = kind => alerts.filter(a => a.kind === kind);

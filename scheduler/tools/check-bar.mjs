@@ -240,7 +240,7 @@ const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
 expect('each driver state uses its Carbon icon and tone',
   drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|normal|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
   [['off', '#i-circle-dash', false], ['warning', '#i-warning--alt--filled', false], ['normal', '#i-in-progress', false],
-    ['success', '#i-checkmark--filled', false], ['success', '#i-checkmark--filled', false], ['error', '#m-error-fill', true]]);
+    ['success', '#i-checkmark--filled', false], ['success', '#i-checkmark--filled', false], ['error', '#i-warning--filled', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',
   [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, icon(c) === '#m-swap_horiz-fill']),
@@ -261,7 +261,7 @@ expect('an empty seat shows a person in the error colour, not the alert badge\'s
   [true,false].map(due => { const c = Bar.crewEl(emptyDriver,due,false); return [icon(c), c.querySelector('.scheduler-crew__mark').classes().includes('scheduler-crew__mark--error')]; }),
   [['#m-person-fill',true],[null,false]]);
 const declinedDriver = {role:'driver',label:'Driver',who:{name:'Alex'},status:window.SchedulerLegFacts.DRIVER_STATUSES.find(s=>s.value==='declined')};
-expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDriver,true,true)), '#m-error-fill');
+expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDriver,true,true)), '#i-warning--filled');
 
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
@@ -557,7 +557,7 @@ expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway 
 const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__msg--'))?.slice(20), m.getAttribute('aria-label').split(':')[1]?.trim(), m.querySelector('use')?.getAttribute('href')] : null; };
 expect('each warning is the alert badge in its colour, its name leading the badge\'s words, and the times stay',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => [badge(lit(n)), say(lit(n)), has(row(lit(n)), '.scheduler-road__track')]), [
-    [['error', 'Stop lamp', '#m-error-fill'], null, true], [['error', 'Not rolling', '#m-error-fill'], null, true], [['error', 'Wrong bus', '#m-error-fill'], null, true],
+    [['error', 'Stop lamp', '#i-warning--filled'], null, true], [['error', 'Not rolling', '#i-warning--filled'], null, true], [['error', 'Wrong bus', '#i-warning--filled'], null, true],
     [['warning', 'Late to spot', '#i-warning--alt--filled'], null, true], [['warning', 'Short on hours', '#i-warning--alt--filled'], null, true]]);
 expect('a bar with no warning and no problem of its own has no badge', badge(lit('At highway speed')), null);
 expect('an engine warning lamp is said on the tooltip only',
@@ -787,18 +787,18 @@ expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon
     tripTile({ duty: 'sleeper', left_ms: 8 * H }, true), tripTile({ duty: 'on', left_ms: 0 }, true),
     tripTile({ duty: 'off', left_ms: 5 * H }, true, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }), tripTile({ duty: 'off', left_ms: 10 * H }, false)],
   [['#i-BPMN-link--fill', 'driving', '6:00 left', false], ['#i-pause--outline--filled', 'off', '5:00 left', false],
-    ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#m-error-fill', null, '0:00 left', false],
+    ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#i-warning--filled', null, '0:00 left', false],
     ['#i-warning--alt--filled', null, '5:00 left', false], [null, null, '', true]]);
 expect('an expired paper: the red mark, and the paper in red alone in the line\'s place, free or not, unless Samsara has words of its own',
   [tripTile({ duty: 'off', left_ms: 10 * H }, false, { id: 'd2', name: 'Ana Ruiz', med_card_expiry: dayIn(-3) }),
     tripCell.querySelector('.scheduler-avail__line').dataset.tone, tripCell.hasAttribute('data-cannot'),
     tripTile({ duty: 'off', left_ms: 4 * H }, false, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) }),
     tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(-1) })],
-  [['#m-error-fill', null, 'Medical card expired', true], 'error', true,
-    ['#m-error-fill', null, 'Licence expired', true], ['#m-error-fill', null, 'in 133', true]]);
+  [['#i-warning--filled', null, 'Medical card expired', true], 'error', true,
+    ['#i-warning--filled', null, 'Licence expired', true], ['#i-warning--filled', null, 'in 133', true]]);
 expect('a red mark from Samsara stands before an amber one of the papers, and its line has no meter',
   tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }),
-  ['#m-error-fill', null, 'in 133', true]);
+  ['#i-warning--filled', null, 'in 133', true]);
 const card = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
   live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',

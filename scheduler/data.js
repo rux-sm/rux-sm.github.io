@@ -270,7 +270,7 @@
     alert.setAttribute('aria-hidden', 'true');
     const warning = svgUse('#i-warning--alt--filled', '16', '0 0 32 32');
     warning.dataset.tone = 'warning';
-    const error = svgUse('#m-error-fill', '16', '0 0 32 32');
+    const error = svgUse('#i-warning--filled', '16', '0 0 32 32');
     error.dataset.tone = 'error';
     alert.append(warning, error);
     return alert;
@@ -14626,7 +14626,7 @@
 
   // The red alert a lapsed card wears in the menu, coloured as a declined status.
   function lapseIcon() {
-    const svg = svgUse('#m-error-fill', '16', '0 0 32 32');
+    const svg = svgUse('#i-warning--filled', '16', '0 0 32 32');
     svg.setAttribute('class', 'rux--icon-indicator--failed scheduler-status-icon');
     return svg;
   }

@@ -423,7 +423,7 @@
       const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
       const text = el('span', 'scheduler-tip__words', words);
       if (why) text.append(' ', el('span', 'scheduler-tip__why', why));
-      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), text);
+      row.append(svgUse(tone === 'error' ? '#i-warning--filled' : '#i-warning--alt--filled', '16', '0 0 32 32'), text);
       tip.appendChild(row);
     };
     // A back-to-back trip either side with the rest between, amber where the rest is short.
@@ -538,7 +538,7 @@
     for (const x of board.standing(trip, legKeyOfVehicle(trip, assign))) {
       if (String(x.assignmentId) !== String(assign.id)) continue;
       const row = el('div', 'scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--error');
-      row.append(svgUse('#m-error-fill', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', x.what));
+      row.append(svgUse('#i-warning--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', x.what));
       tip.appendChild(row);
     }
     if (partner?.phone) {
@@ -773,7 +773,7 @@
       if (!raised && !other.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No alerts.'));
       for (const w of live) {
         const row = el('div', `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${w.tone}`);
-        row.append(svgUse(w.tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'),
+        row.append(svgUse(w.tone === 'error' ? '#i-warning--filled' : '#i-warning--alt--filled', '16', '0 0 32 32'),
           el('span', 'scheduler-tip__words', `${w.title}: ${w.sentence}`));
         tip.appendChild(row);
       }
@@ -783,7 +783,7 @@
         const tone = a.row === 'scheduler-card__error' ? 'error' : 'warning';
         const row = el('div', need ? 'scheduler-tip__alert scheduler-tip__need'
           : `scheduler-tip__alert scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
-        row.append(svgUse(tone === 'error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
+        row.append(svgUse(tone === 'error' ? '#i-warning--filled' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
           goLink(a.words, a.go, a.spot));
         /* A driver kept apart from one on the trip ends in Allow, which asks
            first, as Assign anyway does, and allows the pair on this trip. */
@@ -986,7 +986,7 @@
     }
     const lamp = (tone, words) => {
       const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
-      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', words));
+      row.append(svgUse(tone === 'error' ? '#i-warning--filled' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', words));
       tip.appendChild(row);
       return row;
     };

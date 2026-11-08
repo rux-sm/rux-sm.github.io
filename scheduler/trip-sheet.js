@@ -310,7 +310,7 @@
       if (a.spot) band.dataset.spot = a.spot;
       const need = other.includes(a);
       if (need) band.classList.add('scheduler-card__row--need');
-      band.append(svgUse(a.row === 'scheduler-card__error' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
+      band.append(svgUse(a.row === 'scheduler-card__error' ? '#i-warning--filled' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
         el('strong', null, a.words));
       if (a.row === 'scheduler-card__asks' && !reminded) {
         reminded = true;

@@ -128,7 +128,11 @@
      as between Houston and the Valley; its short route can take back roads.
      So both are asked, and the short one is taken when it is at least 5%
      fewer miles for at most 10% more time, the road a bus would drive and the
-     miles a quote is priced on. */
+     miles a quote is priced on. `line` is the road it follows, which the
+     Live map draws ahead of a bus. */
+  // The road a route follows, as [lat, lng] points, from Geoapify's line or lines.
+  const lineOf = g => (g?.type === 'LineString' ? [g.coordinates] : g?.type === 'MultiLineString' ? g.coordinates : [])
+    .flat().map(([lng, lat]) => [lat, lng]);
   const SHORTER = 0.05;
   const SLOWER = 0.10;
   const drives = new Map();
@@ -137,13 +141,15 @@
     const pair = `${a.lat},${a.lng}|${b.lat},${b.lng}`;
     if (!drives.has(pair)) {
       const route = type => geoapify('routing', { waypoints: pair, mode: 'drive', type })
-        .then(d => d.features?.[0]?.properties ?? null);
+        .then(d => d.features?.[0] ?? null);
       // A short route that fails leaves the balanced one, as before.
       drives.set(pair, Promise.all([route('balanced'), route('short').catch(() => null)])
         .then(([fast, short]) => {
-          const p = fast && short && short.distance <= fast.distance * (1 - SHORTER)
-            && short.time <= fast.time * (1 + SLOWER) ? short : fast;
-          return p ? { min: Math.round(p.time / 60), miles: Math.round(p.distance / 160.934) / 10 } : null;
+          const f = fast && short && short.properties.distance <= fast.properties.distance * (1 - SHORTER)
+            && short.properties.time <= fast.properties.time * (1 + SLOWER) ? short : fast;
+          if (!f) return null;
+          const p = f.properties;
+          return { min: Math.round(p.time / 60), miles: Math.round(p.distance / 160.934) / 10, line: lineOf(f.geometry) };
         })
         .catch(e => { drives.delete(pair); throw e; }));
     }

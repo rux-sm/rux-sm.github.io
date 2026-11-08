@@ -26,6 +26,8 @@
    now more than two and a half miles off, since it loaded at a lot further
    out and drove on. The next stop is the first after the last one reached
    that has a map point. A bus with no path yet is nowhere known on its leg.
+   `nextOn(stops, bus, eta)` is that reading as the bar and the map use it:
+   { stops, where, stop, at, arrival, late }, or null with no path.
 
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
    Geoapify's drive slowed by the office's percent, asked at most once every
@@ -306,5 +308,18 @@
     };
   }
 
-  window.SchedulerRoad = { NEAR_MILES, PARKED_MILES, LATE_MIN, LOW_LEFT, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
+  /* Where a bus is on its leg's stops, as the board's bar and the Live map
+     both read it: `whereOn`'s answer, the stop it is at or goes to next, and,
+     on the way, when it gets there by `eta`, an `arrivals`, and how late. */
+  function nextOn(stops, bus, eta) {
+    const where = whereOn(stops, bus.path, bus);
+    if (!where) return null;
+    if (where.at) return { stops, where, stop: stops[where.reached], at: true };
+    if (where.next < 0) return { stops, where, stop: null };
+    const stop = stops[where.next];
+    const arrival = eta.get(bus.bus_id, stop, bus.lat != null ? [bus.lat, bus.lng] : null);
+    return { stops, where, stop, at: false, arrival, late: lateBy(stop, arrival) };
+  }
+
+  window.SchedulerRoad = { NEAR_MILES, PARKED_MILES, LATE_MIN, LOW_LEFT, MARGIN, miles, span, isOut, stopsOf, whereOn, nextOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
 })();

@@ -965,15 +965,7 @@
   function roadNext(bar, bus) {
     const trip = heldTrip(bar.dataset.tripId);
     if (!trip || !bus) return null;
-    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
-    const where = Road.whereOn(stops, bus.path, bus);
-    if (!where) return null;
-    const here = bus.lat != null ? [bus.lat, bus.lng] : null;
-    if (where.at) return { stops, where, stop: stops[where.reached], at: true };
-    if (where.next < 0) return { stops, where, stop: null };
-    const stop = stops[where.next];
-    const arrival = roadEta.get(bus.bus_id, stop, here);
-    return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop, arrival) };
+    return Road.nextOn(Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg), bus, roadEta);
   }
 
   /* Each bus out on the board and where its path starts, two hours before
@@ -1034,35 +1026,25 @@
     for (const bar of bars) {
       const bus = roadBusOf(bar);
       const span = [Number(bar.dataset.roadFrom), Number(bar.dataset.roadTo)];
-      const out = !!bar.dataset.roadFrom && (Road.isOut(bus, span) || Live.watching(bus, span));
+      const out = !!bar.dataset.roadFrom && Live.outOn(bus, span);
       roadBar(bar, out ? bus : null);
     }
   }
 
-  // The drivers a bar names, by id.
-  const roadNamed = bar => new Set([...bar.querySelectorAll(':scope > .scheduler-bar__drivers > .scheduler-bar__crew > .scheduler-crew')]
-    .map(c => c.dataset.driverId).filter(Boolean));
-
   /* What live-trip.js says of an out bar's bus: its warnings, worst first,
      where it is on its leg, and the co-drivers the bar names who are in
-     another of the buses they ride. Handed the drivers the bar names, the
-     buses each may be in, every bus in Samsara's answer, the yard's point and the leg's yard-out, and each
-     stop's drive and whether its wait is rest, from the trip's own stops. */
-  function roadLook(bar, bus, next, named) {
-    const rows = new Map((heldTrip(bar.dataset.tripId)?.trip_stops ?? []).map(s => [String(s.id), s]));
-    const look = {
-      bus, next, named: [...named], now: Date.now(),
-      buses: new Map((barCrew(bar, { riders: true })?.crew ?? []).filter(c => c.driverId != null).map(c => [c.driverId, c.buses])),
-      others: roadAnswer?.buses ?? [],
+     another of the buses they ride, from the bar's trip and assignment as
+     the Live map reads them too. */
+  function roadLook(bar, bus, next) {
+    const found = barCrew(bar);
+    const trip = found?.trip ?? heldTrip(bar.dataset.tripId);
+    if (!trip) return null;
+    return Live.saidOf(Live.lookOf({
+      trip, assign: found?.assign ?? null, span: [Number(bar.dataset.roadFrom), Number(bar.dataset.roadTo)],
+      bus, next, others: roadAnswer?.buses ?? [],
       numberOf: id => panelIndex.buses.get(id)?.number ?? null,
       yard: yardPlace ? [Number(yardPlace.lat), Number(yardPlace.lng)] : null,
-      yardOut: Number(bar.dataset.roadFrom) + Road.MARGIN,
-      drives: (next?.stops ?? []).map(s => {
-        const row = rows.get(s.key);
-        return { min: driveMin(row?.drive), rest: ['off', 'sleeper'].includes(row?.dwell_status) };
-      }),
-    };
-    return Live.saidOf(look);
+    }));
   }
 
   /* Today's column counted from the bar's first day, held to the bar, so a
@@ -1081,7 +1063,7 @@
     RoadBar.draw(bar, bus, {
       next,
       day: bus ? roadDay(bar) : 0,
-      said: bus ? roadLook(bar, bus, next, roadNamed(bar)) : null,
+      said: bus ? roadLook(bar, bus, next) : null,
       at: roadAnswer?.at,
       motion: view.motion,
     });
@@ -17873,7 +17855,7 @@
     const bus = roadBusOf(bar);
     if (!bus) return null;
     const next = roadNext(bar, bus);
-    return { bus, next, said: roadLook(bar, bus, next, roadNamed(bar)) };
+    return { bus, next, said: roadLook(bar, bus, next) };
   }
   function tipBoard() {
     return {

@@ -6755,10 +6755,10 @@ html[data-scheduler-takeover] {
 .scheduler-customer-notes { white-space: pre-line; }
 
 /* ── The Live map ─────────────────────────────────────────────────────────
-   live.html: the map of the buses out on a trip, with the panel of buses
-   beside it, in one card that fills the window under the header, as the
-   board does; on a phone the panel goes under the map. A bus's pin and its
-   number in its tile wear its trip's colour from the bar's own palette. */
+   live.html: the map of every bus, with the panel of buses beside it, in one
+   card that fills the window under the header, as the board does; on a
+   phone the panel goes under the map. A bus out wears its trip's colour from
+   the bar's own palette on its pin and the number in its tile. */
 .scheduler-live-page [hidden] { display: none; }
 .scheduler-live {
   position: relative;
@@ -6779,6 +6779,15 @@ html[data-scheduler-takeover] {
   inset-block-start: var(--rux-spacing-05);
   inset-inline: var(--rux-spacing-05);
 }
+/* Show all stands over the map's top right, clear of Leaflet's zoom at the left. */
+.scheduler-live__all {
+  position: absolute;
+  z-index: 1;
+  grid-area: 1 / 1 / 2 / 2;
+  justify-self: end;
+  align-self: start;
+  margin: var(--rux-spacing-05);
+}
 /* Leaflet sets its own face on the map; the pins take the page's. */
 .scheduler-live__map.leaflet-container { font: inherit; }
 /* The panel stands on the page's own surface, so its tiles stand out on it,
@@ -6795,6 +6804,12 @@ html[data-scheduler-takeover] {
   .scheduler-live { grid-template-columns: minmax(0, 1fr); grid-template-rows: 60% minmax(0, 1fr); }
   .scheduler-live__panel { border-inline-start: 0; border-block-start: 1px solid var(--rux-border-subtle-01); }
 }
+/* The panel's first line: how many are out, need attention and are on no
+   trip, the attention in the error's colour while any do, and when Samsara
+   answered under it. */
+.scheduler-live__summary { margin-block-end: var(--rux-spacing-05); }
+.scheduler-live__counts { font-weight: 600; }
+.scheduler-live__need { color: var(--rux-text-error); }
 /* On the road: a tile a bus, a step apart, its number beside its words. */
 .scheduler-live__tiles, .scheduler-live__yard { margin: 0; padding: 0; list-style: none; }
 .scheduler-live__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
@@ -6817,18 +6832,24 @@ html[data-scheduler-takeover] {
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-/* The Yard: small tiles two to a row, a bus's number over its engine. */
+/* Not on a trip: small tiles two to a row, a bus's number over what it is doing. */
 .scheduler-live__yard { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: var(--rux-spacing-03); }
-.scheduler-live__yard-tile { display: grid; min-block-size: 0; min-inline-size: 0; }
+.scheduler-live__yard-tile { display: grid; inline-size: 100%; min-block-size: 0; min-inline-size: 0; color: var(--rux-text-primary); text-align: start; }
 .scheduler-live__yard-num { font-weight: 600; font-variant-numeric: tabular-nums; }
 .scheduler-live__said { display: grid; min-inline-size: 0; }
 .scheduler-live__dest { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-live__line { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
-.scheduler-live__next { display: flex; gap: var(--rux-spacing-02); }
-.scheduler-live__stop { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
-.scheduler-live__due { flex: none; }
-.scheduler-live__hours, .scheduler-live__due { font-variant-numeric: tabular-nums; }
-.scheduler-live__hours--low, .scheduler-live__due--late { color: var(--rux-text-primary); font-weight: 600; }
+/* A warning, its sign in the status colour of its tone and its words in the
+   tile's, wrapping rather than cut, since they are what the tile is for. */
+.scheduler-live__warning { display: flex; align-items: start; gap: var(--rux-spacing-02); color: var(--rux-text-primary); white-space: normal; }
+.scheduler-live__warning > svg { flex: none; }
+.scheduler-live__warning--error > svg { color: var(--scheduler-mark-error); }
+.scheduler-live__warning--warning > svg { color: var(--scheduler-mark-warning); }
+.scheduler-live__warning-words { min-inline-size: 0; }
+/* A small tile's state wraps too, so Last seen keeps its time. */
+.scheduler-live__yard-tile > .scheduler-live__line { white-space: normal; }
+.scheduler-live__hours, .scheduler-live__when { font-variant-numeric: tabular-nums; }
+.scheduler-live__hours--low, .scheduler-live__late { color: var(--rux-text-primary); font-weight: 600; }
 /* A pin: its number on the trip's colour, centred on where the bus is, the
    chosen one ringed. Leaflet's own box around it is emptied. */
 .scheduler-live-pin-box { background: none; border: 0; }
@@ -6849,6 +6870,20 @@ html[data-scheduler-takeover] {
   cursor: pointer;
 }
 .scheduler-live-pin--chosen { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+/* A bus on no trip, small and grey; one Samsara has no fresh reading of, faded. */
+.scheduler-live-pin--parked {
+  padding-inline: var(--rux-spacing-02);
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-primary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: 1.25rem;
+}
+.scheduler-live-pin--stale { opacity: .55; }
+/* Buses too close to tell apart, one pin with every number, each a press of its own. */
+.scheduler-live-pin--group { gap: 0; padding: 0; }
+.scheduler-live-pin__member { padding-inline: var(--rux-spacing-02); }
+.scheduler-live-pin__member + .scheduler-live-pin__member { border-inline-start: 1px solid color-mix(in srgb, currentColor 40%, transparent); }
+.scheduler-live-pin__member--chosen { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* A pin rings with the light its bar casts, in the same hue and rhythm:
    flickering while the bus moves, breathing while it idles, slower and purple
    at rest, amber while it will be late, and a dashed grey with no signal.
@@ -6859,6 +6894,9 @@ html[data-scheduler-takeover] {
 }
 .scheduler-live-pin[data-light="rest"] { --scheduler-road-hue: var(--scheduler-mark-rest); }
 .scheduler-live-pin[data-tone="warning"] { --scheduler-road-hue: var(--scheduler-mark-warning); }
+.scheduler-live-pin[data-tone="error"] { --scheduler-road-hue: var(--scheduler-mark-error); }
+/* A joined pin has no light of its own, so its worst warning rings it still. */
+.scheduler-live-pin--group[data-tone] { box-shadow: 0 0 0 3px var(--scheduler-road-hue); }
 @keyframes scheduler-live-run { 0%, 100% { box-shadow: 0 0 0 3px var(--scheduler-road-light); } 33% { box-shadow: 0 0 0 6px var(--scheduler-road-light); } 66% { box-shadow: 0 0 0 4px var(--scheduler-road-light); } }
 @keyframes scheduler-live-idle { 0%, 100% { box-shadow: 0 0 0 3px var(--scheduler-road-light); } 50% { box-shadow: 0 0 0 7px var(--scheduler-road-light); } }
 .scheduler-live-pin[data-light="run"] { animation: scheduler-live-run .45s ease-in-out infinite; }
@@ -6868,10 +6906,14 @@ html[data-scheduler-takeover] {
 [data-motion="calm"] .scheduler-live-pin[data-light]:not([data-light="off"], [data-light="scan"]) { animation: none; box-shadow: 0 0 0 4px var(--scheduler-road-light); }
 [data-motion="off"] .scheduler-live-pin[data-light] { animation: none; box-shadow: none; }
 .scheduler-live-pin__arrow { display: block; flex: none; }
-/* The chosen bus's leg: the path it drove, the dashed way on to its next
-   stop, and its stops, a ring until reached and filled after. */
+/* The last hour's tail of every bus out, faint under the pins. */
+.scheduler-live-trail { stroke: var(--rux-support-info); stroke-width: 3; stroke-opacity: .45; fill: none; }
+/* The chosen bus's leg: the path it drove, the dashed road on to its next
+   stop, the dotted road on through the stops after, and its stops, a ring
+   until reached and filled after. */
 .scheduler-live-path { stroke: var(--rux-support-info); stroke-width: 4; stroke-opacity: .85; fill: none; }
 .scheduler-live-ahead { stroke: var(--rux-support-info); stroke-width: 3; stroke-dasharray: 6 6; stroke-opacity: .8; fill: none; }
+.scheduler-live-later { stroke: var(--rux-support-info); stroke-width: 2; stroke-dasharray: 1 6; stroke-linecap: round; stroke-opacity: .5; fill: none; }
 .scheduler-live-stop { stroke: var(--rux-text-primary); stroke-width: 2; fill: var(--rux-background); fill-opacity: 1; }
 .scheduler-live-stop--reached { fill: var(--rux-support-success); }
 

@@ -1,9 +1,10 @@
 /* ==========================================================================
    Rux Scheduler — LIVE TRIP, what a bus out on its leg is warned of
    --------------------------------------------------------------------------
-   Loaded by the board after road.js, so a bar's live line, its tooltip and
-   the live card say the same thing about one bus. Nothing here draws or reads
-   the page.
+   Loaded by the board and the Live map after road.js, so a bar's live line,
+   its tooltip, the live card and a map pin say the same thing about one bus.
+   `lookOf` reads leg-facts.js and route-figures.js when it is called. Nothing
+   here draws or reads the page.
 
    `warningsOf(look)` lists what is wrong with a bus out on its leg, worst
    first, each { kind, tone, title, detail, sentence }:
@@ -29,6 +30,9 @@
    each driver the bar names whom Samsara has in another bus they ride, as
    { driver, bus }, the bus's number, which the crew says quietly; `saidOf`
    is all three, as a bar is handed them.
+   `lookOf({ trip, assign, span, bus, next, others, numberOf, yard, now })`
+   builds `look` from the leg's own rows, so the board and the Live map warn
+   alike; `outOn(bus, span, now)` is whether either draws the bus as out.
    `watching(bus, span, now)` is whether a bar whose bus Samsara knows counts
    as out from ten minutes before its yard-out whatever the engine does, so
    Not rolling has a line to stand on; road.js's isOut asks a running engine
@@ -196,5 +200,29 @@
   // All a bar says of its bus, as road-bar.js draws it.
   const saidOf = look => ({ warnings: warningsOf(look), phase: phaseOf(look), riding: ridingOf(look) });
 
-  window.SchedulerLiveTrip = { BEFORE_MS, PRETRIP_MS, clock, hours, watching, warningsOf, phaseOf, ridingOf, saidOf };
+  // Whether a bus counts as out on a leg whose span is `span`, as the bar and the map draw it.
+  const outOn = (bus, span, now = Date.now()) => !!span && (Road.isOut(bus, span, now) || watching(bus, span, now));
+
+  /* `look` from a leg's own rows, as the board and the Live map both build
+     it: the drivers who ride the assignment and the buses each may be in, by
+     leg-facts.js's crew; yard-out from the leg's span; and each stop's drive
+     and whether its wait is rest, from the trip's stops. */
+  function lookOf({ trip, assign, span, bus, next, others = [], numberOf = () => null, yard = null, now = Date.now() }) {
+    const seated = (assign ? window.SchedulerLegFacts.crewOf(trip, assign, new Map(), null, { riders: true }) : [])
+      .filter(c => c.driverId != null);
+    const rows = new Map((trip.trip_stops ?? []).map(s => [String(s.id), s]));
+    const { driveMin } = window.SchedulerRouteFigures;
+    return {
+      bus, next, others, numberOf, yard, now,
+      named: seated.map(c => c.driverId),
+      buses: new Map(seated.map(c => [c.driverId, c.buses])),
+      yardOut: span ? span[0] + Road.MARGIN : null,
+      drives: (next?.stops ?? []).map(s => {
+        const row = rows.get(String(s.key));
+        return { min: driveMin(row?.drive), rest: ['off', 'sleeper'].includes(row?.dwell_status) };
+      }),
+    };
+  }
+
+  window.SchedulerLiveTrip = { BEFORE_MS, PRETRIP_MS, clock, hours, watching, outOn, warningsOf, phaseOf, ridingOf, saidOf, lookOf };
 })();

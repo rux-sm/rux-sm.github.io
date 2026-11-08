@@ -473,7 +473,7 @@
   }
 
   window.SchedulerRouteFigures = {
-    toMin, hm, leaveDayOf, samePlace,
+    toMin, hm, leaveDayOf, samePlace, driveMin,
     waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights, countsTo,
     REST, SPLIT, stretches, nightDwell, legFigures, fromStops,
   };

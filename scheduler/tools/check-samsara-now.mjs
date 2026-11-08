@@ -118,7 +118,7 @@ const DRIVERS = [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Or
 // a hundredth of a mile apart, from two hours ago.
 const fix = (min, lng) => ({ time: ago(min), latitude: 26.2, longitude: lng });
 const DRIVE = Array.from({ length: 241 }, (_, i) => fix(120 - i / 2, -97.9 + i * 0.000163));
-function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false, logsFail = false } = {}) {
+function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false, logsFail = false, rulesFail = false } = {}) {
   let calls = 0, asked = null, logsAsked = null;
   return {
     get calls() { return calls; },
@@ -142,6 +142,10 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
         clock('Ana Ruiz', 'driving', 9 * H + 3 * 60_000, 14 * H, 69 * H),
         clock('Ben Ortiz', 'sleeperBed', 4 * H, 9 * H, 50 * H),
         clock('Cal Diaz', 'offDuty', 10 * H, 15 * H, 70 * H, null),
+      ]; },
+      rules: async () => { calls++; if (rulesFail) throw new Error('403'); return [
+        { id: 's-Ana Ruiz', eldSettings: { rulesets: [{ shift: 'US Interstate Passenger', cycle: 'USA 70 hour / 8 day' }] } },
+        { id: 's-Ben Ortiz', eldSettings: { rulesets: [{ shift: 'US Interstate Property', cycle: 'USA 70 hour / 8 day' }] } },
       ]; },
       history: async (ids, from, to) => { calls++; asked = [ids, from, to]; if (historyFail) throw new Error('403');
         return { v101: DRIVE.filter(f => Date.parse(f.time) >= from) }; },
@@ -214,6 +218,14 @@ expect('a driver in the sleeper has when that run began, and no split without an
   a.buses[0].drivers.map(x => [x.name, x.berth_since, x.split_ms]), [['Ana Ruiz', null, null], ['Ben Ortiz', ago(3 * 60), null]]);
 expect('every scheduler driver with a clock comes back, in a bus or not, and nobody the scheduler lacks',
   a.drivers.map(x => [x.driver_id, x.duty, x.rest_since]), [['d1', 'driving', null], ['d2', 'sleeper', ago(5 * 60)]]);
+expect('each driver has the hours rules Samsara keeps them to, in its words, and null where it lists none',
+  a.drivers.map(x => x.rules), [['US Interstate Passenger, USA 70 hour / 8 day'], ['US Interstate Property, USA 70 hour / 8 day']]);
+{
+  const q = parts({ rulesFail: true });
+  const b = await liveFor(BUSES, DRIVERS, q.deps);
+  expect('rules that cannot be read leave every driver\'s null, and their clocks still come',
+    b.drivers.map(x => [x.rules, x.duty]), [[null, 'driving'], [null, 'sleeper']]);
+}
 p = parts();
 const home = await liveFor(BUSES, [...DRIVERS, { id: 'd3', name: 'Cal Diaz' }], p.deps);
 expect('a scheduler driver resting in no bus comes back with their rest asked after',

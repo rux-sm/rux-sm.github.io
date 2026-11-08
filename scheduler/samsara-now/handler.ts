@@ -25,6 +25,10 @@
 // HOURS LEFT is the least of the three clocks Samsara keeps, driving, shift and
 // cycle, which is how long the driver may still drive. Without the key's hours
 // permission the buses still come back, with no drivers and `hours` false.
+// RULES are the hours rules Samsara keeps each driver to, each ruleset's shift
+// and cycle in Samsara's words, "US Interstate Passenger, USA 70 hour / 8 day",
+// so the board can see a driver kept to rules that are not a bus driver's.
+// Null when Samsara's drivers cannot be read.
 // OVER is how long a driver has been past their driving or cycle hours, from
 // the violation Samsara counts while it runs. A driver whose app is not
 // connected is still on Samsara's clocks with an empty duty, so comes back
@@ -82,6 +86,10 @@ export type Faults = {
   oem?: { diagnosticTroubleCodes?: { codeDescription?: string; codeIdentifier?: string }[] }
 }
 export type Fix = { time: string; latitude: number; longitude: number }
+export type SamsaraDriver = {
+  id?: string
+  eldSettings?: { rulesets?: { shift?: string; cycle?: string }[] }
+}
 export type HosLogs = {
   driver?: { id?: string }
   hosLogs?: { logStartTime?: string; logEndTime?: string; hosStatusType?: string }[]
@@ -108,6 +116,8 @@ export type Deps = {
   vehicles(): Promise<Vehicle[]>
   stats(vehicleIds: string[]): Promise<Stat[]>
   clocks(): Promise<Clock[]>
+  // Every Samsara driver with their hours rules.
+  rules(): Promise<SamsaraDriver[]>
   // Each vehicle's GPS readings between two instants, by vehicle id.
   history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
   // The duty logs of the Samsara drivers named, between two instants.
@@ -128,6 +138,8 @@ export type LiveDriver = {
   // How long the driver has been over their driving or cycle hours, as
   // Samsara counts a violation running now, or 0.
   over_ms: number
+  // The hours rules Samsara keeps them to, one entry a ruleset, or null.
+  rules: string[] | null
   // When the stretch of rest a resting driver is in began, or null.
   rest_since: string | null
   // When a driver in the sleeper went into it, and how long the earlier
@@ -222,11 +234,20 @@ export function liveDriver(c: Clock, index: Map<string, string>): LiveDriver {
     left_ms: known.length ? Math.min(...known) : null,
     drive_ms: drive, shift_ms: shift, cycle_ms: cycle,
     over_ms: Math.max(0, ms(c.violations?.shiftDrivingViolationDurationMs) ?? 0, ms(c.violations?.cycleViolationDurationMs) ?? 0),
+    rules: null,
     rest_since: null,
     berth_since: null,
     split_ms: null,
     wheel: false,
   }
+}
+
+/* A driver's hours rules, each ruleset's shift and cycle; null when the
+   drivers could not be read or Samsara lists none for them. */
+export function rulesOf(drivers: SamsaraDriver[] | null, id: string | undefined): string[] | null {
+  const sets = drivers?.find(x => id != null && String(x.id) === String(id))?.eldSettings?.rulesets
+  const words = (sets ?? []).map(r => [r.shift, r.cycle].filter(Boolean).join(', ')).filter(Boolean)
+  return words.length ? words : null
 }
 
 // The statuses that rest a driver: off duty, personal conveyance and the sleeper.
@@ -352,9 +373,11 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     if (Number.isFinite(at)) since.set(p.vehicle, Math.min(Math.max(at, now - PATH_MS), now))
   }
   let hours = true
-  const [stats, clocks, history] = await Promise.all([
+  const [stats, clocks, samsaraDrivers, history] = await Promise.all([
     ids.length ? deps.stats(ids) : Promise.resolve([] as Stat[]),
     deps.clocks().catch(() => { hours = false; return [] as Clock[] }),
+    // Rules that cannot be read leave every driver's null, and the rest stands.
+    deps.rules().catch(() => null),
     // A path that cannot be read leaves the bus without one, and the rest stands.
     since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => null)
       : Promise.resolve({} as Record<string, Fix[]>),
@@ -371,6 +394,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   for (const c of clocks) {
     const v = c.currentVehicle?.id ? String(c.currentVehicle.id) : null
     const d = liveDriver(c, index)
+    d.rules = rulesOf(samsaraDrivers, c.driver?.id)
     if (d.driver_id) known.push(d)
     if ((d.driver_id || (v && answered.has(v))) && ['sleeper', 'off', 'personal'].includes(d.duty ?? '') && c.driver?.id) resting.set(String(c.driver.id), d)
     if (v) inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])

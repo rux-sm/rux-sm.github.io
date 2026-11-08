@@ -13,7 +13,7 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Clock, type Dvir, type Fix, type HosLogs, type SamsaraDriver, type Schedule, type Stat, type Upcoming, type Vehicle, type WorkOrder } from './handler.ts'
+import { handle, type Clock, type Dvir, type Fix, type HosLogs, type SamsaraDriver, type Schedule, type Stat, type Upcoming, type Vehicle } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
@@ -94,10 +94,6 @@ Deno.serve(req => {
     },
     upcoming() {
       return samsara<Upcoming>('/maintenance/preventive/upcoming', { limit: '200' })
-    },
-    // The key's Read Work Orders permission.
-    workOrders(vehicleId, from) {
-      return samsara<WorkOrder>('/maintenance/work-orders/stream', { startTime: new Date(from).toISOString(), assetIds: vehicleId })
     },
     // The key's Read DVIRs permission; the feed needs its end, or it never ends.
     dvirs(from, to, unsafe = false) {

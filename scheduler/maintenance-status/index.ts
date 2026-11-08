@@ -111,7 +111,6 @@ Deno.serve(req => handle(req, {
       dvirs: async () => [],
       schedules: async () => [],
       upcoming: async () => [],
-      workOrders: async () => [],
       // With no clocks there is no resting driver, so no duty logs are asked.
       logs: async () => [],
       async history(vehicleIds, from, to) {

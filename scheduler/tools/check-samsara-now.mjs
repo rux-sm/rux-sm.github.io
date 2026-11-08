@@ -153,10 +153,6 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
         { asset: { id: 'v101' }, schedule: { id: 's1' }, status: 'overdue', dueInOdometer: -1_609.344 * 2457, dueInEngineHours: -40 },
         { asset: { id: 'v102' }, schedule: { id: 's9' }, status: 'upcoming', dueInDays: 12 },
       ]; },
-      workOrders: async (vehicle, from) => { calls++; asked = ['work', vehicle, from]; return [
-        { id: 'w1', status: 'Completed', category: 'PREVENTIVE', description: 'Oil changed ', createdAtTime: ago(60 * 24 * 60), completedAtTime: ago(59 * 24 * 60), odometerMeters: 1_609.344 * 200 },
-        { id: 'w2', status: 'Open', description: '', createdAtTime: ago(60) },
-      ]; },
       dvirs: async (from, to, unsafe) => { calls++; if (dvirsFail) throw new Error('403'); if (unsafe) return [
         { id: 'r0', type: 'postTrip', safetyStatus: 'unsafe', dvirSubmissionTime: ago(5 * 24 * 60), vehicle: { id: 'v102' }, defectIds: ['z'] },
       ]; return [
@@ -248,14 +244,6 @@ expect('a bus\'s inspections, newest first, each once as Samsara last changed it
 expect('each bus\'s maintenance, overdue first, named by its schedule, in miles to go, and an unknown schedule named plainly',
   [a.maintenance, a.buses[0].due.map(d => [d.title, d.status, d.miles, d.hours, d.last_miles]), a.buses[1].due.map(d => [d.title, d.days])],
   [true, [['Oil change', 'overdue', -2457, -40, null], ['Brake check', 'upcoming', 5000, null, 100_000]], [['Maintenance', 12]]]);
-expect('no bus has a service log unless the body names it', a.buses.map(b => 'service' in b), [false, false]);
-{
-  const q = parts();
-  const b = await liveFor(BUSES, DRIVERS, q.deps, {}, 'b1');
-  expect('the bus the body names has its work orders, newest first, its words trimmed, a blank one empty',
-    [b.buses[0].service.map(x => [x.status, x.what, x.miles]), 'service' in b.buses[1]],
-    [[['Open', null, null], ['Completed', 'Oil changed', 200]], false]);
-}
 {
   const q = parts({ pmFail: true });
   const b = await liveFor(BUSES, DRIVERS, q.deps);

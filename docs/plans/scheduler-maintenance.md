@@ -20,15 +20,15 @@ each bus's odometer and inspections.
 
 ## Decisions
 
-- **What is due comes from Samsara.** Its upcoming preventive maintenance,
-  `GET /maintenance/preventive/upcoming`, gives each bus's items with
-  `status` overdue or upcoming, the miles, engine hours or days still to go,
-  and when each was last done; the schedules are kept in Samsara and nowhere
-  else. The unused `bus_service_rules` table is dropped.
-- **Services are logged in Samsara and shown here, read only.** The
+- **What is due comes from Samsara.** `samsara-now` gives each bus its
+  preventive maintenance as Samsara schedules it, overdue first, with the
+  miles, engine hours or days still to go and when each was last done; the
+  schedules are kept in Samsara and nowhere else. The unused
+  `bus_service_rules` table is dropped.
+- **Services are logged in Samsara, and the profile links to them.** The
   Maintenance tab's Add repair goes; its history keeps the repairs already
-  entered from the binder, and shows Samsara's service log beside them where
-  its API gives it, else a link to the bus in Samsara.
+  entered from the binder, and a link opens the bus's service log in
+  Samsara, since the account has no license for Samsara's work-order API.
 - **The binder's checklists stay the scheduler's own form,** built for a
   phone at the bus: one tap per item, the six tire positions drawn as on the
   paper, tread in 32nds. A watch or now result opens a defect on the bus's
@@ -65,13 +65,10 @@ each bus's odometer and inspections.
 
 ## Tasks
 
-- [ ] Read Samsara's upcoming preventive maintenance and work orders once
-      with the key, to see whether it has their read permissions and
-      whether the service log comes through work orders.
 - [ ] Show what is due on the Maintenance tab and mark an overdue bus on
       its tile, from Samsara.
-- [ ] Take Add repair off the Maintenance tab and show Samsara's service log
-      in its history, or link to it.
+- [ ] Take Add repair off the Maintenance tab and link to the bus's service
+      log in Samsara.
 - [ ] Make Details' mileage and service dates read-only, from Samsara.
 - [ ] Drop `bus_service_rules`.
 - [ ] Backfill the other buses' paper checklists as they are scanned, each

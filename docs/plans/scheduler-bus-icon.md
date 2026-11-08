@@ -12,9 +12,9 @@ facing the way it drives, sharp at actual and Retina size.
 
 ## Decisions
 
-- **Pixel art in a 28 × 28 px square,** the smallest size at which window
-  panes, the door, wheel hubs and rear lights show; drawn on whole pixels
-  with no strokes, gradients or soft edges.
+- **Pixel art in a 32 × 32 px square,** room for window panes, the door,
+  wheel hubs and rear lights to read clearly; drawn on whole pixels with no
+  strokes, gradients or soft edges.
 - **Eight directions, picked by heading to the nearest 45°,** never turned
   to an angle, because turning a small drawing blurs it; a stopped bus keeps
   its last direction.
@@ -29,7 +29,7 @@ facing the way it drives, sharp at actual and Retina size.
   now, since four buses share near-black paint; warning rings and joined pins
   stay as they are.
 - **rux draws the five views in Linearity Curve** from the template in the
-  iCloud Drive folder `Bus icon`, one 28px file a view with a starter
+  iCloud Drive folder `Bus icon`, one 32px file a view with a starter
   coach in the key colours, and exports each as SVG there.
 
 ## Questions

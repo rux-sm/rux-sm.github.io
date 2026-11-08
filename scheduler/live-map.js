@@ -8,7 +8,7 @@
    `load()` loads Leaflet the first time a page without it asks, from
    jsdelivr at the version and hash live.html links, and the bus drawings,
    and resolves once both are there.
-   THE BUS DRAWINGS are five 28px pixel views of the coach in `brand/`, up,
+   THE BUS DRAWINGS are five pixel views of the coach in `brand/`, up,
    up-right, right, down-right and down, the three facing left their
    mirrors, picked by heading to the nearest 45°, so a drawing is never
    turned and stays sharp; a bus with no heading keeps the last it had, and
@@ -86,7 +86,10 @@
         if (svg.nodeName !== 'svg') return '';
         for (const n of svg.querySelectorAll('[id]')) n.removeAttribute('id');
         svg.removeAttribute('id');
-        Object.entries({ width: 28, height: 28, 'shape-rendering': 'crispEdges', 'aria-hidden': 'true' }).forEach(([k, v]) => svg.setAttribute(k, v));
+        // app.css sizes it, one pixel of the drawing to one of the page.
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
+        Object.entries({ 'shape-rendering': 'crispEdges', 'aria-hidden': 'true' }).forEach(([k, v]) => svg.setAttribute(k, v));
         return svg.outerHTML;
       })
       .catch(() => ''))).then(list => { views = list; });

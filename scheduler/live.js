@@ -52,7 +52,7 @@
   const ASK_EVERY = 60e3;
   const TRIPS_EVERY = 5 * 60e3;
   // A pin's size, its drawing and number, near enough, so pins that would overlap are joined.
-  const PIN_BOX = [60, 28];
+  const PIN_BOX = [64, 32];
   const TONE_RANK = { error: 0, warning: 1 };
 
   let client = null, road = null, map = null, slow = 0, yard = null;

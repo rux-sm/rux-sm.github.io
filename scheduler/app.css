@@ -6873,16 +6873,18 @@ html[data-scheduler-takeover] {
    is emptied. */
 .scheduler-live-pin-box { background: none; border: 0; }
 .scheduler-live-mark {
+  /* The bus drawings' size, their files' own, so each pixel stays whole. */
+  --scheduler-live-bus: 32px;
   display: flex;
   align-items: center;
   gap: var(--rux-spacing-01);
   inline-size: max-content;
-  translate: -14px -50%;
+  translate: calc(var(--scheduler-live-bus) / -2) -50%;
   cursor: pointer;
 }
 /* One Samsara has no fresh reading of, faded. */
 .scheduler-live-mark--stale { opacity: .55; }
-/* The drawing at its own 28px, whole pixels kept whole, ringed 1px in the
+/* The drawing at its own size, whole pixels kept whole, ringed 1px in the
    page's icon ink: four offset shadows of no blur, each over the last, make
    the eight pixels round every pixel of the coach. Facing left, it is the
    right-facing view mirrored. */
@@ -6890,16 +6892,16 @@ html[data-scheduler-takeover] {
   --scheduler-live-outline: var(--rux-icon-primary);
   display: block;
   flex: none;
-  inline-size: 28px;
-  block-size: 28px;
+  inline-size: var(--scheduler-live-bus);
+  block-size: var(--scheduler-live-bus);
   filter: drop-shadow(1px 0 0 var(--scheduler-live-outline)) drop-shadow(-1px 0 0 var(--scheduler-live-outline))
     drop-shadow(0 1px 0 var(--scheduler-live-outline)) drop-shadow(0 -1px 0 var(--scheduler-live-outline));
 }
-.scheduler-live-bus > svg { display: block; }
+.scheduler-live-bus > svg { display: block; inline-size: 100%; block-size: 100%; }
 .scheduler-live-bus--mirrored { scale: -1 1; }
-/* Joined buses stand one behind the next, 10px apart. */
+/* Joined buses stand one behind the next, 12px apart. */
 .scheduler-live-mark__buses { display: flex; flex: none; }
-.scheduler-live-mark__buses > .scheduler-live-bus + .scheduler-live-bus { margin-inline-start: -18px; }
+.scheduler-live-mark__buses > .scheduler-live-bus + .scheduler-live-bus { margin-inline-start: calc(12px - var(--scheduler-live-bus)); }
 .scheduler-live-pin {
   display: flex;
   align-items: center;

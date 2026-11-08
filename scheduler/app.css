@@ -749,8 +749,9 @@ button.scheduler-row-head__num:focus { outline: none; }
    its label, "No bus" in italic, says no bus fills it. */
 .scheduler-row--unassigned .scheduler-row-head__num {
   /* Always two lines, "No" over "bus", so the label is no wider than the bus
-     numbers. */
+     numbers, centred as they are. */
   white-space: pre-line;
+  text-align: center;
   color: var(--rux-text-primary);
   font-weight: 400;
   font-style: italic;
@@ -792,11 +793,11 @@ button.scheduler-row-head__num:focus { outline: none; }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
    ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 64px, Carbon's
-   spacing 10, 8px in from its sides: the 48px between them holds a
-   three-figure number, the 4px gap and its 16px alert, and the readings box
-   across it, as tall as four of the bar's lines less 8px. Its parts
+   spacing 10, 8px in from its sides, its parts centred: the 48px between
+   them holds the number and the readings box across it, as tall as four of
+   the bar's lines less 8px, its alert on the box's top-right corner. Its parts
    stand on the bar's lines, `scheduler/docs/board-layout.md` the measures:
-   the number and its alert on line 1, the square under it, the fuel a meter
+   the number on line 1, the box under it, the fuel a meter
    across it with its percent the tip's, and the kit or a low DEF on line 6;
    its type and seats are the tip's. A phone's board keeps the narrow column
    above, so the parts only the tile shows are drawn here alone. */
@@ -810,19 +811,33 @@ button.scheduler-row-head__num:focus { outline: none; }
   gap: var(--rux-spacing-02);
   padding-inline: var(--rux-spacing-03);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; justify-content: space-between; }
-/* WHILE THE BUS HAS A MARK, ITS ALERT ENDS THE NUMBER'S LINE, the number at
-   the line's start, as a driver's icon ends their name's: the warning
-   triangle in amber, or the error circle in red where a mark is red, the
-   two every trip bar and driver tile wear, so one mark means one thing on
-   the board. The marks themselves are not
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; }
+/* WHILE THE BUS HAS A MARK, ITS ALERT HANGS ON THE BOX'S TOP-RIGHT CORNER,
+   the tile's own top right, so the number, the box and the kit all stand
+   centred: the warning triangle in amber, or the error circle in red where
+   a mark is red, the two every trip bar and driver tile wear, so one mark
+   means one thing on the board. It stands on a 20px disc of the tile's
+   surface, which parts it from the box and the number, centred 2px inside
+   the box's corner so the disc ends at the tile's edge. With three lines
+   the box holds its words on one line, which the disc would cover, and with
+   two or one there is no box, so there it ends line 1. The marks themselves are not
    drawn on the tile but stay for a screen reader, each with its words, and
    the tip says them all. */
 .scheduler-row-head__alert { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__alert {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + var(--scheduler-row-h) + var(--rux-spacing-02) - 10px);
+  z-index: 1;
   display: flex;
+  padding: 2px;
+  border-radius: 50%;
+  background: var(--rux-layer);
   visibility: hidden;
   color: var(--scheduler-head-low);
+}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__alert {
+  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) - 1px);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > *) .scheduler-row-head__alert { visibility: visible; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > [data-tone="error"]) .scheduler-row-head__alert { color: var(--scheduler-head-critical); }
@@ -840,13 +855,11 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
 /* THE TILE STANDS ON ITS BAR'S LINES, measured from the top, so a row of
-   stacked trips keeps it on the first trip's, and on its 8px inset at the
-   start, as the bar's words stand on theirs: the number at line 1's start,
-   level with the destination, its alert at the line's end; the square 4px
-   under it, across the tile inside its insets, so on six or five lines it
-   is centred on lines 2 to 5, 4px clear of each; and on six, line 6 at its
-   start, level with the drivers, the lift and sleeper, or a low DEF in
-   their place. */
+   stacked trips keeps it on the first trip's, its parts centred: the number
+   on line 1, level with the destination; the box 4px under it, across the
+   tile inside its insets, so on six or five lines it is centred on lines 2
+   to 5, 4px clear of each; and on six, line 6, level with the drivers, the
+   lift and sleeper, or a low DEF in their place. */
 /* With one line the tile is its number alone, and the empty square goes too. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
 /* The box runs the tile inside its insets and fills the lines under the
@@ -893,8 +906,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   align-items: center;
   gap: var(--rux-spacing-02);
   inset-block: var(--scheduler-line-six) auto;
-  inset-inline: var(--rux-spacing-03) auto;
-  margin-inline: 0;
   block-size: var(--scheduler-row-h);
 }
 /* Line 6's top, from the head's own: the bar's clear space and padding, and
@@ -907,11 +918,11 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level-pct { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] {
   position: absolute;
-  inset-inline: var(--rux-spacing-03) auto;
+  inset-inline: 0;
   inset-block: var(--scheduler-line-six) auto;
   block-size: var(--scheduler-row-h);
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   margin: 0;
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__tile:empty { display: none; }
@@ -934,8 +945,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* "No bus" stands in the tile's 16px on the 18px line every number has,
    its two lines on whole pixels, as a partner's name is. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--unassigned .scheduler-row-head__num { line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
-/* A partner's name and No bus stand at the tile's start, as a number does. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row--partner, .scheduler-row--unassigned) .scheduler-row-head > .scheduler-row-head__num { align-self: stretch; text-align: start; }
+/* A partner's name and No bus stand centred in the tile, as a number does;
+   their row's start alignment is the phone grid's. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head > .scheduler-row-head__num { align-self: center; }
 /* THE STATE READS AS ONE: its reading and its word stand 4px apart and the
    fuel 12px under them, so the word belongs to its reading and not to the
    fuel. Each line is trimmed to its letters, from the cap height to the

@@ -38,19 +38,21 @@ and is what `scheduler/app.css` draws; what each part says is in
 ## The bus tile, on six lines
 
 64px, Carbon's spacing 10, and the column's 1px rule, 8px in from its
-sides: the 48px between them holds a three-figure number, 26px, the 4px gap
-and its 16px alert, the narrowest a number and its alert take. Its parts
-stand at its start, as a driver tile's and a bar's words do. It is measured
-from the top, so a row of stacked trips keeps it on the first trip's lines.
+sides, its parts centred. Its alert hangs on the box's top-right corner, the
+tile's own top right, on a 20px disc of the tile's surface that ends at the
+tile's edge, so it takes none of line 1's room. It is measured from the top,
+so a row of stacked trips keeps it on the first trip's lines.
 
 | Line | Holds |
 | :--- | :--- |
-| 1 | The number at the start, a longer one cut short; its alert at the line's end |
+| 1 | The number, centred, a longer one cut short |
 | 2 to 5 | The readings box across the tile, 48px wide and 64px tall, 4px clear of the lines: the state's 16px semibold reading over its unit, and the fuel's meter alone across it, 32px |
-| 6 | The lift and the sleeper, 16px icons, at the start, or a low DEF in their place, its name alone in the low or critical colour |
+| 6 | The lift and the sleeper, 16px icons, centred, or a low DEF in their place, its name alone in the low or critical colour |
 
 At this width the widest words in the box, an inspection date such as Nov 20,
-stand 4px from its sides, and a four-figure number is cut short.
+stand 4px from its sides, and a four-figure number is cut short. On three
+lines, where the box holds its words on one line, and on two and one, where
+there is no box, the alert ends line 1 instead.
 
 ## The driver tile
 

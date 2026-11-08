@@ -3,9 +3,11 @@
 // answers is `handler.ts`. Samsara's API refuses calls from a web page and its
 // key must never reach the public site, so the board asks here.
 //
-// The bus is read on the caller's own log-in, so only staff get a link. Its
-// one secret, SAMSARA_API_TOKEN, is the key samsara-now uses, which needs
-// Samsara's Write Live Sharing Links permission for this.
+// The bus is read on the caller's own log-in, so only staff get a link. It
+// has two secrets: SAMSARA_API_TOKEN, the read-only key samsara-now uses, to
+// find the bus's vehicle, and SAMSARA_SHARE_TOKEN, a key with Samsara's Write
+// Live Sharing Links permission and nothing else, to make the link, so the
+// one key that can write in Samsara can do nothing but this.
 
 // Each import names one exact version, as check-connector.mjs holds it to;
 // supabase-js is the version the site's pages load.
@@ -15,16 +17,17 @@ import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
 import { handle, type ShareBody, type Shared, type Vehicle } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
+const SHARE_TOKEN = Deno.env.get('SAMSARA_SHARE_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 
 // Samsara's answer, or an error carrying its status, whose words go to the
 // function's log, which says why, such as a key without the permission.
-async function samsara<T>(method: string, path: string, params: Record<string, string>, body?: unknown): Promise<T> {
+async function samsara<T>(token: string, method: string, path: string, params: Record<string, string>, body?: unknown): Promise<T> {
   const q = new URLSearchParams(params)
   const r = await fetch(`${SAMSARA}${path}${q.size ? `?${q}` : ''}`, {
     method,
-    headers: { Authorization: `Bearer ${TOKEN}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+    headers: { Authorization: `Bearer ${token}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
     ...(body ? { body: JSON.stringify(body) } : {}),
   })
   if (!r.ok) {
@@ -41,7 +44,7 @@ Deno.serve(req => {
     auth: { persistSession: false, autoRefreshToken: false },
   })
   return handle(req, {
-    keyed: !!TOKEN,
+    keyed: !!TOKEN && !!SHARE_TOKEN,
     now: () => Date.now(),
     async bus(id) {
       const { data, error } = await db.from('buses').select('id,number').eq('id', id).maybeSingle()
@@ -53,14 +56,14 @@ Deno.serve(req => {
       let after = ''
       do {
         const body = await samsara<{ data?: Vehicle[]; pagination?: { hasNextPage?: boolean; endCursor?: string } }>(
-          'GET', '/fleet/vehicles', { limit: '512', ...(after ? { after } : {}) })
+          TOKEN, 'GET', '/fleet/vehicles', { limit: '512', ...(after ? { after } : {}) })
         rows.push(...(body.data ?? []).map(v => ({ id: String(v.id), name: String(v.name ?? '') })))
         after = body.pagination?.hasNextPage ? body.pagination.endCursor ?? '' : ''
       } while (after)
       return rows
     },
     async share(link: ShareBody) {
-      return (await samsara<{ data?: Shared }>('POST', '/live-shares', {}, link)).data ?? {}
+      return (await samsara<{ data?: Shared }>(SHARE_TOKEN, 'POST', '/live-shares', {}, link)).data ?? {}
     },
   })
 })

@@ -353,7 +353,9 @@ log-in preview. `scheduler/tools/check-driver-form.mjs` runs it against an inven
 `samsara-share`, source in `scheduler/samsara-share/`, makes the link a trip bar's Copy tracking
 link copies: Samsara's live sharing link of one bus's vehicle, named for the bus, ending at the
 time the page asks and at most a week on. It reads the bus on the caller's session, so a caller
-who is not staff gets no link and Samsara is never asked, and needs the key's Write Live Sharing
-Links permission, without which it answers `no-permission`. It writes nothing here, is deployed
+who is not staff gets no link and Samsara is never asked. It finds the vehicle with the read-only
+`SAMSARA_API_TOKEN` and makes the link with `SAMSARA_SHARE_TOKEN`, a key with Samsara's Write Live
+Sharing Links permission alone; without both it answers `no-key`, and a refused link
+`no-permission`. It writes nothing here, is deployed
 with Verify JWT off, as §5 is, and answers the site and the log-in preview.
 `scheduler/tools/check-samsara-share.mjs` runs it against an invented fleet.

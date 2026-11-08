@@ -9,8 +9,8 @@
 // bus is read on the caller's own log-in, so only staff get a link. A BUS IS
 // THE SAMSARA VEHICLE NAMED WITH ITS NUMBER, as in samsara-now. The link is
 // Samsara's live sharing link of that one vehicle, named for the bus, and the
-// answer is `{ url, until }`. A key without Samsara's Write Live Sharing
-// Links permission is answered `no-permission`.
+// answer is `{ url, until }`. Without both of its keys it answers `no-key`,
+// and a link key Samsara refuses is answered `no-permission`.
 
 // The longest a link lasts, so a link sent once does not show the bus for good.
 export const MAX_MS = 7 * 24 * 3600_000

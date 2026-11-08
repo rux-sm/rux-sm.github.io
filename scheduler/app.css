@@ -199,7 +199,7 @@
      a compact board, whatever the window or the panels beside the week, so a
      change of width shows more of the strip or less and moves no trip. */
   --scheduler-strip-day: 175px;
-  --scheduler-tile-head: calc(var(--rux-spacing-10) + 1px);
+  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-03) + 1px);
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
@@ -792,10 +792,10 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-aside[data-week] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
-   ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 64px, Carbon's
-   spacing 10, 8px in from its sides, its parts centred: the 48px between
-   them holds the number and the readings box across it, as tall as four of
-   the bar's lines less 8px, its alert on the box's top-right corner. Its parts
+   ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 72px, a 56px card
+   8px clear of its sides, its parts centred 8px inside the card: the 40px
+   between them holds the number and the readings across it, as tall as four
+   of the bar's lines less 8px, its alert on the card's top-right corner. Its parts
    stand on the bar's lines, `scheduler/docs/board-layout.md` the measures:
    the number on line 1, the box under it, the fuel a meter
    across it with its percent the tip's, and the kit or a low DEF on line 6;
@@ -813,10 +813,11 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 /* A bus's parts stand inside its card, the card's clear space and the bar's
    own inset in from the column's sides. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] { padding-inline: calc(var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline)); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] { padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline)); }
 /* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
-   size and place, as tall as the bar, its clear space above it and at its
-   sides, and the bar's corners, so the bus and its trips read as one kind of
+   size and place, as tall as the bar, 8px clear of the row's lines and of
+   the column's sides as a bar is of the row's lines and the column's rule,
+   and the bar's corners, so the bus and its trips read as one kind of
    thing across the row. Its parts stand inside it on the bar's lines and
    insets. A shut row draws none. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id]::before {
@@ -824,7 +825,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   position: absolute;
   z-index: -1;
   inset-block-start: var(--scheduler-row-clear);
-  inset-inline: var(--scheduler-gap-clear);
+  inset-inline: var(--scheduler-row-clear);
   block-size: var(--scheduler-bar-h);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--rux-layer-02);

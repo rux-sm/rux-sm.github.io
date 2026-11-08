@@ -37,13 +37,14 @@ and is what `scheduler/app.css` draws; what each part says is in
 
 ## The bus tile, on six lines
 
-The column is 64px, Carbon's spacing 10, and its 1px rule. In it each bus
-is a tile as a trip is a bar: a card of the second layer the bar's size and
-place, 56px wide, as tall as the bar and 8px under the row's line, 4px clear
-at its sides, with the bar's corners. Its parts stand centred inside it, the
-bar's 8px in from its sides, on the bar's lines. Its alert hangs on the
-card's top-right corner, on a 20px disc of the column's surface that ends at
-the column's edge, 2px under the row's line. It is measured from the top, so
+The column is 72px and its 1px rule. In it each bus is a tile as a trip is
+a bar: a card of the second layer the bar's size and place, 56px wide, as
+tall as the bar and 8px clear of the row's lines and the column's sides, as
+a bar is of the row's lines and the column's rule, with the bar's corners.
+Its parts stand centred inside it, the bar's 8px in from its sides, on the
+bar's lines. Its alert hangs on the card's top-right corner, on a 20px disc
+of the column's surface that ends at the column's edge, 2px under the row's
+line. It is measured from the top, so
 a row of stacked trips keeps it on the first trip's lines.
 
 | Line | Holds |
@@ -54,7 +55,8 @@ a row of stacked trips keeps it on the first trip's lines.
 
 At this width the widest words, an inspection date such as Nov 20, fill the
 40px, a four-figure number is cut short, and on three and two lines, where
-the state stands beside its unit, they stand 6px inside the card.
+the state stands beside its unit, they stand 6px inside the card where the
+rest stand 8px.
 
 ## The driver tile
 

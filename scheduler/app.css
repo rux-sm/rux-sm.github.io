@@ -3830,10 +3830,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-week--short .scheduler-row--last > * {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-/* Where the priority changes, a second rule over the row's own, so the
-   groups part without a heading or a number between them; the priority is
-   on the name's title. */
-.scheduler-avail__row--break > * { border-block-start: 1px solid var(--rux-border-subtle-02, var(--rux-border-subtle-01)); }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
 .scheduler-avail__day,
@@ -4017,14 +4013,16 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__days > :not(.scheduler-avail__day--on-day) + .scheduler-avail__day--on-day { border-start-start-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--on-day:not(:has(+ .scheduler-avail__day--on-day)) { border-start-end-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
-/* The roster's corner, sticky in both axes. */
+/* The roster's corner, sticky in both axes, holding the Sort button. Its
+   ghost button stands 8px in, so its label falls on the names' own 16px
+   inset. Declared here, after `.scheduler-avail__day`, whose zero padding
+   and centring also match this cell at the same specificity. */
 .scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
-  /* Start-aligned on the driver names' own inset, so Driver stands over the
-     names. Declared here, after `.scheduler-avail__day`, whose zero padding
-     and centring also match this cell at the same specificity. */
-  padding-inline: var(--rux-spacing-07) var(--rux-spacing-03);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--rux-spacing-03);
   text-align: start;
 }
 

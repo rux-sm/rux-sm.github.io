@@ -11658,6 +11658,22 @@
     return rows;
   }
 
+  /* THE RAIL'S ORDER, the corner's Sort, saved with the view: priority, the
+     order the office calls drivers in and the rows' own; name; or the
+     driving time Samsara says each has left, the most first and a driver
+     with no clock last, taken when the rail is drawn, so the rows hold still
+     between Samsara's answers. */
+  const RAIL_SORTS = { priority: 'Priority', name: 'Name', left: 'Time left' };
+  const nameKeyOf = d => d.short_name || d.name || '';
+  function railOrder(rows) {
+    if (view.railSort === 'name') return [...rows].sort((a, b) => nameKeyOf(a.driver).localeCompare(nameKeyOf(b.driver)));
+    if (view.railSort === 'left') {
+      const left = r => liveDriverOf(r.driver.id)?.left_ms ?? -1;
+      return [...rows].sort((a, b) => left(b) - left(a));
+    }
+    return rows;
+  }
+
   /* Draws `count` of the board's `days`, from its day `first`. Every day cell
      keeps the board's own day number, so the selected trip's days light the
      same columns whichever week is shown. */
@@ -11669,12 +11685,21 @@
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
-    /* The column header, then every driver, edge to edge in the pane. The
-       rows are in priority order, each priority parted from the last by a
-       rule, and the priority is on the name's title. */
+    /* The column header, then every driver, edge to edge in the pane, in the
+       order the corner's Sort says. */
     const head = el('div', 'scheduler-avail__days');
-    // Empty, as the board's corner over its buses is: the pane's title names them.
+    // The corner holds Sort, a ghost button naming the order, which opens its menu.
     const corner = el('div', 'scheduler-avail__day scheduler-avail__day--head');
+    const sortButton = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', RAIL_SORTS[view.railSort]);
+    sortButton.type = 'button';
+    sortButton.id = 'scheduler-rail-sort';
+    sortButton.setAttribute('aria-haspopup', 'true');
+    sortButton.setAttribute('aria-expanded', 'false');
+    sortButton.setAttribute('aria-label', `Drivers sorted by ${RAIL_SORTS[view.railSort].toLowerCase()}. Change the order`);
+    const sortIcon = svgUse('#i-arrows--vertical', '16', '0 0 32 32');
+    sortIcon.classList.add('rux--btn__icon');
+    sortButton.appendChild(sortIcon);
+    corner.appendChild(sortButton);
     head.appendChild(corner);
     for (let i = first; i < first + count; i++) {
       const d = addDays(weekStart, i);
@@ -11700,16 +11725,8 @@
     }
     availGrid.appendChild(head);
 
-    /* Where the priority changes, the first driver of the new one has a rule
-       above its row. A driver with no priority is set apart rather than left
-       in the last priority's group, which would say something untrue about
-       them. */
-    let band;
-    rows.forEach((row, n) => {
-      const p = row.driver.priority ?? null;
-      const starts = n === 0 || p !== band;
-      band = p;
-      const r = el('div', `scheduler-avail__row${starts && n ? ' scheduler-avail__row--break' : ''}`);
+    railOrder(rows).forEach(row => {
+      const r = el('div', 'scheduler-avail__row');
       /* The cell is the driver's head, driver-head.js's: the name, its one
          icon and the driving time Samsara says they have left. */
       const nameEl = el('div', 'scheduler-avail__name');
@@ -13333,7 +13350,7 @@
      key it replaced, still written beside it so a tab running the older
      script reads a Sunday start, and read when `weekStart` was never saved. */
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
-    yard: false, fill: false, grayConfirmed: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
+    yard: false, fill: false, grayConfirmed: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full', railSort: 'priority' };
   const VIEW_KEY = 'scheduler.view';
   /* Compact is the rows' own switches set to view.js's compact set, the
      destination, the times and the drivers, about half a bar's height; it is
@@ -13349,6 +13366,7 @@
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
     for (const k of [...VIEW_ROWS, 'yard', 'fill', 'grayConfirmed', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
+    if (['priority', 'name', 'left'].includes(saved.railSort)) view.railSort = saved.railSort;
     view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before `cursor` is first computed below, because `firstDayOf` reads it
@@ -13450,6 +13468,36 @@
     // colour is drawn with its bar, so the held week is drawn again.
     applyView();
     if (key === 'grayConfirmed') drawHeld();
+  });
+
+  /* The rail's Sort opens its menu under the corner, a radio item an order;
+     a pick saves the view and draws the rail again in that order. */
+  const railSortMenu = document.getElementById('scheduler-rail-sort-menu');
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('#scheduler-rail-sort');
+    if (!trigger || !railSortMenu) return;
+    if (window.Rux?.menu?.isOpen?.(railSortMenu)) { window.Rux.menu.close(railSortMenu); return; }
+    for (const item of railSortMenu.querySelectorAll('[data-rail-sort]')) {
+      const on = item.dataset.railSort === view.railSort;
+      item.setAttribute('aria-checked', String(on));
+      item.querySelector('.rux--menu-item__selection-icon')?.replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
+    }
+    const r = trigger.getBoundingClientRect();
+    popMenuAt(railSortMenu, { clientX: r.left, clientY: r.bottom }, trigger);
+    trigger.setAttribute('aria-expanded', 'true');
+  });
+  railSortMenu?.addEventListener('click', e => {
+    const item = e.target.closest('[data-rail-sort]');
+    if (!item) return;
+    window.Rux?.menu?.close?.(railSortMenu);
+    if (item.dataset.railSort === view.railSort) return;
+    view.railSort = item.dataset.railSort;
+    try { localStorage.setItem(VIEW_KEY, JSON.stringify(view)); } catch { /* nothing to do */ }
+    drawRoster(true);
+  });
+  railSortMenu?.addEventListener('rux:menu-closed', () => {
+    railSortMenu.hidden = true;
+    document.getElementById('scheduler-rail-sort')?.setAttribute('aria-expanded', 'false');
   });
 
   viewMenu?.addEventListener('rux:menu-closed', () => {

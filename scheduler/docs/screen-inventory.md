@@ -262,12 +262,16 @@ week folds first.
 | **A popover** | The Driver card, from a press anywhere on a tile. |
 
 Shut, the rail is the tiles alone, 160px. Its head stands level with the
-board's toolbar and holds its title, Drivers, and a chevron; its band, empty over the tiles as
-the board's corner is over its buses, stands level with the day band, and its rows are 48px, Carbon's table row, each line inside
+board's toolbar and holds its title, Drivers, and a chevron; its band stands level with the day
+band and holds Sort, a ghost button naming the rail's order with Carbon's sort arrows, which
+opens a menu of Priority, Name and Time left, saved with the view; and its rows are 48px, Carbon's table row, each line inside
 its row as a Carbon table's is, so three stand beside each lane of a
 six-line board's bus rows, 144px, and every third driver's row starts level
-with a bus's. They are in priority order: a rule parts one priority
-from the next, and a name's title says its priority. The chevron slides the
+with a bus's, each parted from the next by the same line. Priority is the
+order the office calls drivers in, a name's title saying it; Time left puts
+the most driving time Samsara says a driver has first and a driver with no
+clock last, taken as the rail is drawn, so the rows hold still between
+Samsara's answers. The chevron slides the
 week out beside the tiles, seven 32px days, 24rem in all, and every page load starts with it shut. With a trip selected,
 its days are shaded in the week's band, and each driver free on every one of
 them has an open slot across them, a box in the success tint with a success

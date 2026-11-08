@@ -347,3 +347,13 @@ onto pages added at the end, so no answer is cut short. It files the PDF in
 on for a yearly form, and records the signing in `driver_form_signings` with the caller's IP
 address and browser. It is deployed with Verify JWT off, as §5 is, and answers the site and the
 log-in preview. `scheduler/tools/check-driver-form.mjs` runs it against an invented form.
+
+## 11. Samsara share
+
+`samsara-share`, source in `scheduler/samsara-share/`, makes the link a trip bar's Copy tracking
+link copies: Samsara's live sharing link of one bus's vehicle, named for the bus, ending at the
+time the page asks and at most a week on. It reads the bus on the caller's session, so a caller
+who is not staff gets no link and Samsara is never asked, and needs the key's Write Live Sharing
+Links permission, without which it answers `no-permission`. It writes nothing here, is deployed
+with Verify JWT off, as §5 is, and answers the site and the log-in preview.
+`scheduler/tools/check-samsara-share.mjs` runs it against an invented fleet.

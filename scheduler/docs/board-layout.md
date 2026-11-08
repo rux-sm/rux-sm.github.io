@@ -37,14 +37,22 @@ and is what `scheduler/app.css` draws; what each part says is in
 
 ## The bus tile, on six lines
 
-96px and the column's 1px rule, 8px in from its sides. It is measured
-from the top, so a row of stacked trips keeps it on the first trip's lines.
+80px, Carbon's spacing 11, and the column's 1px rule, 8px in from its
+sides: the width the 64px readings square takes, since the square is as tall
+as four lines less 8px. Its parts stand at its start, as a driver tile's and
+a bar's words do. It is measured from the top, so a row of stacked trips
+keeps it on the first trip's lines.
 
 | Line | Holds |
 | :--- | :--- |
-| 1 | The number, centred, its alert after it and that alert's room kept before it |
-| 2 to 5 | The readings square, 64px, 4px clear of the lines: the state's 16px semibold reading over its unit, and the fuel's meter |
-| 6 | The lift and the sleeper, 16px icons, or a low DEF in their place |
+| 1 | The number at the start, 44px of room, a longer one cut short; its alert at the line's end |
+| 2 to 5 | The readings square across the tile, 64px, 4px clear of the lines: the state's 16px semibold reading over its unit, and the fuel's meter alone across it, 48px |
+| 6 | The lift and the sleeper, 16px icons, at the start, or a low DEF in their place |
+
+The square sets the width: a narrower tile would make it a rectangle or
+take its 8px insets. Next come a low DEF's words, 52px, and an inspection
+date in the square, 39px inside its 8px padding; the kit's two icons take
+34px and the number and its alert 46px.
 
 ## The driver tile
 

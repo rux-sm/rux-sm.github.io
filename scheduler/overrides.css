@@ -336,14 +336,6 @@
    head's list from opening. Invisible, it takes nothing. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__collapsed-title-text { pointer-events: none; }
 
-/* The Forms list's and the calculator's title stands 32px in, level with
-   their rows and sections, which keep that inset as the Tasks pane's rows
-   do. A form opened from the list puts the way back first, at Carbon's
-   16px. */
-.scheduler-viewer--list .rux--side-panel .rux--side-panel__header--has-title:not(.rux--side-panel__header--on-detail-step) {
-  padding-inline-start: var(--rux-spacing-07);
-}
-
 /* The title fills the head's height and centres its heading in it, so a
    title that lists can light the whole band as the week button does. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__title {
@@ -1521,9 +1513,9 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    panel's own surface and gives up the page's inset, and each tile is a
    section of that surface: no fill, ring or corner of its own, and Carbon's
    subtle border parting it from the one before, run to the panel's edges as
-   the Tasks pane's rows are. Its inset is 24px all round, which with its
-   body's 8px sets what it holds 32px from its every edge, as a task's words
-   are, under the panel's title. */
+   the Tasks pane's rows are. Its inset is 8px all round, which with its
+   body's 8px sets what it holds 16px from its every edge, Carbon's side
+   panel inset, under the panel's title. */
 .scheduler-quote-framed body { background: var(--rux-layer-01); }
 .scheduler-quote-framed .rux--content.scheduler-quote-page,
 .scheduler-quote-framed .scheduler-quote-tabs > .rux--tab-content { padding: 0; }
@@ -1531,7 +1523,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   background: transparent;
   box-shadow: none;
   border-radius: 0;
-  padding: calc(var(--rux-spacing-07) - var(--rux-spacing-03));
+  padding: calc(var(--rux-spacing-05) - var(--rux-spacing-03));
 }
 .scheduler-quote-framed .scheduler-quote > .rux--tile + .rux--tile {
   border-block-start: 1px solid var(--rux-border-subtle-01);
@@ -1709,9 +1701,9 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    Carbon rules each item off from the next, insets the title 1rem and the
    open content up to a quarter of its width, for reading down a page; here
    the row draws the rule, and the heading fills the row, its lines the
-   pane's 32px from the row's sides and 16px from its top and foot, and
+   pane's 16px from the row's sides, top and foot, and
    Design's arrow standing on the first line's middle at its end. The open
-   content keeps the same 32px at its sides.
+   content keeps the same 16px at its sides.
    A title that may not shrink would push its long line past the row instead
    of ending it in an ellipsis. */
 .scheduler-to-do .rux--accordion__item { border-block: 0; }

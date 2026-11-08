@@ -1784,24 +1784,22 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* ── The hub ──────────────────────────────────────────────────────────────
    One list of forms, a row each, the form's icon and its short name, each
    row running edge to edge under a rule, as the board's Tasks pane draws
-   its rows, on the page's own surface. In the panel
-   a row's words stand 32px from its every edge, level with the panel's
-   title; standing alone the page's column already has its inset, so they
-   stand Carbon's 16px in. */
+   its rows, on the page's own surface. Its icon and words stand Carbon's
+   16px from a row's every edge, level with the panel's title; standing
+   alone, the list opens with a rule of its own. */
 
 /* [hidden] is a UA rule of the lowest weight, so any display here outranks it
    and the hub would stay on screen behind a form. */
 .scheduler-print__hub[hidden] { display: none; }
 
 .scheduler-print__hub {
-  --scheduler-print-inset: var(--rux-spacing-07);
+  --scheduler-print-inset: var(--rux-spacing-05);
   display: flex;
   flex-direction: column;
 }
 /* Standing alone, under the page's title rather than a panel's ruled head,
    the list opens with a rule of its own. */
 [data-rux-standalone] .scheduler-print__hub {
-  --scheduler-print-inset: var(--rux-spacing-05);
   margin-block-start: var(--rux-spacing-05);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }

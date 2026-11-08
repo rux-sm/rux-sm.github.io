@@ -13470,8 +13470,9 @@
     if (key === 'grayConfirmed') drawHeld();
   });
 
-  /* The rail's Sort opens its menu under the corner, a radio item an order;
-     a pick saves the view and draws the rail again in that order. */
+  /* The rail's Sort opens its menu under the corner, joined to it as the ⋮'s
+     is, a radio item an order; a pick saves the view and draws the rail
+     again in that order. */
   const railSortMenu = document.getElementById('scheduler-rail-sort-menu');
   document.addEventListener('click', e => {
     const trigger = e.target.closest('#scheduler-rail-sort');
@@ -13485,6 +13486,7 @@
     const r = trigger.getBoundingClientRect();
     popMenuAt(railSortMenu, { clientX: r.left, clientY: r.bottom }, trigger);
     trigger.setAttribute('aria-expanded', 'true');
+    joinMenu(railSortMenu, trigger);
   });
   railSortMenu?.addEventListener('click', e => {
     const item = e.target.closest('[data-rail-sort]');
@@ -13497,7 +13499,9 @@
   });
   railSortMenu?.addEventListener('rux:menu-closed', () => {
     railSortMenu.hidden = true;
-    document.getElementById('scheduler-rail-sort')?.setAttribute('aria-expanded', 'false');
+    const trigger = document.getElementById('scheduler-rail-sort');
+    trigger?.setAttribute('aria-expanded', 'false');
+    if (trigger) partMenu(railSortMenu, trigger);
   });
 
   viewMenu?.addEventListener('rux:menu-closed', () => {

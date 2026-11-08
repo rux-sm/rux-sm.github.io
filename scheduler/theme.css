@@ -1233,20 +1233,20 @@
   line-height: 1;
 }
 /* Rux 100's menus and calendars are Geist's menu material, Background 1,
-   #0a0a0a, in its line, from Design. The open ⋮ and the open week's name
+   #0a0a0a, in its line, from Design. An open ⋮ or Sort and the open week's name
    join the menu and the calendar they open in it, so they take that sheet
    rather than the board's black. */
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-panel-more[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
+[data-theme="rux-100"] :is(.rux--btn[data-attached], .scheduler-weekbtn[aria-expanded="true"], #scheduler-week-picker .rux--date-picker__calendar-container) {
   --scheduler-region: var(--geist-background-100);
 }
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-panel-more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) { --rux-layer: var(--scheduler-region); }
+[data-theme="rux-100"] :is(.rux--btn[data-attached], .scheduler-weekbtn[aria-expanded="true"]) { --rux-layer: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two.
    The menu hangs 1px lower than the ⋮'s foot, so its outline lies on the
    board's top line, as the shell's panels lie on the header's, and the strip
    covers that line under the ⋮. */
-[data-theme="rux-100"] :is(.scheduler-toolbar__more, .scheduler-panel-more)[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
+[data-theme="rux-100"] .rux--btn[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
 [data-theme="rux-100"] :is(.scheduler-view-menu, .scheduler-panel-menu)[data-attached] { margin-block-start: 1px; }
 /* A form's open pick cell does the same with its menu, in the menu's own
    surface and line, Background 1 and gray 400, which Design gives every Rux 100

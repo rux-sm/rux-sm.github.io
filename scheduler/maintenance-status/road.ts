@@ -531,6 +531,10 @@ const window = {};
   // The furthest back a path is asked from, so a leg days long loads quickly.
   const PATH_BACK = 12 * 3600e3;
   const LATE_MIN = 10;
+  /* Driving time left this short is low and drawn amber, on the wheel, the
+     tips, the cards, the driver rail and the live page alike: under two hours
+     a driver cannot take one more leg out and back. */
+  const LOW_LEFT = 2 * 3600e3;
   /* A bus parked this near a pickup is there. Parked is standing still this
      long: points within GPS wander of each other, or two points this little
      apart with that long between them, since Samsara sends few points from a
@@ -785,7 +789,7 @@ const window = {};
     };
   }
 
-  window.SchedulerRoad = { NEAR_MILES, PARKED_MILES, LATE_MIN, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
+  window.SchedulerRoad = { NEAR_MILES, PARKED_MILES, LATE_MIN, LOW_LEFT, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
 })();
 
 export default window;

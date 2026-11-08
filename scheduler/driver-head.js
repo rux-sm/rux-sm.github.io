@@ -18,15 +18,16 @@
      theirs, Material's bus alert, red; over or out of hours, the red error
      mark. With no mark, a driver on a trip under way has what they are
      doing on it, so a dispatcher knows whom not to call: driving, the trip bar's arrow
-     in green, amber under an hour; on duty, a clock; off duty, a pause;
+     in green, amber when low; on duty, a clock; off duty, a pause;
      in the sleeper berth, a moon in the rest colour. A driver with no icon
      is on no trip. The tile is too narrow for a row of icons, so one
      stands for all.
    - Under it, the driving time Samsara says they have left, the least of
      the drive, shift and cycle clocks: a 48px meter of the ten hours a
      passenger carrier's driver may drive, as the bus tile's fuel is, and
-     at the line's end, at 12px in the secondary grey, "6:30 left". Under an
-     hour it is amber and at none red, both semibold. A driver on no trip
+     at the line's end, at 12px in the secondary grey, "6:30 left". Low, under
+     RoadBar's LOW, the meter and words are amber and at none red, the words
+     semibold. A driver on no trip
      with all ten hours is free and the line is empty, so the drivers who
      matter stand out. On a trip, Not logged in in amber or "in 133" in red
      stands alone in the line's place, and over hours it is "Over 0:25" in
@@ -53,7 +54,7 @@
   'use strict';
 
   const RoadBar = window.SchedulerRoadBar;
-  const { HOUR, DRIVE, hours } = RoadBar;
+  const { LOW, DRIVE, hours } = RoadBar;
   const NOT_SENT_ICON = window.SchedulerLegFacts.DRIVER_STATUSES.find(s => s.value === 'off').icon;
 
   // A paper this close to running out warns, as the Drivers page warns.
@@ -101,7 +102,7 @@
      - on a trip with their app not connected, Not logged in, amber;
      - on a trip in another bus, "in 133", red;
      - over their hours, "Over 0:25", red, as long as Samsara counts it;
-     - else the driving time left, "6:30 left", amber under an hour and red
+     - else the driving time left, "6:30 left", amber when low and red
        under a minute. */
   const fill = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 100) / 100;
   function stateOf(live, trip = null) {
@@ -119,7 +120,7 @@
     const left = live.left_ms;
     if (left == null) return { ...quiet, line: '–', words, trip: doing };
     if (!trip && left >= DRIVE) return { ...quiet, line: '', words, free: true };
-    const tone = left < 60e3 ? 'error' : left < HOUR ? 'warning' : 'normal';
+    const tone = left < 60e3 ? 'error' : left < LOW ? 'warning' : 'normal';
     return { ...quiet, line: `${hours(left)} left`, tone, words, meter: fill(left, DRIVE), trip: doing, mark: tone === 'error' ? NOW_MARKS.out : null };
   }
 

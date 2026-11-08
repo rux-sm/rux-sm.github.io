@@ -374,7 +374,7 @@
           others: [{ bus_id: 'b119', drivers: [driver('d2', { wheel: false, duty: 'on' })] }], buses: new Map([['d2', ['b119']]]) })),
         one('Late to spot', 'Amber: the pickup is next and the bus will reach it after its spot.', live('Riverbend Seniors', {
           next: (() => { const stops = liveStops(); stops[0].due = now + 6 * MIN; return { stops, where: { reached: -1, at: false, next: 0 }, stop: stops[0], at: false, arrival: now + 25 * MIN, late: 19 }; })() })),
-        one('Short on hours', 'Amber: the hours left in the bus fall short of the drive before the next rest; the steering wheel is amber under an hour.', live('Harbor Tours', {
+        one('Short on hours', 'Amber: the hours left in the bus fall short of the drive before the next rest; the steering wheel is amber under two hours.', live('Harbor Tours', {
           crew: [['d3', 'driver', 'confirmed']], bus: { drivers: [driver('d3', { left_ms: 50 * MIN })] }, drives: [{}, { min: 270 }, { min: 300 }] })),
         one('Low fuel', 'Under a quarter of a tank, the tank amber.', live('Northside Band', { bus: { fuel: 18 } })),
         one('Engine warning lamp', 'Said only on the tooltip and the live card, since a warning lamp can stay lit for days.', live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'] } })),

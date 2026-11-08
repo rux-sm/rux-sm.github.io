@@ -1972,7 +1972,7 @@ a.scheduler-tip__go { text-decoration: none; }
 :is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 /* On the road: the three clocks side by side, each its name and the hours
    left over a 3px meter of them in the inverse green, amber and the hours
-   bold under an hour; the small map the tip's full width and 8rem tall,
+   bold under two hours; the small map the tip's full width and 8rem tall,
    with its credit and no zoom buttons, since Live map is a press away; the
    next stop with when the bus gets there at the row's end; and the two
    links in the footer. A clock's name and hours are 12px, in one ink. */
@@ -2203,7 +2203,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* THE LIVE CARD, trip-tips.js's `live`, a trip out on the road's. Each warning is a band tinted its colour, its mark and name over
    the sentence that says why; the map stands under them with its two links;
    each driver's clocks are three meters side by side, filled to what is left
-   of what the rule allows, amber under an hour; where the bus is and when
+   of what the rule allows, amber under two hours; where the bus is and when
    Samsara last heard close it. */
 .scheduler-card__live-warn {
   display: grid;
@@ -2256,7 +2256,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-card__live-tile .scheduler-card__live-driver + .scheduler-card__live-driver { border-block-start: 1px solid var(--rux-border-subtle-01); }
 /* A driver's three clocks side by side under their name, across the tile's
    whole width, each its name and the hours left over a 3px meter of them,
-   amber under an hour. */
+   amber under two hours. */
 .scheduler-card__live-clocks {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2775,7 +2775,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 
 /* Duty replaces the assignment mark with its own icon and semantic colour.
-   A ring, when used, shows driving availability and turns amber under one hour. */
+   A ring, when used, shows driving availability and turns amber under two hours. */
 .scheduler-crew--wheel:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
 .scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
@@ -3936,8 +3936,8 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-avail__line > .scheduler-avail__state { flex: 1 1 auto; min-inline-size: 0; text-align: end; }
 /* The meter is Carbon's small progress bar, as the bus tile's fuel is: the
-   driving time left of the ten hours in the success green, amber under an
-   hour; with no clock, dashed and empty. It is 48px so "10:00 left" fits
+   driving time left of the ten hours in the success green, amber under two
+   hours; with no clock, dashed and empty. It is 48px so "10:00 left" fits
    beside it in the tile. */
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
@@ -3977,7 +3977,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__mark:not([hidden]) { display: inline-flex; }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* With no mark, what a driver is doing on their trip: driving in the trip
-   bar's green, amber under an hour as its arrow is; on or off duty in the
+   bar's green, amber under two hours as its arrow is; on or off duty in the
    secondary icon grey, since neither asks anything; the sleeper berth in
    the rest colour the bars use. */
 .scheduler-avail__mark[data-trip] { color: var(--rux-icon-secondary); }

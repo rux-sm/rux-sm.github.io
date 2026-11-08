@@ -22,7 +22,7 @@
      what a driver is doing, their hours and their rest, is their tile's in
      the driver rail, and the tip their mark opens says it in full. The one
      at the wheel stands first, behind the steering wheel, the driving mark
-     in green, amber under an hour. A driver Samsara has in another bus says
+     in green, amber when low. A driver Samsara has in another bus says
      that bus in red; a co-driver in another of the buses they ride says it
      in the row's ink. A driver at the wheel the bar does not name joins the
      end of the row.
@@ -68,6 +68,7 @@
   };
 
   const HOUR = 3600e3;
+  const { LOW_LEFT: LOW } = Road;
   const { DRIVER_STATUSES } = window.SchedulerLegFacts;
   const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
   const DUTY = {
@@ -137,17 +138,17 @@
     m.appendChild(svgUse(status.icon, '16', status.box ?? '0 0 16 16'));
     if (left != null) {
       m.classList.add('scheduler-crew__duty--ring');
-      if (left < HOUR) m.classList.add('scheduler-crew__duty--low');
+      if (left < LOW) m.classList.add('scheduler-crew__duty--low');
       m.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, left / DRIVE) * 100)}%`);
     }
     return m;
   };
   /* The steering wheel on a bar, the driving mark of the driver at the
-     wheel, amber under an hour left: a button, which `liveOpener` makes the
+     wheel, amber when low: a button, which `liveOpener` makes the
      opener of their tip. */
   const wheelMark = left => {
     const m = mark('driving', null, true);
-    if (left != null && left < HOUR) m.dataset.tone = 'warning';
+    if (left != null && left < LOW) m.dataset.tone = 'warning';
     m.setAttribute('aria-label', 'At the wheel');
     return m;
   };
@@ -452,5 +453,5 @@
     ].filter(Boolean).join('\n');
   }
 
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, DRIVE, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords, restProgress };
+  window.SchedulerRoadBar = { draw, HOUR, LOW, DUTY, REST, DRIVE, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords, restProgress };
 })();

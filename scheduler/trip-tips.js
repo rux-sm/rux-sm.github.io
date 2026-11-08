@@ -52,7 +52,7 @@
   const Road = window.SchedulerRoad;
   const LiveMap = window.SchedulerLiveMap;
   const RoadBar = window.SchedulerRoadBar;
-  const { HOUR: ROAD_HOUR, DUTY: ROAD_DUTY, hours: roadHours, mark: roadMark, ago: roadAgo, restWords: roadRest } = RoadBar;
+  const { HOUR: ROAD_HOUR, LOW: ROAD_LOW, DUTY: ROAD_DUTY, hours: roadHours, mark: roadMark, ago: roadAgo, restWords: roadRest } = RoadBar;
   const { format: showPhone, dial } = window.SchedulerPhone;
 
   const el = (tag, cls, text) => {
@@ -350,7 +350,7 @@
      ON THE ROAD, for a driver Samsara has in the bus, it says how they are
      doing, the live card's driver with the driver as its head: their duty
      under the name; their Drive, Shift and Cycle time left, each over its
-     meter, amber under an hour; their rest while off or in the sleeper; a
+     meter, amber when low; their rest while off or in the sleeper; a
      lamp row for each of the road's warnings; the rest either side, as before
      the trip, since it is about their next trip; the small map of the leg;
      the next stop and when the bus gets there; and in its footer Call at the
@@ -375,13 +375,13 @@
     });
     return face;
   }
-  // A live driver's Drive, Shift and Cycle time left, each over its meter, amber under an hour; null with none.
+  // A live driver's Drive, Shift and Cycle time left, each over its meter, amber when low; null with none.
   function clocksOf(d) {
     const clocks = el('div', 'scheduler-tip__row scheduler-tip__clocks');
     for (const [label, field, most] of LIVE_CLOCKS) {
       const ms = d[field];
       if (ms == null) continue;
-      const clock = el('div', `scheduler-tip__clock${ms < ROAD_HOUR ? ' scheduler-tip__clock--low' : ''}`);
+      const clock = el('div', `scheduler-tip__clock${ms < ROAD_LOW ? ' scheduler-tip__clock--low' : ''}`);
       const top = el('span', 'scheduler-tip__clock-top');
       top.append(el('span', null, label), el('span', 'scheduler-tip__left', roadHours(ms)));
       const meter = el('span', 'scheduler-tip__meter');
@@ -631,12 +631,12 @@
         who.append(roadMark(d.duty ?? 'unknown'), el('span', 'scheduler-card__road-name', d.name),
           el('span', 'scheduler-card__road-words', [(ROAD_DUTY[d.duty] ?? ROAD_DUTY.unknown).word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')));
         /* The three clocks side by side, each its name and the hours left
-           over a meter of them, amber under an hour. */
+           over a meter of them, amber when low. */
         const clocks = el('div', 'scheduler-card__live-clocks');
         for (const [name, field, most] of LIVE_CLOCKS) {
           const ms = d[field];
           if (ms == null) continue;
-          const low = ms < ROAD_HOUR;
+          const low = ms < ROAD_LOW;
           const clock = el('div', `scheduler-card__live-clock${low ? ' scheduler-card__live-clock--low' : ''}`);
           clock.title = `${name}: ${roadHours(ms)} left`;
           const top = el('span', 'scheduler-card__live-clock-top');

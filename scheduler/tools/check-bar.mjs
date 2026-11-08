@@ -455,7 +455,7 @@ expect('a driver whose leg changed since they said yes is told so in amber',
 const onRoad = tipDrawn("A driver's tip on the road", {
   near: () => ({ near: new Map([['d3', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d3']) }),
 });
-expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the rest either side, the map, the next stop, and Call and Live map in its footer',
+expect('a driver\'s tip on the road: their duty, the three clocks amber under two hours, the road\'s warnings, the rest either side, the map, the next stop, and Call and Live map in its footer',
   [text(onRoad, '.scheduler-tip__text > .scheduler-tip__by'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
     tipRows(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
     text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), footLinks(onRoad).map(([words, , target]) => [words, target]), onRoad.querySelector('.scheduler-tip__answer')],
@@ -569,7 +569,7 @@ const riding = [...lit('Co-driver in another bus they ride').querySelectorAll('.
 expect('a co-driver in another bus they ride: that bus said quietly, their status mark kept, no warning',
   [riding.classList.contains('scheduler-crew--riding'), text(riding, '.scheduler-crew__away'), has(riding, '.scheduler-crew__duty'), has(riding, '.scheduler-crew__mark'), say(lit('Co-driver in another bus they ride'))],
   [true, 'in 119', false, true, null]);
-expect('under an hour left, the steering wheel is amber',
+expect('under two hours left, the steering wheel is amber',
   lit('Short on hours').querySelector('.scheduler-crew__duty').dataset.tone, 'warning');
 expect('the driver at the wheel wears the steering wheel in their answer\'s place, and every other driver their answer',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [useOf(c.querySelector('.scheduler-crew__duty')), has(c, '.scheduler-crew__mark')]),
@@ -732,12 +732,12 @@ expect('the tip words each paper in the inspection\'s place',
 
 console.log('\n  The roster');
 const H = 3600e3;
-expect('a driver\'s line: the driving time left in any duty, amber under an hour and red at none; empty for a driver free with all ten hours; a dash with no clock',
-  [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'on', left_ms: 0 },
+expect('a driver\'s line: the driving time left in any duty, amber under two hours and red at none; empty for a driver free with all ten hours; a dash with no clock',
+  [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'driving', left_ms: 1.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'on', left_ms: 0 },
     { duty: 'off', left_ms: 4 * H, rest_since: ago(3 * 60) }, { duty: 'off', left_ms: 10 * H, rest_since: ago(14 * 60) },
     { duty: 'off', rest_since: ago(30 * 60) }, null]
     .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter, st.free]; }),
-  [['6:30 left', 'normal', 0.65, false], ['0:36 left', 'warning', 0.06, false], ['0:00 left', 'error', 0, false],
+  [['6:30 left', 'normal', 0.65, false], ['1:30 left', 'warning', 0.15, false], ['0:36 left', 'warning', 0.06, false], ['0:00 left', 'error', 0, false],
     ['4:00 left', 'normal', 0.4, false], ['', 'quiet', null, true], ['\u2013', 'quiet', null, false], ['\u2013', 'quiet', null, false]]);
 expect('on a trip under way, what the driver is doing: at the wheel, on duty with a yard move, off duty with personal conveyance, in the berth; on none, nothing, and never free',
   [[{ duty: 'driving', left_ms: 6 * H }, true], [{ duty: 'on', left_ms: 6 * H, wheel: true }, true], [{ duty: 'yard', left_ms: 6 * H }, true],

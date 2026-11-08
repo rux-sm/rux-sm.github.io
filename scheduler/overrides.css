@@ -884,10 +884,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   background: var(--scheduler-mark-warning);
 }
 
-/* Today is the toolbar's one worded ghost button, and Carbon writes a ghost
-   button's words in the link colour. It takes the text colour its icon
+/* Today in the toolbar and Sort in the rail's corner are the board's worded
+   ghost buttons, and Carbon writes a ghost button's words in the link colour,
+   which on the board is today's. They take the text colour their icon
    neighbours draw in. */
-.scheduler-toolbar .rux--btn--ghost:not(.rux--btn--icon-only) { color: var(--rux-text-primary); }
+:is(.scheduler-toolbar, .scheduler-avail__days) .rux--btn--ghost:not(.rux--btn--icon-only) { color: var(--rux-text-primary); }
 
 /* The Billing summary's confirmation reads as the tab's lead line: the
    primary text colour at `heading-compact-02`, over Carbon's secondary body
@@ -983,7 +984,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 
 /* A MENU JOINED TO ITS BUTTON IS ONE SURFACE WITH IT, in Carbon's overflow
    menu's open treatment, for every pair joined-menu.js joins, on the board
-   and on the forms page, and the week's calendar button: the button takes
+   and on the forms page, and the week's calendar button, each a button: the button takes
    the menu's layer and shadow, its shadow stopping at its foot, and a strip
    the button's width in the menu's layer covers the menu's shadow along the
    button's foot. The strip is 5px, past the shadow's reach above the menu,
@@ -993,13 +994,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    names the panel's toolbar to outrank that toolbar's own hover. A pick
    cell's rule comes off while it is open, as Carbon's open trigger has no
    line down its side. */
-:is(.scheduler-toolbar__more, .scheduler-panel-more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached] {
+button[data-attached] {
   background-color: var(--rux-layer);
   box-shadow: 0 2px 6px var(--rux-shadow);
   clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-print__pick[data-attached] { border-inline-end-color: transparent; }
-:is(.scheduler-view-menu, .scheduler-panel-menu, .scheduler-long-menu, .scheduler-print__menu)[data-attached]::before {
+.rux--menu[data-attached]::before {
   position: absolute;
   content: "";
   inset-block-start: -5px;
@@ -1028,7 +1029,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-print__pick:hover { background: var(--rux-layer-hover); }
 .scheduler-viewer__toolbar > .scheduler-print__cell--action:hover,
 .scheduler-viewer__toolbar > .scheduler-print__pick:hover { background: var(--rux-background-hover); }
-:is(.scheduler-toolbar__more, .scheduler-panel-more, .scheduler-weekbtn, .scheduler-print__pick)[data-attached]:hover,
+button[data-attached]:hover,
 .scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer); }
 
 /* A labelled action, Print all, is as wide as its words with the cell's own

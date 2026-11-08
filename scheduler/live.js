@@ -204,7 +204,7 @@
     const who = el('span', 'scheduler-live__line');
     if (s.wheel) {
       who.append(short(s.wheel.name));
-      if (s.wheel.left_ms != null) who.appendChild(el('span', `scheduler-live__hours${s.wheel.left_ms < HOUR ? ' scheduler-live__hours--low' : ''}`, ` ${hours(s.wheel.left_ms)}`));
+      if (s.wheel.left_ms != null) who.appendChild(el('span', `scheduler-live__hours${s.wheel.left_ms < Road.LOW_LEFT ? ' scheduler-live__hours--low' : ''}`, ` ${hours(s.wheel.left_ms)}`));
       who.append(' · ');
     }
     who.append(motion(s.bus));

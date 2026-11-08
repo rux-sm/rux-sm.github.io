@@ -3,29 +3,32 @@
    --------------------------------------------------------------------------
    A driver's name cell in the rail is their tile, as a bus's is in the
    bus column, drawn inside the cell data.js makes, on two lines:
-   - The name at 14px, and at the line's end the driver's most urgent mark, 16px, with every mark's
-     words on its label, or while a selected trip finds them free on every
-     day of it, a green check in its place:
+   - The name at 14px, and at the line's end one 16px icon, every mark's
+     words on its label. The driver's most urgent mark stands there:
        papers  the licence or medical card running out within WARN_DAYS,
                amber, or run out, red, as the Drivers page warns
        tell    a leg within 30 days that changed for them since they said
                yes, amber
        unsent  a leg leaving within two days they sit on and have not
                been sent, amber
-     The tile is too narrow for a row of them, so one stands for all.
-   - Under it, a meter of Samsara's hours-of-service clock, as the bus
-     tile's fuel is, and at the line's end, at 12px in the secondary grey,
-     what the clock says now: driving, the time left, "6:30", on a meter of
-     the ten hours a passenger carrier's driver may drive; on duty, a yard
-     move or personal conveyance, the duty log's own short word and the time
-     left, "On 0:36", on the same meter; off or in the sleeper berth, the
-     word and the whole hours rested, "Off 14h", "SB 3h", on the rest meter
-     toward eight hours, in the rest colour the bars use while a trip of
-     theirs is under way and in a quiet grey with none, where the rest is
-     their own time. The time left is the least of the drive, shift and
-     cycle clocks, amber under an hour as the driver's tip has it. The full
-     words are the line's label. A driver Samsara keeps no clock for has a
-     quiet dash beside an empty meter, as a bus with no signal does.
+     With none, a driver out of hours has the red error mark; with none
+     of those, a driver on a trip under way has what they are doing on it,
+     so a dispatcher knows whom not to call: driving, the trip bar's arrow
+     in green, amber under an hour; on duty, a clock; off duty, a pause;
+     in the sleeper berth, a moon in the rest colour. A driver with no icon
+     is on no trip. While a selected trip finds them free on every day of
+     it, a green check stands there instead. The tile is too narrow for a
+     row of icons, so one stands for all.
+   - Under it, the driving time Samsara says they have left, the least of
+     the drive, shift and cycle clocks: a 48px meter of the ten hours a
+     passenger carrier's driver may drive, as the bus tile's fuel is, and
+     at the line's end, at 12px in the secondary grey, "6:30 left". Under an
+     hour it is amber and at none red, both semibold. A driver on no trip
+     with all ten hours is free and the line is empty, so the drivers who
+     matter stand out. A driver Samsara keeps no clock for has a quiet
+     dash beside an empty meter, as a bus with no signal does. The full
+     words, their duty and rest among them, are the line's label and the
+     card's.
    A press anywhere on the tile opens the driver's card, a Carbon toggletip
    that data.js fills from trip-tips.js's `driverCard`, as a press anywhere
    on a bus's tile opens its tip.
@@ -44,15 +47,19 @@
   'use strict';
 
   const RoadBar = window.SchedulerRoadBar;
-  const { HOUR, DRIVE, REST, hours, restProgress } = RoadBar;
+  const { HOUR, DRIVE, hours } = RoadBar;
   const NOT_SENT_ICON = window.SchedulerLegFacts.DRIVER_STATUSES.find(s => s.value === 'off').icon;
 
   // A paper this close to running out warns, as the Drivers page warns.
   const WARN_DAYS = 45;
   const DAY = 864e5;
-  /* samsara-now reads a day of duty logs for a rest, so a rest that fills
-     them began a day ago or earlier. */
-  const REST_LOOK = 24 * HOUR;
+  /* What a driver is doing on a trip under way, by their duty log: a yard
+     move counts as on duty and personal conveyance as off duty, as the
+     hours rules count them. */
+  const TRIP_OF = { driving: 'driving', on: 'on', yard: 'on', personal: 'off', off: 'off', sleeper: 'sleeper' };
+  const TRIP_ICON = { driving: '#i-BPMN-link--fill', on: '#i-time--filled', off: '#i-pause--outline--filled', sleeper: '#i-asleep--filled' };
+  // The mark of a driver with no driving time left.
+  const OUT = { kind: 'hours', tone: 'error', icon: '#i-error--filled' };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -69,34 +76,23 @@
     return svg;
   };
 
-  // Whole hours, "14h", or minutes under an hour, "35m", never more than it is.
-  const spell = ms => {
-    const min = Math.floor(ms / 60e3);
-    return min < 60 ? `${min}m` : `${Math.floor(min / 60)}h`;
-  };
-  // The duty log's own short words.
-  const SHORT = { on: 'On', yard: 'Yard', personal: 'PC', sleeper: 'SB', off: 'Off' };
-
-  /* What the clock says: `{ line, tone, words, meter }`, the line the head
-     shows, its tone, quiet, normal or warning, the words for its label, and
-     its meter, `{ kind, share }`, how full it is from 0 to 1 and its kind:
-     `drive`, `rest` during a trip, or `off` with none under way; or null
-     with no clock. */
+  /* What the clock says: `{ line, tone, words, meter, trip, free }`, the
+     line the head shows, its tone, quiet, normal, warning under an hour or
+     error under a minute, the words for its label, its meter's share of
+     the ten hours from 0 to 1 or null with no clock, what the driver is
+     doing on a trip under way, `driving`, `on`, `off` or `sleeper`, or
+     null on none, and whether they are free, on no trip with all ten
+     hours, when the line is empty. */
   const fill = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 100) / 100;
   function stateOf(live, onTrip = false) {
-    if (!live?.duty) return { line: '–', tone: 'quiet', words: 'No hours-of-service clock from Samsara', meter: null };
-    const left = live.left_ms;
-    const low = left != null && left < HOUR;
+    if (!live?.duty) return { line: '–', tone: 'quiet', words: 'No hours-of-service clock from Samsara', meter: null, trip: null, free: false };
     const words = RoadBar.words(live);
-    if (live.duty === 'sleeper' || live.duty === 'off') {
-      const { ms } = restProgress(live);
-      const word = SHORT[live.duty];
-      const rested = ms == null ? null : ms >= REST_LOOK ? `${spell(REST_LOOK)}+` : spell(ms);
-      return { line: rested ? `${word} ${rested}` : word, tone: 'normal', words, meter: { kind: onTrip ? 'rest' : 'off', share: fill(ms ?? 0, REST) } };
-    }
-    const time = left == null ? null : hours(left);
-    const line = live.duty === 'driving' ? time ?? 'Driving' : [SHORT[live.duty] ?? 'On', left == null ? null : hours(left)].filter(Boolean).join(' ');
-    return { line, tone: low ? 'warning' : 'normal', words, meter: { kind: 'drive', share: fill(left ?? 0, DRIVE) } };
+    const trip = onTrip ? (live.wheel ? 'driving' : TRIP_OF[live.duty] ?? null) : null;
+    const left = live.left_ms;
+    if (left == null) return { line: '–', tone: 'quiet', words, meter: null, trip, free: false };
+    if (!onTrip && left >= DRIVE) return { line: '', tone: 'quiet', words, meter: null, trip: null, free: true };
+    const tone = left < 60e3 ? 'error' : left < HOUR ? 'warning' : 'normal';
+    return { line: `${hours(left)} left`, tone, words, meter: fill(left, DRIVE), trip, free: false };
   }
 
   const dayOf = v => {
@@ -132,8 +128,8 @@
   }
 
   /* THE TILE'S PARTS, made once, so a live answer changes their words in
-     place and a card open from the tile stays open: the name; the worst
-     mark; the free check; and the line, the button of the card's toggletip,
+     place and a card open from the tile stays open: the name; the one
+     icon; the free check; and the line, the button of the card's toggletip,
      with the structure from `carbon-ibm-products-dom.json` that
      js/popover.js opens, its content data.js's, filled as it opens. The
      whole tile is that button's to press, as the whole bus tile is its
@@ -167,30 +163,39 @@
     const state = stateOf(live, onTrip);
     const marks = marksOf(driver, alerts);
     const name = driver.short_name || driver.name || 'Driver';
-    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, marks.map(m => [m.kind, m.tone, m.words])]);
+    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.line, state.tone, state.meter, state.trip, state.free, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
     cell.dataset.head = key;
     if (!cell.querySelector(':scope > .scheduler-avail__top')) build(cell);
     const full = driver.name || name;
     const who = cell.querySelector('.scheduler-avail__who');
     who.textContent = name;
+    /* The one icon: the worst mark, else the out-of-hours mark, else what
+       they are doing on their trip, `data-trip`, in its own colour. */
     const mark = cell.querySelector('.scheduler-avail__mark');
-    mark.hidden = !marks.length;
-    if (marks.length) {
-      mark.dataset.tone = marks[0].tone;
-      mark.replaceChildren(svgUse(marks[0].icon, '16', '0 0 32 32'));
+    const shown = marks[0] ?? (state.tone === 'error' ? OUT : null);
+    mark.hidden = !shown && !state.trip;
+    if (shown) {
+      delete mark.dataset.trip;
+      mark.dataset.tone = shown.tone;
+      mark.replaceChildren(svgUse(shown.icon, '16', '0 0 32 32'));
+    } else if (state.trip) {
+      mark.dataset.trip = state.trip;
+      mark.dataset.tone = state.tone;
+      mark.replaceChildren(svgUse(TRIP_ICON[state.trip], '16', '0 0 32 32'));
     }
     // A driver whose worst mark is red cannot drive, so is never marked free.
     cell.toggleAttribute('data-cannot', marks[0]?.tone === 'error');
     const line = cell.querySelector('.scheduler-avail__line');
     line.dataset.tone = state.tone;
-    line.setAttribute('aria-label', [`${full}'s card`, state.words, ...marks.map(m => m.words)].join('. '));
+    line.setAttribute('aria-label', [`${full}'s card`, state.trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
     line.querySelector('.scheduler-avail__state').textContent = state.line;
     const meter = line.querySelector('.scheduler-avail__meter');
+    meter.hidden = state.free;
     meter.dataset.tone = state.tone;
-    if (state.meter) {
-      meter.dataset.kind = state.meter.kind;
-      meter.style.setProperty('--scheduler-share', `${Math.round(state.meter.share * 100)}%`);
+    if (state.meter != null) {
+      meter.dataset.kind = 'drive';
+      meter.style.setProperty('--scheduler-share', `${Math.round(state.meter * 100)}%`);
     } else {
       delete meter.dataset.kind;
       meter.style.removeProperty('--scheduler-share');

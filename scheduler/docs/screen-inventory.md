@@ -280,17 +280,21 @@ A driver's tile is drawn by `scheduler/driver-head.js`, two lines 16px in
 from its sides, as the bus tile's parts are, and 2px apart, centred above
 the row's line on whole pixels with the odd pixel below. The first is the
 name at 14px, its photo left to the card, and at the
-line's end their worst mark, every mark's words on its label: a licence or
-medical card expiring within 45 days, amber, or expired, red; a leg within
-30 days that changed since they said yes; a leg leaving within two days
-they have not been sent. The second is a 4px meter of Samsara's
-hours-of-service clock, 64px as the bus tile's square is, and at the line's
-end, at 12px, what the clock says now: "6:30" driving or "On 0:36" on duty
-on a meter of the ten hours a driver may drive in the success green, both
-amber under an hour left; "Off 14h" or "SB 3h" resting, on the rest meter
-toward eight hours, in the rest colour the bars use while a trip of theirs
-is under way, from its yard-out to its return, and in Carbon's strong border
-grey with none; and a dash beside a dashed empty meter with no clock.
+line's end one icon, every mark's words on its label. Their worst mark
+stands there: a licence or medical card expiring within 45 days, amber, or
+expired, red; a leg within 30 days that changed since they said yes; a leg
+leaving within two days they have not been sent. With none, a driver out
+of hours has the red error mark, and a driver on a trip under way, from its
+yard-out to its return, has what they are doing on it: the trip bar's
+arrow in green while driving, amber under an hour; a grey clock on duty,
+a yard move with it; a grey pause off duty, personal conveyance with it;
+a moon in the rest colour in the sleeper berth. No icon means no trip.
+The second line is the driving time Samsara says they have left, the
+least of the drive, shift and cycle clocks: a 4px meter of the ten hours,
+48px, in the success green, and at the line's end, at 12px, "6:30 left",
+amber and semibold under an hour and red at none. A driver on no trip with
+all ten hours is free, and the line is empty; a driver with no clock has a
+dash beside a dashed empty meter. Their duty and rest are the card's.
 
 A press anywhere on a tile opens the driver's Driver card, as a press
 anywhere on a bus's tile opens its tip: the whole tile lights under the

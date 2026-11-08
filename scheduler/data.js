@@ -11699,12 +11699,8 @@
       const starts = n === 0 || p !== band;
       band = p;
       const r = el('div', `scheduler-avail__row${starts && n ? ' scheduler-avail__row--break' : ''}`);
-      /* The cell is the driver's head, driver-head.js's: the name, what
-         Samsara's clock says now and the most urgent mark. The full name,
-         the priority and every mark's words go on its title, because the
-         cell shows `short_name` when there is one and ellipses a long name.
-         `title` is hover only, so it does not help a keyboard or
-         screen-reader user tell two similar names apart. */
+      /* The cell is the driver's head, driver-head.js's: the name, its one
+         icon and the driving time Samsara says they have left. */
       const nameEl = el('div', 'scheduler-avail__name');
       DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), onTripNow(row));
       // The name is a toggle that picks out the driver's trips on the board; see `markDriverTrips`.

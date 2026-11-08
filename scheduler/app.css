@@ -3899,10 +3899,9 @@ a.scheduler-tip__go { text-decoration: none; }
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* A DRIVER'S TILE, driver-head.js's: the name and at the
-   line's end the worst mark on the 18px line; 2px under it the 4px meter,
-   64px as the bus tile's square is so every driver's reads alike, with
-   their words ending the 16px line, so the name has the width the words
-   do not take. The two lines are centred in the row above its line on
+   line's end its one icon on the 18px line; 2px under it the 4px meter,
+   48px so every driver's reads alike, with their words ending the 16px
+   line, so the name has the width the icon does not take. The two lines are centred in the row above its line on
    whole pixels, the odd pixel below. The line is the card's button, and
    its press covers the whole tile, as a bus number's covers the bus tile:
    this layer spans the tile, the nearest positioned box once overrides.css
@@ -3941,21 +3940,19 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-avail__line > .scheduler-avail__state { flex: 1 1 auto; min-inline-size: 0; text-align: end; }
 /* The meter is Carbon's small progress bar, as the bus tile's fuel is: the
-   time left of a day's driving in the success green, amber under an hour,
-   or the rest toward eight hours in the rest colour the bars use; with no
-   clock, dashed and empty. */
+   driving time left of the ten hours in the success green, amber under an
+   hour; with no clock, dashed and empty. It is 48px so "10:00 left" fits
+   beside it in the tile. */
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
   flex: none;
-  inline-size: var(--rux-spacing-10);
+  inline-size: var(--rux-spacing-09);
   block-size: var(--rux-spacing-02);
   background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
 }
-.scheduler-avail__meter[data-kind="rest"] { --scheduler-meter-ink: var(--scheduler-rest-fill); }
-/* Resting with no trip under way is the driver's own time, in Carbon's
-   strong border grey, quieter than any meter that says something. */
-.scheduler-avail__meter[data-kind="off"] { --scheduler-meter-ink: var(--rux-border-strong-01); }
+.scheduler-avail__meter[hidden] { display: none; }
 .scheduler-avail__line[data-tone="warning"] > .scheduler-avail__state { color: var(--scheduler-head-low); font-weight: 600; }
+.scheduler-avail__line[data-tone="error"] > .scheduler-avail__state { color: var(--scheduler-head-critical); font-weight: 600; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--rux-border-subtle-02) 0 2px, transparent 2px 4px); }
 @supports (inset-inline-start: round(50%, 1px)) {
@@ -3988,6 +3985,14 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name[data-free] .scheduler-avail__free-mark { display: block; }
 .scheduler-avail__name[data-free] .scheduler-avail__mark { display: none; }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
+/* With no mark, what a driver is doing on their trip: driving in the trip
+   bar's green, amber under an hour as its arrow is; on or off duty in the
+   secondary icon grey, since neither asks anything; the sleeper berth in
+   the rest colour the bars use. */
+.scheduler-avail__mark[data-trip] { color: var(--rux-icon-secondary); }
+.scheduler-avail__mark[data-trip="driving"] { color: var(--scheduler-mark-success); }
+.scheduler-avail__mark[data-trip="driving"][data-tone="warning"] { color: var(--scheduler-head-low); }
+.scheduler-avail__mark[data-trip="sleeper"] { color: var(--scheduler-rest-fill); }
 
 /* The corner stays above the day letters when the roster scrolls sideways.
    It needs the header row's two-class specificity to beat their z-index 3. */

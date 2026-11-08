@@ -713,17 +713,18 @@ expect('the tip words each paper in the inspection\'s place',
 
 console.log('\n  The roster');
 const H = 3600e3;
-expect('a driver\'s line: the time left driving, the duty log\'s word and the time left on duty, the hours rested off or in the berth, a dash with no clock',
-  [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'yard', left_ms: 3 * H },
-    { duty: 'off', left_ms: 10 * H, rest_since: ago(14.2 * 60) }, { duty: 'sleeper', left_ms: 4 * H, rest_since: ago(40) },
-    { duty: 'off', rest_since: ago(30 * 60) }, { duty: 'off', rest_since: null }, null]
-    .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter?.kind ?? null, st.meter?.share ?? null]; }),
-  [['6:30', 'normal', 'drive', 0.65], ['On 0:36', 'warning', 'drive', 0.06], ['Yard 3:00', 'normal', 'drive', 0.3], ['Off 14h', 'normal', 'off', 1],
-    ['SB 40m', 'normal', 'off', 0.08], ['Off 24h+', 'normal', 'off', 1], ['Off', 'normal', 'off', 0], ['\u2013', 'quiet', null, null]]);
-expect('a rest is the rest meter only while a trip of theirs is under way; driving keeps the drive meter either way',
-  [[{ duty: 'off', rest_since: ago(5 * 60) }, true], [{ duty: 'sleeper', rest_since: ago(60) }, true], [{ duty: 'off', rest_since: ago(5 * 60) }, false],
-    [{ duty: 'driving', left_ms: 6 * H }, true]].map(([l, on]) => DriverHead.stateOf(l, on).meter.kind),
-  ['rest', 'rest', 'off', 'drive']);
+expect('a driver\'s line: the driving time left in any duty, amber under an hour and red at none; empty for a driver free with all ten hours; a dash with no clock',
+  [{ duty: 'driving', left_ms: 6.5 * H }, { duty: 'on', left_ms: 0.6 * H }, { duty: 'on', left_ms: 0 },
+    { duty: 'off', left_ms: 4 * H, rest_since: ago(3 * 60) }, { duty: 'off', left_ms: 10 * H, rest_since: ago(14 * 60) },
+    { duty: 'off', rest_since: ago(30 * 60) }, null]
+    .map(l => { const st = DriverHead.stateOf(l); return [st.line, st.tone, st.meter, st.free]; }),
+  [['6:30 left', 'normal', 0.65, false], ['0:36 left', 'warning', 0.06, false], ['0:00 left', 'error', 0, false],
+    ['4:00 left', 'normal', 0.4, false], ['', 'quiet', null, true], ['\u2013', 'quiet', null, false], ['\u2013', 'quiet', null, false]]);
+expect('on a trip under way, what the driver is doing: at the wheel, on duty with a yard move, off duty with personal conveyance, in the berth; on none, nothing, and never free',
+  [[{ duty: 'driving', left_ms: 6 * H }, true], [{ duty: 'on', left_ms: 6 * H, wheel: true }, true], [{ duty: 'yard', left_ms: 6 * H }, true],
+    [{ duty: 'off', left_ms: 10 * H }, true], [{ duty: 'personal', left_ms: 6 * H }, true], [{ duty: 'sleeper', left_ms: 6 * H }, true],
+    [{ duty: 'driving', left_ms: 6 * H }, false]].map(([l, on]) => { const st = DriverHead.stateOf(l, on); return [st.trip, st.free]; }),
+  [['driving', false], ['driving', false], ['on', false], ['off', false], ['off', false], ['sleeper', false], [null, false]]);
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 expect('a driver\'s marks, the most urgent first: an expired card, then a card expiring, a change to tell and a leg not sent',
   DriverHead.marksOf({ license_exp: dayIn(12), med_card_expiry: dayIn(-2) },
@@ -738,14 +739,27 @@ DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', pr
 expect('the tile draws the short name and its most urgent mark over the line and its meter, and a free check to show',
   [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
     cell.querySelector('.scheduler-avail__meter').dataset.kind, !!cell.querySelector('.scheduler-avail__free-mark'), cell.hasAttribute('data-cannot')],
-  ['Rigo', '2:00', 'warning', 'drive', true, false]);
+  ['Rigo', '2:00 left', 'warning', 'drive', true, false]);
 expect('the tile\'s one button is the toggletip button of the driver\'s card, labelled with the name, the clock and the marks; the name and mark are words, and the hover is the driver\'s own',
   [cell.querySelectorAll('button').length, cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null,
     cell.querySelector('.scheduler-avail__card .rux--popover-content') != null, cell.querySelector('.scheduler-avail__line').getAttribute('aria-label'), cell.title],
   [1, true, true, 'Rigoberto Soto\'s card. Driving · 2:00 driving left. Licence expires in 5 days', 'Rigoberto Soto · Priority 2']);
-DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'off', left_ms: 2 * H, rest_since: ago(90) }, []);
+DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'off', left_ms: 1.5 * H, rest_since: ago(90) }, []);
 expect('a live answer changes the tile\'s words in place, so a card open from it stays open',
-  [text(cell, '.scheduler-avail__state'), cell.querySelectorAll('.scheduler-avail__line').length], ['Off 1h', 1]);
+  [text(cell, '.scheduler-avail__state'), cell.querySelectorAll('.scheduler-avail__line').length], ['1:30 left', 1]);
+const tripCell = document.createElement('div');
+const tripTile = (live, onTrip, driver = { id: 'd2', name: 'Ana Ruiz' }) => {
+  DriverHead.draw(tripCell, driver, live, [], onTrip);
+  const mark = tripCell.querySelector('.scheduler-avail__mark');
+  return [mark.hidden ? null : mark.querySelector('use')?.getAttribute('href'), mark.dataset.trip ?? null, text(tripCell, '.scheduler-avail__state'), tripCell.querySelector('.scheduler-avail__meter').hidden];
+};
+expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon in the berth; the red mark out of hours; a paper\'s mark before the trip; none and an empty line for a free driver',
+  [tripTile({ duty: 'driving', left_ms: 6 * H, wheel: true }, true), tripTile({ duty: 'off', left_ms: 5 * H }, true),
+    tripTile({ duty: 'sleeper', left_ms: 8 * H }, true), tripTile({ duty: 'on', left_ms: 0 }, true),
+    tripTile({ duty: 'off', left_ms: 5 * H }, true, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }), tripTile({ duty: 'off', left_ms: 10 * H }, false)],
+  [['#i-BPMN-link--fill', 'driving', '6:00 left', false], ['#i-pause--outline--filled', 'off', '5:00 left', false],
+    ['#i-asleep--filled', 'sleeper', '8:00 left', false], ['#i-error--filled', null, '0:00 left', false],
+    ['#i-warning--alt--filled', null, '5:00 left', false], [null, null, '', true]]);
 const card = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
   live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',

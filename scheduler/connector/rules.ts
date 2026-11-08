@@ -205,7 +205,7 @@ const window = {};
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'warning', icon: '#i-warning--alt--filled', indicator: 'rux--icon-indicator--caution-minor' },
     { value: 'pending-response', label: 'Pending response', tone: 'normal', icon: '#i-in-progress', indicator: 'rux--icon-indicator--in-progress' },
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--filled', indicator: 'rux--icon-indicator--succeeded' },
-    { value: 'declined', label: 'Declined', tone: 'error', icon: '#i-error--filled', indicator: 'rux--icon-indicator--failed' },
+    { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill', indicator: 'rux--icon-indicator--failed' },
   ];
   /* A status row's identity: trip, driver, leg and role, the leg by the key
      week.js gives it, its id on a trip read with its legs. */

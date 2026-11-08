@@ -4,7 +4,9 @@
    A driver's name cell in the rail is their tile, as a bus's is in the
    bus column, drawn inside the cell data.js makes, on two lines:
    - The name at 14px, and at the line's end one 16px icon, every mark's
-     words on its label. The driver's most urgent mark stands there:
+     words on its label. The driver's most urgent mark stands there, the
+     warning triangle for an amber one and the error circle for a red one,
+     the two every trip bar and bus tile wear:
        rules   Samsara keeping them to hours rules that are not a
                passenger carrier's, red
        papers  the licence or medical card running out within WARN_DAYS,
@@ -15,8 +17,7 @@
                been sent, amber
      What Samsara says now can earn one too, and the worse stands: on a
      trip, their app not connected, amber; on a trip, logged into a bus not
-     theirs, Material's bus alert, red; over or out of hours, the red error
-     mark. With no mark, a driver on a trip under way has what they are
+     theirs, red; over or out of hours, red. With no mark, a driver on a trip under way has what they are
      doing on it, so a dispatcher knows whom not to call: driving, the trip bar's arrow
      in green, amber when low; on duty, a clock; off duty, a pause;
      in the sleeper berth, a moon in the rest colour. A driver with no icon
@@ -56,7 +57,6 @@
 
   const RoadBar = window.SchedulerRoadBar;
   const { LOW, DRIVE, hours } = RoadBar;
-  const NOT_SENT_ICON = window.SchedulerLegFacts.DRIVER_STATUSES.find(s => s.value === 'off').icon;
 
   // A paper this close to running out warns, as the Drivers page warns.
   const WARN_DAYS = 45;
@@ -70,9 +70,9 @@
      the marks of their papers and legs. */
   const NOW_MARKS = {
     unlogged: { kind: 'unlogged', tone: 'warning', icon: '#i-warning--alt--filled' },
-    away: { kind: 'away', tone: 'error', icon: '#m-bus_alert-fill' },
-    over: { kind: 'over', tone: 'error', icon: '#i-error--filled' },
-    out: { kind: 'out', tone: 'error', icon: '#i-error--filled' },
+    away: { kind: 'away', tone: 'error', icon: '#m-error-fill' },
+    over: { kind: 'over', tone: 'error', icon: '#m-error-fill' },
+    out: { kind: 'out', tone: 'error', icon: '#m-error-fill' },
   };
 
   const el = (tag, cls, text) => {
@@ -145,7 +145,7 @@
        gives for them wrong; the fix is the driver's settings in Samsara. */
     const rules = live?.rules ?? [];
     if (rules.length && !rules.every(r => /passenger/i.test(r))) {
-      marks.push({ kind: 'rules', tone: 'error', icon: '#i-error--filled', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
+      marks.push({ kind: 'rules', tone: 'error', icon: '#m-error-fill', words: `Samsara keeps them to ${rules.join('; ')}, not a bus driver's hours rules` });
     }
     for (const [field, word] of PAPERS) {
       const when = dayOf(driver?.[field]);
@@ -155,15 +155,15 @@
       // The Drivers page's words.
       const words = n < 0 ? `${word} expired ${plural(-n, 'day')} ago`
         : n === 0 ? `${word} expires today` : `${word} expires in ${plural(n, 'day')}`;
-      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#i-error--filled' : '#i-warning--alt--filled', words,
+      marks.push({ kind: 'papers', tone: n < 0 ? 'error' : 'warning', icon: n < 0 ? '#m-error-fill' : '#i-warning--alt--filled', words,
         ...(n < 0 ? { line: `${word} expired` } : {}) });
     }
     const of = kind => alerts.filter(a => a.kind === kind);
     const legs = list => list.map(a => [a.trip?.destination || a.trip?.trip_ref || 'A trip', a.legName].filter(Boolean).join(', ')).join('; ');
     const tell = of('tell');
-    if (tell.length) marks.push({ kind: 'tell', tone: 'warning', icon: '#m-notifications-fill', words: `Tell of a change: ${legs(tell)}` });
+    if (tell.length) marks.push({ kind: 'tell', tone: 'warning', icon: '#i-warning--alt--filled', words: `Tell of a change: ${legs(tell)}` });
     const unsent = of('unsent');
-    if (unsent.length) marks.push({ kind: 'unsent', tone: 'warning', icon: NOT_SENT_ICON, words: `Not sent: ${legs(unsent)}` });
+    if (unsent.length) marks.push({ kind: 'unsent', tone: 'warning', icon: '#i-warning--alt--filled', words: `Not sent: ${legs(unsent)}` });
     return marks.sort((a, b) => (a.tone === b.tone ? 0 : a.tone === 'error' ? -1 : 1));
   }
 

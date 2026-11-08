@@ -122,7 +122,7 @@
     const late = (live?.due ?? []).filter(d => d.status === 'overdue');
     return late.length ? { tone: 'warning', word: late.map(d => `${d.title}: ${d.words.toLowerCase()}`).join('. ') } : null;
   }
-  const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
+  const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#m-error-fill', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
   // The state: its reading over its unit, mph or how long, or beside it on
@@ -221,11 +221,11 @@
     const marks = [];
     if (papers.length) {
       const error = papers.some(p => p.tone === 'error');
-      marks.push(['scheduler-row-head__papers', error ? 'error' : 'warning', error ? '#i-error--filled' : '#i-warning--alt--filled',
+      marks.push(['scheduler-row-head__papers', error ? 'error' : 'warning', error ? '#m-error-fill' : '#i-warning--alt--filled',
         papers.map(p => p.words).join('. ')]);
     }
     if (lamp) marks.push(['scheduler-row-head__lamp', lamp.tone, '#m-car_repair-fill', [lamp.word, ...(live?.faults ?? [])].join('. ')]);
-    if (unsafe) marks.push(['scheduler-row-head__unsafe', unsafe.tone, '#i-error--filled', unsafe.word]);
+    if (unsafe) marks.push(['scheduler-row-head__unsafe', unsafe.tone, '#m-error-fill', unsafe.word]);
     if (overdue) marks.push(['scheduler-row-head__due', overdue.tone, '#i-warning--alt--filled', overdue.word]);
     if (!marks.length) {
       if (kit && !kit.childElementCount) kit.remove();

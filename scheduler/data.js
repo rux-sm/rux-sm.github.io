@@ -253,23 +253,27 @@
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
   }
-  /* The bus's type's drawing alone, in the head's own ink, where its picture
-     will go, and beside it, for app.css to show in its place while the bus
-     has a mark, the same drawing with its warning: Material's Bus Alert for a
-     bus, and for a type with no such drawing, its own with a dot at the
-     corner where Bus Alert has its warning. */
+  // The bus's type's drawing alone, in the head's own ink, before the number.
   function busIcon(bus) {
     const mark = el('span', 'scheduler-row-head__icon');
     mark.setAttribute('aria-hidden', 'true');
-    const icon = window.SchedulerVehicles?.iconOf(bus.type) ?? '#m-directions_bus-fill';
-    const type = el('span', 'scheduler-row-head__type');
-    type.appendChild(svgUse(icon, '16', '0 0 32 32'));
-    const alert = el('span', 'scheduler-row-head__alert');
-    const warned = window.SchedulerVehicles?.alertOf(bus.type) ?? (icon === '#m-directions_bus-fill' ? '#m-bus_alert-fill' : null);
-    alert.appendChild(svgUse(warned ?? icon, '16', '0 0 32 32'));
-    if (!warned) alert.appendChild(el('span', 'scheduler-row-head__badge'));
-    mark.append(type, alert);
+    mark.appendChild(svgUse(window.SchedulerVehicles?.iconOf(bus.type) ?? '#m-directions_bus-fill', '16', '0 0 32 32'));
     return mark;
+  }
+  /* After the number, the one alert every bar and driver tile wears: the
+     warning triangle while the bus has a mark, the error circle while one is
+     red. app.css shows the one the kit's worst mark asks for, and keeps its
+     room when there is none, so the number never moves; the kit's own marks
+     carry the words. */
+  function busAlert() {
+    const alert = el('span', 'scheduler-row-head__alert');
+    alert.setAttribute('aria-hidden', 'true');
+    const warning = svgUse('#i-warning--alt--filled', '16', '0 0 32 32');
+    warning.dataset.tone = 'warning';
+    const error = svgUse('#m-error-fill', '16', '0 0 32 32');
+    error.dataset.tone = 'error';
+    alert.append(warning, error);
+    return alert;
   }
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-tip');
@@ -1429,7 +1433,7 @@
         // The caret is the popover's own last child, where Carbon draws it.
         pop.append(content, el('span', 'rux--popover-caret'));
         tip.append(trigger, pop);
-        top.appendChild(tip);
+        top.append(tip, busAlert());
       } else {
         top.append(el('div', 'scheduler-row-head__num', r.partner ? r.partner.name : 'No\nbus'));
       }

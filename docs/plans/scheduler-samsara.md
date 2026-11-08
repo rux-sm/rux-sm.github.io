@@ -59,7 +59,8 @@ None open.
 
 ## Tasks
 
-- [ ] Make a Samsara API token with Write Live Sharing Links alone, under
-      Driver Workflow, and set it as the `SAMSARA_SHARE_TOKEN` secret;
-      `samsara-share` answers no-key until then.
+- [ ] Make the Samsara API token Scheduler Links again with Write Live
+      Sharing Links alone, under Driver Workflow, and put its full
+      `samsara_api_` value in the `SAMSARA_SHARE_TOKEN` secret, which holds a
+      value Samsara calls invalid, so `samsara-share` answers no-permission.
 - [ ] Add Copy tracking link to the bar's menu, calling `samsara-share`.

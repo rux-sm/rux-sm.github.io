@@ -652,6 +652,14 @@
         "path|d=M24 17 8 17 8 15 24 15 24 17z fill=none"
       ]
     },
+    "pause--outline--filled@16": {
+      "name": "pause--outline--filled",
+      "size": "16",
+      "source": "node_modules/@carbon/icons/svg/16/pause--outline--filled.svg",
+      "geometry": [
+        "path|d=M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M7,11H6V5h1V11z M10,11H9V5h1V11z"
+      ]
+    },
     "gas-station@32": {
       "name": "gas-station",
       "size": "32",

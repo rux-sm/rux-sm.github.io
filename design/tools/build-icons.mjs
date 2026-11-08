@@ -90,6 +90,8 @@ const ICONS = [
   'draggable',
   'task--user', 'shuttle',
   'BPMN-link--fill', 'time--filled', 'asleep--filled', 'subtract--filled',
+  // A driver off duty during their trip, on their tile in the scheduler's rail.
+  'pause--outline--filled',
   // A BUS'S FUEL in the scheduler's bus column, at Carbon's 16px.
   'gas-station',
   // THE UPDATES BUTTON on a scheduler trip bar, leading the row that opens

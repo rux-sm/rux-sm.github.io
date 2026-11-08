@@ -38,6 +38,15 @@ the same steps, so nothing on the board stands a pixel or two off.
 - **A driver tile is its two 18px lines centred in its 48px row,** where
   today its lines are 18px, a 2px gap and 16px, 5px from the top and 6px
   from its line.
+- **A driver tile is 128px wide, from 160px,** 96px inside its 16px insets:
+  the widest name in semibold is 55px, so a name and its icon take 75px. Its
+  second line is the hours meter alone, run the full 96px, a tenth of it an
+  hour, amber under two hours and red at none; the time in words goes, and
+  the exact Drive, Shift and Cycle clocks stay in the driver's card. Words
+  that stand in the meter's place stay: Over 1:25, Not logged in, in 133, and
+  an expired paper as "Licence expired" or "Medical expired", since "Medical
+  card expired" is 116px and "Card" alone could be the fuel card. The rail
+  is then 128px shut and 352px with its week open, from 160px and 384px.
 - **A bar keeps 10px above and below its six lines,** the one gap off the
   4px steps, because it centres 108px of lines in the 128px bar and sets the
   destination level with the bus number.
@@ -55,6 +64,9 @@ None open.
   semibold, and take semibold off as the picked-out driver's own mark.
 - [ ] Set a driver tile's status line at 18px and centre its two lines in
   the row.
+- [ ] Narrow the driver tile to 128px, run its meter across the line in
+  place of the time, and shorten an expired medical card's words to Medical
+  expired.
 - [ ] Stand the bus tile's square and kit on the bar's lines, in the full
   view and every folded one, keeping each number centred.
 - [ ] Move a low DEF to line 6 of the bus tile and hold the square at 64px.

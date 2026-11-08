@@ -9,8 +9,8 @@ type: plan
 The scheduler reads more of what Samsara already knows, so the office sees
 trouble on the board without opening Samsara: a driver on a trip who is
 not logged in, in the wrong bus, over hours or on the wrong hours rules;
-a bus's arrival at the yard and its pickup as Samsara sees it; and each
-pre-trip inspection, safe or not. What `samsara-now` reads today is in
+and each pre-trip inspection, safe or not. A customer can follow their
+bus on a link the office sends. What `samsara-now` reads today is in
 `scheduler/docs/database-inventory.md` §8, and the driver tile it feeds in
 `scheduler/docs/screen-inventory.md`.
 
@@ -42,6 +42,12 @@ pre-trip inspection, safe or not. What `samsara-now` reads today is in
   ticks on the driver's seat, and an unsafe one is a red mark on the bus
   tile and a defect on the bus's Fleet profile, as
   `docs/plans/scheduler-maintenance.md` keeps defects.
+- **A customer can follow their bus on a Samsara live link.** The bar's
+  menu has Copy tracking link for a leg's bus on its days, which asks a new
+  Edge Function, `samsara-share`, for Samsara's live map link of that one
+  vehicle, expiring an hour after the leg's return, and copies it for the
+  office to text the trip's contact. The stops stay the scheduler's and are
+  not copied into Samsara as a route.
 - **Safety events stay in Samsara.** Hard braking, speeding and phone use
   are the office's to review there, not the board's.
 - **Each database change is its own step,** SQL shown to rux and applied on
@@ -49,17 +55,7 @@ pre-trip inspection, safe or not. What `samsara-now` reads today is in
 
 ## Questions
 
-- Should the yard and the pickups become Samsara geofences, so Samsara
-  tells the scheduler the moment a bus arrives? It would give
-  `docs/plans/scheduler-on-time-pickup.md` its arrival as it happens,
-  where that plan reads it from the GPS history after the leg, and it
-  needs a new Edge Function that Samsara calls.
-- Should a trip's stops become a Samsara route? Samsara would give each
-  stop's arrival estimate, its actual arrival and departure, and a live
-  link a customer could follow; the scheduler works out its own estimates
-  today, so the two would have to agree.
-- Should Send trips also send the trip to the driver's Samsara app, where
-  Samsara says whether they read it?
+None open.
 
 ## Tasks
 
@@ -74,4 +70,5 @@ pre-trip inspection, safe or not. What `samsara-now` reads today is in
 - [ ] Read each driver's hours rules and mark a driver on the wrong ones.
 - [ ] Read Samsara's inspections, tick the pre-trip on the seat and mark an
       unsafe one on the bus.
-- [ ] Answer the three questions, and add their tasks or delete them.
+- [ ] Confirm the Samsara key may make live sharing links, add
+      `samsara-share`, and add Copy tracking link to the bar's menu.

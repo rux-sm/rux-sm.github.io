@@ -11780,7 +11780,6 @@
       c.classList.remove(...OPEN);
     }
     for (const icon of availGrid.querySelectorAll('.scheduler-avail__free')) icon.remove();
-    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-free]')) n.removeAttribute('data-free');
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -11802,7 +11801,6 @@
       const name = r.querySelector('.scheduler-avail__name');
       const cannot = !!name?.hasAttribute('data-cannot');
       const all = open.length === days && !cannot;
-      if (all) name?.setAttribute('data-free', '');
       for (const c of open) {
         c.classList.add('scheduler-avail__cell--open');
         if (all) c.classList.add('scheduler-avail__cell--whole');

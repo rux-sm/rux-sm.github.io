@@ -271,10 +271,10 @@ from the next, and a name's title says its priority. The chevron slides the
 week out beside the tiles, seven 32px days, 24rem in all, and every page load starts with it shut. With a trip selected,
 its days are shaded in the week's band, and each driver free on every one of
 them has an open slot across them, a box in the success tint with a success
-edge and one check at its middle, Geist's green 100, 400 and 900 in Rux 100,
-and on their tile a green check in the worst mark's place, shut or open; a
-driver free on only some has nothing drawn, and a driver with an expired
-paper keeps the red mark and has neither, since they cannot drive.
+edge and one check at its middle, Geist's green 100, 400 and 900 in Rux 100;
+their tile shows no check of its own; a driver free on only some has
+nothing drawn, and a driver with an expired paper has no slot, since they
+cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, two lines 16px in
 from its sides, as the bus tile's parts are, and 2px apart, centred above

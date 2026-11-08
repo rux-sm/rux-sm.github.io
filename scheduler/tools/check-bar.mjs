@@ -765,10 +765,10 @@ expect('a card further off than 45 days, or none on file, marks nothing',
   DriverHead.marksOf({ license_exp: dayIn(46), med_card_expiry: null }, [], null, today), []);
 const cell = document.createElement('div');
 DriverHead.draw(cell, { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, license_exp: dayIn(5) }, { duty: 'driving', left_ms: 2 * H }, []);
-expect('the tile draws the short name and its most urgent mark over the line and its meter, and a free check to show',
+expect('the tile draws the short name and its most urgent mark over the line and its meter, and no check of its own for a trip it is free for',
   [text(cell, '.scheduler-avail__who'), text(cell, '.scheduler-avail__state'), cell.querySelector('.scheduler-avail__mark').dataset.tone,
-    cell.querySelector('.scheduler-avail__meter').dataset.kind, !!cell.querySelector('.scheduler-avail__free-mark'), cell.hasAttribute('data-cannot')],
-  ['Rigo', '2:00 left', 'warning', 'drive', true, false]);
+    cell.querySelector('.scheduler-avail__meter').dataset.kind, cell.querySelectorAll('.scheduler-avail__top svg').length, cell.hasAttribute('data-cannot')],
+  ['Rigo', '2:00 left', 'warning', 'drive', 1, false]);
 expect('the tile\'s one button is the toggletip button of the driver\'s card, labelled with the name, the clock and the marks; the name and mark are words, and the hover is the driver\'s own',
   [cell.querySelectorAll('button').length, cell.querySelector('.scheduler-avail__card > button.rux--toggletip-button.scheduler-avail__line') != null,
     cell.querySelector('.scheduler-avail__card .rux--popover-content') != null, cell.querySelector('.scheduler-avail__line').getAttribute('aria-label'), cell.title],

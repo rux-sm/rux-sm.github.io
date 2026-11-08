@@ -3972,18 +3972,13 @@ a.scheduler-tip__go { text-decoration: none; }
   font-weight: var(--rux-label-01-font-weight);
   color: var(--rux-text-secondary);
 }
-/* The worst mark ends the name's line, a status solid in its colour. While
-   the selected trip finds the driver free, data.js's `data-free`, a green
-   check stands in its place, but never for a driver who cannot drive. A
+/* The worst mark ends the name's line, a status solid in its colour. A
    driver with no mark has none drawn, and the name takes its room. */
 .scheduler-avail__mark {
   flex: none;
   color: var(--scheduler-head-low);
 }
 .scheduler-avail__mark:not([hidden]) { display: inline-flex; }
-.scheduler-avail__free-mark { display: none; flex: none; color: var(--rux-support-success); }
-.scheduler-avail__name[data-free] .scheduler-avail__free-mark { display: block; }
-.scheduler-avail__name[data-free] .scheduler-avail__mark { display: none; }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* With no mark, what a driver is doing on their trip: driving in the trip
    bar's green, amber under an hour as its arrow is; on or off duty in the

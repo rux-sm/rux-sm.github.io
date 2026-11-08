@@ -20,9 +20,8 @@
      doing on it, so a dispatcher knows whom not to call: driving, the trip bar's arrow
      in green, amber under an hour; on duty, a clock; off duty, a pause;
      in the sleeper berth, a moon in the rest colour. A driver with no icon
-     is on no trip. While a selected trip finds them free on every day of
-     it, a green check stands there instead. The tile is too narrow for a
-     row of icons, so one stands for all.
+     is on no trip. The tile is too narrow for a row of icons, so one
+     stands for all.
    - Under it, the driving time Samsara says they have left, the least of
      the drive, shift and cycle clocks: a 48px meter of the ten hours a
      passenger carrier's driver may drive, as the bus tile's fuel is, and
@@ -166,7 +165,7 @@
 
   /* THE TILE'S PARTS, made once, so a live answer changes their words in
      place and a card open from the tile stays open: the name; the one
-     icon; the free check; and the line, the button of the card's toggletip,
+     icon; and the line, the button of the card's toggletip,
      with the structure from `carbon-ibm-products-dom.json` that
      js/popover.js opens, its content data.js's, filled as it opens. The
      whole tile is that button's to press, as the whole bus tile is its
@@ -178,11 +177,7 @@
     const mark = el('span', 'scheduler-avail__mark');
     mark.setAttribute('aria-hidden', 'true');
     mark.hidden = true;
-    /* The check a selected trip's free drivers wear in the mark's place,
-       shown by app.css while data.js marks the tile free. */
-    const free = svgUse('#i-checkmark--filled', '16', '0 0 32 32');
-    free.classList.add('scheduler-avail__free-mark');
-    top.append(name, mark, free);
+    top.append(name, mark);
     const card = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--right-start rux--toggletip scheduler-avail__card');
     const line = el('button', 'rux--toggletip-button scheduler-avail__line');
     line.type = 'button';

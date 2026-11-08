@@ -647,6 +647,16 @@ const dayIn = n => {
   d.setDate(d.getDate() + n);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
+{
+  const unsafe = { id: 'r9', kind: 'post', at: ago(90), status: 'unsafe', driver_id: null, defects: 2 };
+  const head = busHead({ engine: 'off', mph: 0, inspections: [{ ...unsafe, id: 'r10', kind: 'pre', status: 'safe', at: ago(30) }, unsafe] });
+  const mark = head.querySelector('.scheduler-row-head__unsafe');
+  expect('an inspection Samsara still counts unsafe is a red mark on the bus and a line of the tip; a resolved one is neither',
+    [mark?.dataset.tone, /^Unsafe on its post-trip inspection, .+, 2 defects$/.test(mark?.getAttribute('aria-label') ?? ''),
+      BusHead.tipOf({}, { engine: 'off', mph: 0, inspections: [unsafe] }).some(l => l.startsWith('Unsafe on its post-trip inspection')),
+      BusHead.unsafeOf({ inspections: [{ ...unsafe, status: 'resolved' }] })],
+    ['error', true, true, null]);
+}
 expect('moving: the speed over mph in a filled green display, the fuel\'s percent and meter, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__fuel-pct'), line(h), marks(h)]; })(),
   [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);

@@ -36,12 +36,12 @@ bus on a link the office sends. What `samsara-now` reads today is in
   rules are not a passenger carrier's has a red mark on their tile and its
   words on their card, since every clock they show is wrong, and the fix
   is their settings in Samsara.
-- **Samsara's inspections are read, not re-entered.** Each pre-trip and
-  post-trip inspection a driver files in Samsara, safe, unsafe or resolved,
-  is read from its inspections feed against the bus and the day: a pre-trip
-  ticks on the driver's seat, and an unsafe one is a red mark on the bus
-  tile and a defect on the bus's Fleet profile, as
-  `docs/plans/scheduler-maintenance.md` keeps defects.
+- **Samsara's inspections are read live, not stored.** `samsara-now`
+  reads the last day's inspections and any still unsafe from thirty days:
+  a trip bar warns No pre-trip once yard-out has passed with none since two
+  hours before it, and a bus with an unsafe one has a red mark until a
+  mechanic resolves it in Samsara. No defect is copied into the Fleet
+  profile.
 - **A customer can follow their bus on a Samsara live link.** The bar's
   menu has Copy tracking link for a leg's bus on its days, which asks a new
   Edge Function, `samsara-share`, for Samsara's live map link of that one
@@ -59,7 +59,5 @@ None open.
 
 ## Tasks
 
-- [ ] Read Samsara's inspections, tick the pre-trip on the seat and mark an
-      unsafe one on the bus.
 - [ ] Confirm the Samsara key may make live sharing links, add
       `samsara-share`, and add Copy tracking link to the bar's menu.

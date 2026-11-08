@@ -88,8 +88,11 @@ Deno.serve(req => {
       return samsara<SamsaraDriver>('/fleet/drivers', { limit: '512' })
     },
     // The key's Read DVIRs permission; the feed needs its end, or it never ends.
-    dvirs(from, to) {
-      return samsara<Dvir>('/dvirs/stream', { startTime: new Date(from).toISOString(), endTime: new Date(to).toISOString(), limit: '200' })
+    dvirs(from, to, unsafe = false) {
+      return samsara<Dvir>('/dvirs/stream', {
+        startTime: new Date(from).toISOString(), endTime: new Date(to).toISOString(), limit: '200',
+        ...(unsafe ? { safetyStatus: 'unsafe' } : {}),
+      })
     },
     async history(vehicleIds, from, to) {
       const rows = await samsara<{ id: string; gps?: Fix[] }>('/fleet/vehicles/stats/history', {

@@ -147,7 +147,9 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
         { id: 's-Ana Ruiz', eldSettings: { rulesets: [{ shift: 'US Interstate Passenger', cycle: 'USA 70 hour / 8 day' }] } },
         { id: 's-Ben Ortiz', eldSettings: { rulesets: [{ shift: 'US Interstate Property', cycle: 'USA 70 hour / 8 day' }] } },
       ]; },
-      dvirs: async () => { calls++; if (dvirsFail) throw new Error('403'); return [
+      dvirs: async (from, to, unsafe) => { calls++; if (dvirsFail) throw new Error('403'); if (unsafe) return [
+        { id: 'r0', type: 'postTrip', safetyStatus: 'unsafe', dvirSubmissionTime: ago(5 * 24 * 60), vehicle: { id: 'v102' }, defectIds: ['z'] },
+      ]; return [
         { id: 'r1', type: 'preTrip', safetyStatus: 'safe', dvirSubmissionTime: ago(5 * 60), vehicle: { id: 'v101' }, authorSignature: { signatoryUser: { id: 's-Ana Ruiz' }, type: 'driver' }, defectIds: [] },
         { id: 'r2', type: 'postTrip', safetyStatus: 'unsafe', dvirSubmissionTime: ago(60), vehicle: { id: 'v101' }, authorSignature: { signatoryUser: { id: 'someone' }, type: 'driver' }, defectIds: ['x', 'y'] },
         { id: 'r1', type: 'preTrip', safetyStatus: 'resolved', dvirSubmissionTime: ago(5 * 60), vehicle: { id: 'v101' }, authorSignature: { signatoryUser: { id: 's-Ana Ruiz' }, type: 'driver' }, defectIds: [] },
@@ -224,14 +226,14 @@ expect('a driver in the sleeper has when that run began, and no split without an
   a.buses[0].drivers.map(x => [x.name, x.berth_since, x.split_ms]), [['Ana Ruiz', null, null], ['Ben Ortiz', ago(3 * 60), null]]);
 expect('every scheduler driver with a clock comes back, in a bus or not, and nobody the scheduler lacks',
   a.drivers.map(x => [x.driver_id, x.duty, x.rest_since]), [['d1', 'driving', null], ['d2', 'sleeper', ago(5 * 60)]]);
-expect('a bus\'s inspections, newest first, each once as Samsara last changed it, the signer matched to a scheduler driver, and none for a bus with none',
+expect('a bus\'s inspections, newest first, each once as Samsara last changed it, the signer matched to a scheduler driver, and an unsafe one from days back',
   [a.inspections, a.buses[0].inspections.map(i => [i.id, i.kind, i.status, i.driver_id, i.defects]), a.buses[1].inspections],
-  [true, [['r2', 'post', 'unsafe', null, 2], ['r1', 'pre', 'resolved', 'd1', 0]], []]);
+  [true, [['r2', 'post', 'unsafe', null, 2], ['r1', 'pre', 'resolved', 'd1', 0]], [['r0', 'post', 'unsafe', null, 1]].map(([id, kind, status, driver_id, defects]) => ({ id, kind, at: ago(5 * 24 * 60), status, driver_id, defects }))]);
 {
   const q = parts({ dvirsFail: true });
   const b = await liveFor(BUSES, DRIVERS, q.deps);
-  expect('inspections that cannot be read leave every bus with none, say so, and the rest still comes',
-    [b.inspections, b.buses.map(x => x.inspections.length), b.buses[0].engine], [false, [0, 0], 'on']);
+  expect('inspections that cannot be read leave every bus\'s null, say so, and the rest still comes',
+    [b.inspections, b.buses.map(x => x.inspections), b.buses[0].engine], [false, [null, null], 'on']);
 }
 expect('each driver has the hours rules Samsara keeps them to, in its words, and null where it lists none',
   a.drivers.map(x => x.rules), [['US Interstate Passenger, USA 70 hour / 8 day'], ['US Interstate Property, USA 70 hour / 8 day']]);

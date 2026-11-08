@@ -37,6 +37,17 @@ const driver = (id, name, over = {}) => ({ driver_id: id, name, duty: 'driving',
 const bus = (over = {}) => ({ bus_id: 'b218', engine: 'on', engine_at: null, lat: away[0], lng: away[1], drivers: [driver('d1', 'Marco Ruiz')], ...over });
 const look = over => ({ yard, yardOut, next: ahead(), named: ['d1'], others: [], numberOf: id => ({ b746: '746' })[id] ?? null, drives: [], now: at('14:45'), ...over, bus: over.bus ?? bus() });
 const kinds = l => warningsOf(l).map(w => w.kind);
+const pre = (clock, kind = 'pre') => ({ id: clock, kind, at: new Date(at(clock)).toISOString(), status: 'safe', driver_id: 'd1', defects: 0 });
+expect('No pre-trip once yard-out has passed with none since two hours before it; quiet with one, before yard-out, unread, or past the day of inspections',
+  [kinds(look({ bus: bus({ inspections: [pre('11:00'), pre('13:30', 'post')] }) })).includes('noPretrip'),
+    kinds(look({ bus: bus({ inspections: [pre('12:45')] }) })).includes('noPretrip'),
+    kinds(look({ bus: bus({ inspections: [] }), now: at('14:20') })).includes('noPretrip'),
+    kinds(look({ bus: bus({ inspections: null }) })).includes('noPretrip'),
+    kinds(look({ bus: bus({ inspections: [] }), now: at('14:30') + 23 * 3600e3 })).includes('noPretrip')],
+  [true, false, false, false, false]);
+expect('its words: since when, and the yard-out',
+  warningsOf(look({ bus: bus({ inspections: [] }) })).filter(w => w.kind === 'noPretrip').map(w => [w.tone, w.title, w.detail]),
+  [['warning', 'No pre-trip', 'None in Samsara since 7:30a']]);
 
 console.log('\n  Not rolling');
 const offAtYard = bus({ engine: 'off', engine_at: '2026-10-16T12:40:00Z', lat: yard[0], lng: yard[1] });

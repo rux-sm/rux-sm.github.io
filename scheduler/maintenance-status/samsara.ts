@@ -33,11 +33,12 @@
 // so the board can see a driver kept to rules that are not a bus driver's.
 // Null when Samsara's drivers cannot be read.
 // INSPECTIONS are the inspection reports drivers and mechanics filed in
-// Samsara for each bus in the last day, newest first: pre-trip, post-trip or
-// a mechanic's, when it was submitted, whether Samsara counts the bus safe,
-// unsafe or resolved, the scheduler driver who signed it where they match,
-// and how many defects it names. `inspections` is false when the key may not
-// read them.
+// Samsara for each bus in the last day, and any still unsafe from the last
+// thirty, newest first: pre-trip, post-trip or a mechanic's, when it was
+// submitted, whether Samsara counts the bus safe, unsafe or resolved, the
+// scheduler driver who signed it where they match, and how many defects it
+// names. A bus's `inspections` is null, and the answer's `inspections`
+// false, when the key may not read them.
 // OVER is how long a driver has been past their driving or cycle hours, from
 // the violation Samsara counts while it runs. A driver whose app is not
 // connected is still on Samsara's clocks with an empty duty, so comes back
@@ -71,8 +72,10 @@ export const REST_LOOK_MS = 24 * 3600_000
 // A full rest, and the least either period of a split may be.
 export const REST_FULL_MS = 8 * 3600_000
 export const SPLIT_MIN_MS = 2 * 3600_000
-// How far back a bus's inspections are read.
+// How far back a bus's inspections are read, and its unsafe ones, which
+// stand until a mechanic resolves them.
 export const INSPECT_LOOK_MS = 24 * 3600_000
+export const UNSAFE_LOOK_MS = 30 * 24 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
 
@@ -138,8 +141,9 @@ export type Deps = {
   clocks(): Promise<Clock[]>
   // Every Samsara driver with their hours rules.
   rules(): Promise<SamsaraDriver[]>
-  // The inspection reports submitted or changed between two instants.
-  dvirs(from: number, to: number): Promise<Dvir[]>
+  // The inspection reports submitted or changed between two instants, or
+  // only the unsafe ones.
+  dvirs(from: number, to: number, unsafe?: boolean): Promise<Dvir[]>
   // Each vehicle's GPS readings between two instants, by vehicle id.
   history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
   // The duty logs of the Samsara drivers named, between two instants.
@@ -190,7 +194,7 @@ export type LiveBus = {
   fault: 'stop' | 'check' | null
   faults: string[]
   drivers: LiveDriver[]
-  inspections: Inspection[]
+  inspections: Inspection[] | null
 }
 export type Inspection = {
   id: string
@@ -277,7 +281,7 @@ const KIND: Record<string, Inspection['kind']> = { preTrip: 'pre', postTrip: 'po
 const STATUS: Record<string, Inspection['status']> = { safe: 'safe', unsafe: 'unsafe', resolved: 'resolved' }
 
 /* A bus's inspections, newest first, each once however often Samsara
-   changed it; the signer is a scheduler driver where their Samsara id is
+   changed it, the later read standing; the signer is a scheduler driver where their Samsara id is
    one the clocks matched. */
 export function inspectionsOf(dvirs: Dvir[], vehicle: string, driverOf: Map<string, string>): Inspection[] {
   const byId = new Map<string, Inspection>()
@@ -434,7 +438,8 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     // Rules that cannot be read leave every driver's null, and the rest stands.
     deps.rules().catch(() => null),
     // Inspections that cannot be read leave every bus with none, and say so.
-    ids.length ? deps.dvirs(now - INSPECT_LOOK_MS, now).catch(() => { inspected = false; return [] as Dvir[] }) : Promise.resolve([] as Dvir[]),
+    ids.length ? Promise.all([deps.dvirs(now - INSPECT_LOOK_MS, now), deps.dvirs(now - UNSAFE_LOOK_MS, now, true)])
+      .then(([day, unsafe]) => [...unsafe, ...day]).catch(() => { inspected = false; return [] as Dvir[] }) : Promise.resolve([] as Dvir[]),
     // A path that cannot be read leaves the bus without one, and the rest stands.
     since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => null)
       : Promise.resolve({} as Record<string, Fix[]>),
@@ -505,7 +510,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         odometer: odometerOf(s),
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
-        inspections: inspectionsOf(dvirs, vehicle, driverOfSigner),
+        inspections: inspected ? inspectionsOf(dvirs, vehicle, driverOfSigner) : null,
         ...(since.has(vehicle) && history ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),

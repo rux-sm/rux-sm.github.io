@@ -20,6 +20,10 @@
        more than road.js's LATE_MIN after its spot.
      shortOnHours, amber: the driving hours left in the bus, every driver's
        added, do not cover the drive still planned before the next rest.
+     noPretrip, amber: yard-out has passed and Samsara has no pre-trip
+       inspection for the bus since PRETRIP_MS before it, asked only while
+       samsara-now's day of inspections reaches back that far, so a trip's
+       later days, and a bus whose inspections could not be read, are not.
    `phaseOf(look)` says where the bus is when nothing is wrong: At a stop, To
    the next one with when it gets there, or To the yard. `ridingOf(look)` is
    each driver the bar names whom Samsara has in another bus they ride, as
@@ -48,6 +52,10 @@
   const Road = window.SchedulerRoad;
   const BEFORE_MS = 10 * 60e3;
   const HOUR = 3600e3;
+  // A pre-trip this long before yard-out counts for the leg; samsara-now
+  // reads a day of inspections.
+  const PRETRIP_MS = 2 * HOUR;
+  const INSPECT_LOOK_MS = 24 * HOUR;
 
   const hours = ms => `${Math.floor(ms / HOUR)}:${String(Math.floor((ms % HOUR) / 60e3)).padStart(2, '0')}`;
   // An instant as the bar writes a time, "9:30a".
@@ -152,7 +160,19 @@
     };
   }
 
-  const RULES = [stopLamp, notRolling, wrongBus, lateToSpot, shortOnHours];
+  function noPretrip({ bus, yardOut, now }) {
+    if (!bus || !Array.isArray(bus.inspections) || yardOut == null || now < yardOut) return null;
+    const from = yardOut - PRETRIP_MS;
+    if (now - from > INSPECT_LOOK_MS) return null;
+    if (bus.inspections.some(i => i.kind === 'pre' && Date.parse(i.at) >= from)) return null;
+    return {
+      kind: 'noPretrip', tone: 'warning', title: 'No pre-trip',
+      detail: `None in Samsara since ${clock(from)}`,
+      sentence: `Samsara has no pre-trip inspection for this bus since ${clock(from)}, two hours before its ${clock(yardOut)} yard-out.`,
+    };
+  }
+
+  const RULES = [stopLamp, notRolling, wrongBus, lateToSpot, shortOnHours, noPretrip];
   const warningsOf = look => RULES.map(rule => rule(look)).filter(Boolean);
 
   function phaseOf({ next }) {
@@ -176,5 +196,5 @@
   // All a bar says of its bus, as road-bar.js draws it.
   const saidOf = look => ({ warnings: warningsOf(look), phase: phaseOf(look), riding: ridingOf(look) });
 
-  window.SchedulerLiveTrip = { BEFORE_MS, clock, hours, watching, warningsOf, phaseOf, ridingOf, saidOf };
+  window.SchedulerLiveTrip = { BEFORE_MS, PRETRIP_MS, clock, hours, watching, warningsOf, phaseOf, ridingOf, saidOf };
 })();

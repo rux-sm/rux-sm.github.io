@@ -582,7 +582,7 @@ button.scheduler-row-head__num::after {
 }
 /* The bus's marks beside the number: the papers' and out-of-service marks,
    and on the Mac's tile, where they stand in their own column, the engine's
-   lamp. */
+   lamp and an unsafe inspection. */
 .scheduler-row-head__kit {
   position: relative;
   pointer-events: none;
@@ -804,7 +804,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    beside its unit at 12px, two drop the square, leaving the state under the
    first line, and one is the first line alone. A phone's board keeps the narrow
    column above, so the parts only the tile shows are drawn here alone. */
-.scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__lamp) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__icon, .scheduler-row-head__lamp, .scheduler-row-head__unsafe) { display: none; }
 /* The tile's surface is Carbon's 96px, an even width its parts centre in on
    whole pixels, and the column's 1px rule stands beside it. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: var(--scheduler-tile-head); }
@@ -846,7 +846,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__lamp { display: inline-flex; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
 /* THE SQUARE CENTRES ON WHOLE PIXELS between the number's line and the
    row's foot: the head keeps the same 8px at its foot as under the line, so

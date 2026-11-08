@@ -28,6 +28,13 @@ the same steps, so nothing on the board stands a pixel or two off.
   drivers. Its parts then fill the same 108px the bar's words do, 18px from
   the row's top and from its line, where today they stand 9px and 10px
   around the square and 9px from the line.
+- **A low DEF takes line 6,** its name and percent in the warning colour in
+  the lift and sleeper's place, where today it grows the square and drops
+  them; the square keeps its 64px whatever it holds.
+- **A row of stacked trips keeps its tile on the first trip's lines.** Two
+  lanes make a 288px row, 16px between the bars, six driver rows beside it,
+  and the number stays level with the top bar's destination, the rest of the
+  tile empty below.
 - **A driver tile is its two 18px lines centred in its 48px row,** where
   today its lines are 18px, a 2px gap and 16px, 5px from the top and 6px
   from its line.
@@ -50,7 +57,17 @@ None open.
   the row.
 - [ ] Stand the bus tile's square and kit on the bar's lines, in the full
   view and every folded one, keeping each number centred.
+- [ ] Move a low DEF to line 6 of the bus tile and hold the square at 64px.
+- [ ] Hold the bus tile to the first lane of a row of stacked trips.
+- [ ] Write the board's geometry as one reference,
+  `scheduler/docs/board-layout.md`: for each tile its size, insets, gaps,
+  type and alignment, and for each view, six lines down to one and the
+  phone's board, which parts show on which lines, the bus column and driver
+  tile lines in `scheduler/docs/screen-inventory.md` linking to it in place
+  of their measures.
+- [ ] Draw the content states on `scheduler/components.html` with invented
+  content: a low DEF, no signal, a long name, a bus with an inspection date
+  only, a partner's bus and No bus, and measure each there.
 - [ ] Measure each tile in Chrome on :8641 in every row view and in Gray 100
-  and Rux 100, and update the bus column and driver tile lines in
-  `scheduler/docs/screen-inventory.md` and the comments in
-  `scheduler/app.css` with each change.
+  and Rux 100, and update the comments in `scheduler/app.css` with each
+  change.

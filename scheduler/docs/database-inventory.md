@@ -306,7 +306,7 @@ three of its codes in words, from a second call because Samsara gives three read
 odometer in whole miles, the engine's reading else the GPS's, from a third; for a bus the
 body's `paths` names, its path since the time given, a point a tenth of a mile, four days back at
 most; and the drivers logged in: each one's duty, the least of their three clocks as hours left, and
-who reports Driving duty, and how long each has been over their driving or cycle hours, with the key's Compliance permission, and the hours rules Samsara keeps each driver to, from its drivers list. A driver whose app is not connected comes back with no duty. Yard move and Personal conveyance
+who reports Driving duty, and how long each has been over their driving or cycle hours, with the key's Compliance permission, and the hours rules Samsara keeps each driver to, from its drivers list. Each bus has the inspections filed for it in Samsara in the last day, with the key's Read DVIRs permission: pre-trip, post-trip or a mechanic's, when, safe, unsafe or resolved, the driver who signed it and how many defects it names. A driver whose app is not connected comes back with no duty. Yard move and Personal conveyance
 remain distinct from On duty and Off duty. A resting driver has when the rest began, from a day of
 duty logs, and one in the sleeper when that run began and the earlier sleeper period of two hours or
 more it pairs with as a split, back to the last full eight hours; elapsed rest does not assert a reset of the clocks. Beside the buses it

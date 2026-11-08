@@ -32,6 +32,12 @@
 // and cycle in Samsara's words, "US Interstate Passenger, USA 70 hour / 8 day",
 // so the board can see a driver kept to rules that are not a bus driver's.
 // Null when Samsara's drivers cannot be read.
+// INSPECTIONS are the inspection reports drivers and mechanics filed in
+// Samsara for each bus in the last day, newest first: pre-trip, post-trip or
+// a mechanic's, when it was submitted, whether Samsara counts the bus safe,
+// unsafe or resolved, the scheduler driver who signed it where they match,
+// and how many defects it names. `inspections` is false when the key may not
+// read them.
 // OVER is how long a driver has been past their driving or cycle hours, from
 // the violation Samsara counts while it runs. A driver whose app is not
 // connected is still on Samsara's clocks with an empty duty, so comes back
@@ -65,6 +71,8 @@ export const REST_LOOK_MS = 24 * 3600_000
 // A full rest, and the least either period of a split may be.
 export const REST_FULL_MS = 8 * 3600_000
 export const SPLIT_MIN_MS = 2 * 3600_000
+// How far back a bus's inspections are read.
+export const INSPECT_LOOK_MS = 24 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
 
@@ -89,6 +97,15 @@ export type Faults = {
   oem?: { diagnosticTroubleCodes?: { codeDescription?: string; codeIdentifier?: string }[] }
 }
 export type Fix = { time: string; latitude: number; longitude: number }
+export type Dvir = {
+  id?: string
+  type?: string
+  safetyStatus?: string
+  dvirSubmissionTime?: string
+  vehicle?: { id?: string }
+  authorSignature?: { signatoryUser?: { id?: string }; type?: string }
+  defectIds?: string[]
+}
 export type SamsaraDriver = {
   id?: string
   eldSettings?: { rulesets?: { shift?: string; cycle?: string }[] }
@@ -121,6 +138,8 @@ export type Deps = {
   clocks(): Promise<Clock[]>
   // Every Samsara driver with their hours rules.
   rules(): Promise<SamsaraDriver[]>
+  // The inspection reports submitted or changed between two instants.
+  dvirs(from: number, to: number): Promise<Dvir[]>
   // Each vehicle's GPS readings between two instants, by vehicle id.
   history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
   // The duty logs of the Samsara drivers named, between two instants.
@@ -171,8 +190,17 @@ export type LiveBus = {
   fault: 'stop' | 'check' | null
   faults: string[]
   drivers: LiveDriver[]
+  inspections: Inspection[]
 }
-export type Answer = { at: string; hours: boolean; buses: LiveBus[]; drivers: LiveDriver[] }
+export type Inspection = {
+  id: string
+  kind: 'pre' | 'post' | 'mechanic' | 'other'
+  at: string
+  status: 'safe' | 'unsafe' | 'resolved' | null
+  driver_id: string | null
+  defects: number
+}
+export type Answer = { at: string; hours: boolean; inspections: boolean; buses: LiveBus[]; drivers: LiveDriver[] }
 
 // The pages that ask: the site, and its log-in preview.
 const ORIGINS = new Set([
@@ -243,6 +271,29 @@ export function liveDriver(c: Clock, index: Map<string, string>): LiveDriver {
     split_ms: null,
     wheel: false,
   }
+}
+
+const KIND: Record<string, Inspection['kind']> = { preTrip: 'pre', postTrip: 'post', mechanic: 'mechanic' }
+const STATUS: Record<string, Inspection['status']> = { safe: 'safe', unsafe: 'unsafe', resolved: 'resolved' }
+
+/* A bus's inspections, newest first, each once however often Samsara
+   changed it; the signer is a scheduler driver where their Samsara id is
+   one the clocks matched. */
+export function inspectionsOf(dvirs: Dvir[], vehicle: string, driverOf: Map<string, string>): Inspection[] {
+  const byId = new Map<string, Inspection>()
+  for (const d of dvirs) {
+    if (String(d.vehicle?.id ?? '') !== vehicle || !d.id || !d.dvirSubmissionTime) continue
+    const signer = d.authorSignature?.signatoryUser?.id
+    byId.set(String(d.id), {
+      id: String(d.id),
+      kind: KIND[d.type ?? ''] ?? 'other',
+      at: d.dvirSubmissionTime,
+      status: STATUS[d.safetyStatus ?? ''] ?? null,
+      driver_id: signer ? driverOf.get(String(signer)) ?? null : null,
+      defects: Array.isArray(d.defectIds) ? d.defectIds.length : 0,
+    })
+  }
+  return [...byId.values()].sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
 }
 
 /* A driver's hours rules, each ruleset's shift and cycle; null when the
@@ -376,11 +427,14 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     if (Number.isFinite(at)) since.set(p.vehicle, Math.min(Math.max(at, now - PATH_MS), now))
   }
   let hours = true
-  const [stats, clocks, samsaraDrivers, history] = await Promise.all([
+  let inspected = true
+  const [stats, clocks, samsaraDrivers, dvirs, history] = await Promise.all([
     ids.length ? deps.stats(ids) : Promise.resolve([] as Stat[]),
     deps.clocks().catch(() => { hours = false; return [] as Clock[] }),
     // Rules that cannot be read leave every driver's null, and the rest stands.
     deps.rules().catch(() => null),
+    // Inspections that cannot be read leave every bus with none, and say so.
+    ids.length ? deps.dvirs(now - INSPECT_LOOK_MS, now).catch(() => { inspected = false; return [] as Dvir[] }) : Promise.resolve([] as Dvir[]),
     // A path that cannot be read leaves the bus without one, and the rest stands.
     since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => null)
       : Promise.resolve({} as Record<string, Fix[]>),
@@ -388,6 +442,8 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   const statOf = new Map(stats.map(s => [String(s.id), s]))
   const index = driverIndex(drivers)
   const inVehicle = new Map<string, LiveDriver[]>()
+  // The scheduler driver behind each Samsara driver id, for who signed an inspection.
+  const driverOfSigner = new Map<string, string>()
   // Every scheduler driver Samsara keeps a clock for, in a bus or not.
   const known: LiveDriver[] = []
   // The Samsara driver behind each one resting who is answered, in a bus
@@ -398,6 +454,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     const v = c.currentVehicle?.id ? String(c.currentVehicle.id) : null
     const d = liveDriver(c, index)
     d.rules = rulesOf(samsaraDrivers, c.driver?.id)
+    if (c.driver?.id && d.driver_id) driverOfSigner.set(String(c.driver.id), d.driver_id)
     if (d.driver_id) known.push(d)
     if ((d.driver_id || (v && answered.has(v))) && ['sleeper', 'off', 'personal'].includes(d.duty ?? '') && c.driver?.id) resting.set(String(c.driver.id), d)
     if (v) inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])
@@ -418,6 +475,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   return {
     at: new Date(now).toISOString(),
     hours,
+    inspections: inspected,
     buses: pairs.map(({ bus, vehicle }) => {
       const s = statOf.get(vehicle)
       const engineAt = s?.engineState ? Date.parse(s.engineState.time) : NaN
@@ -447,6 +505,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         odometer: odometerOf(s),
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
+        inspections: inspectionsOf(dvirs, vehicle, driverOfSigner),
         ...(since.has(vehicle) && history ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),

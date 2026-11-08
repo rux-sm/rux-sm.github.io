@@ -24,7 +24,10 @@ and is what `scheduler/app.css` draws; what each part says is in
 
 ## The trip bar, on six lines
 
-128px tall, 10px above and below its lines and 8px at its sides.
+128px tall, 10px above and below its lines and 8px at its sides. A bar
+that spans days is a one-day bar's width in its colour, its head, and its
+colour's next darker step after that, its tail, so the head lines up with
+the one-day bars above and below it.
 
 | Line | Holds |
 | :--- | :--- |

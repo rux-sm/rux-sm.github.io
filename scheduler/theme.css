@@ -411,13 +411,35 @@
    An end that runs into another week has no edge of its own. */
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar {
   background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
-    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), var(--scheduler-footer-paint);
+    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), var(--scheduler-tail-paint);
   background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%, 100% 100%;
   background-position: 0 0, 0 100%, 0 0, 100% 0, 0 0;
   background-repeat: no-repeat;
 }
 .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 .scheduler-bar--to-next { --scheduler-edge-end: 0px; }
+/* THE TAIL IS CARBON'S NEXT STEP DOWN in the themes built on its palette:
+   a light theme's 10 tint is 20 in the tail, its greys 20 then 30, and a
+   dark theme's 70 is 80. */
+:is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar { --scheduler-tail-hover: var(--scheduler-bg); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--gray      { --scheduler-tail: var(--rux-gray-30); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-cool-gray-30); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--blue      { --scheduler-tail: var(--rux-blue-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--cyan      { --scheduler-tail: var(--rux-cyan-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--teal      { --scheduler-tail: var(--rux-teal-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--green     { --scheduler-tail: var(--rux-green-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--purple    { --scheduler-tail: var(--rux-purple-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--red       { --scheduler-tail: var(--rux-red-20); }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--amber     { --scheduler-tail: var(--rux-yellow-20); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--gray      { --scheduler-tail: var(--rux-gray-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-cool-gray-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--blue      { --scheduler-tail: var(--rux-blue-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--cyan      { --scheduler-tail: var(--rux-cyan-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--teal      { --scheduler-tail: var(--rux-teal-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--green     { --scheduler-tail: var(--rux-green-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--purple    { --scheduler-tail: var(--rux-purple-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--red       { --scheduler-tail: var(--rux-red-80); }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--amber     { --scheduler-tail: var(--rux-yellow-80); }
 
 /* THE FOUR HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
    the roster's head, the trip editor's head and the document panel's head
@@ -970,7 +992,7 @@
    stay free for the week's run-on marks and the selection ring. A bar that
    runs on from last week has no start here and takes none. */
 [data-theme^="apple-"] .scheduler-bar:not(.scheduler-bar--from-prev) {
-  background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-footer-paint);
+  background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-tail-paint);
   background-size: 3px 100%, 100% 100%;
   background-repeat: no-repeat;
 }
@@ -988,7 +1010,7 @@
     background-image:
       radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
       radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
-      linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-footer-paint);
+      linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-tail-paint);
     background-size: 3px 3px, 3px 3px, 3px calc(100% - 11px), 100% 100%;
     background-position: 4px 4px, 4px calc(100% - 4px), 4px 5.5px, 0 0;
   }
@@ -1256,16 +1278,15 @@
   --scheduler-footer-warning: var(--rux-status-yellow);
 }
 
-/* A BAR IS ONE TONE IN EVERY THEME: its update and drivers stand on the
-   bar's own fill in its own ink, with no darker band under them, so a trip
-   is one shape on the board, not two. The footer's tokens follow the bar,
+/* A BAR'S LINES STAND ON ITS OWN FILL IN EVERY THEME: its update and
+   drivers in its own ink, with no darker band under them, so a trip is one
+   shape on the board, not two. The footer's tokens follow the bar,
    so the update's hover fill is a step off the bar's own colour, and the
    footer lightens with the bar under the pointer, as the body does. */
 [data-theme] .scheduler-bar {
   --scheduler-footer-base: var(--scheduler-bg);
   --scheduler-footer: var(--scheduler-footer-base);
   --scheduler-footer-fg: var(--scheduler-fg);
-  --scheduler-footer-paint: none;
 }
 [data-theme] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* ONE STATUS STEP PER THEME, on a trip and off it. A status reads in one

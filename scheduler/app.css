@@ -1298,6 +1298,8 @@ button.scheduler-row-head__num:focus { outline: none; }
   --scheduler-strong: var(--rux-icon-secondary);
   --scheduler-dim: initial;
   --scheduler-border: var(--rux-border-tile);
+  --scheduler-tail: initial;
+  --scheduler-tail-hover: initial;
 }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-bar__dest { color: var(--rux-text-primary); }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__count,
@@ -1513,15 +1515,31 @@ button.scheduler-row-head__num:focus { outline: none; }
   --scheduler-age-week: var(--scheduler-footer-warning);
   --scheduler-mark-warning: var(--scheduler-footer-warning);
 }
+/* A BAR'S TAIL: past where a one-day bar beside it would end, a bar that
+   spans days is its colour's next darker step, so its words read as the
+   bar's head and the rest as how long the trip runs. The tail is the days
+   after the first, less what the far end gives a yard card, worked from the
+   bar's own width since a day's may be a share of the week, and lifts to
+   the bar's own colour under the pointer as the head lifts to its hover. A
+   theme gives `--scheduler-tail` per colour; one that does not, and a trip
+   that is back, which has given its colour up, is one tone. The paint is
+   the last of a bar's background layers in every theme. The Mac's board
+   alone has it. */
 .scheduler-bar {
-  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), transparent 0);
-  background-image: var(--scheduler-footer-paint);
+  --scheduler-tail-w: max(0px, calc((100% + var(--scheduler-gap) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px))
+    * (var(--scheduler-span) - 1) / var(--scheduler-span) - var(--scheduler-cut-end, 0px)));
+  --scheduler-tail-now: var(--scheduler-tail, transparent);
+  --scheduler-tail-paint: linear-gradient(to left, var(--scheduler-tail-now) var(--scheduler-tail-w), transparent 0);
+  background-image: var(--scheduler-tail-paint);
   background-size: 100% 100%;
   background-position: 0 0;
   background-repeat: no-repeat;
 }
-.scheduler-week--no-update, .scheduler-week--no-drivers { --scheduler-footer-rows: 1; }
-.scheduler-week--no-update.scheduler-week--no-drivers { --scheduler-footer-rows: 0; }
+.scheduler-bar:hover { --scheduler-tail-now: var(--scheduler-tail-hover, transparent); }
+.scheduler-bar[aria-current="true"]:hover { --scheduler-tail-now: var(--scheduler-tail, transparent); }
+/* A phone's bar lays its lines across the whole trip, so it has no head
+   and no tail. */
+.scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-tail-paint: none; }
 .scheduler-bar__age { flex: none; font-size: var(--rux-label-01-font-size); opacity: .85; }
 /* A live bar's times are the times row's size too, so the trip on the road
    reads as every other. */
@@ -7036,9 +7054,6 @@ html[data-scheduler-takeover] {
   transition: none;
 }
 
-
-.scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-footer-paint: none; }
-.scheduler-week--no-update.scheduler-week--no-drivers .scheduler-bar { --scheduler-footer-paint: none; }
 
 .scheduler-card__edit { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-card__edit .rux--text-area { inline-size: 100%; }

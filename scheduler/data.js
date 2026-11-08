@@ -253,13 +253,6 @@
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
   }
-  // The bus's type's drawing alone, in the head's own ink, before the number.
-  function busIcon(bus) {
-    const mark = el('span', 'scheduler-row-head__icon');
-    mark.setAttribute('aria-hidden', 'true');
-    mark.appendChild(svgUse(window.SchedulerVehicles?.iconOf(bus.type) ?? '#m-directions_bus-fill', '16', '0 0 32 32'));
-    return mark;
-  }
   /* After the number, the one alert every bar and driver tile wears: the
      warning triangle while the bus has a mark, the error circle while one is
      red. app.css shows the one the kit's worst mark asks for, and keeps its
@@ -1254,8 +1247,7 @@
        so its opening moves no active row. */
     const retired = b => b.status !== 'active';
     /* Grouped by type in the order of the office's vehicle-types list, fleet
-       order kept within a type, so a van never reads as the next coach down.
-       Each bus's head draws its type's icon, so no band parts the groups; a
+       order kept within a type, so a van never sits between two coaches; a
        type the list lacks follows every listed one. */
     const typeList = window.SchedulerVehicles?.types ?? [];
     const typeKey = b => String(b.type || '').trim().toLowerCase();
@@ -1404,13 +1396,11 @@
       if (r.empty) rowEl.hidden = true;
 
       /* The head is the bus number, its marks and the bus's own state, which
-         bus-head.js draws under them, and on the Mac's board the bus's type
-         beside the number; the rest of what the bus knows is in the number's
-         toggletip and the head's title. */
+         bus-head.js draws under them; the rest of what the bus knows, its
+         type among it, is in the number's toggletip and the head's title. */
       const head = el('div', 'scheduler-row-head');
       const top = el('div', 'scheduler-row-head__top');
       head.appendChild(top);
-      if (r.bus) top.appendChild(busIcon(r.bus));
       if (r.bus) head.dataset.busId = r.bus.id;
       // "No bus" wraps in the narrow column, and the head's title carries the sense.
       /* The number is a toggletip trigger, with the structure from

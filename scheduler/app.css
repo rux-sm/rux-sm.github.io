@@ -4013,16 +4013,18 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__days > :not(.scheduler-avail__day--on-day) + .scheduler-avail__day--on-day { border-start-start-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--on-day:not(:has(+ .scheduler-avail__day--on-day)) { border-start-end-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
-/* The roster's corner, sticky in both axes, holding the Sort button. Its
-   ghost button stands 8px in, so its label falls on the names' own 16px
-   inset. Declared here, after `.scheduler-avail__day`, whose zero padding
-   and centring also match this cell at the same specificity. */
+/* The roster's corner, sticky in both axes, holding the Sort button flush
+   to its edge and the band's full height, as the toolbar's buttons stand,
+   so its open menu hangs from the band's foot; the button's own inset puts
+   its label on the names' 16px. Declared here, after `.scheduler-avail__day`,
+   whose zero padding and centring also match this cell at the same
+   specificity. */
 .scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
   display: flex;
-  align-items: center;
-  padding-inline: var(--rux-spacing-03);
+  align-items: stretch;
+  padding-inline: 0;
   text-align: start;
 }
 

@@ -783,12 +783,11 @@ button.scheduler-row-head__num:focus { outline: none; }
   -webkit-user-select: none;
   user-select: none;
 }
-/* The roster's day rule is `border-subtle-01`, the token the row rules use,
-   at half its strength: each driver reads as one row, and the days are still
-   there to find where a booking starts. Mixed toward transparent rather than
-   to another token, so it is half as strong in every theme. The board draws
-   none: its 8px gaps and the day band say where a day starts. */
-.scheduler-avail__cell { --scheduler-day-rule: color-mix(in srgb, var(--rux-border-subtle-01) 50%, transparent); }
+/* No rule runs between the days in the roster, as none does on the board:
+   each driver keeps the line under its row, the day band names the columns,
+   and the marks show where a day starts. The names stand behind their own
+   rule, as the bus column's numbers do, from the day band down. */
+.scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
    ON THE MAC'S BOARD THE BUS COLUMN IS THE BUS'S TILE, 96px, 8px in from
@@ -3770,10 +3769,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
 .scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
 
-/* A rule parts two weeks of days. */
-.scheduler-avail__cell--week,
-.scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
-
 /* The rail's rows are 48px, Carbon's table row, their lines inside them as
    a Carbon table row's are: the one under every row and the one over the
    first of a priority. Three stand beside a six-line board's 144px bus row,
@@ -4044,12 +4039,6 @@ a.scheduler-tip__go { text-decoration: none; }
 @supports (block-size: round(1px, 1px)) {
   .scheduler-avail__cell { --scheduler-mark-top: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-mark-h)) / 2), 1px); }
 }
-/* The day rules in the roster: every body cell rules its start edge, the first
-   included, so each day's box is the same and every mark is the same size, 2px
-   inside the rules either side. Only body rows use `__cell`, so no rule
-   enters the header row. It is the board's day rule, at the same half
-   strength, so a driver reads as one row as a bus does beside it. */
-.scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
 /* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
    days: a booking's box in the success tint with the success edge, and one
    check at the middle of the slot in the success ink, so it reads as room
@@ -4070,9 +4059,9 @@ a.scheduler-tip__go { text-decoration: none; }
   background: var(--scheduler-free-fill, color-mix(in oklab, var(--rux-support-success) 12%, transparent));
 }
 /* One slot over the days, as a booking is one bar: a day joined to the next
-   runs over the rule between them and leaves its edge to that day. */
+   runs to that edge of its cell and leaves its edge to that day. */
 .scheduler-avail__cell--whole:has(+ .scheduler-avail__cell--whole)::after {
-  inset-inline-end: -1px;
+  inset-inline-end: 0;
   border-inline-end-width: 0;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
@@ -4121,9 +4110,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* ONE LEG OR ONE STRETCH OF TIME OFF IS ONE BAR, as the board draws a trip: a
    day joined to the next runs to that edge of its cell and squares its
-   corners there, and the day it joins does the same and covers the day rule
-   between them, which needs its cell to let the mark out. The first day shown
-   keeps the rule beside the names, having no joined cell before it. */
+   corners there, and the day it joins does the same. */
 .scheduler-avail__cell--to-next::after {
   inset-inline-end: 0;
   border-inline-end-width: 0;
@@ -4136,8 +4123,6 @@ a.scheduler-tip__go { text-decoration: none; }
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
-.scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev { overflow: visible; }
-.scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev::after { inset-inline-start: -1px; }
 .scheduler-avail__cell > span {
   overflow: hidden;
   text-overflow: ellipsis;

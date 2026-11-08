@@ -11714,13 +11714,11 @@
       cell.appendChild(el('span', 'scheduler-avail__letter', [...short].slice(0, 1).join('')));
       cell.title = d.toLocaleDateString(undefined, two
         ? { weekday: 'long', month: 'short', day: 'numeric' } : { weekday: 'long' });
-      // Weekend letters dim, as the board's day header does; the day rules are
-      // drawn in the body only.
+      // Weekend letters dim, as the board's day header does.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
       // Today is marked on its letter, as on the board's header.
       if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);
-      if (i === 7) cell.classList.add('scheduler-avail__day--week');
       head.appendChild(cell);
     }
     availGrid.appendChild(head);
@@ -11754,7 +11752,6 @@
           : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
-        if (i === 7) cell.classList.add('scheduler-avail__cell--week');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
         if (rest?.hours != null && rest.hours < REST_SHORT_HOURS) cell.classList.add('scheduler-avail__cell--short');

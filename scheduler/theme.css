@@ -835,15 +835,6 @@
    that say it, so a run of booked days stays one blue bar.
    A day free for the picked trip carries the shared check or caution, in
    Geist's green 900 and amber 900, the theme's success and warning. */
-/* No rule runs between the days in the roster, as none does on the board:
-   each driver keeps the line under its row, the day band names the
-   columns, and the marks themselves show where a day starts. */
-[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__cell {
-  --scheduler-day-rule: transparent;
-}
-/* No second, lighter rule parts the priority groups, so every line in the
-   roster is the board's; the priority stays on each name's title. */
-[data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: var(--geist-blue-800);
   color: var(--geist-white);
@@ -853,16 +844,6 @@
   --scheduler-avail-fill: var(--geist-red-800);
   color: var(--geist-white);
 }
-/* The rule that parts the two weeks in the day band goes, its width kept as
-   padding so the letters do not move: the letters repeat, M after S, and say
-   where the week turns. */
-[data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--week { border-inline-start: 0; padding-inline-start: 1px; }
-/* The days draw no rule at all, rather than a clear one: a clear 1px rule
-   still takes its corner of the row's line under it, which left a notch in
-   the line at every day. The names stand behind their own rule, as the bus
-   column's numbers do, from the day band down. */
-[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__cell { border-inline-start: 0; }
-[data-theme="rux-100"] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

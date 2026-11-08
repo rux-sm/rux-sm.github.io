@@ -37,6 +37,8 @@
     { id: 'b105', number: '105', capacity: 56, type: 'Coach' },
     { id: 'b106', number: '106', capacity: 56, type: 'Coach', sleeper: true },
     { id: 'b119', number: '119', capacity: 56, type: 'Coach' },
+    { id: 'b120', number: '1207 Prevost (sold)', capacity: 56, type: 'Coach' },
+    { id: 'b121', number: '121', capacity: 56, type: 'Coach', ada_lift: true, inspection_exp: dateAt(Date.now() + 12 * DAY) },
   ].map(b => ({ status: 'active', ada_lift: false, sleeper: false, equipment: {}, ...b }));
   const DRIVERS = [
     { id: 'd1', name: 'Marco Ruiz', short_name: 'Marco', phone: '9565550188' },
@@ -491,7 +493,36 @@
         sample(road, 'Two drivers'),
       ],
     };
-    return { busesById, driversById, partnersById, statuses, sections: [icons, tripBar, crew, alerts, handled, road, tips] };
+    /* THE BUS TILE, a bus's head on the Mac's board of six lines, each with
+       what samsara-now says of it, `live`, or null for a bus it does not
+       answer for. */
+    const tile = (bus, live, ...bars) => ({ head: busesById.get(bus).number, bus, live, bars });
+    const tileLive = o => ({ engine: 'off', engine_at: new Date(now - 6 * HOUR).toISOString(), fuel: 80, def: 60, fault: null, faults: [], ...o });
+    const busTile = {
+      id: 'bus-tile', title: 'The bus tile',
+      intro: 'A bus\'s head on the Mac\'s board, on its bar\'s six lines: the number on line 1, the readings square on lines 2 to 5, and the lift, the sleeper or a low DEF on line 6.',
+      samples: [
+        { name: 'Moving', note: 'The speed in green over mph and the fuel, the lift and sleeper on line 6.', days: 3, tiles: true,
+          rows: [tile('b101', tileLive({ engine: 'on', engine_at: new Date(now - 2 * HOUR).toISOString(), mph: 58, fuel: 70 }),
+            bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [crewed('b101')] })))] },
+        { name: 'A low DEF', note: 'Idling past 30 minutes in amber, a low tank in orange, and DEF on line 6 in the kit\'s place, the square kept at 64px.', days: 3, tiles: true,
+          rows: [tile('b106', tileLive({ engine: 'idle', engine_at: new Date(now - 34 * MIN).toISOString(), fuel: 22, def: 9 }),
+            bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b106')] })))] },
+        { name: 'No signal', note: 'A dash over how long since Samsara last heard the bus, the state and fuel faded.', days: 3, tiles: true,
+          rows: [tile('b103', { engine: null, seen: new Date(now - 25 * MIN).toISOString(), fuel: 64 },
+            bar(trip({ customer: 'Harbor Tours', destination: 'Galveston, TX', buses: [crewed('b103')] })))] },
+        { name: 'A long number', note: 'Cut short with an ellipsis on line 1, the whole of it in the tip and title.', days: 3, tiles: true,
+          rows: [tile('b120', tileLive({}), bar(trip({ customer: 'Northside Band', destination: 'Austin, TX', buses: [crewed('b120')] })))] },
+        { name: 'An inspection date only', note: 'A bus Samsara does not answer for holds its inspection in the square, amber within 45 days.', days: 3, tiles: true,
+          rows: [tile('b121', null, bar(trip({ customer: 'Mesa Robotics Club', destination: 'Houston, TX', buses: [crewed('b121')] })))] },
+        { name: 'A partner\'s bus and No bus', note: 'A partner\'s row is headed with its name and No bus with its words, neither with a tile.', days: 3, tiles: true,
+          rows: [partnerRowOf('p1', bar(covered, { slot: 1 })), row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
+        { name: 'Stacked trips', note: 'Two trips on one day make a 288px row, 16px between the bars, and the tile keeps to the first trip\'s lines.', days: 3, tiles: true,
+          rows: [tile('b105', tileLive({}), bar(trip({ customer: 'Riverbend Seniors', destination: 'San Antonio, TX', buses: [crewed('b105')] }), { span: 2 }),
+            bar(trip({ customer: 'Lakeview High School', destination: 'Corpus Christi, TX', buses: [crewed('b105')] }), { start: 1, span: 2 }))] },
+      ],
+    };
+    return { busesById, driversById, partnersById, statuses, sections: [icons, tripBar, busTile, crew, alerts, handled, road, tips] };
   }
 
   window.SchedulerComponentsData = { build };

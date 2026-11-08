@@ -26,6 +26,7 @@
   const Live = window.SchedulerLiveTrip;
   const Tips = window.SchedulerTripTips;
   const Sheet = window.SchedulerTripSheet;
+  const BusHead = window.SchedulerBusHead;
   const { legsOf, assignLanes, legByKey, legKeyOfVehicle } = window.SchedulerWeek;
   const page = root.closest('.scheduler-page') ?? root;
 
@@ -161,18 +162,38 @@
   const shows = r => (view.compact ? COMPACT[r] : view[r]);
   function showRows(board) {
     for (const r of ROWS) board.classList.toggle(HIDE_ROW[r], !shows(r));
-    board.style.setProperty('--scheduler-bar-rows', String(1 + ROWS.filter(shows).length));
+    // The count and the attribute app.css keys each view's parts to, as data.js sets both.
+    const rows = String(1 + ROWS.filter(shows).length);
+    board.style.setProperty('--scheduler-bar-rows', rows);
+    board.dataset.barRows = rows;
+  }
+
+  /* A bus's tile as the board draws it, its number and alert on line 1,
+     bus-head.js's readings and its kit. */
+  function tileOf(head, bus, live) {
+    const top = el('div', 'scheduler-row-head__top');
+    // A button, as the board's number is the button of its tip.
+    const num = el('button', 'scheduler-row-head__num', bus.number);
+    num.type = 'button';
+    top.append(num, BusHead.alertEl());
+    head.appendChild(top);
+    head.dataset.busId = bus.id;
+    head.title = [bus.number, `${bus.capacity} pax`, bus.type].join(' · ');
+    BusHead.draw(head, bus, live);
+    head.appendChild(BusHead.equipEl(bus));
   }
 
   function boardOf(sample, data) {
-    const board = el('div', 'scheduler-week scheduler-components__board');
+    // A sample of the Mac's bus tile is drawn on a board of the Mac's own kind.
+    const board = el('div', `scheduler-week scheduler-components__board${sample.tiles ? ' scheduler-week--scroll' : ''}`);
     board.style.setProperty('--scheduler-days', sample.days);
     const grid = el('div', 'scheduler-grid');
     for (const r of sample.rows) {
       const none = r.head === 'No bus';
       const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : r.partner ? ' scheduler-row--partner' : ''}`);
       const head = el('div', 'scheduler-row-head');
-      head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
+      if (r.bus) tileOf(head, data.busesById.get(r.bus), r.live);
+      else head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
       if (none) head.title = 'Trips with no bus yet';
       if (r.partner) head.title = `${r.head}, a partner covering buses with its own coach and driver`;
       const track = el('div', 'scheduler-track');

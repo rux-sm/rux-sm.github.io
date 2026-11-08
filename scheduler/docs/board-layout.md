@@ -71,3 +71,13 @@ six lines alone.
 | 3 | 80px, 13px | 96px | Number; square 28px, the state beside its unit |
 | 2 | 48px, 6px | 64px | Number; the state on line 2, no square |
 | 1 | 32px, 7px | 48px | The number alone |
+
+## The phone's board
+
+A phone's board is the compact view whatever the View menu holds: three
+lines, the destination, the times and the drivers. Its bar is those lines
+and 6px above and below them, 66px, in a row of 82px, and is not rounded to
+16px as the Mac's is. The bus column is the narrow one, 41px: the number on
+line 1, level with the destination, and under it, from line 2, the state
+and fuel centred in what the row leaves, across every lane of a row of
+stacked trips. The lift and sleeper are not drawn there.

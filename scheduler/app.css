@@ -349,12 +349,12 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* None at the sides, so the state's display fills the column, and at the top 1px under where the bar's lines start,
-     its clear space and its own padding, so the number stands level with the
-     destination; the last row's foot lands over the row rule by the track's
+  /* None at the sides, so the state's display fills the column, and at the
+     top where the bar's lines start, its clear space and its own padding, so
+     each of the head's rows stands level with one of the bar's lines; the last row's foot lands over the row rule by the track's
      own gap, so no padding is needed below, and none is set, or the head
      would stand taller than its track. */
-  padding: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 1px) 0 0;
+  padding: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block)) 0 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -381,9 +381,11 @@
    dot. A bus with no tracker has its inspection in the state's place. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
 .scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__gauges, .scheduler-row-head__insp) { grid-column: 1; }
-/* The number's row a pixel up, out of the head's 8px, so it stands level
-   with the destination, whose line starts 7px down the bar. */
-.scheduler-row-head__top { grid-row: 1; align-self: start; margin-block-start: -1px; }
+/* The number on the first row, level with the destination, a partner's
+   name and No bus, which stand in the head with no row of their own, the
+   same. */
+.scheduler-row-head__top,
+.scheduler-row-head > .scheduler-row-head__num { grid-row: 1; align-self: start; }
 .scheduler-row-head__insp { grid-row: 2; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__insp { grid-row: 2 / span 3; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__insp { grid-row: 2 / span 2; }
@@ -814,7 +816,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   gap: var(--rux-spacing-02);
   padding-inline: var(--rux-spacing-03);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; margin-block-start: -1px; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; }
 /* WHILE THE BUS HAS A MARK, THE ALERT FOLLOWS ITS NUMBER, the warning
    triangle in amber, or the error circle in red where a mark is red, the
    two every trip bar and driver tile wear, so one mark means one thing on
@@ -7000,6 +7002,9 @@ html[data-scheduler-takeover] {
    size to nothing: the column takes the corner's own floor instead, 69px,
    or the compact board's narrow column. */
 .scheduler-components__board { --scheduler-head-w: var(--scheduler-head-min); }
+/* A sample of the Mac's bus tile keeps the board's own column: the tile and
+   the clear space beside it. */
+.scheduler-components__board.scheduler-week--scroll { --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge)); }
 /* A sample's tip stands in the page under its bar rather than floating
    over it: a toggletip in the flow, which overrides.css lays out there; the
    live card as wide as two days and as tall as it needs, to the board's

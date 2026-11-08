@@ -253,21 +253,6 @@
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
     return disc;
   }
-  /* After the number, the one alert every bar and driver tile wears: the
-     warning triangle while the bus has a mark, the error circle while one is
-     red. app.css shows the one the kit's worst mark asks for, and keeps its
-     room when there is none, so the number never moves; the kit's own marks
-     carry the words. */
-  function busAlert() {
-    const alert = el('span', 'scheduler-row-head__alert');
-    alert.setAttribute('aria-hidden', 'true');
-    const warning = svgUse('#i-warning--alt--filled', '16', '0 0 32 32');
-    warning.dataset.tone = 'warning';
-    const error = svgUse('#i-warning--filled', '16', '0 0 32 32');
-    error.dataset.tone = 'error';
-    alert.append(warning, error);
-    return alert;
-  }
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-tip');
     const head = el('div', 'scheduler-tip__head');
@@ -1405,7 +1390,7 @@
         // The caret is the popover's own last child, where Carbon draws it.
         pop.append(content, el('span', 'rux--popover-caret'));
         tip.append(trigger, pop);
-        top.append(tip, busAlert());
+        top.append(tip, BusHead.alertEl());
       } else {
         top.append(el('div', 'scheduler-row-head__num', r.partner ? r.partner.name : 'No\nbus'));
       }
@@ -1425,23 +1410,7 @@
       const windows = windowsOf(r);
       if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
 
-      /* The bus's kit on the head's last row: its sleeper and its lift,
-         each in its own place down the column, and an empty place where the
-         bus lacks one, so the lifts stand in one line. The number's tip and
-         title name them, and its seats, for the reader. */
-      if (r.bus) {
-        const equip = el('div', 'scheduler-row-head__equip');
-        for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
-          const t = el('span', 'scheduler-row-head__tile');
-          if (on) {
-            t.setAttribute('role', 'img');
-            t.setAttribute('aria-label', label);
-            t.appendChild(svgUse(href, '16', '0 0 32 32'));
-          }
-          equip.appendChild(t);
-        }
-        head.appendChild(equip);
-      }
+      if (r.bus) head.appendChild(BusHead.equipEl(r.bus));
 
       const track = el('div', 'scheduler-track');
       if (r.bus) track.dataset.busId = r.bus.id;

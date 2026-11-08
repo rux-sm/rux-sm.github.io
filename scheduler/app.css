@@ -2875,9 +2875,9 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The roster's head, on the pane's surface like the toolbar: a title over a
    region, not a column-header band. Its height comes from the same size token
    as the toolbar's, so the head and the toolbar end on one line. Its title
-   stands 32px in, as Carbon's side panel sets the Forms and Quote calculator
-   panels' titles, so every pane that opens in that place titles itself at
-   one inset. */
+   stands on the inset of what the pane holds: 32px in the Tasks and
+   Departures lists, whose rows stand 32px in, and 16px in the roster below,
+   whose Sort and names stand there. */
 .scheduler-aside__head {
   display: flex;
   align-items: center;
@@ -2896,7 +2896,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-aside__head {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-.scheduler-aside > .scheduler-aside__head { border-block-end: 0; }
+.scheduler-aside > .scheduler-aside__head {
+  border-block-end: 0;
+  padding-inline-start: var(--rux-spacing-05);
+}
 /* `heading-compact-02`, 16px at 600: the same style as the week name in the
    toolbar and the trip editor's title, so the three section heads read as one
    set. The column headings beneath them are 14px. */

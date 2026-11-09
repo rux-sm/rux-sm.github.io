@@ -264,7 +264,7 @@ week folds first.
 | **On the Drivers page** | The same week, nothing highlighted. |
 | **A popover** | The Driver card, from a press anywhere on a tile. |
 
-Shut, the rail is the tiles alone, 128px. Its head stands level with the
+Shut, the rail is the tiles alone, 160px. Its head stands level with the
 board's toolbar and holds its title, Drivers, 16px in over the names, and a chevron; its band stands level with the day
 band and holds Sort, a ghost button naming the rail's order in the text colour with Carbon's sort arrows, which
 opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 48px, Carbon's lg table row,
@@ -275,7 +275,7 @@ order the office calls drivers in, a name's title saying it; Time left puts
 the most driving time Samsara says a driver has first and a driver with no
 clock last, taken as the rail is drawn, so the rows hold still between
 Samsara's answers. The chevron slides the
-week out beside the tiles, seven 40px days, 408px in all, and every page load starts with it shut. A trip or time off is a
+week out beside the tiles, seven 40px days and 4px at each end, 448px in all, and every page load starts with it shut. A trip or time off is a
 bar across its days as a trip is on the board, its sizes in `scheduler/docs/board-layout.md`; a rest's hours stand centred on it; no rule runs between the days, only the one
 behind the names, from the day band down, which goes with the week shut. With a trip selected,
 its days are shaded in the week's band, and each driver free on every one of
@@ -293,8 +293,9 @@ it at the sides and 7px above and below, its sizes in
 driver and keyboard focus mark the card alone, as a trip bar's are, and the
 row around it keeps the rail's surface; a bus tile is marked the same way.
 The first is the
-name at 14px semibold, its photo left to the card, and after it one
-icon, every mark's words on its label. Their worst mark
+name at 14px semibold, its photo left to the card, and at the line's
+end one icon, every mark's words on its label, so every driver's stands in
+one column. Their worst mark
 stands there, the warning triangle when amber and the error circle when red,
 as on the trip bars and the bus tiles: Samsara keeping them to hours rules that are not a
 passenger carrier's, red, since every clock it gives is then wrong; a
@@ -305,10 +306,10 @@ the amber warning; on a trip, logged into a bus that is none of the ones
 they ride on it, as a trip bar's Wrong bus says, red;
 over or out of hours, red. With no mark, a driver on a trip
 under way, from its yard-out to its return, has what they are doing on it: the trip bar's
-arrow in green while driving, amber under two hours; a grey clock on duty,
+arrow in green while driving, amber under two hours; a grey play triangle on duty,
 a yard move with it; a grey pause off duty, personal conveyance with it;
 a moon in the rest colour in the sleeper berth. No icon means no trip.
-The line ends in the driving time Samsara says they have left, the
+Before the icon stands the driving time Samsara says they have left, the
 least of the drive, shift and cycle clocks, as a 16px gauge, a 2px ring
 filled clockwise from the top of the ten hours, in the success green and
 amber under two hours; the time in words is the card's. A driver on no trip

@@ -36,14 +36,16 @@
   /* The lists' pane, Tasks and Departures, and the Forms and Quote
      calculator panels: Carbon's `rux--side-panel--sm`. */
   --scheduler-list-w: 20rem;
-  /* The driver rail: its tiles alone, 128px, twice Carbon's spacing 10,
-     96px inside the tile's 8px clear space and 8px inset, room for the
-     longest words a tile's second line says, Medical expired, 93px; and with
-     its week open seven of Carbon's 40px md days beside them, 408px in all,
-     so a one-day mark 8px in from each end of its day is 24px, room for a
-     rest's "18h". */
-  --scheduler-rail-w: calc(2 * var(--rux-spacing-10));
-  --scheduler-rail-week-w: calc(var(--scheduler-rail-w) + 7 * var(--rux-layout-size-height-md));
+  /* The driver rail: its tiles alone, 160px, Carbon's spacing 13, 128px
+     inside the tile's 8px clear space and 8px inset, which leaves a name
+     84px beside its icon and gauge, room for a two-word short name such as
+     Juan Carlos, 79px; and with its week open seven of Carbon's 40px md days
+     beside them and 4px more at each end of the week, 448px in all, so a
+     one-day mark 4px in from each end of its day, as a bar on the board is,
+     is a 32px square, two marks on neighbouring days stand 8px apart, and a
+     mark stands 8px from the week's edges too. */
+  --scheduler-rail-w: var(--rux-spacing-13);
+  --scheduler-rail-week-w: calc(var(--scheduler-rail-w) + 7 * var(--rux-layout-size-height-md) + 2 * var(--scheduler-gap-clear));
   /* The document viewer; opened larger it leaves its column for a window
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
@@ -1004,9 +1006,12 @@ button.scheduler-row-head__num:focus { outline: none; }
   block-size: var(--scheduler-bar-h);
 }
 /* A driver tile's skeleton stands in the tile's own class, which places
-   it: the name's line. */
-.scheduler-avail__name .rux--skeleton__text { margin-block-end: 0; }
-.scheduler-skeleton-who { inline-size: 5rem; block-size: var(--rux-spacing-05); }
+   it: Carbon's 16px skeleton line centred on the name's 18px line. */
+.scheduler-skeleton-who {
+  inline-size: 5rem;
+  block-size: var(--rux-spacing-05);
+  margin-block: calc((var(--scheduler-row-h) - var(--rux-spacing-05)) / 2) 0;
+}
 /* On the strip the skeleton is three weeks of days, so a board Fill the
    window has widened loads full to its edge, and the pane cuts the days it
    cannot hold. render() takes the grid's skeleton class off as it draws the
@@ -3812,8 +3817,14 @@ a.scheduler-tip__go { text-decoration: none; }
   inline-size: var(--scheduler-rail-week-w);
 }
 /* Its week shut, the rail is the tiles' one column under its title and
-   chevron. */
+   chevron. Open, the first and last of its seven days are 4px wider, so a
+   mark stands 8px from the week's edges as two marks stand 8px apart; the
+   seven are `--scheduler-rail-week-w`'s. */
 .scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
+.scheduler-aside[data-week] .scheduler-avail__grid {
+  --scheduler-edge-day: calc(var(--scheduler-day-track) + var(--scheduler-gap-clear));
+  grid-template-columns: var(--scheduler-head-w) var(--scheduler-edge-day) repeat(5, var(--scheduler-day-track)) var(--scheduler-edge-day);
+}
 .scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
 
 /* The rail's rows are Carbon's lg table row, 48px, its default, since a
@@ -3831,7 +3842,8 @@ a.scheduler-tip__go { text-decoration: none; }
    name would push the squares out rather than ellipsing. */
 .scheduler-aside .scheduler-week--avail {
   --scheduler-head-w: var(--scheduler-rail-w);
-  /* Each day column is Carbon's md, 40px, `--scheduler-rail-week-w`'s. */
+  /* Each day column is Carbon's md, 40px, a 32px mark and the 4px either
+     side of it; `--scheduler-rail-week-w`'s. */
   --scheduler-day-track: var(--rux-layout-size-height-md);
   /* Takes what the head leaves of the height app.js gives the aside: a short
      list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`
@@ -3876,7 +3888,6 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
-.scheduler-avail__day,
 .scheduler-avail__name {
   position: sticky;
   inset-inline-start: 0;
@@ -3884,13 +3895,6 @@ a.scheduler-tip__go { text-decoration: none; }
   background: var(--rux-layer);
   color: var(--rux-text-secondary);
   overflow: hidden;
-}
-/* A day's label is one line, cut short where its column is. */
-.scheduler-avail__day {
-  display: block;
-  padding-inline: var(--rux-spacing-03);
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 /* A tile whose card is open rises over the board's bus column and day header,
    as a trip's shortcuts do, because the card is fixed beside the tile and
@@ -3923,14 +3927,15 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 
 /* A DRIVER'S TILE, driver-head.js's, is one 18px line, the bar's: the name
-   in Carbon's 14px semibold, every name's style on the board, then its one
-   icon and the hours gauge, each 4px after what stands before it, so a
-   part not drawn leaves no space, and each the line's height with its
-   glyph centred in it. The line stands centred in the card, 7px inside it
-   above and below, measured from the row's top so a row that gives its
-   line under it to the region's edge keeps its tile in place; at the sides
-   the card's clear space and the bar's own inset, 16px, where the rail's
-   title and Sort stand. */
+   in Carbon's 14px semibold, every name's style on the board, then the
+   hours gauge and its one icon, as a bar's words and its marks stand: the
+   first glyph at least 8px after the name and the icon 4px after the
+   gauge, each spaced by its own margin so a part not drawn leaves no
+   space, and each the line's height with its glyph centred in it. The line
+   stands centred in the card, 7px inside it above and below, measured from
+   the row's top so a row that gives its line under it to the region's edge
+   keeps its tile in place; at the sides the card's clear space and the
+   bar's own inset, 16px, where the rail's title and Sort stand. */
 .scheduler-avail__name {
   align-items: flex-start;
   padding-block: calc(var(--scheduler-row-clear) + (var(--scheduler-tile-card-h) - var(--scheduler-row-h)) / 2) 0;
@@ -3984,16 +3989,17 @@ a.scheduler-tip__go { text-decoration: none; }
 /* THE HOURS GAUGE: the driving time left of the ten hours, a 2px ring the
    icon's 16px, filled clockwise from the top in the success green, amber
    under two hours, on the second layer's subtle border, as the bus tile's
-   fuel is, and Carbon's selected one on a selected card, where the plain one
-   is the card's own grey; with no clock, dashed and empty. The ring is a mask over the
-   fill, so the card's hover and selected show through its middle; its
-   inner edge fades over half a pixel so it draws round. */
+   fuel is, and Carbon's selected one on a selected card, where the plain
+   one is the card's own grey; with no clock, dashed and empty, ten dashes,
+   one an hour. The ring is a mask over the fill, so the card's hover and
+   selected show through its middle; its inner edge fades over half a pixel
+   so it draws round, and the radius trims the fill's corners outside it. */
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
   --scheduler-meter-track: var(--rux-border-subtle-02);
   inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
-  margin-inline-start: var(--rux-spacing-02);
+  margin-inline-start: var(--rux-spacing-03);
   border-radius: 50%;
   background: conic-gradient(var(--scheduler-meter-ink) var(--scheduler-share, 0%), var(--scheduler-meter-track) 0);
   mask: radial-gradient(closest-side, transparent calc(100% - var(--rux-spacing-01) - 0.5px), #000 calc(100% - var(--rux-spacing-01)));
@@ -4002,16 +4008,19 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-conic-gradient(var(--scheduler-meter-track) 0 18deg, transparent 0 36deg); }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
-/* The worst mark stands after the name, a status solid in its colour. A
-   driver with no mark has none drawn, and the name takes its room. */
+/* The worst mark ends the line, a status solid in its colour, so every
+   driver's stands in one column at the card's edge, as a bar's alert ends
+   its row. A driver with no mark has none drawn, and the name takes its
+   room. */
 .scheduler-avail__mark {
   flex: none;
   align-items: center;
-  margin-inline-start: var(--rux-spacing-02);
+  margin-inline-start: var(--rux-spacing-03);
   block-size: var(--scheduler-row-h);
   color: var(--scheduler-head-low);
 }
 .scheduler-avail__mark:not([hidden]) { display: inline-flex; }
+.scheduler-avail__card:has(.scheduler-avail__meter:not([hidden])) + .scheduler-avail__mark { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* With no mark, what a driver is doing on their trip: driving in the trip
    bar's green, amber under two hours as its arrow is; on or off duty in the
@@ -4030,13 +4039,18 @@ a.scheduler-tip__go { text-decoration: none; }
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
 
-/* A day label needs no padding and reads better centred over its square. */
+/* A day's label is one line, centred over its marks and cut short where
+   its column is; the first and last days' over the mark, not the 4px the
+   week's edge adds. */
 .scheduler-avail__day {
-  inset-inline-start: auto;
-  position: static;
-  padding-inline: 0;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   text-align: center;
 }
+.scheduler-avail__day--head + .scheduler-avail__day { padding-inline-start: var(--scheduler-gap-clear); }
+.scheduler-avail__days > .scheduler-avail__day:last-child { padding-inline-end: var(--scheduler-gap-clear); }
 /* The selected trip's days are shaded in the header, in primary text, with
    the mark's corners at the run's two top ends; today's letter takes the
    colour the board's own today does. Two classes, to beat the header row's
@@ -4068,12 +4082,12 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The two marks. Free is the one being looked for, so it is empty; busy and
    off are Carbon's tag tints, the palette the trip bar uses. A mark is a bar
    as a trip's is on the board: a pseudo-element as tall as the driver tile
-   beside it and level with it, 8px clear of the row's lines, and 8px in from
-   the ends of its days, so a one-day mark is 24px wide; 4px where the next
-   day's mark stands beside it, so two marks stand 8px apart, as two bars do
-   on the board; and a mark that runs on into the next day or past the
-   week's edge runs to that edge. It takes the
-   theme's mark radius and an edge where the theme draws one. Its fill and
+   beside it and level with it, 8px clear of the row's lines, and 4px in
+   from the ends of its days, `--scheduler-gap-clear`, as a bar is on the
+   board, so a one-day mark is always a 32px square and two marks on
+   neighbouring days stand 8px apart; a mark that runs on into the next day
+   or past the week's edge runs to that edge. It takes the theme's mark
+   radius and an edge where the theme draws one. Its fill and
    edge are the two properties below, which a theme sets in theme.css. */
 .scheduler-avail__cell {
   overflow: hidden;
@@ -4081,11 +4095,12 @@ a.scheduler-tip__go { text-decoration: none; }
   letter-spacing: var(--scheduler-ls);
   --scheduler-mark-top: var(--scheduler-row-clear);
   --scheduler-mark-h: var(--scheduler-tile-card-h);
-  --scheduler-mark-start: var(--scheduler-row-clear);
-  --scheduler-mark-end: var(--scheduler-row-clear);
+  --scheduler-mark-start: var(--scheduler-gap-clear);
+  --scheduler-mark-end: var(--scheduler-gap-clear);
 }
-.scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole):has(+ .scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole)) { --scheduler-mark-end: var(--scheduler-gap-clear); }
-.scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole) + .scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole) { --scheduler-mark-start: var(--scheduler-gap-clear); }
+/* The week's first and last days hold their marks 8px from its edges. */
+.scheduler-avail__name + .scheduler-avail__cell { --scheduler-mark-start: var(--scheduler-row-clear); }
+.scheduler-avail__cell:last-child { --scheduler-mark-end: var(--scheduler-row-clear); }
 /* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
    days: a booking's box in the success tint with the success edge, and one
    check at the middle of the slot in the success ink, so it reads as room

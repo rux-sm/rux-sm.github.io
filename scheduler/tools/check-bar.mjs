@@ -786,7 +786,7 @@ expect('the one icon: on a trip, the arrow driving, the pause off duty, the moon
   [tripTile({ duty: 'driving', left_ms: 6 * H, wheel: true }, true), tripTile({ duty: 'off', left_ms: 5 * H }, true),
     tripTile({ duty: 'sleeper', left_ms: 8 * H }, true), tripTile({ duty: 'on', left_ms: 0 }, true),
     tripTile({ duty: 'off', left_ms: 5 * H }, true, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }), tripTile({ duty: 'off', left_ms: 10 * H }, false)],
-  [['#i-BPMN-link--fill', 'driving', false], ['#i-pause--outline--filled', 'off', false],
+  [['#i-BPMN-link--fill', 'driving', false], ['#i-pause--filled', 'off', false],
     ['#i-asleep--filled', 'sleeper', false], ['#i-warning--filled', null, true],
     ['#i-warning--alt--filled', null, false], [null, null, true]]);
 expect('an expired paper: the red mark and no gauge, free or not, the tile marked cannot, Samsara\'s own mark standing for now',

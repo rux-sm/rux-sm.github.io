@@ -4,7 +4,7 @@
    A driver's name cell in the rail is their tile, a card as a bus's is in
    the bus column and a trip's bar is on the board, which app.css draws
    under the parts this draws inside the cell data.js makes, on one line:
-   - The name at 14px, and after it one 16px icon, every mark's
+   - The name at 14px, and at the line's end one 16px icon, every mark's
      words on its label. The driver's most urgent mark stands there, the
      warning triangle for an amber one and the error circle for a red one,
      the two every trip bar and bus tile wear:
@@ -20,11 +20,11 @@
      trip, their app not connected, amber; on a trip, logged into a bus not
      theirs, red; over or out of hours, red. With no mark, a driver on a trip under way has what they are
      doing on it, so a dispatcher knows whom not to call: driving, the trip bar's arrow
-     in green, amber when low; on duty, a clock; off duty, a pause;
+     in green, amber when low; on duty, a play triangle; off duty, a pause;
      in the sleeper berth, a moon in the rest colour. A driver with no icon
      is on no trip. The tile is too narrow for a row of icons, so one
      stands for all.
-   - At the line's end, the driving time Samsara says they have left, the
+   - Before the icon, the driving time Samsara says they have left, the
      least of the drive, shift and cycle clocks, as a 16px gauge, a ring
      filled of the ten hours a passenger carrier's driver may drive, as the
      bus tile's fuel is; amber when low, under RoadBar's LOW. A driver on no
@@ -62,9 +62,9 @@
   const DAY = 864e5;
   /* What a driver is doing on a trip under way, by their duty log: a yard
      move counts as on duty and personal conveyance as off duty, as the
-     hours rules count them. */
+     hours rules count them; each draws RoadBar's `DUTY` mark, the trip
+     bar's. */
   const TRIP_OF = { driving: 'driving', on: 'on', yard: 'on', personal: 'off', off: 'off', sleeper: 'sleeper' };
-  const TRIP_ICON = { driving: '#i-BPMN-link--fill', on: '#i-time--filled', off: '#i-pause--outline--filled', sleeper: '#i-asleep--filled' };
   /* The marks what Samsara says now earns a driver, in the same place as
      the marks of their papers and legs. */
   const NOW_MARKS = {
@@ -166,10 +166,10 @@
   }
 
   /* THE TILE'S PARTS, made once, so a live answer changes them in place and
-     a card open from the tile stays open: the name; the one icon; and the
-     gauge in the button of the card's toggletip, with the structure from
+     a card open from the tile stays open: the name; the gauge in the
+     button of the card's toggletip, with the structure from
      `carbon-ibm-products-dom.json` that js/popover.js opens, its content
-     data.js's, filled as it opens. The whole tile is that button's to
+     data.js's, filled as it opens; and the one icon. The whole tile is that button's to
      press, as the whole bus tile is its number's: app.css spreads its press
      over the tile, so the name and the mark are words in it and the
      button's label says them all. */
@@ -188,7 +188,7 @@
     const pop = el('span', 'rux--popover');
     pop.append(el('span', 'rux--popover-content'), el('span', 'rux--popover-caret'));
     card.append(line, pop);
-    cell.replaceChildren(name, mark, card);
+    cell.replaceChildren(name, card, mark);
   }
 
   function draw(cell, driver, live, alerts = [], trip = null) {
@@ -221,7 +221,8 @@
     } else if (state.trip) {
       mark.dataset.trip = state.trip;
       mark.dataset.tone = state.tone;
-      mark.replaceChildren(svgUse(TRIP_ICON[state.trip], '16', '0 0 32 32'));
+      const duty = RoadBar.DUTY[state.trip];
+      mark.replaceChildren(svgUse(duty.icon, '16', duty.box));
     }
     cell.toggleAttribute('data-cannot', !!expired);
     const line = cell.querySelector('.scheduler-avail__line');

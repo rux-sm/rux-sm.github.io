@@ -71,11 +71,15 @@
   const { LOW_LEFT: LOW } = Road;
   const { DRIVER_STATUSES } = window.SchedulerLegFacts;
   const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
+  /* EACH DUTY'S MARK, the one table a trip bar's crew and a driver's tile
+     in the rail both draw from: bare shapes, a play triangle on duty and
+     pause bars off it, since a disc beside an hours ring reads as a second
+     ring. */
   const DUTY = {
     driving: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Driving', tone: 'success' },
-    on: { icon: '#i-time--filled', box: '0 0 32 32', word: 'On duty', tone: 'success' },
+    on: { icon: '#i-play--filled--alt', box: '0 0 32 32', word: 'On duty', tone: 'success' },
     sleeper: { icon: '#i-asleep--filled', box: '0 0 32 32', word: 'Sleeper', tone: 'rest' },
-    off: { icon: '#i-subtract--filled', box: '0 0 32 32', word: 'Off duty', tone: 'neutral' },
+    off: { icon: '#i-pause--filled', box: '0 0 32 32', word: 'Off duty', tone: 'neutral' },
     yard: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Yard move', tone: 'warning' },
     personal: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Personal conveyance', tone: 'rest' },
     unknown: { icon: '#i-unknown--filled', box: '0 0 32 32', word: 'Unknown duty', tone: 'neutral' },

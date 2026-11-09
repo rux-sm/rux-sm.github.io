@@ -66,31 +66,31 @@ rest stand 8px.
 
 ## The driver tile
 
-The rail is 128px, and in it each driver is a tile as a bus is: a card of
-the second layer with the bar's corners, 112px wide, 8px clear of the
+The rail is 160px, Carbon's spacing 13, and in it each driver is a tile as
+a bus is: a card of the second layer with the bar's corners, 144px wide, 8px clear of the
 rail's sides and the row's lines as the bus tile is. Its row is Carbon's
 lg table row, 48px, and the card Carbon's sm, 32px, from 8px to 40px of
 the row. It holds one 18px line, 7px inside it above and below and 8px in
-from its sides, 96px wide, and two cards stand 16px apart across the row's
+from its sides, 128px wide, and two cards stand 16px apart across the row's
 line, as two buses' bars do. The Apple themes, whose Layer 02 is their
 Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |
 | :--- | :--- |
-| Name | What the icon and gauge leave of the 96px, 56px with both |
-| Icon | 16px, 4px after the name |
-| Gauge | 16px, a 2px ring, 4px after the icon, filled clockwise of the ten hours |
+| Name | What the icon and gauge leave of the 128px, 84px with both |
+| Gauge | 16px, a 2px ring, at least 8px after the name, as a bar's marks stand from its words, filled clockwise of the ten hours |
+| Icon | 16px, at the line's end, 4px after the gauge or at least 8px after the name |
 
 ## The driver's week
 
-With its week out the rail is 408px: the 128px tiles and seven of
-Carbon's 40px md days. A trip, time off or a selected trip's open slot is a
-bar as a trip is on the board: as tall as the driver tile and level with
-it, 8px clear of the row's lines, and 8px in from the ends of its days, so
-a one-day bar is 24px wide; where the next day holds another bar, each
-stands 4px from the day's edge, so two bars are 8px apart, as on the
-board. A bar that runs on into the next day, or past the week's edge, runs
-to that edge.
+With its week out the rail is 448px: the 160px tiles, seven of Carbon's
+40px md days, and 4px more at each end of the week. A trip, time off or a
+selected trip's open slot is a bar as a trip is on the board: as tall as
+the driver tile and level with it, 8px clear of the row's lines, and 4px in
+from the ends of its days, so a one-day bar is always a 32px square, two
+bars on neighbouring days stand 8px apart, as on the board, and a bar on
+the first or last day stands 8px from the week's edge. A bar that runs on into the next day,
+or past the week's edge, runs to that edge.
 
 ## Each view
 

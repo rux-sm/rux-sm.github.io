@@ -284,9 +284,9 @@ cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, a card as a bus's
 tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
-the rail's sides and 4px of the row's lines, and its two lines 8px inside
-it, 18px each with nothing between them, centred above the row's line on
-whole pixels with the odd pixel below, its sizes in
+the rail's sides and 8px from the next card, and its two lines 8px inside
+it at the sides and 2px above and below, 18px each with nothing between
+them, its sizes in
 `scheduler/docs/board-layout.md`. Hover, selected and focus fill the row
 around the card, as they do the bus column's. The first is the
 name at 14px semibold, its photo left to the card, and at the

@@ -3923,7 +3923,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
   line-height: normal;
   padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
@@ -3932,21 +3932,24 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* THE DRIVER IS A TILE AS A BUS IS AND A TRIP IS A BAR: a card of the
    second layer with the bar's corners, 8px clear of the rail's sides as the
-   bus tile is of its column's, and 4px clear of the row's lines, half the
-   bar's, since two 18px lines fill all but 11px of the 48px row. So a
-   driver, a bus and a trip read as the same kind of thing. The row's
-   hover, selected and focus stand around it, as the bus tile's do. */
+   bus tile is of its column's. Its two 18px lines stand 2px inside it above
+   and below, and it 4px under the row's top, so with the row's line the
+   cards stand 8px apart, as two bars do: two lines fill all but 12px of the
+   48px row. So a driver, a bus and a trip read as the same kind of thing.
+   The row's hover, selected and focus stand around it, as the bus tile's
+   do. */
 .scheduler-avail__name::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset-block: var(--rux-spacing-02);
+  inset-block-start: var(--rux-spacing-02);
+  block-size: calc(var(--scheduler-tile-h) + 2 * var(--rux-spacing-01));
   inset-inline: var(--scheduler-row-clear);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-fill);
 }
-/* A DRIVER'S TILE, driver-head.js's: two 18px lines, the bar's, centred in
-   the row above its line on whole pixels, the odd pixel below. The first is
+/* A DRIVER'S TILE, driver-head.js's: two 18px lines, the bar's, 2px inside
+   its card above and below, 6px under the row's top. The first is
    the name in 14px semibold, every name's style on the board, and at the
    line's end its one icon; the second is the 4px meter across the line, or
    the words that stand in its place. The line is the card's button, and
@@ -3972,10 +3975,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__card { display: block; }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
 .scheduler-avail__name { --scheduler-tile-h: calc(2 * var(--scheduler-row-h)); }
-@supports (block-size: round(1px, 1px)) {
-  .scheduler-avail__name { justify-content: flex-start; }
-  .scheduler-avail__top { margin-block-start: round(down, calc((var(--scheduler-avail-h) - 1px - var(--scheduler-tile-h)) / 2), 1px); }
-}
+.scheduler-avail__top { margin-block-start: calc(var(--rux-spacing-02) + var(--rux-spacing-01)); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-avail__line {
   display: flex;

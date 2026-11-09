@@ -4096,15 +4096,21 @@ a.scheduler-tip__go { text-decoration: none; }
    off are Carbon's tag tints, the palette the trip bar uses. A mark is a bar
    as a trip's is on the board: a pseudo-element as tall as the driver tile
    beside it and level with it, 8px clear of the row's lines, and 8px in from
-   the ends of its days, so a one-day mark is 16px wide; a mark that runs on
-   into the next day or past the week's edge runs to that edge. It takes the
+   the ends of its days, so a one-day mark is 24px wide; 4px where the next
+   day's mark stands beside it, so two marks stand 8px apart, as two bars do
+   on the board; and a mark that runs on into the next day or past the
+   week's edge runs to that edge. It takes the
    theme's mark radius and an edge where the theme draws one. Its fill and
    edge are the two properties below, which a theme sets in theme.css. */
 .scheduler-avail__cell {
   overflow: hidden;
   --scheduler-mark-top: var(--scheduler-row-clear);
   --scheduler-mark-h: calc(var(--scheduler-tile-h) + 2 * var(--scheduler-tile-pad-block));
+  --scheduler-mark-start: var(--scheduler-row-clear);
+  --scheduler-mark-end: var(--scheduler-row-clear);
 }
+.scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole):has(+ .scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole)) { --scheduler-mark-end: var(--scheduler-gap-clear); }
+.scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole) + .scheduler-avail__cell:is(.scheduler-avail__cell--busy, .scheduler-avail__cell--off, .scheduler-avail__cell--whole) { --scheduler-mark-start: var(--scheduler-gap-clear); }
 /* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
    days: a booking's box in the success tint with the success edge, and one
    check at the middle of the slot in the success ink, so it reads as room
@@ -4117,7 +4123,7 @@ a.scheduler-tip__go { text-decoration: none; }
   content: '';
   position: absolute;
   inset-block-start: var(--scheduler-mark-top);
-  inset-inline: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-mark-start) var(--scheduler-mark-end);
   block-size: var(--scheduler-mark-h);
   box-sizing: border-box;
   border: 1px solid var(--scheduler-free-edge, var(--rux-support-success));
@@ -4159,7 +4165,7 @@ a.scheduler-tip__go { text-decoration: none; }
   content: '';
   position: absolute;
   inset-block-start: var(--scheduler-mark-top);
-  inset-inline: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-mark-start) var(--scheduler-mark-end);
   block-size: var(--scheduler-mark-h);
   box-sizing: border-box;
   border: 1px solid var(--scheduler-avail-edge, transparent);
@@ -4204,9 +4210,9 @@ a.scheduler-tip__go { text-decoration: none; }
    times. Centred, in tabular figures so a column of them lines up, and over
    the mark. Under 10 hours its words turn yellow on the mark's own blue, in
    theme.css, since each theme's blue carries a different yellow. */
-/* It is centred on the mark, which stands 8px in from the ends of its days
+/* It is centred on the mark, which stands in from the ends of its days
    where it does not run on. */
-.scheduler-avail__cell--rest { justify-content: center; padding-inline: var(--scheduler-row-clear); }
+.scheduler-avail__cell--rest { justify-content: center; padding-inline: var(--scheduler-mark-start) var(--scheduler-mark-end); }
 .scheduler-avail__cell--rest.scheduler-avail__cell--to-next { padding-inline-end: 0; }
 .scheduler-avail__cell--rest.scheduler-avail__cell--from-prev { padding-inline-start: 0; }
 .scheduler-avail__cell--rest > span {

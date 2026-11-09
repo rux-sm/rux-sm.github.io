@@ -418,10 +418,11 @@
 }
 .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 .scheduler-bar--to-next { --scheduler-edge-end: 0px; }
-/* THE TAIL IS CARBON'S NEXT STEP DOWN in the themes built on its palette:
-   a light theme's 10 tint is 20 in the tail, its greys 20 then 30, and a
-   dark theme's 70 is 80. */
-:is([data-theme="white"], [data-theme="g10"], [data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar { --scheduler-tail-hover: var(--scheduler-bg); }
+/* A BAR'S TAIL IS ITS PALETTE'S NEXT STEP DOWN, unless that step is the
+   board's own colour, which would lose where the trip ends. In the themes
+   built on Carbon's palette a light theme's 10 tint is 20 in the tail, its
+   greys 20 then 30, and a dark theme's 70 is 80, but for g90's greys,
+   whose 80 is its board. */
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--gray      { --scheduler-tail: var(--rux-gray-30); }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-cool-gray-30); }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--blue      { --scheduler-tail: var(--rux-blue-20); }
@@ -431,8 +432,8 @@
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--purple    { --scheduler-tail: var(--rux-purple-20); }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--red       { --scheduler-tail: var(--rux-red-20); }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--amber     { --scheduler-tail: var(--rux-yellow-20); }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--gray      { --scheduler-tail: var(--rux-gray-80); }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-cool-gray-80); }
+:is([data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--gray      { --scheduler-tail: var(--rux-gray-80); }
+:is([data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-cool-gray-80); }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--blue      { --scheduler-tail: var(--rux-blue-80); }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--cyan      { --scheduler-tail: var(--rux-cyan-80); }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--teal      { --scheduler-tail: var(--rux-teal-80); }
@@ -440,6 +441,28 @@
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--purple    { --scheduler-tail: var(--rux-purple-80); }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--red       { --scheduler-tail: var(--rux-red-80); }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar--amber     { --scheduler-tail: var(--rux-yellow-80); }
+/* Ant's trips hover a step deeper and apple-light's to the full tag tint,
+   so in ant-dark, pixel-dark and apple-light the hover is the next step
+   down. apple-dark's hues are 40% on black and step 4 points, so its tail
+   is 36%; geist-dark's step two points of lightness, so its tail is 25%. */
+:is([data-theme="ant-dark"], [data-theme="pixel-dark"], [data-theme="apple-light"]) .scheduler-bar { --scheduler-tail: var(--scheduler-hover); }
+[data-theme="apple-dark"] .scheduler-bar { --scheduler-tail: color-mix(in srgb, var(--scheduler-bg) 90%, #000); }
+[data-theme="geist-dark"] .scheduler-bar { --scheduler-tail: oklch(from var(--scheduler-bg) calc(l - 0.02) c h); }
+/* rux-dark's hues step 0.04 of lightness at 95% of the chroma Display P3
+   holds there, so the tail is 0.30; its tag greys step down its layers'
+   ladder. Its standard trip, the raised tile, is one step above the board,
+   so its step down would lose the trip's end in the board, and it is one
+   tone, as a trip that is back is. */
+[data-theme="rux-dark"] .scheduler-bar--gray      { --scheduler-tail: var(--rux-tag-background-cool-gray); }
+[data-theme="rux-dark"] .scheduler-bar--cool-gray { --scheduler-tail: var(--rux-layer-hover-02); }
+[data-theme="rux-dark"] .scheduler-bar--red       { --scheduler-tail: oklch(0.30 0.130 25); }
+[data-theme="rux-dark"] .scheduler-bar--purple    { --scheduler-tail: oklch(0.30 0.158 300); }
+[data-theme="rux-dark"] .scheduler-bar--green     { --scheduler-tail: oklch(0.30 0.110 150); }
+[data-theme="rux-dark"] .scheduler-bar--teal      { --scheduler-tail: oklch(0.30 0.068 185); }
+[data-theme="rux-dark"] .scheduler-bar--cyan      { --scheduler-tail: oklch(0.30 0.071 225); }
+[data-theme="rux-dark"] .scheduler-bar--amber     { --scheduler-tail: oklch(0.30 0.069 75); }
+/* Rux 100's trips are each hue's Geist 100, the scale's darkest, so it
+   has no step down and its bars are one tone. */
 
 /* THE FOUR HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
    the roster's head, the trip editor's head and the document panel's head

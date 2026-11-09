@@ -80,6 +80,15 @@ and driver tiles with the layer's accent.
 | 1 | The name, its one icon at the line's end |
 | 2 | The hours meter across the line, 96px, a tenth of it an hour; or the words that stand in its place |
 
+## The driver's week
+
+With its week out the rail is 408px: the 128px tiles and seven of
+Carbon's 40px md days. A trip, time off or a selected trip's open slot is a
+bar as a trip is on the board: as tall as the driver tile and level with
+it, 8px clear of the row's lines, and 8px in from the ends of its days, so
+a one-day bar is 24px wide. A bar that runs on into the next day, or past
+the week's edge, runs to that edge.
+
 ## Each view
 
 A view with fewer bar lines keeps the card the bar's size, the number level

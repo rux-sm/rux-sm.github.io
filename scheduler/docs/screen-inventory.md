@@ -272,8 +272,8 @@ order the office calls drivers in, a name's title saying it; Time left puts
 the most driving time Samsara says a driver has first and a driver with no
 clock last, taken as the rail is drawn, so the rows hold still between
 Samsara's answers. The chevron slides the
-week out beside the tiles, seven 32px days, 22rem in all, and every page load starts with it shut. A trip or time off is a
-bar 28px tall across its days, 2px in from each end, so one day is a square, centred in the row; no rule runs between the days, only the one
+week out beside the tiles, seven 40px days, 408px in all, and every page load starts with it shut. A trip or time off is a
+bar across its days as a trip is on the board, its sizes in `scheduler/docs/board-layout.md`; a rest's hours stand centred on it; no rule runs between the days, only the one
 behind the names, from the day band down, which goes with the week shut. With a trip selected,
 its days are shaded in the week's band, and each driver free on every one of
 them has an open slot across them, a bar the same height in the success tint with a success

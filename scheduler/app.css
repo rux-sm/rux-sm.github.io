@@ -159,9 +159,8 @@
   }
   /* The Mac's board on Carbon's 8px grid: a bar is a whole number of 16px,
      Carbon's spacing 05, so a row of one lane, the bar and its 8px clear
-     space with the row's line inside it, is too, 144px for six lines, and
-     holds a whole number of the driver rail's 48px rows wherever it is a
-     multiple of 48: three at six lines, two at three, one at one. */
+     space with the row's line inside it, is too, 144px for six lines, two
+     of the driver rail's 72px rows. */
   .scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-bar-h: round(up, calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02)), var(--rux-spacing-05)); }
 }
 /* A lane on the Mac's board is a bus row's height: its lanes stand 16px
@@ -3811,11 +3810,17 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
 .scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
 
-/* The rail's rows are 48px, Carbon's table row, their lines inside them as
-   a Carbon table row's are: the one under every row and the one over the
-   first of a priority. Three stand beside a six-line board's 144px bus row,
-   which the board's rows are sized for. */
-.scheduler-week--avail { --scheduler-avail-h: var(--rux-spacing-09); max-block-size: 15rem; }
+/* The rail's rows are a driver tile's, built as a bus row is: 8px clear,
+   the six-line bar's 10px inside, two 18px lines, 10px and 8px, 72px, so
+   two stand beside a six-line board's 144px bus row. Their lines are inside
+   them as a Carbon table row's are: the one under every row and the one
+   over the first of a priority. */
+.scheduler-week--avail {
+  --scheduler-tile-pad-block: calc(var(--rux-spacing-03) + var(--rux-spacing-01));
+  --scheduler-tile-h: calc(2 * var(--scheduler-row-h));
+  --scheduler-avail-h: calc(2 * var(--scheduler-row-clear) + 2 * var(--scheduler-tile-pad-block) + var(--scheduler-tile-h));
+  max-block-size: 15rem;
+}
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
    not `1fr`, because a track's automatic minimum is its content and a long
    name would push the squares out rather than ellipsing. */
@@ -3931,25 +3936,24 @@ a.scheduler-tip__go { text-decoration: none; }
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* THE DRIVER IS A TILE AS A BUS IS AND A TRIP IS A BAR: a card of the
-   second layer with the bar's corners, 8px clear of the rail's sides as the
-   bus tile is of its column's. Its two 18px lines stand 2px inside it above
-   and below, and it 4px under the row's top, so with the row's line the
-   cards stand 8px apart, as two bars do: two lines fill all but 12px of the
-   48px row. So a driver, a bus and a trip read as the same kind of thing.
-   The row's hover, selected and focus stand around it, as the bus tile's
-   do. */
+   second layer with the bar's corners, 8px clear of the row's lines and the
+   rail's sides as the bus tile is of its column's, its two 18px lines 10px
+   inside it above and below, as the six-line bar's are, so a driver, a bus
+   and a trip read as the same kind of thing. Two cards stand 16px apart
+   across the row's line, as two buses' bars do. The row's hover, selected
+   and focus stand around it, as the bus tile's do. */
 .scheduler-avail__name::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset-block-start: var(--rux-spacing-02);
-  block-size: calc(var(--scheduler-tile-h) + 2 * var(--rux-spacing-01));
+  inset-block-start: var(--scheduler-row-clear);
+  block-size: calc(var(--scheduler-tile-h) + 2 * var(--scheduler-tile-pad-block));
   inset-inline: var(--scheduler-row-clear);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-fill);
 }
-/* A DRIVER'S TILE, driver-head.js's: two 18px lines, the bar's, 2px inside
-   its card above and below, 6px under the row's top. The first is
+/* A DRIVER'S TILE, driver-head.js's: two 18px lines, the bar's, 10px inside
+   its card above and below, 18px under the row's top. The first is
    the name in 14px semibold, every name's style on the board, and at the
    line's end its one icon; the second is the 4px meter across the line, or
    the words that stand in its place. The line is the card's button, and
@@ -3974,8 +3978,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .scheduler-avail__card { display: block; }
 .scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
-.scheduler-avail__name { --scheduler-tile-h: calc(2 * var(--scheduler-row-h)); }
-.scheduler-avail__top { margin-block-start: calc(var(--rux-spacing-02) + var(--rux-spacing-01)); }
+.scheduler-avail__top { margin-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-tile-pad-block)); }
 .scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-avail__line {
   display: flex;

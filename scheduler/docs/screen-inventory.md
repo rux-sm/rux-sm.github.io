@@ -264,9 +264,9 @@ week folds first.
 Shut, the rail is the tiles alone, 128px. Its head stands level with the
 board's toolbar and holds its title, Drivers, 16px in over the names, and a chevron; its band stands level with the day
 band and holds Sort, a ghost button naming the rail's order in the text colour with Carbon's sort arrows, which
-opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 48px, Carbon's table row, each line inside
-its row as a Carbon table's is, so three stand beside each lane of a
-six-line board's bus rows, 144px, and every third driver's row starts level
+opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 72px, a driver tile's, each line inside
+its row as a Carbon table's is, so two stand beside each lane of a
+six-line board's bus rows, 144px, and every second driver's row starts level
 with a bus's, each parted from the next by the same line. Priority is the
 order the office calls drivers in, a name's title saying it; Time left puts
 the most driving time Samsara says a driver has first and a driver with no
@@ -284,8 +284,8 @@ cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, a card as a bus's
 tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
-the rail's sides and 8px from the next card, and its two lines 8px inside
-it at the sides and 2px above and below, 18px each with nothing between
+the rail's sides and the row's lines, and its two lines 8px inside
+it at the sides and 10px above and below, as a bus tile's are, 18px each with nothing between
 them, its sizes in
 `scheduler/docs/board-layout.md`. Hover, selected and focus fill the row
 around the card, as they do the bus column's. The first is the

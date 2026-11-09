@@ -19,7 +19,7 @@ and is what `scheduler/app.css` draws; what each part says is in
 | An icon | 16px, 4px from its words |
 | A bar | 8px clear of the row's lines and of the next bar |
 | A bus row | a lane for each stacked trip; on six lines 144px for one, 288px for two |
-| A driver row | 48px, three beside one lane on six lines |
+| A driver row | 72px, two beside one lane on six lines |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
 
 ## The trip bar, on six lines
@@ -66,11 +66,11 @@ rest stand 8px.
 
 The rail is 128px, and in it each driver is a tile as a bus is: a card of
 the second layer with the bar's corners, 112px wide, 8px clear of the
-rail's sides as the bus tile is of its column's. Its two lines stand 2px
-inside it above and below, since two lines leave the 48px row 12px: the
-card is 40px, 4px to 44px of the row, its lines from 6px to 42px and 8px in
-from its sides, 96px wide, and two cards stand 8px apart across the row's
-line, as two bars do. The Apple themes, whose Layer 02 is their Layer 01, fill the bus
+rail's sides and the row's lines as the bus tile is. Its row is built as a
+bus row is: 8px clear, the six-line bar's 10px inside, two 18px lines, 10px
+and 8px, 72px, half a bus row. The card is 56px, 8px to 64px of the row,
+its lines from 18px to 54px and 8px in from its sides, 96px wide, and two
+cards stand 16px apart across the row's line, as two buses' bars do. The Apple themes, whose Layer 02 is their Layer 01, fill the bus
 and driver tiles with the layer's accent.
 
 | Line | Holds |
@@ -82,7 +82,7 @@ and driver tiles with the layer's accent.
 
 A view with fewer bar lines keeps the card the bar's size, the number level
 with the destination, and the readings on the lines under the number, four
-at most, less 4px at each end. The driver rows stay 48px, so they line up with the bus rows on
+at most, less 4px at each end. The driver rows stay 72px, so they line up with the bus rows on
 six lines alone.
 
 | Lines | Bar, its padding | Bus row | Bus tile |

@@ -15,6 +15,11 @@
    A sample with a tip draws, under its bar, what a press on the bar opens,
    by trip-tips.js or the phone's half sheet by trip-sheet.js, each handed
    the sample in place of the board.
+   The last section, Bus drawings, is the fleet's own: each active bus from
+   the database as its tile on the board, rux's side view standing at its
+   foot where the board will stand it, and the Live map's eight views, all
+   painted by bus-paint.js with the figures picked above them, which start
+   at its LOOK and change nothing outside the page, to tune the paint rule.
    ========================================================================== */
 (() => {
   'use strict';
@@ -248,6 +253,81 @@
     root.replaceChildren(...out);
   }
 
+  // ── Bus drawings ──────────────────────────────────────────────────────────
+  const Paint = window.SchedulerBusPaint;
+  const VIEWS = ['bus-1-up', 'bus-2-up-right', 'bus-3-right', 'bus-4-down-right', 'bus-5-down'];
+  // A reading for the tile, so it shows its state as on the board.
+  const RESTING = () => ({ engine: 'off', mph: 0, fuel: 75, engine_at: new Date(Date.now() - 2 * 3600e3).toISOString() });
+  const lookFrom = inputs => {
+    const look = { ...Paint.LOOK };
+    for (const input of inputs) {
+      const key = input.dataset.look;
+      look[key] = input.type === 'color' ? input.value : key === 'floor' ? Number(input.value) || 0 : (Number(input.value) || 0) / 100;
+    }
+    return look;
+  };
+  const sayLook = look => [`lift ${look.floor}`, `side ${Math.round(look.side * 100)}%`, `front and back ${Math.round(look.end * 100)}%`,
+    `roof details ${Math.round(look.detail * 100)}%`, `glass and tyres ${look.black}`, `hubs ${look.hub}`].join(' · ');
+
+  async function drawBuses(client) {
+    const [{ data: buses }, side, ...views] = await Promise.all([
+      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,color,insurance_exp,registration_exp,inspection_exp')
+        .eq('status', 'active').order('sort_order'),
+      Paint.read('bus-side'), ...VIEWS.map(Paint.read)]);
+    if (!buses?.length) return;
+    const data = { busesById: new Map(buses.map(b => [b.id, b])) };
+    const box = el('section', 'scheduler-components__section');
+    box.setAttribute('aria-labelledby', 'scheduler-components-buses');
+    const title = el('h2', 'rux--type-heading-03', 'Bus drawings');
+    title.id = 'scheduler-components-buses';
+    const controls = document.getElementById('scheduler-components-paint').content.cloneNode(true);
+    const inputs = [...controls.querySelectorAll('[data-look]')];
+    const figures = controls.querySelector('.scheduler-components__figures');
+    const list = el('div', 'scheduler-components__buses');
+    const drawn = buses.map(bus => {
+      const figure = el('figure', 'scheduler-components__sample scheduler-components__bus');
+      const caption = el('figcaption', 'scheduler-components__caption');
+      caption.append(el('span', 'scheduler-components__name rux--type-heading-compact-01', bus.number),
+        el('span', 'scheduler-components__note rux--type-body-compact-01', bus.color ?? 'No paint'));
+      const board = boardOf({ tiles: true, days: 1, rows: [{ bus: bus.id, live: RESTING(), bars: [] }] }, data);
+      const foot = el('span', 'scheduler-components__foot');
+      foot.setAttribute('aria-hidden', 'true');
+      board.querySelector('.scheduler-row-head').appendChild(foot);
+      const turns = el('div', 'scheduler-components__views');
+      turns.setAttribute('aria-hidden', 'true');
+      const row = el('div', 'scheduler-components__drawn');
+      row.append(board, turns);
+      figure.append(caption, row);
+      list.appendChild(figure);
+      return { bus, foot, turns };
+    });
+    // Each view facing its way: up, the four turning right, then the three left, mirrored.
+    const paint = () => {
+      const look = lookFrom(inputs);
+      figures.textContent = sayLook(look);
+      for (const { bus, foot, turns } of drawn) {
+        foot.innerHTML = Paint.painted(side, bus.color, look);
+        turns.innerHTML = [0, 1, 2, 3, 4, 5, 6, 7].map(t => `<span class="scheduler-live-bus${t > 4 ? ' scheduler-live-bus--mirrored' : ''}">${Paint.painted(views[t <= 4 ? t : 8 - t], bus.color, look)}</span>`).join('');
+      }
+    };
+    controls.querySelector('.scheduler-components__look').addEventListener('input', paint);
+    controls.querySelector('.scheduler-components__look').addEventListener('change', paint);
+    controls.querySelector('.scheduler-components__reset').addEventListener('click', () => {
+      for (const input of inputs) {
+        const v = Paint.LOOK[input.dataset.look];
+        input.value = input.type === 'color' ? v : input.dataset.look === 'floor' ? v : Math.round(v * 100);
+      }
+      paint();
+    });
+    box.append(title, el('p', 'rux--type-body-01 scheduler-components__intro',
+      'Every active bus in its own paint: its tile with the side view at its foot, and the Live map\'s eight directions. The figures change this page alone.'), controls, list);
+    root.appendChild(box);
+    const link = el('a', 'rux--link', 'Bus drawings');
+    link.href = '#scheduler-components-buses';
+    root.querySelector('.scheduler-components__nav')?.appendChild(link);
+    paint();
+  }
+
   // Play again: the sample drawn from fresh samples, so it starts as new.
   root.addEventListener('click', e => {
     const again = e.target.closest('.scheduler-components__again');
@@ -293,5 +373,6 @@
     draw();
     select(motionSwitch, view.motion, 'motion');
     applyView();
+    if (client) drawBuses(client).then(applyView);
   });
 })();

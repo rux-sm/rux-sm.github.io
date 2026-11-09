@@ -7027,6 +7027,47 @@ html[data-scheduler-takeover] {
 .scheduler-components__note { flex-basis: 100%; order: 2; color: var(--rux-text-secondary); }
 .scheduler-components__again { margin-inline-start: auto; }
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
+/* BUS DRAWINGS: the paint figures in a row, each bus's tile with the side
+   view at its foot, where the board's tile will stand it, 48 by 24px, its
+   top on line 6's, and beside it the Live map's eight views at 32px. The
+   lift and sleeper it stands in place of go, as they will on the board. */
+.scheduler-components__look { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--rux-spacing-05); }
+.scheduler-components__figure { inline-size: 10rem; }
+.scheduler-components__swatch {
+  display: block;
+  inline-size: 4rem;
+  block-size: var(--rux-layout-size-height-sm, 2rem);
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  background: none;
+  cursor: pointer;
+}
+.scheduler-components__figures { margin: 0; color: var(--rux-text-secondary); }
+.scheduler-components__buses { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--rux-spacing-06); }
+/* The tile alone: its row's day folds to nothing, keeping the row's height. */
+.scheduler-components__bus .scheduler-grid { grid-template-columns: var(--scheduler-head-w) 0; }
+.scheduler-components__bus .scheduler-track { overflow: hidden; }
+.scheduler-components__drawn { display: flex; align-items: flex-start; gap: var(--rux-spacing-06); }
+.scheduler-components__drawn > .scheduler-components__board { flex: none; inline-size: auto; }
+.scheduler-components__views { --scheduler-live-bus: 32px; display: grid; grid-template-columns: repeat(4, 32px); gap: var(--rux-spacing-04); padding-block-start: var(--rux-spacing-03); }
+.scheduler-components__bus .scheduler-components__board.scheduler-week--scroll .scheduler-row-head__equip { display: none; }
+.scheduler-components__foot {
+  position: absolute;
+  inset-inline: var(--scheduler-row-clear);
+  inset-block-start: var(--scheduler-line-six);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.scheduler-components__foot > svg {
+  --scheduler-components-outline: var(--rux-icon-primary);
+  display: block;
+  inline-size: 48px;
+  block-size: 24px;
+  filter: drop-shadow(1px 0 0 var(--scheduler-components-outline)) drop-shadow(-1px 0 0 var(--scheduler-components-outline))
+    drop-shadow(0 1px 0 var(--scheduler-components-outline)) drop-shadow(0 -1px 0 var(--scheduler-components-outline));
+}
+.scheduler-page[data-board="compact"] .scheduler-components__foot { display: none; }
 .scheduler-components__board { max-block-size: none; }
 /* A sample has no day band, so no corner sets its bus column, and the heads
    size to nothing: the column takes the corner's own floor instead, 69px,

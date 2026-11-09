@@ -12,12 +12,10 @@
    up-right, right, down-right and down, the three facing left their
    mirrors, picked by heading to the nearest 45°, so a drawing is never
    turned and stays sharp; a bus with no heading keeps the last it had, and
-   faces right until it has one. Their paint is drawn in key colours, which
-   each bus's own paint from the Fleet page takes the place of: roof #FF00FF
-   the paint, side #CC00CC, front and back #990099 and roof details #660066
-   shaded from it, darker for a light paint and lighter for a dark one, so a
-   black coach keeps its form. app.css rings each with a 1px outline in the
-   page's icon ink, light on the dark map and dark on the light one.
+   faces right until it has one. bus-paint.js reads them and paints each in
+   its bus's own paint from the Fleet page. app.css rings each with a 1px
+   outline in the page's icon ink, light on the dark map and dark on the
+   light one.
    `style()` is the tiles for the page's own background: the light street
    map on a light page and the dark one on a dark page.
    `pinHtml({ id, number, paint, heading, hue, chosen, light, tone, parked,
@@ -74,48 +72,11 @@
     return loading;
   }
 
-  // The five views, read once, each as markup with its ids and prolog gone, or '' where one did not come.
+  // The five views, read once by bus-paint.js, or '' where one did not come.
   const VIEWS = ['bus-1-up', 'bus-2-up-right', 'bus-3-right', 'bus-4-down-right', 'bus-5-down'];
-  const BRAND = new URL('brand/', document.currentScript?.src ?? location.href);
   let views = null, viewing = null;
-  function readViews() {
-    viewing ??= Promise.all(VIEWS.map(name => fetch(new URL(`${name}.svg`, BRAND))
-      .then(r => (r.ok ? r.text() : ''))
-      .then(text => {
-        const svg = new DOMParser().parseFromString(text, 'image/svg+xml').documentElement;
-        if (svg.nodeName !== 'svg') return '';
-        for (const n of svg.querySelectorAll('[id]')) n.removeAttribute('id');
-        svg.removeAttribute('id');
-        // app.css sizes it, one pixel of the drawing to one of the page.
-        svg.removeAttribute('width');
-        svg.removeAttribute('height');
-        Object.entries({ 'shape-rendering': 'crispEdges', 'aria-hidden': 'true' }).forEach(([k, v]) => svg.setAttribute(k, v));
-        return svg.outerHTML;
-      })
-      .catch(() => ''))).then(list => { views = list; });
-    return viewing;
-  }
+  const readViews = () => (viewing ??= Promise.all(VIEWS.map(window.SchedulerBusPaint.read)).then(list => { views = list; }));
   const load = () => Promise.all([leaflet(), readViews()]).then(() => window.L);
-
-  /* A paint taken k of the way to black, or for a near-black paint, whose
-     every channel is low, to white; a strong red is low in green and blue
-     but is no dark paint. */
-  const shade = (hex, k) => {
-    const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
-    const dark = Math.max(...c) < 80;
-    const to = dark ? 255 : 0;
-    const amount = dark ? { side: 0.14, end: 0.08, detail: 0.24 }[k] : { side: 0.12, end: 0.24, detail: 0.3 }[k];
-    return `#${c.map(v => Math.round(v + (to - v) * amount).toString(16).padStart(2, '0')).join('')}`;
-  };
-  const KEYS = { ff00ff: null, cc00cc: 'side', '990099': 'end', '660066': 'detail' };
-  const NO_PAINT = '#8d8d8d';
-  function painted(markup, paint) {
-    const p = /^#[0-9a-f]{6}$/i.test(paint ?? '') ? paint.toLowerCase() : NO_PAINT;
-    return markup.replace(/#(ff00ff|cc00cc|990099|660066)\b/gi, (_, key) => {
-      const k = KEYS[key.toLowerCase()];
-      return k ? shade(p, k) : p;
-    });
-  }
 
   // The way each bus last faced, by its id, for a reading with no heading.
   const facing = new Map();
@@ -124,7 +85,7 @@
     const turn = Math.round((facing.get(id) ?? 90) / 45) % 8;
     const view = views?.[turn <= 4 ? turn : 8 - turn];
     if (!view) return '';
-    return `<span class="scheduler-live-bus${turn > 4 ? ' scheduler-live-bus--mirrored' : ''}" data-bus-id="${id}">${painted(view, paint)}</span>`;
+    return `<span class="scheduler-live-bus${turn > 4 ? ' scheduler-live-bus--mirrored' : ''}" data-bus-id="${id}">${window.SchedulerBusPaint.painted(view, paint)}</span>`;
   }
 
   const TRAIL_MS = 3600e3;

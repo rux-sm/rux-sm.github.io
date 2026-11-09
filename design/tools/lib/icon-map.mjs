@@ -152,11 +152,13 @@ export const ICONS = {
   'paint-brush': { material: 'brush', rux: null },
   'palm-tree': { material: 'beach_access', rux: null },  // Time away: Carbon draws a palm and Material a beach umbrella.
   'partnership': { material: 'handshake', rux: null },  // A company that covers a bus with its own coach and driver.
-  'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.
+  'pause--filled': { material: 'pause-fill', rux: null },  // The bare bars.
+  'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out.
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },
   'pin': { material: 'keep', rux: null },
   'play--filled': { material: 'play_circle-fill', rux: null },  // A solid disc with the triangle cut out.
+  'play--filled--alt': { material: 'play_arrow-fill', rux: null },  // The bare triangle.
   'power': { material: 'power_settings_new', rux: null },  // A driver off duty.
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.

@@ -90,8 +90,12 @@ const ICONS = [
   'draggable',
   'task--user', 'shuttle',
   'BPMN-link--fill', 'time--filled', 'asleep--filled', 'subtract--filled',
-  // A driver off duty during their trip, on their tile in the scheduler's rail.
+  // Pixels' pause, its Material twin.
   'pause--outline--filled',
+  // A driver off duty during their trip, on their tile in the scheduler's
+  // rail: the bare bars, since a disc beside the tile's hours ring reads as a
+  // second ring; on duty, the bare triangle, for the same reason.
+  'pause--filled', 'play--filled--alt',
   // A BUS'S FUEL in the scheduler's bus column, at Carbon's 16px.
   'gas-station',
   // THE UPDATES BUTTON on a scheduler trip bar, leading the row that opens

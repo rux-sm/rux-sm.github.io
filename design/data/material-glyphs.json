@@ -1290,6 +1290,14 @@
         "path|d=m484-104 445-447-338-338-89 89 235 235-107 106-185-185-252 250 57 57 213-213 22 21-213 213 56 56 213-212 21 21-214 213 57 57 214-214 21 21-213 213 57 57ZM169-412l275-275 186 186 64-64-325-325L30-551l139 139Z"
       ]
     },
+    "pause-fill@960": {
+      "name": "pause-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/pause-fill.svg",
+      "geometry": [
+        "path|d=M555-200v-560h175v560H555Zm-325 0v-560h175v560H230Z"
+      ]
+    },
     "pause_circle-fill@960": {
       "name": "pause_circle-fill",
       "size": "960",
@@ -1344,6 +1352,14 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/play_circle-fill.svg",
       "geometry": [
         "path|d=m383-310 267-170-267-170v340Zm97 230q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"
+      ]
+    },
+    "play_arrow-fill@960": {
+      "name": "play_arrow-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/play_arrow-fill.svg",
+      "geometry": [
+        "path|d=M320-203v-560l440 280-440 280Z"
       ]
     },
     "power_settings_new@960": {

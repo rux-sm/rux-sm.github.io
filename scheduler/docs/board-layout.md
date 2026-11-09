@@ -41,28 +41,27 @@ above and below it.
 
 ## The bus tile, on six lines
 
-The column is 72px and its 1px rule. In it each bus is a tile as a trip is
-a bar: a card of the second layer the bar's size and place, 56px wide, as
+The column is 88px and its 1px rule. In it each bus is a tile as a trip is
+a bar: a card of the second layer the bar's size and place, 72px wide, as
 tall as the bar and 8px clear of the row's lines and the column's sides, as
 a bar is of the row's lines and the column's rule, with the bar's corners.
-Its parts stand centred inside it, the bar's 8px in from its sides, on the
-bar's lines. Hover, an open tip and keyboard focus mark the card alone, as
-a bar's mark the bar, in Layer 02's hover and selected, or the Apple themes'
-accent hover and active; the column around it keeps its surface. Its alert hangs on the card's top-right corner, on a 20px disc
-of the column's surface that ends at the column's edge, 2px under the row's
-line. It is measured from the top, so
-a row of stacked trips keeps it on the first trip's lines.
+Its parts stand at the start, 8px in from the card's sides, 56px wide, in
+rows 8px apart from the bar's first line to the card's 8px inset at its
+foot, measured from the top, so a row of stacked trips keeps it on the
+first trip's lines. Hover, an open tip and keyboard focus mark the card
+alone, as a bar's mark the bar, in Layer 02's hover and selected, or the
+Apple themes' accent hover and active; the column around it keeps its
+surface.
 
-| Line | Holds |
-| :--- | :--- |
-| 1 | The number, centred, a longer one cut short |
-| 2 to 5 | The readings, 40px wide and centred on the lines, 4px clear of them: the state's 16px semibold reading over its unit, and the fuel's meter alone across them, 40px |
-| 6 | The lift and the sleeper, 16px icons, centred, or a low DEF in their place, its name alone in the low or critical colour |
+| Row | Holds | Height |
+| :--- | :--- | :--- |
+| Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
+| Speed | The figure at 16px semibold, then 2px on mph or how long at 12px: "57 mph", "Idle 37m", "Off 6h". With no tracker, the inspection's word and date | 22px, 8px under the number |
+| Speed's meter | Eight blocks across the 56px, 1px apart, one lit for each 10 mph to 80, green while moving and amber over 75 | 8px, 4px under the figure |
+| Fuel | The pump at 16px, then 4px on the percent at 14px semibold; orange when low, red when critical | 18px, 8px under the meter |
+| Kit | The lift and the sleeper, 16px icons 4px apart, or a low DEF in their place | 16px, 8px under the fuel, on the card's inset |
 
-At this width the widest words, an inspection date such as Nov 20, fill the
-40px, a four-figure number is cut short, and on three and two lines, where
-the state stands beside its unit, they stand 6px inside the card where the
-rest stand 8px.
+56px is the least that holds a number, 8px and its alert.
 
 ## The driver tile
 
@@ -94,18 +93,17 @@ or past the week's edge, runs to that edge.
 
 ## Each view
 
-A view with fewer bar lines keeps the card the bar's size, the number level
-with the destination, and the readings on the lines under the number, four
-at most, less 4px at each end. The driver rows stay 48px in every view.
+A view with fewer bar lines keeps the card the bar's size and drops the
+tile's parts from the foot up. The driver rows stay 48px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 144px | Number; readings 64px tall; lift, sleeper or low DEF on line 6 |
-| 5 | 112px, 11px | 128px | Number; readings 64px tall, grown by a low DEF |
-| 4 | 96px, 12px | 112px | Number; readings 46px tall, no fuel |
-| 3 | 80px, 13px | 96px | Number; the state beside its unit |
-| 2 | 48px, 6px | 64px | Number; the state on line 2 |
-| 1 | 32px, 7px | 48px | The number alone |
+| 6 | 128px, 10px | 144px | Number, speed, its meter, fuel, kit or low DEF |
+| 5 | 112px, 11px | 128px | Number, speed, its meter, fuel |
+| 4 | 96px, 12px | 112px | Number, speed, fuel |
+| 3 | 80px, 13px | 96px | Number, speed |
+| 2 | 48px, 6px | 64px | Number, the state at 14px; an inspection's date alone |
+| 1 | 32px, 7px | 48px | The number and its alert |
 
 ## The phone's board
 

@@ -198,11 +198,14 @@
      trip running on into the days in view. Under the band and at the foot
      a row's own 8px clear space is that edge already. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 97PX, 41px on
+  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 89PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
-     change of width shows more of the strip or less and moves no trip. */
+     change of width shows more of the strip or less and moves no trip. The
+     tile's 89px is its card's 8px clear either side, the card's 8px inset
+     either side and the 56px between, the least that holds a number, 8px
+     and its alert, and the column's 1px rule. */
   --scheduler-strip-day: 175px;
-  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-03) + 1px);
+  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-06) + 1px);
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
@@ -797,34 +800,48 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-aside[data-week] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
-   ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 72px, a 56px card
-   8px clear of its sides, its parts centred 8px inside the card: the 40px
-   between them holds the number and the readings across it, as tall as four
-   of the bar's lines less 8px, its alert on the card's top-right corner. Its parts
-   stand on the bar's lines, `scheduler/docs/board-layout.md` the measures:
-   the number on line 1, the box under it, the fuel a meter
-   across it with its percent the tip's, and the kit or a low DEF on line 6;
-   its type and seats are the tip's. A phone's board keeps the narrow column
-   above, so the parts only the tile shows are drawn here alone. */
+   ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 88px, a 72px card
+   8px clear of its sides, as a trip is a bar, its parts in rows at the
+   start 8px inside it, 8px apart: the number on the bar's first line with
+   its alert at the line's end; the speed's figure and its meter of blocks;
+   the pump and the fuel's percent; and the kit or a low DEF on the card's
+   foot. A shorter view drops the kit, then the meter, then the fuel.
+   `scheduler/docs/board-layout.md` has the measures; its type and seats
+   are the tip's. A phone's board keeps the narrow column above, so the
+   parts only the tile shows are drawn here alone. */
 .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__speed-meter, .scheduler-row-head__fuel-icon) { display: none; }
 /* The tile and the column's 1px rule beside it. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: var(--scheduler-tile-head); }
+/* THE HEAD'S ROWS start on the bar's first line, so the number stands level
+   with the destination, and on six lines end on the card's 8px inset; each
+   view has its own, below. Every part names the one column, inside the
+   card, the card's clear space and the bar's own inset in from the column's
+   sides, at the start, as a bar's words and a driver's name stand. A
+   partner's name and No bus stand the same. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--rux-spacing-02);
-  padding-inline: var(--rux-spacing-03);
+  /* The speed's figure, Carbon's heading-compact-02, 16px on its 22px line. */
+  --scheduler-figure-h: round(calc(var(--rux-heading-compact-02-font-size) * var(--rux-heading-compact-02-line-height)), 1px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows:
+    var(--scheduler-row-h) var(--rux-spacing-03)
+    var(--scheduler-figure-h) var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-03)
+    var(--scheduler-row-h) var(--rux-spacing-03)
+    var(--scheduler-mark-glyph);
+  align-content: start;
+  justify-items: start;
+  padding-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block));
+  padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
 }
-/* A bus's parts stand inside its card, the card's clear space and the bar's
-   own inset in from the column's sides. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-bus-id] { padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline)); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges) { display: contents; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head > *,
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__body) > * { grid-column: 1; }
 /* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
    size and place, as tall as the bar, 8px clear of the row's lines and of
    the column's sides as a bar is of the row's lines and the column's rule,
    and the bar's corners, so the bus and its trips read as one kind of
-   thing across the row. Its parts stand inside it on the bar's lines and
-   insets. A shut row draws none. */
+   thing across the row. A shut row draws none. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id]::before {
   content: "";
   position: absolute;
@@ -839,30 +856,29 @@ button.scheduler-row-head__num:focus { outline: none; }
    and keyboard focus rings the tile, inside its edge, as it rings a bar. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id] { background: var(--rux-layer); outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id]:has(button.scheduler-row-head__num:focus-visible)::before { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; }
-/* WHILE THE BUS HAS A MARK, ITS ALERT HANGS ON THE TILE'S TOP-RIGHT CORNER,
-   so the number, the readings and the kit all stand centred: the warning
-   triangle in amber, or the error circle in red where a mark is red, the
-   two every trip bar and driver tile wear, so one mark means one thing on
-   the board. It stands on a 20px disc of the column's surface, which parts
-   it from the tile, the disc ending at the column's edge and 2px under the
-   row's line, in every view. The marks themselves are not
-   drawn on the tile but stay for a screen reader, each with its words, and
-   the tip says them all. */
+/* THE NUMBER, a name, so every name's style on the board, Carbon's
+   heading-compact-01, 14px semibold, cut short with an ellipsis where a
+   sold bus's long title would run on. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { grid-row: 1; justify-self: stretch; justify-content: flex-start; block-size: var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top > .rux--popover-container { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__num { font-size: var(--rux-heading-compact-01-font-size); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll button.scheduler-row-head__num { display: block; max-inline-size: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* "No bus" stands in the tile's 16px on the 18px line every number has,
+   its two lines on whole pixels, as a partner's name is. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--unassigned .scheduler-row-head__num { line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
+/* WHILE THE BUS HAS A MARK, ITS ALERT ENDS THE NUMBER'S LINE, at least 8px
+   after the number, as a bar's alert ends its destination's line and a
+   driver's icon their tile's: the warning triangle in amber, or the error
+   circle in red where a mark is red, so one mark means one thing on the
+   board. The marks themselves are not drawn on the tile but stay for a
+   screen reader, each with its words, and the tip says them all. */
 .scheduler-row-head__alert { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__alert {
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-start: calc(var(--scheduler-row-clear) - 6px);
-  z-index: 1;
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > *) .scheduler-row-head__alert {
   display: flex;
-  padding: 2px;
-  border-radius: 50%;
-  background: var(--rux-layer);
-  visibility: hidden;
+  flex: none;
+  margin-inline-start: var(--rux-spacing-03);
   color: var(--scheduler-head-low);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > *) .scheduler-row-head__alert { visibility: visible; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > [data-tone="error"]) .scheduler-row-head__alert { color: var(--scheduler-head-critical); }
 .scheduler-row-head__alert > [data-tone="error"],
 .scheduler-row-head:has(.scheduler-row-head__kit > [data-tone="error"]) .scheduler-row-head__alert > [data-tone="warning"] { display: none; }
@@ -877,112 +893,78 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
-/* THE TILE STANDS ON ITS BAR'S LINES, measured from the top, so a row of
-   stacked trips keeps it on the first trip's, its parts centred: the number
-   on line 1, level with the destination; the box 4px under it, across the
-   tile inside its insets, so on six or five lines it is centred on lines 2
-   to 5, 4px clear of each; and on six, line 6, level with the drivers, the
-   lift and sleeper, or a low DEF in their place. */
-/* With one line the tile is its number alone, and the empty square goes too. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { display: none; }
-/* The readings run the tile inside its insets and are centred on the lines
-   under the number, four at most, less 4px at each end: 64px tall on six
-   lines and on five, 46px on four, 28px on three. A low DEF on five grows
-   them. They stand on the tile's own surface, in no box of their own. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) {
-  align-self: stretch;
-  min-block-size: calc(min(var(--scheduler-bar-rows) - 1, 4) * var(--scheduler-row-h) - 2 * var(--rux-spacing-02));
-  margin-block: 0;
-  padding: 0;
+/* THE SPEED, 8px under the number: its figure in heading-compact-02, 16px
+   semibold, then 2px on its unit or how long, label-01's 12px, on one
+   baseline, the two Carbon's sizes for a reading and its unit; the speed
+   over mph, Idle or Off and how long. A bus with no tracker has its
+   inspection there, the word over the date. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dial { grid-row: 3; display: flex; align-items: center; block-size: var(--scheduler-figure-h); margin: 0; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--rux-spacing-01);
+  line-height: var(--scheduler-figure-h);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__gauges { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: var(--rux-spacing-02); }
-/* The number is a name, so it is every name's style on the board, Carbon's
-   heading-compact-01, 14px semibold; the state's reading is
-   heading-compact-02, 16px, the square's one large figure. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__num { font-size: var(--rux-heading-compact-01-font-size); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed { flex-direction: column; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-heading-compact-02-font-size); line-height: var(--rux-heading-compact-02-line-height); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level { margin: 0; align-self: stretch; }
-/* The fuel's row is its meter's 4px, between a fuel gauge's E and F,
-   whose label-01 lines hang centred on it, so the state over it keeps its
-   place. They stay the secondary ink in every level: the meter alone takes
-   the tank's colour. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; inline-size: auto; block-size: var(--rux-spacing-02); gap: var(--rux-spacing-02); margin: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { flex: 1; }
-/* The fuel is its meter across the square in every level, its percent the
-   tip's: a low tank's meter, short by E and in the tank's colour, says it
-   without the row changing shape. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct { display: none; }
-/* The meter runs the square's width with no E or F beside it, as a
-   driver's hours meter runs their line. */
-/* The meter is Carbon's small progress bar: 4px, square, on the subtle
-   border's track for the square's layer, the second, which a theme that
-   sets its own track keeps. */
-:where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { block-size: 4px; border-radius: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { align-self: center; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { flex-direction: column; justify-content: center; align-items: center; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed > :first-child { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { grid-row: 3 / span 4; flex-direction: column; align-items: flex-start; margin: 0; padding: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-row-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip {
-  display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-02);
-  inset-block: var(--scheduler-line-six) auto;
-  block-size: var(--scheduler-row-h);
+/* The speed's meter, 4px under its figure: eight blocks across the tile,
+   8px tall, 1px apart, the lit ones in the dial's colour, green while
+   moving and amber past the speeding mark, on the second layer's subtle
+   border; bus-head.js says how many are lit. The blocks are the
+   scheduler's own, since Carbon has no segmented meter. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed-meter {
+  --scheduler-speed-ink: var(--scheduler-head-moving);
+  grid-row: 5;
+  justify-self: stretch;
+  display: block;
+  block-size: var(--rux-spacing-03);
+  background: linear-gradient(to right, var(--scheduler-speed-ink) 0 calc(var(--scheduler-speed-lit, 0) / 8 * 100%), var(--rux-border-subtle-02) 0);
+  mask: repeating-linear-gradient(to right, #000 0 calc((100% - 7px) / 8), transparent 0 calc((100% - 7px) / 8 + 1px));
 }
-/* Line 6's top, from the head's own: the bar's clear space and padding, and
-   five lines. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head { --scheduler-line-six: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 5 * var(--scheduler-row-h)); }
-/* A low DEF on six lines stands on line 6 in the kit's place, its name
-   alone in the low or critical colour, its percent the tip's and the
-   label's, so the square keeps its 64px. On five, with no line 6, it stays
-   under the fuel in the square, which grows for it. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level-pct { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] {
-  position: absolute;
-  inset-inline: 0;
-  inset-block: var(--scheduler-line-six) auto;
-  block-size: var(--scheduler-row-h);
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed-meter--warning { --scheduler-speed-ink: var(--scheduler-head-low); }
+/* THE FUEL, 8px under the meter: the pump, Carbon's gas station at 16px,
+   then 4px on the percent in heading-compact-01, 14px semibold, the pump
+   in the secondary ink and the percent in the primary while normal, both
+   orange when low and red when critical. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level:not([data-tank="D"]) { grid-row: 7; margin: 0; }
+:where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; gap: var(--rux-spacing-02); inline-size: auto; block-size: var(--scheduler-row-h); margin: 0; color: var(--rux-text-secondary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-icon { display: block; flex: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct { display: inline; font-size: var(--rux-heading-compact-01-font-size); font-weight: var(--rux-heading-compact-01-font-weight); line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); color: var(--rux-text-primary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:is([data-level="low"], [data-level="critical"]) { color: var(--scheduler-tank-ink); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:is([data-level="low"], [data-level="critical"]) .scheduler-row-head__fuel-pct { color: inherit; }
+/* THE KIT, on the card's foot against its 8px inset: the lift and the
+   sleeper, 16px icons in the secondary ink, 4px apart; or a low DEF in
+   their place, its name alone in the low or critical colour, its percent
+   the tip's, since it asks something of the office and the kit does not. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip { position: static; grid-row: 9; display: flex; align-items: center; gap: var(--rux-spacing-02); margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__tile:empty { display: none; }
-/* A low DEF asks something of the office and the kit does not, so it takes
-   the kit's place. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { grid-row: 9; display: flex; align-items: center; margin: 0; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-mark-glyph); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level-pct { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) .scheduler-row-head__equip { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head__equip { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head .scheduler-row-head__level { display: none; }
-/* On two lines the state is line 2's words alone, on the line itself. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { gap: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__insp) { min-block-size: var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-label-h); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head .scheduler-row-head__dial { display: flex; }
-/* The number on one line, cut short with an ellipsis, a long one such as a
-   sold bus's in its title. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .rux--popover-container { min-inline-size: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll button.scheduler-row-head__num { display: block; max-inline-size: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-/* "No bus" stands in the tile's 16px on the 18px line every number has,
-   its two lines on whole pixels, as a partner's name is. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--unassigned .scheduler-row-head__num { line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
-/* A partner's name and No bus stand centred in the tile, as a number does;
-   their row's start alignment is the phone grid's. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head > .scheduler-row-head__num { align-self: center; }
-/* THE STATE READS AS ONE: its reading and its word stand 4px apart and the
-   fuel 12px under them, so the word belongs to its reading and not to the
-   fuel. Each line is trimmed to its letters, from the cap height to the
-   baseline, since Carbon's line boxes add air that would push the word
-   away, and its box rounded up to an even pixel, so the stack centres in
-   the square on whole pixels. A browser that cannot trim keeps the lines
-   whole. */
-@supports (text-box: trim-both cap alphabetic) and (block-size: round(up, 1cap, 2px)) {
-  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__speed { gap: var(--rux-spacing-02); }
-  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__speed > * { text-box: trim-both cap alphabetic; block-size: round(up, 1cap, 2px); }
-  .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__dial + .scheduler-row-head__level { margin-block-start: var(--rux-spacing-03); }
-}
-
-
+/* A SHORTER VIEW DROPS FROM THE FOOT UP: five lines the kit and a low DEF,
+   both the tip's; four the speed's meter too, the fuel 8px under the
+   figure; three the fuel; two the state on line 2 at the row's own 14px,
+   the inspection its date alone; and one the number and its alert. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="5"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h) var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-03) var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h) var(--rux-spacing-03) var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head__level:not([data-tank="D"]) { grid-row: 5; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__equip, .scheduler-row-head__level[data-tank="D"]) { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__speed-meter { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__level { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__insp { grid-row: 3 / span 3; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; block-size: var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head__speed { gap: var(--rux-spacing-02); line-height: var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head__speed > :first-child { font-size: var(--rux-heading-compact-01-font-size); font-weight: var(--rux-heading-compact-01-font-weight); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__insp-word { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { display: none; }
 /* The loading skeleton. index.html ships it inside the grid and render()
    replaces it, so it uses the real row, head and track rules and the week
    arrives without anything moving. The grey and the shimmer are Carbon's
@@ -990,13 +972,16 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-skeleton-label { inline-size: 2.5rem; block-size: 1rem; }
 /* A bus head's skeleton stands in the head's own classes, which size and
    place it; these give each grey block the size of what it stands for:
-   the number's line, the state's reading and the fuel. */
-.scheduler-row-head .rux--skeleton__text { margin-block-end: 0; }
-.scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; }
+   the number's line, the state's reading, the fuel and the kit's icons. */
+.scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; margin-block-end: 0; }
 .scheduler-skeleton-dial { inline-size: 24px; block-size: 12px; justify-self: center; align-self: center; }
-.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 17px; margin-inline: auto; }
-/* The kit's two marks in the size of their icons. */
-.scheduler-skeleton-kit { inline-size: 16px; block-size: 16px; }
+.scheduler-skeleton-fuel { inline-size: var(--scheduler-kit-w); block-size: 17px; margin: 0 auto; }
+.scheduler-skeleton-kit { inline-size: 16px; block-size: 16px; margin-block-end: 0; }
+/* On the Mac's tile, each in its row at the start, Carbon's 16px skeleton
+   line: the number's, the speed's and the fuel's. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-skeleton-num { block-size: var(--rux-spacing-05); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-skeleton-dial { inline-size: 3rem; block-size: var(--rux-spacing-05); justify-self: start; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-skeleton-fuel { inline-size: 2.5rem; block-size: var(--rux-spacing-05); margin: 1px 0 0; }
 /* Placed and sized like a trip bar in the first lane. */
 .scheduler-skeleton-bar {
   position: absolute;

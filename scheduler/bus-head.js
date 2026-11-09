@@ -2,19 +2,18 @@
    Rux Scheduler — BUS HEAD, what the bus column says of each bus
    --------------------------------------------------------------------------
    The head of a bus's row on the board says what belongs to the bus rather
-   than a trip, in a stack centred down it: the number at its top, the
-   readings under it and the kit at its foot. On the Mac's board it is the
-   bus's tile, app.css's, the bus's type beside the number and the state
-   and fuel drawn large. What it draws:
-   - For a bus Samsara answers for, in whatever week is shown, its
-     state under the number: the speed over mph, green while moving,
-     or Idle, Off or a dash over how long, amber past SPEEDING or IDLE_MS,
-     beside it on one row; then its fuel. DEF is drawn only while it is
-     low, since a normal DEF needs nothing of the office, on the row under
-     the fuel. DEF is drawn only while it is low, since a normal DEF needs
-     nothing of the office, under the fuel. With no signal the state and
-     fuel fade. Where the bus is, when it was last seen and its inspection
-     are the number's toggletip's.
+   than a trip: the number at its top, the readings under it and the kit at
+   its foot. On the Mac's board it is the bus's tile, app.css's, the
+   readings at the start in their own rows. What it draws:
+   - For a bus Samsara answers for, in whatever week is shown, its state:
+     the speed and mph, green while moving, or Idle, Off or a dash and how
+     long, amber past SPEEDING or IDLE_MS; on the Mac's tile the speed's
+     meter of eight blocks under it; then its fuel, the pump and its
+     percent there, a meter on a phone, grey until low, orange, or
+     critical, red. DEF is drawn only while it is low, since a normal DEF
+     needs nothing of the office. With no signal the state and fuel fade.
+     Where the bus is, when it was last seen and its inspection are the
+     number's toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
@@ -25,15 +24,13 @@
      card; the engine's lamp, amber or red, whose codes lead their line
      in the tip; an inspection in Samsara that marked the bus unsafe,
      red, until a mechanic resolves it there; and maintenance Samsara counts
-     overdue, amber, each item's words in the tip. The words of each are the number's toggletip's. The kit
-     holds them worst first; the Mac's tile turns the bus's icon to its
-     warning in the worst one's tone, and a phone's narrow column shows the
-     papers' mark with the out-of-service mark.
-   The fuel is a meter filled to the tank's share over its percent, grey
-   until low, orange, or critical, red; on the Mac's tile the meter runs
-   the square's width alone and the percent is the tip's. Until samsara-now first
-   answers, every bus is drawn at rest, Off over an empty fuel meter and a
-   dash for its percent, so the column has its shape while it loads.
+     overdue, amber. The words of each are the number's toggletip's. The
+     kit holds them worst first; the Mac's tile shows the worst one's tone
+     as its alert, and a phone's narrow column shows the papers' mark with
+     the out-of-service mark.
+   Until samsara-now first answers, every bus is drawn at rest, Off with
+   an empty fuel and a dash for its percent, so the column has its shape
+   while it loads.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
    is the bus's row and `live` its bus of samsara-now's answer or null, and
@@ -141,16 +138,30 @@
     return box;
   }
 
-  // The fuel: a meter filled to the tank's share over its percent, grey
-  // until low or critical. The Mac's tile draws the meter alone across its
-  // square and leaves the percent to the tip.
+  // The fuel: the pump, a meter filled to the tank's share and its percent,
+  // grey until low or critical. The Mac's tile shows the pump and the
+  // percent; a phone's narrow column the meter.
   function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
     box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
-    box.append(el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
+    const pump = svgUse('#i-gas-station', '16', '0 0 32 32');
+    pump.classList.add('scheduler-row-head__fuel-icon');
+    box.append(pump, el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
     return box;
+  }
+
+  /* The speed's meter under the dial on the Mac's tile: eight blocks, one
+     lit for each 10 mph or part of it up to SPEED_TOP, so a bus over the
+     speeding mark lights them all; none at rest. Its colour is the dial's. */
+  const SPEED_TOP = 80;
+  function speedMeter(live, state) {
+    const meter = el('span', `scheduler-row-head__speed-meter scheduler-row-head__speed-meter--${state.tone}`);
+    meter.setAttribute('aria-hidden', 'true');
+    const mph = moving(live) ? Math.min(live.mph, SPEED_TOP) : 0;
+    meter.style.setProperty('--scheduler-speed-lit', String(Math.ceil(mph / 10)));
+    return meter;
   }
 
   // One tank. Fuel: its percent and meter. DEF, drawn only while low: its name and
@@ -279,7 +290,7 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      gauges.appendChild(dial(shown, state));
+      gauges.append(dial(shown, state), speedMeter(shown, state));
       if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
       body.appendChild(gauges);
@@ -318,8 +329,8 @@
 
   /* After the number, the one alert every bar and driver tile wears: the
      warning triangle while the bus has a mark, the error circle while one is
-     red. app.css shows the one the kit's worst mark asks for, and keeps its
-     room when there is none, so the number never moves; the kit's own marks
+     red. app.css shows the one the kit's worst mark asks for at the end of
+     the number's line, and none while there is none; the kit's own marks
      carry the words. */
   function alertEl() {
     const alert = el('span', 'scheduler-row-head__alert');

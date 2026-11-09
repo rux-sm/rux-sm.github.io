@@ -264,10 +264,10 @@ week folds first.
 Shut, the rail is the tiles alone, 128px. Its head stands level with the
 board's toolbar and holds its title, Drivers, 16px in over the names, and a chevron; its band stands level with the day
 band and holds Sort, a ghost button naming the rail's order in the text colour with Carbon's sort arrows, which
-opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 72px, a driver tile's, each line inside
-its row as a Carbon table's is, so two stand beside each lane of a
-six-line board's bus rows, 144px, and every second driver's row starts level
-with a bus's, each parted from the next by the same line. Priority is the
+opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 64px, Carbon's two-line table row,
+each line inside its row as a Carbon table's is, each parted from the next
+by the same line; they stand apart from the bus rows beside them, since a
+driver's row says nothing about the bus beside it. Priority is the
 order the office calls drivers in, a name's title saying it; Time left puts
 the most driving time Samsara says a driver has first and a driver with no
 clock last, taken as the rail is drawn, so the rows hold still between
@@ -284,9 +284,9 @@ cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, a card as a bus's
 tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
-the rail's sides and the row's lines, and its two lines 8px inside
-it at the sides and 10px above and below, as a bus tile's are, 18px each with nothing between
-them, its sizes in
+the rail's sides and the row's lines, and its two lines, 18px and 16px
+with nothing between them, 8px inside it at the sides and 7px above and
+below, its sizes in
 `scheduler/docs/board-layout.md`. Hover, an open card, a picked-out
 driver and keyboard focus mark the card alone, as a trip bar's are, and the
 row around it keeps the rail's surface; a bus tile is marked the same way.

@@ -10,8 +10,8 @@
 // one, six lines to one, as the view menu does, and in each says whether
 // every bar is a whole number of 16px and every open bus row, its line
 // inside it, of 8px, Carbon's grid, whether every box a bus's head or a bar
-// in view paints stands on whole pixels, and at six lines whether the driver
-// rail's rows are 72px and two of them stand level with a one-lane bus row.
+// in view paints stands on whole pixels, and at six lines whether every
+// driver rail row is 64px, Carbon's xl row, its tile 48px and 8px clear.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
 import { spawn } from 'node:child_process';
@@ -290,23 +290,18 @@ const VIEWS = `(async () => {
       if (h % 8) v.rows.push({ bus, h: +h.toFixed(2) });
       measure(head, bus, v);
     }
-    /* The rail beside six lines: every row 72px, and a one-lane bus row,
-       144px, two of them, its top level with a driver row's. */
+    /* The rail beside six lines: every row 64px, its tile 48px from 8px. */
     if (lines === 6) {
-      const tops = new Set();
+      let rail = 0;
       for (const n of document.querySelectorAll('.scheduler-avail__name')) {
         const b = n.getBoundingClientRect();
         if (!b.height) continue;
-        tops.add(b.top);
-        if (b.height !== 72) v.rows.push({ bus: 'a driver', h: b.height });
+        rail++;
+        const tile = getComputedStyle(n, '::before');
+        if (b.height !== 64) v.rows.push({ bus: 'a driver', h: b.height });
+        if (tile.top !== '8px' || tile.height !== '48px') v.rows.push({ bus: 'a driver tile', h: tile.height + ' from ' + tile.top });
       }
-      const first = [...tops].length ? Math.min(...tops) : null;
-      for (const head of sch.querySelectorAll('.scheduler-row:not([data-shut]) > .scheduler-row-head')) {
-        const b = head.getBoundingClientRect();
-        if (first == null || b.height !== 144 || b.top < first || b.top > Math.max(...tops)) continue;
-        if (!tops.has(b.top)) v.rows.push({ bus: 'a bus level with no driver row', h: b.top });
-      }
-      v.rail = tops.size;
+      v.rail = rail;
     }
     out.push(v);
   }
@@ -395,7 +390,7 @@ async function main() {
     for (const v of views) {
       const bad = [...v.bars.map(h => `a bar ${h}px tall`), ...v.rows.map(r => `${r.bus}'s row ${r.h}px tall`), ...v.boxes.map(x => `${x.bus}: ${x.part} at ${x.box}`)];
       if (bad.length) { fail('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${bad.length} off the grid or off whole pixels`); for (const w of bad.slice(0, 6)) console.log(`          ${w}`); }
-      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels${v.rail ? `, ${v.rail} driver rows of 72px level with the buses` : ''}`);
+      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels${v.rail ? `, ${v.rail} driver rows of 64px with 48px tiles` : ''}`);
     }
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }

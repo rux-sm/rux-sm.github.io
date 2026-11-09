@@ -1003,12 +1003,10 @@ button.scheduler-row-head__num:focus { outline: none; }
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
 }
-/* A driver tile's skeleton stands in the tile's own classes, which place
-   it: the name's line and, on the line under it, the meter across it. */
+/* A driver tile's skeleton stands in the tile's own class, which places
+   it: the name's line. */
 .scheduler-avail__name .rux--skeleton__text { margin-block-end: 0; }
 .scheduler-skeleton-who { inline-size: 5rem; block-size: var(--rux-spacing-05); }
-.scheduler-skeleton-line { display: flex; align-items: center; block-size: var(--scheduler-label-h); }
-.scheduler-skeleton-meter { flex: 1 1 auto; block-size: var(--rux-spacing-02); }
 /* On the strip the skeleton is three weeks of days, so a board Fill the
    window has widened loads full to its edge, and the pane cuts the days it
    cannot hold. render() takes the grid's skeleton class off as it draws the
@@ -3818,19 +3816,14 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
 .scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
 
-/* The rail's rows are Carbon's xl table row, 64px, the one Carbon gives a
-   row of two lines, and stand apart from the bus rows beside them, since a
-   driver's row says nothing about the bus beside it. A driver's tile is
-   Carbon's lg, 48px, 8px clear of the row's lines as a bar is, holding the
-   name's 18px line and the 16px line under it, `label-01`'s, with what
-   that leaves, 7px, above and below. The row's lines are inside it as a
-   Carbon table row's are: the one under every row and the one over the
-   first of a priority. */
+/* The rail's rows are Carbon's lg table row, 48px, its default, since a
+   driver's tile is one line. A driver's tile is Carbon's sm, 32px, 8px
+   clear of the row's lines as a bar is, its 18px line centred in it, 7px
+   above and below. The row's lines are inside it as a Carbon table row's
+   are: the one under every row and the one over the first of a priority. */
 .scheduler-week--avail {
-  --scheduler-avail-h: var(--rux-layout-size-height-xl);
-  --scheduler-tile-card-h: var(--rux-layout-size-height-lg);
-  --scheduler-tile-h: calc(var(--scheduler-row-h) + var(--scheduler-label-h));
-  --scheduler-tile-pad-block: calc((var(--scheduler-tile-card-h) - var(--scheduler-tile-h)) / 2);
+  --scheduler-avail-h: var(--rux-layout-size-height-lg);
+  --scheduler-tile-card-h: var(--rux-layout-size-height-sm);
   max-block-size: 15rem;
 }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
@@ -3864,8 +3857,6 @@ a.scheduler-tip__go { text-decoration: none; }
   block-size: var(--scheduler-avail-h);
   display: flex;
   align-items: center;
-  font-size: var(--scheduler-fs);
-  letter-spacing: var(--scheduler-ls);
 }
 /* The list's last rule and the region's own edge draw two lines on top of each
    other in a theme whose regions carry an edge, so there the row gives way to
@@ -3892,12 +3883,14 @@ a.scheduler-tip__go { text-decoration: none; }
   z-index: 2;
   background: var(--rux-layer);
   color: var(--rux-text-secondary);
+  overflow: hidden;
+}
+/* A day's label is one line, cut short where its column is. */
+.scheduler-avail__day {
+  display: block;
   padding-inline: var(--rux-spacing-03);
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-  line-height: var(--scheduler-avail-h);
 }
 /* A tile whose card is open rises over the board's bus column and day header,
    as a trip's shortcuts do, because the card is fixed beside the tile and
@@ -3929,17 +3922,18 @@ a.scheduler-tip__go { text-decoration: none; }
   border-block: var(--scheduler-band-rule-w) solid var(--rux-border-subtle-01);
 }
 
-/* A driver's head, driver-head.js's, is two 18px lines centred in the row
-   with nothing between them: the name in Carbon's 14px, over what Samsara's
-   clock says, its words in `label-01`, 12px. Its parts stand inside its
-   card, the card's clear space and the bar's own inset in from the rail's
-   sides, 16px, where the rail's title and Sort stand. */
+/* A DRIVER'S TILE, driver-head.js's, is one 18px line, the bar's: the name
+   in Carbon's 14px semibold, every name's style on the board, then its one
+   icon and the hours gauge, each 4px after what stands before it, so a
+   part not drawn leaves no space, and each the line's height with its
+   glyph centred in it. The line stands centred in the card, 7px inside it
+   above and below, measured from the row's top so a row that gives its
+   line under it to the region's edge keeps its tile in place; at the sides
+   the card's clear space and the bar's own inset, 16px, where the rail's
+   title and Sort stand. */
 .scheduler-avail__name {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  line-height: normal;
+  align-items: flex-start;
+  padding-block: calc(var(--scheduler-row-clear) + (var(--scheduler-tile-card-h) - var(--scheduler-row-h)) / 2) 0;
   padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
@@ -3960,22 +3954,26 @@ a.scheduler-tip__go { text-decoration: none; }
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
 }
-/* A DRIVER'S TILE, driver-head.js's: an 18px line, the bar's, over a 16px
-   one, `label-01`'s, 7px inside its card above and below. The first is
-   the name in 14px semibold, every name's style on the board, and at the
-   line's end its one icon; the second is the 4px meter across the line, or
-   the words that stand in its place. The line is the card's button, and
-   its press covers the whole tile, as a bus number's covers the bus tile:
-   this layer spans the tile, the nearest positioned box once overrides.css
-   makes the card's container static. */
+.scheduler-avail__who {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  line-height: var(--scheduler-row-h);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The gauge is the card's button, and its press covers the whole tile, as
+   a bus number's covers the bus tile: this layer spans the tile, the
+   nearest positioned box once overrides.css makes the card's container
+   static. */
+.scheduler-avail__card { display: flex; flex: none; align-items: center; block-size: var(--scheduler-row-h); }
 .scheduler-avail__line {
+  display: flex;
   padding: 0;
   border: 0;
   background: none;
   color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-align: start;
   cursor: pointer;
 }
 .scheduler-avail__line::after {
@@ -3983,61 +3981,34 @@ a.scheduler-tip__go { text-decoration: none; }
   position: absolute;
   inset: 0;
 }
-.scheduler-avail__who { line-height: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.scheduler-avail__card { display: block; }
-.scheduler-avail__top { display: flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); min-inline-size: 0; }
-.scheduler-avail__top { margin-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-tile-pad-block)); }
-.scheduler-avail__top > .scheduler-avail__who { flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-avail__line {
-  display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-03);
-  inline-size: 100%;
-  block-size: var(--scheduler-label-h);
-  color: var(--rux-text-secondary);
-}
-.scheduler-avail__line > .scheduler-avail__state { flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-avail__line > .scheduler-avail__state:empty { display: none; }
-/* The meter is Carbon's small progress bar, as the bus tile's fuel is: the
-   driving time left of the ten hours in the success green, amber under two
-   hours; with no clock, dashed and empty. It runs the line's width, a tenth
-   of it an hour. */
+/* THE HOURS GAUGE: the driving time left of the ten hours, a 2px ring the
+   icon's 16px, filled clockwise from the top in the success green, amber
+   under two hours, on the second layer's subtle border, as the bus tile's
+   fuel is, and Carbon's selected one on a selected card, where the plain one
+   is the card's own grey; with no clock, dashed and empty. The ring is a mask over the
+   fill, so the card's hover and selected show through its middle; its
+   inner edge fades over half a pixel so it draws round. */
 .scheduler-avail__meter {
   --scheduler-meter-ink: var(--scheduler-mark-success);
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  block-size: var(--rux-spacing-02);
-  background: linear-gradient(var(--scheduler-meter-ink), var(--scheduler-meter-ink)) 0 0 / var(--scheduler-share, 0%) 100% no-repeat, var(--rux-border-subtle-02);
+  --scheduler-meter-track: var(--rux-border-subtle-02);
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+  margin-inline-start: var(--rux-spacing-02);
+  border-radius: 50%;
+  background: conic-gradient(var(--scheduler-meter-ink) var(--scheduler-share, 0%), var(--scheduler-meter-track) 0);
+  mask: radial-gradient(closest-side, transparent calc(100% - var(--rux-spacing-01) - 0.5px), #000 calc(100% - var(--rux-spacing-01)));
 }
 .scheduler-avail__meter[hidden] { display: none; }
-.scheduler-avail__line[data-tone="warning"] > .scheduler-avail__state { color: var(--scheduler-head-low); font-weight: 600; }
-.scheduler-avail__line[data-tone="error"] > .scheduler-avail__state { color: var(--scheduler-head-critical); font-weight: 600; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
-.scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--rux-border-subtle-02) 0 2px, transparent 2px 4px); }
-@supports (inset-inline-start: round(50%, 1px)) {
-  .scheduler-avail__meter { background-size: round(var(--scheduler-share, 0%), 1px) 100%; }
-}
-.scheduler-avail__who,
-.scheduler-avail__state {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.scheduler-avail__who {
-  line-height: var(--rux-body-compact-01-line-height);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-}
-.scheduler-avail__state {
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--scheduler-label-h);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-  font-weight: var(--rux-label-01-font-weight);
-  color: var(--rux-text-secondary);
-}
-/* The worst mark ends the name's line, a status solid in its colour. A
+.scheduler-avail__meter:not([data-kind]) { background: repeating-conic-gradient(var(--scheduler-meter-track) 0 18deg, transparent 0 36deg); }
+.scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
+/* The worst mark stands after the name, a status solid in its colour. A
    driver with no mark has none drawn, and the name takes its room. */
 .scheduler-avail__mark {
   flex: none;
+  align-items: center;
+  margin-inline-start: var(--rux-spacing-02);
+  block-size: var(--scheduler-row-h);
   color: var(--scheduler-head-low);
 }
 .scheduler-avail__mark:not([hidden]) { display: inline-flex; }
@@ -4106,6 +4077,8 @@ a.scheduler-tip__go { text-decoration: none; }
    edge are the two properties below, which a theme sets in theme.css. */
 .scheduler-avail__cell {
   overflow: hidden;
+  font-size: var(--scheduler-fs);
+  letter-spacing: var(--scheduler-ls);
   --scheduler-mark-top: var(--scheduler-row-clear);
   --scheduler-mark-h: var(--scheduler-tile-card-h);
   --scheduler-mark-start: var(--scheduler-row-clear);

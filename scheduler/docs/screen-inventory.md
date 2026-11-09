@@ -267,7 +267,7 @@ week folds first.
 Shut, the rail is the tiles alone, 128px. Its head stands level with the
 board's toolbar and holds its title, Drivers, 16px in over the names, and a chevron; its band stands level with the day
 band and holds Sort, a ghost button naming the rail's order in the text colour with Carbon's sort arrows, which
-opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 64px, Carbon's two-line table row,
+opens a menu of Priority, Name and Time left joined to it as the ⋮'s is, saved with the view; and its rows are 48px, Carbon's lg table row,
 each line inside its row as a Carbon table's is, each parted from the next
 by the same line; they stand apart from the bus rows beside them, since a
 driver's row says nothing about the bus beside it. Priority is the
@@ -287,15 +287,14 @@ cannot drive.
 
 A driver's tile is drawn by `scheduler/driver-head.js`, a card as a bus's
 tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
-the rail's sides and the row's lines, and its two lines, 18px and 16px
-with nothing between them, 8px inside it at the sides and 7px above and
-below, its sizes in
+the rail's sides and the row's lines, and its one 18px line, 8px inside
+it at the sides and 7px above and below, its sizes in
 `scheduler/docs/board-layout.md`. Hover, an open card, a picked-out
 driver and keyboard focus mark the card alone, as a trip bar's are, and the
 row around it keeps the rail's surface; a bus tile is marked the same way.
 The first is the
-name at 14px semibold, its photo left to the card, and at the
-line's end one icon, every mark's words on its label. Their worst mark
+name at 14px semibold, its photo left to the card, and after it one
+icon, every mark's words on its label. Their worst mark
 stands there, the warning triangle when amber and the error circle when red,
 as on the trip bars and the bus tiles: Samsara keeping them to hours rules that are not a
 passenger carrier's, red, since every clock it gives is then wrong; a
@@ -309,18 +308,16 @@ under way, from its yard-out to its return, has what they are doing on it: the t
 arrow in green while driving, amber under two hours; a grey clock on duty,
 a yard move with it; a grey pause off duty, personal conveyance with it;
 a moon in the rest colour in the sleeper berth. No icon means no trip.
-The second line is the driving time Samsara says they have left, the
-least of the drive, shift and cycle clocks, as a 4px meter alone across the
-line, a tenth of it an hour, in the success green and amber under two
-hours; the time in words is the card's. A driver on no trip with all ten
-hours is free, and the line is empty. Words stand alone in the meter's
-place, at 12px semibold: on a trip, Not logged in in amber or "in 133" in
-red; over hours "Over 0:25" in red, as long as Samsara counts it, and at
-none Out of hours in red. Unless Samsara has words of its own, a driver with
-an expired paper has the paper in red there, "Medical expired" or "Licence
-expired". A driver with no clock, or not logged in off a trip, has the
-meter dashed and empty. Their
-duty and rest are the card's.
+The line ends in the driving time Samsara says they have left, the
+least of the drive, shift and cycle clocks, as a 16px gauge, a 2px ring
+filled clockwise from the top of the ten hours, in the success green and
+amber under two hours; the time in words is the card's. A driver on no trip
+with all ten hours is free, and has no gauge. Where the red or amber mark
+says it there is no gauge: on a trip, not logged in or in another bus;
+over or out of hours; and, unless Samsara has a mark of its own, an
+expired paper, whose words are the card's. A driver with no clock, or not
+logged in off a trip, has the gauge dashed and empty. Their duty and rest
+are the card's.
 
 A press anywhere on a tile opens the driver's Driver card, as a press
 anywhere on a bus's tile opens its tip: the whole tile lights under the

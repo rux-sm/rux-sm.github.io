@@ -19,7 +19,7 @@ and is what `scheduler/app.css` draws; what each part says is in
 | An icon | 16px, 4px from its words |
 | A bar | 8px clear of the row's lines and of the next bar |
 | A bus row | a lane for each stacked trip; on six lines 144px for one, 288px for two |
-| A driver row | 64px, Carbon's xl table row, the one for two lines; it does not line up with the bus rows |
+| A driver row | 48px, Carbon's lg table row, its default; three stand beside a six-line bus row |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
 
 ## The trip bar, on six lines
@@ -69,17 +69,17 @@ rest stand 8px.
 The rail is 128px, and in it each driver is a tile as a bus is: a card of
 the second layer with the bar's corners, 112px wide, 8px clear of the
 rail's sides and the row's lines as the bus tile is. Its row is Carbon's
-xl table row, 64px, the size Carbon gives a row of two lines, and the card
-Carbon's lg, 48px, from 8px to 56px of the row. It holds the name's 18px
-line over a 16px one, with 7px above and below, the lines 8px in from its
-sides, 96px wide, and two cards stand 16px apart across the row's line, as
-two buses' bars do. The Apple themes, whose Layer 02 is their Layer 01, fill the bus
-and driver tiles with the layer's accent.
+lg table row, 48px, and the card Carbon's sm, 32px, from 8px to 40px of
+the row. It holds one 18px line, 7px inside it above and below and 8px in
+from its sides, 96px wide, and two cards stand 16px apart across the row's
+line, as two buses' bars do. The Apple themes, whose Layer 02 is their
+Layer 01, fill the bus and driver tiles with the layer's accent.
 
-| Line | Holds |
+| Part | Holds |
 | :--- | :--- |
-| 1, 18px | The name, its one icon at the line's end |
-| 2, 16px | The hours meter across the line, 96px, a tenth of it an hour; or the words that stand in its place |
+| Name | What the icon and gauge leave of the 96px, 56px with both |
+| Icon | 16px, 4px after the name |
+| Gauge | 16px, a 2px ring, 4px after the icon, filled clockwise of the ten hours |
 
 ## The driver's week
 
@@ -96,7 +96,7 @@ to that edge.
 
 A view with fewer bar lines keeps the card the bar's size, the number level
 with the destination, and the readings on the lines under the number, four
-at most, less 4px at each end. The driver rows stay 64px in every view.
+at most, less 4px at each end. The driver rows stay 48px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |

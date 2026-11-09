@@ -4317,16 +4317,13 @@ a.scheduler-tip__go { text-decoration: none; }
 /* While its figure is out a name is dimmed, as a carried bar is where it sat.
    Once the figure has fallen out of sight the name slides back in on its
    tile in the selected fill, which fades, so it reads as there to pick up
-   again. */
+   again: Carbon's slow-01, 400ms, on the expressive entrance curve, since
+   the name arrives on screen. */
 .scheduler-avail__name--carried { cursor: grabbing; color: var(--rux-text-disabled); }
-@keyframes scheduler-avail-back {
-  from { text-indent: -4rem; }
-  60% { text-indent: .25rem; }
-  to { text-indent: 0; }
-}
+@keyframes scheduler-avail-back { from { text-indent: -4rem; } }
 @keyframes scheduler-avail-back-tile { from { background-color: var(--scheduler-tile-selected); } }
-.scheduler-avail__name--back { animation: scheduler-avail-back 480ms cubic-bezier(.2, .8, .3, 1); }
-.scheduler-avail__name--back::before { animation: scheduler-avail-back-tile 480ms cubic-bezier(.2, .8, .3, 1); }
+.scheduler-avail__name--back { animation: scheduler-avail-back 400ms cubic-bezier(0, 0, 0.3, 1); }
+.scheduler-avail__name--back::before { animation: scheduler-avail-back-tile 400ms cubic-bezier(0, 0, 0.3, 1); }
 .scheduler-bar.scheduler-bar--seat { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 2; }
 .scheduler-bar.scheduler-bar--seat-warn { outline: 2px solid var(--rux-support-warning); outline-offset: 1px; z-index: 2; }
 .scheduler-grid--carrying .scheduler-bar[data-wants-crew]:not(.scheduler-bar--open, .scheduler-bar--saving, .scheduler-bar--seat, .scheduler-bar--seat-warn) {

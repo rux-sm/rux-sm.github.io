@@ -20,7 +20,7 @@ and is what `scheduler/app.css` draws; what each part says is in
 | A bar | 8px clear of the row's lines and of the next bar |
 | A bus row | a lane for each stacked trip; on six lines 144px for one, 288px for two |
 | A driver row | 48px, three beside one lane on six lines |
-| Insets | 8px inside a card on the board, a bar or a bus tile; 16px inside a list, the driver rail |
+| Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
 
 ## The trip bar, on six lines
 
@@ -64,8 +64,13 @@ rest stand 8px.
 
 ## The driver tile
 
-128px, 16px in from its sides, in a 48px row: 5px, then two 18px lines,
-then 6px above the row's line.
+The rail is 128px, and in it each driver is a tile as a bus is: a card of
+the second layer with the bar's corners, 112px wide, 8px clear of the
+rail's sides as the bus tile is of its column's, and 4px clear of the 48px
+row's lines, half a bar's, since two lines leave the row 11px. The card is
+39px, 4px to 43px, its lines 8px in from its sides, 96px wide, and from 5px
+to 41px. The Apple themes, whose Layer 02 is their Layer 01, fill the bus
+and driver tiles with the layer's accent.
 
 | Line | Holds |
 | :--- | :--- |

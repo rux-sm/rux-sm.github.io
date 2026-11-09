@@ -88,6 +88,12 @@
    held the dark time at 2.9 in apple-light and 4.5 in apple-dark; it holds
    it at 6.9 and 7.6. */
 [data-theme^="apple-"] { --scheduler-rest-fill: #ea8dff; }
+/* A bus tile's and a driver tile's card is Layer 02, the step up from the
+   column it stands in. The Apple themes' Layer 02 is their Layer 01, the
+   rail's own surface and apple-light's board, so there the card takes the
+   layer's accent, the step up their trip that is back takes too. */
+[data-theme] { --scheduler-tile-fill: var(--rux-layer-02); }
+[data-theme^="apple-"] { --scheduler-tile-fill: var(--rux-layer-accent-01); }
 /* The bus head's readings, bus-head.js's: the primary ink while normal,
    the status palette's warning when low or idling too long and its error
    when critical, and its green for a moving bus's speed. */

@@ -1,8 +1,9 @@
 /* ==========================================================================
    Rux Scheduler — DRIVER HEAD, what the roster says of each driver
    --------------------------------------------------------------------------
-   A driver's name cell in the rail is their tile, as a bus's is in the
-   bus column, drawn inside the cell data.js makes, on two lines:
+   A driver's name cell in the rail is their tile, a card as a bus's is in
+   the bus column and a trip's bar is on the board, which app.css draws
+   under the parts this draws inside the cell data.js makes, on two lines:
    - The name at 14px, and at the line's end one 16px icon, every mark's
      words on its label. The driver's most urgent mark stands there, the
      warning triangle for an amber one and the error circle for a red one,

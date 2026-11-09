@@ -282,10 +282,13 @@ their tile shows no check of its own; a driver free on only some has
 nothing drawn, and a driver with an expired paper has no slot, since they
 cannot drive.
 
-A driver's tile is drawn by `scheduler/driver-head.js`, 128px, two lines 16px in
-from its sides, 18px each with nothing between them, centred above
-the row's line on whole pixels with the odd pixel below, its sizes in
-`scheduler/docs/board-layout.md`. The first is the
+A driver's tile is drawn by `scheduler/driver-head.js`, a card as a bus's
+tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
+the rail's sides and 4px of the row's lines, and its two lines 8px inside
+it, 18px each with nothing between them, centred above the row's line on
+whole pixels with the odd pixel below, its sizes in
+`scheduler/docs/board-layout.md`. Hover, selected and focus fill the row
+around the card, as they do the bus column's. The first is the
 name at 14px semibold, its photo left to the card, and at the
 line's end one icon, every mark's words on its label. Their worst mark
 stands there, the warning triangle when amber and the error circle when red,

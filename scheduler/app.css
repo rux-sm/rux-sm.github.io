@@ -736,9 +736,11 @@ button.scheduler-row-head__num::after {
    low tank keeps its strength, since the office still has to act on it. */
 .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
 /* The whole head opens the tip, so the whole head answers the pointer, and
-   stays marked while its tip is open. */
-.scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
-.scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
+   stays marked while its tip is open: a head with a tile on its tile, as a
+   trip bar is marked on itself, and a head with none, a phone's or a shut
+   row's, on the whole head. */
+.scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); --scheduler-tile-state: var(--scheduler-tile-hover); }
+.scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); --scheduler-tile-state: var(--scheduler-tile-selected); }
 /* Keyboard focus on the number rings the whole head, the thing a press
    takes, in Carbon's 2px focus ring inside its edge. */
 button.scheduler-row-head__num:focus { outline: none; }
@@ -827,8 +829,12 @@ button.scheduler-row-head__num:focus { outline: none; }
   inset-inline: var(--scheduler-row-clear);
   block-size: var(--scheduler-bar-h);
   border-radius: var(--scheduler-bar-radius, 0);
-  background: var(--scheduler-tile-fill);
+  background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
 }
+/* The head around the tile keeps the column's surface whatever its state,
+   and keyboard focus rings the tile, inside its edge, as it rings a bar. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id] { background: var(--rux-layer); outline: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head[data-bus-id]:has(button.scheduler-row-head__num:focus-visible)::before { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__top { block-size: var(--scheduler-row-h); align-self: stretch; }
 /* WHILE THE BUS HAS A MARK, ITS ALERT HANGS ON THE TILE'S TOP-RIGHT CORNER,
    so the number, the readings and the kit all stand centred: the warning
@@ -3950,7 +3956,7 @@ a.scheduler-tip__go { text-decoration: none; }
   block-size: calc(var(--scheduler-tile-h) + 2 * var(--scheduler-tile-pad-block));
   inset-inline: var(--scheduler-row-clear);
   border-radius: var(--scheduler-bar-radius, 0);
-  background: var(--scheduler-tile-fill);
+  background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
 }
 /* A DRIVER'S TILE, driver-head.js's: two 18px lines, the bar's, 10px inside
    its card above and below, 18px under the row's top. The first is
@@ -4223,17 +4229,18 @@ a.scheduler-tip__go { text-decoration: none; }
   -webkit-user-select: none;
   user-select: none;
 }
-/* The whole tile opens the card, so the whole tile answers the pointer and
-   stays marked while its card is open, as a bus head does. */
-.scheduler-avail__name:hover { background: var(--rux-layer-hover); }
-.scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) { background: var(--rux-layer-selected); }
+/* The whole row opens the card, so the whole row answers the pointer, and
+   the tile is marked, as a trip bar is on itself, and stays marked while its
+   card is open or its driver picked out, as a bus tile does. */
+.scheduler-avail__name:hover { --scheduler-tile-state: var(--scheduler-tile-hover); }
+.scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) { --scheduler-tile-state: var(--scheduler-tile-selected); }
 .scheduler-avail__name[data-picked] {
   color: var(--rux-text-primary);
 }
-/* Keyboard focus on the card's button rings the whole tile, the thing its
-   press takes, in Carbon's 2px ring inside its edge, as a bus head's does. */
+/* Keyboard focus on the card's button rings the tile, the thing its press
+   takes, in Carbon's 2px ring inside its edge, as a bus tile's does. */
 .scheduler-avail__line:focus { outline: none; }
-.scheduler-avail__name:has(.scheduler-avail__line:focus-visible) { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-avail__name:has(.scheduler-avail__line:focus-visible)::before { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-avail__cell--busy { cursor: pointer; }
 
 /* A driver carried to a trip, from the roster or off another bar, is a figure
@@ -4311,15 +4318,18 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-carried__leg { transform-origin: 9px 27px; transform: rotate(var(--scheduler-carried-leg)); }
 .scheduler-carried__leg--back { transform: rotate(var(--scheduler-carried-leg-back)); }
 /* While its figure is out a name is dimmed, as a carried bar is where it sat.
-   Once the figure has fallen out of sight the name slides back in on the
-   selected surface, which fades, so it reads as there to pick up again. */
+   Once the figure has fallen out of sight the name slides back in on its
+   tile in the selected fill, which fades, so it reads as there to pick up
+   again. */
 .scheduler-avail__name--carried { cursor: grabbing; color: var(--rux-text-disabled); }
 @keyframes scheduler-avail-back {
-  from { text-indent: -4rem; background-color: var(--rux-layer-selected); }
+  from { text-indent: -4rem; }
   60% { text-indent: .25rem; }
   to { text-indent: 0; }
 }
+@keyframes scheduler-avail-back-tile { from { background-color: var(--scheduler-tile-selected); } }
 .scheduler-avail__name--back { animation: scheduler-avail-back 480ms cubic-bezier(.2, .8, .3, 1); }
+.scheduler-avail__name--back::before { animation: scheduler-avail-back-tile 480ms cubic-bezier(.2, .8, .3, 1); }
 .scheduler-bar.scheduler-bar--seat { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 2; }
 .scheduler-bar.scheduler-bar--seat-warn { outline: 2px solid var(--rux-support-warning); outline-offset: 1px; z-index: 2; }
 .scheduler-grid--carrying .scheduler-bar[data-wants-crew]:not(.scheduler-bar--open, .scheduler-bar--saving, .scheduler-bar--seat, .scheduler-bar--seat-warn) {

@@ -46,7 +46,9 @@ a bar: a card of the second layer the bar's size and place, 56px wide, as
 tall as the bar and 8px clear of the row's lines and the column's sides, as
 a bar is of the row's lines and the column's rule, with the bar's corners.
 Its parts stand centred inside it, the bar's 8px in from its sides, on the
-bar's lines. Its alert hangs on the card's top-right corner, on a 20px disc
+bar's lines. Hover, an open tip and keyboard focus mark the card alone, as
+a bar's mark the bar, in Layer 02's hover and selected, or the Apple themes'
+accent hover and active; the column around it keeps its surface. Its alert hangs on the card's top-right corner, on a 20px disc
 of the column's surface that ends at the column's edge, 2px under the row's
 line. It is measured from the top, so
 a row of stacked trips keeps it on the first trip's lines.

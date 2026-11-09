@@ -287,8 +287,10 @@ tile is and a trip's bar: the second layer, the bar's corners, 8px clear of
 the rail's sides and the row's lines, and its two lines 8px inside
 it at the sides and 10px above and below, as a bus tile's are, 18px each with nothing between
 them, its sizes in
-`scheduler/docs/board-layout.md`. Hover, selected and focus fill the row
-around the card, as they do the bus column's. The first is the
+`scheduler/docs/board-layout.md`. Hover, an open card, a picked-out
+driver and keyboard focus mark the card alone, as a trip bar's are, and the
+row around it keeps the rail's surface; a bus tile is marked the same way.
+The first is the
 name at 14px semibold, its photo left to the card, and at the
 line's end one icon, every mark's words on its label. Their worst mark
 stands there, the warning triangle when amber and the error circle when red,

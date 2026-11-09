@@ -89,11 +89,20 @@
    it at 6.9 and 7.6. */
 [data-theme^="apple-"] { --scheduler-rest-fill: #ea8dff; }
 /* A bus tile's and a driver tile's card is Layer 02, the step up from the
-   column it stands in. The Apple themes' Layer 02 is their Layer 01, the
-   rail's own surface and apple-light's board, so there the card takes the
-   layer's accent, the step up their trip that is back takes too. */
-[data-theme] { --scheduler-tile-fill: var(--rux-layer-02); }
-[data-theme^="apple-"] { --scheduler-tile-fill: var(--rux-layer-accent-01); }
+   column it stands in, with Layer 02's hover and selected. The Apple themes'
+   Layer 02 is their Layer 01, the rail's own surface and apple-light's
+   board, so there the card takes the layer's accent and its hover and
+   active, as their trip that is back does. */
+[data-theme] {
+  --scheduler-tile-fill: var(--rux-layer-02);
+  --scheduler-tile-hover: var(--rux-layer-hover-02);
+  --scheduler-tile-selected: var(--rux-layer-selected-02);
+}
+[data-theme^="apple-"] {
+  --scheduler-tile-fill: var(--rux-layer-accent-01);
+  --scheduler-tile-hover: var(--rux-layer-accent-hover-01);
+  --scheduler-tile-selected: var(--rux-layer-accent-active-01);
+}
 /* The bus head's readings, bus-head.js's: the primary ink while normal,
    the status palette's warning when low or idling too long and its error
    when critical, and its green for a moving bus's speed. */
@@ -823,7 +832,7 @@
 /* A Rux 100 bus head whose tip is open is back at the board's own sheet,
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */
-[data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); }
+[data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); --scheduler-tile-state: var(--scheduler-tile-fill); }
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
    dims its icon, state and fuel to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it

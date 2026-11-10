@@ -66,9 +66,10 @@ for (const game of scan.games) {
   const discs = [];
   if (convertsPs1) {
     for (const cue of game.files.filter(f => f.ext === 'cue')) {
+      // The data track, the first, names the disc; audio tracks are on no list.
       const bins = binsOf(game, cue);
       const name = bins[0]?.match?.name;
-      if (!name || bins.some(b => b.match?.name !== name)) { skipped.push(`${cue.name}: its tracks are not one listed disc`); continue; }
+      if (!name || bins.some(b => b.match && b.match.name !== name)) { skipped.push(`${cue.name}: its data track is not a listed disc`); continue; }
       discs.push(name);
       plan.push({ kind: 'chd', system: 'psx', tool: 'createcd', from: cue.name, out: `psx/${name}.chd`,
         originals: [cue, ...bins], inner: bins.map(b => b.sha1) });

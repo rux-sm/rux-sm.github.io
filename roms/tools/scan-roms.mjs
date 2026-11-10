@@ -20,7 +20,7 @@ import crypto from 'node:crypto';
 import zlib from 'node:zlib';
 import os from 'node:os';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { loadLists, matchGame, loadSwitchVersions, matchSwitch, baseOf, loadBiosList } from './lib/lists.mjs';
+import { loadLists, matchGame, loadSwitchVersions, matchSwitch, discBaseOf, releaseOf, loadBiosList } from './lib/lists.mjs';
 
 const root = process.argv[2];
 const headersOnly = process.argv.includes('--headers-only');
@@ -452,12 +452,37 @@ for (const x of extras.filter((x) => x.baseTitleId)) {
 // Each game against the lists, where the drive holds them.
 const lists = loadLists(path.join(root, 'lists'));
 const switchVersions = loadSwitchVersions(path.join(root, 'lists'));
-for (const g of out) g.match = g.system === 'switch' ? matchSwitch(g, switchVersions) : matchGame(g, lists);
-// Two games of one name on one system are copies of one game in different
-// regions or revisions; each names the others. Discs are already one game.
+const matchOf = g => (g.system === 'switch' ? matchSwitch(g, switchVersions) : matchGame(g, lists));
+for (const g of out) g.match = matchOf(g);
+// Discs whose files carry no disc number, like a set named by edition, are
+// one game once the list names them as discs of one set.
+const sets = new Map();
+for (const g of out) {
+  const n = g.match?.names ?? [];
+  if (n.length && n.every(x => /\(Disc \d+\)/.test(x))) {
+    const k = `${g.system}/${discBaseOf(n[0])}`;
+    if (!sets.has(k)) sets.set(k, []);
+    sets.get(k).push(g);
+  }
+}
+for (const [k, group] of sets) {
+  if (group.length < 2) continue;
+  const [first, ...rest] = group;
+  first.title = k.slice(k.indexOf('/') + 1);
+  for (const g of rest) {
+    first.files.push(...g.files);
+    first.size += g.size;
+    first.hasSave ||= g.hasSave;
+    out.splice(out.indexOf(g), 1);
+  }
+  first.formats = [...new Set(first.files.map(f => f.ext))].sort();
+  first.match = matchOf(first);
+}
+// Two games of one release on one system, told apart only by region,
+// languages or revision, are copies of one game; each names the others.
 const byBase = new Map();
 for (const g of out) {
-  const k = `${g.system}/${baseOf(g.match?.names?.[0] ?? g.title).replace(/\s*\(Disc \d+\)/, '')}`;
+  const k = `${g.system}/${releaseOf(g.match?.names?.[0] ?? g.title)}`;
   if (!byBase.has(k)) byBase.set(k, []);
   byBase.get(k).push(g);
 }
@@ -473,9 +498,16 @@ const bios = await Promise.all(biosFiles.map(async (f) => {
   if (SECRET.test(f)) return { name: rel, secret: true };
   return { name: rel, size: fs.statSync(f).size, ...(await fingerprint(f, fs.statSync(f))) };
 }));
-// A BIOS the system list knows, by name; it knows few, so no match is no fault.
+// A BIOS the system list knows, by name, under that system's emulator's
+// folder in the list, since one small file can equal another system's. The
+// list knows few, so no match is no fault.
+const BIOS_FOLDERS = { ps2: /^System: pcsx2\//, xbox: /^System: (xemu|xbox)\//i };
 const biosList = loadBiosList(path.join(root, 'lists'));
-for (const b of bios) if (biosList && b.sha1) b.listedAs = biosList.get(b.sha1) ?? null;
+for (const b of bios) {
+  const hit = biosList && b.sha1 ? biosList.get(b.sha1) : null;
+  const folder = BIOS_FOLDERS[b.name.split('/')[0]];
+  b.listedAs = hit && folder?.test(hit) ? hit : null;
+}
 
 fs.mkdirSync(scansDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));

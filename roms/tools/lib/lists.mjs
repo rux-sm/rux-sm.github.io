@@ -7,6 +7,10 @@
 // what is inside it: a CHD by the tracks chdman extracts, an RVZ by the disc
 // ID in its header. A 3DS game, whose lists fingerprint the encrypted
 // cartridge, is matched by its product code.
+//
+// libretro's Redump lists hold each disc's data track alone, the first; a
+// PlayStation disc's audio tracks are on no list, so they neither match nor
+// count against a game.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -76,21 +80,27 @@ const discOf = name => Number(tagsOf(name).find(x => /^Disc \d+$/.test(x))?.slic
 // A title without its tags, for finding other versions of the same game.
 export const baseOf = name => String(name).replace(/\s*\([^)]*\)/g, '').replace(/\s*\[[^\]]*\]/g, '').trim();
 const stemOf = name => path.basename(name).replace(/\.[^.]+$/, '');
+// A track the lists do not hold: a BIN named (Track 2) or later.
+const audioTrack = name => /\(Track 0*([2-9]|\d{2,})\)\.bin$/i.test(name);
+// What a disc's list name is without its disc number and what follows it.
+export const discBaseOf = name => String(name).replace(/\s*\(Disc \d+\).*$/, '').trim();
+// The tags that make a release its own: all but region, languages and revision.
+const REGION = /^(USA|Europe|Japan|World|Canada|Korea|Asia|Australia|Brazil|Spain|France|Germany|Italy|Netherlands|Sweden|China)(, [A-Za-z]+)*$/;
+export const releaseOf = name => [baseOf(name), ...tagsOf(name)
+  .filter(t => !REGION.test(t) && !/^(En|Ja|Fr|De|Es|It|Nl|Pt|Sv|Ko|Zh)(,|$)/.test(t) && !/^Rev \w+$/.test(t) && !/^Disc \d+$/.test(t))].join(' | ');
 
 // One file's match: the list entry it is, and how that was found.
 function matchFile(file, list) {
   const h = file.header ?? {};
-  if (file.ext === 'cue' || file.ext === 'm3u') return null;
+  if (file.ext === 'cue' || file.ext === 'm3u' || audioTrack(file.name)) return null;
   if (file.sha1 && list.bySha1.has(file.sha1)) {
     const { game, rom } = list.bySha1.get(file.sha1);
     return { name: game.name, file: rom.name, by: 'fingerprint' };
   }
-  // A CHD's tracks, as chdman extracted them: every track must be one game's.
-  if (file.inner?.length) {
-    const hits = file.inner.map(s => list.bySha1.get(s));
-    if (hits.every(Boolean) && new Set(hits.map(x => x.game.name)).size === 1) {
-      return { name: hits[0].game.name, file: `${hits[0].game.name}.${file.ext}`, by: 'fingerprint inside' };
-    }
+  // A CHD by its first track, the data track, as chdman extracted it.
+  if (file.inner?.length && list.bySha1.has(file.inner[0])) {
+    const { game } = list.bySha1.get(file.inner[0]);
+    return { name: game.name, file: `${game.name}.${file.ext}`, by: 'fingerprint inside' };
   }
   // A GameCube or Wii disc by the ID in its header, its disc and its revision.
   if (h.discId) {
@@ -115,7 +125,7 @@ function matchFile(file, list) {
 export function matchGame(game, lists) {
   const list = lists[game.system];
   if (!list || game.folder) return null;
-  const files = game.files.filter(f => f.ext !== 'cue' && f.ext !== 'm3u');
+  const files = game.files.filter(f => f.ext !== 'cue' && f.ext !== 'm3u' && !audioTrack(f.name));
   for (const f of game.files) f.match = matchFile(f, list);
   const matched = files.filter(f => f.match);
   const names = [...new Set(matched.map(f => f.match.name))];
@@ -131,11 +141,12 @@ export function matchGame(game, lists) {
       if (baseOf(g.name) === baseOf(n) && revOf(g.name) > revOf(n) && sameRelease(g.name, n)) better.push(g.name);
     }
   }
-  // Discs the list knows of that the game lacks.
+  // Discs the list knows of that the game lacks: the same name before its
+  // disc number, another disc number.
   const discs = new Set(names.map(discOf));
-  const missingDiscs = names.length ? list.games
-    .filter(g => names.some(n => baseOf(g.name) === baseOf(n) && tagsOf(g.name)[0] === tagsOf(n)[0]
-      && revOf(g.name) === revOf(n)) && /\(Disc \d+\)/.test(g.name) && !discs.has(discOf(g.name)))
+  const bases = new Set(names.filter(n => /\(Disc \d+\)/.test(n)).map(discBaseOf));
+  const missingDiscs = bases.size ? list.games
+    .filter(g => /\(Disc \d+\)/.test(g.name) && bases.has(discBaseOf(g.name)) && !discs.has(discOf(g.name)))
     .map(g => g.name) : [];
   return {
     listed: files.length > 0 && matched.length === files.length,

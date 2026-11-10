@@ -4090,28 +4090,31 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-conic-gradient(var(--scheduler-meter-track) 0 18deg, transparent 0 36deg); }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
-/* The worst mark ends the line, a status solid in its colour, so every
-   driver's stands in one column at the card's edge, as a bar's alert ends
-   its row. A driver with no mark has none drawn, and the name takes its
-   room. */
+/* After the gauge, what a driver is doing on their trip, then their worst
+   mark, a status solid in its colour, ending the line so every driver's
+   stands in one column at the card's edge, as a bar's alert ends its row.
+   Each stands 4px after the icon before it, 8px after the name, and one
+   not drawn gives the name its room. */
+.scheduler-avail__doing,
 .scheduler-avail__mark {
   flex: none;
   align-items: center;
   margin-inline-start: var(--rux-spacing-03);
   block-size: var(--scheduler-row-h);
-  color: var(--scheduler-head-low);
 }
-.scheduler-avail__mark:not([hidden]) { display: inline-flex; }
-.scheduler-avail__card:has(.scheduler-avail__meter:not([hidden])) + .scheduler-avail__mark { margin-inline-start: var(--rux-spacing-02); }
+:is(.scheduler-avail__doing, .scheduler-avail__mark):not([hidden]) { display: inline-flex; }
+.scheduler-avail__card:has(.scheduler-avail__meter:not([hidden])) ~ :is(.scheduler-avail__doing, .scheduler-avail__mark),
+.scheduler-avail__doing:not([hidden]) + .scheduler-avail__mark { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-avail__mark { color: var(--scheduler-head-low); }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
-/* With no mark, what a driver is doing on their trip: driving in the trip
-   bar's green, amber under two hours as its arrow is; on or off duty in the
-   secondary icon grey, since neither asks anything; the sleeper berth in
-   the rest colour the bars use. */
-.scheduler-avail__mark[data-trip] { color: var(--rux-icon-secondary); }
-.scheduler-avail__mark[data-trip="driving"] { color: var(--scheduler-mark-success); }
-.scheduler-avail__mark[data-trip="driving"][data-tone="warning"] { color: var(--scheduler-head-low); }
-.scheduler-avail__mark[data-trip="sleeper"] { color: var(--scheduler-rest-fill); }
+/* What they are doing: driving in the trip bar's green, amber under two
+   hours as its arrow is; on or off duty in the secondary icon grey, since
+   neither asks anything; the sleeper berth in the rest colour the bars
+   use. */
+.scheduler-avail__doing { color: var(--rux-icon-secondary); }
+.scheduler-avail__doing[data-trip="driving"] { color: var(--scheduler-mark-success); }
+.scheduler-avail__doing[data-trip="driving"][data-tone="warning"] { color: var(--scheduler-head-low); }
+.scheduler-avail__doing[data-trip="sleeper"] { color: var(--scheduler-rest-fill); }
 
 /* The corner stays above the day letters when the roster scrolls sideways.
    It needs the header row's two-class specificity to beat their z-index 3. */

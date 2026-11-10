@@ -297,10 +297,10 @@ it at the sides and 7px above and below, its sizes in
 driver and keyboard focus mark the card alone, as a trip bar's are, and the
 row around it keeps the rail's surface; a bus tile is marked the same way.
 The first is the
-name at 14px semibold, its photo left to the card, and at the line's
-end one icon, every mark's words on its label, so every driver's stands in
-one column. Their worst mark
-stands there, the warning triangle when amber and the error circle when red,
+name at 14px semibold, its photo left to the card, then two icons,
+every mark's words on the label. At the line's end, so every driver's
+stands in one column, their worst mark
+stands, the warning triangle when amber and the error circle when red,
 as on the trip bars and the bus tiles: Samsara keeping them to hours rules that are not a
 passenger carrier's, red, since every clock it gives is then wrong; a
 licence or medical card expiring within 45 days, amber, or expired, red; a leg within 30 days that changed since they said yes; a leg
@@ -308,12 +308,12 @@ leaving within two days they have not been sent. What Samsara says now
 earns one too, and the worse stands: on a trip, their app not connected,
 the amber warning; on a trip, logged into a bus that is none of the ones
 they ride on it, as a trip bar's Wrong bus says, red;
-over or out of hours, red. With no mark, a driver on a trip
-under way, from its yard-out to its return, has what they are doing on it: the trip bar's
+over or out of hours, red. Before the mark, a driver on a trip
+under way, from its yard-out to its return, has what they are doing on it, mark or not: the trip bar's
 arrow in green while driving, amber under two hours; a grey play triangle on duty,
 a yard move with it; a grey pause off duty, personal conveyance with it;
-a moon in the rest colour in the sleeper berth. No icon means no trip.
-Before the icon stands the driving time Samsara says they have left, the
+a moon in the rest colour in the sleeper berth. No such icon means no trip.
+Before the icons stands the driving time Samsara says they have left, the
 least of the drive, shift and cycle clocks, as a 16px gauge, a 2px ring
 filled clockwise from the top of the ten hours, in the success green and
 amber under two hours; the time in words is the card's. A driver on no trip

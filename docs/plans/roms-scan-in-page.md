@@ -14,9 +14,11 @@ Import page and no Saves page upload are needed. The rest of Roms is
 
 ## Decisions
 
-- **Update, on the Status page, scans the drive in Chrome.** Chrome lets a
-  page read a folder rux picks once and remembers it, as the Saves page
-  already does; Safari cannot, so the page says to use Chrome.
+- **Update, on the Status page, scans the drive in Chrome, and only
+  Chrome.** Chrome lets a page read a folder rux picks once and remembers
+  it, as the Saves page already does; Safari cannot, so there the page says
+  to use Chrome, and the rest of Roms keeps working in Safari and on the
+  phone.
 - **The scan is one module that both Node and the page run,** as
   `roms/saves-rules.js` is, so the page and `scan-roms.mjs` never read a
   game differently. Reading files, hashing and the lists move into it;
@@ -46,8 +48,6 @@ Import page and no Saves page upload are needed. The rest of Roms is
 
 ## Questions
 
-- Is Chrome-only acceptable for Update? The rest of Roms keeps working in
-  Safari and on the phone.
 - Should Update also run on its own when Status opens and the folder is
   already allowed, or only on a click?
 

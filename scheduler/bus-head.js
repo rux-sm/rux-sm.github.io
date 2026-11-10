@@ -13,7 +13,7 @@
      critical, red. DEF is drawn only while it is low, since a normal DEF
      needs nothing of the office. The full tile labels lost signal and
      shows the age at its foot when there is room, and on six lines boxes
-     the state and the fuel, green while the bus moves.
+     the state and the fuel, green while the engine runs and dark while off.
      Where the bus is, when it was last seen and its inspection are the
      number's toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the

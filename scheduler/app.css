@@ -950,26 +950,29 @@ button.scheduler-row-head__num:focus { outline: none; }
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
-/* THE STATE'S BOX, on six lines: a 1px border round the state and the fuel,
-   its sides on the card's 8px inset, in line with the number, 4px clear of
-   the number and the foot and 4px from its words all round, the unit or
-   elapsed time under its reading. The
-   border is the third layer's subtle one, as on anything set on a tile, and
-   a moving bus's is its green over a tint of it, amber past SPEEDING, so a
-   bus on the road shows down the column; the box carries the colour, so its
-   speed and mph are the primary text, which holds 4.5 to 1 on the tint in
-   every theme where the green and the secondary grey do not. Shorter views have no room and keep the state on one row. */
+/* THE STATE'S BOX, on six lines: round the state and the fuel, its sides on
+   the card's 8px inset, in line with the number, 4px clear of the number and
+   the foot and 4px from its words all round, the unit or elapsed time under
+   its reading. It says whether the engine runs: off or with no signal it is
+   the column's own surface, a step below the card as a bar's tail is below
+   the bar, with no border; while the engine runs, idle or moving, it is the
+   green over a tint of it, and amber in the warning tone, past SPEEDING or
+   idling past IDLE_MS. A running box carries the colour, so its words are
+   the primary text, which holds 4.5 to 1 on the tint in every theme where
+   the green and the secondary grey do not. Shorter views have no room and
+   keep the state on one row. */
 .scheduler-row-head__box { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__box {
   display: block;
   grid-row: 3 / 6;
   justify-self: stretch;
   margin-block: calc(-1 * var(--scheduler-box-clear));
-  border: 1px solid var(--scheduler-head-box);
+  border: 1px solid transparent;
+  background: var(--rux-layer);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"] .scheduler-row-head__box { border-color: var(--scheduler-head-moving); background: var(--scheduler-head-box-moving); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"]:has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-low); background: var(--scheduler-head-box-low); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"] :is(.scheduler-row-head__dial, .scheduler-row-head__under) { color: var(--rux-text-primary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { border-color: var(--scheduler-head-moving); background: var(--scheduler-head-box-on); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]):has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-low); background: var(--scheduler-head-box-low); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under, .scheduler-row-head__fuel-end) { color: var(--rux-text-primary); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__dial { align-self: start; align-items: flex-start; block-size: auto; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__speed { flex-direction: column; align-items: flex-start; gap: 0; max-inline-size: 100%; }

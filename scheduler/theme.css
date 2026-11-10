@@ -113,14 +113,11 @@
   --scheduler-head-critical: var(--scheduler-mark-error);
   --scheduler-head-moving: var(--scheduler-mark-success);
 }
-/* The full tile's state box: the third layer's subtle border at rest, since
-   it is set on the second layer's tile, and
-   for a moving bus a tint of its green, or of the warning past SPEEDING,
-   under the border in the full colour. */
+/* The full tile's state box while the engine runs: a tint of the green, or
+   of the warning past SPEEDING or IDLE_MS, under a border in the full colour. */
 :root,
 [data-theme] {
-  --scheduler-head-box: var(--rux-border-subtle-03);
-  --scheduler-head-box-moving: color-mix(in srgb, var(--scheduler-head-moving) 16%, transparent);
+  --scheduler-head-box-on: color-mix(in srgb, var(--scheduler-head-moving) 16%, transparent);
   --scheduler-head-box-low: color-mix(in srgb, var(--scheduler-head-low) 16%, transparent);
 }
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take

@@ -117,6 +117,7 @@ collection is ever written here, because this repository is public.
 | `emulators.json` | each system's emulator, why, how it names a save, what it needs, and where each keeps saves on a Mac; the scan and the gather tool read it too |
 | `scan.js` | the scan, for the Mac tool and the page alike |
 | `drive.js` | the drive as `scan.js` reads it in Chrome, from a folder rux picks |
+| `zip.js` | the backup zip, packed in the page |
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js`, `import.js` | each page's own behaviour |

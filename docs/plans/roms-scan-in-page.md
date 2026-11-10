@@ -31,8 +31,8 @@ Import page and no Saves page upload are needed. The rest of Roms is
   `fingerprints.json`, which the organize tool writes when it makes the
   CHD; a CHD it did not make is listed as not fingerprinted yet, and the
   organize tool fills it in.
-- **The page packs the backup zip itself,** saves, BIOS and keys,
-  uncompressed, and uploads it as Import does now.
+- **The page packs the backup zip itself,** saves, BIOS and keys, with
+  `roms/zip.js` and Chrome's own deflate, and uploads it as Import does now.
 - **Update shows what changed before saving:** games new, changed and gone,
   and saves on a yes, as Import does; the Import page goes.
 - **This Mac's apps and settings still need one double-click,** because
@@ -55,7 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Pack the backup zip in the page.
 - [ ] Turn `gather-saves.mjs` into `Check this Mac.command`, writing to the
   drive's `macs/` folder.
 - [ ] Add Update to the Status page with the change summary and the save,

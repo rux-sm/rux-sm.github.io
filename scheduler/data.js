@@ -1394,10 +1394,12 @@
       } else {
         top.append(el('div', 'scheduler-row-head__num', r.partner ? r.partner.name : 'No\nbus'));
       }
-      // A partner's tile carries how many of its buses it has confirmed, which `markHeads` writes.
+      // A partner's tile carries the partner's mark at its foot, which the head's title says in words.
       if (r.partner) {
         head.dataset.partner = String(r.partner.id);
-        head.appendChild(confirmedEl());
+        const mark = el('span', 'scheduler-row-head__partner');
+        mark.appendChild(svgUse('#i-collaborate', '16', '0 0 32 32'));
+        head.appendChild(mark);
       }
       if (!r.bus) head.title = r.partner ? `${r.partner.name}, a partner covering buses with its own coach and driver` : 'Trips with no bus yet';
       if (r.bus) {
@@ -1428,7 +1430,7 @@
          grows for the trips in view once the strip is placed. */
       const least = track.dataset.retired != null || track.dataset.unassigned || track.dataset.partner ? 0 : 1;
       track.style.setProperty('--scheduler-lanes', least);
-      stripRows.push({ track, head, bus: r.bus, partner: r.partner, items, least, windows });
+      stripRows.push({ track, head, bus: r.bus, items, least, windows });
 
       rowEl.append(head, track);
       gridEl.appendChild(rowEl);
@@ -1870,42 +1872,11 @@
     for (const row of stripRows) for (const item of row.items) item.el?.toggleAttribute('data-lead', leads(item, leadDay));
   }
 
-  /* The marks beside the bus numbers, for the out-of-service days in view,
-     and each partner's confirmed count, for the buses it covers in the
-     same days: those of the board's label. */
+  // The marks beside the bus numbers, for the out-of-service days in view.
   function markHeads() {
     if (!stripStart) return;
     const to = viewEnd(cursor);
-    const first = daysBetween(stripStart, cursor), past = first + inView();
-    for (const row of stripRows) {
-      if (row.bus) markOutOfService(row.head, row.windows.filter(w => clip(w.start_date, w.end_date, cursor, to)));
-      if (row.partner) markConfirmed(row.head, row.items.filter(item => item.b && item.start < past && item.end > first));
-    }
-  }
-  /* A partner's count: a check, the buses it has confirmed and, after a
-     slash, the buses it covers, each assignment once however many legs it
-     runs. app.css draws it on the tile's last row, amber while one is not
-     confirmed, and none while it covers none in those days. */
-  function confirmedEl() {
-    const box = el('span', 'scheduler-row-head__confirmed');
-    box.setAttribute('role', 'img');
-    box.hidden = true;
-    const figure = el('span', 'scheduler-row-head__confirmed-figure');
-    figure.append(el('span', 'scheduler-row-head__confirmed-done'), el('span', 'scheduler-row-head__confirmed-of'));
-    box.append(svgUse('#m-check_circle', '16', '0 0 32 32'), figure);
-    return box;
-  }
-  function markConfirmed(head, items) {
-    const box = head.querySelector('.scheduler-row-head__confirmed');
-    if (!box) return;
-    const assigns = new Map(items.map(item => [item.b.assign.id, item.b.assign]));
-    const of = assigns.size;
-    const done = [...assigns.values()].filter(a => a.partner_confirmed).length;
-    box.hidden = !of;
-    box.toggleAttribute('data-waiting', done < of);
-    box.setAttribute('aria-label', `${done} of ${of} ${of === 1 ? 'bus' : 'buses'} confirmed`);
-    box.querySelector('.scheduler-row-head__confirmed-done').textContent = String(done);
-    box.querySelector('.scheduler-row-head__confirmed-of').textContent = `/${of}`;
+    for (const row of stripRows) if (row.bus) markOutOfService(row.head, row.windows.filter(w => clip(w.start_date, w.end_date, cursor, to)));
   }
   /* THE DAYS NOT YET READ show the loading skeleton near the view: a
      placeholder across them in each row's first lane, as the page's first

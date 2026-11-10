@@ -102,6 +102,7 @@ export const ICONS = {
   'circle-stroke': { material: 'trip_origin', rux: null },  // A plain ring; `radio_button_unchecked` is taken by radio-button.
   'close': { material: 'close', rux: null },
   'close--filled': { material: 'cancel-fill', rux: null },
+  'collaborate': { material: 'partner_exchange', rux: null },  // A company that covers a bus with its own coach and driver: two people, and the exchange between them.
   'color-palette': { material: 'palette', rux: null },
   'copy': { material: 'content_copy', rux: null },
   'critical': { material: 'dangerous', rux: null },  // `error` is taken by error--filled.
@@ -151,7 +152,7 @@ export const ICONS = {
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
   'paint-brush': { material: 'brush', rux: null },
   'palm-tree': { material: 'beach_access', rux: null },  // Time away: Carbon draws a palm and Material a beach umbrella.
-  'partnership': { material: 'handshake', rux: null },  // A company that covers a bus with its own coach and driver.
+  'partnership': { material: 'handshake', rux: null },
   'pause--filled': { material: 'pause-fill', rux: null },  // The bare bars.
   'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out.
   'pending--filled': { material: 'pending-fill', rux: null },

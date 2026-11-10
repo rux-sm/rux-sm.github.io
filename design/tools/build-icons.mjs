@@ -96,6 +96,9 @@ const ICONS = [
   // rail: the bare bars, since a disc beside the tile's hours ring reads as a
   // second ring; on duty, the bare triangle, for the same reason.
   'pause--filled', 'play--filled--alt',
+  // A partner, a company that covers a bus with its own coach and driver, at
+  // the foot of its tile in the scheduler's bus column.
+  'collaborate',
   // A BUS'S FUEL in the scheduler's bus column, at Carbon's 16px.
   'gas-station',
   // THE UPDATES BUTTON on a scheduler trip bar, leading the row that opens

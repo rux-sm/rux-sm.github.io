@@ -70,7 +70,7 @@ A partner's row has the bus tile's card, its parts at the same start.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Name | The partner's name in full, label-01 semibold, on up to three lines, cut after the third; one line in a view of three rows or fewer | Every row above the foot |
-| Foot | A check at 16px, then how many of the buses it covers in the days of the board's label it has confirmed, in heading-compact-01, and after a slash how many it covers, in label-01; all amber while one is not confirmed, and nothing while it covers none | The tile's last row, on the card's inset |
+| Foot | Carbon's collaborate mark at 16px, the partner's, where a bus tile has its kit | The tile's last row, on the card's inset |
 
 A view of one row shows the name alone.
 

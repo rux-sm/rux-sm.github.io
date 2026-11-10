@@ -772,8 +772,8 @@ button.scheduler-row-head__num:focus { outline: none; }
    surface, headed with the partner's name in the number's type, on as many
    lines as it takes, a long word broken in the phone's narrow column. */
 .scheduler-row--partner .scheduler-row-head__num { white-space: normal; overflow-wrap: anywhere; text-align: center; line-height: 18px; }
-/* Its confirmed count is the Mac's tile's alone. */
-.scheduler-row-head__confirmed { display: none; }
+/* Its mark is the Mac's tile's alone. */
+.scheduler-row-head__partner { display: none; }
 
 .scheduler-track {
   position: relative;
@@ -871,10 +871,8 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--unassigned .scheduler-row-head__num { line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
 /* A PARTNER'S TILE holds its name in full at the start, in label-01's
    size on up to three lines where the view has the rows, and on its last
-   row how many of the buses it covers in the days of the board's label it
-   has confirmed: the figure in the fuel figure's type, the count after the
-   slash in its unit's, all in amber while one is not confirmed. A view of
-   one row shows the name alone. */
+   row the partner's mark, where a bus tile has its kit. A view of one row
+   shows the name alone. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--partner .scheduler-row-head__top { grid-row: 1 / -2; align-items: flex-start; block-size: auto; min-block-size: 0; overflow: hidden; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row--partner .scheduler-row-head__num {
   display: -webkit-box;
@@ -887,24 +885,10 @@ button.scheduler-row-head__num:focus { outline: none; }
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row--partner .scheduler-row-head__num { -webkit-line-clamp: 3; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__confirmed:not([hidden]) { grid-row: -2; align-self: end; display: flex; align-items: center; gap: var(--rux-spacing-01); color: var(--rux-icon-secondary); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__confirmed svg { display: block; flex: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__confirmed-done {
-  color: var(--rux-text-primary);
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--scheduler-row-h);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
-}
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__confirmed-of {
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__confirmed[data-waiting] :is(svg, .scheduler-row-head__confirmed-done, .scheduler-row-head__confirmed-of) { color: var(--scheduler-head-low); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__partner { grid-row: -2; align-self: end; display: block; color: var(--rux-text-secondary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__partner svg { display: block; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row--partner .scheduler-row-head__top { grid-row: 1; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head__confirmed:not([hidden]) { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head__partner { display: none; }
 /* WHILE THE BUS HAS A MARK, ITS ALERT ENDS THE NUMBER'S LINE, at least 8px
    after the number, as a bar's alert ends its destination's line and a
    driver's icon their tile's: the warning triangle in amber, or the error

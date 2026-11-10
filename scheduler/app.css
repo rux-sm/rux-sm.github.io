@@ -954,9 +954,11 @@ button.scheduler-row-head__num:focus { outline: none; }
    its sides on the card's 8px inset, in line with the number, 4px clear of
    the number and the foot and 4px from its words all round, the unit or
    elapsed time under its reading. The
-   border is the second layer's subtle one, and a moving bus's is its green
-   over a tint of it, amber past SPEEDING, so a bus on the road shows down
-   the column. Shorter views have no room and keep the state on one row. */
+   border is the third layer's subtle one, as on anything set on a tile, and
+   a moving bus's is its green over a tint of it, amber past SPEEDING, so a
+   bus on the road shows down the column; the box carries the colour, so its
+   speed and mph are the primary text, which holds 4.5 to 1 on the tint in
+   every theme where the green and the secondary grey do not. Shorter views have no room and keep the state on one row. */
 .scheduler-row-head__box { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__box {
   display: block;
@@ -967,6 +969,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"] .scheduler-row-head__box { border-color: var(--scheduler-head-moving); background: var(--scheduler-head-box-moving); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"]:has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-low); background: var(--scheduler-head-box-low); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head[data-engine="moving"] :is(.scheduler-row-head__dial, .scheduler-row-head__under) { color: var(--rux-text-primary); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__dial { align-self: start; align-items: flex-start; block-size: auto; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__speed { flex-direction: column; align-items: flex-start; gap: 0; max-inline-size: 100%; }

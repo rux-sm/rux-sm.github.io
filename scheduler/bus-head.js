@@ -7,11 +7,13 @@
    readings at the start in their own rows. What it draws:
    - For a bus Samsara answers for, in whatever week is shown, its state:
      the speed and mph, green while moving, or Idle, Off or a dash and how
-     long, amber past SPEEDING or IDLE_MS; on the Mac's tile the speed's
-     meter of eight blocks under it; then its fuel, the pump and its
-     percent there, a meter on a phone, grey until low, orange, or
+     long, amber past SPEEDING or IDLE_MS. The full tile adds the speed's
+     meter, none of it lit while the bus stands, so every tile keeps one
+     shape, and a pump beside the fuel percentage, its meter in eighths. Fuel
+     is grey until low, orange, or
      critical, red. DEF is drawn only while it is low, since a normal DEF
-     needs nothing of the office. With no signal the state and fuel fade.
+     needs nothing of the office. The full tile labels lost signal and
+     shows the age at its foot when there is room.
      Where the bus is, when it was last seen and its inspection are the
      number's toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
@@ -135,43 +137,49 @@
     const under = figure ? 'mph' : state.under;
     if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
     box.appendChild(speed);
+    if (state.engine === 'none') box.appendChild(el('span', 'scheduler-row-head__no-signal', 'No signal'));
     return box;
   }
 
   // The fuel: the pump, a meter filled to the tank's share and its percent,
-  // grey until low or critical. The Mac's tile shows the pump and the
-  // percent; a phone's narrow column the meter.
+  // grey until low or critical. A phone's narrow column omits the pump.
   function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
     box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
+    // The Mac's tile draws the meter in eighths, one block lit for each or part of one, as a fuel gauge reads.
+    box.style.setProperty('--scheduler-tank-lit', String(Math.ceil(Math.max(0, Math.min(100, pct ?? 0)) / 12.5)));
     const pump = svgUse('#i-gas-station', '16', '0 0 32 32');
     pump.classList.add('scheduler-row-head__fuel-icon');
-    box.append(pump, el('span', 'scheduler-row-head__fuel-meter'), el('span', 'scheduler-row-head__fuel-pct', pct == null ? '\u2013' : `${pct}%`));
+    const percent = el('span', 'scheduler-row-head__fuel-pct', pct == null ? '–' : String(pct));
+    if (pct != null) percent.appendChild(el('span', 'scheduler-row-head__fuel-unit', '%'));
+    box.append(pump, el('span', 'scheduler-row-head__fuel-meter'), percent);
     return box;
   }
 
   /* The speed's meter under the dial on the Mac's tile: eight blocks, one
      lit for each 10 mph or part of it up to SPEED_TOP, so a bus over the
-     speeding mark lights them all; none at rest. Its colour is the dial's. */
+     speeding mark lights them all, and none while it is not moving. Its
+     colour is the dial's. */
   const SPEED_TOP = 80;
   function speedMeter(live, state) {
     const meter = el('span', `scheduler-row-head__speed-meter scheduler-row-head__speed-meter--${state.tone}`);
     meter.setAttribute('aria-hidden', 'true');
-    const mph = moving(live) ? Math.min(live.mph, SPEED_TOP) : 0;
+    const mph = state.engine === 'moving' ? Math.min(live.mph ?? 0, SPEED_TOP) : 0;
     meter.style.setProperty('--scheduler-speed-lit', String(Math.ceil(mph / 10)));
     return meter;
   }
 
   // One tank. Fuel: its percent and meter. DEF, drawn only while low: its name and
   // percent as a tag.
-  function level(pct, tank) {
+  function level(pct, tank, stale = false) {
     const lv = levelOf(pct, tank);
     const g = el('span', 'scheduler-row-head__level');
     if (lv) g.dataset.level = lv;
     g.dataset.tank = tank.letter;
-    const words = pct == null ? `${tank.word} not read yet` : `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
+    const name = tank === FUEL && stale ? 'Last reported fuel' : tank.word;
+    const words = pct == null ? `${name} not read yet` : `${name} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
     if (tank === FUEL) {
@@ -290,9 +298,15 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      gauges.append(dial(shown, state), speedMeter(shown, state));
-      if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL));
+      gauges.appendChild(dial(shown, state));
+      gauges.appendChild(speedMeter(shown, state));
+      if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL, state.engine === 'none'));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
+      else if (state.engine === 'none' && state.under) {
+        const seen = el('span', 'scheduler-row-head__seen', `${state.under} ago`);
+        seen.setAttribute('aria-hidden', 'true');
+        gauges.appendChild(seen);
+      }
       body.appendChild(gauges);
     } else {
       const insp = inspection(bus);

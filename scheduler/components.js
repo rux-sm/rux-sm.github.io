@@ -34,6 +34,17 @@
   const BusHead = window.SchedulerBusHead;
   const { legsOf, assignLanes, legByKey, legKeyOfVehicle } = window.SchedulerWeek;
   const page = root.closest('.scheduler-page') ?? root;
+  // A sprite icon at 16px, as the board draws its marks.
+  const icon = href => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '16'); svg.setAttribute('height', '16');
+    svg.setAttribute('viewBox', '0 0 32 32'); svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', href);
+    svg.appendChild(use);
+    return svg;
+  };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -198,9 +209,29 @@
       const row = el('div', `scheduler-row${none ? ' scheduler-row--unassigned' : r.partner ? ' scheduler-row--partner' : ''}`);
       const head = el('div', 'scheduler-row-head');
       if (r.bus) tileOf(head, data.busesById.get(r.bus), r.live);
-      else head.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
-      if (none) head.title = 'Trips with no bus yet';
-      if (r.partner) head.title = `${r.head}, a partner covering buses with its own coach and driver`;
+      else {
+        // A partner's and No bus's tiles, as data.js draws them: the name, and the partner's mark or the buses still wanting one.
+        const top = el('div', 'scheduler-row-head__top');
+        top.appendChild(el('div', 'scheduler-row-head__num', none ? 'No\nbus' : r.head));
+        head.appendChild(top);
+      }
+      if (none) {
+        head.title = 'Trips with no bus yet';
+        head.dataset.unassigned = '';
+        const open = el('span', 'scheduler-row-head__open');
+        open.setAttribute('role', 'img');
+        open.setAttribute('aria-label', `${r.bars.length} ${r.bars.length === 1 ? 'bus' : 'buses'} with no bus yet`);
+        open.append(icon('#m-bus_alert'), el('span', 'scheduler-row-head__open-count', String(r.bars.length)));
+        open.hidden = !r.bars.length;
+        head.appendChild(open);
+      }
+      if (r.partner) {
+        head.title = `${r.head}, a partner covering buses with its own coach and driver`;
+        head.dataset.partner = r.head;
+        const mark = el('span', 'scheduler-row-head__partner');
+        mark.appendChild(icon('#i-collaborate'));
+        head.appendChild(mark);
+      }
       const track = el('div', 'scheduler-track');
       const bars = r.bars.map(placed);
       track.style.setProperty('--scheduler-lanes', assignLanes(bars));

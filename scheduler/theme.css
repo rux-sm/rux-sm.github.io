@@ -833,12 +833,10 @@
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */
 [data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); --scheduler-tile-state: var(--scheduler-tile-fill); }
-/* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
-   dims its icon, state and fuel to 35%, so the buses running are the
-   bright heads in the column. Its number stays at full strength, since it
-   names the row, and so does a low tank, since the office has to act on it;
-   so does its kit, which the engine does not change. */
-[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
+/* Rux 100 dims the dial, normal fuel and compact state dot when the engine
+   is off. In the full tile, lost signal and its last reading use secondary
+   text. The bus number, alerts and low tanks stay at full strength. */
+[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]:not(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll *)) :is(.scheduler-row-head__dot, .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
   opacity: .35;
 }
 /* A RUX 100 TRIP READS IN LAYERS: the destination, the line that names

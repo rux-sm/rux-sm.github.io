@@ -56,10 +56,10 @@ surface.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
-| Speed | The figure at 16px semibold, then 2px on mph or how long at 12px: "57 mph", "Idle 37m", "Off 6h". With no tracker, the inspection's word and date | 22px, 8px under the number |
-| Speed's meter | Eight blocks across the 56px, 1px apart, one lit for each 10 mph to 80, green while moving and amber over 75 | 8px, 4px under the figure |
-| Fuel | The pump at 16px, then 4px on the percent at 14px semibold; orange when low, red when critical | 18px, 8px under the meter |
-| Kit | The lift and the sleeper, 16px icons 4px apart, or a low DEF in their place | 16px, 8px under the fuel, on the card's inset |
+| State | The speed, Idle and Off use heading-compact-01, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection | 22px, 8px under the number |
+| Speed meter | Eight blocks across the 56px, 1px apart, one lit for each 10 mph to 80, green while moving and amber over 75, and drawn unlit while the bus stands, so every tile keeps one shape | 4px, 4px under the state |
+| Fuel | The pump at 16px, then 2px to the figure in label-01 and its percent sign in label-01's grey. A current reading has the speed's eight blocks, one lit for each eighth of the tank. Orange means low and red means critical | 24px including the meter, 8px under the speed meter |
+| Foot | The lift and sleeper, low DEF with its percentage, or the age of a lost signal | 16px on the card's inset |
 
 56px is the least that holds a number, 8px and its alert.
 
@@ -109,8 +109,8 @@ tile's parts from the foot up. The driver rows stay 48px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 144px | Number, speed, its meter, fuel, kit or low DEF |
-| 5 | 112px, 11px | 128px | Number, speed, its meter, fuel |
+| 6 | 128px, 10px | 144px | Number, state, both meters, fuel and the foot |
+| 5 | 112px, 11px | 128px | Number, state, both meters and fuel |
 | 4 | 96px, 12px | 112px | Number, speed, fuel |
 | 3 | 80px, 13px | 96px | Number, speed |
 | 2 | 48px, 6px | 64px | Number, the state at 14px; an inspection's date alone |

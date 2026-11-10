@@ -808,13 +808,13 @@ button.scheduler-row-head__num:focus { outline: none; }
    8px clear of its sides, as a trip is a bar, its parts in rows at the
    start 8px inside it, 8px apart: the number on the bar's first line with
    its alert at the line's end; the speed's figure and its meter of blocks;
-   the pump and the fuel's percent; and the kit or a low DEF on the card's
-   foot. A shorter view drops the kit, then the meter, then the fuel.
+   the pump, fuel percentage and its meter; and the kit, low DEF or last
+   contact at the foot. Shorter views drop the foot, the meters and then fuel.
    `scheduler/docs/board-layout.md` has the measures; its type and seats
    are the tip's. A phone's board keeps the narrow column above, so the
    parts only the tile shows are drawn here alone. */
 .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
-.scheduler-row-head :is(.scheduler-row-head__speed-meter, .scheduler-row-head__fuel-icon) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__speed-meter, .scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
 /* The tile and the column's 1px rule beside it. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: var(--scheduler-tile-head); }
 /* THE HEAD'S ROWS start on the bar's first line, so the number stands level
@@ -824,14 +824,14 @@ button.scheduler-row-head__num:focus { outline: none; }
    sides, at the start, as a bar's words and a driver's name stand. A
    partner's name and No bus stand the same. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
-  /* The speed's figure, Carbon's heading-compact-02, 16px on its 22px line. */
-  --scheduler-figure-h: round(calc(var(--rux-heading-compact-02-font-size) * var(--rux-heading-compact-02-line-height)), 1px);
+  --scheduler-state-h: calc(var(--scheduler-row-h) + var(--rux-spacing-02));
+  --scheduler-fuel-h: calc(var(--scheduler-row-h) + var(--rux-spacing-01) + var(--rux-spacing-02));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows:
     var(--scheduler-row-h) var(--rux-spacing-03)
-    var(--scheduler-figure-h) var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-03)
-    var(--scheduler-row-h) var(--rux-spacing-03)
+    var(--scheduler-state-h) var(--rux-spacing-02) var(--rux-spacing-02) var(--rux-spacing-03)
+    var(--scheduler-fuel-h) calc(var(--rux-spacing-02) + var(--rux-spacing-01))
     var(--scheduler-mark-glyph);
   align-content: start;
   justify-items: start;
@@ -926,67 +926,103 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
-/* THE SPEED, 8px under the number: its figure in heading-compact-02, 16px
-   semibold, then 2px on its unit or how long, label-01's 12px, on one
-   baseline, the two Carbon's sizes for a reading and its unit; the speed
-   over mph, Idle or Off and how long. A bus with no tracker has its
-   inspection there, the word over the date. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dial { grid-row: 3; display: flex; align-items: center; block-size: var(--scheduler-figure-h); margin: 0; }
+/* The speed, Idle and Off are heading-compact-01. Every unit and elapsed
+   time is label-01, on the same baseline as its reading. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dial { grid-row: 3; display: flex; align-items: center; block-size: var(--scheduler-state-h); max-inline-size: 100%; margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed {
   flex-direction: row;
   align-items: baseline;
   gap: var(--rux-spacing-01);
-  line-height: var(--scheduler-figure-h);
+  min-inline-size: 0;
+  line-height: var(--scheduler-row-h);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed > :first-child { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed > :first-child {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--scheduler-row-h);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__under, .scheduler-row-head__fuel-unit, .scheduler-row-head__no-signal, .scheduler-row-head__seen) {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__under { display: inline; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-signal-lost] .scheduler-row-head__speed { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__no-signal { display: inline; white-space: nowrap; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: 1; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { grid-row: 3 / span 4; flex-direction: column; align-items: flex-start; margin: 0; padding: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-row-h); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 /* The speed's meter, 4px under its figure: eight blocks across the tile,
-   8px tall, 1px apart, the lit ones in the dial's colour, green while
-   moving and amber past the speeding mark, on the second layer's subtle
-   border; bus-head.js says how many are lit. The blocks are the
+   4px tall, 1px apart, the lit ones in the dial's colour, green while
+   moving and amber past the speeding mark; bus-head.js says how many are lit. The blocks are the
    scheduler's own, since Carbon has no segmented meter. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed-meter {
   --scheduler-speed-ink: var(--scheduler-head-moving);
   grid-row: 5;
   justify-self: stretch;
   display: block;
-  block-size: var(--rux-spacing-03);
-  background: linear-gradient(to right, var(--scheduler-speed-ink) 0 calc(var(--scheduler-speed-lit, 0) / 8 * 100%), var(--rux-border-subtle-02) 0);
+  block-size: var(--rux-spacing-02);
+  background: linear-gradient(to right, var(--scheduler-speed-ink) 0 calc(var(--scheduler-speed-lit, 0) / 8 * 100%), var(--scheduler-head-track) 0);
   mask: repeating-linear-gradient(to right, #000 0 calc((100% - 7px) / 8), transparent 0 calc((100% - 7px) / 8 + 1px));
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed-meter--warning { --scheduler-speed-ink: var(--scheduler-head-low); }
-/* THE FUEL, 8px under the meter: the pump, Carbon's gas station at 16px,
-   then 4px on the percent in heading-compact-01, 14px semibold, the pump
-   in the secondary ink and the percent in the primary while normal, both
-   orange when low and red when critical. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level:not([data-tank="D"]) { grid-row: 7; margin: 0; }
-:where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-border-subtle-02); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel { flex-direction: row; align-items: center; gap: var(--rux-spacing-02); inline-size: auto; block-size: var(--scheduler-row-h); margin: 0; color: var(--rux-text-secondary); }
+/* The fuel figure is label-01, under the state it supports, and its
+   percent sign the unit's grey. A current reading gets the speed's meter
+   below it, eight blocks, one lit for each eighth of the tank or part of
+   one, as a fuel gauge reads; bus-head.js says how many. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="F"] { grid-row: 7; justify-self: stretch; align-self: start; margin: 0; }
+:where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-layer-03); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel {
+  display: grid;
+  grid-template-columns: var(--scheduler-mark-glyph) minmax(0, 1fr);
+  grid-template-rows: var(--scheduler-row-h);
+  align-items: center;
+  gap: var(--rux-spacing-01);
+  inline-size: auto;
+  margin: 0;
+  text-align: start;
+}
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-icon { display: block; flex: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct { display: inline; font-size: var(--rux-heading-compact-01-font-size); font-weight: var(--rux-heading-compact-01-font-weight); line-height: var(--scheduler-row-h); letter-spacing: var(--rux-heading-compact-01-letter-spacing); color: var(--rux-text-primary); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:is([data-level="low"], [data-level="critical"]) { color: var(--scheduler-tank-ink); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:is([data-level="low"], [data-level="critical"]) .scheduler-row-head__fuel-pct { color: inherit; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  display: none;
+  block-size: var(--rux-spacing-02);
+  border-radius: 0;
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 calc(var(--scheduler-tank-lit, 0) / 8 * 100%), var(--scheduler-head-track) 0);
+  mask: repeating-linear-gradient(to right, #000 0 calc((100% - 7px) / 8), transparent 0 calc((100% - 7px) / 8 + 1px));
+}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head:not([data-signal-lost]) .scheduler-row-head__fuel[data-level] .scheduler-row-head__fuel-meter { display: block; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-pct {
+  display: inline;
+  color: var(--rux-text-primary);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-unit { color: var(--rux-text-secondary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-signal-lost] .scheduler-row-head__fuel[data-level="normal"] .scheduler-row-head__fuel-pct { color: var(--rux-text-secondary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel:is([data-level="low"], [data-level="critical"]) :is(.scheduler-row-head__fuel-pct, .scheduler-row-head__fuel-unit) { color: var(--scheduler-tank-ink); }
 /* THE KIT, on the card's foot against its 8px inset: the lift and the
-   sleeper, 16px icons in the secondary ink, 4px apart; or a low DEF in
-   their place, its name alone in the low or critical colour, its percent
-   the tip's, since it asks something of the office and the kit does not. */
+   sleeper, a low DEF reading, or the age of a lost signal. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip { position: static; grid-row: 9; display: flex; align-items: center; gap: var(--rux-spacing-02); margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__tile:empty { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { grid-row: 9; display: flex; align-items: center; margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-mark-glyph); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level-pct { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__level[data-tank="D"]) .scheduler-row-head__equip { display: none; }
-/* A SHORTER VIEW DROPS FROM THE FOOT UP: five lines the kit and a low DEF,
-   both the tip's; four the speed's meter too, the fuel 8px under the
-   figure; three the fuel; two the state on line 2 at the row's own 14px,
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"][data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__seen { grid-row: 9; display: block; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; color: var(--rux-text-secondary); white-space: nowrap; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(:is(.scheduler-row-head__level[data-tank="D"], .scheduler-row-head__seen)) .scheduler-row-head__equip { display: none; }
+/* A SHORTER VIEW DROPS FROM THE FOOT UP: five lines omit the foot,
+   four omit both meters; three omit fuel; two put the state on line 2,
    the inspection its date alone; and one the number and its alert. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="5"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h) var(--rux-spacing-02) var(--rux-spacing-03) var(--rux-spacing-03) var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h) var(--rux-spacing-03) var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head__level:not([data-tank="D"]) { grid-row: 5; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-figure-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="5"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-state-h) var(--rux-spacing-02) var(--rux-spacing-02) var(--rux-spacing-03) var(--scheduler-fuel-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-state-h) var(--rux-spacing-03) var(--scheduler-row-h); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="4"] .scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-state-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__equip, .scheduler-row-head__level[data-tank="D"]) { display: none; }
@@ -994,8 +1030,6 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__level { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__insp { grid-row: 3 / span 3; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; block-size: var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head__speed { gap: var(--rux-spacing-02); line-height: var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head__speed > :first-child { font-size: var(--rux-heading-compact-01-font-size); font-weight: var(--rux-heading-compact-01-font-weight); letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__insp-word { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { display: none; }
 /* The loading skeleton. index.html ships it inside the grid and render()

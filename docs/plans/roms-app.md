@@ -100,7 +100,7 @@ What the scan records for every game:
 | CHD version and stored SHA-1 | the CHD header | PS1, PS2 |
 | title ID, version, kind (game, update, add-on) | the file name's brackets, then the NSP or XCI header | Switch |
 | title ID, version | `meta.xml` in the game's folder | Wii U |
-| save file, save state | a matching name under `emulation/saves/` | all with a save folder |
+| save file, save state, memory card | `emulation/saves/`, matched by each emulator's rule below | all |
 
 The problems the app flags:
 
@@ -118,21 +118,120 @@ The problems the app flags:
 - **Out of date:** a Switch or Wii U game with no update, or an older one
   than the title list knows.
 
-Three pages in a side nav, each started from a Design template:
+- **Save with no game:** a save whose game is not on the drive, so a game
+  renamed or removed without its save.
+- **Missing BIOS:** a file the system's emulator needs, below, not in
+  `emulation/bios/`.
+- **Original waiting:** a converted game's original still in
+  `emulation/to-delete/`.
+
+A game with more than one newer revision is one row under Newer version,
+naming the latest, because the older ones are not worth getting.
+
+Saves:
+
+- **Every emulator keeps its saves on the drive,** under
+  `emulation/saves/<emulator>/`, so both Macs play from the same saves and
+  the scan sees every one; RetroArch and Azahar already do.
+- **A save is matched to its game the way its emulator names it:** RetroArch
+  by the game's file name, Azahar, Cemu and the Switch emulator by title ID,
+  Dolphin by disc ID, and DuckStation and PCSX2 by the disc's serial, so the
+  scan reads the serial from `SYSTEM.CNF` inside a CHD too.
+- **The organize tool renames a RetroArch save with its game,** because
+  RetroArch finds a save only by the game's file name.
+- **PCSX2 uses folder memory cards and DuckStation one card per game,** so
+  each game's save is its own file and not one card shared by every game.
+- **What the scan records for a save:** its game, kind (save, save state or
+  memory card), files, size, created and last saved, from the file's dates.
+
+Emulators, the one each system runs, and why:
+
+| System | Emulator | Why | It needs |
+| :--- | :--- | :--- | :--- |
+| NES, SNES, GB, GBC, GBA | RetroArch: Mesen, Snes9x, Gambatte, mGBA | accurate and light, and these saves are already its | nothing; a GBA BIOS is optional |
+| N64 | RetroArch: Mupen64Plus-Next | its saves are already there | nothing |
+| DS | RetroArch: melonDS DS | its saves are already there | nothing for DS games; DSi BIOS and firmware only for DSi-only games |
+| 3DS | Azahar | the maintained successor to Citra, already in use | nothing for a decrypted `.3ds` |
+| PS1 | DuckStation | the most accurate and fastest on Apple Silicon, reads CHD and `.m3u`, one memory card per game | a PS1 BIOS, `scph5501.bin` for USA games |
+| PS2 | PCSX2 | the only mature PS2 emulator | a PS2 BIOS |
+| GameCube, Wii | Dolphin | the only mature one, reads RVZ | nothing |
+| Wii U | Cemu | the only mature one, native on macOS | nothing for a `.wua` |
+| Switch | Ryubing, the community Ryujinx | the best macOS support, native on Apple Silicon with Metal | `prod.keys`, `title.keys` and firmware |
+| Xbox | xemu | the only mature one | the MCPX and flash BIOS and a hard disk image |
+
+- **The table lives in `app.js`** beside each system's preferred format, so
+  the app and the scan read one list.
+- **A needed file is checked by name and, where libretro's list knows it, by
+  MD5;** keys are checked by name only and never read.
+- **Each emulator's settings stay on each Mac;** the Emulators page says where
+  each keeps them, its saves and its files.
+
+Backups:
+
+- **`roms/tools/backup-saves.mjs` copies `emulation/saves/` and
+  `emulation/bios/`** to a dated folder, never deleting the drive's copy,
+  and records the date in `emulation/backups.json`, which the scan carries.
+- **The keys and firmware go with the BIOS,** because they cannot be
+  downloaded again either.
+
+Rux's own notes:
+
+- **A note on a save,** saying where it is in the game, is typed on the Saves
+  page and kept with the save.
+- **Played, finished, favourite and a note on a game** are typed in the side
+  panel, kept in their own table, keyed by system and title.
+- **Import never changes rux's notes,** and the organize tool lists its
+  renames in the next scan so Import moves a renamed game's notes with it.
+- **`plays` on a converted game** says its new file was played, and Problems
+  says when every original in `to-delete/` is safe to empty.
+
+Five pages in a side nav, each started from a Design template:
 
 - **Collection** is one table of every game: system, title, region, format,
   size and a status tag, with search and a filter per system and per status.
-  A game opens in a side panel with every field above.
+  A game opens in a side panel with every field above and rux's notes.
 - **Problems** lists every game with a problem under one heading per kind,
   worst first, which covers the better versions to look for and what the
   organize tool would convert or rename.
+- **Saves** has one heading per system and a row per game with a save: kind,
+  created, last saved, size and the note, and the last backup's date at the
+  top.
+- **Emulators** has one row per system: the emulator, why, each file it needs
+  and whether the drive has it, and where its saves and settings live.
 - **Import** takes a scan file, shows what changed since the last one, and
   saves on a yes.
 
 ## Questions
 
-None open.
+- Which emulator does the other Mac run for each system? The table above is
+  the recommendation; where one differs, keep it or switch?
+- Where do backups go: a folder on each Mac, iCloud Drive, or a second
+  drive? And how many dated copies are kept?
+- The drive has Xbox BIOS and a hard disk image but no Xbox games: are Xbox
+  games coming, or do those files go?
+- Should a RetroArch save state show the screenshot RetroArch writes beside
+  it? That needs a private storage bucket, since nothing from the collection
+  is committed.
 
 ## Tasks
 
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
+- [ ] Add a PS1 BIOS to `emulation/bios/psx/`.
+- [ ] Point Dolphin's, PCSX2's, Cemu's and the Switch emulator's save folders
+  at the drive on the other Mac, moving the saves already there.
+- [ ] Read the serial inside a CHD, and match saves by each emulator's rule.
+- [ ] Record each save's kind, dates and size, and add `roms_saves` with its
+  note column.
+- [ ] Add `roms_notes` for played, finished, favourite and a note, and list
+  both tables in `docs/database-access.md`.
+- [ ] Rename a RetroArch save with its game in the organize tool, and list
+  renames in the scan for Import to move notes.
+- [ ] Add the emulator table to `app.js` and check each needed file.
+- [ ] Add the Saves and Emulators pages, and the notes to the side panel.
+- [ ] Add Save with no game, Missing BIOS and Original waiting to Problems,
+  and one Newer version row per game.
+- [ ] Record `to-delete/`'s size and games, and the `plays` mark.
+- [ ] Write `roms/tools/backup-saves.mjs` and carry the last backup in the
+  scan.
+- [ ] Update `roms/README.md`, then scan, import and check every page in
+  Chrome on :8641.

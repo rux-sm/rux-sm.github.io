@@ -49,23 +49,34 @@ them and nothing is entered twice.
 - **The customer, the booking contact, its email thread, the billing, the
   quote, the Details and the updates are the trip's,** entered once whatever
   its legs and routes.
+- **The trip's passengers are the sum of its routes',** because the customer
+  is quoted for the whole group.
 
 ### What is each leg's
 
 - **Its dates, its bus count and its workflow marks,** which are pairs of
   `_outbound` and `_return` columns on `trips` now.
 - **Its files and contacts, with the first leg's standing in** where a leg
-  has none of its own, as `scheduler/trip-shape.js` hands them. A file and
-  a contact name a leg, never a route,
-  so every route of a leg is handed the leg's.
+  has none of its own, as `scheduler/trip-shape.js` hands them.
+
+### What is each route's
+
+- **Its name, its stops and times, its vehicles and its passengers,** because
+  each group's headcount decides how many buses its route needs and what
+  size.
+- **Its own files and contacts where its group has them, with its leg's
+  standing in** where it has none, so a route's itinerary is found on the
+  route, then its leg, then the first leg, and a booking with one itinerary
+  for every group enters it once on the leg.
 
 ### The contacts
 
 - **A trip's contacts are a list, as many as it needs,** each with its leg,
-  in a `trip_contacts` table, where five slots on `trips` are shared by
-  every leg now.
+  or its route where one group has its own, such as a band director beside
+  a coach, in a `trip_contacts` table, where five slots on `trips` are
+  shared by every leg now.
 - **Everything that reads a contact reads the list:** the editor, the driver
-  card, the envelope and itinerary sheet, which print a leg's first two,
+  card, the envelope and itinerary sheet, which print a route's first two,
   Departures, the driver's link and the connector.
 
 ### A cancelled day
@@ -99,7 +110,12 @@ them and nothing is entered twice.
   route sits beside it. The tab opens on the leg and route of the bar that
   was pressed.
 - **A route is added as a copy of the one on screen,** so only what differs
-  is changed: a pickup, a few stops, a time.
+  is changed: a pickup, a few stops, a time. It takes no files or contacts,
+  because the leg's stand in until the route is given its own.
+- **The Route tab holds the route's Passengers,** and the trip's total is
+  shown beside them on a leg of more than one route.
+- **A file and a contact choose their leg or route,** where Files' Move to
+  another leg does now, with the leg meaning every route on it.
 - **The Buses tab lists a leg's vehicles under their routes,** and a
   vehicle's window chooses its route. A route with no vehicle is still
   listed, so it can be given one.
@@ -131,11 +147,16 @@ them and nothing is entered twice.
 ### How it is kept
 
 - **A `trip_legs` table holds a row per leg,** with its dates, bus count and
-  workflow marks, and a `trip_routes` table a row per route, with its leg
-  and its name. Both are staff only, as every table is.
-- **A stop and a vehicle name their route, and a file, a contact and a
-  driver's status their leg,** each by its id. A rental line names the leg
+  workflow marks, and a `trip_routes` table a row per route, with its leg,
+  its name and its passengers. Both are staff only, as every table is.
+- **A stop and a vehicle name their route, a driver's status its leg, and a
+  file and a contact their leg and, where they are one group's, their
+  route,** each by its id. A rental line names the leg
   or route it was priced separately for, and none when it is the trip's.
+- **`trips.passengers` stays as a copy of the routes' sum,** kept by a
+  trigger as `start_date` and `end_date` are, so trips can still be found
+  and quoted by headcount; each route's is filled from it, one route on
+  every leg now.
   Legs are
   ordered by date, so a leg added before the first needs nothing
   renumbered.
@@ -163,10 +184,22 @@ them and nothing is entered twice.
 
 ## Questions
 
-None open.
+- **May two legs overlap?** Groups that leave together and come home on
+  different days, such as a band home Tuesday night and football on
+  Thursday, cannot be routes of one leg, because a route has its leg's
+  dates. Two legs on the same first day would hold them, but Add leg puts a
+  new leg after the last one ends, and nothing here says the board, the
+  quote or Remove leg read overlapping legs right.
 
 ## Tasks
 
+- [ ] Write the SQL that adds `passengers` to `trip_routes`, filled from
+      `trips.passengers` and summed back into it by trigger, and `route_id`
+      to `trip_documents` and `trip_contacts`, null on every row; show it to
+      rux and apply it on a yes. Then hand a route its own itinerary and
+      contacts through `scheduler/trip-shape.js`, the leg's standing in, and
+      move the driver card, envelope, itinerary sheet, driver's link and
+      connector to them.
 - [ ] Move the editor's quote lines' Leg, its hotel and its contacts, the
       bar menu's hotel mark, itinerary upload and Mark as told, and
       `scheduler/print.js`'s marks and quote lines to the legs; let Add leg
@@ -175,8 +208,9 @@ None open.
       taken off; and let a draft carry legs and contacts through
       `scheduler/draft-fields.js`, which carries a split's pickup days now.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
-      rename and remove, and the tab opening on the pressed bar's leg and
-      route.
+      rename and remove, the tab opening on the pressed bar's leg and
+      route, the route's Passengers, and a file or contact choosing its leg
+      or route.
 - [ ] List the Buses tab's vehicles under their routes, choose a vehicle's
       route in its window, and make Add co-driver and Rest in the sleeper
       act on the route's vehicles.
@@ -205,6 +239,7 @@ None open.
 - [ ] Enter two trips in Chrome on :8641 with the page's writes recorded and
       not sent: one of three legs, a two-day overnight leg and a one-day leg
       home, a different driver each, three contacts on one leg; and one of
-      five buses on two routes, split two and three, with an itinerary for
-      each route. Then open a saved round trip and a saved split trip and
+      five buses on two routes, split two and three, each with its own
+      passengers, uploaded itinerary and contact, and see each route's
+      driver handed its own. Then open a saved round trip and a saved split trip and
       see them read as before.

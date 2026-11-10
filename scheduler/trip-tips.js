@@ -803,6 +803,7 @@
            first, as Assign anyway does, and allows the pair on this trip. */
         if (a.allow != null) {
           const allow = footLink('Allow', '#');
+          allow.classList.add('scheduler-tip__end');
           allow.dataset.allowApart = String(a.allow);
           allow.setAttribute('aria-label', `Allow on this trip: ${a.words}`);
           row.appendChild(allow);
@@ -1011,6 +1012,7 @@
       if (m.kind !== 'tell' || !tells.length) { lamp(m.tone, m.words); continue; }
       for (const t of tells) {
         const tell = footLink('Tell', t.href);
+        tell.classList.add('scheduler-tip__end');
         tell.dataset.tellLeg = '';
         tell.setAttribute('aria-label', `Tell ${name} of the change to ${t.words}`);
         lamp('warning', `Tell of a change: ${t.words}`).appendChild(tell);

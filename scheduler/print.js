@@ -3734,12 +3734,35 @@
        opens the driver's current one in a new tab, and a driver with none
        says so and links to the upload. The file prints from the browser's
        own viewer, which nothing here hears, so Printed under a driver's rows
-       is ticked by hand, on the seat, where the checklist reads it. */
+       is ticked by hand, on the seat, where the checklist reads it. A trip
+       with no driver seated yet, as a school asking before it books, lists
+       every active driver's form instead, so any can go with the request.
+       Each opens with the trip's campus and days written on. */
     const Facts = window.SchedulerLegFacts;
     const client = window.Rux?.account?.client;
     if (found?.trip && client && Facts?.readDriverForms && await Facts.readDriverForms(client).catch(() => false)
       && Facts.formKindsOf(found.trip).length) {
       const tripId = encodeURIComponent(found.trip.id);
+      if (!found.buses.length) {
+        const { data: drivers } = await client.from('drivers').select('id,name').eq('status', 'active');
+        const nameById = new Map((drivers ?? []).map(d => [d.id, d.name]));
+        const onFile = Facts.formsOnFile(found.trip).filter(f => nameById.has(f.driverId))
+          .sort((a, b) => a.kind.localeCompare(b.kind) || nameById.get(a.driverId).localeCompare(nameById.get(b.driverId)));
+        for (const f of onFile) {
+          const item = el('a', 'scheduler-print__row');
+          item.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
+          item.target = '_blank';
+          item.rel = 'noopener';
+          item.append(...face({ icon: '#m-description', short: `${f.kind}, ${nameById.get(f.driverId)}` }));
+          rows.appendChild(item);
+        }
+        if (!onFile.length) {
+          const item = el('div', 'scheduler-print__row');
+          item.append(...face({ icon: '#m-description', short: 'Driver forms' },
+            el('p', 'scheduler-print__row-need', 'No active driver has a current one on file.')));
+          rows.appendChild(item);
+        }
+      }
       const split = found.legs.length > 1;
       for (const bus of found.buses) {
         const leg = legOfVehicle(found.trip, bus);

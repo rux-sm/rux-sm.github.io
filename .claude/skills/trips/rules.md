@@ -72,6 +72,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - Route, Buses and Billing are marked Done once each is reviewed against what we know now; a later itinerary is updated in and the tab marked again.
 - Printing the itinerary and envelopes is prep for the day before the trip, so it is not reported as missing earlier.
+- A driver background check form goes to a school with the trip's dates and campus on its first page, every time, because the district approves the driver for that trip and campus.
 
 ## Updates
 

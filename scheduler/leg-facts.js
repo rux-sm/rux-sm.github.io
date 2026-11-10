@@ -281,31 +281,37 @@
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
      document kept once for each driver, such as a background check form, and
      a trip for that customer wants each of its drivers' current form of each
-     kind. Empty until a page has read them, which asks nothing of any trip. */
+     kind. A customer that is part of another, as a school is of its
+     district, asks for what the whole asks for too, because a district's
+     form is every one of its campuses'. Empty until a page has read them,
+     which asks nothing of any trip. */
   let formKinds = new Map();   // kind id → name
   let formAsks = new Map();    // customer id → kind ids
+  let partOf = new Map();      // customer id → the customer it is part of
   let driverForms = [];        // each driver's current documents
-  function setDriverForms({ kinds = [], asks = [], forms = [] } = {}) {
+  function setDriverForms({ kinds = [], asks = [], forms = [], parts = [] } = {}) {
     formKinds = new Map(kinds.map(k => [k.id, k.name]));
     formAsks = new Map();
     for (const a of asks) {
       if (!formAsks.has(a.customer_id)) formAsks.set(a.customer_id, []);
       formAsks.get(a.customer_id).push(a.kind_id);
     }
+    partOf = new Map(parts.filter(p => p.part_of_id).map(p => [p.id, p.part_of_id]));
     driverForms = forms.filter(f => f.driver_id);
   }
   /* Reads what `setDriverForms` takes and hands it over. A read that fails
      leaves the forms as they were, so a trip is never told it lacks a form
      the page could not look for. */
   async function readDriverForms(client) {
-    const [kinds, asks, forms] = await Promise.all([
+    const [kinds, asks, forms, parts] = await Promise.all([
       client.from('document_kinds').select('id,name').eq('per_driver', true),
       client.from('customer_required_kinds').select('customer_id,kind_id'),
       client.from('company_documents').select('id,kind_id,customer_id,driver_id,ends_on')
         .is('replaced_at', null).not('driver_id', 'is', null),
+      client.from('customers').select('id,part_of_id').not('part_of_id', 'is', null),
     ]);
-    if (kinds.error || asks.error || forms.error) return false;
-    setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data });
+    if (kinds.error || asks.error || forms.error || parts.error) return false;
+    setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data, parts: parts.data });
     return true;
   }
   /* THE PARTNERS by id, each with `papers`: a line for every kind of paper
@@ -371,8 +377,9 @@
   // The day a leg leaves, which a form has to last until.
   const legDay = (trip, leg) => String(weekLeg(trip, leg)?.from
     ?? ((leg === 'return' && trip.return_start_date) || trip.start_date) ?? '').slice(0, 10);
-  // The kinds the trip's customer asks for, in name order.
-  const formKindsOf = trip => (formAsks.get(trip.customer_id) || [])
+  // The kinds the trip's customer and the whole it is part of ask for, each once, in name order.
+  const formKindsOf = trip => [...new Set([
+    ...(formAsks.get(trip.customer_id) || []), ...(formAsks.get(partOf.get(trip.customer_id)) || [])])]
     .filter(id => formKinds.has(id))
     .sort((a, b) => formKinds.get(a).localeCompare(formKinds.get(b)));
   /* One driver's forms for a leg, a row for each kind asked for: the form
@@ -389,6 +396,11 @@
       return { kindId, kind: formKinds.get(kindId), form, ended, ok: !!form && !ended };
     });
   }
+  /* Every driver's form the trip could send, for a school that asks before
+     a driver is seated: each driver with a form of a kind the customer asks
+     for that lasts until the first leg leaves, a row a driver and kind. */
+  const formsOnFile = trip => [...new Set(driverForms.map(f => f.driver_id))]
+    .flatMap(driverId => driverFormsOf(trip, null, driverId).filter(f => f.ok).map(f => ({ ...f, driverId })));
 
   /* A leg's buses and seats as its checklist reads them: how many buses it
      needs and has, how many fall short of the trip, the seats open and filled,
@@ -474,6 +486,6 @@
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, alsoOnOf, ridersOf, busesOfRow, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
-    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf,
+    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf, formsOnFile,
   };
 })();

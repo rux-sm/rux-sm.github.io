@@ -115,6 +115,20 @@ expect('the form issued to the trip\'s customer is taken first, and one that end
   [[['f2', true, false]], [['f1', false, true]], [1, ['Ana, Background check'], 0]]);
 expect('a return leg is held to the day it leaves',
   Facts.driverFormsOf(tripFor('north', [], { return_start_date: '2027-01-05' }), 'return', 'd1').map(f => f.ended), [true]);
+Facts.setDriverForms({
+  kinds: [{ id: 'bg', name: 'Background check' }, { id: 'tb', name: 'TB test' }],
+  asks: [{ customer_id: 'district', kind_id: 'bg' }, { customer_id: 'campus', kind_id: 'bg' }, { customer_id: 'campus', kind_id: 'tb' }],
+  forms: [
+    { id: 'f1', kind_id: 'bg', driver_id: 'd1', customer_id: null, ends_on: '2026-12-31' },
+    { id: 'f2', kind_id: 'bg', driver_id: 'd2', customer_id: null, ends_on: '2026-10-31' },
+  ],
+  parts: [{ id: 'campus', part_of_id: 'district' }, { id: 'school', part_of_id: 'district' }],
+});
+expect('a campus asks for what its district asks for, each kind once',
+  [Facts.formKindsOf(tripFor('school', [])), Facts.formKindsOf(tripFor('campus', [])), Facts.formKindsOf(tripFor('west', []))],
+  [['bg'], ['bg', 'tb'], []]);
+expect('a trip with no driver seated has every driver\'s form that lasts until it leaves',
+  Facts.formsOnFile(tripFor('school', [])).map(f => [f.driverId, f.form.id]), [['d1', 'f1']]);
 
 const part = f => ids(checklist(ready, () => ({ ...full, ...f }), true)).filter(i => /^(partners|partner-prices|itinerary-printed):/.test(i));
 expect('a bus a partner covers asks for the partner confirmed and its price, and a leg with none asks neither',

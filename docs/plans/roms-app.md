@@ -244,7 +244,7 @@ Rux's own notes:
 - **`plays` on a converted game** says its new file was played, and Problems
   says when every original in `to-delete/` is safe to empty.
 
-Five pages in a side nav, each started from a Design template:
+Six pages in a side nav, each started from a Design template:
 
 - **Collection** is one table of every game: system, title, region, format,
   size and a status tag, with search and a filter per system and per status.
@@ -255,6 +255,8 @@ Five pages in a side nav, each started from a Design template:
 - **Saves** has one heading per system and a row per game with a save: kind,
   created, last saved, size, the note and a restore, and each backup
   location's last date at the top.
+- **Status** says what is done and what is left, for the drive and for each
+  Mac, so a Mac is set up from one checklist.
 - **Emulators** has one row per system: the emulator, why, each file it needs
   and whether the drive has it, and where its saves, settings and installer
   live.

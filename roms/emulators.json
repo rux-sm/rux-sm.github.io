@@ -5,7 +5,8 @@
     "settings": "~/ES-DE",
     "apps": [
       "ES-DE.app"
-    ]
+    ],
+    "config": "settings/es_settings.xml"
   },
   "systems": {
     "nes": {
@@ -396,6 +397,73 @@
       ],
       "places": [],
       "inHardDisk": true
+    }
+  },
+  "retired": {
+    "RetroArch": {
+      "apps": [
+        "RetroArch.app"
+      ],
+      "homes": [
+        "~/Library/Application Support/RetroArch"
+      ],
+      "config": {
+        "file": "config/retroarch.cfg",
+        "format": "toml"
+      },
+      "places": [
+        {
+          "path": "saves",
+          "key": "savefile_directory"
+        },
+        {
+          "path": "states",
+          "key": "savestate_directory"
+        }
+      ]
+    },
+    "Ryujinx": {
+      "apps": [
+        "Ryujinx.app"
+      ],
+      "homes": [
+        "~/Library/Application Support/Ryujinx"
+      ],
+      "places": [
+        {
+          "path": "bis/user/save"
+        }
+      ]
+    },
+    "Citra": {
+      "apps": [
+        "Citra.app",
+        "citra-qt.app"
+      ],
+      "homes": [
+        "~/Library/Application Support/Citra"
+      ],
+      "places": [
+        {
+          "path": "sdmc"
+        }
+      ]
+    },
+    "OpenEmu": {
+      "apps": [
+        "OpenEmu.app"
+      ],
+      "homes": [
+        "~/Library/Application Support/OpenEmu"
+      ],
+      "places": [
+        {
+          "path": "Battery Saves"
+        },
+        {
+          "path": "Save States"
+        }
+      ]
     }
   }
 }

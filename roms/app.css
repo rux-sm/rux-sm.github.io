@@ -44,5 +44,8 @@ th.roms-size .rux--table-header-label { justify-content: flex-end; }
 .roms-tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 .roms-facts--row { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 
+/* A Status row's state keeps its width, so its words are never cut. */
+.roms-state { flex: none; }
+
 /* A save's files, one to a line. */
 .roms-files { white-space: pre-line; font-size: .75rem; }

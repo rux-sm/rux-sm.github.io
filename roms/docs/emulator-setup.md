@@ -106,9 +106,9 @@ Wherever each emulator keeps its saves, `Back up saves.command` on the drive
 finds them, from each emulator's own settings or its default folder, and
 copies them to the Emulation folder's backups folder in your home folder;
 then the Saves page opens, and Back up this Mac's saves uploads them. The
-first time, Chrome asks for that backups folder. The Emulators page then
-shows how this Mac stands: each app installed and its version, and each
-folder it keeps saves in and what was there. That list is also the check
+first time, Chrome asks for that backups folder. The Status page then
+shows how this Mac stands: what is installed, where each emulator saves,
+and each retired app still there or still holding files. That list is also the check
 that `emulators.json` names each one's folders rightly; correct `macSaves` there when one is not found. After
 changing `emulators.json`, put the tool on the drive again:
 

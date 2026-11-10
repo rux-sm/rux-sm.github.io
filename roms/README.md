@@ -32,10 +32,16 @@ Mac's saves, which uploads what `tools/gather-saves.mjs` gathered from this
 Mac's emulators; then every save by system, on the drive or a Mac, each
 with its kind, dates, how to restore it and rux's note on it.
 
-`emulators.html` shows how each Mac stood when its saves were last
-uploaded: its macOS, ES-DE's and each emulator's app and version, or that
-only its data is left, and each folder it keeps saves in and what was
-there. Then each system's emulator from `emulators.json`, why it
+`status.html` says what is done and what is left. For the drive, from its
+last scan: each BIOS a system with games needs, each emulator's installer
+kept, and saves still in a folder from before each emulator had its own.
+For each Mac, from the last time its saves were uploaded: ES-DE installed
+and reading the drive's games, each emulator installed and saving into its
+folder on the drive, and each retired app in `emulators.json` still there
+or still holding files. An emulator whose systems have no games is not
+needed yet.
+
+`emulators.html` shows each system's emulator from `emulators.json`, why it
 is the one, each file it needs and whether the drive holds it, and where its
 saves, settings and installer live. `docs/emulator-setup.md` is how each is
 set up on a Mac.

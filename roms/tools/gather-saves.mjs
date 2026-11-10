@@ -17,9 +17,12 @@
 // its game, its size and dates, and the folder it came from for restoring
 // it. The manifest also says how this Mac stands: its macOS, ES-DE's and
 // each emulator's app and version, if installed, and where it looked for
-// each one's saves and what it found, which the Emulators page shows. The
-// newest five gatherings are kept. A save an emulator writes beside
-// its game on the drive is the scan's, not this.
+// each one's saves and what it found, with the folder ES-DE reads games
+// from and how many files each retired app in `retired` still holds, which
+// the Status page shows. A retired app's files are counted, never copied,
+// because they are moved to the drive by hand. The newest five gatherings
+// are kept. A save an emulator writes beside its game on the drive is the
+// scan's, not this.
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -34,7 +37,7 @@ const install = args.includes('--install') ? args[args.indexOf('--install') + 1]
 // emulators.json sits beside this tool on the drive, or one folder up in the repository.
 const jsonPath = [path.join(here, 'emulators.json'), path.join(here, '..', 'emulators.json')].find((p) => fs.existsSync(p));
 if (!jsonPath) { console.error('emulators.json is not beside this tool or above it'); process.exit(1); }
-const { frontend, systems, macSaves } = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+const { frontend, systems, macSaves, retired = {} } = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 if (install) {
   if (!fs.existsSync(path.join(install, 'roms'))) { console.error('usage: gather-saves.mjs --install <emulation folder holding roms/>'); process.exit(1); }
@@ -116,6 +119,14 @@ const appOf = (names) => {
 };
 const run = (cmd, a) => { try { return execFileSync(cmd, a, { encoding: 'utf8' }).trim(); } catch { return null; } };
 
+// The folder ES-DE reads games from, from its own settings file.
+function esdeRoms() {
+  const file = path.join(expand(frontend.settings), frontend.config);
+  if (!fs.existsSync(file)) return null;
+  const v = fs.readFileSync(file, 'utf8').match(/<string name="ROMDirectory" value="([^"]*)"/)?.[1];
+  return v ? v.replace(home, '~') : null;
+}
+
 const mac = (() => {
   try { return execFileSync('scutil', ['--get', 'ComputerName'], { encoding: 'utf8' }).trim(); }
   catch { return os.hostname().split('.')[0]; }
@@ -125,18 +136,14 @@ const backups = path.join(home, 'Emulation', 'backups');
 const out = path.join(backups, `${mac} ${stamp}`);
 const manifest = {
   mac, made: new Date().toISOString(), macos: run('sw_vers', ['-productVersion']), chip: run('uname', ['-m']),
-  frontend: { name: frontend.name, app: appOf(frontend.apps) }, emulators: [], files: [],
+  frontend: { name: frontend.name, app: appOf(frontend.apps), romDirectory: esdeRoms() }, emulators: [], files: [],
 };
 
-for (const [emulator, where] of Object.entries(macSaves)) {
-  const homeDir = where.homes.map(expand).find((h) => fs.existsSync(h));
-  const plays = Object.keys(systems).filter((s) => systems[s].emulator === emulator);
-  // Installed is the app; a data folder can outlive it.
-  const said = { emulator, systems: plays, app: appOf(where.apps), data: homeDir ? homeDir.replace(home, '~') : null, places: [], files: 0, size: 0 };
-  manifest.emulators.push(said);
-  if (!homeDir) continue;
+// Each place an emulator or retired app saves to: its setting in the app's
+// settings file wins over its default.
+function placesOf(where, homeDir, emulator) {
   const config = where.config && path.join(homeDir, where.config.file);
-  for (const [i, place] of where.places.entries()) {
+  return where.places.map((place) => {
     let dir = null;
     let from = 'default';
     if (place.key && config && fs.existsSync(config)) {
@@ -146,6 +153,21 @@ for (const [emulator, where] of Object.entries(macSaves)) {
       } catch (e) { console.error(`  ${emulator}: could not read ${where.config.file}: ${e.message}`); }
     }
     if (!dir && place.path) dir = path.join(homeDir, place.path);
+    return { place, dir, from };
+  });
+}
+
+// Every folder an emulator saves to, so a retired app's folder holding them is not counted twice.
+const gathered = [];
+for (const [emulator, where] of Object.entries(macSaves)) {
+  const homeDir = where.homes.map(expand).find((h) => fs.existsSync(h));
+  const plays = Object.keys(systems).filter((s) => systems[s].emulator === emulator);
+  // Installed is the app; a data folder can outlive it.
+  const said = { emulator, systems: plays, app: appOf(where.apps), data: homeDir ? homeDir.replace(home, '~') : null, places: [], files: 0, size: 0 };
+  manifest.emulators.push(said);
+  if (!homeDir) continue;
+  for (const [i, { place, dir, from }] of placesOf(where, homeDir, emulator).entries()) {
+    if (dir) gathered.push(dir);
     said.places.push({ dir: dir ? dir.replace(home, '~') : null, from, found: Boolean(dir && fs.existsSync(dir)), files: 0 });
     if (!dir || !fs.existsSync(dir)) continue;
     const include = place.include ? new RegExp(place.include) : null;
@@ -168,15 +190,35 @@ for (const [emulator, where] of Object.entries(macSaves)) {
   }
 }
 
+// A retired app: whether it is still here, and how many files each of its
+// save folders holds, less another emulator's folder inside it.
+for (const [emulator, where] of Object.entries(retired)) {
+  const homeDir = where.homes.map(expand).find((h) => fs.existsSync(h));
+  const said = { emulator, retired: true, systems: [], app: appOf(where.apps), data: homeDir ? homeDir.replace(home, '~') : null, places: [], files: 0, size: 0 };
+  if (!said.app && !homeDir) continue;
+  manifest.emulators.push(said);
+  if (!homeDir) continue;
+  const seen = new Set();
+  for (const { dir, from } of placesOf(where, homeDir, emulator)) {
+    if (!dir || seen.has(dir)) continue;
+    seen.add(dir);
+    const theirs = (f) => gathered.some((g) => f.startsWith(`${g}${path.sep}`));
+    const files = fs.existsSync(dir) ? walk(dir).filter((f) => path.basename(f) !== '.DS_Store' && !theirs(f)) : [];
+    said.places.push({ dir: dir.replace(home, '~'), from, found: files.length > 0, files: files.length });
+    said.files += files.length;
+    said.size += files.reduce((a, f) => a + fs.statSync(f).size, 0);
+  }
+}
+
 fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 1));
 for (const old of list(backups).filter((d) => d.startsWith(`${mac} `)).slice(0, -5)) {
   fs.rmSync(path.join(backups, old), { recursive: true, force: true });
 }
 const f = manifest.frontend;
-console.log(`${mac}, macOS ${manifest.macos}: ${f.name} ${f.app ? `${f.app.version ?? ''} installed` : 'not installed'}`);
+console.log(`${mac}, macOS ${manifest.macos}: ${f.name} ${f.app ? `${f.app.version ?? ''} installed` : 'not installed'}${f.romDirectory ? `, games from ${f.romDirectory}` : ''}`);
 for (const e of manifest.emulators) {
-  const app = e.app ? `${e.app.version ?? 'installed'}` : e.data ? 'app gone, data left' : 'not on this Mac';
+  const app = `${e.retired ? 'retired, ' : ''}${e.app ? `${e.app.version ?? 'installed'}` : e.data ? 'app gone, data left' : 'not on this Mac'}`;
   const places = e.places.map((p) => `${p.found ? `${p.files} from` : 'none at'} ${p.dir}${p.from === 'setting' ? ' (its setting)' : ''}`);
   console.log(`  ${e.emulator.padEnd(12)} ${app.padEnd(20)} ${places.join(', ')}`);
 }

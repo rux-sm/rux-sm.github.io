@@ -60,7 +60,7 @@ The setup kit, so any Mac is set up from the server in one step:
   emulator from those copies, copies the BIOS, keys and firmware, and writes
   each one's settings so it reads games from the Mac's library folder and
   keeps saves where Syncthing mirrors them.
-- **The Emulators page is the kit's checklist:** each emulator's Mac copy
+- **The Status page is the kit's checklist:** each emulator's Mac copy
   and version on the server, and whether this Mac's settings point at it.
 - **A PC follows the same way later,** from `emulators/windows/`, where
   nearly every emulator runs portably and needs no install.
@@ -84,4 +84,4 @@ The setup kit, so any Mac is set up from the server in one step:
 - [ ] Serve the games over HTTPS on Tailscale, and add Download to this Mac,
   Remove from this Mac and the mark of what this Mac holds.
 - [ ] Write `roms/tools/build-kit.mjs`, the download addresses, and
-  `Set up this Mac.command`, and show the kit on the Emulators page.
+  `Set up this Mac.command`, and show the kit on the Status page.

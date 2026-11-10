@@ -46,7 +46,7 @@ a bar: a card of the second layer the bar's size and place, 72px wide, as
 tall as the bar and 8px clear of the row's lines and the column's sides, as
 a bar is of the row's lines and the column's rule, with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
-rows 8px apart from the bar's first line to the card's 8px inset at its
+rows 12px apart from the bar's first line to the card's 8px inset at its
 foot, measured from the top, so a row of stacked trips keeps it on the
 first trip's lines. Hover, an open tip and keyboard focus mark the card
 alone, as a bar's mark the bar, in Layer 02's hover and selected, or the
@@ -56,10 +56,9 @@ surface.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
-| State | The speed, Idle and Off use heading-compact-01, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection | 22px, 8px under the number |
-| Speed meter | Eight blocks across the 56px, 1px apart, one lit for each 10 mph to 80, green while moving and amber over 75, and drawn unlit while the bus stands, so every tile keeps one shape | 4px, 4px under the state |
-| Fuel | The pump at 16px, then 2px to the figure in label-01 and its percent sign in label-01's grey. A current reading has the speed's eight blocks, one lit for each eighth of the tank. Orange means low and red means critical | 24px including the meter, 8px under the speed meter |
-| Foot | The lift and sleeper, low DEF with its percentage, or the age of a lost signal | 16px on the card's inset |
+| State | The speed, Idle and Off use heading-compact-01, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 22px, 12px under the number |
+| Fuel | A gauge read from E to F: the letters in label-01's grey at its ends and four blocks between them, 2px apart, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 18px, 12px under the state |
+| Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 12px under the fuel, on the card's inset |
 
 56px is the least that holds a number, 8px and its alert.
 
@@ -69,7 +68,7 @@ A partner's row and No bus have the bus tile's card, their parts at the same sta
 
 | Row | Holds | Height |
 | :--- | :--- | :--- |
-| Name | The partner's name in full, or "No bus", label-01 semibold, on up to three lines, cut after the third; one line in a view of three rows or fewer | Every row above the foot |
+| Name | The partner's name in full, or "No bus", in the bus number's heading-compact-01, on up to three lines, cut after the third; one line in a view of three rows or fewer | Every row above the foot |
 | Foot | A partner's: Carbon's collaborate mark at 16px, where a bus tile has its kit. No bus's: the bus with its alert at 16px and how many buses a trip still wants in the days of the board's label, in heading-compact-01, in amber, and nothing while none does | The tile's last row, on the card's inset |
 
 A view of one row shows the name alone.
@@ -109,10 +108,10 @@ tile's parts from the foot up. The driver rows stay 48px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 144px | Number, state, both meters, fuel and the foot |
-| 5 | 112px, 11px | 128px | Number, state, both meters and fuel |
-| 4 | 96px, 12px | 112px | Number, speed, fuel |
-| 3 | 80px, 13px | 96px | Number, speed |
+| 6 | 128px, 10px | 144px | Number, state, fuel and the foot, 12px apart |
+| 5 | 112px, 11px | 128px | Number, state and fuel, 12px apart |
+| 4 | 96px, 12px | 112px | Number, state and fuel, 8px apart |
+| 3 | 80px, 13px | 96px | Number and state |
 | 2 | 48px, 6px | 64px | Number, the state at 14px; an inspection's date alone |
 | 1 | 32px, 7px | 48px | The number and its alert |
 

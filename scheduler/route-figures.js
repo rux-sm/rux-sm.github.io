@@ -421,16 +421,16 @@
      `{ pre, post, late }`. Each stop keeps its row as `row`.
 
      A TRIP READ WITH ITS LEGS is read through trip-shape.js: `leg` is the
-     leg's id, or the old word a page still names it by, and the model is its
-     first route's stops on the leg's days. A trip read without them, such as
+     leg's id, or the old word a page still names it by, and the model is the
+     stops of the route `routeId` names, or its first route's, on the leg's days. A trip read without them, such as
      a draft's, is read by the old word on each stop and the trip's date
      columns. */
   const SHAPE = window.SchedulerTripShape;
   const shapeLeg = (trip, leg) => (SHAPE && Array.isArray(trip?.trip_legs)
     ? SHAPE.legOf(trip, leg) ?? SHAPE.legOfWord(trip, leg) : null);
-  function fromStops(trip, leg, rows, routeTimes = {}) {
+  function fromStops(trip, leg, rows, routeTimes = {}, routeId = null) {
     const shaped = shapeLeg(trip, leg);
-    const route = shaped?.routes[0]?.id;
+    const route = shaped?.routes.find(r => r.id === routeId)?.id ?? shaped?.routes[0]?.id;
     const stops = (rows || []).filter(s => (shaped ? s.route_id === route : (s.leg || 'outbound') === leg))
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     const pickup = stops.find(s => s.type === 'pickup') ?? null;

@@ -157,7 +157,23 @@
      are still kept by the word. */
   const SHAPE = window.SchedulerTripShape;
   const legRow = (trip, leg) => (SHAPE && Array.isArray(trip?.trip_legs)
-    ? SHAPE.legOf(trip, leg) ?? SHAPE.legOfWord(trip, leg) : null);
+    ? SHAPE.legOf(trip, leg) ?? SHAPE.legOfWord(trip, leg) ?? SHAPE.legOfRoute(trip, leg) : null);
+  /* A ROUTE'S PAPERS. On a leg of more than one route, a copy is named by
+     its route's id, which `legRow` finds the leg of, so the leg's days, files
+     and contacts are the route's too; its stops and vehicles are the route's
+     own. A leg's key names its first route's stops. */
+  const namesRoute = (trip, key) => !!legRow(trip, key)?.routes.some(r => r.id === key);
+  const routeOfKey = (trip, key) => {
+    const l = legRow(trip, key);
+    return l ? l.routes.find(r => r.id === key) ?? l.routes[0] ?? null : null;
+  };
+  // A route's name on a leg of more than one, `Route 2` where it has none; null otherwise.
+  const routeName = (trip, key) => {
+    const l = legRow(trip, key);
+    if (!l || l.routes.length < 2 || !namesRoute(trip, key)) return null;
+    const at = l.routes.findIndex(r => r.id === key);
+    return l.routes[at].name || `Route ${at + 1}`;
+  };
   // The old word a leg mirrors, and its key: its id, or the word on a trip with no legs.
   const wordOf = (trip, leg) => legRow(trip, leg)?.word ?? (leg === 'return' ? 'return' : 'outbound');
   const legKey = (trip, leg) => legRow(trip, leg)?.id ?? wordOf(trip, leg);
@@ -172,9 +188,18 @@
     : isReturn(trip, leg) ? (trip.return_end_date || trip.end_date) : trip.end_date);
   const legBuses = (trip, leg) => (legRow(trip, leg) ? legRow(trip, leg).busCount
     : isReturn(trip, leg) ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count);
-  // Whether a stop or a vehicle is on the leg: on one of its routes, or naming its word.
-  const onLeg = (trip, leg, row) => (legRow(trip, leg)
-    ? legRow(trip, leg).routes.some(r => r.id === row?.route_id) : (row?.leg || 'outbound') === wordOf(trip, leg));
+  /* Whether a vehicle is on the leg, or on the route a route's key names:
+     on one of the leg's routes, or naming its word. */
+  const onLeg = (trip, leg, row) => (!legRow(trip, leg) ? (row?.leg || 'outbound') === wordOf(trip, leg)
+    : namesRoute(trip, leg) ? row?.route_id === leg : legRow(trip, leg).routes.some(r => r.id === row?.route_id));
+  // Whether a stop is on the route a key names, a leg's first where it names a leg, or naming its word.
+  const onRoute = (trip, key, row) => (legRow(trip, key) ? row?.route_id === routeOfKey(trip, key)?.id
+    : (row?.leg || 'outbound') === wordOf(trip, key));
+  // What a vehicle's papers print for: its route where its leg has more than one, and its leg otherwise.
+  const placeOfVehicle = (trip, a) => {
+    const leg = legOfVehicle(trip, a);
+    return (legRow(trip, leg)?.routes.length ?? 0) > 1 && namesRoute(trip, a?.route_id) ? a.route_id : leg;
+  };
   // The leg's papers, its day-of contacts and its itinerary, as trip-shape.js hands them.
   const legContacts = (trip, leg) => SHAPE.contactsFor(trip, legRow(trip, leg)?.id);
   const legItinerary = (trip, leg) => SHAPE.itineraryFor(trip, legRow(trip, leg)?.id);
@@ -343,7 +368,7 @@
 
   // The leg's pickup, where the Route tab keeps the address and the spot time.
   const pickupOf = (trip, leg) => (trip.trip_stops || [])
-    .find(s => onLeg(trip, leg, s) && s.type === 'pickup') || null;
+    .find(s => onRoute(trip, leg, s) && s.type === 'pickup') || null;
 
   const cell = (label, value, blank) => {
     const node = el('div');
@@ -803,7 +828,7 @@
   const legsOf = trip => {
     const legs = SHAPE && Array.isArray(trip?.trip_legs) ? SHAPE.legsOf(trip) : [];
     if (legs.length) {
-      const found = legs.filter(l => (trip.trip_stops || []).some(s => onLeg(trip, l.id, s))).map(l => l.id);
+      const found = legs.filter(l => (trip.trip_stops || []).some(s => l.routes.some(r => r.id === s.route_id))).map(l => l.id);
       return found.length ? found : [legs[0].id];
     }
     const have = new Set((trip.trip_stops || []).map(s => s.leg || 'outbound'));
@@ -811,8 +836,20 @@
     return found.length ? found : ['outbound'];
   };
 
+  /* The itinerary's copies: each leg, and on a leg of more than one route
+     each route with stops, by its id, so every group's drivers have their
+     own sheet. */
+  const copiesOf = trip => legsOf(trip).flatMap(leg => {
+    const routes = legRow(trip, leg)?.routes ?? [];
+    if (routes.length < 2) return [leg];
+    const own = routes.filter(r => (trip.trip_stops || []).some(s => s.route_id === r.id)).map(r => r.id);
+    return own.length ? own : [leg];
+  });
+  // A copy's name in the list of copies: its leg's days, and its route's name on a leg of more than one.
+  const copyDays = (trip, key) => [legDays(trip, key), routeName(trip, key)].filter(Boolean).join(', ');
+
   const stopsOf = (trip, leg) => (trip.trip_stops || [])
-    .filter(s => onLeg(trip, leg, s))
+    .filter(s => onRoute(trip, leg, s))
     .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   /* A STOP'S TIMES, labelled by what the driver needs from that row rather
@@ -1200,7 +1237,7 @@
        drawn only for a trip, since every figure comes from its route. */
     const detailed = layout === 'detailed' && !!trip?.id;
     const model = detailed
-      ? window.SchedulerRouteFigures.fromStops(trip, legKey(trip, leg), trip.trip_stops, routeTimes) : null;
+      ? window.SchedulerRouteFigures.fromStops(trip, legKey(trip, leg), trip.trip_stops, routeTimes, routeOfKey(trip, leg)?.id ?? null) : null;
     const fig = model ? window.SchedulerRouteFigures.legFigures(model) : null;
     const waitFor = stop => {
       const entry = model?.list.find(e => e.row === stop);
@@ -2113,21 +2150,22 @@
   function barsOfWeek(trips, first) {
     const last = plusDays(first, 6);
     const byBus = new Map();
+    // Each bus on its route's days and times, as the board draws it, numbered on its leg.
     for (const trip of trips) {
-      for (const leg of WEEK.legsOf(trip)) {
+      const nth = new Map();
+      for (const leg of WEEK.rangesOf(trip)) {
         const place = WEEK.clip(leg.from, leg.to, first, last);
-        if (!place) continue;
-        const onLeg = (trip.trip_assignments || [])
-          .filter(a => WEEK.legKeyOfVehicle(trip, a) === leg.key && (a.bus_id || a.partner_id))
-          .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-        onLeg.forEach((assignment, i) => {
+        for (const assignment of leg.vehicles.filter(a => a.bus_id || a.partner_id)) {
+          const i = nth.get(leg.key) ?? 0;
+          nth.set(leg.key, i + 1);
+          if (!place) continue;
           const key = assignment.bus_id ?? partnerKey(assignment);
           if (!byBus.has(key)) byBus.set(key, []);
           byBus.get(key).push({
             trip, leg, assignment, place: { ...place },
             of: leg.count > 1 ? `${i + 1}/${leg.count}` : '',
           });
-        });
+        }
       }
     }
     return byBus;
@@ -2435,7 +2473,8 @@
   // The Detailed layout is the office's copy, so its file says so.
   const itineraryFileName = (subject, layout) => (subject.trip
     ? forTrip(subject.trip, CODES['driver-itinerary'],
-      `${wordOf(subject.trip, subject.leg)}${layout === 'detailed' ? '-detailed' : ''}`) : null);
+      `${wordOf(subject.trip, subject.leg)}${routeName(subject.trip, subject.leg) ? `-route-${(legRow(subject.trip, subject.leg)?.routes.findIndex(r => r.id === subject.leg) ?? 0) + 1}` : ''}`
+      + `${layout === 'detailed' ? '-detailed' : ''}`) : null);
   const quoteFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.quote) : null);
   const weekFileName = subject => (subject.week ? forDay(subject.week, CODES['week-schedule']) : null);
 
@@ -2558,7 +2597,7 @@
          the paper's rather than a limit -- a short itinerary still draws a
          whole page of it, because that is what comes out of the printer. */
       page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
-      copies: subject => legsOf(subject.trip).map(leg => ({
+      copies: subject => copiesOf(subject.trip).map(leg => ({
         ...subject,
         leg,
         // The bus came from the assignment the form was opened on, and an
@@ -2566,7 +2605,7 @@
         // line is blank for the pen.
         assignment: subject.assignment && onLeg(subject.trip, leg, subject.assignment) ? subject.assignment : null,
       })),
-      copyName: subject => legDays(subject.trip, subject.leg),
+      copyName: subject => copyDays(subject.trip, subject.leg),
       typed: { always: true, fields: ITINERARY_FIELDS },
       render: itinerary,
       fileName: itineraryFileName,
@@ -3680,12 +3719,12 @@
     const itineraryForm = FORMS.find(form => form.id === 'driver-itinerary');
     for (const a of found?.covered ?? []) {
       const split = found.legs.length > 1;
-      const leg = legOfVehicle(found.trip, a);
+      const leg = placeOfVehicle(found.trip, a);
       const item = el('a', 'scheduler-print__row');
       item.href = `print.html?form=driver-itinerary&assignment=${encodeURIComponent(a.id)}&trip=${encodeURIComponent(trip)}`
         + `&leg=${encodeURIComponent(leg)}&from=forms`;
       item.append(...face({ ...itineraryForm,
-        short: `Itinerary for ${a.partner?.name || 'a partner'}${split ? `, ${legDays(found.trip, leg)}` : ''}` }));
+        short: `Itinerary for ${a.partner?.name || 'a partner'}${split || routeName(found.trip, leg) ? `, ${copyDays(found.trip, leg)}` : ''}` }));
       rows.appendChild(item);
     }
 
@@ -3765,7 +3804,7 @@
       .from('trip_assignments').select(BUS_SEATS_QUERY).eq('trip_id', tripId);
     if (error || !data?.length) return fallback;
     const copies = [...data].sort(byLegThenPosition)
-      .flatMap(a => form.copies({ ...subject, assignment: a, leg: legOfVehicle(subject.trip, a) }));
+      .flatMap(a => form.copies({ ...subject, assignment: a, leg: placeOfVehicle(subject.trip, a) }));
     return copies.length ? copies : fallback;
   }
 
@@ -3914,11 +3953,11 @@
     const assignment = assignmentId ? { ...data, leg: data.leg || 'outbound' } : null;
     // The leg the address names, by its id or its old word, else the bus's.
     const named = params.get('leg');
-    const asked = named && (legRow(trip, named) || LEGS.includes(named)) ? legKey(trip, named) : null;
+    const asked = named && (legRow(trip, named) || LEGS.includes(named)) ? (namesRoute(trip, named) ? named : legKey(trip, named)) : null;
     const subject = {
       trip,
       assignment,
-      leg: asked || (assignment ? legOfVehicle(trip, assignment) : legKey(trip, 'outbound')),
+      leg: asked || (assignment ? placeOfVehicle(trip, assignment) : legKey(trip, 'outbound')),
       seat: null,
     };
     // The Detailed layout's figures add the office's pre-trip and post-trip
@@ -3957,7 +3996,7 @@
     const subject = {
       trip: data.trips,
       assignment: data,
-      leg: legOfVehicle(data.trips, data),
+      leg: placeOfVehicle(data.trips, data),
       seat: null,
     };
     const copies = form.copies(subject);

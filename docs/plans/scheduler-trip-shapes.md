@@ -217,9 +217,6 @@ them and nothing is entered twice.
       longest route, with Estimated miles following it; add Price
       separately and its undo for a leg or a route; and write each line's
       days and routes in its words.
-- [ ] Print an itinerary for each route, and give the envelope, the
-      driver's page, the driver's reminder and the maintenance schedule the
-      leg and route of their bus.
 - [ ] Hold each route to the Route tab's Done, name the leg and route in a
       trip's history, and count a route with no times in the to-do list.
 - [ ] Write the SQL that drops the old leg columns and contact slots once

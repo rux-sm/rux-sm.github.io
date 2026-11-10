@@ -114,11 +114,21 @@
   --scheduler-head-moving: var(--scheduler-mark-success);
 }
 /* The full tile's state box while the engine runs: a tint of the green, or
-   of the warning past SPEEDING or IDLE_MS, under a border in the full colour. */
+   of the warning past SPEEDING or IDLE_MS, under a border in the full colour.
+   Rux 100 takes Geist's own tinted pairs instead, the 100 fill and the 400
+   edge its green and amber bars use, since a mix is a colour Geist lacks. */
 :root,
 [data-theme] {
   --scheduler-head-box-on: color-mix(in srgb, var(--scheduler-head-moving) 16%, transparent);
+  --scheduler-head-box-on-edge: var(--scheduler-head-moving);
   --scheduler-head-box-low: color-mix(in srgb, var(--scheduler-head-low) 16%, transparent);
+  --scheduler-head-box-low-edge: var(--scheduler-head-low);
+}
+[data-theme="rux-100"] {
+  --scheduler-head-box-on: var(--geist-green-100);
+  --scheduler-head-box-on-edge: var(--geist-green-400);
+  --scheduler-head-box-low: var(--geist-amber-100);
+  --scheduler-head-box-low-edge: var(--geist-amber-400);
 }
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
    Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
@@ -841,9 +851,11 @@
    trigger without a fill. */
 [data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); --scheduler-tile-state: var(--scheduler-tile-fill); }
 /* Rux 100 dims the dial, normal fuel and compact state dot when the engine
-   is off. In the full tile, lost signal and its last reading use secondary
-   text. The bus number, alerts and low tanks stay at full strength. */
-[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]:not(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll *)) :is(.scheduler-row-head__dot, .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
+   is off, except on six lines, where the full tile's dark box already says
+   so and the dimmed words would fall far under 4.5 to 1. In the full tile,
+   lost signal and its last reading use secondary text. The bus number,
+   alerts and low tanks stay at full strength. */
+[data-theme="rux-100"] .scheduler-row-head:not(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] *):is([data-engine="off"], [data-engine="none"]:not(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll *)) :is(.scheduler-row-head__dot, .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) {
   opacity: .35;
 }
 /* A RUX 100 TRIP READS IN LAYERS: the destination, the line that names

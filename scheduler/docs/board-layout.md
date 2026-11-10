@@ -14,7 +14,7 @@ and is what `scheduler/app.css` draws; what each part says is in
 | Part | Size |
 | :--- | :--- |
 | A line | 18px, `--scheduler-row-h`, Carbon's 14px compact line |
-| A name | 14px semibold, Carbon's heading-compact-01: a bus number, a destination, a driver's name |
+| A name | 14px semibold, Carbon's heading-compact-01 with its 0.16px tracking, in the primary text, or on a coloured bar its strongest ink: a bus number, a destination, a driver's name |
 | Other words | 12px or 14px on the 18px line |
 | An icon | 16px, 4px from its words |
 | A bar | 8px clear of the row's lines and of the next bar |

@@ -970,8 +970,8 @@ button.scheduler-row-head__num:focus { outline: none; }
   border: 1px solid transparent;
   background: var(--rux-layer);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { border-color: var(--scheduler-head-moving); background: var(--scheduler-head-box-on); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]):has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-low); background: var(--scheduler-head-box-low); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { border-color: var(--scheduler-head-box-on-edge); background: var(--scheduler-head-box-on); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]):has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-box-low-edge); background: var(--scheduler-head-box-low); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under, .scheduler-row-head__fuel-end) { color: var(--rux-text-primary); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__dial { align-self: start; align-items: flex-start; block-size: auto; }
@@ -1529,7 +1529,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar__row > * { overflow: hidden; text-overflow: ellipsis; }
 /* The first part of a row gives way; whatever sits right of it keeps its width. */
 .scheduler-bar__row > :first-child { flex: 0 1 auto; min-inline-size: 0; }
-.scheduler-bar__dest { font-weight: 600; }
+.scheduler-bar__dest { font-weight: 600; letter-spacing: var(--rux-heading-compact-01-letter-spacing); }
 /* How many buses a trip takes, after its destination: plain weight and dim,
    as the client is. The name gives way and the count is never cut short. */
 .scheduler-bar__multi { display: flex; align-items: baseline; gap: var(--rux-spacing-02); }
@@ -3957,13 +3957,14 @@ a.scheduler-tip__go { text-decoration: none; }
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
-   and opaque so nothing shows through. */
+   and opaque so nothing shows through. The name is primary text, as a bus
+   number and a destination are, the board's three names alike. */
 .scheduler-avail__name {
   position: sticky;
   inset-inline-start: 0;
   z-index: 2;
   background: var(--rux-layer);
-  color: var(--rux-text-secondary);
+  color: var(--rux-text-primary);
   overflow: hidden;
 }
 /* A tile whose card is open rises over the board's bus column and day header,
@@ -4034,6 +4035,7 @@ a.scheduler-tip__go { text-decoration: none; }
   min-inline-size: 0;
   line-height: var(--scheduler-row-h);
   font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4286,8 +4288,8 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* A driver's tile takes the hover and selected surfaces of Carbon's
    selectable rows: selected while its card is open, and while the menu's
-   Pick out trips has picked the driver out, when the name reads in primary
-   text. A busy day selects its trip, so it shows the hand. */
+   Pick out trips has picked the driver out. A busy day selects its trip,
+   so it shows the hand. */
 /* A finger holding a name opens its menu, so the browser's own callout and
    text selection are off there, as on the board's cells. */
 .scheduler-avail__name {
@@ -4301,9 +4303,6 @@ a.scheduler-tip__go { text-decoration: none; }
    card is open or its driver picked out, as a bus tile does. */
 .scheduler-avail__name:hover { --scheduler-tile-state: var(--scheduler-tile-hover); }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) { --scheduler-tile-state: var(--scheduler-tile-selected); }
-.scheduler-avail__name[data-picked] {
-  color: var(--rux-text-primary);
-}
 /* Keyboard focus on the card's button rings the tile, the thing its press
    takes, in Carbon's 2px ring inside its edge, as a bus tile's does. */
 .scheduler-avail__line:focus { outline: none; }

@@ -1401,6 +1401,11 @@
         mark.appendChild(svgUse('#i-collaborate', '16', '0 0 32 32'));
         head.appendChild(mark);
       }
+      // The unassigned row's tile carries how many buses still want one, which `markHeads` writes.
+      if (r.id === UNASSIGNED) {
+        head.dataset.unassigned = '';
+        head.appendChild(openEl());
+      }
       if (!r.bus) head.title = r.partner ? `${r.partner.name}, a partner covering buses with its own coach and driver` : 'Trips with no bus yet';
       if (r.bus) {
         head.title = [
@@ -1430,7 +1435,7 @@
          grows for the trips in view once the strip is placed. */
       const least = track.dataset.retired != null || track.dataset.unassigned || track.dataset.partner ? 0 : 1;
       track.style.setProperty('--scheduler-lanes', least);
-      stripRows.push({ track, head, bus: r.bus, items, least, windows });
+      stripRows.push({ track, head, bus: r.bus, unassigned: r.id === UNASSIGNED, items, least, windows });
 
       rowEl.append(head, track);
       gridEl.appendChild(rowEl);
@@ -1872,11 +1877,35 @@
     for (const row of stripRows) for (const item of row.items) item.el?.toggleAttribute('data-lead', leads(item, leadDay));
   }
 
-  // The marks beside the bus numbers, for the out-of-service days in view.
+  /* The marks beside the bus numbers, for the out-of-service days in view,
+     and the unassigned row's count, for the buses with none in the same
+     days: those of the board's label. */
   function markHeads() {
     if (!stripStart) return;
     const to = viewEnd(cursor);
-    for (const row of stripRows) if (row.bus) markOutOfService(row.head, row.windows.filter(w => clip(w.start_date, w.end_date, cursor, to)));
+    const first = daysBetween(stripStart, cursor), past = first + inView();
+    for (const row of stripRows) {
+      if (row.bus) markOutOfService(row.head, row.windows.filter(w => clip(w.start_date, w.end_date, cursor, to)));
+      if (row.unassigned) markOpen(row.head, row.items.filter(item => item.b && item.start < past && item.end > first).length);
+    }
+  }
+  /* The unassigned row's count: the bus with its alert and how many buses a
+     trip still wants, one for each empty place on a leg however many days
+     it runs. app.css draws it on the tile's last row in amber, and nothing
+     while none wants one in those days. */
+  function openEl() {
+    const box = el('span', 'scheduler-row-head__open');
+    box.setAttribute('role', 'img');
+    box.hidden = true;
+    box.append(svgUse('#m-bus_alert', '16', '0 0 32 32'), el('span', 'scheduler-row-head__open-count'));
+    return box;
+  }
+  function markOpen(head, count) {
+    const box = head.querySelector('.scheduler-row-head__open');
+    if (!box) return;
+    box.hidden = !count;
+    box.setAttribute('aria-label', `${count} ${count === 1 ? 'bus' : 'buses'} with no bus yet`);
+    box.querySelector('.scheduler-row-head__open-count').textContent = String(count);
   }
   /* THE DAYS NOT YET READ show the loading skeleton near the view: a
      placeholder across them in each row's first lane, as the page's first

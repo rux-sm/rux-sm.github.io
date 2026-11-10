@@ -63,14 +63,14 @@ surface.
 
 56px is the least that holds a number, 8px and its alert.
 
-## The partner tile
+## The partner and No bus tiles
 
-A partner's row has the bus tile's card, its parts at the same start.
+A partner's row and No bus have the bus tile's card, their parts at the same start.
 
 | Row | Holds | Height |
 | :--- | :--- | :--- |
-| Name | The partner's name in full, label-01 semibold, on up to three lines, cut after the third; one line in a view of three rows or fewer | Every row above the foot |
-| Foot | Carbon's collaborate mark at 16px, the partner's, where a bus tile has its kit | The tile's last row, on the card's inset |
+| Name | The partner's name in full, or "No bus", label-01 semibold, on up to three lines, cut after the third; one line in a view of three rows or fewer | Every row above the foot |
+| Foot | A partner's: Carbon's collaborate mark at 16px, where a bus tile has its kit. No bus's: the bus with its alert at 16px and how many buses a trip still wants in the days of the board's label, in heading-compact-01, in amber, and nothing while none does | The tile's last row, on the card's inset |
 
 A view of one row shows the name alone.
 

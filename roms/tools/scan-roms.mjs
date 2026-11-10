@@ -45,7 +45,9 @@ function readAt(fd, offset, length) {
   const n = fs.readSync(fd, buf, 0, length, offset);
   return buf.subarray(0, n);
 }
-const ascii = (b) => b.toString('latin1').replace(/\0+$/, '').trim();
+// A header's text ends at its first NUL; a Game Boy Color title is padded
+// with NULs before the maker code that shares its bytes.
+const ascii = (b) => b.toString('latin1').split('\0')[0].trim();
 
 // ---- fingerprints -------------------------------------------------------
 

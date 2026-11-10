@@ -32,8 +32,10 @@
   const idsOf = g => [g.titleId ?? g.title_id, ...(g.files ?? []).map(f => f.header?.titleId)]
     .filter(Boolean).map(x => String(x).toLowerCase());
   const discIdsOf = g => [...new Set((g.files ?? []).map(f => f.header?.discId?.slice(0, 4)).filter(Boolean))];
+  // A serial as the disc's own code, four letters and five digits, since the
+  // lists add an edition after it, such as SLUS-00860GH, that no card carries.
   const serialsOf = g => [...new Set([...(g.match?.serials ?? []), ...(g.files ?? []).map(f => f.header?.serial)]
-    .filter(Boolean).map(norm))];
+    .filter(Boolean).map(x => norm(x).match(/^[A-Z]{4}\d{5}/)?.[0] ?? norm(x)))];
 
   // Each rule answers which of a system's games a save's path belongs to.
   const RULES = {

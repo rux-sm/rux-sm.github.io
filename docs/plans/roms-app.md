@@ -139,8 +139,6 @@ Five pages in a side nav, each started from a Design template:
 
 ## Tasks
 
-- [ ] Apply `roms_games` and `roms_bios` on rux's yes as a named migration, and
-  add them to `docs/database-access.md`.
 - [ ] Add the No-Intro and Redump lists and the Switch title list to the tool,
   downloaded on a yes and kept outside this repository, and match every
   game against them.

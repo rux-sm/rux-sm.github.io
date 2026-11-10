@@ -29,6 +29,9 @@ ask `is_owner()` in `owner_read` and `owner_all`, and so does their private
 bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
 other account reads it.
 
+The Roms tables, `roms_games` and `roms_bios`, ask `is_owner()` in
+`owner_all`: the game collection is the owner's alone.
+
 The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
 `staff_read`: only the owner makes puzzles and sees the players. A player,
 whether an account or a guest with no account, reaches them only through

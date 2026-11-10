@@ -13056,10 +13056,14 @@
      past the sum closes the oldest panels with nothing typed in them. Below md
      one panel is open at a time, in front of the board.
 
-     A list closed for room is put away, not dismissed: once the panel it made
-     room for shuts, it comes back in its own place as it was left, where it
-     fits, so a form printed from Departures leaves Departures on the same
-     leg. Another panel asking for room first forgets it.
+     A list runs one errand at a time: a form or file opened from a list's
+     line takes the place of the one that list opened last, so Departures
+     stays beside the envelope that follows the itinerary. A list closed for
+     room is put away, not dismissed: once the panel it made room for shuts,
+     it comes back in its own place as it was left, where it fits, so a form
+     printed from Departures leaves Departures on the same leg. The next
+     errand from the same list carries that on; any other panel asking for
+     room first forgets it.
 
      The board's width is what this reads, never the schedule's: the board is
      the whole content column whichever panels are open, so it holds still when
@@ -13130,7 +13134,7 @@
     { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('prep'), reopen: () => window.SchedulerToDoList?.reopen('prep') },
     ...Object.values(viewers).map(v => ({ name: v.key, el: v.el, open: !!v.el && !v.el.hidden,
-      width: () => ownWidth(v.el, '--scheduler-viewer-w'), close: () => v.close(false), dirty: () => v.dirty })),
+      width: () => ownWidth(v.el, '--scheduler-viewer-w'), close: () => v.close(false), dirty: () => v.dirty, from: () => v.from })),
     { name: 'editor', el: tripEl, open: !!tripEl && !tripEl.hidden, width: () => panelWidth('--scheduler-editor-w'), editor: true },
   ];
 
@@ -13151,30 +13155,47 @@
     && panels().filter(p => (p.open || p.name === adding) && !p.editor && !p.rail).length <= 1;
   // Whether `adding` can open with nothing else closing for it.
   const hasRoomFor = adding => !overRoom(adding) || besideEditor(adding);
+  // The open list a control stands in, by name, or none.
+  const listOf = el => (el?.isConnected ? panels().find(p => p.reopen && p.open && p.el?.contains(el))?.name ?? null : null);
 
-  /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
-     panel closes, then the next, until the new one fits; one holding typed
-     input asks first and stays on a no. The editor is never closed for room:
-     where it is what stands in the way, the new panel does not open and the
-     board says why. The editor itself always opens. Below md one panel is open
-     at a time, so opening one closes the one open. It answers whether the new
-     panel may open. */
-  async function makeRoom(name) {
+  /* ROOM FOR A PANEL ABOUT TO OPEN. A list runs one errand at a time: a panel
+     opened `from` a list's line takes the place of the one that list opened
+     last, which closes first however much room there is, since the line
+     pressed next is the next step and the last one is done, and the lists
+     that one had put away are put away for the new one. Past what fits beside
+     the week, the oldest panel closes, then the next, until the new one fits.
+     One holding typed input asks first and stays on a no. The editor is never
+     closed for room: where it is what stands in the way, the new panel does
+     not open and the board says why. The editor itself always opens. Below md
+     one panel is open at a time, so opening one closes the one open. It
+     answers whether the new panel may open. */
+  async function makeRoom(name, from = null) {
     placeRoom();
     replacing = null;
+    const before = displaced;
     displaced = { by: name, closed: [], seen: false };
     const kept = new Set();
+    // Closes one panel for `name`, asking first where something typed in it would be lost.
+    const closeFor = async p => {
+      if (p.dirty?.() && !(await ask(`Close ${PANEL_NAMES[p.name]}?`, `To open ${PANEL_NAMES[name]}, ${PANEL_NAMES[p.name]} closes, and what was typed in it is not kept.`))) {
+        kept.add(p.name);
+        return false;
+      }
+      if (name !== 'editor') replacing ??= { name, place: p.name };
+      return true;
+    };
+    const last = from && panels().find(p => p.open && p.name !== name && p.from?.() === from);
+    if (last && await closeFor(last)) {
+      if (before?.by === last.name) displaced.closed.push(...before.closed);
+      last.close();
+    }
     while (!hasRoomFor(name)) {
       // The rail's week folds before any panel closes.
       if (railWeek) { setRailWeek(false, { place: false }); continue; }
       const oldest = openOrder.map(n => panels().find(p => p.name === n))
         .find(p => p && p.open && p.name !== name && !p.editor && !p.rail && !kept.has(p.name));
       if (!oldest) break;
-      if (oldest.dirty?.() && !(await ask(`Close ${PANEL_NAMES[oldest.name]}?`, `To open ${PANEL_NAMES[name]}, ${PANEL_NAMES[oldest.name]} closes, and what was typed in it is not kept.`))) {
-        kept.add(oldest.name);
-        continue;
-      }
-      if (name !== 'editor') replacing ??= { name, place: oldest.name };
+      if (!(await closeFor(oldest))) continue;
       if (oldest.reopen) displaced.closed.push(oldest.name);
       oldest.close();
     }
@@ -14105,6 +14126,7 @@
          upsert would need every column and write back stale copies of those
          the tab never shows. */
       await saveRoute(tripId, write);
+      await saveRouteName(write);
       await mirrorPickupLeg(tripId, write);
 
       /* Payments, then `deposit_amount`, which holds their sum despite its
@@ -14126,7 +14148,6 @@
           client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', tripId));
       }
 
-      await saveRouteName(write);
       /* Purchase orders, invoices and quote lines, by id like the payments.
          Their summary columns on the trip, and `quoted_price`, which is the
          lines' sum, went out with the trip patch (`EDITS`). */
@@ -15818,10 +15839,16 @@
   const viewerHead = byId('head');
   const viewerBack = byId('back');
   let viewerOpener = null;
+  // The list whose line opened what the panel shows, whose errand it is, or none.
+  let viewerFrom = null;
   // The file showing: its document id, its blob address and its download name.
   let viewerShown = null;
   // Counts opens, so a slow fetch that a later open overtook is dropped.
   let viewerSeq = 0;
+  /* Counts what the panel was last asked, to show something or to shut, so
+     an open still waiting on its file's address gives way to a later ask and
+     a panel shut meanwhile stays shut. */
+  let viewerAsked = 0;
   // The document the panel is on, loaded or not, so a replace or a delete
   // elsewhere can follow it.
   let viewerDocId = null;
@@ -16289,7 +16316,12 @@
       window.open(url, '_blank', 'noopener');
       return;
     }
-    if (viewerEl.hidden && !(await makeRoom(key))) return;
+    const asked = ++viewerAsked;
+    const from = listOf(opener);
+    if (viewerEl.hidden && !(await makeRoom(key, from))) return;
+    if (asked !== viewerAsked) return;
+    // Following the trip in focus, with no opener, keeps whose errand the panel is.
+    if (opener) viewerFrom = from;
     setTrip(trip);
     dropShown();
     setViewerMode('form');
@@ -16330,9 +16362,14 @@
      line opened it. */
   async function openDocument(doc, opener, trip, mark = null) {
     if (!doc) return;
-    if (viewerEl && viewerEl.hidden && !(await makeRoom(key))) return;
+    const asked = ++viewerAsked;
+    const from = listOf(opener);
+    if (viewerEl && viewerEl.hidden && !(await makeRoom(key, from))) return;
+    if (asked !== viewerAsked) return;
+    if (opener) viewerFrom = from;
     setViewerMode('file');
     const url = await signedDocumentUrl(doc.file_path);
+    if (asked !== viewerAsked) return;
     if (!viewerEl || !url) {
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
@@ -16429,6 +16466,8 @@
     viewerDocId = null;
     viewerType = null;
     viewerMark = null;
+    viewerFrom = null;
+    viewerAsked++;
     setTrip(null);
     syncViewerButtons();
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
@@ -16453,6 +16492,7 @@
   /* A selected trip with no file of the kind showing: the panel stays,
      its head naming the kind and the trip's number, and says so. */
   function showNoFile(kind, tripId) {
+    viewerAsked++;
     viewerSeq++;
     dropShown();
     setViewerMode('file');
@@ -16474,6 +16514,7 @@
     get docType() { return viewerType; },
     get mark() { return viewerMark; },
     get frame() { return viewerFrame; },
+    get from() { return viewerFrom; },
   };
   }
   window.Rux = window.Rux || {};
@@ -17793,6 +17834,7 @@
         && String(d.driver_id) !== String(c.driverId));
       const partner = partnerSeat ? panelIndex.driversById.get(partnerSeat.driver_id) : null;
       const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
+      const { pickup: legPickup, back: legBack } = endsOf(a);
       return {
         trip, inbound, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
         bus: number != null ? String(number) : '',
@@ -17834,7 +17876,6 @@
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       if (onTap) a.addEventListener('click', onTap);
-      const { pickup: legPickup, back: legBack } = endsOf(a);
       const glyph = svgUse(icon, '16', '0 0 32 32');
       glyph.classList.add('rux--btn__icon');
       a.appendChild(glyph);

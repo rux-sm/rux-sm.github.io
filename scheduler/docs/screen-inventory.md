@@ -207,7 +207,10 @@ Three homes, and one rule for choosing.
   stands left of the week. Opening one past either closes the
   oldest, then the next, without a word,
   except one with something typed in it, which asks first and stays on a no.
-  A list closed so, Tasks or Departures, comes back in its own place
+  A list runs one errand at a time: a form or file opened from a list's line
+  first closes the one that list opened last, whatever the room, and takes
+  its place, so Print on a second Departures line replaces the first form
+  and Departures stays. A list closed so, Tasks or Departures, comes back in its own place
   as it was left, on the same open row, leg and scroll, once the panel it made
   room for shuts and where it fits, unless another panel has opened since.
   The board never closes the editor: where it alone stands in the way, the

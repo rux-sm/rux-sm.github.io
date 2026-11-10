@@ -213,12 +213,9 @@ them and nothing is entered twice.
 - [ ] Find how a driver taken off a trip is told now, and tell the drivers
       of a removed leg the same way, where now Remove leg waits for them to
       be taken off on the Buses tab.
-- [ ] Make the trip's Bus rental line, buses times legs priced on its
-      longest route, with Estimated miles following it; add Price
-      separately and its undo for a leg or a route; and write each line's
-      days and routes in its words.
-- [ ] Hold each route to the Route tab's Done, name the leg and route in a
-      trip's history, and count a route with no times in the to-do list.
+- [ ] Make the trip's Bus rental line one for every bus on every leg,
+      buses times legs; add Price separately and its undo for a leg or a
+      route; and write each line's days and routes in its words.
 - [ ] Write the SQL that drops the old leg columns and contact slots once
       nothing reads them, with the old date fields and words
       `get_maintenance_schedule` still hands the maintenance link, show it

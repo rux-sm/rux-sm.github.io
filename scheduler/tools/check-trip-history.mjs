@@ -98,6 +98,14 @@ expect('a leg moved or given more buses is a line naming the leg by its place',
   said(changes(trip({ trip_type: 'dropoff_pickup', trip_legs: [first, legRow()] }),
     trip({ trip_type: 'dropoff_pickup', trip_legs: [first, legRow({ start_date: '2027-01-11', end_date: '2027-01-11', bus_count: 3 })] }), names)),
   ['Leg: 2: Start 2027-01-10, End 2027-01-10, Buses 2 → Start 2027-01-11, End 2027-01-11, Buses 3']);
+// A second route on a leg is a line of its own, and a stop on it names its route.
+const oneLeg = { id: 'L1', trip_id: 't', leg: 'outbound', kind: 'round_trip', start_date: '2027-01-08', end_date: '2027-01-08', bus_count: 2,
+  hotel_booked: false, hotel_itinerary_number: null, created_at: 'x', trip_routes: [{ id: 'R1', leg_id: 'L1', position: 1, name: 'Football' }] };
+const twoRoutes = { ...oneLeg, trip_routes: [...oneLeg.trip_routes, { id: 'RB', leg_id: 'L1', position: 2, name: 'Band' }] };
+expect('a route added to a leg is said by its name, its stops on it naming it',
+  said(changes(trip({ trip_legs: [oneLeg], trip_stops: [] }),
+    trip({ trip_legs: [twoRoutes], trip_stops: [stop('s9', 0, { route_id: 'RB', leg: undefined })] }), names)),
+  ['Route: Band: ∅ → Name Band', 'Stop: Place s9 (Band): ∅ → Type stop, Address s9 Main St, Arrives 10:00, Leaves before 09:00']);
 expect('a pickup added and taken away each say what it holds',
   said(changes(trip({ trip_legs: [first] }), trip({ trip_legs: [first, legRow()] }), names)).concat(
     said(changes(trip({ trip_legs: [first, legRow()] }), trip({ trip_legs: [first] }), names))),

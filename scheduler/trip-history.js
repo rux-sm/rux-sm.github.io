@@ -236,10 +236,36 @@
     }
     return row.leg ?? null;
   }
+  /* Where a row is: a split's drop-off or pickup, any other trip's leg by
+     its number where it has more than one, and its route by its name where
+     its leg has more than one, as the reads place it. */
   const dayOf = (row, ctx) => {
+    const SHAPE = window.SchedulerTripShape;
     const word = ctx.split ? legWordOf(row, ctx) : null;
-    return word ? ` (${(LEGS[word] || word).toLowerCase()})` : '';
+    const parts = word ? [(LEGS[word] || word).toLowerCase()] : [];
+    for (const trip of ctx.reads) {
+      if (!SHAPE || !Array.isArray(trip?.trip_legs)) continue;
+      const leg = row.route_id ? SHAPE.legOfRoute(trip, row.route_id) : null;
+      if (!leg) continue;
+      if (!word && SHAPE.legsOf(trip).length > 1) parts.push(`leg ${leg.number}`);
+      const at = leg.routes.findIndex(r => r.id === row.route_id);
+      if (leg.routes.length > 1) parts.push(leg.routes[at].name || `route ${at + 1}`);
+      break;
+    }
+    return parts.length ? ` (${parts.join(', ')})` : '';
   };
+  // A route by its name, or its place on its leg where it has none.
+  function routeName(route, ctx) {
+    const SHAPE = window.SchedulerTripShape;
+    for (const trip of ctx.reads) {
+      const leg = SHAPE && Array.isArray(trip?.trip_legs) ? SHAPE.legOfRoute(trip, route.id) : null;
+      if (leg) {
+        const at = leg.routes.findIndex(r => r.id === route.id);
+        return `${route.name || `route ${at + 1}`}${SHAPE.legsOf(trip).length > 1 ? ` (leg ${leg.number})` : ''}`;
+      }
+    }
+    return route.name || 'route';
+  }
   /* A leg is named by its place on the trip, read through trip-shape.js in
      either read, and its old word where it has one. */
   function legName(leg, ctx) {
@@ -250,6 +276,10 @@
   const LISTS = [
     { field: 'legs', label: 'Leg', rows: t => t.trip_legs, name: legName,
       holds: ['start_date', 'end_date', 'bus_count', 'kind'] },
+    /* A route comes and goes with its leg, which says so, so only one added
+       to or taken from a leg both reads hold is said. */
+    { field: 'routes', label: 'Route', rows: t => (t.trip_legs || []).flatMap(l => (l.trip_routes || []).map(r => ({ ...r, leg_id: r.leg_id ?? l.id }))),
+      name: routeName, holds: ['name'], alone: (r, ctx) => ctx.reads.every(t => (t?.trip_legs || []).some(l => l.id === r.leg_id)) },
     { field: 'itinerary', label: 'Stop', rows: t => t.trip_stops,
       name: (s, ctx) => `${s.name || s.address || s.label || s.type || 'Stop'}${dayOf(s, ctx)}`,
       holds: ['type', 'address', 'arrive', 'spot', 'depart_prev'] },
@@ -285,10 +315,12 @@
     const wasById = new Map(was.map(r => [r.id, r]));
     const nowById = new Map(now.map(r => [r.id, r]));
     const add = (row, b, a) => out.push({ field: list.field, label: `${list.label}: ${list.name(row, ctx)}`, before: b, after: a });
-    for (const r of was) if (!nowById.has(r.id)) add(r, describe(r, list.holds, ctx.names) ?? 'Held', null);
+    // A row that comes or goes only with the row it is under, as a route with its leg, says nothing of its own.
+    const alone = r => !list.alone || list.alone(r, ctx);
+    for (const r of was) if (!nowById.has(r.id) && alone(r)) add(r, describe(r, list.holds, ctx.names) ?? 'Held', null);
     for (const r of now) {
       const old = wasById.get(r.id);
-      if (!old) { add(r, null, describe(r, list.holds, ctx.names) ?? 'Added'); continue; }
+      if (!old) { if (alone(r)) add(r, null, describe(r, list.holds, ctx.names) ?? 'Added'); continue; }
       const changed = columnsOf(old, r).filter(f => !quiet(f, { ...old, ...r }) && !same(old[f], r[f]));
       const said = changed.filter(f => !(FOLLOWS[f] && changed.includes(FOLLOWS[f])));
       // Two columns of one label, as a map point's two halves, are said once.

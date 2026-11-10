@@ -6589,38 +6589,45 @@
   };
 
   /* A leg's miles, dead miles and days, and its miles a day as the quote
-     calculator prices them. The Route tab's own leg reads the Summary's rows
-     and total, from the drives it has looked up since the trip opened; the
-     other leg reads its saved stops, spread over its days. Estimated miles stand in
-     only while the route has no miles, on a trip of one leg. `leg` is a key,
-     or an old word. */
+     calculator prices them, from its longest route, so no bus is quoted
+     short. The route on the Route tab reads the Summary's rows and total,
+     from the drives it has looked up since the trip opened; any other route
+     reads its saved stops, spread over the leg's days. Estimated miles stand
+     in only while the route has no miles, on a trip of one leg. `leg` is a
+     key, or an old word. */
   function legFigures(leg) {
     const key = legHeld(leg) ? leg : legKeyOf(leg);
     const r = editing?.route;
-    const mine = !!r && r.leg === key;
-    const stops = (editing?.stops || []).filter(st => keyOfRow(editing.trip, st) === key);
-    const pickup = stops.find(st => st.type === 'pickup');
-    const back = stops.filter(st => st.type === 'return').at(-1);
-    const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
-    const home = mine ? r.backMiles : numOrNull(back?.miles);
-    const between = stops.filter(st => st !== pickup && st !== back)
-      .reduce((n, st) => n + (Number(st.miles) || 0), 0);
-    // The open leg's total is the Summary's own, so a stop added or moved
-    // since the trip opened, or a new trip's whole route, is counted.
-    const routeMiles = mine && r.legMiles != null ? r.legMiles
-      : between + (Number(out) || 0) + (Number(home) || 0);
-    const est = fleetLegs().length > 1 ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
     const { from = null, to = null } = legDaysNow(key) ?? {};
     const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
-    const whole = Math.round(routeMiles > 0 ? routeMiles : est ?? 0);
-    const perDay = window.SchedulerQuoteLines.milesADay(mine ? r.dayMiles : null, whole, days);
-    return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
-      dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
+    const est = fleetLegs().length > 1 ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
+    const routes = legRoutes(key);
+    const figuresOf = routeId => {
+      const mine = !!r && r.leg === key && (routes.length < 2 || r.routeId === routeId);
+      const stops = (editing?.stops || []).filter(st => keyOfRow(editing.trip, st) === key
+        && (routes.length < 2 || st.route_id === routeId));
+      const pickup = stops.find(st => st.type === 'pickup');
+      const back = stops.filter(st => st.type === 'return').at(-1);
+      const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
+      const home = mine ? r.backMiles : numOrNull(back?.miles);
+      const between = stops.filter(st => st !== pickup && st !== back)
+        .reduce((n, st) => n + (Number(st.miles) || 0), 0);
+      // The open route's total is the Summary's own, so a stop added or moved
+      // since the trip opened, or a new trip's whole route, is counted.
+      const routeMiles = mine && r.legMiles != null ? r.legMiles
+        : between + (Number(out) || 0) + (Number(home) || 0);
+      const whole = Math.round(routeMiles > 0 ? routeMiles : est ?? 0);
+      const perDay = window.SchedulerQuoteLines.milesADay(mine ? r.dayMiles : null, whole, days);
+      return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
+        dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
+    };
+    const all = (routes.length > 1 ? routes.map(x => x.id) : [null]).map(figuresOf);
+    return all.reduce((best, f) => (f.route > best.route ? f : best), all[0]);
   }
 
   /* ESTIMATED MILES FOLLOW THE ROUTE. The column is the trip's miles
      override, and driver records read no other miles, so a blank field is not saved
-     blank: Save writes the route's miles, every leg together, rounded as the
+     blank: Save writes the miles of every leg's longest route together, rounded as the
      Summary's Total is. A figure typed in the field is saved as typed. A trip
      that opened following and still does is not a change by itself, so an
      untouched trip stays untouched and the figure goes with the next save. */
@@ -7720,15 +7727,21 @@
       const c = editing.route?.check;
       if (!c) return ['a route'];
       // A trip of more than one leg names the leg on screen, as it names the others.
-      const many = fleetLegs().length > 1;
-      const on = many ? ` on ${legPhrase(editing.route.leg)}` : '';
+      const many = fleetLegs().length > 1 || editing.route.routes.length > 1;
+      const on = many ? ` on ${routePhrase(editing.route.leg, editing.route.routeId)}` : '';
       if (!c.pickup) out.push(`a pickup place${on}`);
       if (!c.drop) out.push(`a drop-off place${on}`);
       if (c.unlocated) out.push(`a place for ${plural(c.unlocated, 'stop', 'stops')}${on}`);
       if (c.status === 'Needs times') out.push(`the times${on}`);
       if (c.status === 'Check times') out.push(`times in order${on}`);
       if (c.unmeasured && c.pickup && c.drop && !c.unlocated) out.push(`the drives measured${on}`);
-      if (many) for (const key of fleetLegs().filter(k => k !== editing.route.leg)) out.push(...otherLegMissing(key));
+      // Every other route, of this leg and the others, as saved.
+      for (const key of fleetLegs()) {
+        for (const route of legRoutes(key).length ? legRoutes(key) : [null]) {
+          if (key === editing.route.leg && (route?.id ?? null) === (editing.route.routeId ?? route?.id ?? null)) continue;
+          out.push(...otherLegMissing(key, route?.id ?? null));
+        }
+      }
       return out;
     }
     if (tab === 'buses') {
@@ -7763,11 +7776,20 @@
     return out;
   }
 
-  /* A leg not on the Route tab, read from its saved rows by the same rules:
-     every place found, the times in, and the drives measured. */
-  function otherLegMissing(key) {
-    const name = legPhrase(key);
-    const rows = editing.creating ? [] : stopsOfLeg(editing.trip, key).stops;
+  /* A route not on the Route tab, of its leg or another, read from its saved
+     rows by the same rules: every place found, the times in, and the drives
+     measured. `routePhrase` names it: by its name on a leg of more than one
+     route, and by its leg on a trip of more than one leg. */
+  function routePhrase(key, routeId) {
+    const routes = legRoutes(key);
+    const at = routes.findIndex(x => x.id === routeId);
+    const own = routes.length > 1 && at >= 0 ? `the ${routeLabel(routes[at], at)} route` : null;
+    const leg = fleetLegs().length > 1 ? legPhrase(key) : null;
+    return own && leg ? `${own} on ${leg}` : own ?? leg ?? 'the route';
+  }
+  function otherLegMissing(key, routeId = null) {
+    const name = routePhrase(key, routeId);
+    const rows = editing.creating ? [] : stopsOfLeg(editing.trip, key, routeId).stops;
     if (!rows.length) return [`${name}'s route`];
     const pickup = rows.find(x => x.type === 'pickup') ?? null;
     const back = rows.findLast(x => x.type === 'return') ?? null;
@@ -16647,7 +16669,7 @@
   }
 
   /* THE CALCULATOR FROM A TRIP'S SAVED ROWS, for a trip that is not in the
-     editor: its stops' miles, or its estimated miles where they have none,
+     editor: its longest route's stops' miles, or its estimated miles where they have none,
      spread over the leg's days, the pickup and return drives as dead miles,
      and its buses and their co-driver and relief seats as saved. What the
      editor has not saved yet is not in it, so the editor's trip is filled
@@ -16655,10 +16677,13 @@
   function savedCalcFacts(trip, legKey) {
     const leg = (legKey ? legByKey(trip, legKey) : null) ?? legsOf(trip)[0];
     if (!leg) return null;
-    const { stops } = stopsOfLeg(trip, leg.key);
+    // The leg's longest route, as the editor prices it.
+    const milesOf = rows => rows.reduce((n, st) => n + (Number(st.miles) || 0), 0);
+    const { stops } = leg.routes.map(x => stopsOfLeg(trip, leg.key, x.routeId))
+      .reduce((best, x) => (milesOf(x.stops) > milesOf(best.stops) ? x : best), stopsOfLeg(trip, leg.key));
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
-    const stopMiles = stops.reduce((n, st) => n + (Number(st.miles) || 0), 0);
+    const stopMiles = milesOf(stops);
     const legs = legsOf(trip);
     const whole = Math.round(stopMiles > 0 ? stopMiles : (legs.length < 2 ? Number(trip.est_miles) || 0 : 0));
     const days = leg.from && leg.ends ? daysBetween(parseISO(leg.from), parseISO(leg.ends)) + 1 : 1;

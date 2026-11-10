@@ -76,9 +76,10 @@ const walk = (dir) => list(dir).flatMap((n) => {
 });
 
 // One setting's value from an emulator's settings file, by its key: an INI
-// section and key, a JSON or TOML path, a BML path, or an XML tag.
+// section and key, a JSON or TOML path, a BML path, or an XML tag. A leading
+// byte-order mark, which Mesen writes, is dropped first.
 function setting(file, format, key) {
-  const text = fs.readFileSync(file, 'utf8');
+  const text = fs.readFileSync(file, 'utf8').replace(/^﻿/, '');
   const clean = (v) => (v == null ? null : String(v).trim().replace(/^"(.*)"$/, '$1').trim() || null);
   if (format === 'ini') {
     const [section, name] = key.split('/');

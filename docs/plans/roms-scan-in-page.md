@@ -43,13 +43,15 @@ Import page and no Saves page upload are needed. The rest of Roms is
 - **Saves live on the drive now,** so the Mac report says what is installed
   and where each emulator saves, and copies only a save still kept on the
   Mac; the Saves page's own upload goes.
+- **Update runs on its own when Status opens** and Chrome already allows
+  the folder, since a scan reads only what changed; a click runs it again,
+  and nothing is saved until rux says yes.
 - **Update writes the page's progress as it goes,** files read and hashed
   and time left, and a scan stopped part way saves nothing.
 
 ## Questions
 
-- Should Update also run on its own when Status opens and the folder is
-  already allowed, or only on a click?
+None open.
 
 ## Tasks
 

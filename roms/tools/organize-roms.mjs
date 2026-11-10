@@ -25,6 +25,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import scanner from '../scan.js';
 
 const root = process.argv[2];
 const yes = process.argv.includes('--yes');
@@ -41,7 +42,7 @@ if (!scan.fingerprints || !Object.keys(scan.lists ?? {}).length) {
   process.exit(1);
 }
 const cachePath = path.join(scansDir, 'fingerprints.json');
-const cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+const cache = scanner.bySecond(JSON.parse(fs.readFileSync(cachePath, 'utf8')));
 const trash = path.join(root, 'to-delete');
 
 const abs = rel => path.join(romsDir, rel);
@@ -159,7 +160,7 @@ for (const p of plan) {
       continue;
     }
     const st = fs.statSync(out);
-    cache[`${path.relative(root, out)}|${st.size}|${Math.floor(st.mtimeMs)}`] = { inner: p.inner };
+    cache[scanner.fingerprintKey(path.relative(root, out), st.size, st.mtimeMs)] = { inner: p.inner };
     for (const f of p.originals) moveToTrash(f.name);
     saveCache();
     console.log(`  made   ${p.out} (${gb(st.size)} from ${gb(p.originals.reduce((a, f) => a + f.size, 0))}, ${Math.round((Date.now() - t) / 1000)}s)`);

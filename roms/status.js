@@ -8,6 +8,7 @@
    reading the drive's games, each emulator installed and saving into its
    folder on the drive, and each retired app still there or still holding
    files. An emulator whose systems have no games yet is not needed yet.
+   Update, above them, is update.js, and they are drawn again after it saves.
    ========================================================================== */
 (() => {
   'use strict';
@@ -152,23 +153,20 @@
     const out = $('roms-status');
     out.replaceChildren();
     if (drive) {
-      out.append(section('The drive', `From the scan of ${R.when(drive.scanned_at)}. Scan and import again after a change.`,
+      out.append(section('The drive', `From the scan of ${R.when(drive.scanned_at)}.`,
         driveRows(emulators, bios, drive, saves, used)));
     } else {
-      const p = el('p', 'rux--type-body-01', 'No scan yet. ');
-      const a = el('a', 'rux--link', 'Import one');
-      a.href = 'import.html';
-      p.append(a, '.');
-      out.append(p);
+      out.append(el('p', 'rux--type-body-01', 'No scan yet. Update scans the drive.'));
     }
     for (const mac of macs) {
       out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}`,
-        `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Back up this Mac's saves on the Saves page, to check again.`,
+        `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Update, to check it again.`,
         macRows(mac, emulators, used)));
     }
     if (!macs.length) {
-      out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Back up this Mac\'s saves on the Saves page.'));
+      out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Update.'));
     }
   }
   load();
+  document.addEventListener('roms:saved', load);
 })();

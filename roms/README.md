@@ -32,10 +32,22 @@ Mac's saves, which uploads the report `tools/check-mac.mjs` wrote to the
 drive and any save this Mac keeps itself; then every save by system, on the drive or a Mac, each
 with its kind, dates, how to restore it and rux's note on it.
 
-`status.html` says what is done and what is left. For the drive, from its
-last scan: each BIOS a system with games needs, each emulator's installer
+`status.html` starts with Update, which scans the drive in Chrome through
+the emulation folder rux picks once, and runs by itself when the page opens
+and Chrome already allows that folder. It shows how many games are new,
+changed or gone since the last save, and any Mac's report newer than the
+one saved, and saves on a yes: every game and save in the scan, leaving
+rux's notes, moving the notes of a game the organize tool renamed, removing
+what is no longer on the drive, replacing the BIOS list and the drive's
+row, uploading the backup zip to the `roms-backups` bucket, which keeps
+every backup of the last 30 days and the newest of each month before, and
+each Mac's report with any save it keeps itself. It writes the scan, the
+fingerprints and the zip back to the drive, as the Mac scan does.
+
+Then it says what is done and what is left. For the drive, from its last
+scan: each BIOS a system with games needs, each emulator's installer
 kept, and saves still in a folder from before each emulator had its own.
-For each Mac, from the last time its saves were uploaded: ES-DE installed
+For each Mac, from its last report: ES-DE installed
 and reading the drive's games, each emulator installed and saving into its
 folder on the drive, and each retired app in `emulators.json` still there
 or still holding files. An emulator whose systems have no games is not
@@ -45,14 +57,6 @@ needed yet.
 is the one, each file it needs and whether the drive holds it, and where its
 saves, settings and installer live. `docs/emulator-setup.md` is how each is
 set up on a Mac.
-
-`import.html` takes a scan file and the backup zip of the same date, read on
-this device, shows how many games are new, changed or gone since the last
-save, and saves on a yes. Saving writes every game and save in the scan,
-leaving rux's notes, moves the notes of a game the organize tool renamed,
-removes what is no longer on the drive, replaces the BIOS list and the
-drive's row, and uploads the zip to the `roms-backups` bucket, which keeps
-every backup of the last 30 days and the newest of each month before.
 
 ## The scan
 
@@ -82,7 +86,7 @@ it makes the CHD, or chdman extracts once on a Mac.
 `tools/organize-roms.mjs` turns PlayStation BIN and CUE games and PlayStation
 2 ISOs into CHDs, adds a playlist beside a game on more than one disc, and
 renames every other file and its saves to its list name, keeping each
-rename for Import. It touches only games whose every
+rename for the next save. It touches only games whose every
 file is on the list, checks each CHD before its original moves, and moves
 originals to a to-delete folder on the drive instead of deleting them. Scan
 again after it. chdman comes from Homebrew's `rom-tools`.
@@ -120,7 +124,8 @@ collection is ever written here, because this repository is public.
 | `zip.js` | the backup zip, packed in the page |
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
-| `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js`, `import.js` | each page's own behaviour |
+| `update.js` | Update, on the Status page |
+| `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `roms-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

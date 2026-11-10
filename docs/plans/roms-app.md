@@ -21,11 +21,10 @@ lists and stored in its system's preferred format.
   folders. A game is one entry in a system folder; the tracks and discs of
   one game count as one game, and a Switch game's updates, add-ons and mods
   are kept with the game they belong to.
-- **A Mac tool scans, the app shows.** `roms/tools/scan-roms.mjs` reads the
-  drive, because only the Mac can read 460 GB quickly and open every format;
-  it writes its results to a scans folder on the drive, never into this
-  repository, and the app's Import page reads that file and saves it on a
-  yes, as Coins' Import page takes a bank file. A scan only reads the games.
+- **The scan is `roms/scan.js`, run by Update on the Status page in Chrome
+  or by `roms/tools/scan-roms.mjs` on a Mac;** it writes its results to a
+  scans folder on the drive, never into this repository, and Update saves
+  them on a yes. A scan only reads the games.
 - **The list lives in the Supabase project, in `roms_*` tables, and only
   rux's account can read it,** through `is_owner()` as LN Guide's and
   Pixels' tables are, so the list opens on rux's phone too. No game
@@ -193,7 +192,7 @@ Backups, three copies of everything small:
 - **The drive** holds the saves the emulators play from.
 - **Supabase** holds the offsite copy, in a private `roms-backups` bucket
   only the owner reads: the scan packs `saves/`, `bios/` and the keys into
-  one dated zip on the drive, and Import uploads it with the scan, signed in
+  one dated zip on the drive, and Update uploads it with the scan, signed in
   as rux.
 - **Each Mac** keeps a third copy: `roms/tools/backup-saves.mjs` copies the
   same zip, the firmware and the installers to a folder in its Documents.
@@ -217,8 +216,8 @@ Saves found wherever each emulator keeps them, and backed up from the app:
 - **`Check this Mac.command`, kept on the drive, runs it with a double-click**
   and opens the Status page, so no terminal is needed; it needs Node on the
   Mac.
-- **Back up this Mac's saves, on the Saves page,** uploads a Mac's report
-  through Chrome, picked once and remembered, file by file to the
+- **Update, on the Status page, saves a Mac's report** from the drive,
+  uploading any save it keeps itself file by file to the
   `roms-backups` bucket, and records each save by its game and Mac.
   The page cannot read `~/Library` itself, which Chrome keeps from pages.
 - **The rules that match a save to its game live in one module,**
@@ -239,12 +238,12 @@ Rux's own notes:
   page and kept with the save.
 - **Played, finished, favourite and a note on a game** are typed in the side
   panel, kept in their own table, keyed by system and title.
-- **Import never changes rux's notes,** and the organize tool lists its
-  renames in the next scan so Import moves a renamed game's notes with it.
+- **Saving a scan never changes rux's notes,** and the organize tool lists its
+  renames in the next scan so the save moves a renamed game's notes with it.
 - **`plays` on a converted game** says its new file was played, and Problems
   says when every original in `to-delete/` is safe to empty.
 
-Six pages in a side nav, each started from a Design template:
+Five pages in a side nav, each started from a Design template:
 
 - **Collection** is one table of every game: system, title, region, format,
   size and a status tag, with search and a filter per system and per status.
@@ -255,13 +254,11 @@ Six pages in a side nav, each started from a Design template:
 - **Saves** has one heading per system and a row per game with a save: kind,
   created, last saved, size, the note and a restore, and each backup
   location's last date at the top.
-- **Status** says what is done and what is left, for the drive and for each
-  Mac, so a Mac is set up from one checklist.
+- **Status** has Update, and says what is done and what is left, for the
+  drive and for each Mac, so a Mac is set up from one checklist.
 - **Emulators** has one row per system: the emulator, why, each file it needs
   and whether the drive has it, and where its saves, settings and installer
   live.
-- **Import** takes a scan file, shows what changed since the last one, and
-  saves on a yes.
 
 ## Questions
 

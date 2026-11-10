@@ -23,7 +23,7 @@
    It returns the scan, the fingerprints to keep, and the files the backup
    zip packs; writing them is the caller's.
 
-   Fingerprints are kept by path, size and date, so a scan hashes only new
+   Fingerprints are kept by path, size and time, so a scan hashes only new
    or changed files. A CHD's content fingerprints, which the lists match,
    come from what the organize tool kept when it made the CHD, or `inside`.
 
@@ -488,6 +488,21 @@
 
   // ---- the scan -----------------------------------------------------------
 
+  // A fingerprint is kept by the file's path, size and time to the second,
+  // since Node and Chrome round a file's time to the millisecond apart.
+  const fingerprintKey = (rel, size, mtimeMs) => `${rel}|${size}|${Math.floor(mtimeMs / 1000)}`;
+  // Fingerprints kept by the time to the millisecond, as they once were, by the second.
+  const bySecond = cache => {
+    for (const k of Object.keys(cache)) {
+      const m = k.match(/^(.*)\|(\d+)\|(\d{12,})$/);
+      if (!m) continue;
+      const to = fingerprintKey(m[1], m[2], Number(m[3]));
+      cache[to] = { ...cache[k], ...cache[to] };
+      delete cache[k];
+    }
+    return cache;
+  };
+
   // Files a system folder holds that are not games.
   const SWITCH_EXTRAS = new Set(['mods', 'updates_dlc']);
   // Secrets that sit among the BIOS files: listed by name, never read.
@@ -502,6 +517,7 @@
   // `cache` is the fingerprints kept from the last scan, by path, size and
   // date; `emulators` is emulators.json's systems; `headersOnly` skips hashing.
   async function scan(drive, { cache = {}, emulators, saveRules, headersOnly = false }) {
+    bySecond(cache);
     const stats = new Map();
     const listOf = async dir => {
       const items = await drive.list(dir);
@@ -510,7 +526,7 @@
     };
     const walk = async dir => (await Promise.all((await listOf(dir))
       .map(it => (it.dir ? walk(join(dir, it.name)) : [join(dir, it.name)])))).flat();
-    const keyOf = f => { const st = stats.get(f); return `${f}|${st.size}|${Math.floor(st.mtimeMs)}`; };
+    const keyOf = f => { const st = stats.get(f); return fingerprintKey(f, st.size, st.mtimeMs); };
 
     let bytesRead = 0;
     let bytesTotal = 0;
@@ -703,7 +719,7 @@
     const trashFiles = (await walk('to-delete')).map(f => {
       const rel = f.slice('to-delete/'.length);
       const st = stats.get(f);
-      const sha = cache[`roms/${rel}|${st.size}|${Math.floor(st.mtimeMs)}`]?.sha1;
+      const sha = cache[fingerprintKey(`roms/${rel}`, st.size, st.mtimeMs)]?.sha1;
       return { name: rel, size: st.size, game: sha ? byInner.get(sha) : null };
     });
     // A CUE goes with the disc whose tracks sit beside it.
@@ -769,7 +785,7 @@
     };
   }
 
-  const api = { scan, crc32, LIST_FILES, discBaseOf, releaseOf, baseOf };
+  const api = { scan, crc32, fingerprintKey, bySecond, LIST_FILES, discBaseOf, releaseOf, baseOf };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Roms = Object.assign(root.Roms || {}, { scanner: api });
 })(typeof window === 'object' ? window : globalThis);

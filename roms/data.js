@@ -54,7 +54,7 @@
 
   const data = client && {
     games: () => all(() => client.from('roms_games').select('*').order('system').order('title')),
-    // What Import compares a scan with: each game's key and its files' fingerprints.
+    // What Update compares a scan with: each game's key and its files' fingerprints.
     gameKeys: () => all(() => client.from('roms_games').select('system, title, size, scanned_at').order('system').order('title')),
     notes: () => all(() => client.from('roms_notes').select('*')),
     saves: () => all(() => client.from('roms_saves').select('*').order('system').order('name')),

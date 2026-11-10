@@ -2,8 +2,8 @@
    saves.js — the Saves page
    --------------------------------------------------------------------------
    Where each of the three copies stands: the drive, Supabase and each Mac,
-   with every backup in Supabase to download, and Back up this Mac's saves,
-   which uploads what roms/tools/check-mac.mjs wrote to the drive.
+   with every backup in Supabase to download; Update on the Status page
+   saves them.
    Then every save, the drive's and each Mac's, under one heading per
    system, each opening in the side panel with its files, dates, where it
    lives, how to restore it, and rux's note, which is saved from there.
@@ -37,7 +37,7 @@
     out.append(tile('Drive', drive?.scanned_at ? R.date(drive.scanned_at) : 'Not scanned',
       drive?.backup ? `${drive.backup.file}, ${R.size(drive.backup.size)}` : 'The last scan packed no backup'));
     out.append(tile('Supabase', backups[0] ? R.date(backups[0].created_at) : 'None yet',
-      backups[0] ? `${backups.length} kept` : 'Import the scan with its zip'));
+      backups[0] ? `${backups.length} kept` : 'Update on Status uploads one'));
     // Each Mac's newest copy, from the drive's backups.json.
     const macs = new Map();
     for (const b of drive?.backups ?? []) if (!macs.has(b.host) || macs.get(b.host).at < b.at) macs.set(b.host, b);
@@ -190,76 +190,6 @@
     return box;
   }
 
-  // ---- Back up this Mac's saves ------------------------------------------
-
-  // The drive's macs folder check-mac.mjs writes to, as Chrome gave it, kept
-  // in this browser so it is picked once.
-  const handles = (mode, act) => new Promise((resolve, reject) => {
-    const open = indexedDB.open('roms', 1);
-    open.onupgradeneeded = () => open.result.createObjectStore('handles');
-    open.onerror = () => reject(open.error);
-    open.onsuccess = () => {
-      const tx = open.result.transaction('handles', mode);
-      const req = act(tx.objectStore('handles'));
-      tx.oncomplete = () => resolve(req.result);
-      tx.onerror = () => reject(tx.error);
-    };
-  });
-  const said = text => { $('roms-mac-status').textContent = text; };
-  // Supabase takes a narrower set of characters in a file's path than a file name may hold.
-  const safe = p => p.split('/').map(part => part.replace(/[^\w !\-.*'()&$@=;:+,?]/g, '_')).join('/');
-  const fileAt = async (dir, rel) => {
-    const parts = rel.split('/');
-    for (const p of parts.slice(0, -1)) dir = await dir.getDirectoryHandle(p);
-    return (await dir.getFileHandle(parts.at(-1))).getFile();
-  };
-  const manifestOf = async dir => {
-    try { return JSON.parse(await (await fileAt(dir, 'report.json')).text()); } catch { return null; }
-  };
-
-  async function backUpMac() {
-    if (!window.showDirectoryPicker) { said('Backing up a Mac\'s saves needs Chrome, which can read a folder you choose.'); return; }
-    const button = $('roms-mac-backup');
-    button.disabled = true;
-    try {
-      let dir = await handles('readonly', store => store.get('macs')).catch(() => null);
-      if (dir && await dir.queryPermission({ mode: 'read' }) !== 'granted' && await dir.requestPermission({ mode: 'read' }) !== 'granted') dir = null;
-      if (!dir) {
-        said('Choose the macs folder in the drive\'s emulation folder.');
-        dir = await window.showDirectoryPicker({ id: 'roms-macs', mode: 'read' });
-        await handles('readwrite', store => store.put(dir, 'macs'));
-      }
-      // The newest report in the folder, or the folder itself if one Mac's was chosen.
-      let gathering = await manifestOf(dir) ? { dir, m: await manifestOf(dir) } : null;
-      for await (const [, h] of dir.entries()) {
-        if (h.kind !== 'directory') continue;
-        const m = await manifestOf(h);
-        if (m && (!gathering || m.made > gathering.m.made)) gathering = { dir: h, m };
-      }
-      if (!gathering) { said('That folder holds no Mac\'s report. Double-click Check this Mac.command on the drive first.'); return; }
-      const { m } = gathering;
-      said(`Uploading ${m.files.length} files from ${m.mac}, gathered ${R.when(m.made)}…`);
-      const [games, emulators] = await Promise.all([R.data.games(), R.emulators()]);
-      const uploads = [];
-      const files = [];
-      for (const f of m.files) {
-        const stored = safe(f.stored);
-        uploads.push({ stored, blob: await fileAt(gathering.dir, f.stored) });
-        files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
-      }
-      const grouped = R.saveRules.group(files, games, emulators.systems);
-      await R.data.saveMacSaves(m, uploads, grouped);
-      said(`${grouped.length} saves from ${m.mac} backed up, ${m.files.length} files in all.`);
-      await load();
-    } catch (error) {
-      if (error?.name === 'AbortError') { said(''); return; }
-      console.error(error);
-      said(error?.message ? `That did not back up: ${error.message}` : 'That did not back up. Try again.');
-    } finally {
-      button.disabled = false;
-    }
-  }
-  $('roms-mac-backup').addEventListener('click', backUpMac);
 
   const closePanel = () => {
     $('roms-panel').classList.remove('rux--side-panel--open');

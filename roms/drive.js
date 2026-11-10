@@ -82,6 +82,8 @@
         return enc === 'latin1' ? latin1(new Uint8Array(await f.arrayBuffer())) : f.text();
       },
       async exists(rel) { return Boolean(await file(rel)); },
+      // A file's size and last-changed time, or null.
+      async stat(rel) { const f = await file(rel); return f && { size: f.size, mtimeMs: f.lastModified }; },
       async hasher() {
         const hw = root.hashwasm;
         const [crc, md5, sha1] = await Promise.all([hw.createCRC32(), hw.createMD5(), hw.createSHA1()]);

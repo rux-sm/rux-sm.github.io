@@ -105,9 +105,8 @@ Problems lists a save with no game.
 `Check this Mac.command` on the drive finds where each emulator saves, from
 its own settings or its default folder, and writes how this Mac stands to
 the drive's `macs` folder, with a copy of any save this Mac keeps itself;
-then the Status page opens. Back up this Mac's saves, on the Saves page,
-uploads it; the first time, Chrome asks for the drive's `macs` folder. The
-Status page then shows how this Mac stands: what is installed, where each emulator saves,
+then the Status page opens, and Update saves it. The Status page then shows
+how this Mac stands: what is installed, where each emulator saves,
 and each retired app still there or still holding files. That list is also the check
 that `emulators.json` names each one's folders rightly; correct `macSaves` there when one is not found. After
 changing `emulators.json`, put the tool on the drive again:
@@ -117,7 +116,7 @@ changing `emulators.json`, put the tool on the drive again:
 ## Backups
 
 Each scan packs the saves, BIOS and keys into `<drive>/backups/`, and
-Import uploads that zip to Supabase. On each Mac, now and then:
+Update on the Status page uploads that zip to Supabase. On each Mac, now and then:
 
     node roms/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
 

@@ -23,8 +23,13 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **QuickBooks names a customer its own way,** UTRGV for UTRGV Edinburg and
   Mercedes Independent School District for Mercedes High School, and an IIF
   name it does not hold adds a new customer. So Export writes each trip under
-  the name QuickBooks has, learned from that customer's matched invoices, and
-  holds back a trip whose customer has none until rux names it.
+  the name QuickBooks already has, never a new one, and holds back a trip
+  whose customer has none until rux names it.
+- **A customer's QuickBooks name is the `qb_name` column on `customers`,**
+  because the report is read in the browser and kept
+  nowhere. The QuickBooks page fills it from the names on that customer's
+  matched invoices, and where they carry more than one, the name with the
+  most invoices.
 - **Export writes a Bus Rental line from the quoted price where a trip has no
   quote lines,** one per leg on a split trip, as the printed quote does,
   because only 5 of the 312 trips that have run with no invoice have lines.
@@ -63,24 +68,32 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **A match is saved on a yes,** as a `trip_invoices` row with the number,
   amount and date, and a `trip_history` line, the way the Billing tab's
   Invoices step saves one, so the bar menu and the Billing tab show it.
-- **Export takes the trips that have run, are not cancelled and have no
-  invoice,** each ticked or not by rux, and writes one IIF file: a TRNS line
-  per invoice and an SPL line per quote line, with the items the Billing tab
-  already names, Bus Rental, Addt'l Driver, Deductions and Hotel.
-- **A file is imported once.** Mark imported records each invoice's number
-  on its trip, so the next export cannot repeat it, and the page says the
-  file was marked so a second import is caught before QuickBooks sees it.
+- **Export is two buttons that write the same IIF:** a TRNS line per invoice
+  and an SPL line per quote line, with the items the Billing tab already
+  names, Bus Rental, Addt'l Driver, Deductions and Hotel.
+  - **Export week,** on the QuickBooks page, takes every confirmed,
+    not-cancelled trip with no invoice whose first day is in the one week
+    chosen there, never more, so a forgotten earlier trip cannot slip in. The
+    week starts on the board's own first day and opens on the current week.
+  - **Export to QuickBooks,** in the Billing tab's menu beside Copy for
+    QuickBooks, takes the open trip alone, for a customer who asks for an
+    invoice before the weekly run.
+- **QuickBooks numbers the invoices.** The IIF leaves Num empty, so an
+  import never collides with a number QuickBooks has used.
+- **A file is imported once.** Mark imported turns each trip's Invoiced on,
+  with no number, so no export takes it again, and the page says the file
+  was marked so a second import is caught before QuickBooks sees it. The
+  number arrives with the next report, whose match fills it in.
 - **The import is done in single-user mode, signed in as Admin, after a
   backup,** because QuickBooks greys out IIF import in a shared file and an
   import cannot be undone.
 
 ## Questions
 
-- Should the export number the invoices from the next number QuickBooks will
-  use, or leave Num empty for QuickBooks to fill? The office's numbers run one
-  after another, 15729 the latest recorded.
-- Where does a customer's QuickBooks name live: a `qb_name` column on
-  `customers`, a migration rux applies, filled from the matched invoices?
+- Does the next report's match fill the number on a trip Mark imported left
+  Invoiced with none, by the trip's facts as any invoice is matched, or does
+  the IIF carry the `trip_ref` in a field QuickBooks keeps, such as REQ #, so
+  the match is certain? The test import settles which fields survive.
 
 ## Tasks
 
@@ -90,9 +103,10 @@ file the office imports, so no invoice is typed by hand and none is made twice.
       company file, and settle from what QuickBooks makes of it the item and
       account of each line, the customer, the P.O. #, the description and its
       ñ, and the Bus # and REQ # fields.
-- [ ] Record each customer's QuickBooks name from its matched invoices, once
-      its home is settled.
-- [ ] Build Export and Mark imported on the same page, with the page in
-      `switcher.json`'s scheduler links if it needs one, and the inventories.
+- [ ] Have the QuickBooks page fill `customers.qb_name` from the matched
+      invoices, the most-used name where there are several.
+- [ ] Build Export week and Mark imported on the QuickBooks
+      page, and Export to QuickBooks in the Billing tab's menu, with the page
+      in `switcher.json`'s scheduler links if it needs one, and the inventories.
 - [ ] Write `scheduler/docs/quickbooks.md`, the how-to for the weekly import:
       single-user, Admin, backup, import, Mark imported, share again.

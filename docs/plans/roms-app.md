@@ -270,5 +270,4 @@ None open.
   `roms/docs/emulator-setup.md`, and keep each installer on the drive.
 - [ ] Move the RetroArch and Azahar saves, and the other Mac's Dolphin,
   PCSX2, Cemu and Switch saves, into `emulation/saves/`, as the how-to says.
-- [ ] Add a PS1 BIOS to `emulation/bios/psx/`.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.

@@ -46,7 +46,7 @@ a bar: a card of the second layer the bar's size and place, 72px wide, as
 tall as the bar and 8px clear of the row's lines and the column's sides, as
 a bar is of the row's lines and the column's rule, with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
-rows 12px apart from the bar's first line to the card's 8px inset at its
+rows, sized below, from the bar's first line to the card's 8px inset at its
 foot, measured from the top, so a row of stacked trips keeps it on the
 first trip's lines. Hover, an open tip and keyboard focus mark the card
 alone, as a bar's mark the bar, in Layer 02's hover and selected, or the
@@ -56,9 +56,16 @@ surface.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
-| State | The speed uses heading-compact-02 and Idle and Off heading-compact-01, on the row's height, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 22px, 12px under the number |
-| Fuel | A gauge read from E to F: the letters in label-01's grey at its ends and four blocks between them, 2px apart, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 18px, 12px under the state |
-| Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 12px under the fuel, on the card's inset |
+| State | The speed in heading-compact-02 and Idle and Off in heading-compact-01, each on 18px, with mph or elapsed time under it in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 34px, 9px under the number |
+| Fuel | A gauge read from E to F: the letters in label-01's grey at its ends and four blocks between them, 2px apart, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 16px, 8px under the state |
+| Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 9px under the fuel, on the card's inset |
+
+A bus with a tracker has a box round its state and fuel: a 1px border in
+the second layer's subtle colour, 4px clear of the number and the foot,
+8px from its words at the sides and 4px above and below, so those two rows
+stand 48px wide. While the bus moves the border is its green over a 16%
+tint of it, amber past the speeding limit. Views shorter than six lines
+have no box and keep the state on one row.
 
 56px is the least that holds a number, 8px and its alert.
 

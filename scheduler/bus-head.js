@@ -12,7 +12,8 @@
      is grey until low, orange, or
      critical, red. DEF is drawn only while it is low, since a normal DEF
      needs nothing of the office. The full tile labels lost signal and
-     shows the age at its foot when there is room.
+     shows the age at its foot when there is room, and on six lines boxes
+     the state and the fuel, green while the bus moves.
      Where the bus is, when it was last seen and its inspection are the
      number's toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
@@ -287,7 +288,11 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      gauges.appendChild(dial(shown, state));
+      /* The box the full tile draws around the state and the fuel, first so
+         it lies under them; app.css's, and nothing elsewhere. */
+      const box = el('span', 'scheduler-row-head__box');
+      box.setAttribute('aria-hidden', 'true');
+      gauges.append(box, dial(shown, state));
       if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL, state.engine === 'none'));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
       else if (state.engine === 'none' && state.under) {

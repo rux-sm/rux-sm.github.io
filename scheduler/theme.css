@@ -113,6 +113,15 @@
   --scheduler-head-critical: var(--scheduler-mark-error);
   --scheduler-head-moving: var(--scheduler-mark-success);
 }
+/* The full tile's state box: the second layer's subtle border at rest, and
+   for a moving bus a tint of its green, or of the warning past SPEEDING,
+   under the border in the full colour. */
+:root,
+[data-theme] {
+  --scheduler-head-box: var(--rux-border-subtle-02);
+  --scheduler-head-box-moving: color-mix(in srgb, var(--scheduler-head-moving) 16%, transparent);
+  --scheduler-head-box-low: color-mix(in srgb, var(--scheduler-head-low) 16%, transparent);
+}
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
    Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
    the gauges and the words alike. */

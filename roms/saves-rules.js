@@ -17,9 +17,10 @@
   const SAVE_FILE = /\.(sav|srm|rtc|eep|sra|fla|mpk|dsv|mcd|mcr|gci|state\d*|ss\d|ml\d+|mss|st\d+)(\.png)?$/i;
 
   // What a save file is: a save state, a memory card, or the game's own save.
+  // A PCSX2 card is a `.ps2` file, or a `.ps2` folder holding each game's save.
   const kindOf = rel => {
     if (/(^|\/)[^/]*states?\//i.test(rel) || /\.(state\d*|ss\d|ml\d+|mss|st\d+)(\.png)?$/i.test(rel)) return 'state';
-    if (/\.ps2\//i.test(rel) || /\.(mcd|mcr|gci)$/i.test(rel)) return 'card';
+    if (/\.ps2(\/|$)/i.test(rel) || /\.(mcd|mcr|gci)$/i.test(rel)) return 'card';
     return 'save';
   };
   // A save's own name: its file name less its extension, and a state's `.state`.

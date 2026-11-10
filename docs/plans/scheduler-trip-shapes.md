@@ -209,9 +209,6 @@ them and nothing is entered twice.
       `scheduler/draft-fields.js`, which carries a split's pickup days now.
 - [ ] Give the Route tab the route's Passengers, and let a file or contact
       choose its leg or route, once their columns are in.
-- [ ] List the Buses tab's vehicles under their routes, choose a vehicle's
-      route in its window, and make Add co-driver and Rest in the sleeper
-      act on the route's vehicles.
 - [ ] Give the editor and the driver card the contact list.
 - [ ] Find how a driver taken off a trip is told now, and tell the drivers
       of a removed leg the same way, where now Remove leg waits for them to

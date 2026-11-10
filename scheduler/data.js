@@ -2900,7 +2900,7 @@
     seats.driver.on = true;
     const needs = needsObject(needIds(seed.needs));
     const vehicleType = seed.vehicleType ?? null;
-    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, partner: null, pickupAt: null, stopArrivals: null, yardDepartAt: null, yardReturnAt: null, seats,
+    return { key: `new-${++fleetSeq}`, id: null, position: null, routeId: null, busId: null, partner: null, pickupAt: null, stopArrivals: null, yardDepartAt: null, yardReturnAt: null, seats,
       needs, vehicleType, seed: { needs: { ...needs }, vehicleType } };
   };
 
@@ -2937,6 +2937,8 @@
     bus.key = `a-${a.id}`;
     bus.id = a.id;
     bus.position = a.position ?? null;
+    // The route it runs; one a page made and has not read back is on its leg's first.
+    bus.routeId = a.route_id ?? null;
     bus.busId = a.bus_id ?? null;
     bus.partner = a.partner_id != null ? { id: a.partner_id, price: a.partner_price ?? null, confirmed: !!a.partner_confirmed,
       confirmedAt: a.partner_confirmed_at ?? null, vehicle: a.partner_vehicle ?? null,
@@ -3008,7 +3010,9 @@
   // no bus, no driver, no other seat, and the needs and type it started with.
   const busEmpty = b => !b.busId && !b.partner && ROLES.every(r => r.role === 'driver' || !b.seats[r.role].on)
     && !seatFilled(b.seats.driver)
-    && sameNeeds(b.needs, b.seed?.needs) && (b.vehicleType ?? null) === (b.seed?.vehicleType ?? null);
+    && sameNeeds(b.needs, b.seed?.needs) && (b.vehicleType ?? null) === (b.seed?.vehicleType ?? null)
+    // A vehicle wanted on a route other than the leg's first is worth a row, so its route can be given a bus.
+    && !b.routeId;
 
   // `active_roles` as it is stored: the driver first, then each seat that
   // is on, with its status after a colon unless it is Not sent.
@@ -3057,6 +3061,17 @@
   // The leg on screen's old word, for what still goes by it: its files, its contacts and a draft's.
   const viewWord = () => (legOnScreen() == null ? null : wordOfLeg(legOnScreen()) ?? 'outbound');
   const fleetLegs = () => (editing?.legs ?? []).map(l => l.key);
+  /* A LEG'S ROUTES as the trip was read, each `{ id, name }`, none on a
+     trip not saved; `busRoute` is the one a vehicle runs, its leg's first
+     where it names none the leg has, and `routeBuses` the vehicles on one. */
+  const legRoutes = key => (editing?.creating || !shaped(editing?.trip) ? []
+    : (SHAPE.legOf(editing.trip, key)?.routes ?? []).map(x => ({ id: x.id, name: x.name ?? null })));
+  const busRoute = (key, b) => {
+    const routes = legRoutes(key);
+    return routes.find(x => x.id === b?.routeId)?.id ?? routes[0]?.id ?? null;
+  };
+  const routeBuses = (key, routeId) => (editing?.fleet?.[key] ?? [])
+    .filter(b => routeId == null || busRoute(key, b) === routeId);
   /* A leg's name on a trip of more than one: a split's Drop-off and Pickup,
      and any other leg its first day. `legPhrase` is the same in a sentence. */
   function legTitle(key) {
@@ -3170,6 +3185,7 @@
         }
         const patch = {};
         if (!same(b.busId, prev.busId)) patch.bus_id = b.busId;
+        if (b.routeId && !same(b.routeId, prev.routeId)) patch.route_id = b.routeId;
         // A partner taken on or let go writes all its columns, so none is left without one.
         const covered = partnerRow(b), was = partnerRow(prev);
         for (const k of Object.keys(covered)) if (!same(covered[k], was[k])) patch[k] = covered[k];
@@ -3304,7 +3320,7 @@
       }
       for (const ins of ops.inserts) {
         const made = await write('its buses', client.from('trip_assignments')
-          .insert({ trip_id: tripId, ...onRoute(ops.leg), ...ins.row }).select('id').single());
+          .insert({ trip_id: tripId, ...onRoute(ops.leg, ins.bus.routeId), ...ins.row }).select('id').single());
         madeIds.set(ins.bus.key, made.id);
         const rows = ROLES.filter(r => seatFilled(ins.bus.seats[r.role]))
           .map(r => ({ assignment_id: made.id, ...seatRow(r.role, ins.bus.seats[r.role]) }));
@@ -3769,10 +3785,13 @@
   let vehicleEdit = null;          // { leg, bus: the copy, index: its place, or null for a new one }
   const vehicleHost = document.getElementById('scheduler-vehicle-fields');
 
-  function openVehicleDialog(leg, bus) {
+  // `route` is the route a new vehicle goes on, from its route's Add vehicle; none is the leg's first.
+  function openVehicleDialog(leg, bus, route = null) {
     if (!vehicleHost) return;
     const index = bus ? editing.fleet[leg].indexOf(bus) : null;
-    vehicleEdit = { leg, bus: bus ? JSON.parse(JSON.stringify(bus)) : blankBus(), index };
+    const fresh = bus ? null : blankBus();
+    if (fresh && route && route !== legRoutes(leg)[0]?.id) fresh.routeId = route;
+    vehicleEdit = { leg, bus: bus ? JSON.parse(JSON.stringify(bus)) : fresh, index };
     const n = index === null ? editing.fleet[leg].length + 1 : index + 1;
     document.getElementById('scheduler-vehicle-h').textContent = index === null ? 'Add vehicle' : `Vehicle ${n}`;
     drawVehicleFields();
@@ -3794,6 +3813,11 @@
     const runs = selectField('scheduler-fleet-vpartner', 'Runs it', bus.partner?.id ?? '',
       [['', 'Our bus and driver'], ...offeredPartners.map(p => [String(p.id), p.name])]);
     runs.querySelector('select').dataset.fleetVehicle = 'partner';
+    // The route it runs, chosen here on a leg of more than one.
+    const routes = legRoutes(leg);
+    const routePick = routes.length > 1 ? selectField('scheduler-fleet-vroute', 'Route', busRoute(leg, bus),
+      routes.map((x, i) => [x.id, routeLabel(x, i)])) : null;
+    if (routePick) routePick.querySelector('select').dataset.fleetVehicle = 'route';
     const fleetTypes = [...(panelIndex.buses?.values() ?? [])].filter(b => b.status === 'active').map(b => b.type);
     const types = [...new Set([...fleetTypes, bus.vehicleType].filter(Boolean))].sort();
     const type = selectField('scheduler-fleet-vtype', 'Type', bus.vehicleType ?? '', [['', 'Any'], ...types.map(t => [t, t])]);
@@ -3857,7 +3881,7 @@
        the place of are named, since Done takes them off. */
     if (bus.partner) {
       const field = (node, key) => { node.querySelector('input').dataset.fleetPartner = key; return node; };
-      what.append(full(runs), full(type), needs,
+      what.append(...(routePick ? [full(routePick)] : []), full(runs), full(type), needs,
         pair(field(moneyField('scheduler-fleet-pprice', 'Their price', bus.partner.price), 'price'),
           field(checkField('scheduler-fleet-pconfirmed', 'Confirmed', bus.partner.confirmed), 'confirmed')),
         full(field(textField('scheduler-fleet-pvehicle', 'Their coach', bus.partner.vehicle), 'vehicle')),
@@ -3868,7 +3892,7 @@
       if (focusId) document.getElementById(focusId)?.focus();
       return;
     }
-    what.append(full(runs), full(type), needs, full(busPick));
+    what.append(...(routePick ? [full(routePick)] : []), full(runs), full(type), needs, full(busPick));
     const seats = el('div', 'rux--stack-vertical rux--stack-scale-5');
     seats.append(seatBlock(leg, bus, 'driver', n, dups), crew);
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
@@ -3957,6 +3981,13 @@
       bus.partner = id ? (String(bus.partner?.id) === id ? bus.partner
         : { id, price: null, confirmed: false, confirmedAt: null, vehicle: null, driverId: null, newDriver: null }) : null;
       drawVehicleFields(e.target.id);
+      return;
+    }
+    /* A route chosen: a saved vehicle names it, and a new one the leg's
+       first route by none, so an untouched slot still needs no row. */
+    if (e.target.dataset?.fleetVehicle === 'route') {
+      const first = legRoutes(vehicleEdit.leg)[0]?.id ?? null;
+      bus.routeId = !bus.id && e.target.value === first ? null : e.target.value || null;
       return;
     }
     if (e.target.dataset?.fleetVehicle !== 'type') return;
@@ -4066,20 +4097,29 @@
     };
     for (const leg of fleetLegs()) {
       const buses = editing.fleet[leg];
-      const { list, body } = rowList();
-      list.classList.add('scheduler-fleet-list');
-      buses.forEach((b, i) => body.appendChild(fleetTile(leg, b, i, buses.length, dups)));
-      const add = listAddRow({ label: 'Add vehicle', id: `scheduler-fleet-${leg}-add`, onClick: () => openVehicleDialog(leg, null) });
-      if (buses.length >= MAX_BUSES) add.btn.disabled = true;
-      body.appendChild(add.li);
-      // One leg's list needs no heading, since the tab names it; a trip of more names its leg.
-      const title = many ? `${legTitle(leg)} vehicles` : null;
-      const sec = section(title, list, assignBestButton(leg));
-      const short = seatsShort(buses);
-      if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
-      sec.dataset.fleetSection = leg;
-      sec.hidden = many && leg !== screenKey();
-      panelFleet.appendChild(sec);
+      /* A leg of more than one route lists its vehicles under their routes,
+         each by its name, and a route with none still stands with its Add
+         vehicle, so it can be given one. A vehicle keeps its number on the
+         leg, which its window and the board name it by. */
+      const routes = legRoutes(leg);
+      const groups = routes.length > 1 ? routes.map((x, n) => ({ route: x, n })) : [{ route: null, n: 0 }];
+      groups.forEach(({ route, n }) => {
+        const { list, body } = rowList();
+        list.classList.add('scheduler-fleet-list');
+        buses.forEach((b, i) => { if (!route || busRoute(leg, b) === route.id) body.appendChild(fleetTile(leg, b, i, buses.length, dups)); });
+        const addId = route ? `scheduler-fleet-${leg}-${route.id}-add` : `scheduler-fleet-${leg}-add`;
+        const add = listAddRow({ label: 'Add vehicle', id: addId, onClick: () => openVehicleDialog(leg, null, route?.id ?? null) });
+        if (buses.length >= MAX_BUSES) add.btn.disabled = true;
+        body.appendChild(add.li);
+        // One leg's list needs no heading, since the tab names it; a trip of more names its leg, and a leg of more its routes.
+        const title = route ? `${routeLabel(route, n)} vehicles` : many ? `${legTitle(leg)} vehicles` : null;
+        const sec = section(title, list, n === 0 ? assignBestButton(leg) : undefined);
+        const short = n === 0 ? seatsShort(buses) : null;
+        if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
+        sec.dataset.fleetSection = leg;
+        sec.hidden = many && leg !== screenKey();
+        panelFleet.appendChild(sec);
+      });
     }
     // Done stays the tab's last section.
     const done = doneSection('buses');
@@ -6444,21 +6484,24 @@
   // A leg's buses on the Buses tab.
   const legBuses = leg => Math.max(fleetOfLeg(leg).length, 1);
   // A leg's co-driver seats that are on, which a second driver line counts.
-  const coDrivers = leg => fleetOfLeg(leg)
-    .filter(b => b.seats?.['co-driver']?.on).length;
-  /* Turns the co-driver seat on or off on every bus of a leg, as the Buses
-     tab's seat toggle does, for Save to keep. A seat with a driver in it is
-     not turned off; the count of those comes back. */
-  function setCoDrivers(leg, on) {
-    const buses = fleetOfLeg(leg);
+  // A leg's co-driver seats that are on, or one route's where it is named.
+  const coDrivers = (leg, route = null) => fleetOfLeg(leg)
+    .filter(b => (route == null || busRoute(leg, b) === route) && b.seats?.['co-driver']?.on).length;
+  /* Turns the co-driver seat on or off on every bus of a leg, or of one
+     route of it where one is named, as the Buses tab's seat toggle does, for
+     Save to keep. A seat with a driver in it is not turned off; the count of
+     those comes back. */
+  function setCoDrivers(leg, on, route = null) {
+    const all = fleetOfLeg(leg);
+    const buses = route == null ? all : all.filter(b => busRoute(leg, b) === route);
     if (on && !buses.length) {
-      toast('info', 'No bus on this leg yet', 'Add one on the Buses tab, then its co-driver.');
+      toast('info', route == null ? 'No bus on this leg yet' : 'No bus on this route yet', 'Add one on the Buses tab, then its co-driver.');
       return 0;
     }
     let kept = 0;
     for (const b of buses) {
       // A partner's bus has a driver of its own, and one another's co-driver rides has theirs.
-      if (b.partner || riderOf(buses, b)) continue;
+      if (b.partner || riderOf(all, b)) continue;
       const seat = b.seats?.['co-driver'];
       if (!seat) continue;
       if (!on && seat.driverId) { kept++; continue; }
@@ -9678,7 +9721,8 @@
          needs a sleeper. */
       function takeSleeperRest(stop) {
         stop.dwell = 'sleeper';
-        for (const b of editing?.fleet?.[r.leg] ?? []) {
+        // The route's vehicles rest in it, so each must have a sleeper.
+        for (const b of routeBuses(r.leg, r.routeId)) {
           b.needs = needsObject(new Set([...needIds(b.needs), 'sleeper']));
         }
         drawFleet();
@@ -9712,7 +9756,7 @@
            as Get from Samsara or the nightly run found them, a bus's number
            first where the leg has more than one; a leg with neither shows
            nothing here. */
-        const legBuses = editing?.fleet?.[r.leg] ?? [];
+        const legBuses = routeBuses(r.leg, r.routeId);
         const actual = legBuses.filter(b => b.yardDepartAt || b.yardReturnAt).map(b => {
           const row = el('dl', 'scheduler-figures');
           const at = iso => {
@@ -9816,11 +9860,12 @@
            many do not; the Buses tab holds the seat, and the quote follows
            it. */
         const { over } = fig;
-        const legFleet = editing?.fleet?.[r.leg] ?? [];
+        // The route's own vehicles, since the notice is about its times.
+        const legFleet = routeBuses(r.leg, r.routeId);
         const without = legFleet.filter(b => b.seats?.['co-driver'] && !b.seats['co-driver'].on).length;
-        const some = coDrivers(r.leg) > 0
-          ? ` ${without} of the leg's ${legFleet.length} buses ${without === 1 ? 'has' : 'have'} no co-driver seat.` : '';
-        if (over && (coDrivers(r.leg) === 0 || without > 0)) {
+        const some = coDrivers(r.leg, r.routeId) > 0
+          ? ` ${without} of the ${r.routes.length > 1 ? 'route' : 'leg'}'s ${legFleet.length} buses ${without === 1 ? 'has' : 'have'} no co-driver seat.` : '';
+        if (over && (coDrivers(r.leg, r.routeId) === 0 || without > 0)) {
           const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
           /* A NIGHT OFF DUTY COMES FIRST, then the sleeper rest, where either
              is enough. Nights at a stop left on duty, counted as off duty as a
@@ -9831,7 +9876,7 @@
              is the one offer. */
           const nights = nightRests();
           const rest = nights.length ? null : sleeperRest();
-          const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
+          const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true, r.routeId) };
           const where = n => n.stop.place?.name || 'the stop';
           const nightWords = nights.length === 1 ? `the night at ${where(nights[0])}`
             : `the ${nights.length} nights at ${[...new Set(nights.map(where))].join(' and ')}`;

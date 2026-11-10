@@ -15699,6 +15699,8 @@
   function setViewerMode(mode) {
     const form = mode === 'form';
     viewerMark = null;
+    // The page names its form once it draws, so a drag before then keeps no width.
+    viewerForm = null;
     setToolbarShown(true);
     setViewerBack(null);
     viewerDownload.hidden = form;
@@ -15886,6 +15888,42 @@
     placeRoom();
     window.Rux?.schedule?.fit?.();
   }
+  /* A FORM OPENS AT THE WIDTH IT READS AT. The width last dragged to for a
+     form is kept in this browser by the form's id, so the next quote opens
+     where the last one was left; a form never dragged opens by its paper,
+     at `--scheduler-viewer-page-w` when the paper is wider than the 6-inch
+     envelope and at the panel's own width otherwise. The page hands the form
+     up as it draws it, and a stored file, which has none, keeps the panel's
+     width. Either is still held to the room the week leaves. */
+  const FORM_WIDTHS_KEY = 'scheduler.form-widths';
+  let viewerForm = null;
+  const formWidths = () => {
+    try { return JSON.parse(localStorage.getItem(FORM_WIDTHS_KEY) || '{}') || {}; } catch { return {}; }
+  };
+  function storeFormWidths(widths) {
+    try { localStorage.setItem(FORM_WIDTHS_KEY, JSON.stringify(widths)); } catch { /* kept for this page only */ }
+  }
+  function keepFormWidth() {
+    if (!viewerForm) return;
+    storeFormWidths({ ...formWidths(), [viewerForm.id]: Math.round(viewerWidth() / remPx() * 10) / 10 });
+  }
+  function forgetFormWidth() {
+    if (!viewerForm) return;
+    const { [viewerForm.id]: _, ...rest } = formWidths();
+    storeFormWidths(rest);
+  }
+  function fitFormWidth() {
+    if (!viewerForm || resizer.hidden) return;
+    const kept = Number(formWidths()[viewerForm.id]);
+    const px = kept > 0 ? kept * remPx()
+      : viewerForm.inches > 6 ? panelWidth('--scheduler-viewer-page-w') : 0;
+    if (px) setViewerWidth(px);
+    else { setResizable(false); setResizable(true); }
+  }
+  function setFormPaper(form) {
+    viewerForm = form?.id ? { id: String(form.id), inches: parseFloat(form.width) || 0 } : null;
+    fitFormWidth();
+  }
   /* The pointer is captured by the handle, so the file's frame under it does not
      take the drag, and the width follows how far the pointer has moved from
      where it went down: the column is left of the week, so right is wider.
@@ -15922,6 +15960,7 @@
       resizer.removeEventListener('pointerup', stop);
       resizer.removeEventListener('pointercancel', stop);
       syncResizer();
+      keepFormWidth();
       placeRoom();
       window.Rux?.schedule?.fit?.();
     };
@@ -15934,8 +15973,15 @@
     if (!dir) return;
     e.preventDefault();
     setViewerWidth(viewerWidth() + dir * (e.shiftKey ? 4 : RESIZE_STEP) * remPx());
+    keepFormWidth();
   });
-  resizer.addEventListener('dblclick', () => { setResizable(false); setResizable(true); });
+  // A double-click forgets the form's kept width and opens it as a form never dragged.
+  resizer.addEventListener('dblclick', () => {
+    forgetFormWidth();
+    setResizable(false);
+    setResizable(true);
+    fitFormWidth();
+  });
 
   /* THE WAY BACK TO THE LIST a form was chosen from. The form says how to go
      back, since the list is its frame's page and not this one's; anything
@@ -15983,7 +16029,7 @@
   }
 
   // And it says what it did in the board's toast, as the board does.
-  const host = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink, ask: askForForm,
+  const host = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink, setFormPaper, ask: askForForm,
     report: window.SchedulerToast.report, setTrip };
 
   /* Shows the panel, which the opener has already found room for. A panel

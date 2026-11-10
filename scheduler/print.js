@@ -2845,6 +2845,8 @@
       if (value) root.setProperty(prop, value);
       else root.removeProperty(prop);
     }
+    // The panel sizes itself to the form and its paper, or to none on the list.
+    host?.setFormPaper?.(form ? { id: form.id, width: paper?.width } : null);
   }
 
   /* THE SHEET AT THE SIZE THE ROOM ALLOWS. A form keeps the paper's own width

@@ -926,8 +926,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
-/* The speed, Idle and Off are heading-compact-01. Every unit and elapsed
-   time is label-01, on the same baseline as its reading. */
+/* The speed, Idle and Off are heading-compact-02, on the row's height so
+   the tile's rows stay put. Every unit and elapsed time is label-01, on the
+   same baseline as its reading. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dial { grid-row: 3; display: flex; align-items: center; block-size: var(--scheduler-state-h); max-inline-size: 100%; margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed {
   flex-direction: row;
@@ -937,10 +938,10 @@ button.scheduler-row-head__num:focus { outline: none; }
   line-height: var(--scheduler-row-h);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__speed > :first-child {
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
   line-height: var(--scheduler-row-h);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__under, .scheduler-row-head__fuel-unit, .scheduler-row-head__no-signal, .scheduler-row-head__seen) {
   font-size: var(--rux-label-01-font-size);

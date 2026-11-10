@@ -56,7 +56,7 @@ surface.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
-| State | The speed, Idle and Off use heading-compact-01, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 22px, 12px under the number |
+| State | The speed, Idle and Off use heading-compact-02 on the row's height, with mph or elapsed time in label-01. A lost signal has its own label, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 22px, 12px under the number |
 | Fuel | A gauge read from E to F: the letters in label-01's grey at its ends and four blocks between them, 2px apart, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 18px, 12px under the state |
 | Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 12px under the fuel, on the card's inset |
 

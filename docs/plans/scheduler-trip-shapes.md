@@ -218,8 +218,6 @@ them and nothing is entered twice.
 - [ ] Find how a driver taken off a trip is told now, and tell the drivers
       of a removed leg the same way, where now Remove leg waits for them to
       be taken off on the Buses tab.
-- [ ] Draw each bar with its route's times, its route's name and 2 of 3,
-      and give the yard gap and the rest between trips the same times.
 - [ ] Make the trip's Bus rental line, buses times legs priced on its
       longest route, with Estimated miles following it; add Price
       separately and its undo for a leg or a route; and write each line's

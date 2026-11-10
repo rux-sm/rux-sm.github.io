@@ -897,7 +897,7 @@
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 /* The count of a leg's buses is Geist's gray 900 on every trip, a figure
    beside the destination rather than part of its name. */
-[data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: var(--geist-gray-900); }
+[data-theme="rux-100"] :is(.scheduler-bar__count, .scheduler-bar__route) { opacity: 1; color: var(--geist-gray-900); }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
    pane's sheet, every row parted by the board's one line. A mark is small
    and carries no words but a rest's hours, so it is Geist's solid badge,

@@ -95,9 +95,9 @@
       el('span', 'scheduler-bar-shortcut__label', action.short));
     return btn;
   }
-  // The leg's times, out and back, the days named where they are not one.
+  // The bar's route's times, out and back, the days named where they are not one.
   function sheetTimes(trip, bar) {
-    const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg);
+    const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg, bar.dataset.routeId || null);
     const dep = bar.dataset.depart, back = bar.dataset.back;
     if (!leg || (!dep && !back)) return dep || back || '';
     const many = leg.from !== leg.to;
@@ -125,7 +125,7 @@
       if (warn) words.push(warn.title);
       tone = warn?.tone === 'error' ? 'error' : next?.late || warn ? 'warning' : 'success';
     } else {
-      const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg);
+      const leg = legByKey(trip, bar.dataset.legKey || bar.dataset.leg, bar.dataset.routeId || null);
       const now = Date.now();
       const out = leg ? window.SchedulerWeek.departAt(leg) : null, back = leg ? window.SchedulerWeek.backAt(leg) : null;
       if (out == null) words.push('No times yet');
@@ -152,7 +152,7 @@
      mark, or the partner covering it with its answer's mark. */
   function sheetCrew(trip, bar, board) {
     const assign = assignOf(trip, bar);
-    const due = Bar.staffingDue(legByKey(trip, bar.dataset.legKey || bar.dataset.leg) ?? { from: trip.start_date, to: trip.end_date });
+    const due = Bar.staffingDue(legByKey(trip, bar.dataset.legKey || bar.dataset.leg, bar.dataset.routeId || null) ?? { from: trip.start_date, to: trip.end_date });
     const done = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
     const partner = partnerOf(assign, board);
     if (partner) {

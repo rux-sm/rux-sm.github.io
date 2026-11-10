@@ -834,7 +834,7 @@
 
   // -- placing --------------------------------------------------------------
   // Which days a leg covers, its times and its lane, shared with the printed week.
-  const { stopsOfLeg, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, clip, assignLanes } = window.SchedulerWeek;
+  const { stopsOfLeg, timesOf, legsOf, rangesOf, legKeyOfVehicle, legByKey, takes, clip, assignLanes } = window.SchedulerWeek;
 
   // The contact columns as the editor shows them on opening, so an untouched
   // panel has nothing to save. Each day-of contact stays in its own slot.
@@ -1194,16 +1194,18 @@
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
 
+    /* Each bus on its route's days and with its route's times, so two
+       routes of one leg that leave at different hours draw their own bars;
+       the empty slots up to the leg's count are on its first route. */
     for (const trip of trips) {
-      for (const leg of legsOf(trip)) {
+      const ranges = rangesOf(trip);
+      for (const leg of ranges) {
         const place = clip(leg.from, leg.to, weekStart, weekEnd);
-        if (!place) continue;
-        const assigns = (trip.trip_assignments || [])
-          .filter(a => legKeyOfVehicle(trip, a) === leg.key)
-          .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
         // A bus a partner covers sits in its partner's row, one with no bus yet in the unassigned row.
-        assigns.forEach(a => push(a.partner_id != null ? partnerRowId(a.partner_id) : a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
-        for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
+        if (place) leg.vehicles.forEach(a => push(a.partner_id != null ? partnerRowId(a.partner_id) : a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
+        if (leg.routeNumber !== 1) continue;
+        const filled = ranges.filter(r => r.key === leg.key).reduce((n, r) => n + r.vehicles.length, 0);
+        if (place) for (let i = filled; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
       }
     }
 
@@ -11539,12 +11541,12 @@
       }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
+    // Each vehicle on its route's days and times, as its bar is drawn.
     for (const trip of trips || []) {
-      for (const leg of legsOf(trip)) {
+      for (const leg of rangesOf(trip)) {
         const place = clip(leg.from, leg.to, weekStart, weekEnd);
         if (!place) continue;
-        for (const a of trip.trip_assignments || []) {
-          if (legKeyOfVehicle(trip, a) !== leg.key) continue;
+        for (const a of leg.vehicles) {
           // Only the roles that are on, as the bar's crew counts them, so the
           // grid and the bar agree on who is driving.
           const on = activeRolesOf(a);
@@ -14604,7 +14606,7 @@
     const rider = own ? null : ridersOf(trip, ridden).find(r => r.d.role === role) ?? null;
     const assign = rider?.from ?? ridden;
     const leg = assign.leg || 'outbound';
-    const range = legByKey(trip, legKeyOfVehicle(trip, assign));
+    const range = legByKey(trip, legKeyOfVehicle(trip, assign), assign.route_id ?? null);
     const seat = rider?.d ?? own;
     return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays, departDays: range.departDays } : null, seat };
   }

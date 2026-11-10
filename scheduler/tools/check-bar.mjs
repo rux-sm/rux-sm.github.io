@@ -190,9 +190,9 @@ expect('a bar\'s track is empty before the trip leaves, filled as its time goes,
   [0, 50, 100, 100, 50, 50]);
 const kindOf = b => { const k = b.querySelector('.scheduler-bar__dest > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
 expect('one way wears its arrow after the destination', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
-expect('a split\'s drop-off points down and its pickup up; a round trip wears none',
+expect('a split\'s drop-off points down and its pickup up, each saying which leg it is; a round trip of one leg wears none',
   [...drawn('trip-bar', 'Drop-off and pickup'), ...drawn('trip-bar', 'Colours').slice(0, 1)].map(kindOf),
-  [['#m-download', 'Drop-off'], ['#m-upload', 'Pickup'], null]);
+  [['#m-download', '1 of 2'], ['#m-upload', '2 of 2'], null]);
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
   [['3', 'Marco'], ['3', 'Lena'], ['3', 'Needs a bus']]);

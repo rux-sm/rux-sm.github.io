@@ -125,7 +125,7 @@ const withRows = { trip_type: 'dropoff_pickup', start_date: '2026-10-13', end_da
 const shapedTrip = { ...withRows, trip_legs: [
   { id: 'l2', leg: 'return', start_date: '2026-10-15', end_date: '2026-10-15', bus_count: 1, trip_routes: [{ id: 'r2', position: 1 }] },
   { id: 'l1', leg: 'outbound', start_date: '2026-10-13', end_date: '2026-10-13', bus_count: 2, trip_routes: [{ id: 'r1', position: 1 }] }] };
-const bare = l => { const { legId, key, ...rest } = l; return rest; };
+const bare = l => { const { legId, key, routes, ...rest } = l; return { ...rest, routes: routes.map(({ routeId, ...r }) => r) }; };
 expect('a trip read with its legs gives the bars its columns give, keyed by each leg\'s id',
   [legsOf(shapedTrip).map(bare), legsOf(shapedTrip).map(l => [l.key, l.legId, l.number])],
   [legsOf(withRows).map(bare), [['l1', 'l1', 1], ['l2', 'l2', 2]]]);
@@ -138,6 +138,25 @@ expect('a vehicle is on its route\'s leg, or the leg its word names before it ha
 expect('a leg is found by its key, or by the old word a link names',
   [legByKey(shapedTrip, 'l2')?.leg, legByKey(shapedTrip, 'return')?.key, legByKey(withRows, 'return')?.key, legByKey(shapedTrip, 'l9')],
   ['return', 'l2', 'return', null]);
+
+// Two routes on one leg: each bus on its route's times and days, the leg over every route's days.
+const twoRoutes = { ...shapedTrip,
+  trip_legs: [{ id: 'l1', leg: 'outbound', start_date: '2026-10-13', end_date: '2026-10-13', bus_count: 3,
+    trip_routes: [{ id: 'r1', position: 1, name: 'Football' }, { id: 'rb', position: 2, name: 'Band' }] }],
+  trip_stops: [{ route_id: 'r1', position: 0, type: 'pickup', depart_prev: '06:00', spot: '07:00' },
+    { route_id: 'r1', position: 1, type: 'return', arrive: '18:00' },
+    { route_id: 'rb', position: 0, type: 'pickup', depart_prev: '21:00', depart_prev_date: '2026-10-12', spot: '05:30', spot_date: '2026-10-13' },
+    { route_id: 'rb', position: 1, type: 'return', arrive: '02:15' }],
+  trip_assignments: [{ id: 'a2', route_id: 'rb', position: 2 }, { id: 'a1', route_id: 'r1', position: 0 }, { id: 'a0', position: 1 }] };
+expect('each route of a leg has its own times and days, and the leg takes every route\'s days with its first route\'s times',
+  [legsOf(twoRoutes).map(l => [l.from, l.to, l.depart, l.routes.map(r => [r.routeId, r.routeName, r.routeNumber, r.depart, r.back])])],
+  [[['2026-10-12', '2026-10-13', '06:00', [['r1', 'Football', 1, '06:00', '18:00'], ['rb', 'Band', 2, '21:00', '02:15']]]]]);
+expect('a vehicle is on its route, and one with no route on the leg\'s first',
+  window.SchedulerWeek.rangesOf(twoRoutes).map(r => [r.routeId, r.routeName, r.routeCount, r.from, r.depart, r.vehicles.map(a => a.id)]),
+  [['r1', 'Football', 2, '2026-10-13', '06:00', ['a1', 'a0']], ['rb', 'Band', 2, '2026-10-12', '21:00', ['a2']]]);
+expect('a leg found with a route named is that route, its first with none it has',
+  [legByKey(twoRoutes, 'l1', 'rb')?.depart, legByKey(twoRoutes, 'l1', null)?.routeName, legByKey(twoRoutes, 'l1', 'r9')?.routeId, legByKey(twoRoutes, 'l1')?.routeId],
+  ['21:00', 'Football', 'r1', undefined]);
 
 // A third leg, made by the editor once it writes legs, mirrors no old word: it still has a bar, read by its id.
 const third = { ...shapedTrip, trip_legs: [...shapedTrip.trip_legs,

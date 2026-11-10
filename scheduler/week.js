@@ -50,15 +50,17 @@
      arrival in `arrive`. The board and the editor both use it, so they pick
      the same two; `timesOf` falls back to the trip's own time columns.
 
-     A TRIP READ WITH ITS LEGS is read through trip-shape.js: the leg's
-     first route's stops, the leg named by its key, its id, or by the old
-     word a page still names it by. One read without them, from a page whose
-     query does not ask for them yet, is read by the old word on each stop. */
+     A TRIP READ WITH ITS LEGS is read through trip-shape.js: the stops of
+     the route named, or of the leg's first route with none named, the leg
+     named by its key, its id, or by the old word a page still names it by.
+     One read without them, from a page whose query does not ask for them
+     yet, is read by the old word on each stop. */
   const SHAPE = window.SchedulerTripShape;
   const shaped = trip => Array.isArray(trip?.trip_legs) && !!SHAPE;
   const shapeLeg = (trip, key) => SHAPE.legOf(trip, key) ?? SHAPE.legOfWord(trip, key);
-  const stopsOfLeg = (trip, leg) => {
-    const route = shaped(trip) ? shapeLeg(trip, leg)?.routes[0] : null;
+  const stopsOfLeg = (trip, leg, routeId = null) => {
+    const routes = shaped(trip) ? shapeLeg(trip, leg)?.routes ?? [] : [];
+    const route = routes.find(r => r.id === routeId) ?? routes[0];
     const stops = route ? SHAPE.stopsOfRoute(trip, route.id)
       : (trip.trip_stops || [])
         .filter(s => (s.leg || 'outbound') === leg)
@@ -98,14 +100,15 @@
     return out && group && out < group ? daysBetween(parseISO(out), parseISO(group)) : 0;
   };
 
-  /* A leg's times as saved, by its key or its old word: the yard departure,
+  /* A route's times as saved, by its leg's key or old word and the route's
+     id, the leg's first route with none named: the yard departure,
      the spot, the trip's end and the yard return, `nights`, the midnights a
      one-day leg's return comes after its departure, and `outDays`, the days
      before the leg's first that the bus leaves the yard. A leg with no pickup
      departure takes the trip's time column for the word it mirrors, and a
      leg that mirrors none has no departure. */
-  const timesOf = (trip, leg) => {
-    const { stops, pickup, back } = stopsOfLeg(trip, leg);
+  const timesOf = (trip, leg, routeId = null) => {
+    const { stops, pickup, back } = stopsOfLeg(trip, leg, routeId);
     const word = shaped(trip) ? shapeLeg(trip, leg)?.word ?? null : leg;
     const depart = pickup?.depart_prev || (word === 'outbound' ? trip.departure_time : word ? trip.return_time : null) || null;
     return {
@@ -210,25 +213,37 @@
   // A leg saved with its end before its start is read as its start day, so it
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
-  /* A trip's legs, each with the days it takes, `from` to `to`, `starts` and
-     `ends`, the first and last day as saved, and `number`, from 1 in date
-     order. `key` tells the
+  /* A trip's legs, each with `starts` and `ends`, the first and last day as
+     saved, `number`, from 1 in date order, and `routes`, each route's own
+     times and the days its buses take, with `routeId`, `routeName` and
+     `routeNumber`; a trip read without its legs has one route with no id.
+     A leg takes `from` to `to`, the first day any of its routes takes to
+     the last, and carries its first route's times, which a page reading a
+     bus reads from its route instead, through `rangeOf`. `key` tells the
      legs apart: the leg's id on a trip read with its legs, which gives
      `legId` too, and the old word on one that is not, such as a draft. A
      leg that mirrors an old word carries it in `leg`, which the old columns
      are read by, and a leg that mirrors none carries null. */
   const legsOf = trip => {
     const legs = [];
-    const add = (leg, from, end, count, more = {}) => {
-      const times = timesOf(trip, more.key ?? leg);
+    const add = (leg, from, end, count, more = {}, routes = [null]) => {
       const ends = lastDay(from, end);
-      legs.push({ leg, key: leg, number: legs.length + 1, starts: from, ends, count, ...times, ...takes(from, ends, times), ...more });
+      const timed = routes.map((r, i) => {
+        const times = timesOf(trip, more.key ?? leg, r?.id ?? null);
+        return { routeId: r?.id ?? null, routeName: r?.name || null, routeNumber: i + 1, ...times, ...takes(from, ends, times) };
+      });
+      const { routeId, routeName, routeNumber, ...first } = timed[0];
+      legs.push({ leg, key: leg, number: legs.length + 1, starts: from, ends, count, ...first, ...more,
+        from: timed.reduce((d, r) => (r.from < d ? r.from : d), first.from),
+        to: timed.reduce((d, r) => (r.to > d ? r.to : d), first.to),
+        routes: timed });
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {
         if (l.start) {
           add(l.word, l.start, l.end, l.busCount || 1,
-            { legId: l.id, key: l.id, number: l.number, hotelBooked: l.hotelBooked, hotelNumber: l.hotelNumber });
+            { legId: l.id, key: l.id, number: l.number, hotelBooked: l.hotelBooked, hotelNumber: l.hotelNumber },
+            l.routes.length ? l.routes : [null]);
         }
       }
       return legs;
@@ -248,9 +263,34 @@
      and not yet read it back with its route; on one that is not, the word. */
   const legKeyOfVehicle = (trip, a) => (!shaped(trip) ? a?.leg || 'outbound'
     : (a?.route_id ? SHAPE.legOfRoute(trip, a.route_id) : SHAPE.legOfWord(trip, a?.leg))?.id ?? null);
-  // A trip's leg by its key, or by the old word a link or row still names.
-  const legByKey = (trip, key) => legsOf(trip).find(l => l.key === key)
-    ?? (key == null ? null : legsOf(trip).find(l => l.leg === key)) ?? null;
+  /* ONE ROUTE OF A LEG, as a leg: the leg with that route's times and the
+     days its buses take, `routeId`, `routeName`, `routeNumber`, and
+     `routeCount`, how many routes the leg has. A route the leg lacks, or
+     none named, is its first, as a vehicle a page has made and not yet read
+     back with its route is on. */
+  const rangeOf = (leg, routeId = null) => {
+    if (!leg) return null;
+    const route = leg.routes.find(r => r.routeId === routeId) ?? leg.routes[0];
+    return { ...leg, ...route, routeCount: leg.routes.length };
+  };
+  /* A trip's leg by its key, or by the old word a link or row still names;
+     with a route named, that route of it, as `rangeOf` gives it. */
+  const legByKey = (trip, key, routeId) => {
+    const leg = legsOf(trip).find(l => l.key === key)
+      ?? (key == null ? null : legsOf(trip).find(l => l.leg === key)) ?? null;
+    return routeId === undefined ? leg : rangeOf(leg, routeId);
+  };
+  /* Every route of every leg of a trip, each as `rangeOf` gives it, with
+     the vehicles on it in position order: a bus's days and times are its
+     route's. A vehicle with no route yet is on its leg's first. */
+  const rangesOf = trip => legsOf(trip).flatMap(leg => {
+    const vehicles = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === leg.key)
+      .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
+    return leg.routes.map((r, i) => ({
+      ...rangeOf(leg, r.routeId),
+      vehicles: vehicles.filter(a => (leg.routes.some(x => x.routeId === a.route_id) ? a.route_id === r.routeId : i === 0)),
+    }));
+  });
 
   const clip = (from, to, weekStart, weekEnd) => {
     const a = parseISO(from), b = parseISO(to);
@@ -282,7 +322,7 @@
 
   window.SchedulerWeek = {
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
-    stopsOfLeg, stopsOfKey, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, stopsOfKey, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
   };
 })();

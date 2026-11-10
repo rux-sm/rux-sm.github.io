@@ -36,7 +36,7 @@
 (() => {
   'use strict';
 
-  const { legsOf, legByKey, legKeyOfVehicle } = window.SchedulerWeek;
+  const { legsOf, rangesOf, legByKey, legKeyOfVehicle } = window.SchedulerWeek;
   const { activeRolesOf } = window.SchedulerLegFacts;
 
   const DAY = 864e5;
@@ -136,22 +136,13 @@
      work spreads. `range` is the leg's dates, with its `depart` and `back`
      times when it has them, and comes back with the answer. `skip` leaves out the editor's whole trip, whose
      buses it holds unsaved, or the one bus a bar is. */
-  /* A trip's legs, and the leg each of its vehicles runs on, worked out once
-     for each list of what is around: a draw hands its one list to every
-     bar, and working them out again for each bar was most of a draw's clash
-     reading. */
+  /* Every route around, each with its vehicles, worked out once for each
+     list of what is around: a draw hands its one list to every bar, and
+     working them out again for each bar was most of a draw's clash reading. */
   const around = new WeakMap();
   const memoOf = nearby => {
-    if (!around.has(nearby)) around.set(nearby, { legs: new WeakMap(), keys: new WeakMap(), all: null });
+    if (!around.has(nearby)) around.set(nearby, { all: null });
     return around.get(nearby);
-  };
-  const legsIn = (memo, t) => {
-    if (!memo.legs.has(t)) memo.legs.set(t, legsOf(t));
-    return memo.legs.get(t);
-  };
-  const keyIn = (memo, t, a) => {
-    if (!memo.keys.has(a)) memo.keys.set(a, legKeyOfVehicle(t, a));
-    return memo.keys.get(a);
   };
 
   function fitFor(nearby, range, skip) {
@@ -163,11 +154,12 @@
     const before = iso(addDays(parseISO(range.from), -1));
     const after = iso(addDays(parseISO(range.to), 1));
     const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
-    /* Every leg around, in trip order, once for the list. A leg that ends
+    /* Every route around, in trip order, once for the list, on its own
+       days and times, since a bus is out when its route is. A route that ends
        before the days lately or starts after the day after the range can be
        neither a clash, back-to-back nor a day worked, so it is passed over
        before anything is worked out for it. */
-    memo.all ??= trips.flatMap(t => legsIn(memo, t).map(l => ({ t, l })));
+    memo.all ??= trips.flatMap(t => rangesOf(t).map(l => ({ t, l })));
     for (const { t, l } of memo.all) {
       if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
       if ((l.to && l.to < recent.from) || l.from > after) continue;
@@ -179,8 +171,7 @@
         for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
       }
       if (!clash && !next && !days.length) continue;
-      for (const a of t.trip_assignments || []) {
-        if (keyIn(memo, t, a) !== l.key) continue;
+      for (const a of l.vehicles) {
         if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
         const text = `On trip ${t.destination || 'with no destination'}`;
         const on = activeRolesOf(a);
@@ -298,42 +289,45 @@
      `readPartners`. */
   function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map(), partnersById = new Map() } = {}) {
     if (!trip || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return [];
-    const range = legByKey(trip, leg);
-    if (!range) return [];
-    const fit = fitFor(nearby, range, { tripId: trip.id });
-    const crew = tripCrew(trip, range).map(c => driversById.get(c.driverId)).filter(Boolean);
+    // Each route of the leg on its own days and times, with the vehicles on it.
+    const key = legByKey(trip, leg)?.key;
+    const routes = key == null ? [] : rangesOf(trip).filter(r => r.key === key);
     const out = [];
     const put = (a, driverId, subject, what, extra = {}) => {
       if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
         out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, partnerId: a.partner_id ?? null, what, words: `${subject}: ${what}`, ...extra });
       }
     };
-    for (const a of (trip.trip_assignments || []).filter(x => legKeyOfVehicle(trip, x) === range.key)) {
-      // A bus a partner covers has no bus of ours and no seat; only its partner can stand in its way.
-      if (a.partner_id != null) {
-        const partner = partnersById.get(a.partner_id);
-        const name = partner?.name || 'The partner';
-        if (partner?.status && partner.status !== 'active') put(a, null, name, 'Inactive');
-        const lapse = paperLapse(partner, range);
-        if (lapse) put(a, null, name, lapse);
-        continue;
-      }
-      if (a.bus_id != null) {
-        const bus = busesById.get(a.bus_id);
-        for (const what of fit.buses.get(a.bus_id) ?? []) put(a, null, bus?.number != null ? `Bus ${bus.number}` : 'The bus', what);
-      }
-      const on = activeRolesOf(a);
-      for (const d of a.trip_drivers || []) {
-        if (d.driver_id == null || !on.has(d.role || 'driver')) continue;
-        const who = driversById.get(d.driver_id);
-        const name = who?.short_name || who?.name || 'A driver';
-        for (const what of fit.drivers.get(d.driver_id) ?? []) put(a, d.driver_id, name, what);
-        if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
-        const lapse = who ? cardLapse(who, range) : '';
-        if (lapse) put(a, d.driver_id, name, lapse);
-        const apart = who ? apartWords(who, crew, trip.id) : '';
-        // `apart` marks it as one the office may allow on the trip.
-        if (apart) put(a, d.driver_id, name, apart, { apart: true });
+    for (const range of routes) {
+      const fit = fitFor(nearby, range, { tripId: trip.id });
+      const crew = tripCrew(trip, range).map(c => driversById.get(c.driverId)).filter(Boolean);
+      for (const a of range.vehicles) {
+        // A bus a partner covers has no bus of ours and no seat; only its partner can stand in its way.
+        if (a.partner_id != null) {
+          const partner = partnersById.get(a.partner_id);
+          const name = partner?.name || 'The partner';
+          if (partner?.status && partner.status !== 'active') put(a, null, name, 'Inactive');
+          const lapse = paperLapse(partner, range);
+          if (lapse) put(a, null, name, lapse);
+          continue;
+        }
+        if (a.bus_id != null) {
+          const bus = busesById.get(a.bus_id);
+          for (const what of fit.buses.get(a.bus_id) ?? []) put(a, null, bus?.number != null ? `Bus ${bus.number}` : 'The bus', what);
+        }
+        const on = activeRolesOf(a);
+        for (const d of a.trip_drivers || []) {
+          if (d.driver_id == null || !on.has(d.role || 'driver')) continue;
+          const who = driversById.get(d.driver_id);
+          const name = who?.short_name || who?.name || 'A driver';
+          for (const what of fit.drivers.get(d.driver_id) ?? []) put(a, d.driver_id, name, what);
+          if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
+          const lapse = who ? cardLapse(who, range) : '';
+          if (lapse) put(a, d.driver_id, name, lapse);
+          const apart = who ? apartWords(who, crew, trip.id) : '';
+          // `apart` marks it as one the office may allow on the trip.
+          if (apart) put(a, d.driver_id, name, apart, { apart: true });
+        }
       }
     }
     return out;

@@ -181,13 +181,18 @@
     'drop-off': { icon: '#m-download', word: 'Drop-off' },
     pickup: { icon: '#m-upload', word: 'Pickup' },
   };
-  const kindEl = kind => {
-    const { icon, word } = KINDS[kind];
-    const pill = el('span', 'scheduler-bar__kind');
-    pill.title = word;
+  /* On a trip of more than one leg, the pill says which leg the bar is, as
+     `2 of 3`, after the arrow of a leg that has one; its tooltip names both. */
+  const kindEl = (kind, number = null, legs = 1) => {
+    const { icon, word } = kind ? KINDS[kind] : { icon: null, word: null };
+    const which = legs > 1 ? `${number} of ${legs}` : null;
+    const said = [which && `Leg ${which}`, word].filter(Boolean).join(' · ');
+    const pill = el('span', `scheduler-bar__kind${which ? ' scheduler-bar__kind--leg' : ''}`);
+    pill.title = said;
     pill.setAttribute('role', 'img');
-    pill.setAttribute('aria-label', word);
-    pill.append(svgUse(icon, '12', '0 0 12 12'), el('span', 'scheduler-bar__kind-word', word));
+    pill.setAttribute('aria-label', said);
+    if (icon) pill.append(svgUse(icon, '12', '0 0 12 12'));
+    pill.append(el('span', 'scheduler-bar__kind-word', which ?? word));
     return pill;
   };
   // The chip is always the icon alone, so there is nothing to fit; data.js still calls this on a card's head.
@@ -633,6 +638,8 @@
     bar.dataset.legKey = leg.key ?? leg.leg;
     bar.dataset.legNumber = leg.number ?? 1;
     bar.dataset.leg = leg.leg ?? '';
+    // The route the bus runs, whose times the bar carries; none on a trip read without its legs.
+    bar.dataset.routeId = leg.routeId ?? '';
     bar.dataset.start = place.start;
     bar.dataset.span = place.span;
     // The slot is the position an empty slot's assignment row is written at.
@@ -656,8 +663,8 @@
 
     /* A leg that leaves the group or fetches it says so after the destination, its arrow pointing the way the bus does: across for a
        one-way trip, down for a split's drop-off, where the group is set down,
-       up for its pickup, every leg after the first. The pill says which leg
-       of a split this is, so the reference is only its count. */
+       up for its pickup, every leg after the first. On a trip of more than
+       one leg the pill also says which leg the bar is, as `2 of 3`. */
     const SHAPE = window.SchedulerTripShape;
     const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
       : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
@@ -674,12 +681,15 @@
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
     const closed = alert ? null : closeMarks(window.SchedulerCloseOut.report(trip));
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
-    const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
-    if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', String(count)));
+    // The route's name, on a leg of more than one route, so its groups' bars are told apart.
+    const routeName = (leg.routeCount ?? 1) > 1 ? el('span', 'scheduler-bar__route', leg.routeName || `Route ${leg.routeNumber}`) : null;
+    const dest = count > 1 || routeName ? el('span', 'scheduler-bar__multi') : destName;
+    if (dest !== destName) dest.append(...[destName, routeName, count > 1 ? el('span', 'scheduler-bar__count', String(count)) : null].filter(Boolean));
     /* The destination row holds what the trip is on the left, and only what
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
-    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? closed);
+    const legs = window.SchedulerWeek.legsOf(trip).length;
+    addRow(bar, 'scheduler-bar__dest', dest, kind || legs > 1 ? kindEl(kind, leg.number ?? 1, legs) : null, alert ?? closed);
     // The words in a run, which spans the trip's length; see app.css's row widths.
     const runOf = (...parts) => {
       const run = el('span', 'scheduler-bar__run');

@@ -50,6 +50,9 @@
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
   --scheduler-viewer-w: var(--scheduler-viewer-sm-w);
+  /* A form on paper wider than the envelope, such as Letter, opens at 36rem,
+     where its 11pt text renders near 8px; a width dragged to replaces it. */
+  --scheduler-viewer-page-w: 36rem;
   /* The trip editor. */
   --scheduler-editor-w: 22rem;
 }
@@ -1381,7 +1384,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   --scheduler-tail: initial;
 }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-bar__dest { color: var(--rux-text-primary); }
-.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__count,
+.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__count, .scheduler-bar__route,
   .scheduler-bar__age, .scheduler-bar__ref, .scheduler-bar__ampm, .scheduler-bar__none) {
   color: var(--rux-text-secondary);
   opacity: 1;
@@ -1514,6 +1517,10 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-bar__kind > svg { flex: none; inline-size: 12px; block-size: 12px; }
 .scheduler-bar__kind > .scheduler-bar__kind-word { display: none; }
+/* On a trip of more than one leg the pill says which leg the bar is, `2 of
+   3`, in figures after any arrow, so it is as wide as its words. */
+.scheduler-bar__row > .scheduler-bar__kind--leg { inline-size: auto; gap: var(--rux-spacing-01); }
+.scheduler-bar__kind--leg > .scheduler-bar__kind-word { display: inline; font-weight: 400; font-variant-numeric: tabular-nums; }
 
 /* The rows the view menu can turn off. `display: none` rather than
    `visibility: hidden`, so the height comes back: `--scheduler-bar-rows` drops
@@ -1535,6 +1542,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar__multi { display: flex; align-items: baseline; gap: var(--rux-spacing-02); }
 .scheduler-bar__multi > :first-child { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
 .scheduler-bar__count { flex: none; font-weight: 400; opacity: .85; }
+/* The route's name, on a leg of more than one route, as dim as the count;
+   it gives way after the destination does. */
+.scheduler-bar__route { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 400; opacity: .85; }
 .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
 /* Times in figures of one width, so down the board they line up; the a or
    p after each, and the Route summary's AM or PM, is smaller and dimmer, so

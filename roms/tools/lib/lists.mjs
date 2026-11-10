@@ -95,12 +95,12 @@ function matchFile(file, list) {
   if (file.ext === 'cue' || file.ext === 'm3u' || audioTrack(file.name)) return null;
   if (file.sha1 && list.bySha1.has(file.sha1)) {
     const { game, rom } = list.bySha1.get(file.sha1);
-    return { name: game.name, file: rom.name, by: 'fingerprint' };
+    return { name: game.name, file: rom.name, by: 'fingerprint', serial: game.serial };
   }
   // A CHD by its first track, the data track, as chdman extracted it.
   if (file.inner?.length && list.bySha1.has(file.inner[0])) {
     const { game } = list.bySha1.get(file.inner[0]);
-    return { name: game.name, file: `${game.name}.${file.ext}`, by: 'fingerprint inside' };
+    return { name: game.name, file: `${game.name}.${file.ext}`, by: 'fingerprint inside', serial: game.serial };
   }
   // A GameCube or Wii disc by the ID in its header, its disc and its revision.
   if (h.discId) {
@@ -108,20 +108,29 @@ function matchFile(file, list) {
     const candidates = list.games.filter(g => String(g.serial ?? '').split('-').includes(id4)
       && discOf(g.name) === (h.discNumber ?? 1) && revOf(g.name) === (h.revision ?? 0));
     const pick = candidates.find(g => g.name === stemOf(file.name)) ?? (candidates.length === 1 ? candidates[0] : null);
-    if (pick) return { name: pick.name, file: `${pick.name}.${file.ext}`, by: 'disc ID' };
+    if (pick) return { name: pick.name, file: `${pick.name}.${file.ext}`, by: 'disc ID', serial: pick.serial };
   }
   // A 3DS game by its product code, or a disc by its serial.
   const serial = h.productCode || h.serial;
   if (serial && list.bySerial.has(serial)) {
     const candidates = list.bySerial.get(serial);
     const pick = candidates.find(g => g.name === stemOf(file.name)) ?? (candidates.length === 1 ? candidates[0] : null);
-    if (pick) return { name: pick.name, file: `${pick.name}.${file.ext}`, by: h.productCode ? 'product code' : 'serial' };
+    if (pick) return { name: pick.name, file: `${pick.name}.${file.ext}`, by: h.productCode ? 'product code' : 'serial', serial: pick.serial };
   }
   return null;
 }
 
+// The newer discs of one set as the set once: its name, revision and discs.
+const discSet = names => {
+  if (names.length < 2 || !names.every(n => /\(Disc \d+\)/.test(n))) return names;
+  const rev = n => tagsOf(n).find(t => /^Rev \w+$/.test(t));
+  if (new Set(names.map(discBaseOf)).size > 1 || new Set(names.map(rev)).size > 1) return names;
+  return [`${discBaseOf(names[0])}${rev(names[0]) ? ` (${rev(names[0])})` : ''}, ${names.length} discs`];
+};
+
 // A game's match: each file's, whether all were found, whether each file
-// carries the list's name, and the newer revisions the list knows of.
+// carries the list's name, its serials as the list gives them, and the
+// newest revision the list knows of, since an older one is not worth getting.
 export function matchGame(game, lists) {
   const list = lists[game.system];
   if (!list || game.folder) return null;
@@ -131,15 +140,14 @@ export function matchGame(game, lists) {
   const names = [...new Set(matched.map(f => f.match.name))];
   const renames = matched.filter(f => path.basename(f.name) !== f.match.file)
     .map(f => ({ from: f.name, to: path.join(path.dirname(f.name), f.match.file) }));
-  // The newer revisions of the same release: every tag the same but the
+  // The newest revision of the same release: every tag the same but the
   // revision, so a re-release or a collection is not counted as one.
   const better = [];
   const sameRelease = (a, b) => tagsOf(a).filter(t => !/^Rev \w+$/.test(t)).join('|')
     === tagsOf(b).filter(t => !/^Rev \w+$/.test(t)).join('|');
   for (const n of names) {
-    for (const g of list.games) {
-      if (baseOf(g.name) === baseOf(n) && revOf(g.name) > revOf(n) && sameRelease(g.name, n)) better.push(g.name);
-    }
+    const newer = list.games.filter(g => baseOf(g.name) === baseOf(n) && revOf(g.name) > revOf(n) && sameRelease(g.name, n));
+    if (newer.length) better.push(newer.reduce((a, g) => (revOf(g.name) > revOf(a.name) ? g : a)).name);
   }
   // Discs the list knows of that the game lacks: the same name before its
   // disc number, another disc number.
@@ -152,9 +160,11 @@ export function matchGame(game, lists) {
     listed: files.length > 0 && matched.length === files.length,
     names,
     by: [...new Set(matched.map(f => f.match.by))],
+    // A list may name a disc by more than one serial, joined by commas.
+    serials: [...new Set(matched.flatMap(f => String(f.match.serial ?? '').split(/,\s*/)).filter(Boolean))],
     unmatched: files.filter(f => !f.match).map(f => f.name),
     renames,
-    better: [...new Set(better)],
+    better: discSet([...new Set(better)]),
     missingDiscs: [...new Set(missingDiscs)],
   };
 }
@@ -176,6 +186,7 @@ export function matchSwitch(game, versions) {
     listed: Boolean(known),
     names: known ? [game.title] : [],
     by: known ? ['title ID'] : [],
+    serials: [],
     unmatched: known ? [] : game.files.map(f => f.name),
     renames: [],
     better: latest > have ? [`Update v${latest} (${known[latest]}), the drive has ${have ? `v${have}` : 'no update'}`] : [],

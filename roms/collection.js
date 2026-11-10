@@ -4,7 +4,8 @@
    Every game the last scan found, by system then title, with search and a
    filter per system and per status. A wide screen shows a table; a phone
    shows the same games as a list. A game opens in the side panel with
-   everything the scan read about it.
+   everything the scan read about it, its saves, and rux's marks and note,
+   which are saved from there.
    ========================================================================== */
 (() => {
   'use strict';
@@ -15,6 +16,7 @@
   if (!R?.data) { R?.notice('Roms needs a log-in to read the collection.'); return; }
 
   let games = [];
+  let saves = [];
 
   function shown() {
     const q = $('roms-search').value.trim().toLowerCase();
@@ -84,9 +86,17 @@
       ['Region', g.region], ['Languages', g.languages], ['Revision', g.revision],
       ['Format', g.formats.join(' + ').toUpperCase()], ['Size', R.size(g.size)],
       ['Title ID', g.title_id], ['Version', g.title_id ? g.version : null],
-      ['Save', g.has_save ? 'Yes' : null],
       ['On the list as', g.match?.names?.join(', ')], ['Found by', g.match?.by?.join(', ')],
     ]));
+    const own = saves.filter(s => s.system === g.system && s.game === g.title);
+    if (own.length) {
+      body.append(el('h3', 'rux--type-heading-02', 'Saves'), facts(own.map(s =>
+        [s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save', `Last saved ${R.date(s.saved_at)}${s.note ? ` · ${s.note}` : ''}`])));
+      const a = el('a', 'rux--link', 'Open in Saves');
+      a.href = `saves.html?q=${encodeURIComponent(g.title)}`;
+      body.append(a);
+    }
+    body.append(notesForm(g));
     for (const x of g.extras ?? []) {
       body.append(el('h3', 'rux--type-heading-02', x.kind === 'update' ? 'Update' : 'Add-on'),
         facts([['File', x.file?.name], ['Version', x.version], ['Size', x.file ? R.size(x.file.size) : null]]));
@@ -113,6 +123,69 @@
     $('roms-panel').classList.add('rux--side-panel--open');
     $('roms-panel-close').focus();
   }
+  // rux's marks and note on the game, saved on Save. `plays` is asked only of
+  // a converted game whose originals wait in to-delete.
+  function notesForm(g) {
+    const n = g.notes ?? {};
+    const form = el('form', 'rux--stack-vertical rux--stack-scale-5');
+    form.append(el('h3', 'rux--type-heading-02', 'Your notes'));
+    const fieldset = el('fieldset', 'rux--fieldset');
+    const legend = el('legend', 'rux--label', 'Marks');
+    fieldset.append(legend);
+    const marks = [['played', 'Played'], ['finished', 'Finished'], ['favourite', 'Favourite']];
+    if (g.originals?.length) marks.push(['plays', 'The new file plays, so its originals can go']);
+    for (const [k, label] of marks) {
+      const wrap = el('div', 'rux--form-item rux--checkbox-wrapper');
+      const box = el('input', 'rux--checkbox');
+      box.type = 'checkbox';
+      box.id = `roms-note-${k}`;
+      box.name = k;
+      box.checked = Boolean(n[k]);
+      const lab = el('label', 'rux--checkbox-label');
+      lab.htmlFor = box.id;
+      lab.append(el('div', 'rux--checkbox-label-text', label));
+      wrap.append(box, lab);
+      fieldset.append(wrap);
+    }
+    const item = el('div', 'rux--form-item');
+    const lw = el('div', 'rux--text-area__label-wrapper');
+    const lab = el('label', 'rux--label', 'Note');
+    lab.htmlFor = 'roms-note-text';
+    lw.append(lab);
+    const tw = el('div', 'rux--text-area__wrapper');
+    const area = el('textarea', 'rux--text-area');
+    area.id = 'roms-note-text';
+    area.rows = 3;
+    area.value = n.note ?? '';
+    tw.append(area);
+    item.append(lw, tw);
+    const actions = el('div', 'roms-actions');
+    const button = el('button', 'rux--btn rux--btn--primary', 'Save notes');
+    button.type = 'submit';
+    const said = el('p', 'rux--type-body-01');
+    said.setAttribute('role', 'status');
+    actions.append(button);
+    form.append(fieldset, item, actions, said);
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      button.disabled = true;
+      const row = { system: g.system, title: g.title, note: area.value.trim() || null };
+      for (const [k] of [['played'], ['finished'], ['favourite'], ['plays']]) row[k] = Boolean(form.elements[k]?.checked ?? n[k]);
+      try {
+        await R.data.saveNotes(row);
+        g.notes = row;
+        g.status = R.statusOf(g);
+        said.textContent = 'Saved.';
+        render();
+      } catch (error) {
+        console.error(error);
+        said.textContent = 'That did not save. Try again.';
+      }
+      button.disabled = false;
+    });
+    return form;
+  }
+
   const closePanel = () => {
     $('roms-panel').classList.remove('rux--side-panel--open');
     $('roms-panel').hidden = true;
@@ -122,7 +195,9 @@
 
   async function load() {
     try {
-      games = (await R.data.games()).map(g => ({ ...g, status: R.statusOf(g) }));
+      const [rows, notes, savesRead] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves()]);
+      saves = savesRead;
+      games = R.withNotes(rows, notes).map(g => ({ ...g, status: R.statusOf(g) }));
     } catch (error) {
       console.error(error);
       R.notice('Roms could not read the collection. Try again.');

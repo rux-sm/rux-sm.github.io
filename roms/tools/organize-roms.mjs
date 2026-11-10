@@ -7,7 +7,11 @@
 // - A PlayStation game on BIN and CUE becomes one CHD per disc, and a
 //   PlayStation 2 ISO a CHD, each named by the list; a game on more than one
 //   disc gets an .m3u playlist beside its discs.
-// - Every other file the list names differently is renamed to the list's name.
+// - Every other file the list names differently is renamed to the list's name,
+//   and so is a save under `<emulation>/saves/<system>/` named after it,
+//   since an emulator that finds a save by the game's file name would lose it.
+//   Each rename is kept in `scans/renames.json`, so Import moves the game's
+//   notes with it.
 // - Only a game whose every file is on the list is touched, so a bad copy is
 //   never sealed into a new format or given a name it is not.
 // - Nothing is deleted: a converted original moves to `<emulation>/to-delete/`,
@@ -41,6 +45,21 @@ const cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
 const trash = path.join(root, 'to-delete');
 
 const abs = rel => path.join(romsDir, rel);
+const EMULATORS = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8')).systems;
+const renamesPath = path.join(scansDir, 'renames.json');
+const renames = fs.existsSync(renamesPath) ? JSON.parse(fs.readFileSync(renamesPath, 'utf8')) : [];
+// A game's title, as the scan gives it: its file name less its track and disc.
+const titleOf = rel => path.basename(rel).replace(/\.[^.]+$/, '').replace(/\s*\((Track|Disc) \d+\)/g, '').trim();
+const stemOf = rel => path.basename(rel).replace(/\.[^.]+$/, '');
+const walk = dir => (fs.existsSync(dir) ? fs.readdirSync(dir).filter(n => !n.startsWith('.')).flatMap(n => {
+  const p = path.join(dir, n);
+  return fs.statSync(p).isDirectory() ? walk(p) : [p];
+}) : []);
+// The saves of a game renamed from `from` to `to`, on a system whose
+// emulator names a save after the game's file: each file named `from` plus
+// its extensions becomes `to` plus the same.
+const savesOf = (system, from) => (EMULATORS[system]?.saves === 'name' ? walk(path.join(root, 'saves', system)) : [])
+  .filter(f => path.basename(f).startsWith(`${from}.`));
 const gb = n => `${(n / 1e9).toFixed(1)} GB`;
 const plan = [];
 const skipped = [];
@@ -81,7 +100,13 @@ for (const game of scan.games) {
         originals: [iso], inner: [iso.sha1] });
     }
   } else {
-    for (const r of m.renames) plan.push({ kind: 'rename', from: r.from, out: r.to });
+    for (const r of m.renames) {
+      plan.push({ kind: 'rename', from: r.from, out: r.to });
+      const [from, to] = [stemOf(r.from), stemOf(r.to)];
+      for (const f of savesOf(game.system, from)) {
+        plan.push({ kind: 'save', path: f, out: path.join(path.dirname(f), to + path.basename(f).slice(from.length)) });
+      }
+    }
     discs.push(...m.names);
   }
   if (game.system === 'psx' && discs.length > 1 && !formats.includes('m3u')) {
@@ -91,8 +116,13 @@ for (const game of scan.games) {
 
 const totalIn = plan.filter(p => p.kind === 'chd').flatMap(p => p.originals).reduce((a, f) => a + f.size, 0);
 console.log(`${newest}: ${plan.filter(p => p.kind === 'chd').length} discs to convert (${gb(totalIn)}), `
-  + `${plan.filter(p => p.kind === 'rename').length} files to rename, ${plan.filter(p => p.kind === 'm3u').length} playlists`);
-for (const p of plan) console.log(`  ${p.kind.padEnd(6)} ${p.from ?? ''}${p.from ? '\n         → ' : ''}${p.out}`);
+  + `${plan.filter(p => p.kind === 'rename').length} files to rename, ${plan.filter(p => p.kind === 'save').length} saves to rename, `
+  + `${plan.filter(p => p.kind === 'm3u').length} playlists`);
+for (const p of plan) {
+  const from = p.from ?? (p.path && path.relative(root, p.path));
+  const out = p.kind === 'save' ? path.relative(root, p.out) : p.out;
+  console.log(`  ${p.kind.padEnd(6)} ${from ?? ''}${from ? '\n         → ' : ''}${out}`);
+}
 for (const s of skipped) console.log(`  skip   ${s}`);
 if (!yes) { console.log('\nNothing changed. Run again with --yes to do it.'); process.exit(0); }
 
@@ -104,10 +134,18 @@ const moveToTrash = rel => {
 };
 let done = 0;
 for (const p of plan) {
-  const out = abs(p.out);
+  const out = p.kind === 'save' ? p.out : abs(p.out);
   if (fs.existsSync(out) && p.kind !== 'm3u') { console.log(`  exists, left: ${p.out}`); continue; }
-  if (p.kind === 'rename') {
+  if (p.kind === 'save') {
+    fs.renameSync(p.path, out);
+  } else if (p.kind === 'rename') {
     fs.renameSync(abs(p.from), out);
+    const system = p.from.split('/')[0];
+    const [from, to] = [titleOf(p.from), titleOf(p.out)];
+    if (from !== to && !renames.some(r => r.system === system && r.from === from && r.to === to)) {
+      renames.push({ at: new Date().toISOString(), system, from, to });
+      fs.writeFileSync(renamesPath, JSON.stringify(renames, null, 1));
+    }
   } else if (p.kind === 'm3u') {
     fs.writeFileSync(out, p.discs.join('\n') + '\n');
   } else {

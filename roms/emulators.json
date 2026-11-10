@@ -1,0 +1,42 @@
+{
+  "frontend": {
+    "name": "ES-DE",
+    "why": "It launches each system's emulator from one list of every game, and reads the drive's roms folders as they are named.",
+    "settings": "~/ES-DE"
+  },
+  "systems": {
+    "nes": { "emulator": "Mesen 2", "why": "The most accurate NES emulator, native on macOS.", "saves": "name", "settings": "~/Library/Application Support/Mesen2", "needs": [] },
+    "snes": { "emulator": "Mesen 2", "why": "The most accurate SNES emulator, native on macOS.", "saves": "name", "settings": "~/Library/Application Support/Mesen2", "needs": [] },
+    "n64": { "emulator": "ares", "why": "Accurate, and native on macOS.", "saves": "name", "settings": "~/Library/Application Support/ares", "needs": [] },
+    "gb": { "emulator": "mGBA", "why": "Accurate and light, and it saves as plain .sav files.", "saves": "name", "settings": "~/Library/Application Support/mGBA", "needs": [] },
+    "gbc": { "emulator": "mGBA", "why": "Accurate and light, and it saves as plain .sav files.", "saves": "name", "settings": "~/Library/Application Support/mGBA", "needs": [] },
+    "gba": { "emulator": "mGBA", "why": "Accurate and light, and it saves as plain .sav files.", "saves": "name", "settings": "~/Library/Application Support/mGBA",
+      "needs": [{ "file": "gba_bios.bin", "md5": "a860e8c0b6d573d191e4ec7db1b1e4f6", "optional": true }] },
+    "nds": { "emulator": "melonDS", "why": "The most accurate DS emulator, native on macOS.", "saves": "name", "settings": "~/Library/Application Support/melonDS",
+      "needs": [
+        { "file": "bios7.bin", "md5": "df692a80a5b1bc90728bc3dfc76cd948", "optional": true },
+        { "file": "bios9.bin", "md5": "a392174eb3e572fed6447e956bde4b25", "optional": true },
+        { "file": "firmware.bin", "optional": true }
+      ] },
+    "n3ds": { "emulator": "Azahar", "why": "The maintained successor to Citra; it plays a decrypted .3ds as it is.", "saves": "titleId", "settings": "~/Library/Application Support/Azahar", "needs": [] },
+    "psx": { "emulator": "DuckStation", "why": "The most accurate and fastest PS1 emulator; it reads CHD and .m3u and keeps one memory card per game.", "saves": "serial", "settings": "~/Library/Application Support/DuckStation",
+      "needs": [{ "file": "scph5501.bin", "md5": "490f666e1afb15b7362b406ed1cea246", "label": "PS1 BIOS for USA games" }] },
+    "ps2": { "emulator": "PCSX2", "why": "The only mature PS2 emulator; it runs under Rosetta, as only unofficial forks are native.", "saves": "serial", "settings": "~/Library/Application Support/PCSX2",
+      "needs": [{ "pattern": "^scph\\d+\\.bin$", "label": "a PS2 BIOS" }] },
+    "gc": { "emulator": "Dolphin", "why": "The only mature GameCube emulator; it reads RVZ.", "saves": "discId", "settings": "~/Library/Application Support/Dolphin", "needs": [] },
+    "wii": { "emulator": "Dolphin", "why": "The only mature Wii emulator; it reads RVZ.", "saves": "discId", "settings": "~/Library/Application Support/Dolphin", "needs": [] },
+    "wiiu": { "emulator": "Cemu", "why": "The only mature Wii U emulator, native on macOS; a .wua needs no keys.", "saves": "titleId", "settings": "~/Library/Application Support/Cemu", "needs": [] },
+    "switch": { "emulator": "Eden", "why": "The most active Switch emulator, with the best Apple Silicon support now Ryubing only maintains.", "saves": "titleId", "settings": "~/Library/Application Support/eden",
+      "needs": [
+        { "file": "prod.keys", "secret": true },
+        { "file": "title.keys", "secret": true },
+        { "pattern": "^firmware.*\\.zip$", "label": "firmware" }
+      ] },
+    "xbox": { "emulator": "xemu", "why": "The only mature Xbox emulator, for when Xbox games join.", "saves": "titleId", "settings": "~/Library/Application Support/xemu",
+      "needs": [
+        { "file": "mcpx_1.0.bin", "label": "MCPX boot ROM" },
+        { "pattern": "^complex_4627.*\\.bin$", "label": "flash BIOS" },
+        { "file": "xbox_hdd.qcow2", "label": "hard disk image" }
+      ] }
+  }
+}

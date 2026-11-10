@@ -38,3 +38,11 @@ th.roms-size .rux--table-header-label { justify-content: flex-end; }
 
 /* A step's buttons side by side, wrapping on a phone. */
 .roms-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); }
+
+/* An emulator's row: its needs as tags that wrap, then its saves and settings side by side. */
+.roms-emulator { display: grid; gap: var(--rux-spacing-04); }
+.roms-tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.roms-facts--row { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+
+/* A save's files, one to a line. */
+.roms-files { white-space: pre-line; font-size: .75rem; }

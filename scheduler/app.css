@@ -4086,25 +4086,25 @@ a.scheduler-tip__go { text-decoration: none; }
   background: conic-gradient(var(--scheduler-meter-ink) var(--scheduler-share, 0%), var(--scheduler-meter-track) 0);
   mask: radial-gradient(closest-side, transparent calc(100% - var(--rux-spacing-01) - 0.5px), #000 calc(100% - var(--rux-spacing-01)));
 }
-.scheduler-avail__meter[hidden] { display: none; }
+.scheduler-avail__meter[hidden] { display: block; visibility: hidden; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__meter:not([data-kind]) { background: repeating-conic-gradient(var(--scheduler-meter-track) 0 18deg, transparent 0 36deg); }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
 /* After the gauge, what a driver is doing on their trip, then their worst
-   mark, a status solid in its colour, ending the line so every driver's
-   stands in one column at the card's edge, as a bar's alert ends its row.
-   Each stands 4px after the icon before it, 8px after the name, and one
-   not drawn gives the name its room. */
+   mark, a status solid in its colour, ending the line. Each keeps its place
+   on every tile, drawn or not, 4px after the one before, so every gauge,
+   every status and every mark stands in its own column down the rail, as a
+   bar's alert ends its row. */
 .scheduler-avail__doing,
 .scheduler-avail__mark {
+  display: inline-flex;
   flex: none;
   align-items: center;
-  margin-inline-start: var(--rux-spacing-03);
+  inline-size: var(--scheduler-mark-glyph);
+  margin-inline-start: var(--rux-spacing-02);
   block-size: var(--scheduler-row-h);
 }
-:is(.scheduler-avail__doing, .scheduler-avail__mark):not([hidden]) { display: inline-flex; }
-.scheduler-avail__card:has(.scheduler-avail__meter:not([hidden])) ~ :is(.scheduler-avail__doing, .scheduler-avail__mark),
-.scheduler-avail__doing:not([hidden]) + .scheduler-avail__mark { margin-inline-start: var(--rux-spacing-02); }
+:is(.scheduler-avail__doing, .scheduler-avail__mark)[hidden] { visibility: hidden; }
 .scheduler-avail__mark { color: var(--scheduler-head-low); }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* What they are doing: driving in the trip bar's green, amber under two

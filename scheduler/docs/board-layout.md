@@ -97,10 +97,10 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |
 | :--- | :--- |
-| Name | What the icons and gauge leave of the 128px, 64px with all three |
+| Name | 64px, what the gauge and both icons leave of the 128px; their places stay when they are not drawn, so each stands in one column down the rail |
 | Gauge | 16px, a 2px ring, at least 8px after the name, as a bar's marks stand from its words, filled clockwise of the ten hours |
-| Doing | 16px, what they are doing on a trip, 4px after the gauge or at least 8px after the name |
-| Mark | 16px, at the line's end, 4px after the icon or gauge before it or at least 8px after the name |
+| Doing | 16px, what they are doing on a trip, 4px after the gauge |
+| Mark | 16px, at the line's end, 4px after the doing icon |
 
 ## The driver's week
 

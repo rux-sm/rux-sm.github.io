@@ -3077,8 +3077,9 @@
     const leg = shaped(editing?.trip) ? SHAPE.legOf(editing.trip, key) : null;
     return leg ? { legId: leg.id, routeId: leg.routes[0]?.id ?? null } : null;
   }
-  const onRoute = key => {
-    const routeId = legIdsOf(key)?.routeId;
+  // A row on a leg's route: the one named, or the leg's first.
+  const onRoute = (key, route = null) => {
+    const routeId = route ?? legIdsOf(key)?.routeId;
     return routeId ? { route_id: routeId } : { leg: wordOfLeg(key) };
   };
   // A quote line names its leg by its word, or none when it is the trip's.
@@ -7184,6 +7185,21 @@
      leg's last day and the yard return a day later after midnight. A place or
      a drive is asked for only once it has changed, so a row's own values
      stand until then. */
+  /* Whether a stop row is on the route the tab shows: its leg's, and the
+     route on screen where the leg has its routes; a row a trip read without
+     its legs holds names no route. */
+  const onShownRoute = (r, x) => x.leg === r.leg && (r.routeId == null || x.route == null || x.route === r.routeId);
+  // The route's name as typed, where it differs from the saved one.
+  const routeNameWork = () => {
+    const r = editing?.route;
+    return !!r?.routeId && (r.name || null) !== (r.nameOpen || null);
+  };
+  async function saveRouteName(write) {
+    const r = editing?.route;
+    if (!routeNameWork()) return;
+    await write('its route', client.from('trip_routes').update({ name: r.name || null }).eq('id', r.routeId));
+  }
+
   function routeWanted() {
     const r = editing?.route;
     if (!r) return null;
@@ -7348,13 +7364,13 @@
         ? drives(r.dropDrive, r.dropMiles) : {}),
     });
 
-    const legRows = r.all.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const legRows = r.all.filter(x => onShownRoute(r, x)).sort((a, b) => a.position - b.position);
     /* A leg with no rows yet, a trip not saved or a return leg not started,
        has every row new: the pickup, the stops, the drop-off and the yard, in
        that order. An outbound leg goes before the return leg's rows, which
        move down to make room; a return leg goes after the outbound's. */
     if (!legRows.length) {
-      const others = r.all.filter(x => x.leg !== r.leg);
+      const others = r.all.filter(x => !onShownRoute(r, x));
       const yard = { name: yardPlace?.name ?? 'Yard', address: yardPlace?.address ?? null,
                      lat: yardPlace?.lat ?? null, lng: yardPlace?.lng ?? null };
       const rows = [{ type: 'pickup', ...wanted.pickup },
@@ -7400,7 +7416,7 @@
     const inserts = [];
     if (delta) {
       const last = legRows.at(-1).position;
-      for (const x of r.all.filter(x => x.leg !== r.leg && x.position > last)) {
+      for (const x of r.all.filter(x => !onShownRoute(r, x) && x.position > last)) {
         updates.push({ id: x.id, patch: { position: x.position + delta } });
       }
     }
@@ -7464,7 +7480,7 @@
       }
       for (const ins of planned.inserts) {
         await write('its route', client.from('trip_stops')
-          .insert({ trip_id: tripId, ...onRoute(r.leg), position: ins.position, ...ins.row }));
+          .insert({ trip_id: tripId, ...onRoute(r.leg, r.routeId), position: ins.position, ...ins.row }));
       }
       return;
     }
@@ -7473,7 +7489,7 @@
       await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
     }
     const rows = (r?.all ?? []).map(x => ({ ...x }));
-    const legRows = () => rows.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const legRows = () => rows.filter(x => onShownRoute(r, x)).sort((a, b) => a.position - b.position);
     const top = () => rows.reduce((n, x) => Math.max(n, x.position), -1);
     for (const ins of inserts) {
       const mine = legRows();
@@ -7490,8 +7506,8 @@
         await write('its route', client.from('trip_stops').update({ position: x.position }).eq('id', x.id));
       }
       const saved = await write('its route', client.from('trip_stops')
-        .insert({ trip_id: tripId, ...onRoute(r.leg), position: pos, ...ins.row }).select('id').single());
-      rows.push({ id: saved.id, leg: r.leg, type: ins.row.type, position: pos });
+        .insert({ trip_id: tripId, ...onRoute(r.leg, r.routeId), position: pos, ...ins.row }).select('id').single());
+      rows.push({ id: saved.id, leg: r.leg, route: r.routeId, type: ins.row.type, position: pos });
     }
   }
 
@@ -7569,7 +7585,7 @@
   function changed() {
     if (!editing) return false;
     const patch = patchOf();
-    return routePlan().work || !!paymentsPatch()?.work
+    return routePlan().work || routeNameWork() || !!paymentsPatch()?.work
       || !!posPatch()?.work || !!invoicesPatch()?.work || !!linesPatch()?.work || fleetChanged()
       || (!!patch && Object.keys(patch).some(k => !(k === 'est_miles' && estFollows()))) || doneChanged();
   }
@@ -8065,6 +8081,97 @@
       await show();
     }
   }
+  /* THE ROUTES OF THE LEG ON SCREEN. The editor opens on a route from its
+     bar where the week shows one, as `openLeg` does a leg. Add route copies
+     the route on screen, its stops and times with no vehicles, and opens it,
+     so only what differs is changed; Remove route takes the route on screen
+     off, its vehicles moving to the leg's first other route. Both act at
+     once on a saved trip with nothing unsaved, after the update box, as Add
+     leg and Remove leg do. A route is named in the field under the list of
+     routes, and the name saves with Save. */
+  function openRoute(key, routeId) {
+    const trip = panelIndex.trips.get(String(editing?.id)) ?? panelArgs?.trip;
+    const leg = trip ? legByKey(trip, key) : null;
+    if (!leg) return;
+    const bar = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(String(trip.id))}"]`)]
+      .find(b => barOnLeg(b, leg.key) && b.dataset.routeId === routeId);
+    if (bar) { selectBar(bar); openPanel(bar); }
+    else openPanel(null, null, { ref: { tripId: String(trip.id), leg: leg.leg, legKey: leg.key, routeId, busId: null, assignmentId: null }, trip });
+    document.getElementById('scheduler-f-route')?.focus();
+  }
+  const routeLabel = (route, i) => route?.name || `Route ${i + 1}`;
+  async function addRoute() {
+    const r = editing?.route;
+    if (!editing || editing.creating || !shaped(editing.trip) || !r?.routeId) return;
+    const trip = editing.trip;
+    const leg = legHeld(screenKey());
+    if (!leg?.id) return;
+    const said = editing.legs.length > 1 ? `Added a route to ${legPhrase(leg.key)}` : 'Added a route';
+    const answer = await askForUpdate({ said: [said], line: said, keys: ['route'] }, false, trip);
+    if (!answer) return;
+    toast('working', 'Adding the route…');
+    let before;
+    try { before = await readTripState(trip.id); } catch { before = undefined; }
+    try {
+      const [routes, stops, last] = await Promise.all([
+        withTimeout(client.from('trip_routes').select('position').eq('leg_id', leg.id).then(unwrap)),
+        withTimeout(client.from('trip_stops').select('*').eq('route_id', r.routeId).order('position').then(unwrap)),
+        withTimeout(client.from('trip_stops').select('position').eq('trip_id', trip.id).order('position', { ascending: false }).limit(1).then(unwrap)),
+      ]);
+      const position = routes.reduce((n, x) => Math.max(n, x.position ?? 0), 0) + 1;
+      const made = await withTimeout(client.from('trip_routes').insert({ trip_id: trip.id, leg_id: leg.id, position })
+        .select('id').single().then(unwrap));
+      const top = last?.[0]?.position ?? -1;
+      if (stops.length) {
+        await withTimeout(client.from('trip_stops').insert(stops.map((x, i) => ({ trip_id: trip.id, route_id: made.id, position: top + 1 + i,
+          ...Object.fromEntries([...STOP_COPY, ...STOP_DAYS].map(k => [k, x[k] ?? null])) }))).then(unwrap));
+      }
+      if (answer.kind !== 'none') await writeUpdate(trip.id, answer);
+      if (before !== undefined) await recordSave(trip.id, before);
+      toast('success', `${said}.`);
+      await show();
+      openRoute(leg.key, made.id);
+    } catch (err) {
+      toast('error', `The route was not added. ${err.message ?? err}`);
+      await show();
+    }
+  }
+  async function removeRoute() {
+    const r = editing?.route;
+    if (!editing || editing.creating || !r?.routeId || r.routes.length < 2) return;
+    const trip = editing.trip;
+    const leg = legHeld(screenKey());
+    const at = r.routes.findIndex(x => x.id === r.routeId);
+    const keep = r.routes.find(x => x.id !== r.routeId);
+    const wait = text => { toast('info', 'This route cannot be removed yet', text); };
+    const [buses, lines, stops] = await Promise.all([
+      withTimeout(client.from('trip_assignments').select('id, trip_drivers(driver_id)').eq('route_id', r.routeId).then(unwrap)),
+      withTimeout(client.from('trip_quote_lines').select('id').eq('route_id', r.routeId).then(unwrap)),
+      withTimeout(client.from('trip_stops').select('id').eq('route_id', r.routeId).then(unwrap)),
+    ]);
+    if (buses.some(a => (a.trip_drivers || []).some(d => d.driver_id))) { wait('Take its drivers off on the Buses tab and save, so they are told.'); return; }
+    if (lines.length) { wait('Take its own quote lines off on the Billing tab and save first.'); return; }
+    const said = `Removed ${routeLabel(r.routes[at], at)}${editing.legs.length > 1 ? ` from ${legPhrase(leg.key)}` : ''}`;
+    const answer = await askForUpdate({ said: [said], line: said, keys: ['route'] }, false, trip);
+    if (!answer) return;
+    toast('working', 'Removing the route…');
+    let before;
+    try { before = await readTripState(trip.id); } catch { before = undefined; }
+    try {
+      if (buses.length) await withTimeout(client.from('trip_assignments').update({ route_id: keep.id }).in('id', buses.map(a => a.id)).then(unwrap));
+      if (stops.length) await withTimeout(client.from('trip_stops').delete().in('id', stops.map(x => x.id)).then(unwrap));
+      await withTimeout(client.from('trip_routes').delete().eq('id', r.routeId).then(unwrap));
+      if (answer.kind !== 'none') await writeUpdate(trip.id, answer);
+      if (before !== undefined) await recordSave(trip.id, before);
+      toast('success', `${said}.`);
+      await show();
+      openRoute(leg.key, keep.id);
+    } catch (err) {
+      toast('error', `The route was not removed. ${err.message ?? err}`);
+      await show();
+    }
+  }
+
   legSwitchHost?.addEventListener('change', e => {
     if (e.target.id !== 'scheduler-f-leg' || !editing) return;
     const key = e.target.value;
@@ -8223,7 +8330,13 @@
        `routeWanted` reads. A new trip has no rows, and Save makes them. */
     editing.route = (() => {
       const leg = screen.key;
-      const stops = creating ? [] : stopsOfLeg(trip, leg).stops;
+      /* THE ROUTE ON SCREEN, of the leg on screen: the bar's or link's, or
+         the leg's first. `routes` are the leg's, in order, each with its
+         name, and `name` the one on screen's as its field holds it. */
+      const routes = creating || !shaped(trip) ? [] : (SHAPE.legOf(trip, leg)?.routes ?? []);
+      const shown = routes.find(x => x.id === ref?.routeId) ?? routes[0] ?? null;
+      const routeId = shown?.id ?? null;
+      const stops = creating ? [] : stopsOfLeg(trip, leg, routeId).stops;
       const pickup = stops.find(x => x.type === 'pickup') ?? null;
       const backIndex = stops.map(x => x.type).lastIndexOf('return');
       const back = backIndex >= 0 ? stops[backIndex] : null;
@@ -8237,10 +8350,12 @@
       // The drop-off's and the pickup's other leg, whose rows a split trip's pickup leg is filled from.
       const other = heldLegs.find(l => l.word && l.word === (screen.word === 'return' ? 'outbound' : 'return'));
       return {
-        leg, pickup, first, drop, back, inner, ...dates,
+        leg, routeId, routes: routes.map(x => ({ id: x.id, name: x.name ?? null })),
+        nameOpen: shown?.name ?? null, name: shown?.name ?? null,
+        pickup, first, drop, back, inner, ...dates,
         between: inner.length,
         otherStops: creating || !other ? [] : stopsOfLeg(trip, other.key).stops,
-        all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: keyOfRow(trip, x), type: x.type, position: x.position ?? 0 })),
+        all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: keyOfRow(trip, x), route: x.route_id ?? null, type: x.type, position: x.position ?? 0 })),
         driveOut: driveMin(pickup?.drive),
         driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
         backDrive: driveMin(back?.drive), backMiles: numOrNull(back?.miles), backSource: back?.drive_source ?? 'estimated',
@@ -9737,9 +9852,33 @@
       const routeSection = section(null, stopsBody);
       // The kept times go last, so the Summary is the tab's first section.
       // Its tile is a frame of its own, so app.css draws no rule after it.
-      const summarySection = section('Summary', summaryLayer);
+      /* THE LEG'S ROUTES, on a saved trip: Add route and, with more than one,
+         Remove route on the Summary's menu, and over the Summary the list of
+         the leg's routes, to move between them, and the name of the one on
+         screen. See `openRoute`. */
+      const routeMenu = creating || !r.routeId ? null : menuTrigger('scheduler-f-routemenu', 'Route actions');
+      routeMenu?.addEventListener('click', () => openItemsMenu(routeMenu, [
+        { label: 'Add route', run: () => whenSafe(addRoute) },
+        ...(r.routes.length > 1 ? [{ label: 'Remove route', danger: true, run: () => whenSafe(removeRoute) }] : []),
+      ], 'Route actions'));
+      let routesSection = null;
+      if (r.routes.length > 1) {
+        const pick = selectField('scheduler-f-route', 'Route', r.routeId, r.routes.map((x, i) => [x.id, routeLabel(x, i)]));
+        const at = r.routes.findIndex(x => x.id === r.routeId);
+        const name = textField('scheduler-f-routename', 'Route name', r.name);
+        name.querySelector('input').placeholder = `Route ${at + 1}`;
+        name.querySelector('input')?.addEventListener('input', e => { r.name = e.target.value.trim() || null; refreshDirty(); });
+        pick.querySelector('select')?.addEventListener('change', e => {
+          const id = e.target.value;
+          e.target.value = r.routeId;
+          if (id && id !== r.routeId) whenSafe(() => openRoute(r.leg, id));
+        });
+        routesSection = section(null, pair(pick, name));
+      }
+      const summarySection = section('Summary', summaryLayer, routeMenu ?? undefined);
       summarySection.classList.add('scheduler-panel-section--summary');
       panelRoute.append(
+        ...(routesSection ? [routesSection] : []),
         summarySection,
         routeSection,
         routeBox,
@@ -11835,6 +11974,7 @@
       tripId: bar.dataset.tripId,
       leg: bar.dataset.leg || 'outbound',
       legKey: bar.dataset.legKey || bar.dataset.leg || 'outbound',
+      routeId: bar.dataset.routeId || null,
       busId: bar.dataset.busId || null,
       assignmentId: bar.dataset.assignmentId || null,
     };
@@ -12425,6 +12565,7 @@
     }
     if (has('destination')) sayChange('destination', patch.destination ? `Changed the destination to ${patch.destination}` : 'Changed the destination');
     if (has('trip_type', 'leg_kind') || routePlan().work) sayChange('route', 'Changed the times or route');
+    else if (routeNameWork()) sayChange('route', editing.route.name ? `Named the route ${editing.route.name}` : 'Took the route\'s name off');
     if (has('customer')) sayChange('customer', patch.customer ? `Changed the customer to ${patch.customer}` : 'Changed the customer');
     if (has('booking_contact_id', 'booking_contact_name', 'booking_contact_phone', 'booking_contact_email')) {
       sayChange('contact', 'booking_contact_name' in patch && patch.booking_contact_name
@@ -13918,6 +14059,7 @@
           client.from('trips').update({ deposit_amount: payPatch.paid || null }).eq('id', tripId));
       }
 
+      await saveRouteName(write);
       /* Purchase orders, invoices and quote lines, by id like the payments.
          Their summary columns on the trip, and `quoted_price`, which is the
          lines' sum, went out with the trip patch (`EDITS`). */

@@ -207,10 +207,8 @@ them and nothing is entered twice.
       contacts and quote lines with it, where now it waits for them to be
       taken off; and let a draft carry legs and contacts through
       `scheduler/draft-fields.js`, which carries a split's pickup days now.
-- [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
-      rename and remove, the tab opening on the pressed bar's leg and
-      route, the route's Passengers, and a file or contact choosing its leg
-      or route.
+- [ ] Give the Route tab the route's Passengers, and let a file or contact
+      choose its leg or route, once their columns are in.
 - [ ] List the Buses tab's vehicles under their routes, choose a vehicle's
       route in its window, and make Add co-driver and Rest in the sleeper
       act on the route's vehicles.

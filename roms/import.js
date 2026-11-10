@@ -17,6 +17,8 @@
   let pending = null;
   const key = g => `${g.system}/${g.title}`;
   const saveKey = s => `${s.system}/${s.name}/${s.kind}`;
+  // The drive's saves are the scan's; a Mac's come from the Saves page.
+  const DRIVE = 'drive';
 
   // A game from the scan as its row: the scan's own names, in the table's.
   const rowOf = (g, scanned) => ({
@@ -29,7 +31,7 @@
   });
   // A save as its row, without its note, so writing it leaves rux's note.
   const saveRowOf = (s, scanned) => ({
-    system: s.system, name: s.name, kind: s.kind, game: s.game, files: s.files, size: s.size,
+    system: s.system, name: s.name, kind: s.kind, location: DRIVE, game: s.game, files: s.files, size: s.size,
     created_at: s.created, saved_at: s.saved, scanned_at: scanned,
   });
 
@@ -70,7 +72,7 @@
       games: scan.games.map(g => rowOf(g, scan.scanned)),
       gone,
       saves: scanSaves.map(s => saveRowOf(s, scan.scanned)),
-      savesGone: savedSaves.filter(s => !savesNow.has(saveKey(s))),
+      savesGone: savedSaves.filter(s => s.location === DRIVE && !savesNow.has(saveKey(s))),
       bios: (scan.bios ?? []).map(b => ({
         name: b.name, size: b.size ?? null, crc32: b.crc32 ?? null, md5: b.md5 ?? null, sha1: b.sha1 ?? null,
         secret: Boolean(b.secret), scanned_at: scan.scanned,

@@ -204,6 +204,35 @@ Backups, three copies of everything small:
 - **A save is restored from the Saves page,** which downloads any backup's
   zip.
 
+Saves found wherever each emulator keeps them, and backed up from the app:
+
+- **`emulators.json` says where each emulator keeps saves on a Mac,** its
+  default and the setting that moves it, because each keeps them its own
+  way: in `~/Library/Application Support`, beside the game, or in a
+  NAND or memory card folder.
+- **`roms/tools/gather-saves.mjs` finds every save on this Mac,** reading
+  each installed emulator's settings for a moved save folder and its
+  default otherwise, and copies them with this Mac's name into one dated
+  folder in `~/Emulation/backups/`; it only reads the saves.
+- **`Back up saves.command`, kept on the drive, runs it with a double-click**
+  and opens the Saves page, so no terminal is needed; it needs Node on the
+  Mac.
+- **Back up this Mac's saves, on the Saves page,** uploads the newest folder
+  through Chrome, picked once and remembered, file by file to the
+  `roms-backups` bucket, and records each save by its game and Mac.
+  The page cannot read `~/Library` itself, which Chrome keeps from pages.
+- **The rules that match a save to its game live in one module,**
+  `roms/saves-rules.js`, which the scan imports and the page loads, so they
+  never match a save differently; the gather tool only copies.
+- **A save beside a game on the drive is a save,** not a game, since mGBA
+  and melonDS keep one there by default.
+- **Each save says where it lives,** the T7 or a Mac by name, and when it was
+  last backed up, so a save on one Mac only is plain to see.
+- **Restore downloads a Mac save's files one by one,** each with the folder
+  its emulator reads it from, and a drive save's backup zip.
+- **Pointing every emulator at the T7's `saves/` stays the choice for playing
+  across Macs,** and the gather tool finds the saves either way.
+
 Rux's own notes:
 
 - **A note on a save,** saying where it is in the game, is typed on the Saves

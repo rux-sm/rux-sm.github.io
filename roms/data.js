@@ -26,6 +26,18 @@
     for (let i = 0; i < rows.length; i += 100) fail((await write(rows.slice(i, i + 100))).error);
   };
 
+  // Every object under a folder of the bucket, its subfolders' too.
+  const allObjects = async prefix => {
+    const { data: items, error } = await client.storage.from(BUCKET).list(prefix, { limit: 1000 });
+    fail(error);
+    const out = [];
+    for (const it of items) {
+      if (it.id) out.push(`${prefix}/${it.name}`);
+      else out.push(...await allObjects(`${prefix}/${it.name}`));
+    }
+    return out;
+  };
+
   // Which backups Supabase keeps: every one of the last 30 days, and the
   // newest of each month before that.
   const keep = names => {
@@ -46,7 +58,7 @@
     gameKeys: () => all(() => client.from('roms_games').select('system, title, size, scanned_at').order('system').order('title')),
     notes: () => all(() => client.from('roms_notes').select('*')),
     saves: () => all(() => client.from('roms_saves').select('*').order('system').order('name')),
-    saveKeys: () => all(() => client.from('roms_saves').select('system, name, kind')),
+    saveKeys: () => all(() => client.from('roms_saves').select('system, name, kind, location')),
     bios: () => all(() => client.from('roms_bios').select('*').order('name')),
     async drive() {
       const { data: row, error } = await client.from('roms_drive').select('*').maybeSingle();
@@ -59,7 +71,8 @@
       fail((await client.from('roms_notes').upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: 'system,title' })).error);
     },
     async saveSaveNote(save, note) {
-      fail((await client.from('roms_saves').update({ note }).eq('system', save.system).eq('name', save.name).eq('kind', save.kind)).error);
+      fail((await client.from('roms_saves').update({ note })
+        .eq('system', save.system).eq('name', save.name).eq('kind', save.kind).eq('location', save.location)).error);
     },
 
     // A scan saved. A rename the organize tool made moves the game's notes
@@ -75,20 +88,25 @@
         fail((await client.from('roms_notes').update({ title: r.to }).eq('system', r.system).eq('title', r.from)).error);
         has.add(`${r.system}/${r.to}`);
       }
-      const saveKeys = new Set((await data.saveKeys()).map(k => `${k.system}/${k.name}/${k.kind}`));
+      const keys = await data.saveKeys();
+      const saveKeys = new Set(keys.map(k => `${k.system}/${k.name}/${k.kind}/${k.location}`));
+      const locations = [...new Set(keys.map(k => k.location))];
       for (const r of renames) {
         for (const kind of ['save', 'state', 'card']) {
-          if (!saveKeys.has(`${r.system}/${r.from}/${kind}`) || saveKeys.has(`${r.system}/${r.to}/${kind}`)) continue;
-          fail((await client.from('roms_saves').update({ name: r.to, game: r.to })
-            .eq('system', r.system).eq('name', r.from).eq('kind', kind)).error);
-          saveKeys.add(`${r.system}/${r.to}/${kind}`);
+          for (const location of locations) {
+            if (!saveKeys.has(`${r.system}/${r.from}/${kind}/${location}`) || saveKeys.has(`${r.system}/${r.to}/${kind}/${location}`)) continue;
+            fail((await client.from('roms_saves').update({ name: r.to, game: r.to })
+              .eq('system', r.system).eq('name', r.from).eq('kind', kind).eq('location', location)).error);
+            saveKeys.add(`${r.system}/${r.to}/${kind}/${location}`);
+          }
         }
       }
       await inBatches(games, rows => client.from('roms_games').upsert(rows, { onConflict: 'system,title' }));
       for (const g of gone) fail((await client.from('roms_games').delete().eq('system', g.system).eq('title', g.title)).error);
-      await inBatches(saves, rows => client.from('roms_saves').upsert(rows, { onConflict: 'system,name,kind' }));
+      await inBatches(saves, rows => client.from('roms_saves').upsert(rows, { onConflict: 'system,name,kind,location' }));
       for (const s of savesGone) {
-        fail((await client.from('roms_saves').delete().eq('system', s.system).eq('name', s.name).eq('kind', s.kind)).error);
+        fail((await client.from('roms_saves').delete()
+          .eq('system', s.system).eq('name', s.name).eq('kind', s.kind).eq('location', s.location)).error);
       }
       fail((await client.from('roms_bios').delete().neq('name', '')).error);
       if (bios.length) fail((await client.from('roms_bios').insert(bios)).error);
@@ -100,6 +118,41 @@
       const { data: files, error } = await client.storage.from(BUCKET).list('', { limit: 1000, sortBy: { column: 'name', order: 'desc' } });
       fail(error);
       return files.filter(f => f.name.endsWith('.zip'));
+    },
+
+    // A Mac's saves, gathered by gather-saves.mjs and read on this device:
+    // each file uploaded under `macs/<Mac>/<date>/`, each save written with
+    // the Mac as its location and leaving its note, the Mac's saves no longer
+    // gathered deleted, and the Mac's gatherings past keeping removed.
+    async saveMacSaves(mac, made, files, saves) {
+      const folder = `macs/${mac}/${made.slice(0, 10)}`;
+      for (const f of files) {
+        fail((await client.storage.from(BUCKET).upload(`${folder}/${f.stored}`, f.blob,
+          { upsert: true, contentType: 'application/octet-stream' })).error);
+      }
+      const rows = saves.map(s => ({
+        system: s.system, name: s.name, kind: s.kind, location: mac, game: s.game,
+        files: s.files.map(f => ({ ...f, object: `${folder}/${f.stored}` })),
+        size: s.size, created_at: s.created, saved_at: s.saved, backed_up_at: made, scanned_at: made,
+      }));
+      await inBatches(rows, batch => client.from('roms_saves').upsert(batch, { onConflict: 'system,name,kind,location' }));
+      const now = new Set(rows.map(r => `${r.system}/${r.name}/${r.kind}`));
+      for (const k of (await data.saveKeys()).filter(k => k.location === mac && !now.has(`${k.system}/${k.name}/${k.kind}`))) {
+        fail((await client.from('roms_saves').delete()
+          .eq('system', k.system).eq('name', k.name).eq('kind', k.kind).eq('location', mac)).error);
+      }
+      const { data: dates, error } = await client.storage.from(BUCKET).list(`macs/${mac}`, { limit: 1000 });
+      fail(error);
+      const kept = keep(dates.map(d => d.name));
+      for (const d of dates.filter(x => !kept.has(x.name))) {
+        const objects = await allObjects(`macs/${mac}/${d.name}`);
+        for (let i = 0; i < objects.length; i += 100) fail((await client.storage.from(BUCKET).remove(objects.slice(i, i + 100))).error);
+      }
+    },
+    async fileLink(object, name) {
+      const { data: link, error } = await client.storage.from(BUCKET).createSignedUrl(object, 60, { download: name });
+      fail(error);
+      return link.signedUrl;
     },
     // A backup zip uploaded, then the ones past keeping removed.
     async uploadBackup(file) {

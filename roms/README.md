@@ -27,8 +27,10 @@ is safe to empty:
 when every game converted from what is in it is marked as playing.
 
 `saves.html` shows the three copies of the saves, on the drive, in Supabase
-and on each Mac, with each backup in Supabase to download; then every save
-by system, each with its kind, dates and rux's note on it.
+and on each Mac, with each backup in Supabase to download, and Back up this
+Mac's saves, which uploads what `tools/gather-saves.mjs` gathered from this
+Mac's emulators; then every save by system, on the drive or a Mac, each
+with its kind, dates, how to restore it and rux's note on it.
 
 `emulators.html` shows each system's emulator from `emulators.json`, why it
 is the one, each file it needs and whether the drive holds it, and where its
@@ -76,6 +78,15 @@ again after it. chdman comes from Homebrew's `rom-tools`.
 
     node roms/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
 
+    node roms/tools/gather-saves.mjs
+    node roms/tools/gather-saves.mjs --install "/Volumes/<drive>/emulation"
+
+`tools/gather-saves.mjs` finds every save this Mac's emulators keep, where
+`emulators.json` says each keeps them or where its own settings moved them,
+and copies them to `~/Emulation/backups/` for the Saves page to upload.
+`--install` puts it on the drive with `Back up saves.command`, which runs it
+with a double-click and opens the Saves page.
+
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
 firmware and installers too large for Supabase, into
 `~/Documents/Roms backups/`, recorded on the drive for the Saves page.
@@ -91,7 +102,8 @@ collection is ever written here, because this repository is public.
 | | |
 | :--- | :--- |
 | `data.js` | the reads and writes |
-| `emulators.json` | each system's emulator, why, how it names a save and what it needs; the scan reads it too |
+| `emulators.json` | each system's emulator, why, how it names a save, what it needs, and where each keeps saves on a Mac; the scan and the gather tool read it too |
+| `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `collection.js`, `problems.js`, `saves.js`, `emulators.js`, `import.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `roms-` |

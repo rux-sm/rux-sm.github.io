@@ -153,6 +153,13 @@
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="roms-backups-title" id="roms-backups-wrap" hidden>
           <h2 class="rux--type-heading-03" id="roms-backups-title">Backups</h2>
           <div class="rux--css-grid rux--css-grid--narrow" id="roms-copies"></div>
+          <div class="rux--stack-vertical rux--stack-scale-3">
+            <div class="roms-actions">
+              <button type="button" class="rux--btn rux--btn--primary" id="roms-mac-backup">Back up this Mac's saves</button>
+            </div>
+            <p class="roms-row__sub">Uploads the saves <code>Back up saves.command</code> on the drive gathered from this Mac's emulators, from the backups folder in your home folder's Emulation folder. Chrome asks for that folder once.</p>
+            <p class="rux--type-body-01" id="roms-mac-status" role="status"></p>
+          </div>
           <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
             <div class="rux--contained-list__header"><h3 class="rux--contained-list__label">In Supabase</h3></div>
             <ul role="list" id="roms-backup-list"></ul>
@@ -200,6 +207,7 @@
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
+<script src="saves-rules.js"></script>
 <script src="saves.js"></script>
 </body>
 </html>

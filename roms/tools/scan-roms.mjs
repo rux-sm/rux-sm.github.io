@@ -11,9 +11,9 @@
 // kept. Nothing it writes belongs in this repository, which is public.
 // `--headers-only` skips the fingerprints, for a quick look.
 //
-// Each save under `<emulation>/saves/<system>/` is matched to its game the
-// way that system's emulator names it, from roms/emulators.json: by the
-// game's file name, title ID, disc ID or serial.
+// Each save under `<emulation>/saves/<system>/`, and each one an emulator
+// wrote beside its game under `roms/`, is matched to its game by the rules in
+// roms/saves-rules.js, which the Saves page shares.
 //
 // When `<emulation>/lists/` holds the No-Intro and Redump lists, every game
 // is matched against them (lib/lists.mjs). A CHD is matched by the tracks
@@ -27,6 +27,7 @@ import zlib from 'node:zlib';
 import os from 'node:os';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { loadLists, matchGame, loadSwitchVersions, matchSwitch, discBaseOf, releaseOf, loadBiosList } from './lib/lists.mjs';
+import saveRules from '../saves-rules.js';
 
 const root = process.argv[2];
 const headersOnly = process.argv.includes('--headers-only');
@@ -374,12 +375,15 @@ function walkFiles(dir) {
 }
 
 const entries = [];
+const besideGames = [];
 for (const system of list(romsDir)) {
   const dir = path.join(romsDir, system);
   if (!fs.statSync(dir).isDirectory()) continue;
   for (const name of list(dir)) {
     const p = path.join(dir, name);
     const isDir = fs.statSync(p).isDirectory();
+    // A save an emulator wrote beside its game is a save, not a game.
+    if (!isDir && saveRules.SAVE_FILE.test(name)) { besideGames.push({ system, path: p }); continue; }
     if (system === 'switch' && SWITCH_EXTRAS.has(name)) {
       for (const f of walkFiles(p)) entries.push({ system, path: f, extra: name });
       continue;
@@ -501,83 +505,30 @@ if (!Object.keys(lists).length) console.error('no lists in <emulation>/lists/, s
 
 // ---- saves ---------------------------------------------------------------
 
-// What a save file is: a save state, a memory card, or the game's own save.
-const kindOf = (rel) => {
-  if (/(^|\/)[^/]*states?\//i.test(rel) || /\.(state\d*|ss\d|ml\d+|mss|st\d+)(\.png)?$/i.test(rel)) return 'state';
-  if (/\.ps2\//i.test(rel) || /\.(mcd|mcr|gci)$/i.test(rel)) return 'card';
-  return 'save';
-};
-const norm = (x) => String(x).toUpperCase().replace(/[^A-Z0-9]/g, '');
-const stemsOf = (g) => new Set([g.title, ...g.files.map((f) => path.basename(f.name).replace(/\.[^.]+$/, ''))]);
-const idsOf = (g) => [g.titleId, ...g.files.map((f) => f.header?.titleId)].filter(Boolean).map((x) => x.toLowerCase());
-const discIdsOf = (g) => [...new Set(g.files.map((f) => f.header?.discId?.slice(0, 4)).filter(Boolean))];
-const serialsOf = (g) => [...new Set([...(g.match?.serials ?? []), ...g.files.map((f) => f.header?.serial)].filter(Boolean).map(norm))];
-
-// Each rule answers which game on the system a save's path belongs to.
-const RULES = {
-  // The game's file name, as the file's name less its extensions or as a folder it sits in.
-  name: (rel, games) => {
-    const parts = rel.split('/');
-    const names = [...parts.slice(0, -1)];
-    for (let b = parts.at(-1); b.includes('.'); ) { b = b.slice(0, b.lastIndexOf('.')); names.push(b); }
-    return games.find((g) => { const st = stemsOf(g); return names.some((n) => st.has(n)); });
-  },
-  // The title ID whole, or split into its two halves as folders, as Azahar and Cemu keep it.
-  titleId: (rel, games) => {
-    const p = rel.toLowerCase();
-    return games.find((g) => idsOf(g).some((id) => p.includes(id) || p.includes(`${id.slice(0, 8)}/${id.slice(8)}`)));
-  },
-  // Dolphin names a GameCube save `<maker>-<ID>-…`, and keeps a Wii one under the ID in hex.
-  discId: (rel, games) => games.find((g) => discIdsOf(g).some((id) =>
-    rel.includes(`-${id}-`) || rel.toLowerCase().split('/').includes(Buffer.from(id).toString('hex')))),
-  // DuckStation's cards and PCSX2's save folders carry the disc's serial.
-  serial: (rel, games) => { const p = norm(rel); return games.find((g) => serialsOf(g).some((s) => p.includes(s))); },
-};
-// A save with no game is only said where a save's name always names its
-// game; a title-ID system's folder also holds the system's own data.
-const SAYS_ORPHANS = new Set(['name', 'serial']);
-
-// A save's own name: its file name less its extension, and a state's `.state`.
-const saveName = (rel) => path.basename(rel).replace(/\.[^.]+$/, '').replace(/\.state\d*$/i, '');
-
-const saveGroups = new Map();
 // Files in a folder not named for a system, from before each system had its
-// own: matched by every system's rule, and the rest listed to be moved. An
-// emulator keeps one save folder for every system it plays, so a system's
-// folder is matched against each of that emulator's systems, its own first.
+// own, are matched against every system, and the rest listed to be moved.
 const unsorted = [];
-const sameEmulator = (top) => [top, ...Object.keys(EMULATORS).filter((s) => s !== top && EMULATORS[s].emulator === EMULATORS[top].emulator)];
+const saveFiles = [];
+const record = (f, name) => {
+  const st = fs.statSync(f);
+  return { name, size: st.size, created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString() };
+};
 for (const top of list(savesDir)) {
   const dir = path.join(savesDir, top);
   if (!fs.statSync(dir).isDirectory()) continue;
-  const systems = EMULATORS[top] ? sameEmulator(top) : Object.keys(EMULATORS);
   for (const f of walkFiles(dir)) {
     const rel = path.relative(dir, f);
-    let system = EMULATORS[top] ? top : null;
-    let game = null;
-    for (const s of systems) {
-      game = RULES[EMULATORS[s].saves](rel, out.filter((g) => g.system === s)) ?? null;
-      if (game) { system = s; break; }
-    }
-    if (!system) { unsorted.push(path.relative(savesDir, f)); continue; }
-    if (!game && !SAYS_ORPHANS.has(EMULATORS[system].saves)) continue;
-    const kind = kindOf(rel);
-    const name = game ? game.title : saveName(rel);
-    const key = `${system}|${name}|${kind}`;
-    const st = fs.statSync(f);
-    if (!saveGroups.has(key)) saveGroups.set(key, { system, name, game: game?.title ?? null, kind, files: [] });
-    saveGroups.get(key).files.push({
-      name: path.relative(savesDir, f), size: st.size,
-      created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString(),
-    });
+    const file = record(f, path.relative(savesDir, f));
+    if (EMULATORS[top]) { saveFiles.push({ rel, systems: saveRules.systemsOf(top, EMULATORS), file }); continue; }
+    const hit = saveRules.match(rel, Object.keys(EMULATORS), out, EMULATORS);
+    if (hit.game) saveFiles.push({ rel, systems: [hit.system], file });
+    else unsorted.push(file.name);
   }
 }
-const saves = [...saveGroups.values()].map((g) => ({
-  ...g,
-  size: g.files.reduce((a, f) => a + f.size, 0),
-  created: g.files.map((f) => f.created).sort()[0],
-  saved: g.files.map((f) => f.saved).sort().at(-1),
-}));
+for (const b of besideGames) {
+  saveFiles.push({ rel: path.basename(b.path), systems: [b.system], file: record(b.path, path.join('..', 'roms', path.relative(romsDir, b.path))) });
+}
+const saves = saveRules.group(saveFiles, out, EMULATORS);
 for (const g of out) g.hasSave = saves.some((s) => s.system === g.system && s.game === g.title);
 
 // ---- originals waiting in to-delete -------------------------------------
@@ -636,11 +587,11 @@ fs.mkdirSync(scansDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));
 const date = new Date().toISOString().slice(0, 10);
 
-// The saves, BIOS and keys as one zip, which Import uploads to Supabase. A
+// The saves, those beside their games too, the BIOS and keys as one zip, which Import uploads to Supabase. A
 // file of 50 MB or more, like the Switch firmware, stays on the drive and the
 // Macs. macOS's own zip packs it.
 let backup = null;
-const packed = [...walkFiles(savesDir), ...biosFiles].filter((f) => fs.statSync(f).size < 50e6);
+const packed = [...walkFiles(savesDir), ...besideGames.map((b) => b.path), ...biosFiles].filter((f) => fs.statSync(f).size < 50e6);
 if (packed.length && !spawnSync('zip', ['-v'], { stdio: 'ignore' }).error) {
   fs.mkdirSync(backupsDir, { recursive: true });
   const file = `roms-backup_${date}.zip`;

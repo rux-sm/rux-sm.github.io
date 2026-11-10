@@ -831,7 +831,6 @@ button.scheduler-row-head__num:focus { outline: none; }
     var(--scheduler-mark-glyph);
   align-content: start;
   justify-items: start;
-  padding-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block));
   padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges) { display: contents; }

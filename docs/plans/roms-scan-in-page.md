@@ -19,10 +19,10 @@ Import page and no Saves page upload are needed. The rest of Roms is
   it, as the Saves page already does; Safari cannot, so there the page says
   to use Chrome, and the rest of Roms keeps working in Safari and on the
   phone.
-- **The scan is one module that both Node and the page run,** as
+- **The scan is `roms/scan.js`, which both Node and the page run,** as
   `roms/saves-rules.js` is, so the page and `scan-roms.mjs` never read a
-  game differently. Reading files, hashing and the lists move into it;
-  `scan-roms.mjs` becomes a thin Node wrapper kept for the server.
+  game differently; `scan-roms.mjs` gives it the drive through Node and is
+  kept for the server.
 - **Fingerprints are hashed in the page with a WebAssembly hash library,**
   CRC32, MD5 and SHA-1 in one pass, because Chrome's own crypto has no MD5
   and cannot hash a file in pieces. Only new or changed files are hashed,
@@ -55,10 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Move the scan's reading, hashing and list matching from
-  `roms/tools/scan-roms.mjs` and `roms/tools/lib/lists.mjs` into one shared
-  module, with `scan-roms.mjs` calling it, and prove the Node scan's output
-  is unchanged against today's scan.
 - [ ] Run the shared module in the page over the drive folder with a
   WebAssembly hash library, and compare its output with the Node scan's.
 - [ ] Pack the backup zip in the page.

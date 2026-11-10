@@ -58,7 +58,8 @@ every backup of the last 30 days and the newest of each month before.
 
     node roms/tools/scan-roms.mjs "/Volumes/<drive>/emulation"
 
-`tools/scan-roms.mjs` reads every game in the drive's emulation roms folder
+`tools/scan-roms.mjs` runs `scan.js`, the scan the Status page will run
+too, which reads every game in the drive's emulation roms folder
 and the BIOS in its bios folder, and writes the scan and the kept
 fingerprints to a scans folder beside them, on the drive, and packs the
 saves, BIOS and keys into a zip in its backups folder. It reads the games
@@ -71,8 +72,9 @@ and never read.
 
 When the drive's emulation folder holds a lists folder, every game is matched
 against the No-Intro and Redump lists as libretro publishes them, and every
-Switch game against titledb's versions list; `tools/lib/lists.mjs` says how.
-A CHD is matched by the tracks inside it, which chdman extracts once.
+Switch game against titledb's versions list; `scan.js` says how.
+A CHD is matched by the tracks inside it, which the organize tool keeps when
+it makes the CHD, or chdman extracts once on a Mac.
 
     node roms/tools/organize-roms.mjs "/Volumes/<drive>/emulation"          what it would do
     node roms/tools/organize-roms.mjs "/Volumes/<drive>/emulation" --yes    do it
@@ -113,9 +115,10 @@ collection is ever written here, because this repository is public.
 | :--- | :--- |
 | `data.js` | the reads and writes |
 | `emulators.json` | each system's emulator, why, how it names a save, what it needs, and where each keeps saves on a Mac; the scan and the gather tool read it too |
+| `scan.js` | the scan, for the Mac tool and the page alike |
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
-| `collection.js`, `problems.js`, `saves.js`, `emulators.js`, `import.js` | each page's own behaviour |
+| `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js`, `import.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `roms-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

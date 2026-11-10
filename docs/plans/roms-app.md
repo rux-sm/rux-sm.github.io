@@ -138,4 +138,3 @@ None open.
 - [ ] Import the scan and check Collection, Problems and Import in Chrome on
   :8641.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
-- [ ] Add Roms' invented example pages to Design.

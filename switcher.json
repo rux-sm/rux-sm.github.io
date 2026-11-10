@@ -37,6 +37,12 @@
       "icon": "/coins/brand/icon.svg"
     },
     {
+      "name": "Roms",
+      "path": "/roms/",
+      "description": "The game collection",
+      "icon": "/roms/brand/icon.svg"
+    },
+    {
       "name": "Design",
       "path": "/design/",
       "description": "The system these are built on",

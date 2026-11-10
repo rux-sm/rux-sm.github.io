@@ -23,12 +23,12 @@ lists and stored in its system's preferred format.
   are kept with the game they belong to.
 - **A Mac tool scans, the app shows.** `roms/tools/scan-roms.mjs` reads the
   drive, because only the Mac can read 460 GB quickly and open every format;
-  it writes one file of results outside this repository, and the app's
-  Import page reads that file and saves it on a yes, as Coins' Import page
-  takes a bank file. A scan only reads.
+  it writes its results to a scans folder on the drive, never into this
+  repository, and the app's Import page reads that file and saves it on a
+  yes, as Coins' Import page takes a bank file. A scan only reads the games.
 - **The list lives in the Supabase project, in `roms_*` tables, and only
-  rux's account can read it,** through a `roms_is_owner()` check as Coins
-  has `coins_is_member()`, so the list opens on rux's phone too. No game
+  rux's account can read it,** through `is_owner()` as LN Guide's and
+  Pixels' tables are, so the list opens on rux's phone too. No game
   name, file name or scan result is ever committed, because this repository
   is public; Design's pages for Roms use invented titles.
 - **Every game is checked against the public lists of known good copies:**
@@ -139,13 +139,8 @@ Five pages in a side nav, each started from a Design template:
 
 ## Tasks
 
-- [ ] Start `roms/` from a Design template, with its `brand/icon.svg` drawn by
-  `docs/app-icons.md` and its entry in `switcher.json`.
-- [ ] Show the `roms_*` tables, `roms_is_owner()` and their grants to rux as SQL,
-  and apply them on a yes as a named migration.
-- [ ] Write `roms/tools/scan-roms.mjs`: walk the system folders and BIOS,
-  group files into games, read sizes, headers and fingerprints, and keep
-  fingerprints between scans.
+- [ ] Apply `roms_games` and `roms_bios` on rux's yes as a named migration, and
+  add them to `docs/database-access.md`.
 - [ ] Add the No-Intro and Redump lists and the Switch title list to the tool,
   downloaded on a yes and kept outside this repository, and match every
   game against them.
@@ -153,9 +148,10 @@ Five pages in a side nav, each started from a Design template:
   for PS1 and PS2, `.m3u` playlists, `.wua` for Wii U, originals moved to
   `emulation/to-delete/`, all shown first and done on a yes.
 - [ ] Install `rom-tools` with Homebrew on a yes, and answer the Cemu question.
-- [ ] Build Import: read a scan file, show what changed, save on a yes.
-- [ ] Build Collection, with the side panel.
-- [ ] Build Problems, Wanted and Organize from the matches.
+- [ ] Import the first full scan and check Collection and Import in Chrome on
+  :8641.
+- [ ] Show each game's list match in Collection, and build Problems, Wanted and
+  Organize from the matches.
 - [ ] Add Roms' invented example pages to Design, and its `README.md`.
-- [ ] Scan the drive, organize it, import it, and check every page in Chrome
-  on :8641.
+- [ ] Organize the drive, scan and import it again, and check every page in
+  Chrome on :8641.

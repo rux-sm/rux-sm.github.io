@@ -100,19 +100,19 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
 Then scan and import: the Saves page lists every save by its game, and
 Problems lists a save with no game.
 
-## Backing up a Mac's saves
+## Checking a Mac
 
-Wherever each emulator keeps its saves, `Back up saves.command` on the drive
-finds them, from each emulator's own settings or its default folder, and
-copies them to the Emulation folder's backups folder in your home folder;
-then the Saves page opens, and Back up this Mac's saves uploads them. The
-first time, Chrome asks for that backups folder. The Status page then
-shows how this Mac stands: what is installed, where each emulator saves,
+`Check this Mac.command` on the drive finds where each emulator saves, from
+its own settings or its default folder, and writes how this Mac stands to
+the drive's `macs` folder, with a copy of any save this Mac keeps itself;
+then the Status page opens. Back up this Mac's saves, on the Saves page,
+uploads it; the first time, Chrome asks for the drive's `macs` folder. The
+Status page then shows how this Mac stands: what is installed, where each emulator saves,
 and each retired app still there or still holding files. That list is also the check
 that `emulators.json` names each one's folders rightly; correct `macSaves` there when one is not found. After
 changing `emulators.json`, put the tool on the drive again:
 
-    node roms/tools/gather-saves.mjs --install "/Volumes/<drive>/emulation"
+    node roms/tools/check-mac.mjs --install "/Volumes/<drive>/emulation"
 
 ## Backups
 

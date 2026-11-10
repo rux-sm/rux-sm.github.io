@@ -1,28 +1,26 @@
 #!/usr/bin/env node
-// Finds every save the emulators on this Mac keep, wherever each keeps them,
-// and copies them into one dated folder for the Saves page to upload.
+// Says how this Mac stands, and copies each save it still keeps itself onto
+// the drive, for the Status page's Update to save.
 //
-//   node roms/tools/gather-saves.mjs                         gather this Mac's saves
-//   node roms/tools/gather-saves.mjs --install "/Volumes/<drive>/emulation"
-//                                                            put it on the drive, with Back up saves.command
+//   node roms/tools/check-mac.mjs "/Volumes/<drive>/emulation"
+//   node roms/tools/check-mac.mjs --install "/Volumes/<drive>/emulation"
+//                         put it on the drive, with Check this Mac.command
 //
 // Where each emulator keeps saves is `macSaves` in roms/emulators.json: its
 // folder in ~/Library, and for each place it saves to, the default and the
 // setting in its own settings file that moves it. A place's setting wins
 // over its default. It only reads the saves.
 //
-// Into `~/Emulation/backups/<this Mac> <date and time>/`: each emulator's
-// files under its name, and `manifest.json`, which lists each file with the
+// Into the drive's `macs/<this Mac>/`, replaced each time: `report.json`,
+// which says how this Mac stands, its macOS, ES-DE's and each emulator's
+// app and version, the folder ES-DE reads games from, where it looked for
+// each emulator's saves and what it found, and how many files each retired
+// app in `retired` still holds; and each save kept on this Mac rather than
+// on the drive, under its emulator's name, which the report lists with the
 // systems its emulator plays, its path within its place for matching it to
 // its game, its size and dates, and the folder it came from for restoring
-// it. The manifest also says how this Mac stands: its macOS, ES-DE's and
-// each emulator's app and version, if installed, and where it looked for
-// each one's saves and what it found, with the folder ES-DE reads games
-// from and how many files each retired app in `retired` still holds, which
-// the Status page shows. A retired app's files are counted, never copied,
-// because they are moved to the drive by hand. The newest five gatherings
-// are kept. A save an emulator writes beside its game on the drive is the
-// scan's, not this.
+// it. A save already on the drive is the scan's, and a retired app's files
+// are counted, never copied, because they are moved to the drive by hand.
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -33,6 +31,11 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const install = args.includes('--install') ? args[args.indexOf('--install') + 1] : null;
+const drive = install ?? args[0];
+if (!drive || !fs.existsSync(path.join(drive, 'roms'))) {
+  console.error('usage: check-mac.mjs [--install] <emulation folder holding roms/>');
+  process.exit(1);
+}
 
 // emulators.json sits beside this tool on the drive, or one folder up in the repository.
 const jsonPath = [path.join(here, 'emulators.json'), path.join(here, '..', 'emulators.json')].find((p) => fs.existsSync(p));
@@ -40,25 +43,26 @@ if (!jsonPath) { console.error('emulators.json is not beside this tool or above 
 const { frontend, systems, macSaves, retired = {} } = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 if (install) {
-  if (!fs.existsSync(path.join(install, 'roms'))) { console.error('usage: gather-saves.mjs --install <emulation folder holding roms/>'); process.exit(1); }
   const tools = path.join(install, 'tools');
   fs.mkdirSync(tools, { recursive: true });
-  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(tools, 'gather-saves.mjs'));
+  fs.copyFileSync(fileURLToPath(import.meta.url), path.join(tools, 'check-mac.mjs'));
   fs.copyFileSync(jsonPath, path.join(tools, 'emulators.json'));
-  const command = path.join(install, 'Back up saves.command');
+  // The tool and command this one replaced.
+  for (const old of [path.join(tools, 'gather-saves.mjs'), path.join(install, 'Back up saves.command')]) fs.rmSync(old, { force: true });
+  const command = path.join(install, 'Check this Mac.command');
   fs.writeFileSync(command, `#!/bin/bash
-# Gathers this Mac's saves and opens the Saves page to upload them.
+# Checks this Mac onto the drive and opens the Status page to save it.
 cd "$(dirname "$0")"
 if ! command -v node >/dev/null 2>&1; then
   echo "This needs Node: install it from nodejs.org, or with Homebrew: brew install node"
   read -n 1 -p "Press any key to close."
   exit 1
 fi
-node tools/gather-saves.mjs && open -a "Google Chrome" "https://rux-sm.github.io/roms/saves.html"
+node tools/check-mac.mjs . && open -a "Google Chrome" "https://rux-sm.github.io/roms/status.html"
 read -n 1 -p "Press any key to close."
 `);
   fs.chmodSync(command, 0o755);
-  console.log(`Back up saves.command and tools/ are on ${install}.`);
+  console.log(`Check this Mac.command and tools/ are on ${install}.`);
   process.exit(0);
 }
 
@@ -131,9 +135,11 @@ const mac = (() => {
   try { return execFileSync('scutil', ['--get', 'ComputerName'], { encoding: 'utf8' }).trim(); }
   catch { return os.hostname().split('.')[0]; }
 })();
-const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ').replace(':', '');
-const backups = path.join(home, 'Emulation', 'backups');
-const out = path.join(backups, `${mac} ${stamp}`);
+// The drive, by its real path, so a save already on it is told from one on this Mac.
+const driveReal = fs.realpathSync(drive);
+const onDrive = (f) => { try { return fs.realpathSync(f).startsWith(`${driveReal}${path.sep}`); } catch { return false; } };
+const out = path.join(drive, 'macs', mac);
+fs.rmSync(out, { recursive: true, force: true });
 const manifest = {
   mac, made: new Date().toISOString(), macos: run('sw_vers', ['-productVersion']), chip: run('uname', ['-m']),
   frontend: { name: frontend.name, app: appOf(frontend.apps), romDirectory: esdeRoms() }, emulators: [], files: [],
@@ -176,6 +182,10 @@ for (const [emulator, where] of Object.entries(macSaves)) {
       if (include && !include.test(`/${rel}`) && !include.test(rel)) continue;
       const st = fs.statSync(f);
       if (st.size >= 50e6) continue;
+      said.files++;
+      said.size += st.size;
+      said.places.at(-1).files++;
+      if (onDrive(f)) continue;
       const stored = path.join(emulator, String(i), rel);
       fs.mkdirSync(path.dirname(path.join(out, stored)), { recursive: true });
       fs.copyFileSync(f, path.join(out, stored));
@@ -183,9 +193,6 @@ for (const [emulator, where] of Object.entries(macSaves)) {
         emulator, systems: plays, rel, stored, from: path.dirname(f), size: st.size,
         created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString(),
       });
-      said.files++;
-      said.size += st.size;
-      said.places.at(-1).files++;
     }
   }
 }
@@ -211,16 +218,13 @@ for (const [emulator, where] of Object.entries(retired)) {
 }
 
 fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 1));
-for (const old of list(backups).filter((d) => d.startsWith(`${mac} `)).slice(0, -5)) {
-  fs.rmSync(path.join(backups, old), { recursive: true, force: true });
-}
+fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(manifest, null, 1));
 const f = manifest.frontend;
 console.log(`${mac}, macOS ${manifest.macos}: ${f.name} ${f.app ? `${f.app.version ?? ''} installed` : 'not installed'}${f.romDirectory ? `, games from ${f.romDirectory}` : ''}`);
 for (const e of manifest.emulators) {
   const app = `${e.retired ? 'retired, ' : ''}${e.app ? `${e.app.version ?? 'installed'}` : e.data ? 'app gone, data left' : 'not on this Mac'}`;
-  const places = e.places.map((p) => `${p.found ? `${p.files} from` : 'none at'} ${p.dir}${p.from === 'setting' ? ' (its setting)' : ''}`);
+  const places = e.places.filter((p) => p.dir).map((p) => `${p.found ? `${p.files} from` : 'none at'} ${p.dir}${p.from === 'setting' ? ' (its setting)' : ''}`);
   console.log(`  ${e.emulator.padEnd(12)} ${app.padEnd(20)} ${places.join(', ')}`);
 }
-console.log(`${manifest.files.length} save files from this Mac are in ${out.replace(home, '~')}.`);
-console.log('Upload them on the Saves page: Back up this Mac\'s saves.');
+console.log(manifest.files.length ? `This Mac's report, and ${manifest.files.length} save files kept on it, are in ${out}.` : `This Mac's report is in ${out}.`);
+console.log('Open Status in Chrome to save it.');

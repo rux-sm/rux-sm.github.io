@@ -4,7 +4,7 @@
    What is done and what is left. The drive, from its last scan: each BIOS
    a system's emulator needs, each emulator's installer kept, and saves
    still in a folder from before each emulator had its own. Then each Mac,
-   from the last time Back up saves.command ran on it: ES-DE installed and
+   from the last time Check this Mac.command ran on it: ES-DE installed and
    reading the drive's games, each emulator installed and saving into its
    folder on the drive, and each retired app still there or still holding
    files. An emulator whose systems have no games yet is not needed yet.
@@ -163,11 +163,11 @@
     }
     for (const mac of macs) {
       out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}`,
-        `From ${R.when(mac.gathered_at)}. Double-click Back up saves.command on the drive, then Back up this Mac's saves on the Saves page, to check again.`,
+        `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Back up this Mac's saves on the Saves page, to check again.`,
         macRows(mac, emulators, used)));
     }
     if (!macs.length) {
-      out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Back up saves.command on the drive, then Back up this Mac\'s saves on the Saves page.'));
+      out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Back up this Mac\'s saves on the Saves page.'));
     }
   }
   load();

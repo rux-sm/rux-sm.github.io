@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Where each of the three copies stands: the drive, Supabase and each Mac,
    with every backup in Supabase to download, and Back up this Mac's saves,
-   which uploads what roms/tools/gather-saves.mjs gathered on this Mac.
+   which uploads what roms/tools/check-mac.mjs wrote to the drive.
    Then every save, the drive's and each Mac's, under one heading per
    system, each opening in the side panel with its files, dates, where it
    lives, how to restore it, and rux's note, which is saved from there.
@@ -192,7 +192,7 @@
 
   // ---- Back up this Mac's saves ------------------------------------------
 
-  // The backups folder gather-saves.mjs writes to, as Chrome gave it, kept
+  // The drive's macs folder check-mac.mjs writes to, as Chrome gave it, kept
   // in this browser so it is picked once.
   const handles = (mode, act) => new Promise((resolve, reject) => {
     const open = indexedDB.open('roms', 1);
@@ -214,7 +214,7 @@
     return (await dir.getFileHandle(parts.at(-1))).getFile();
   };
   const manifestOf = async dir => {
-    try { return JSON.parse(await (await fileAt(dir, 'manifest.json')).text()); } catch { return null; }
+    try { return JSON.parse(await (await fileAt(dir, 'report.json')).text()); } catch { return null; }
   };
 
   async function backUpMac() {
@@ -222,21 +222,21 @@
     const button = $('roms-mac-backup');
     button.disabled = true;
     try {
-      let dir = await handles('readonly', store => store.get('backups')).catch(() => null);
+      let dir = await handles('readonly', store => store.get('macs')).catch(() => null);
       if (dir && await dir.queryPermission({ mode: 'read' }) !== 'granted' && await dir.requestPermission({ mode: 'read' }) !== 'granted') dir = null;
       if (!dir) {
-        said('Choose the Emulation folder\'s backups folder in your home folder.');
-        dir = await window.showDirectoryPicker({ id: 'roms-backups', mode: 'read' });
-        await handles('readwrite', store => store.put(dir, 'backups'));
+        said('Choose the macs folder in the drive\'s emulation folder.');
+        dir = await window.showDirectoryPicker({ id: 'roms-macs', mode: 'read' });
+        await handles('readwrite', store => store.put(dir, 'macs'));
       }
-      // The newest gathering in the folder, or the folder itself if one was chosen.
+      // The newest report in the folder, or the folder itself if one Mac's was chosen.
       let gathering = await manifestOf(dir) ? { dir, m: await manifestOf(dir) } : null;
       for await (const [, h] of dir.entries()) {
         if (h.kind !== 'directory') continue;
         const m = await manifestOf(h);
         if (m && (!gathering || m.made > gathering.m.made)) gathering = { dir: h, m };
       }
-      if (!gathering) { said('That folder holds no gathered saves. Run Back up saves.command on the drive first.'); return; }
+      if (!gathering) { said('That folder holds no Mac\'s report. Double-click Check this Mac.command on the drive first.'); return; }
       const { m } = gathering;
       said(`Uploading ${m.files.length} files from ${m.mac}, gathered ${R.when(m.made)}…`);
       const [games, emulators] = await Promise.all([R.data.games(), R.emulators()]);

@@ -122,7 +122,7 @@
       return files.filter(f => f.name.endsWith('.zip'));
     },
 
-    // A Mac's saves, gathered by gather-saves.mjs and read on this device:
+    // A Mac's report and saves, from check-mac.mjs, read on this device:
     // how the Mac stands written first, then each file uploaded under
     // `macs/<Mac>/<date>/`, each save written with the Mac as its location
     // and leaving its note, the Mac's saves no longer gathered deleted, and

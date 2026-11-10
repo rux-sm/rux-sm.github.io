@@ -28,8 +28,8 @@ when every game converted from what is in it is marked as playing.
 
 `saves.html` shows the three copies of the saves, on the drive, in Supabase
 and on each Mac, with each backup in Supabase to download, and Back up this
-Mac's saves, which uploads what `tools/gather-saves.mjs` gathered from this
-Mac's emulators; then every save by system, on the drive or a Mac, each
+Mac's saves, which uploads the report `tools/check-mac.mjs` wrote to the
+drive and any save this Mac keeps itself; then every save by system, on the drive or a Mac, each
 with its kind, dates, how to restore it and rux's note on it.
 
 `status.html` says what is done and what is left. For the drive, from its
@@ -89,15 +89,15 @@ again after it. chdman comes from Homebrew's `rom-tools`.
 
     node roms/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
 
-    node roms/tools/gather-saves.mjs
-    node roms/tools/gather-saves.mjs --install "/Volumes/<drive>/emulation"
+    node roms/tools/check-mac.mjs "/Volumes/<drive>/emulation"
+    node roms/tools/check-mac.mjs --install "/Volumes/<drive>/emulation"
 
-`tools/gather-saves.mjs` finds every save this Mac's emulators keep, where
-`emulators.json` says each keeps them or where its own settings moved them,
-and copies them to `~/Emulation/backups/` for the Saves page to upload,
-with how this Mac stands: each app installed and its version.
-`--install` puts it on the drive with `Back up saves.command`, which runs it
-with a double-click and opens the Saves page.
+`tools/check-mac.mjs` writes how this Mac stands to the drive's
+`macs/<Mac>/report.json`: each app installed and its version, and where
+each emulator saves, as `emulators.json` says or its own settings moved it.
+A save kept on this Mac rather than the drive is copied in beside it.
+`--install` puts it on the drive with `Check this Mac.command`, which runs it
+with a double-click and opens the Status page.
 
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
 firmware and installers too large for Supabase, into

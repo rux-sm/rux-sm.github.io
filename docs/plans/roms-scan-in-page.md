@@ -55,8 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Turn `gather-saves.mjs` into `Check this Mac.command`, writing to the
-  drive's `macs/` folder.
 - [ ] Add Update to the Status page with the change summary and the save,
   remove the Import page and the Saves page upload, and update the README
   and `roms/docs/emulator-setup.md`.

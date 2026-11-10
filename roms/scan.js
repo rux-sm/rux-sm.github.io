@@ -15,7 +15,8 @@
      chunks(rel)         the whole file, as Uint8Arrays in order
      text(rel, enc)      the file as text, 'utf8' or 'latin1', or null
      exists(rel)         whether a file is there
-     hasher()            { update(bytes), digest() → { crc32, md5, sha1 } }
+     hasher()            { update(bytes), digest() → { crc32, md5, sha1 } },
+                         or a promise of one
      inside(rel)         a CHD's track fingerprints, or null where it cannot
      progress(read, all) told now and then how many new bytes are hashed
 
@@ -519,7 +520,7 @@
       // knows from the files it was made from; the file is still read.
       if (cache[key]?.sha1) return cache[key];
       if (headersOnly) return null;
-      const h = drive.hasher();
+      const h = await drive.hasher();
       for await (const chunk of drive.chunks(f)) {
         h.update(chunk);
         bytesRead += chunk.length;

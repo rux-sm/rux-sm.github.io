@@ -23,7 +23,7 @@ Import page and no Saves page upload are needed. The rest of Roms is
   `roms/saves-rules.js` is, so the page and `scan-roms.mjs` never read a
   game differently; `scan-roms.mjs` gives it the drive through Node and is
   kept for the server.
-- **Fingerprints are hashed in the page with a WebAssembly hash library,**
+- **Fingerprints are hashed in the page with hash-wasm, through `roms/drive.js`,**
   CRC32, MD5 and SHA-1 in one pass, because Chrome's own crypto has no MD5
   and cannot hash a file in pieces. Only new or changed files are hashed,
   from `scans/fingerprints.json` on the drive, as now.
@@ -55,8 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Run the shared module in the page over the drive folder with a
-  WebAssembly hash library, and compare its output with the Node scan's.
 - [ ] Pack the backup zip in the page.
 - [ ] Turn `gather-saves.mjs` into `Check this Mac.command`, writing to the
   drive's `macs/` folder.

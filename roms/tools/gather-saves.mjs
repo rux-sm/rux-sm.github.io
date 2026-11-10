@@ -15,7 +15,10 @@
 // files under its name, and `manifest.json`, which lists each file with the
 // systems its emulator plays, its path within its place for matching it to
 // its game, its size and dates, and the folder it came from for restoring
-// it. The newest five gatherings are kept. A save an emulator writes beside
+// it. The manifest also says how this Mac stands: its macOS, ES-DE's and
+// each emulator's app and version, if installed, and where it looked for
+// each one's saves and what it found, which the Emulators page shows. The
+// newest five gatherings are kept. A save an emulator writes beside
 // its game on the drive is the scan's, not this.
 
 import fs from 'node:fs';
@@ -31,7 +34,7 @@ const install = args.includes('--install') ? args[args.indexOf('--install') + 1]
 // emulators.json sits beside this tool on the drive, or one folder up in the repository.
 const jsonPath = [path.join(here, 'emulators.json'), path.join(here, '..', 'emulators.json')].find((p) => fs.existsSync(p));
 if (!jsonPath) { console.error('emulators.json is not beside this tool or above it'); process.exit(1); }
-const { systems, macSaves } = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+const { frontend, systems, macSaves } = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 if (install) {
   if (!fs.existsSync(path.join(install, 'roms'))) { console.error('usage: gather-saves.mjs --install <emulation folder holding roms/>'); process.exit(1); }
@@ -97,6 +100,22 @@ function setting(file, format, key) {
   return null;
 }
 
+// An app by any of its names in either Applications folder, with the version its bundle says.
+const appOf = (names) => {
+  for (const dir of ['/Applications', path.join(home, 'Applications')]) {
+    for (const name of names ?? []) {
+      const app = path.join(dir, name);
+      if (!fs.existsSync(app)) continue;
+      let version = null;
+      try { version = execFileSync('plutil', ['-extract', 'CFBundleShortVersionString', 'raw', path.join(app, 'Contents', 'Info.plist')], { encoding: 'utf8' }).trim(); }
+      catch { version = null; }
+      return { path: app.replace(home, '~'), version };
+    }
+  }
+  return null;
+};
+const run = (cmd, a) => { try { return execFileSync(cmd, a, { encoding: 'utf8' }).trim(); } catch { return null; } };
+
 const mac = (() => {
   try { return execFileSync('scutil', ['--get', 'ComputerName'], { encoding: 'utf8' }).trim(); }
   catch { return os.hostname().split('.')[0]; }
@@ -104,12 +123,16 @@ const mac = (() => {
 const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ').replace(':', '');
 const backups = path.join(home, 'Emulation', 'backups');
 const out = path.join(backups, `${mac} ${stamp}`);
-const manifest = { mac, made: new Date().toISOString(), emulators: [], files: [] };
+const manifest = {
+  mac, made: new Date().toISOString(), macos: run('sw_vers', ['-productVersion']), chip: run('uname', ['-m']),
+  frontend: { name: frontend.name, app: appOf(frontend.apps) }, emulators: [], files: [],
+};
 
 for (const [emulator, where] of Object.entries(macSaves)) {
   const homeDir = where.homes.map(expand).find((h) => fs.existsSync(h));
   const plays = Object.keys(systems).filter((s) => systems[s].emulator === emulator);
-  const said = { emulator, systems: plays, installed: Boolean(homeDir), places: [], files: 0 };
+  // Installed is the app; a data folder can outlive it.
+  const said = { emulator, systems: plays, app: appOf(where.apps), data: homeDir ? homeDir.replace(home, '~') : null, places: [], files: 0, size: 0 };
   manifest.emulators.push(said);
   if (!homeDir) continue;
   const config = where.config && path.join(homeDir, where.config.file);
@@ -123,7 +146,7 @@ for (const [emulator, where] of Object.entries(macSaves)) {
       } catch (e) { console.error(`  ${emulator}: could not read ${where.config.file}: ${e.message}`); }
     }
     if (!dir && place.path) dir = path.join(homeDir, place.path);
-    said.places.push({ dir, from, found: Boolean(dir && fs.existsSync(dir)) });
+    said.places.push({ dir: dir ? dir.replace(home, '~') : null, from, found: Boolean(dir && fs.existsSync(dir)), files: 0 });
     if (!dir || !fs.existsSync(dir)) continue;
     const include = place.include ? new RegExp(place.include) : null;
     for (const f of walk(dir)) {
@@ -139,6 +162,8 @@ for (const [emulator, where] of Object.entries(macSaves)) {
         created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString(),
       });
       said.files++;
+      said.size += st.size;
+      said.places.at(-1).files++;
     }
   }
 }
@@ -148,9 +173,12 @@ fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null,
 for (const old of list(backups).filter((d) => d.startsWith(`${mac} `)).slice(0, -5)) {
   fs.rmSync(path.join(backups, old), { recursive: true, force: true });
 }
+const f = manifest.frontend;
+console.log(`${mac}, macOS ${manifest.macos}: ${f.name} ${f.app ? `${f.app.version ?? ''} installed` : 'not installed'}`);
 for (const e of manifest.emulators) {
-  const places = e.places.map((p) => `${p.found ? '' : 'none at '}${p.dir.replace(home, '~')}${p.from === 'setting' ? ' (its setting)' : ''}`);
-  console.log(`  ${e.emulator.padEnd(12)} ${e.installed ? `${e.files} files from ${places.join(', ') || 'nowhere'}` : 'not on this Mac'}`);
+  const app = e.app ? `${e.app.version ?? 'installed'}` : e.data ? 'app gone, data left' : 'not on this Mac';
+  const places = e.places.map((p) => `${p.found ? `${p.files} from` : 'none at'} ${p.dir}${p.from === 'setting' ? ' (its setting)' : ''}`);
+  console.log(`  ${e.emulator.padEnd(12)} ${app.padEnd(20)} ${places.join(', ')}`);
 }
 console.log(`${manifest.files.length} save files from this Mac are in ${out.replace(home, '~')}.`);
 console.log('Upload them on the Saves page: Back up this Mac\'s saves.');

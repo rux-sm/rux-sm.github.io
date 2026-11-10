@@ -29,8 +29,8 @@ ask `is_owner()` in `owner_read` and `owner_all`, and so does their private
 bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
 other account reads it.
 
-The Roms tables, `roms_games`, `roms_bios`, `roms_saves`, `roms_notes` and
-`roms_drive`, ask `is_owner()` in `owner_all`, and so does every rule on the
+The Roms tables, `roms_games`, `roms_bios`, `roms_saves`, `roms_notes`,
+`roms_drive` and `roms_macs`, ask `is_owner()` in `owner_all`, and so does every rule on the
 `roms-backups` bucket: the game collection, its saves and their backups are
 the owner's alone.
 

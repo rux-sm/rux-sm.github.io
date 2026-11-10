@@ -60,6 +60,8 @@
     saves: () => all(() => client.from('roms_saves').select('*').order('system').order('name')),
     saveKeys: () => all(() => client.from('roms_saves').select('system, name, kind, location')),
     bios: () => all(() => client.from('roms_bios').select('*').order('name')),
+    // How each Mac stood when its saves were last gathered.
+    macs: () => all(() => client.from('roms_macs').select('*').order('name')),
     async drive() {
       const { data: row, error } = await client.from('roms_drive').select('*').maybeSingle();
       fail(error);
@@ -121,10 +123,16 @@
     },
 
     // A Mac's saves, gathered by gather-saves.mjs and read on this device:
-    // each file uploaded under `macs/<Mac>/<date>/`, each save written with
-    // the Mac as its location and leaving its note, the Mac's saves no longer
-    // gathered deleted, and the Mac's gatherings past keeping removed.
-    async saveMacSaves(mac, made, files, saves) {
+    // how the Mac stands written first, then each file uploaded under
+    // `macs/<Mac>/<date>/`, each save written with the Mac as its location
+    // and leaving its note, the Mac's saves no longer gathered deleted, and
+    // the Mac's gatherings past keeping removed.
+    async saveMacSaves(manifest, files, saves) {
+      const { mac, made } = manifest;
+      fail((await client.from('roms_macs').upsert({
+        name: mac, gathered_at: made, macos: manifest.macos ?? null, chip: manifest.chip ?? null,
+        frontend: manifest.frontend ?? null, emulators: manifest.emulators ?? [],
+      }, { onConflict: 'name' })).error);
       const folder = `macs/${mac}/${made.slice(0, 10)}`;
       for (const f of files) {
         fail((await client.storage.from(BUCKET).upload(`${folder}/${f.stored}`, f.blob,

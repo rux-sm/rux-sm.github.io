@@ -32,7 +32,10 @@ Mac's saves, which uploads what `tools/gather-saves.mjs` gathered from this
 Mac's emulators; then every save by system, on the drive or a Mac, each
 with its kind, dates, how to restore it and rux's note on it.
 
-`emulators.html` shows each system's emulator from `emulators.json`, why it
+`emulators.html` shows how each Mac stood when its saves were last
+uploaded: its macOS, ES-DE's and each emulator's app and version, or that
+only its data is left, and each folder it keeps saves in and what was
+there. Then each system's emulator from `emulators.json`, why it
 is the one, each file it needs and whether the drive holds it, and where its
 saves, settings and installer live. `docs/emulator-setup.md` is how each is
 set up on a Mac.
@@ -83,7 +86,8 @@ again after it. chdman comes from Homebrew's `rom-tools`.
 
 `tools/gather-saves.mjs` finds every save this Mac's emulators keep, where
 `emulators.json` says each keeps them or where its own settings moved them,
-and copies them to `~/Emulation/backups/` for the Saves page to upload.
+and copies them to `~/Emulation/backups/` for the Saves page to upload,
+with how this Mac stands: each app installed and its version.
 `--install` puts it on the drive with `Back up saves.command`, which runs it
 with a double-click and opens the Saves page.
 
@@ -94,7 +98,7 @@ firmware and installers too large for Supabase, into
 ## How it works
 
 `roms_games`, `roms_bios`, `roms_saves` and `roms_drive` hold the last scan
-saved, `roms_notes` rux's marks and notes, and the `roms-backups` bucket the
+saved, `roms_macs` how each Mac stood, `roms_notes` rux's marks and notes, and the `roms-backups` bucket the
 backup zips; only the owner reads them, and `docs/database-access.md` is the
 rule. Nothing from the
 collection is ever written here, because this repository is public.

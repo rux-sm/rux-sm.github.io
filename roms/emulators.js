@@ -1,9 +1,13 @@
 /* ==========================================================================
    emulators.js — the Emulators page
    --------------------------------------------------------------------------
-   One row per system, from emulators.json: the emulator and why, each file
-   it needs and whether the drive's bios folder holds it, how it names a
-   save, and where its settings and installer live.
+   How each Mac stood when its saves were last gathered: its macOS, ES-DE's
+   and each emulator's app and version, or that it is not installed or left
+   only its data, and each place it keeps saves, from its setting or its
+   default, and how many it found. Then one row per system, from
+   emulators.json: the emulator and why, each file it needs and whether the
+   drive's bios folder holds it, how it names a save, and where its
+   settings and installer live.
    ========================================================================== */
 (() => {
   'use strict';
@@ -18,9 +22,52 @@
     discId: 'a save named by the disc\'s ID', serial: 'a memory card named by the disc\'s serial',
   };
 
+  // An app's state on a Mac as a tag: its version, gone with its data left, or not there.
+  const appTag = (app, data) => (app
+    ? tag([`Installed${app.version ? ` · ${app.version}` : ''}`, 'rux--tag--green'], true)
+    : data ? tag(['App gone, its data left', 'rux--tag--warm-gray'], true) : tag(['Not installed', 'rux--tag--gray'], true));
+
+  function showMacs(macs) {
+    $('roms-macs-note').textContent = macs.length
+      ? 'As each Mac stood the last time Back up saves.command ran on it and its saves were uploaded on the Saves page.'
+      : 'No Mac has reported yet: double-click Back up saves.command on the drive, then Back up this Mac\'s saves on the Saves page.';
+    const out = $('roms-macs');
+    out.replaceChildren();
+    for (const m of macs) {
+      const box = el('div', 'rux--contained-list rux--layout--size-lg rux--contained-list--on-page');
+      const head = el('div', 'rux--contained-list__header');
+      head.append(el('h3', 'rux--contained-list__label', `${m.name} · macOS ${m.macos ?? '?'} · checked ${R.when(m.gathered_at)}`));
+      const ul = el('ul');
+      ul.setAttribute('role', 'list');
+      const item = (title, sub, tags) => {
+        const li = el('li', 'rux--contained-list-item');
+        const content = el('div', 'rux--contained-list-item__content roms-emulator');
+        const main = el('span', 'roms-row__main');
+        main.append(el('span', '', title));
+        if (sub) main.append(el('span', 'roms-row__sub roms-files', sub));
+        const t = el('div', 'roms-tags');
+        t.append(...tags);
+        content.append(main, t);
+        li.append(content);
+        ul.append(li);
+      };
+      const f = m.frontend ?? {};
+      item(f.name ?? 'ES-DE', 'The library', [appTag(f.app, null)]);
+      for (const e of m.emulators ?? []) {
+        const places = (e.places ?? []).map(p => `${p.found ? `${p.files} ${p.files === 1 ? 'file' : 'files'} in` : 'Nothing at'} ${p.dir}${p.from === 'setting' ? ', from its setting' : ''}`);
+        const tags = [appTag(e.app, e.data)];
+        if (e.files) tags.push(tag([`${e.files} save ${e.files === 1 ? 'file' : 'files'}, ${R.size(e.size)}`, 'rux--tag--blue'], true));
+        item(`${e.emulator}: ${(e.systems ?? []).map(R.systemName).join(', ')}`,
+          places.join('\n') || (e.data ? '' : 'No data folder on this Mac'), tags);
+      }
+      box.append(head, ul);
+      out.append(box);
+    }
+  }
+
   async function load() {
-    let emulators, bios, drive, games;
-    try { [emulators, bios, drive, games] = await Promise.all([R.emulators(), R.data.bios(), R.data.drive(), R.data.gameKeys()]); }
+    let emulators, bios, drive, games, macs;
+    try { [emulators, bios, drive, games, macs] = await Promise.all([R.emulators(), R.data.bios(), R.data.drive(), R.data.gameKeys(), R.data.macs()]); }
     catch (error) { console.error(error); R.notice('Roms could not read the emulators. Try again.'); return; }
     $('roms-empty').hidden = Boolean(drive);
     const f = emulators.frontend;
@@ -31,6 +78,7 @@
     for (const g of games) count.set(g.system, (count.get(g.system) ?? 0) + 1);
     const installers = drive?.installers ?? [];
 
+    showMacs(macs);
     const ul = $('roms-systems');
     ul.replaceChildren();
     for (const [system, emu] of Object.entries(emulators.systems)) {

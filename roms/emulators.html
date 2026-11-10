@@ -21,9 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- Emulators: each system's emulator, why, what it needs and whether the
-     drive holds it, and where its saves, settings and installer live, from
-     emulators.js. The shell is templates/app-shell.html. -->
+<!-- Emulators: how each Mac stands, its apps and where its saves are, and
+     each system's emulator, why, what it needs and whether the drive holds
+     it, and where its saves, settings and installer live, from emulators.js. The shell is templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -153,9 +153,17 @@
           <p class="rux--type-body-01" id="roms-frontend"></p>
           <p class="rux--type-body-01">Each emulator keeps its saves in one folder in the drive's <code>emulation/saves/</code>, named for the first system it plays, and its installer in <code>emulation/emulators/</code>; <code>roms/docs/emulator-setup.md</code> is how each is set up on a Mac.</p>
         </div>
-        <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
-          <ul role="list" id="roms-systems"></ul>
-        </div>
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="roms-macs-title">
+          <h2 class="rux--type-heading-03" id="roms-macs-title">Each Mac</h2>
+          <p class="rux--type-body-01" id="roms-macs-note"></p>
+          <div class="rux--stack-vertical rux--stack-scale-6" id="roms-macs"></div>
+        </section>
+        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="roms-systems-title">
+          <h2 class="rux--type-heading-03" id="roms-systems-title">Each system</h2>
+          <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
+            <ul role="list" id="roms-systems"></ul>
+          </div>
+        </section>
       </div>
     </div>
   </div>

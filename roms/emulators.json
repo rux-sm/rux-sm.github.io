@@ -2,7 +2,10 @@
   "frontend": {
     "name": "ES-DE",
     "why": "It launches each system's emulator from one list of every game, and reads the drive's roms folders as they are named.",
-    "settings": "~/ES-DE"
+    "settings": "~/ES-DE",
+    "apps": [
+      "ES-DE.app"
+    ]
   },
   "systems": {
     "nes": {
@@ -171,6 +174,10 @@
   },
   "macSaves": {
     "Mesen 2": {
+      "apps": [
+        "Mesen.app",
+        "Mesen2.app"
+      ],
       "homes": [
         "~/Library/Application Support/Mesen2",
         "~/.config/Mesen2"
@@ -190,6 +197,9 @@
       ]
     },
     "mGBA": {
+      "apps": [
+        "mGBA.app"
+      ],
       "homes": [
         "~/Library/Application Support/mGBA"
       ],
@@ -208,6 +218,9 @@
       ]
     },
     "ares": {
+      "apps": [
+        "ares.app"
+      ],
       "homes": [
         "~/Library/Application Support/ares"
       ],
@@ -224,6 +237,9 @@
       ]
     },
     "melonDS": {
+      "apps": [
+        "melonDS.app"
+      ],
       "homes": [
         "~/Library/Application Support/melonDS"
       ],
@@ -239,6 +255,9 @@
       ]
     },
     "Azahar": {
+      "apps": [
+        "Azahar.app"
+      ],
       "homes": [
         "~/Library/Application Support/Azahar"
       ],
@@ -260,6 +279,9 @@
       ]
     },
     "DuckStation": {
+      "apps": [
+        "DuckStation.app"
+      ],
       "homes": [
         "~/Library/Application Support/DuckStation"
       ],
@@ -279,6 +301,9 @@
       ]
     },
     "PCSX2": {
+      "apps": [
+        "PCSX2.app"
+      ],
       "homes": [
         "~/Library/Application Support/PCSX2"
       ],
@@ -298,6 +323,9 @@
       ]
     },
     "Dolphin": {
+      "apps": [
+        "Dolphin.app"
+      ],
       "homes": [
         "~/Library/Application Support/Dolphin"
       ],
@@ -321,6 +349,9 @@
       ]
     },
     "Cemu": {
+      "apps": [
+        "Cemu.app"
+      ],
       "homes": [
         "~/Library/Application Support/Cemu"
       ],
@@ -337,6 +368,10 @@
       ]
     },
     "Eden": {
+      "apps": [
+        "Eden.app",
+        "eden.app"
+      ],
       "homes": [
         "~/Library/Application Support/eden"
       ],
@@ -353,6 +388,9 @@
       ]
     },
     "xemu": {
+      "apps": [
+        "xemu.app"
+      ],
       "homes": [
         "~/Library/Application Support/xemu/xemu"
       ],

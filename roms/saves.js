@@ -248,7 +248,7 @@
         files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
       }
       const grouped = R.saveRules.group(files, games, emulators.systems);
-      await R.data.saveMacSaves(m.mac, m.made, uploads, grouped);
+      await R.data.saveMacSaves(m, uploads, grouped);
       said(`${grouped.length} saves from ${m.mac} backed up, ${m.files.length} files in all.`);
       await load();
     } catch (error) {

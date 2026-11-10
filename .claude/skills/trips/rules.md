@@ -42,7 +42,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 ## Buses and drivers
 
-- A day with no free bus is answered with no availability, never quoted with its buses left empty, even when the buses are held by unconfirmed quotes, because a quote is an offer of a bus the office does not have.
+- A day with no free bus is answered with no availability, even when the buses are held by unconfirmed quotes, because a quote is an offer of a bus the office does not have; when rux says the office will make room, the trip is quoted with its bus left empty and the quote and its email say the bus is tentative, because the bus is not yet freed.
 - Drivers are sent the trip only once it is confirmed, so an unconfirmed trip's drivers not confirming is expected, not a problem.
 - A new driver goes out first as co-driver beside an experienced driver, never alone on a bus, so they learn the work before they drive a trip of their own.
 - A driver gets trips on two days in a row only when the rest between them is clearly enough, at least 10 hours from one trip's return to the yard to the next trip's departure, such as an evening trip back by 19:30 before a 10:30 departure, so the driver's hours reset. A trip spanning several days counts as one trip.
@@ -63,6 +63,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - When an itinerary gives no headcount, the last count the customer gave stands as Passengers, because it is still their word and a blank only keeps the board flagging it.
 - When the booking contact is away, an update names who to reach instead, with their email.
 - The email thread is linked to the trip while reviewing it, so the next review opens it directly.
+- An itinerary sent as a link to the customer's own site, such as SharePoint or OneDrive, is never signed into: the reply asks them to download it and send it as a PDF attachment, because the office has no access to their site.
 - A customer's request that has not been answered in the thread, such as driver information or documents, goes in the report.
 - A customer whose profile gives the quote no address gets one before the quote is printed: its usual pickup set to its saved location, or a bill-to address typed when the bills go somewhere else, because the quote's Name/address box prints the profile's bill-to address, or else its usual pickup's.
 - The Charter Bus is a third party that offers the office trips. Hector chooses which ones to take, and the office covers only those, so a list from them is Hector's to answer and a trip is entered once he has chosen it.

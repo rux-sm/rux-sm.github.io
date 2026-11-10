@@ -250,6 +250,9 @@ reads only the ones before it. Nothing is written until step 10.
   its sender the office's address, and its recipients the customer's.
   `deliver_draft` sends it only when rux asks in chat for it to be sent, and
   only once all three are right, because a sent email cannot be taken back.
+- `compose_draft` reads its body as Markdown, so lines meant to stand one
+  under another, such as trips and their prices, each end in two spaces,
+  because a plain line break joins them into one line.
 
 ## Traps in the editor
 
@@ -273,6 +276,7 @@ reads only the ones before it. Nothing is written until step 10.
   click by coordinates.
 - Leaving the editor drops unsaved changes; Reset takes them back.
 - An editor tab left open while waiting on rux's yes can be gone when he answers, with every unsaved change: check with `get_trip` that nothing was saved, then draft the change again and rebuild it.
+- Save on a trip someone saved after the editor opened asks "This trip changed since you opened it", and Save anyway writes back the editor's older copy over theirs, such as a contract just marked signed: read what they changed with `get_trip`, press Reload trip, then draft the change again and rebuild it.
 - Quote sent, from the Billing tile's Quote sent row, records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.

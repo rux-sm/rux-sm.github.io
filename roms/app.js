@@ -36,22 +36,36 @@
     }
     const missing = headers.flatMap(h => h.missingTracks ?? []);
     if (missing.length) out.push(['incomplete', `Missing ${missing.join(', ')}`]);
+    const m = game.match;
+    for (const d of m?.missingDiscs ?? []) out.push(['incomplete', `Missing ${d}`]);
+    if (m && !m.listed) out.push(['unlisted', m.unmatched.length === files.filter(f => !['cue', 'm3u'].includes(f.ext)).length
+      ? 'Not on the list: a bad, changed or unknown copy'
+      : `Not on the list: ${m.unmatched.map(n => n.split('/').pop()).join(', ')}`]);
     if (headers.some(h => h.headerChecksum === 'bad')) out.push(['header', 'Header checksum does not add up']);
     if (headers.some(h => h.copierHeader)) out.push(['header', 'Copier header']);
     if (headers.some(h => h.byteOrder && h.byteOrder !== 'z64')) out.push(['header', 'Byte order is not z64']);
     if (headers.some(h => h.encrypted)) out.push(['encrypted', 'Encrypted']);
     if (headers.some(h => h.readError)) out.push(['header', 'Could not be read']);
-    return out;
+    for (const r of m?.renames ?? []) out.push(['rename', `List name: ${r.to.split('/').pop()}`]);
+    for (const n of m?.better ?? []) out.push(['newer', `Newer: ${n}`]);
+    for (const n of m?.copies ?? []) out.push(['extra', `Also on the drive: ${n}`]);
+    // Worst first, so the first problem is the game's status.
+    return out.sort((a, b) => ORDER.indexOf(a[0]) - ORDER.indexOf(b[0]));
   };
 
-  // The one status a game shows: its worst problem, or Good.
+  // The one status a game shows: its worst problem, or Good, in this order.
   const STATUS = {
     incomplete: ['Incomplete', 'rux--tag--red'],
+    unlisted: ['Not on the list', 'rux--tag--red'],
     header: ['Bad header', 'rux--tag--red'],
     encrypted: ['Encrypted', 'rux--tag--magenta'],
     format: ['Convert', 'rux--tag--blue'],
+    rename: ['Rename', 'rux--tag--blue'],
+    newer: ['Newer version', 'rux--tag--teal'],
+    extra: ['Extra copy', 'rux--tag--purple'],
     good: ['Good', 'rux--tag--green'],
   };
+  const ORDER = Object.keys(STATUS);
   const statusOf = game => problemsOf(game)[0]?.[0] ?? 'good';
 
   const size = bytes => {

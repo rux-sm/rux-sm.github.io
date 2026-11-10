@@ -36,8 +36,9 @@ lists and stored in its system's preferred format.
   A copy whose fingerprint is on a list is that exact version; one that is
   not is flagged. The lists are downloaded on a yes, kept outside this
   repository, and refreshed by the tool.
-- **BIOS files are checked against the same lists,** so a missing or wrong
-  BIOS shows on Problems.
+- **A BIOS is named where libretro's system list knows it.** That list holds
+  few PlayStation 2 files and no Xbox or Switch ones, so a BIOS it lacks is
+  not flagged.
 - **Switch games are checked by title ID and version** against a public list
   of titles, because No-Intro lists the encrypted cartridge and these files
   will not match it.
@@ -75,8 +76,9 @@ How the drive is organized:
 - **Nothing is deleted by the tool.** A converted original moves to
   `emulation/to-delete/`, and rux empties that folder by hand once the new
   file plays.
-- **Conversion uses chdman, from Homebrew's `rom-tools`,** for CHD, and
-  Cemu's own converter for `.wua`.
+- **Conversion uses chdman, from Homebrew's `rom-tools`,** for CHD. Cemu
+  makes a `.wua` only from its Title Manager window, so the Wii U game is
+  converted there by hand and the scan checks the result.
 
 What the scan records for every game:
 
@@ -86,7 +88,8 @@ What the scan records for every game:
 | title, region, languages, revision | the file name's tags, then the list's entry | all |
 | files, format, size | the file system | all |
 | CRC32, MD5, SHA-1 | read from the whole file | cartridge and handheld systems, BIN and ISO, BIOS |
-| list match | the fingerprint looked up in No-Intro or Redump | all but Switch |
+| list match | the fingerprint looked up in No-Intro or Redump, a CHD by the tracks inside it, GameCube and Wii by disc ID | all but Switch and Wii U |
+| latest update | titledb's versions list | Switch |
 | internal title, game code, version byte | the cartridge header | GB, GBC, GBA, N64, NDS |
 | header kind | the first bytes: iNES or NES 2.0, a copier header on SNES, N64 byte order | NES, SNES, N64 |
 | header checksum | recomputed and compared | GB, GBC, GBA, SNES, N64 |
@@ -114,42 +117,25 @@ The problems the app flags:
 - **Encrypted:** a 3DS copy the emulator cannot read as it is.
 - **Out of date:** a Switch or Wii U game with no update, or an older one
   than the title list knows.
-- **No save:** a game played before, by its save folder, whose save is gone.
-- **BIOS:** a BIOS missing for a system with games, or one not on the list.
 
-Five pages in a side nav, each started from a Design template:
+Three pages in a side nav, each started from a Design template:
 
-- **Collection** is one table of every game: system, title, region, version,
-  format, size and a status tag, with search and a filter per system and
-  per status. A game opens in a side panel with every field above.
-- **Problems** lists only what needs a look, grouped by kind.
-- **Wanted** lists the better versions the lists know of and the collection
-  lacks: a later revision, a missing disc, a missing update, and an English
-  copy where rux has only another language.
-- **Organize** shows what `organize-roms.mjs` would rename and convert, and
-  how much space it saves, for rux to say yes to on the Mac.
+- **Collection** is one table of every game: system, title, region, format,
+  size and a status tag, with search and a filter per system and per status.
+  A game opens in a side panel with every field above.
+- **Problems** lists every game with a problem under one heading per kind,
+  worst first, which covers the better versions to look for and what the
+  organize tool would convert or rename.
 - **Import** takes a scan file, shows what changed since the last one, and
   saves on a yes.
 
 ## Questions
 
-- **Does Cemu's `.wua` converter run from the command line,** or only from
-  its window? If only the window, the one Wii U game is converted by hand
-  and the tool only checks the result.
+None open.
 
 ## Tasks
 
-- [ ] Add the No-Intro and Redump lists and the Switch title list to the tool,
-  downloaded on a yes and kept outside this repository, and match every
-  game against them.
-- [ ] Write `roms/tools/organize-roms.mjs`: renames to the lists' names, CHD
-  for PS1 and PS2, `.m3u` playlists, `.wua` for Wii U, originals moved to
-  `emulation/to-delete/`, all shown first and done on a yes.
-- [ ] Install `rom-tools` with Homebrew on a yes, and answer the Cemu question.
-- [ ] Import the first full scan and check Collection and Import in Chrome on
+- [ ] Import the scan and check Collection, Problems and Import in Chrome on
   :8641.
-- [ ] Show each game's list match in Collection, and build Problems, Wanted and
-  Organize from the matches.
-- [ ] Add Roms' invented example pages to Design, and its `README.md`.
-- [ ] Organize the drive, scan and import it again, and check every page in
-  Chrome on :8641.
+- [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
+- [ ] Add Roms' invented example pages to Design.

@@ -8,11 +8,19 @@
 // file's fingerprints by path, size and date so the next scan reads only new
 // or changed files. Nothing it writes belongs in this repository, which is
 // public. `--headers-only` skips the fingerprints, for a quick look.
+//
+// When `<emulation>/lists/` holds the No-Intro and Redump lists, every game
+// is matched against them (lib/lists.mjs). A CHD is matched by the tracks
+// inside it, which chdman extracts once to a temporary folder and the
+// fingerprints keep.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import os from 'node:os';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { loadLists, matchGame, loadSwitchVersions, matchSwitch, baseOf, loadBiosList } from './lib/lists.mjs';
 
 const root = process.argv[2];
 const headersOnly = process.argv.includes('--headers-only');
@@ -48,7 +56,9 @@ let lastReport = 0;
 
 async function fingerprint(file, stat) {
   const key = `${path.relative(root, file)}|${stat.size}|${Math.floor(stat.mtimeMs)}`;
-  if (cache[key]) return cache[key];
+  // An entry may hold only what is inside a CHD, which organize-roms.mjs
+  // knows from the files it was made from; the file is still read.
+  if (cache[key]?.sha1) return cache[key];
   if (headersOnly) return null;
   const md5 = crypto.createHash('md5');
   const sha1 = crypto.createHash('sha1');
@@ -64,9 +74,45 @@ async function fingerprint(file, stat) {
       process.stderr.write(`  ${pct}% of ${(bytesTotal / 1e9).toFixed(0)} GB new to fingerprint\n`);
     }
   }
-  const out = { crc32: (crc >>> 0).toString(16).padStart(8, '0'), md5: md5.digest('hex'), sha1: sha1.digest('hex') };
+  const out = { ...cache[key], crc32: (crc >>> 0).toString(16).padStart(8, '0'), md5: md5.digest('hex'), sha1: sha1.digest('hex') };
   cache[key] = out;
   return out;
+}
+
+// The SHA-1 of what a CHD holds: each track of a CD, or the image of a DVD,
+// as the lists fingerprint them. Kept with the CHD's own fingerprints.
+const sha1Of = async (file) => {
+  const h = crypto.createHash('sha1');
+  for await (const chunk of fs.createReadStream(file, { highWaterMark: 8 << 20 })) h.update(chunk);
+  return h.digest('hex');
+};
+// chdman exits non-zero on --help, so only a missing program counts as none.
+const chdman = spawnSync('chdman', ['--help'], { stdio: 'ignore' }).error ? null : 'chdman';
+
+async function inside(file, stat) {
+  const key = `${path.relative(root, file)}|${stat.size}|${Math.floor(stat.mtimeMs)}`;
+  if (cache[key]?.inner) return cache[key].inner;
+  if (headersOnly || !chdman || !cache[key]) return null;
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'roms-chd-'));
+  try {
+    let images;
+    try {
+      execFileSync(chdman, ['extractcd', '-i', file, '-o', path.join(tmp, 'disc.cue'), '-sb'], { stdio: 'ignore' });
+      images = fs.readdirSync(tmp).filter((f) => f.endsWith('.bin')).sort();
+    } catch {
+      execFileSync(chdman, ['extractdvd', '-i', file, '-o', path.join(tmp, 'disc.iso')], { stdio: 'ignore' });
+      images = ['disc.iso'];
+    }
+    const inner = [];
+    for (const f of images) inner.push(await sha1Of(path.join(tmp, f)));
+    cache[key].inner = inner;
+    return inner;
+  } catch (e) {
+    console.error(`  could not look inside ${path.basename(file)}: ${e.message}`);
+    return null;
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 }
 
 // ---- headers, one reader per kind of file -------------------------------
@@ -338,7 +384,7 @@ const toFingerprint = [
 ];
 for (const f of toFingerprint) {
   const st = fs.statSync(f);
-  if (!cache[`${path.relative(root, f)}|${st.size}|${Math.floor(st.mtimeMs)}`]) bytesTotal += st.size;
+  if (!cache[`${path.relative(root, f)}|${st.size}|${Math.floor(st.mtimeMs)}`]?.sha1) bytesTotal += st.size;
 }
 console.error(`${entries.length} entries, ${(bytesTotal / 1e9).toFixed(1)} GB new to fingerprint${headersOnly ? ' (skipped)' : ''}`);
 
@@ -351,6 +397,7 @@ async function fileRecord(file) {
     size: st.size,
     modified: new Date(st.mtimeMs).toISOString(),
     ...(await fingerprint(file, st)),
+    ...(ext === 'chd' ? { inner: await inside(file, st) } : {}),
     header: headerOf(file, ext, st.size),
   };
 }
@@ -402,11 +449,33 @@ for (const x of extras.filter((x) => x.baseTitleId)) {
   if (game) (game.extras ??= []).push(x);
 }
 
+// Each game against the lists, where the drive holds them.
+const lists = loadLists(path.join(root, 'lists'));
+const switchVersions = loadSwitchVersions(path.join(root, 'lists'));
+for (const g of out) g.match = g.system === 'switch' ? matchSwitch(g, switchVersions) : matchGame(g, lists);
+// Two games of one name on one system are copies of one game in different
+// regions or revisions; each names the others. Discs are already one game.
+const byBase = new Map();
+for (const g of out) {
+  const k = `${g.system}/${baseOf(g.match?.names?.[0] ?? g.title).replace(/\s*\(Disc \d+\)/, '')}`;
+  if (!byBase.has(k)) byBase.set(k, []);
+  byBase.get(k).push(g);
+}
+for (const group of byBase.values()) {
+  if (group.length < 2) continue;
+  for (const g of group) if (g.match) g.match.copies = group.filter(x => x !== g).map(x => x.title);
+}
+const listsUsed = Object.fromEntries(Object.entries(lists).map(([s, l]) => [s, l.used]));
+if (!Object.keys(lists).length) console.error('no lists in <emulation>/lists/, so no game is matched');
+
 const bios = await Promise.all(biosFiles.map(async (f) => {
   const rel = path.relative(path.join(root, 'bios'), f);
   if (SECRET.test(f)) return { name: rel, secret: true };
   return { name: rel, size: fs.statSync(f).size, ...(await fingerprint(f, fs.statSync(f))) };
 }));
+// A BIOS the system list knows, by name; it knows few, so no match is no fault.
+const biosList = loadBiosList(path.join(root, 'lists'));
+for (const b of bios) if (biosList && b.sha1) b.listedAs = biosList.get(b.sha1) ?? null;
 
 fs.mkdirSync(scansDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));
@@ -415,6 +484,7 @@ const scanPath = path.join(scansDir, `scan_${date}.json`);
 fs.writeFileSync(scanPath, JSON.stringify({
   scanned: new Date().toISOString(),
   fingerprints: !headersOnly,
+  lists: listsUsed,
   games: out,
   unmatchedExtras: extras.filter((x) => !x.baseTitleId || !out.some((g) => g.titleId === x.baseTitleId)),
   bios,

@@ -22,7 +22,7 @@
     title_id: g.titleId ?? null, version: g.version ?? null, product_code: g.productCode ?? null,
     // A folder's thousand small files are counted, not each kept.
     files: g.folder ? g.files.map(({ name, size }) => ({ name, size })) : g.files,
-    extras: g.extras ?? [], scanned_at: scanned,
+    extras: g.extras ?? [], match: g.match ?? null, scanned_at: scanned,
   });
 
   async function read(file) {

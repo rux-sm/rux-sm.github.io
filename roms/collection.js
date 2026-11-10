@@ -85,6 +85,7 @@
       ['Format', g.formats.join(' + ').toUpperCase()], ['Size', R.size(g.size)],
       ['Title ID', g.title_id], ['Version', g.title_id ? g.version : null],
       ['Save', g.has_save ? 'Yes' : null],
+      ['On the list as', g.match?.names?.join(', ')], ['Found by', g.match?.by?.join(', ')],
     ]));
     for (const x of g.extras ?? []) {
       body.append(el('h3', 'rux--type-heading-02', x.kind === 'update' ? 'Update' : 'Add-on'),
@@ -109,9 +110,13 @@
       }
     }
     $('roms-panel').hidden = false;
+    $('roms-panel').classList.add('rux--side-panel--open');
     $('roms-panel-close').focus();
   }
-  const closePanel = () => { $('roms-panel').hidden = true; };
+  const closePanel = () => {
+    $('roms-panel').classList.remove('rux--side-panel--open');
+    $('roms-panel').hidden = true;
+  };
   $('roms-panel-close').addEventListener('click', closePanel);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('roms-panel').hidden) closePanel(); });
 
@@ -132,7 +137,11 @@
       const n = games.filter(g => g.status === key).length;
       if (n) $('roms-filter-status').append(option(key, `${label} (${n})`));
     }
+    // A link from Problems names its game as ?q=, which fills the search.
+    const q = new URLSearchParams(location.search).get('q');
+    if (q) $('roms-search').value = q;
     render();
+    if (q) { const only = shown(); if (only.length === 1) openGame(only[0]); }
   }
 
   for (const id of ['roms-search', 'roms-filter-system', 'roms-filter-status']) {

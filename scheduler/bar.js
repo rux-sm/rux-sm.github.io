@@ -126,7 +126,8 @@
   const TIMES_W = 105;
   const stopDots = (trip, leg, out, back, days) => {
     if (!(back > out)) return [];
-    const stops = window.SchedulerWeek.stopsOfKey(trip, leg.key);
+    // The bar's own route's stops; `leg` is that route, as week.js's rangeOf gives it.
+    const { stops } = window.SchedulerWeek.stopsOfLeg(trip, leg.key, leg.routeId ?? null);
     const pickup = stops.find(s => s.type === 'pickup') ?? stops[0];
     const times = [];
     let before = out, day = leg.from;

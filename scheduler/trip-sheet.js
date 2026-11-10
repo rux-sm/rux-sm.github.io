@@ -207,7 +207,7 @@
     const people = [tripContact(trip, 0), ...dayContactsOf(trip, legKey)].filter(c => c?.name)
       .filter((c, i, all) => all.findIndex(o => o.name === c.name && dial(o.phone || '') === dial(c.phone || '')) === i);
     if (people.length) fact(people.length > 1 ? 'Contacts' : 'Contact', ...people.map(sheetPerson));
-    const stops = window.SchedulerWeek.stopsOfKey(trip, legKey);
+    const { stops } = window.SchedulerWeek.stopsOfLeg(trip, legKey, bar.dataset.routeId || null);
     const pickup = stops.find(st => st.type === 'pickup') ?? stops[0];
     if (pickup) fact('Pickup', [pickup.spot ? hhmm(pickup.spot, true) : null, (pickup.name || pickup.address || '').trim()].filter(Boolean).join(' · '));
     const bus = bar.dataset.busId ? board.busesById.get(bar.dataset.busId) : null;

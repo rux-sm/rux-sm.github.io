@@ -446,11 +446,6 @@ const window = {};
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1, hotel('return'));
     return legs;
   };
-  /* A leg's own stops in order, by its key: every route's on a trip read
-     with its legs, and the stops naming its word on one that is not. */
-  const stopsOfKey = (trip, key) => (shaped(trip)
-    ? (SHAPE.legOf(trip, key)?.routes ?? []).flatMap(r => SHAPE.stopsOfRoute(trip, r.id))
-    : (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === key).sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
   /* The key of the leg a vehicle runs on: on a trip read with its legs, its
      route's leg, or the leg its old word names while the page has made it
      and not yet read it back with its route; on one that is not, the word. */
@@ -515,7 +510,7 @@ const window = {};
 
   window.SchedulerWeek = {
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
-    stopsOfLeg, stopsOfKey, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
   };
 })();
@@ -534,8 +529,9 @@ const window = {};
    and keeps each bus's path, the GPS points since its leg left the yard, by
    asking each time for the points since the last one it has.
 
-   `stopsOf(trip, leg)` lists a leg's stops in order with the time the bus is
-   due at each, the leg named by its key, week.js's, or by its old word: the
+   `stopsOf(trip, leg, route)` lists a route's stops in order with the time
+   the bus is due at each, the leg named by its key, week.js's, or by its old
+   word, and the route by its id, the leg's first with none: the
    pickup at its Spot, every other stop and the yard return
    at their Arrives. `whereOn(stops, path, bus)` follows the path through
    them: a stop is reached when the bus comes within a quarter mile of it, in
@@ -611,7 +607,7 @@ const window = {};
     return t.toISOString().slice(0, 10);
   };
 
-  /* A leg's stops in order, from the pickup to the yard return, each with
+  /* A route's stops in order, from the pickup to the yard return, each with
      its name, its map point and when the bus is due there, an instant on
      the office's clock or null. A time saved with no date is on the leg's
      first day, or the next day where it is earlier on the clock than the
@@ -623,11 +619,11 @@ const window = {};
      `depart_prev`, on the first day from its own date, or the stop's, that
      is not before the arrival, as a due time is; null where the bus leaves
      as it gets there, as the itinerary prints an arrival alone. */
-  function stopsOf(trip, leg) {
+  function stopsOf(trip, leg, route = null) {
     const W = window.SchedulerWeek;
-    const legOf = W.legByKey(trip, leg);
+    const legOf = W.legByKey(trip, leg, route);
     if (!legOf) return [];
-    const { stops, pickup } = W.stopsOfLeg(trip, legOf.key);
+    const { stops, pickup } = W.stopsOfLeg(trip, legOf.key, route);
     let day = legOf.from, last = null, before = null;
     return stops.slice(Math.max(stops.indexOf(pickup), 0)).map((s, i, legStops) => {
       const [time, date] = s.type === 'pickup' ? (s.spot ? [s.spot, s.spot_date] : [s.depart_prev, s.depart_prev_date])

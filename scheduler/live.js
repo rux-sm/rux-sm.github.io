@@ -98,12 +98,13 @@
       .or(`end_date.gte.${from},start_date.gte.${from}`, { referencedTable: 'ends' });
     if (error) throw error;
     const legs = new Map();
+    // Each bus on its route's span, the hours that route keeps.
     for (const trip of data || []) {
-      for (const leg of W.legsOf(trip)) {
+      for (const leg of W.rangesOf(trip)) {
         const span = Road.span(leg);
         if (!span) continue;
-        for (const a of trip.trip_assignments || []) {
-          if (!a.bus_id || W.legKeyOfVehicle(trip, a) !== leg.key) continue;
+        for (const a of leg.vehicles) {
+          if (!a.bus_id) continue;
           if (!legs.has(a.bus_id)) legs.set(a.bus_id, []);
           legs.get(a.bus_id).push({ trip, assign: a, leg: leg.key, span });
         }
@@ -157,7 +158,7 @@
     const s = { bus, number: busesById.get(bus.bus_id)?.number ?? '?', out, leg: out ? leg : null, here, wheel, stale, warnings: [] };
     if (!out) return s;
     s.hue = W.hueFor(leg.trip);
-    s.stops = Road.stopsOf(leg.trip, leg.leg);
+    s.stops = Road.stopsOf(leg.trip, leg.leg, leg.assign?.route_id ?? null);
     s.next = Road.nextOn(s.stops, bus, arrivals);
     s.said = Live.saidOf(Live.lookOf({
       trip: leg.trip, assign: leg.assign, span: leg.span, bus, next: s.next,

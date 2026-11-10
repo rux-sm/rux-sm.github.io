@@ -202,7 +202,7 @@
   };
   // The leg's points in order, each its key, word, place, planned and actual times, or what a bus out says of it.
   function routeOf(trip, bar, board) {
-    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
+    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg, bar.dataset.routeId || null);
     const track = bar.querySelector(':scope > .scheduler-bar__time .scheduler-bar__track[data-out]');
     const out = track ? Number(track.dataset.out) : null;
     const next = bar.classList.contains('scheduler-bar--road') ? board.road(bar)?.next ?? null : null;

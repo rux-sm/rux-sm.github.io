@@ -950,7 +950,7 @@
   function roadNext(bar, bus) {
     const trip = heldTrip(bar.dataset.tripId);
     if (!trip || !bus) return null;
-    return Road.nextOn(Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg), bus, roadEta);
+    return Road.nextOn(Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg, bar.dataset.routeId || null), bus, roadEta);
   }
 
   /* Each bus out on the board and where its path starts, two hours before
@@ -2097,9 +2097,9 @@
     const fromBus = bar.dataset.busId || null;
     const label = busLabel(fromBus);
     schEl.setAttribute('aria-busy', 'true');
-    // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
+    // An empty slot's row goes on its bar's route, or by its word on a trip read without its legs.
     const slotTrip = panelIndex.trips.get(tripId);
-    const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
+    const slotRoute = shaped(slotTrip) ? bar.dataset.routeId || SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id || null : null;
     const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
     const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
       .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
@@ -10435,7 +10435,7 @@
       const pickupOf = (b, leg) => {
         if (!b.pickupAt) return { line: null, tag: null };
         const at = Date.parse(b.pickupAt);
-        const late = Road.pickupLate(Road.stopsOf(trip, leg)[0]?.due ?? null, at);
+        const late = Road.pickupLate(Road.stopsOf(trip, leg, busRoute(leg, b))[0]?.due ?? null, at);
         const line = el('p', 'rux--form__helper-text', `Reached the pickup at ${hhmm(Road.clockOf(at), true)}`);
         let tag = null;
         if (late != null) {
@@ -17636,7 +17636,7 @@
   /* The driver details letter for the customer, or null while no driver on
      the trip has confirmed: every bus under its number, with its confirmed
      drivers' names and numbers beneath, and a bus with none says its driver
-     is to be confirmed; then each leg's spot time at its pickup. Legs with
+     is to be confirmed; then each route's spot time at its pickup. Legs with
      the same crew list the buses once and the spot times one line a day;
      legs that differ each go under their own day with their own spot time.
      It says the drivers are confirmed only while no bus is waiting on one,
@@ -17648,9 +17648,9 @@
   function driverLetter(trip) {
     const named = new Set();
     let waiting = false;
-    const legs = legsOf(trip).map(l => {
-      const buses = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
-        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    // Each route of each leg, with its own buses and spot time.
+    const legs = rangesOf(trip).map(l => {
+      const buses = l.vehicles
         .map(a => {
           /* A bus a partner covers is theirs, so it is headed by the
              partner's name, and their driver is named as ours are once the
@@ -17671,7 +17671,7 @@
             + (c.who.phone ? `, ${showPhone(c.who.phone)}` : '')) : ['Driver to be confirmed'];
           return [number ? `Bus ${number}` : 'Bus to be confirmed', ...lines].join('\r\n');
         });
-      const stops = window.SchedulerWeek.stopsOfKey(trip, l.key);
+      const { stops } = stopsOfLeg(trip, l.key, l.routeId);
       const pickup = stops.find(s => s.type === 'pickup') ?? stops[0];
       const place = (pickup?.name || pickup?.address || '').trim();
       const spot = pickup?.spot ? `${window.SchedulerQuoteText.clock(pickup.spot)}${place ? ` at ${place}` : ''}` : null;
@@ -17685,7 +17685,9 @@
     const one = named.size === 1;
     const same = legs.every(l => l.buses.join() === legs[0].buses.join());
     const split = SHAPE.isSplit(trip);
-    const day = l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${longDay(l.from)}`;
+    // A leg's day, and a route's name where its leg has more than one, so each group reads its own buses and time.
+    const day = l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${longDay(l.from)}`
+      + ((l.routeCount ?? 1) > 1 ? `, ${l.routeName || `route ${l.routeNumber}`}` : '');
     /* One bus on one leg carries its spot time in its own block, as the
        letter's one paragraph of details; more stand apart beneath them. */
     const timed = legs.filter(l => l.spot);
@@ -17753,9 +17755,11 @@
     const inbound = SHAPE.isPickup(trip, on?.key);
     const legStart = saved?.start ?? null;
     const legEnd = saved?.end || legStart;
-    const legStops = window.SchedulerWeek.stopsOfKey(trip, leg);
-    const legPickup = legStops.find(s => s.type === 'pickup') || {};
-    const legBack = [...legStops].reverse().find(s => s.type === 'return') || {};
+    // Each bus's own route's pickup and return, which its drivers are told.
+    const endsOf = a => {
+      const { stops } = stopsOfLeg(trip, leg, a.route_id ?? null);
+      return { pickup: stops.find(s => s.type === 'pickup') || {}, back: [...stops].reverse().find(s => s.type === 'return') || {} };
+    };
     const officeToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
     const jobOf = (a, c) => {
       if (!driverText || !legStart) return null;
@@ -17805,6 +17809,7 @@
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       if (onTap) a.addEventListener('click', onTap);
+      const { pickup: legPickup, back: legBack } = endsOf(a);
       const glyph = svgUse(icon, '16', '0 0 32 32');
       glyph.classList.add('rux--btn__icon');
       a.appendChild(glyph);

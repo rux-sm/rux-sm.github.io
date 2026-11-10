@@ -1358,11 +1358,6 @@ const window = {};
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1, hotel('return'));
     return legs;
   };
-  /* A leg's own stops in order, by its key: every route's on a trip read
-     with its legs, and the stops naming its word on one that is not. */
-  const stopsOfKey = (trip, key) => (shaped(trip)
-    ? (SHAPE.legOf(trip, key)?.routes ?? []).flatMap(r => SHAPE.stopsOfRoute(trip, r.id))
-    : (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === key).sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
   /* The key of the leg a vehicle runs on: on a trip read with its legs, its
      route's leg, or the leg its old word names while the page has made it
      and not yet read it back with its route; on one that is not, the word. */
@@ -1427,7 +1422,7 @@ const window = {};
 
   window.SchedulerWeek = {
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
-    stopsOfLeg, stopsOfKey, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
   };
 })();
@@ -1902,7 +1897,9 @@ const window = {};
       .filter(d => alsoOn(d).includes(String(a.id)))];
     const numberOf = a => (a.buses?.number != null ? String(a.buses.number) : '');
     const inbound = SHAPE.isPickup(trip, shaped?.id);
-    const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
+    // The stops of the route their own bus runs, the leg's first where it names none of the leg's.
+    const route = routes.has(mine.route_id) ? mine.route_id : shaped?.routes[0]?.id;
+    const stops = shaped ? SHAPE.stopsOfRoute(trip, route) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
     const start = shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date;
@@ -2553,7 +2550,9 @@ const window = {};
   // A bus is assigned when it is one of ours or a partner covers it, as leg-facts.js counts it.
   const assigned = (trip, leg) => (trip.trip_assignments || [])
     .filter(a => Week().legKeyOfVehicle(trip, a) === leg && (a.bus_id != null || a.partner_id != null)).length;
-  const hasTimes = (trip, leg) => Week().stopsOfKey(trip, leg).some(s => s.arrive || s.spot || s.depart_prev);
+  // Every route of the leg has a time, since each is a group of its own to be at.
+  const hasTimes = (trip, leg) => (Week().legByKey(trip, leg)?.routes ?? [{ routeId: null }])
+    .every(r => Week().stopsOfLeg(trip, leg, r.routeId).stops.some(s => s.arrive || s.spot || s.depart_prev));
 
   // An open checklist item as a fault, in the words the trip's card uses.
   const OPEN = {

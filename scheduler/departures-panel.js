@@ -137,15 +137,21 @@
 
   /* When a leg's bus is spotted, or else its first time, which orders the
      day's legs: the time as "HH:MM", and the day it falls on, which is the
-     leg's own where the row keeps none. */
+     leg's own where the row keeps none. A leg of several routes leaves when
+     its earliest does. */
   function leavesAt(page) {
-    const stops = window.SchedulerWeek.stopsOfKey(page.trip, page.leg);
-    for (const s of stops) {
-      for (const key of ['spot', 'arrive', 'depart_prev']) {
-        if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day };
+    const W = window.SchedulerWeek;
+    const firstOf = stops => {
+      for (const s of stops) {
+        for (const key of ['spot', 'arrive', 'depart_prev']) {
+          if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day };
+        }
       }
-    }
-    return null;
+      return null;
+    };
+    const times = (W.legByKey(page.trip, page.leg)?.routes ?? [{ routeId: null }])
+      .map(r => firstOf(W.stopsOfLeg(page.trip, page.leg, r.routeId).stops)).filter(Boolean);
+    return times.sort((a, b) => `${a.day} ${a.time}`.localeCompare(`${b.day} ${b.time}`))[0] ?? null;
   }
   // A leg's place in its day: the day and time above, and last with neither.
   const soonest = page => { const at = leavesAt(page); return at ? `${at.day} ${at.time}` : '9'; };

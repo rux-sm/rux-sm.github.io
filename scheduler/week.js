@@ -253,11 +253,6 @@
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1, hotel('return'));
     return legs;
   };
-  /* A leg's own stops in order, by its key: every route's on a trip read
-     with its legs, and the stops naming its word on one that is not. */
-  const stopsOfKey = (trip, key) => (shaped(trip)
-    ? (SHAPE.legOf(trip, key)?.routes ?? []).flatMap(r => SHAPE.stopsOfRoute(trip, r.id))
-    : (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === key).sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
   /* The key of the leg a vehicle runs on: on a trip read with its legs, its
      route's leg, or the leg its old word names while the page has made it
      and not yet read it back with its route; on one that is not, the word. */
@@ -322,7 +317,7 @@
 
   window.SchedulerWeek = {
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
-    stopsOfLeg, stopsOfKey, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
   };
 })();

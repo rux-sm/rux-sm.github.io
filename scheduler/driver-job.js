@@ -146,7 +146,9 @@
       .filter(d => alsoOn(d).includes(String(a.id)))];
     const numberOf = a => (a.buses?.number != null ? String(a.buses.number) : '');
     const inbound = SHAPE.isPickup(trip, shaped?.id);
-    const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
+    // The stops of the route their own bus runs, the leg's first where it names none of the leg's.
+    const route = routes.has(mine.route_id) ? mine.route_id : shaped?.routes[0]?.id;
+    const stops = shaped ? SHAPE.stopsOfRoute(trip, route) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
     const start = shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date;

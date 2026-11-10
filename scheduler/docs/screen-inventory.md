@@ -433,8 +433,8 @@ Driver") over their name and number, with Call and Text, on a phone each its wor
 beside the person. A ⋮ beside the close button holds the rest: Text all drivers, one group message
 from two drivers up; once a driver has confirmed, Email driver details and Copy driver details, the
 letter to the booking contact of every bus with its confirmed drivers' names and numbers and each
-leg's spot time at its pickup, each leg under its day when their crews differ; Email for a contact who has an address; Remind for each
-driver, a text with their reminder of the leg typed in: "Hi Oscar, a reminder for your trip
+route's spot time at its pickup, each leg under its day when their crews differ, and each route under its day and name on a leg of more than one; Email for a contact who has an address; Remind for each
+driver, a text with their reminder of the leg typed in, at the pickup and return of the route their bus runs: "Hi Oscar, a reminder for your trip
 tomorrow:", then the leg in the Driver week info message's own lines, from
 `scheduler/driver-text.js`, and the newest itinerary's link; and Add number for a person with none.
 A driver is told of a change only to what would put them on the wrong day, at the wrong time or at

@@ -61,9 +61,9 @@ surface.
 | Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 9px under the fuel, on the card's inset |
 
 A bus with a tracker has a box round its state and fuel: a 1px border in
-the second layer's subtle colour, 4px clear of the number and the foot,
-8px from its words at the sides and 4px above and below, so those two rows
-stand 48px wide. While the bus moves the border is its green over a 16%
+the second layer's subtle colour, its sides on the card's 8px inset in
+line with the number, 4px clear of the number and the foot and 4px from
+its words all round, so those two rows stand 46px wide. While the bus moves the border is its green over a 16%
 tint of it, amber past the speeding limit. Views shorter than six lines
 have no box and keep the state on one row.
 

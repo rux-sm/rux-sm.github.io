@@ -32,8 +32,9 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 - **The collection is wherever it is found:** the T7 now, the home server's
   share later, and the helper tells the site which.
 - **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each
-  emulator from the installers kept beside the games, copies the
-  keys and firmware, and writes the settings Emu manages, as
+  emulator from the installers Supabase holds, by links the site signs,
+  takes the keys and firmware the same way, and writes the settings Emu
+  manages, as
   `docs/plans/emu-emulator-profiles.md` lists them; the how-to stays the
   record of what it does.
 - **The helper is kept beside the games and built by

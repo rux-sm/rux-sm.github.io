@@ -168,10 +168,9 @@ Emulators, chosen fresh rather than kept from what is installed:
 
 Saves:
 
-- **The collection's copy of the saves is on the drive, one folder per
-  emulator,** under `emulation/saves/<system>/`, named for the first system
-  it plays, which the scan reads; each emulator saves in its own folder on
-  the Mac, and Rux Emu Helper carries saves between the two, as
+- **Saves live in Supabase, one folder per emulator,** `saves/<system>/`,
+  named for the first system it plays; each emulator saves in its own folder
+  on the Mac, and the site carries saves between the two, as
   `docs/plans/emu-emulator-profiles.md` says.
 - **A save is matched to its game the way its emulator names it:** Mesen,
   mGBA, melonDS and ares by the game's file name, Azahar and Cemu by
@@ -189,21 +188,15 @@ Saves:
   is split into the EEPROM, SRAM, flash and Controller Pak files ares reads;
   save states cannot move between emulators and are left behind.
 
-Backups, three copies of everything small:
+Three copies of everything but the games, as
+`docs/plans/emu-emulator-profiles.md` says:
 
-- **The drive** holds the collection's copy of the saves.
-- **Supabase** holds the offsite copy, in a private `emu-backups` bucket
-  only the owner reads: the scan packs `saves/`, `settings/`, `bios/` and the keys into
-  one dated zip on the drive, and Update uploads it with the scan, signed in
-  as rux.
-- **Each Mac** keeps a third copy: `emu/tools/backup-saves.mjs` copies the
-  same zip, the firmware and the installers to a folder in its Documents.
-- **Supabase keeps every backup of the last 30 days and one a month before
-  that,** since the saves, BIOS and keys come to about 10 MB.
-- **The firmware and installers stay off Supabase,** at 325 MB and more, so
-  they live on the drive and each Mac.
-- **A save is restored from the Saves page,** which downloads any backup's
-  zip.
+- **Supabase** is their home, in a private bucket only the owner reads,
+  with the last five copies of each save.
+- **Each Mac that plays** holds the copy its emulators use.
+- **The drive** keeps a dated zip of the saves, settings, BIOS and keys,
+  which Update writes from Supabase.
+- **A save is restored from the Saves page,** to any of its kept copies.
 
 Saves found wherever each emulator keeps them, and backed up from the app:
 

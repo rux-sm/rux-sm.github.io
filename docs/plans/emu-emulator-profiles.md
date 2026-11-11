@@ -7,41 +7,52 @@ type: plan
 ## Goal
 
 Every console behaves the same to the person playing. Play opens a game
-with its latest saves on any Mac, quitting puts them back in the
-collection, and the Emulators page shows each emulator as one profile with
-the same parts in the same order. What differs between emulators is written
-once, in `emu/emulators.json`, and Rux Emu Helper handles it. The rest of
-Emu is `docs/plans/emu-app.md`, the helper `docs/plans/emu-helper.md` and
-the home server `docs/plans/emu-server.md`.
+with its latest saves on any Mac, quitting puts them back in Supabase, and
+the Emulators page shows each emulator as one profile with the same parts in
+the same order. Everything but the games lives in Supabase, so a Mac needs
+the drive only for games. What differs between emulators is written once, in
+`emu/emulators.json`, and Rux Emu Helper handles it. The rest of Emu is
+`docs/plans/emu-app.md`, the helper `docs/plans/emu-helper.md` and the home
+server `docs/plans/emu-server.md`.
 
 ## Decisions
 
 One rule for every emulator:
 
+- **Supabase is the home of everything but the games:** saves, save states,
+  each Mac's settings, BIOS, keys, firmware and installers, in one private
+  bucket only the owner reads, laid out as the drive's `saves/`, `bios/` and
+  `emulators/` folders are. It comes to under 2 GB of the plan's 100 GB, and
+  follows to any Mac with the internet and no drive. The drive, and the home
+  server after it, hold the games and a dated backup.
 - **Every kind of file an emulator writes has one of five classes,** named
   in `emulators.json`: shared, which is saves, memory cards and save states,
   carried both ways; collected, which is screenshots, carried from the Mac to
-  the collection; provided, which is BIOS, keys and firmware, carried from
-  the collection to the Mac; the Mac's own, which is settings, controls and
-  per-game settings, backed up to the collection; and local, which is caches,
-  logs and recent lists, never carried.
-- **An emulator keeps its files in its own folder on the Mac, and the helper
-  carries them to and from the collection,** because no setting moves every
-  file: Dolphin's and Azahar's save states, Mesen 2's firmware and Cemu's
-  keys cannot be pointed anywhere, and Mesen 2, Azahar and Ryujinx go back to
-  the Mac's folder without a word when the drive is missing.
-- **Play is one session, the same for every console:** the helper checks the
-  app is the drive's version, writes the settings Emu manages, brings down
-  what is newer in the collection, starts the game, and when the emulator
-  quits takes up what changed and tells the page.
-- **The helper also carries when the collection appears, when any emulator
-  quits and when the Mac goes to sleep,** so a game opened from ES-DE or the
-  Dock, or left open under a closed lid, is not left out.
-- **The helper's menu bar icon says where the saves stand:** carrying, or
-  all in the collection and safe to unplug, since that is where the eye is
-  when the drive comes out.
-- **The collection keeps its layout,** `saves/<system>/` as the scan reads
-  it; `emulators.json` maps each place on the Mac to its folder there.
+  Supabase; provided, which is BIOS, keys and firmware, carried from
+  Supabase to the Mac; the Mac's own, which is settings, controls and
+  per-game settings, backed up to Supabase; and local, which is caches, logs
+  and recent lists, never carried.
+- **An emulator keeps its files in its own folder on the Mac,** because no
+  setting moves every file: Dolphin's and Azahar's save states, Mesen 2's
+  firmware and Cemu's keys cannot be pointed anywhere, and Mesen 2, Azahar
+  and Ryujinx go back to the Mac's folder without a word when the folder
+  they were pointed at is missing.
+- **The site carries, and the helper keeps no log-in:** signed in as rux,
+  the page compares what the helper reads on the Mac with what Supabase
+  lists and moves each file between them, as Update uploads a Mac's saves; a
+  file too large to pass through the page goes straight between the helper
+  and Supabase by a link the page signs, good for minutes.
+- **A table lists each file Supabase holds, with its fingerprint and when it
+  was saved,** so the page compares without downloading and the Saves page
+  lists them.
+- **Play is one session, the same for every console:** the page brings down
+  what is newer, the helper checks the app is the version Supabase holds,
+  writes the settings Emu manages and starts the game, and when the emulator
+  quits the page takes up what changed.
+- **A save changed with the site closed, or with no internet, waits on the
+  Mac:** the helper notes it, its menu bar icon says saves are waiting, and
+  the site carries it when next open there; opening the site on a Mac also
+  brings down what is newer.
 - **A save is carried whole, as the scan groups it:** one file per game for
   Mesen 2, mGBA, ares, melonDS and DuckStation, one folder per game for
   Dolphin, Azahar, Cemu and PCSX2, and everything at once for Ryujinx's save
@@ -49,8 +60,8 @@ One rule for every emulator:
   contents.
 - **Nothing is overwritten unseen:** the helper remembers each save's
   fingerprint at its last carry; changed on one side, it is copied; changed
-  on both, the newest plays and the other is kept; and the collection keeps
-  the last five copies of each save.
+  on both, the newest plays and the other is kept; and Supabase keeps the
+  last five copies of each save.
 - **Play never waits on a question:** the game's panel says when two copies
   were found and which is playing, with one press to use the other.
 - **Emu manages a short list of settings per emulator,** written before each
@@ -59,8 +70,8 @@ One rule for every emulator:
   updater off; DuckStation's one card per game and PCSX2's folder cards; and
   xemu's welcome screen off. Every other setting is the Mac's own.
 - **Each Mac's settings are backed up after a session that changed them,**
-  into `settings/<mac>/<emulator>/` in the collection with the last five
-  copies kept, and the profile puts any of them back on that Mac.
+  into `settings/<mac>/<emulator>/` with the last five copies kept, and the
+  profile puts any of them back on that Mac.
 - **One set of settings per emulator can be kept as preferred,** from the
   profile, into `settings/preferred/<emulator>/`; a new Mac starts from it,
   and any Mac takes it only when asked, with the settings Emu manages
@@ -69,38 +80,39 @@ One rule for every emulator:
   so a set kept on one Mac opens on another, and a file or line that holds a
   log-in, as PCSX2's `secrets.ini` and Dolphin's achievements token do, is
   left out.
-- **The collection is found, never named in an emulator's setting,** so the
-  drive mounting under another name, or the home server replacing it, changes
-  nothing on a Mac.
+- **Nothing on a Mac names the drive:** a game opens from wherever the
+  collection is found, and everything else comes from Supabase.
+- **The drive keeps a dated zip of the saves, settings, BIOS and keys,**
+  which Update writes from Supabase, so there are three copies: Supabase,
+  each Mac that plays, and the drive.
 
 Versions:
 
-- **The installer on the drive is the version every Mac should have,** and
-  the helper installs from it and writes a receipt naming it, since three
-  apps do not say their own: Mesen 2.1.1 reports `1.0`, Ryujinx 1.3.3
-  reports `1.2`, and the Cemu build `0.0.0`.
+- **The installer Supabase holds is the version every Mac should have,**
+  and the helper installs it by a link the page signs and writes a receipt
+  naming it, since three apps do not say their own: Mesen 2.1.1 reports
+  `1.0`, Ryujinx 1.3.3 reports `1.2`, and the Cemu build `0.0.0`.
 - **An app with no receipt is read from its own version key where that is
   true,** which is every other one, and is otherwise said to be unknown.
 - **The helper asks each project's own feed for the newest during Update,**
   and saves it with the drive's row: GitHub's latest release for Mesen 2,
-  mGBA, ares, melonDS, Azahar, xemu and Cemu; the commits from `0.1` to the
-  `latest` tag for DuckStation; `api.pcsx2.net` for PCSX2; the newest tag and
-  `dl.dolphin-emu.org` for Dolphin; `update.ryujinx.app` for Ryujinx; and
-  `updates.es-de.org` for ES-DE.
-- **A newer one out is a to-do to download it onto the drive,** never an
-  update on one Mac alone, so a save state made on one Mac opens on another.
+  mGBA, ares, melonDS, Azahar and xemu; the commits from `0.1` to the
+  `latest` tag for DuckStation; `api.pcsx2.net` for PCSX2; the greatest tag
+  for Dolphin; `update.ryujinx.app` for Ryujinx; and `updates.es-de.org` for
+  ES-DE.
+- **A newer one out is a to-do to put it in Supabase,** never an update on
+  one Mac alone, so a save state made on one Mac opens on another.
 - **Cemu stays on a development build, named by its build,** since its last
   release is Intel only.
 
 The profile, the same for every emulator, in this order, in plain words:
-the page says in the collection, backed up or stays on this Mac, and the
-class names stay in `emulators.json`.
+the page says in Supabase, backed up or stays on this Mac, and the class
+names stay in `emulators.json`.
 
 - **Version:** this Mac's, the drive's and the newest.
-- **Needs:** each BIOS, key or firmware file, and whether the collection has
-  it.
+- **Needs:** each BIOS, key or firmware file, and whether Supabase has it.
 - **Files:** each kind it writes under its class, where it is on the Mac,
-  where it is in the collection, and whether this Mac is in step.
+  where it is in Supabase, and whether this Mac is in step.
 - **Settings:** each one Emu manages and its value, where the settings
   file is, this Mac's backups to put back, and the preferred set to keep or
   take.
@@ -150,13 +162,7 @@ What each emulator's source and the installers on the drive say:
 
 ## Questions
 
-- Is Supabase the collection's home for everything but the games, with the
-  page carrying saves between the helper and Supabase as it uploads a Mac's
-  saves now, so the drive and the home server hold only games, installers
-  and a backup? Everything but the games is under 2 GB, the project's plan
-  holds 100 GB, and saves then follow to any Mac with the internet and no
-  drive; the helper keeps no log-in, so a save waits on the Mac until the
-  site is open.
+None open.
 
 ## Tasks
 
@@ -164,17 +170,24 @@ In this order, so what can lose a save comes last and proves itself first:
 
 - [ ] Install the helper on the MacBook Pro from the drive and Update
   there, which settles which folder mGBA writes its settings in.
-- [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive, and move
-  the GameCube save into `GC/USA/`.
-- [ ] Make the helper install from the drive with a receipt.
-- [ ] Make the helper back up each Mac's settings, put a backup back, and
+- [ ] Make the bucket and the table of its files, owner-only, with a file
+  size limit past the largest installer.
+- [ ] Move the BIOS, keys, firmware and installers into Supabase, the newer
+  Azahar, PCSX2 and Dolphin among them, and read needs and installers from
+  there on the profiles and Status.
+- [ ] Make the helper install from Supabase with a receipt.
+- [ ] Back up each Mac's settings through the page, put a backup back, and
   keep and take the preferred set.
-- [ ] Make the helper carry for mGBA alone, on the iMac with mGBA installed
-  from the drive, each place in `emulators.json` naming its folder in the
-  collection: fingerprints, the five kept copies, the newest playing when
-  both changed, the session around Play, sleep and the menu bar icon.
-- [ ] Carry for the other emulators, a full backup first, the simple ones
-  first and Dolphin's Wii storage, Cemu, Ryujinx and xemu last, with xemu's
-  EEPROM beside its disk image; say on a game's panel whether its saves are
-  in step.
+- [ ] Carry for mGBA alone, on the iMac with mGBA installed: each place in
+  `emulators.json` naming its folder in Supabase, fingerprints, the five
+  kept copies, the newest playing when both changed, the session around
+  Play, and the menu bar icon.
+- [ ] Carry for the other emulators, a backup first, the simple ones first
+  and Dolphin's Wii storage, Cemu, Ryujinx and xemu last: the drive's saves
+  moved into Supabase, the GameCube save under `GC/USA/`, xemu's EEPROM
+  beside its disk image, each emulator on the MacBook Pro back to its own
+  folders, the Saves page listing Supabase, and a game's panel saying
+  whether its saves are in step.
+- [ ] Write the drive's dated zip from Supabase during Update, in place of
+  the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

@@ -7,19 +7,20 @@ type: plan
 ## Goal
 
 The game collection lives on rux's old gaming PC, at home, instead of on the
-T7 carried between Macs, and any Mac, at home or away, is set up from it in
-one step and downloads the games it plays from the Emu app. The rest of
+T7 carried between Macs, and any Mac, at home or away, is set up in one
+step and downloads the games it plays from it through the Emu app. The rest of
 Emu is `docs/plans/emu-app.md`.
 
 ## Decisions
 
 The home server, so the drive is not carried between Macs:
 
-- **Until the server is built, the T7 stays the collection's home,** carried
-  between Macs as now, and everything Emu does today reads it.
-- **rux's old gaming PC becomes the collection's home,** holding the games,
-  BIOS, keys, firmware, installers and backups; it only stores, and every
-  game is played on another machine.
+- **Until the server is built, the T7 stays the games' home,** carried
+  between Macs as now.
+- **rux's old gaming PC becomes the games' home,** holding the games and the
+  dated backup; everything else is in Supabase, as
+  `docs/plans/emu-emulator-profiles.md` says. It only stores, and every game
+  is played on another machine.
 - **The collection lives on two matching 8 TB CMR NAS hard drives,
   mirrored,** about 7 TB usable for a collection of 800 GB that grows by
   hundreds at a time; hard drives cost a third of SSDs per terabyte, and the
@@ -41,10 +42,9 @@ The home server, so the drive is not carried between Macs:
 - **Tailscale reaches it from anywhere,** for the Mac that is not at home.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
-- **Saves are kept on each Mac, and Rux Emu Helper carries them to and from
-  the server,** as `docs/plans/emu-emulator-profiles.md` says, since an
-  emulator writing a save over the network loses it if the connection drops;
-  the server's copy is the one the scan reads.
+- **Saves are kept on each Mac and carried to and from Supabase,** as
+  `docs/plans/emu-emulator-profiles.md` says, since an emulator writing a
+  save over the network loses it if the connection drops.
 - **The server scans itself every night and saves the scan to Supabase,**
   with a key kept only on the server, so Update is needed only for the T7.
 - **Download to this Mac, in a game's side panel,** writes the game into the
@@ -61,10 +61,10 @@ The home server, so the drive is not carried between Macs:
 - **The T7 becomes the travel copy and the server's backup,** refreshed from
   it.
 
-The setup kit, so any Mac is set up from the server in one step:
+The setup kit, so any Mac is set up in one step:
 
 - **`emu/tools/build-kit.mjs` downloads each emulator's Mac installer,** from
-  the project's own releases on a yes, into the server's `emulators/mac/`,
+  the project's own releases on a yes, into Supabase's `emulators/mac/`,
   with each download's address in `emulators.json`.
 - **Rux Emu Helper sets up a Mac from those copies,** as
   `docs/plans/emu-helper.md` says, pointing each emulator at the Mac's

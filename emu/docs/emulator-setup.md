@@ -89,8 +89,10 @@ correct `settings` for it in `emu/emulators.json`.
   A save sits in `bis/user/save` under a numbered folder, whose
   `ExtraData0` holds the game's title ID, which is how the scan matches it.
   The scan reads only that folder, so the firmware stays out of the backup.
-- **xemu, Xbox.** Settings, System: the MCPX boot ROM, the flash ROM and the
-  hard disk image from `<drive>/bios/xbox/`.
+- **xemu, Xbox.** Settings, System: the MCPX boot ROM and the flash ROM from
+  `<drive>/bios/xbox/`, and the hard disk image, where games save, from
+  `<drive>/saves/xbox/`. xemu loads none of them while its welcome screen is
+  still on, so its `xemu.toml` needs `show_welcome = false` under `[general]`.
 
 ## Moving the RetroArch saves
 

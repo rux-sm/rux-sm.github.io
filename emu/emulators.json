@@ -253,7 +253,7 @@
     },
     "xbox": {
       "emulator": "xemu",
-      "why": "The only mature Xbox emulator, for when Xbox games join.",
+      "why": "The only mature Xbox emulator.",
       "saves": "titleId",
       "settings": "~/Library/Application Support/xemu",
       "launch": {

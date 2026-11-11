@@ -175,8 +175,6 @@ In this order, so what can lose a save comes last and proves itself first:
 
 - [ ] Install the helper on the MacBook Pro from the drive and Update
   there, which settles which folder mGBA writes its settings in.
-- [ ] Drop `emu_bios` and the drive row's installers, which nothing reads
-  now, and stop the scan saving them.
 - [ ] Make the helper install from Supabase with a receipt.
 - [ ] Back up each Mac's settings through the page, put a backup back, and
   keep and take the preferred set.

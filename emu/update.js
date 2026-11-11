@@ -5,8 +5,8 @@
    drive.js, so it runs on a Mac with the helper running and the drive
    plugged in, and reads how this Mac stands, each save it keeps itself and
    each emulator's newest version out from the helper too. It says what changed since the last save, or that
-   nothing is, and saves on a yes: every game and save, the BIOS list and the
-   drive's row with the newest versions, each BIOS, key, firmware and
+   nothing is, and saves on a yes: every game and save, the drive's row with
+   the newest versions, each BIOS, key, firmware and
    installer the drive holds that Supabase lacks, the backup zip to Supabase, and this Mac's report with any
    save it keeps itself, each uploaded file by file.
 
@@ -160,13 +160,9 @@
           gone,
           saves: scan.saves.map(s => saveRowOf(s, scan.scanned)),
           savesGone,
-          bios: scan.bios.map(b => ({
-            name: b.name, size: b.size ?? null, crc32: b.crc32 ?? null, md5: b.md5 ?? null, sha1: b.sha1 ?? null,
-            secret: Boolean(b.secret), scanned_at: scan.scanned,
-          })),
           drive: {
             to_delete: scan.toDelete, unsorted_saves: scan.unsortedSaves, backups: scan.backups,
-            backup: scan.backup, installers: scan.installers, newest, scanned_at: scan.scanned,
+            backup: scan.backup, newest, scanned_at: scan.scanned,
           },
           renames: scan.renames,
         },

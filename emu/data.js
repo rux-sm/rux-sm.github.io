@@ -117,9 +117,9 @@
     // A scan saved. A rename the organize tool made moves the game's notes
     // and its saves' notes first, so the scan's rows land on them. Then every
     // game and save in the scan is written, leaving each note as it is, the
-    // ones no longer on the drive are deleted, and the BIOS list and the
-    // drive's row are replaced. Rows go 100 at a time.
-    async saveScan({ games, gone, bios, saves, savesGone, drive, renames }) {
+    // ones no longer on the drive are deleted, and the drive's row is
+    // replaced. Rows go 100 at a time.
+    async saveScan({ games, gone, saves, savesGone, drive, renames }) {
       const notes = await all(() => client.from('emu_notes').select('system, title'));
       const has = new Set(notes.map(n => `${n.system}/${n.title}`));
       for (const r of renames) {
@@ -147,8 +147,6 @@
         fail((await client.from('emu_saves').delete()
           .eq('system', s.system).eq('name', s.name).eq('kind', s.kind).eq('location', s.location)).error);
       }
-      fail((await client.from('emu_bios').delete().neq('name', '')).error);
-      if (bios.length) fail((await client.from('emu_bios').insert(bios)).error);
       fail((await client.from('emu_drive').upsert({ id: 1, ...drive }, { onConflict: 'id' })).error);
     },
 

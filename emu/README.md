@@ -41,7 +41,7 @@ Helper on a Mac, and runs by itself when the page opens and the helper has
 the drive. It shows how many games are new, changed or gone since the last
 save, and whether this Mac changed, and saves on a yes: every game and save in the scan, leaving
 rux's notes, moving the notes of a game the organize tool renamed, removing
-what is no longer on the drive, replacing the BIOS list and the drive's
+what is no longer on the drive, replacing the drive's
 row, uploading the backup zip to the `emu-backups` bucket, which keeps
 every backup of the last 30 days and the newest of each month before, this Mac's report with
 any save it keeps itself, and into Supabase each BIOS, key, firmware and installer the drive
@@ -116,7 +116,7 @@ the installers, into `~/Documents/Emu backups/`, recorded on the drive for the S
 
 ## How it works
 
-`emu_games`, `emu_bios`, `emu_saves` and `emu_drive` hold the last scan
+`emu_games`, `emu_saves` and `emu_drive` hold the last scan
 saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and
 the `emu-backups` bucket the backup zips. `emu_files` lists each copy of
 each file the `emu-collection` bucket holds, its bytes there under its

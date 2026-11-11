@@ -47,11 +47,12 @@ fingerprints and the zip back to the drive, as the Mac scan does.
 Then it says what is done and what is left. For the drive, from its last
 scan: each BIOS a system with games needs, each emulator's installer
 kept, and saves still in a folder from before each emulator had its own.
-For each Mac, from its last report: ES-DE installed
-and reading the drive's games, each emulator installed and saving into its
-folder on the drive, and each retired app in `emulators.json` still there
-or still holding files. An emulator whose systems have no games is not
-needed yet.
+For each Mac, from its last report: ES-DE reading the drive's games, each
+emulator saving into its folder on the drive, and each retired app in
+`emulators.json` still there or still holding files. Installing an app is
+what says a Mac plays with it, so one not installed is grey, and red only
+when its old folder still holds saves. An emulator whose systems have no
+games is not needed yet.
 
 `emulators.html` shows each system's emulator from `emulators.json`, why it
 is the one, each file it needs and whether the drive holds it, and where its

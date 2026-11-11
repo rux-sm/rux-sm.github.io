@@ -257,7 +257,8 @@ Five pages in a side nav, each started from a Design template:
   created, last saved, size, the note and a restore, and each backup
   location's last date at the top.
 - **Status** has Update, and says what is done and what is left, for the
-  drive and for each Mac, so a Mac is set up from one checklist.
+  drive and for each Mac; an app a Mac has not installed is grey, since
+  installing it is what says the Mac plays with it.
 - **Emulators** has one row per system: the emulator, why, each file it needs
   and whether the drive has it, and where its saves, settings and installer
   live.

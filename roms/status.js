@@ -4,10 +4,12 @@
    What is done and what is left. The drive, from its last scan: each BIOS
    a system's emulator needs, each emulator's installer kept, and saves
    still in a folder from before each emulator had its own. Then each Mac,
-   from the last time Check this Mac.command ran on it: ES-DE installed and
-   reading the drive's games, each emulator installed and saving into its
-   folder on the drive, and each retired app still there or still holding
-   files. An emulator whose systems have no games yet is not needed yet.
+   from the last time Check this Mac.command ran on it: ES-DE reading the
+   drive's games, each emulator saving into its folder on the drive, and each
+   retired app still there or still holding files. Installing an app is what
+   says a Mac plays with it, so one that is not installed is only said, unless
+   its old folder still holds saves. An emulator whose systems have no games
+   yet is not needed yet.
    Update, above them, is update.js, and they are drawn again after it saves.
    ========================================================================== */
 (() => {
@@ -21,7 +23,12 @@
   const DONE = ['Done', 'rux--tag--green'];
   const TODO = ['To do', 'rux--tag--red'];
   const LATER = ['Not needed yet', 'rux--tag--gray'];
+  const ABSENT = ['Not installed', 'rux--tag--gray'];
   const files = n => `${n} ${n === 1 ? 'file' : 'files'}`;
+  // Whether the drive keeps an installer named for an app.
+  const flat = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const keptOn = (drive, name) => (drive?.installers ?? []).some(i => flat(i.name).includes(flat(name)));
+  const absent = (drive, name) => keptOn(drive, name) ? 'Its installer is on the drive' : 'No installer for it on the drive yet';
 
   // A state as a tag that keeps its width beside a long line.
   const state = t => { const box = el('span', 'roms-state'); box.append(tag(t, true)); return box; };
@@ -64,9 +71,7 @@
       detail: missing.length ? `Put in the drive's bios folder:\n${missing.join('\n')}` : 'Every file a system with games needs is in the bios folder' });
 
     const names = [...new Set(Object.values(emulators.systems).map(e => e.emulator))].filter(used);
-    const flat = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const kept = n => (drive.installers ?? []).some(i => flat(i.name).includes(flat(n)));
-    const noInstaller = names.filter(n => !kept(n));
+    const noInstaller = names.filter(n => !keptOn(drive, n));
     rows.push({ what: 'Installers kept on the drive', state: noInstaller.length ? TODO : DONE,
       detail: noInstaller.length ? `None yet in emulation/emulators/ for ${noInstaller.join(', ')}` : `One for each of ${names.join(', ')}` });
 
@@ -86,13 +91,13 @@
   }
 
   // One Mac, from its last gathering.
-  function macRows(mac, emulators, used) {
+  function macRows(mac, emulators, used, drive) {
     const rows = [];
     const f = mac.frontend ?? {};
     const reads = f.romDirectory && /\/emulation\/roms\/?$/.test(f.romDirectory);
     rows.push({ what: `${f.name ?? 'ES-DE'}, the library`,
-      state: f.app && reads ? DONE : TODO,
-      detail: !f.app ? 'Install it, as roms/docs/emulator-setup.md says'
+      state: !f.app ? ABSENT : reads ? DONE : TODO,
+      detail: !f.app ? absent(drive, f.name ?? 'ES-DE')
         : reads ? `${f.app.version ?? 'Installed'} · reads ${f.romDirectory}`
         : f.romDirectory ? `Reads ${f.romDirectory}: point it at the drive's roms folder`
         : 'Open it once and point its ROM folder at the drive\'s roms folder' });
@@ -102,12 +107,15 @@
     for (const e of (mac.emulators ?? []).filter(x => !x.retired)) {
       const systems = (e.systems ?? []).map(R.systemName).join(', ');
       const what = `${e.emulator}: ${systems}`;
-      if (!used(e.emulator)) {
-        rows.push({ what, state: LATER, detail: e.app ? `${e.app.version ?? 'Installed'} · no games for it yet` : 'No games for it yet' });
+      if (!e.app) {
+        const left = (e.places ?? []).filter(p => p.files && !/\/emulation\/saves\//.test(p.dir)).map(p => `${files(p.files)} in ${p.dir}`);
+        rows.push(left.length
+          ? { what, state: TODO, detail: `Not installed, and its old folder holds saves: move them to the drive's saves/${folderOf(e.emulator)}/\n${left.join('\n')}` }
+          : { what, state: ABSENT, detail: absent(drive, e.emulator) });
         continue;
       }
-      if (!e.app) {
-        rows.push({ what, state: TODO, detail: e.data ? `Install it; its old data is left at ${e.data}` : 'Install it' });
+      if (!used(e.emulator)) {
+        rows.push({ what, state: LATER, detail: `${e.app.version ?? 'Installed'} · no games for it yet` });
         continue;
       }
       const version = e.app.version ?? 'Installed';
@@ -115,15 +123,15 @@
         rows.push({ what, state: DONE, detail: `${version} · saves inside its hard disk image` });
         continue;
       }
-      const drive = `saves/${folderOf(e.emulator)}`;
-      const onDrive = new RegExp(`/emulation/${drive}(/|$)`);
+      const folder = `saves/${folderOf(e.emulator)}`;
+      const onDrive = new RegExp(`/emulation/${folder}(/|$)`);
       const places = e.places ?? [];
       const elsewhere = places.filter(p => p.dir && !onDrive.test(p.dir) && (p.from === 'setting' || p.files));
       const where = places.filter(p => p.dir).map(p => `${files(p.files ?? 0)} in ${p.dir}`).join('\n');
       if (!e.data) {
-        rows.push({ what, state: TODO, detail: `${version} · open it once and set its saves to the drive's ${drive}/` });
+        rows.push({ what, state: TODO, detail: `${version} · open it once and set its saves to the drive's ${folder}/` });
       } else if (elsewhere.length || !places.some(p => p.dir && onDrive.test(p.dir))) {
-        rows.push({ what, state: TODO, detail: `${version} · move its saves and point it at the drive's ${drive}/\n${where}` });
+        rows.push({ what, state: TODO, detail: `${version} · move its saves and point it at the drive's ${folder}/\n${where}` });
       } else {
         rows.push({ what, state: DONE, detail: `${version} · saves to the drive\n${where}` });
       }
@@ -161,7 +169,7 @@
     for (const mac of macs) {
       out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}`,
         `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Update, to check it again.`,
-        macRows(mac, emulators, used)));
+        macRows(mac, emulators, used, drive)));
     }
     if (!macs.length) {
       out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Update.'));

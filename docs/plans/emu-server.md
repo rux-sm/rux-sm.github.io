@@ -25,11 +25,18 @@ The home server, so the drive is not carried between Macs:
 - **rux's old gaming PC becomes the collection's home,** holding the games,
   BIOS, keys, firmware, installers and backups; it only stores, and every
   game is played on another machine.
-- **The collection starts on rux's spare SSD alone,** and a second drive of
-  at least its size is attached later to mirror it, which TrueNAS does without
-  starting over; until then the T7 is its copy, and Supabase the saves'.
-- **TrueNAS runs from a small drive of its own,** 16 GB or more, since it
-  takes its whole boot drive and keeps no files there.
+- **The collection lives on two matching 8 TB CMR NAS hard drives,
+  mirrored,** about 7 TB usable for a collection of 800 GB that grows by
+  hundreds at a time; hard drives cost a third of SSDs per terabyte, and the
+  network, not the drives, sets the speed. The T7 stays a copy, and Supabase
+  the saves'.
+- **The drives are CMR, never SMR,** since an SMR drive slows to a crawl
+  rebuilding a ZFS mirror.
+- **TrueNAS runs from a drive of its own,** 16 GB or more, since it takes its
+  whole boot drive and keeps no files there.
+- **Its 32 GB of memory is ZFS's cache,** so listings, the nightly scan and
+  repeated reads come from memory, not the disks.
+- **It is on wired Ethernet,** since TrueNAS has no Wi-Fi.
 - **It runs TrueNAS Community Edition,** free storage software made for a
   mirrored pair, which shares the collection over the network to Macs and,
   later, a PC.
@@ -42,7 +49,7 @@ The home server, so the drive is not carried between Macs:
   since an emulator writing a save over the network loses it if the
   connection drops; the server's copy is the one the scan reads.
 - **The server scans itself every night and saves the scan to Supabase,**
-  with a key kept only on the server, so Import is needed only for the T7.
+  with a key kept only on the server, so Update is needed only for the T7.
 - **Download to this Mac, in a game's side panel,** writes the game into the
   Mac's own library folder, under its system's folder as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
@@ -70,14 +77,16 @@ The setup kit, so any Mac is set up from the server in one step:
 
 ## Questions
 
+- Does the PC still need Windows? If not, its 1 TB NVMe starts TrueNAS and
+  no boot drive is bought; if so, the spare SSD or a small new one does.
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
 
 ## Tasks
 
-- [ ] Buy the TrueNAS parts: a 64 to 256 GB SSD to start TrueNAS from, and
-  two matching 2 TB drives for a mirrored pool, in the board's free NVMe
-  slots or SATA ports.
+- [ ] Check the case has two free 3.5" bays and the board two free SATA
+  ports, then buy two 8 TB WD Red Plus (WD80EFPX), with SATA cables if the
+  board came without spares.
 - [ ] Install TrueNAS on the small SSD, make the mirrored pool and share the
   collection, then copy it on.
 - [ ] Add Tailscale and Syncthing on the server and each Mac.

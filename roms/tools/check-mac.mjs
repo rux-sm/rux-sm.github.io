@@ -175,7 +175,9 @@ for (const [emulator, where] of Object.entries(macSaves)) {
   if (!homeDir) continue;
   for (const [i, { place, dir, from }] of placesOf(where, homeDir, emulator).entries()) {
     if (dir) gathered.push(dir);
-    said.places.push({ dir: dir ? dir.replace(home, '~') : null, from, found: Boolean(dir && fs.existsSync(dir)), files: 0 });
+    // A folder linked to the drive, as Ryujinx's is, is said where the link leads.
+    const shown = dir && fs.existsSync(dir) ? fs.realpathSync(dir) : dir;
+    said.places.push({ dir: shown ? shown.replace(home, '~') : null, from, found: Boolean(dir && fs.existsSync(dir)), files: 0 });
     if (!dir || !fs.existsSync(dir)) continue;
     const include = place.include ? new RegExp(place.include) : null;
     for (const f of walk(dir)) {

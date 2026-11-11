@@ -10477,6 +10477,38 @@
         }
         return { line, tag };
       };
+      /* EACH SEAT'S HOURS, under its miles: its driver's days on duty across
+         the leg's dates, from their Samsara log, `driver_duty_days`, which the
+         nightly run keeps. They are the driver's whole days, so a day with a
+         second trip on it counts that one too. Read once the tab is drawn. */
+      let seatDuty = null;
+      const dutyLength = minutes => {
+        const h = Math.floor(minutes / 60), m = minutes % 60;
+        return [h ? `${h} h` : '', m ? `${m} min` : ''].filter(Boolean).join(' ') || '0 min';
+      };
+      const seatDutyWords = (driverId, leg) => {
+        const at = editing?.legs?.find(l => l.key === leg);
+        const days = (seatDuty?.get(driverId) || []).filter(d => at?.start && d.day >= at.start && d.day <= (at.end || at.start));
+        if (!days.length) return '';
+        const on = days.reduce((n, d) => n + d.on_duty_minutes, 0);
+        const drove = days.reduce((n, d) => n + d.driving_minutes, 0);
+        return `On duty ${dutyLength(on)}, ${dutyLength(drove)} driving${days.length > 1 ? ` over ${days.length} days` : ''}, by Samsara`;
+      };
+      const readSeatDuty = async () => {
+        if (!editing?.fleet) return;
+        const tripId = editing.id;
+        const ids = [...new Set(fleetLegs().flatMap(leg => editing.fleet[leg])
+          .flatMap(b => ROLES.map(r => b.seats[r.role].driverId)).filter(Boolean))];
+        const dates = (editing.legs || []).flatMap(l => [l.start, l.end]).filter(Boolean).sort();
+        if (!client || editing.creating || !ids.length || !dates.length) return;
+        const { data, error } = await client.from('driver_duty_days').select('driver_id,day,on_duty_minutes,driving_minutes')
+          .in('driver_id', ids).gte('day', dates[0]).lte('day', dates.at(-1));
+        // Without them the seats show their miles alone, as they did before there were any.
+        if (error || !data?.length || editing?.id !== tripId) return;
+        seatDuty = new Map();
+        for (const row of data) seatDuty.set(row.driver_id, [...(seatDuty.get(row.driver_id) || []), row]);
+        drawSeatMiles();
+      };
       const drawSeatMiles = () => {
         if (!editing?.fleet) return;
         const many = fleetLegs().length > 1;
@@ -10515,6 +10547,8 @@
             // Each seat's miles under its driver's name, and beside them its pay.
             const fields = seats.map(({ role, seat }) => {
               const field = moneyField(`scheduler-f-seatmiles-${leg}-${i}-${role}`, seatName(seat.driverId), seat.miles);
+              const duty = seatDutyWords(seat.driverId, leg);
+              if (duty) field.querySelector('.rux--text-input__field-outer-wrapper').appendChild(el('div', 'rux--form__helper-text', duty));
               const input = field.querySelector('input');
               input.inputMode = 'numeric';
               // The column holds whole miles, none below zero.
@@ -10560,6 +10594,8 @@
         drawClosed();
       };
       seatMilesDrawn = drawSeatMiles;
+      // Once the editor is built, since its Buses tab, which seats the drivers, comes after this one.
+      setTimeout(readSeatDuty, 0);
 
       let samsaraAsking = false;
       const getFromSamsara = async () => {

@@ -18,6 +18,8 @@
               and Print all start from and grow past
      typed    { fields, always }: what can be typed into, and whether a filled
               copy can be too or only a blank one
+     reads    (client, copies) -> what the copies print beyond their bus, read
+              before they are drawn, or left out
      render   (subject) -> an element, or a list of them, one per sheet
 
    A FORM COMPUTES NOTHING. Every number arrives worked out: a quote's from
@@ -689,13 +691,46 @@
      it, and when the last shift ended. It prints the driver's full name, as
      the record is under it, the seven dates in order, the oldest first and
      the day before the leg starts last, and the leg's first day beside the
-     signature, the day it is signed; the hours, the signature and the time
-     are the driver's to write.
+     signature, the day it is signed. Each day the driver was on duty for the
+     company carries its hours, and the time released carries the last of
+     those days' release; the rest, the total and the signature are the
+     driver's to write.
 
      IT TAKES THE TOP HALF OF A LETTER SHEET and leaves the rest white, which
      is the half the office kept when it printed the form two to a page. */
 
   const HOS_DAYS = 7;
+
+  /* THE HOURS THE COMPANY KNOWS: each driver's days on duty from their
+     Samsara log, `driver_duty_days`, which the nightly run keeps, read for
+     the copies on the sheet before they are drawn. A day with none stays
+     blank, not 0, since a driver who works now and then also writes the hours
+     worked for anyone else, and so do the total and, after a day the company
+     knows, the time released. Keyed by driver, then day. */
+  const dutyDays = new Map();
+  async function readDutyDays(client, copies) {
+    const asked = copies.filter(c => c.seat?.driver_id && legStart(c.trip, c.leg));
+    if (!asked.length) return;
+    const starts = asked.map(c => legStart(c.trip, c.leg)).sort();
+    const { data, error } = await client.from('driver_duty_days')
+      .select('driver_id,day,on_duty_minutes,driving_minutes,released_at')
+      .in('driver_id', [...new Set(asked.map(c => c.seat.driver_id))])
+      .gte('day', dayShift(starts[0], -HOS_DAYS)).lt('day', starts.at(-1));
+    // A form that cannot read them prints its lines blank, as it did before there were any.
+    if (error) return;
+    for (const row of data || []) {
+      if (!dutyDays.has(row.driver_id)) dutyDays.set(row.driver_id, new Map());
+      dutyDays.get(row.driver_id).set(row.day, row);
+    }
+  }
+  // Minutes on duty as the form's line reads them: 8 h 30 min.
+  const dutyWords = minutes => {
+    const h = Math.floor(minutes / 60), m = minutes % 60;
+    return [h ? `${h} h` : '', m ? `${m} min` : ''].filter(Boolean).join(' ') || '0 min';
+  };
+  // When a driver was released, on McAllen's clock: 11/09/2026, 6:45 PM.
+  const releasedWords = (day, at) => `${mdy(day)}, ${new Date(at).toLocaleTimeString('en-US',
+    { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' })}`;
 
   // A line to write on, holding what the form already knows, if anything.
   const hosFill = (name, value) => {
@@ -750,14 +785,19 @@
     for (const name of ['Day', 'Date', 'Time on duty']) headRow.appendChild(el('th', null, name));
     table.appendChild(el('thead')).appendChild(headRow);
     const rows = el('tbody');
+    const known = dutyDays.get(seat?.driver_id) ?? new Map();
+    let lastWorked = null;
     for (let day = 1; day <= HOS_DAYS; day++) {
       const tr = el('tr');
       const th = el('th', null, String(day));
       th.scope = 'row';
+      const on = start ? dayShift(start, day - HOS_DAYS - 1) : null;
+      const worked = on ? known.get(on) : null;
+      if (worked) lastWorked = worked;
       const date = el('td');
-      date.appendChild(hosFill(`Date, day ${day}`, start ? mdy(dayShift(start, day - HOS_DAYS - 1)) : ''));
+      date.appendChild(hosFill(`Date, day ${day}`, on ? mdy(on) : ''));
       const hours = el('td');
-      hours.appendChild(hosFill(`Time on duty, day ${day}`, ''));
+      hours.appendChild(hosFill(`Time on duty, day ${day}`, worked ? dutyWords(worked.on_duty_minutes) : ''));
       tr.append(th, date, hours);
       rows.appendChild(tr);
     }
@@ -768,7 +808,8 @@
     const totals = el('div', 'scheduler-hos__totals');
     totals.append(
       hosField('Add the total time on duty for the last 7 days:', 'Total time on duty, last 7 days', ''),
-      hosField('Time released from duty on the last workday:', 'Time released from duty', ''),
+      hosField('Time released from duty on the last workday:', 'Time released from duty',
+        lastWorked?.released_at ? releasedWords(lastWorked.day, lastWorked.released_at) : ''),
     );
     box.appendChild(totals);
 
@@ -2626,6 +2667,8 @@
          knows and the driver's pen does the rest, which leaves Print all
          free to stack every driver's copy on the trip. */
       typed: { fields: ['.scheduler-hos__fill'] },
+      // Each driver's days on duty, which fill the hours the company knows.
+      reads: readDutyDays,
       render: hoursOfService,
       fileName: hosFileName,
     },
@@ -3846,6 +3889,7 @@
     if (error || !data?.length) return fallback;
     const copies = [...data].sort(byLegThenPosition)
       .flatMap(a => form.copies({ ...subject, assignment: a, leg: placeOfVehicle(subject.trip, a) }));
+    if (copies.length) await form.reads?.(client, copies);
     return copies.length ? copies : fallback;
   }
 
@@ -4050,6 +4094,8 @@
       return say('info', 'This bus has no driver yet.',
         `Fill a seat on the trip's Buses tab, and the ${form.name.toLowerCase()} has someone to print for.`);
     }
+    // What a form reads beyond the bus, such as the drivers' hours, before it is drawn.
+    await form.reads?.(client, copies);
     const wanted = params.get('driver');
     const chosen = Math.max(0, copies.findIndex(c => wanted
       ? String(c.seat?.id) === String(wanted)

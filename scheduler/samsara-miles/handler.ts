@@ -683,12 +683,91 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
 
 // ── each night ──────────────────────────────────────────────────────────────
 
+// ── each driver's day on duty ───────────────────────────────────────────────
+
+/* A DRIVER'S DAY ON DUTY is read from their Samsara duty log, the segments
+   of one status each that the ELD keeps, and not from a trip's times: the
+   hours rules count by driver and calendar day, and a log knows the pre-trip
+   inspection, the night off at the hotel and the co-driver in the sleeper,
+   which a bus's yard times do not. On duty is driving, on duty not driving
+   and yard moves; off duty, the sleeper and personal conveyance are not. Each
+   segment is cut at McAllen's midnights, so a shift past midnight counts on
+   both days. Released is when the day's last on-duty segment ended, and a
+   segment still open at the run has not ended. A day with no minute on duty
+   is no day, so a driver who did not work for the company that day has no
+   row, and the form leaves the day for them to fill. */
+export type HosSegment = { logStartTime?: string; logEndTime?: string; hosStatusType?: string }
+export type HosDriverLogs = { driver?: { id?: string; name?: string }; hosLogs?: HosSegment[] }
+export type DutyDay = { driver_id: string; day: string; on_duty_minutes: number; driving_minutes: number; released_at: string | null }
+const ON_DUTY = new Set(['driving', 'onDuty', 'yardMove'])
+
+// The date after a date, by the calendar.
+const nextDate = (date: string) => new Date(Date.parse(`${date}T00:00:00Z`) + DAY_MS).toISOString().slice(0, 10)
+
+/* Samsara can split one driver's log across entries, a page of the list
+   ending inside it, and one person can have two Samsara profiles under the
+   same name, so a driver's segments are gathered from every entry naming
+   them, and time two segments share is counted once. */
+type Span = { start: number; end: number }
+function union(spans: Span[]): Span[] {
+  const out: Span[] = []
+  for (const s of [...spans].sort((a, b) => a.start - b.start)) {
+    const last = out.at(-1)
+    if (last && s.start <= last.end) last.end = Math.max(last.end, s.end)
+    else out.push({ ...s })
+  }
+  return out
+}
+const within = (spans: Span[], start: number, end: number) =>
+  spans.reduce((n, s) => n + Math.max(0, Math.min(s.end, end) - Math.max(s.start, start)), 0)
+
+export function dutyDays(logs: HosDriverLogs[], drivers: Driver[], from: string, to: string, now: number): DutyDay[] {
+  const index = driverIndex(drivers)
+  const days: { date: string; start: number; end: number }[] = []
+  for (let d = from; d <= to; d = nextDate(d)) {
+    const start = instant(d, '00:00'), end = instant(nextDate(d), '00:00')
+    if (start != null && end != null) days.push({ date: d, start, end })
+  }
+  const segmentsOf = new Map<string, HosSegment[]>()
+  for (const entry of logs) {
+    const key = personKey(entry.driver?.name)
+    const driverId = key ? index.get(key) : undefined
+    if (driverId) segmentsOf.set(driverId, [...(segmentsOf.get(driverId) ?? []), ...(entry.hosLogs ?? [])])
+  }
+  const out: DutyDay[] = []
+  for (const [driverId, logged] of segmentsOf) {
+    const segments = logged.filter(s => ON_DUTY.has(String(s.hosStatusType)) && s.logStartTime)
+      .map(s => ({ start: Date.parse(String(s.logStartTime)), end: s.logEndTime ? Date.parse(s.logEndTime) : null,
+        driving: s.hosStatusType === 'driving' }))
+      .filter(s => Number.isFinite(s.start))
+    // A segment still open runs on past the run, so it counts to the run and has not ended.
+    const onSpans = union(segments.map(s => ({ start: s.start, end: s.end ?? Infinity })))
+    const driveSpans = union(segments.filter(s => s.driving).map(s => ({ start: s.start, end: s.end ?? Infinity })))
+    for (const day of days) {
+      const on = within(onSpans, day.start, Math.min(day.end, now))
+      const drove = within(driveSpans, day.start, Math.min(day.end, now))
+      // Released is where a stretch on duty ends, so a shift carried past midnight is not released at it.
+      const ends = onSpans.map(s => s.end).filter(end => end > day.start && end <= day.end)
+      const released = ends.length ? Math.max(...ends) : null
+      const minutes = Math.round(on / 60_000)
+      if (minutes < 1) continue
+      out.push({ driver_id: driverId, day: day.date, on_duty_minutes: minutes,
+        driving_minutes: Math.min(minutes, Math.round(drove / 60_000)), released_at: released == null ? null : iso(released) })
+    }
+  }
+  return out
+}
+
 // What the nightly run reads and writes besides what a trip's answer needs:
 // the trips not cancelled whose dates touch the range, each bus row with its
-// id, and the rows' yard times and stop arrivals, saved where one was found.
+// id, and the rows' yard times and stop arrivals, saved where one was found;
+// every driver's duty log across the range, and their days on duty, which
+// replace the range's saved days.
 export type NightDeps = Deps & {
   tripsBetween(from: string, to: string): Promise<Trip[]>
   save(rows: YardRow[]): Promise<void>
+  hosLogs(fromMs: number, toMs: number): Promise<HosDriverLogs[]>
+  saveDuty(from: string, to: string, days: DutyDay[]): Promise<void>
 }
 export type YardRow = { id: string; actual_yard_depart_at?: string; actual_yard_return_at?: string; stop_arrivals?: Record<string, string> }
 
@@ -699,10 +778,15 @@ const NIGHT_DAYS = 31
    itself, and every trip whose dates touch them is answered as Get from
    Samsara answers it; each bus row's actual yard depart and return that were
    found are saved, and a time not found leaves the one saved; the stops it
-   reached replace the stops saved, since each run reads the whole leg. Run over past
-   days with `write` false it says what it would save and saves nothing. A
-   Samsara list read once serves every trip in the run. */
-export async function night(deps: NightDeps, from: string, to: string, write: boolean): Promise<{ trips: number; rows: YardRow[] }> {
+   reached replace the stops saved, since each run reads the whole leg. Then
+   every driver's days on duty across the range replace the range's saved
+   days, the log read from a day early to a day late so a shift across either
+   end of the range is whole; a log that does not come, as with a key without the hours
+   permission, leaves the saved days and the yard times are saved anyway. Run
+   over past days with `write` false it says what it would save and saves
+   nothing. A Samsara list read once serves every trip in the run. */
+export async function night(deps: NightDeps, from: string, to: string, write: boolean):
+  Promise<{ trips: number; rows: YardRow[]; duty: DutyDay[] | null }> {
   const once = <T>(f: () => Promise<T>) => { let p: Promise<T> | null = null; return () => (p ??= f()) }
   const shared: NightDeps = { ...deps, vehicles: once(deps.vehicles), drivers: once(deps.drivers),
     samsaraDrivers: once(deps.samsaraDrivers), yard: once(deps.yard) }
@@ -721,7 +805,21 @@ export async function night(deps: NightDeps, from: string, to: string, write: bo
     }
   }
   if (write && rows.length) await deps.save(rows)
-  return { trips: trips.length, rows }
+
+  let duty: DutyDay[] | null = null
+  const start = instant(from, '00:00'), end = instant(nextDate(to), '00:00')
+  if (start != null && end != null) {
+    const now = deps.now()
+    try {
+      // Samsara cuts a segment off where the read ends, so the read runs a day past the range too.
+      const logs = await deps.hosLogs(start - DAY_MS, Math.min(end + DAY_MS, now))
+      duty = dutyDays(logs, await shared.drivers(), from, to, now)
+    } catch {
+      // The function's log says why the list did not come.
+    }
+    if (write && duty) await deps.saveDuty(from, to, duty)
+  }
+  return { trips: trips.length, rows, duty }
 }
 
 // The run's request: the shared key in `x-night-key`, and a body of `from` and

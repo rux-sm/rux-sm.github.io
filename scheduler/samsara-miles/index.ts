@@ -7,8 +7,8 @@
 // The trip is read on the caller's own log-in, so only staff can read one
 // through it, as through the connector. SAMSARA_API_TOKEN is a read-only
 // Samsara key (Read Vehicles, Read Vehicle Statistics, Read Vehicle Trips for
-// who drove, and the Compliance hours permission for the drivers' names), set
-// in the dashboard.
+// who drove, and the Compliance hours permission for the drivers' names and,
+// each night, their duty logs), set in the dashboard.
 //
 // The nightly run is the one request that carries no log-in: it sends
 // SAMSARA_NIGHT_KEY in `x-night-key`, the same value the schedule reads from
@@ -20,7 +20,7 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, handleNight, type Deps, type Fix, type NightDeps, type Readings, type Trip, type Vehicle, type VehicleTrip, type YardRow } from './handler.ts'
+import { handle, handleNight, type Deps, type Fix, type HosDriverLogs, type NightDeps, type Readings, type Trip, type Vehicle, type VehicleTrip, type YardRow } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
@@ -152,6 +152,29 @@ Deno.serve(req => {
         for (const { id, ...times } of rows) {
           const { error } = await db.from('trip_assignments').update(times).eq('id', id)
           if (error) throw error
+        }
+      },
+      // Every active driver's duty log, on the key's ELD compliance read permission.
+      hosLogs(fromMs, toMs) {
+        return samsara<HosDriverLogs>('/fleet/hos/logs', {
+          startTime: new Date(fromMs).toISOString(), endTime: new Date(toMs).toISOString(),
+        })
+      },
+      // The range's days are replaced: the days found are written, and a day
+      // saved before that the log no longer has, as after an edit, goes.
+      async saveDuty(from, to, days) {
+        if (days.length) {
+          const { error } = await db.from('driver_duty_days')
+            .upsert(days.map(d => ({ ...d, read_at: new Date().toISOString() })), { onConflict: 'driver_id,day' })
+          if (error) throw error
+        }
+        const { data, error } = await db.from('driver_duty_days').select('driver_id,day').gte('day', from).lte('day', to)
+        if (error) throw error
+        const kept = new Set(days.map(d => `${d.driver_id} ${d.day}`))
+        for (const old of data ?? []) {
+          if (kept.has(`${old.driver_id} ${old.day}`)) continue
+          const { error: gone } = await db.from('driver_duty_days').delete().eq('driver_id', old.driver_id).eq('day', old.day)
+          if (gone) throw gone
         }
       },
     }

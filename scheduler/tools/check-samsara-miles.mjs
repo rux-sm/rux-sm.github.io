@@ -1,7 +1,7 @@
 // Runs samsara-miles's handler, the trip editor's door to Samsara's odometer,
 // against sample trips with invented readings: the window each leg is read
 // across, the miles each bus gets or why it gets none, when each reached its
-// pickup and each stop after it, when each left the yard and got back, the farthest bus's total, and what a caller who should not get an answer is told. The handler
+// pickup and each stop after it, when each left the yard and got back, the farthest bus's total, each driver's days on duty, and what a caller who should not get an answer is told. The handler
 // is TypeScript with no imports; its types are taken off and the rest is run
 // as a module.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-miles/handler.ts', import.meta.u
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-miles-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { arrivalAt, handle, handleNight, instant, legStops, legWindow, milesFor, night, pickupOf, stopArrivals, yardTimes } = await import(pathToFileURL(file).href);
+const { arrivalAt, dutyDays, handle, handleNight, instant, legStops, legWindow, milesFor, night, pickupOf, stopArrivals, yardTimes } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -371,7 +371,10 @@ const nightParts = (more = {}) => {
   let ranged = null;
   q.deps.tripsBetween = async (from, to) => { ranged = [from, to]; return [rowed]; };
   q.deps.save = async rows => { saved.push(...rows); };
-  return { deps: q.deps, saved, get ranged() { return ranged; }, get calls() { return q.samsaraCalls; } };
+  const duty = [];
+  q.deps.hosLogs = async () => more.logs ?? [];
+  q.deps.saveDuty = async (from, to, days) => { duty.push([from, to, days]); };
+  return { deps: q.deps, saved, duty, get ranged() { return ranged; }, get calls() { return q.samsaraCalls; } };
 };
 let n = nightParts();
 let got = await night(n.deps, '2026-10-10', '2026-10-11', true);
@@ -410,6 +413,64 @@ r = await nightPost({});
 expect('a run with no dates reads the day before and today, and saves', [r.status, r.ranged, r.saved], [200, ['2026-10-10', '2026-10-11'], 1]);
 r = await nightPost({ from: '2026-08-01', to: '2026-10-11' });
 expect('a range past a month is refused', [r.status, r.body], [400, { error: 'range' }]);
+
+// ── each driver's day on duty ───────────────────────────────────────────────
+const crew = [{ id: 'd-ana', name: 'Ana María Garza' }, { id: 'd-luis', name: 'Luis Peña' }];
+const seg = (type, start, end) => ({ hosStatusType: type, logStartTime: `${start}:00Z`, ...(end ? { logEndTime: `${end}:00Z` } : {}) });
+const NOW = Date.parse('2026-10-12T15:00:00Z');
+// McAllen's midnight on Oct 11 is 05:00 UTC.
+let duty = dutyDays([{ driver: { id: '9', name: 'Ana Garza' }, hosLogs: [
+  seg('offDuty', '2026-10-10T20:00', '2026-10-11T11:00'),
+  seg('onDuty', '2026-10-11T11:00', '2026-10-11T11:30'),
+  seg('driving', '2026-10-11T11:30', '2026-10-11T16:30'),
+  seg('sleeperBed', '2026-10-11T16:30', '2026-10-11T18:30'),
+  seg('yardMove', '2026-10-11T18:30', '2026-10-11T18:45'),
+  seg('personalConveyance', '2026-10-11T18:45', '2026-10-11T19:15'),
+  seg('offDuty', '2026-10-11T19:15', '2026-10-12T12:00'),
+] }], crew, '2026-10-11', '2026-10-11', NOW);
+expect('a day on duty adds driving, on duty and yard moves, and passes over the sleeper and personal conveyance',
+  duty, [{ driver_id: 'd-ana', day: '2026-10-11', on_duty_minutes: 345, driving_minutes: 300, released_at: '2026-10-11T18:45:00.000Z' }]);
+duty = dutyDays([{ driver: { name: 'Luis Peña' }, hosLogs: [
+  seg('driving', '2026-10-11T02:00', '2026-10-11T07:00'),
+  seg('offDuty', '2026-10-11T07:00', '2026-10-11T20:00'),
+] }], crew, '2026-10-10', '2026-10-11', NOW);
+expect('a shift past midnight counts on both days, released on the second',
+  duty.map(d => [d.day, d.on_duty_minutes, d.driving_minutes, d.released_at]),
+  [['2026-10-10', 180, 180, null], ['2026-10-11', 120, 120, '2026-10-11T07:00:00.000Z']]);
+duty = dutyDays([{ driver: { name: 'Luis Peña' }, hosLogs: [seg('onDuty', '2026-10-12T13:00')] }], crew, '2026-10-12', '2026-10-12', NOW);
+expect('a segment still open counts to the run and has not ended', duty.map(d => [d.on_duty_minutes, d.released_at]), [[120, null]]);
+duty = dutyDays([{ driver: { name: 'Someone Else' }, hosLogs: [seg('driving', '2026-10-11T12:00', '2026-10-11T14:00')] },
+  { driver: { name: 'Luis Peña' }, hosLogs: [seg('offDuty', '2026-10-11T05:00', '2026-10-12T05:00')] }], crew, '2026-10-11', '2026-10-11', NOW);
+expect('a driver the scheduler does not have, and a day off, are no days', duty, []);
+duty = dutyDays([
+  { driver: { id: '7', name: 'Luis Peña' }, hosLogs: [seg('driving', '2026-10-11T12:00', '2026-10-11T14:00')] },
+  { driver: { id: '7', name: 'Luis Peña' }, hosLogs: [seg('onDuty', '2026-10-11T14:00', '2026-10-11T15:00'), seg('driving', '2026-10-11T12:00', '2026-10-11T14:00')] },
+], crew, '2026-10-11', '2026-10-11', NOW);
+expect('a log split across entries is one day, and a segment in both counts once',
+  duty.map(d => [d.driver_id, d.on_duty_minutes, d.driving_minutes, d.released_at]), [['d-luis', 180, 120, '2026-10-11T15:00:00.000Z']]);
+duty = dutyDays([{ driver: { name: 'Luis Peña' }, hosLogs: [
+  seg('driving', '2026-10-11T22:00', '2026-10-12T05:00'),
+  seg('onDuty', '2026-10-12T05:00', '2026-10-12T05:35'),
+] }], crew, '2026-10-11', '2026-10-12', NOW);
+expect('a shift carried on past midnight in a new segment is released when it ends, not at midnight',
+  duty.map(d => [d.day, d.on_duty_minutes, d.released_at]), [['2026-10-11', 420, null], ['2026-10-12', 35, '2026-10-12T05:35:00.000Z']]);
+n = nightParts({ logs: [{ driver: { name: 'Luis Peña' }, hosLogs: [seg('driving', '2026-10-10T13:00', '2026-10-10T15:00')] }] });
+n.deps.drivers = async () => crew;
+got = await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('each night replaces the range\'s days on duty', n.duty.map(([f, t, days]) => [f, t, days.map(d => [d.driver_id, d.day, d.on_duty_minutes])]),
+  [['2026-10-10', '2026-10-11', [['d-luis', '2026-10-10', 120]]]]);
+n = nightParts({ now: Date.parse('2026-10-20T12:00:00Z') });
+let read = null;
+n.deps.hosLogs = async (fromMs, toMs) => { read = [iso(fromMs), iso(toMs)]; return []; };
+await night(n.deps, '2026-10-10', '2026-10-11', false);
+expect('the duty log is read from a day before the range to a day after it', read, ['2026-10-09T05:00:00.000Z', '2026-10-13T05:00:00.000Z']);
+n = nightParts();
+n.deps.hosLogs = async () => { throw new Error('samsara /fleet/hos/logs 403'); };
+got = await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('a duty log that does not come leaves the saved days, and the yard times are saved', [got.duty, n.duty.length, n.saved.length], [null, 0, 1]);
+n = nightParts();
+got = await night(n.deps, '2026-10-10', '2026-10-11', false);
+expect('a run that may not write saves no days either', [Array.isArray(got.duty), n.duty.length], [true, 0]);
 
 // ── who is answered ─────────────────────────────────────────────────────────
 async function post(body, { auth = 'Bearer staff', method = 'POST', origin = 'http://localhost:8641', ...opts } = {}) {

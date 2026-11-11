@@ -42,11 +42,5 @@ None open.
 
 ## Tasks
 
-- [ ] Move `roms/` to `emu/` and rename every name above, with the checks
-  passing.
-- [ ] Show rux the migration for the tables and the bucket rules, and apply
-  it on a yes, then push.
-- [ ] Make `emu-backups` in the dashboard, copy the four backups across, and
-  delete `emu-backups` once they are checked.
-- [ ] Put the new `Check this Mac.command` on the drive, and check every page
-  in Chrome on :8641.
+- [ ] Delete the `roms-backups` bucket in the dashboard, now its four
+  backups are in `emu-backups`, then drop its four owner rules on a yes.

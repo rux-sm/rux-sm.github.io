@@ -94,10 +94,13 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
    Crystal's `.rtc`, its clock, is not needed by mGBA.
 2. **N64.** RetroArch's `.srm` holds four kinds of save memory one after
    another: EEPROM at 0 for 2 KB, four Controller Paks at 0x800 for 32 KB
-   each, SRAM at 0x20800 for 32 KB, and flash at 0x28800 for 128 KB. Start
-   the game once in ares and save, which shows the file ares names for that
-   kind, then replace it with that part of the `.srm`, such as
-   `dd if=game.srm of=<ares file> bs=1 skip=$((0x20800)) count=32768` for SRAM.
+   each, SRAM at 0x20800 for 32 KB, and flash at 0x28800 for 128 KB. ares
+   keeps each kind as its own file named after the game, `<game>.eeprom`,
+   `.ram`, `.flash` and `.pak`, at the size its game list gives, such as
+   512 bytes of EEPROM for most games. The EEPROM part is copied as it is;
+   the SRAM and flash parts hold each four bytes reversed, and ares reads them
+   in the cartridge's order, so each group of four is turned back. A Controller
+   Pak that only holds the blank format is left behind.
 3. **3DS.** Move `<drive>/saves/Azahar Save/Nintendo 3DS` to `<drive>/saves/n3ds/sdmc/Nintendo 3DS`
    before pointing Azahar at it.
 4. **Save states** belong to the emulator that made them and are left

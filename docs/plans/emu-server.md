@@ -29,7 +29,7 @@ The home server, so the drive is not carried between Macs:
 - **It runs TrueNAS Community Edition,** free storage software made for a
   mirrored pair, which shares the collection over the network to Macs and,
   later, a PC.
-- **It runs with no screen, managed from a browser;** the processor's
+- **It runs with no screen, managed from a browser;** its i7-13700K's
   built-in graphics shows the installer once, so it needs no graphics card.
 - **Tailscale reaches it from anywhere,** for the Mac that is not at home.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
@@ -73,8 +73,6 @@ The setup kit, so any Mac is set up from the server in one step:
 
 ## Tasks
 
-- [ ] Confirm the processor has built-in graphics: a model ending in F, or
-  an AMD one before the 7000 series without a G, has none.
 - [ ] Put the SSD in the PC, install TrueNAS, and share the collection; copy
   the T7 onto it.
 - [ ] Add Tailscale and Syncthing on the server and each Mac.

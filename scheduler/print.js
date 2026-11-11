@@ -458,8 +458,22 @@
         : cell('Spot time', clock(stop?.spot || trip.spot_time || trip.departure_time)),
     ));
 
-    frag.appendChild(row(cell('Pickup address', shortAddress(stop?.address))));
+    frag.appendChild(row(pickupCell(stop)));
     return frag;
+  }
+
+  /* THE PICKUP BY NAME, THEN WHERE IT IS: the place's name the driver looks
+     for on arrival, a school or a hotel, over its street address on a line of
+     its own. A place with no name of its own, an address typed as its name,
+     prints the address alone. */
+  function pickupCell(stop) {
+    const node = cell('Pickup', shortAddress(stop?.address));
+    const name = String(stop?.name || '').trim();
+    const value = node.lastChild;
+    if (name && !value.textContent.toLowerCase().includes(name.toLowerCase())) {
+      value.prepend(name, el('br'));
+    }
+    return node;
   }
 
   /* The lines the driver fills in after the trip: what the ELD and the card
@@ -2745,7 +2759,7 @@
       'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
       'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
       'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-      'trip_stops(id,leg,route_id,position,type,address,spot)',
+      'trip_stops(id,leg,route_id,position,type,name,address,spot)',
       // The trip's buses, for a co-driver who moves between them: the ones they ride, and who rides this one.
       'trip_assignments(id,buses:bus_id(number,type),trip_drivers(role,also_on,drivers:driver_id(name,short_name)))',
       ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),

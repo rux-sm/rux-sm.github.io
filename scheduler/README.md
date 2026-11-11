@@ -92,7 +92,7 @@ it copies the spreadsheet's quirks, each worked out at the saved rates.
 `print.html` is the forms this app fills in and prints. On its own it lists
 them, in the order the office prints them, Quote, Route, Envelope and Hours of service, the driver itinerary listed as Route because an itinerary is the customer's file; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
-a multi-stop layout, on the 6 by 9 envelope itself; the hours-of-service record
+a multi-stop layout, on the 6 by 9 envelope itself, its pickup named over its street address; the hours-of-service record
 is one per seat too, in the top half of Letter, dated back 7 days from the leg.
 The driver itinerary is one copy per leg, or per route on a leg of more than one, named by its days and the route's name, each with its own stops and figures, and one for each bus a partner covers, headed with the partner to send it, on Letter, running onto as many sheets as its stops need, a day never starting
 at the foot of a sheet and named again over the rest of it on the next, every line typed into before it is printed. Its

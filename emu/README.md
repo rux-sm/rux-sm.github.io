@@ -104,6 +104,16 @@ A save kept on this Mac rather than the drive is copied in beside it.
 `--install` puts it on the drive with `Check this Mac.command`, which runs it
 with a double-click and opens the Status page.
 
+    node emu/tools/build-helper.mjs "/Volumes/<drive>/emulation"
+
+`tools/build-helper.mjs` builds Rux Emu Helper from `helper/main.swift` and
+puts it on the drive with `Install Rux Emu Helper.command`, which copies it
+into Applications. The menu bar helper answers only the Rux Emu site, on
+`127.0.0.1:47647`: `/status` says the collection and each system it can
+play, and `/play` opens one game from the collection's roms folder as
+`launch` in `emulators.json` says, read from the drive's `tools/`, so run
+`check-mac.mjs --install` after changing it.
+
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
 firmware and installers too large for Supabase, into
 `~/Documents/Emu backups/`, recorded on the drive for the Saves page.
@@ -111,15 +121,16 @@ firmware and installers too large for Supabase, into
 ## How it works
 
 `emu_games`, `emu_bios`, `emu_saves` and `emu_drive` hold the last scan
-saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and the `emu-backups` bucket the
-backup zips; only the owner reads them, and `docs/database-access.md` is the
-rule. Nothing from the
-collection is ever written here, because this repository is public.
+saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and
+the `emu-backups` bucket the backup zips; only the owner reads them, and
+`docs/database-access.md` is the rule. Nothing from the collection is ever
+written here, because this repository is public.
 
 | | |
 | :--- | :--- |
 | `data.js` | the reads and writes |
-| `emulators.json` | each system's emulator, why, how it names a save, what it needs, and where each keeps saves on a Mac; the scan and the gather tool read it too |
+| `emulators.json` | each system's emulator, why, how it names a save, what it needs, how it opens a game, and where each keeps saves on a Mac; the scan, the gather tool and the helper read it too |
+| `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game |
 | `scan.js` | the scan, for the Mac tool and the page alike |
 | `drive.js` | the drive as `scan.js` reads it in Chrome, from a folder rux picks |
 | `zip.js` | the backup zip, packed in the page |

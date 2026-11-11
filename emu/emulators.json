@@ -14,6 +14,12 @@
       "why": "The most accurate NES emulator, native on macOS.",
       "saves": "name",
       "settings": "~/Library/Application Support/Mesen2",
+      "launch": {
+        "app": "Mesen.app",
+        "args": [
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "snes": {
@@ -21,6 +27,12 @@
       "why": "The most accurate SNES emulator, native on macOS.",
       "saves": "name",
       "settings": "~/Library/Application Support/Mesen2",
+      "launch": {
+        "app": "Mesen.app",
+        "args": [
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "n64": {
@@ -28,6 +40,15 @@
       "why": "Accurate, and native on macOS.",
       "saves": "name",
       "settings": "~/Library/Application Support/ares",
+      "launch": {
+        "app": "ares.app",
+        "args": [
+          "--fullscreen",
+          "--system",
+          "Nintendo 64",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "gb": {
@@ -35,6 +56,13 @@
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
       "settings": "~/Library/Application Support/mGBA",
+      "launch": {
+        "app": "mGBA.app",
+        "args": [
+          "-f",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "gbc": {
@@ -42,6 +70,13 @@
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
       "settings": "~/Library/Application Support/mGBA",
+      "launch": {
+        "app": "mGBA.app",
+        "args": [
+          "-f",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "gba": {
@@ -49,6 +84,13 @@
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
       "settings": "~/Library/Application Support/mGBA",
+      "launch": {
+        "app": "mGBA.app",
+        "args": [
+          "-f",
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "file": "gba_bios.bin",
@@ -62,6 +104,13 @@
       "why": "The most accurate DS emulator, native on macOS.",
       "saves": "name",
       "settings": "~/Library/Preferences/melonDS",
+      "launch": {
+        "app": "melonDS.app",
+        "args": [
+          "-f",
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "file": "bios7.bin",
@@ -84,6 +133,12 @@
       "why": "The maintained successor to Citra; it plays a decrypted .3ds as it is.",
       "saves": "titleId",
       "settings": "~/Library/Application Support/Azahar",
+      "launch": {
+        "app": "Azahar.app",
+        "args": [
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "psx": {
@@ -91,6 +146,13 @@
       "why": "The most accurate and fastest PS1 emulator; it reads CHD and .m3u and keeps one memory card per game.",
       "saves": "serial",
       "settings": "~/Library/Application Support/DuckStation",
+      "launch": {
+        "app": "DuckStation.app",
+        "args": [
+          "-batch",
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "file": "scph5501.bin",
@@ -104,6 +166,13 @@
       "why": "The only mature PS2 emulator; its Mac build runs under Rosetta, and only unofficial forks are native.",
       "saves": "serial",
       "settings": "~/Library/Application Support/PCSX2",
+      "launch": {
+        "app": "PCSX2.app",
+        "args": [
+          "-batch",
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "pattern": "^scph\\d+\\.bin$",
@@ -116,6 +185,14 @@
       "why": "The only mature GameCube emulator; it reads RVZ.",
       "saves": "discId",
       "settings": "~/Library/Application Support/Dolphin",
+      "launch": {
+        "app": "Dolphin.app",
+        "args": [
+          "-b",
+          "-e",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "wii": {
@@ -123,6 +200,14 @@
       "why": "The only mature Wii emulator; it reads RVZ.",
       "saves": "discId",
       "settings": "~/Library/Application Support/Dolphin",
+      "launch": {
+        "app": "Dolphin.app",
+        "args": [
+          "-b",
+          "-e",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "wiiu": {
@@ -130,6 +215,13 @@
       "why": "The only mature Wii U emulator; its automatic builds are native on Apple Silicon, where the 2.6 release runs under Rosetta. A .wua needs no keys.",
       "saves": "titleId",
       "settings": "~/Library/Application Support/Cemu",
+      "launch": {
+        "app": "Cemu.app",
+        "args": [
+          "-g",
+          "{file}"
+        ]
+      },
       "needs": []
     },
     "switch": {
@@ -138,6 +230,12 @@
       "saves": "titleId",
       "savesIn": "^Ryujinx/bis/user/save/",
       "settings": "~/Library/Application Support/Ryujinx",
+      "launch": {
+        "app": "Ryujinx.app",
+        "args": [
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "file": "prod.keys",
@@ -158,6 +256,13 @@
       "why": "The only mature Xbox emulator, for when Xbox games join.",
       "saves": "titleId",
       "settings": "~/Library/Application Support/xemu",
+      "launch": {
+        "app": "xemu.app",
+        "args": [
+          "-dvd_path",
+          "{file}"
+        ]
+      },
       "needs": [
         {
           "file": "mcpx_1.0.bin",

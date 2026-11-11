@@ -49,8 +49,7 @@ None open.
 
 ## Tasks
 
-- [ ] Build the helper with Play and a status answer, its installer on the
-  T7, and remove the test shortcut.
+- [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
 - [ ] Use the helper for Play on the site.
 - [ ] Show each Mac's status live from the helper.
 - [ ] Run Update through the helper, with no folder to choose, and retire

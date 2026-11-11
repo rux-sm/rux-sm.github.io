@@ -124,6 +124,13 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
 Then scan and import: the Saves page lists every save by its game, and
 Problems lists a save with no game.
 
+## Rux Emu Helper
+
+Double-click `Install Rux Emu Helper.command` on the drive. Its game
+controller appears in the menu bar, and it starts at each log-in. The first
+time the Rux Emu site asks it something, Chrome asks whether the site may
+reach this Mac: Allow.
+
 ## Checking a Mac
 
 `Check this Mac.command` on the drive finds where each emulator saves, from

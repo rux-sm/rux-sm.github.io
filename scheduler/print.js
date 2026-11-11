@@ -2482,6 +2482,68 @@
 
   const FORMS = [
     {
+      id: 'driver-itinerary',
+      name: 'Driver route',
+      group: 'Drivers',
+      /* ROUTE, NOT ITINERARY, in the lists: an itinerary is the file the
+         customer sends, on the Files tab, and this is the route the office
+         draws from the Route tab. It stands first of the drivers' forms
+         because the office prints it right after the quote. */
+      short: 'Route',
+      icon: '#m-route',
+      /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
+         because it is personal, one name and one seat; the plan for the day is
+         the same for every driver and every bus on the leg, and `trip_stops`
+         are keyed by trip and leg with no bus among them. */
+      binds: 'trip+leg',
+      blank: true,
+      /* One sheet for the leg, handed to each of its drivers, so its mark is
+         every seat's on the leg at once. It is the driver's sheet that is
+         marked, so the Detailed layout, the office's, offers no tick. Nor
+         does a leg whose customer sent an itinerary: that file is the sheet
+         its drivers are handed, and the board's document panel keeps its
+         tick. */
+      marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary',
+        unless: (trip, leg) => !!trip && !!legItinerary(trip, leg) },
+      /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
+         yard at both ends, each wait and the leg's miles and hours from the
+         Route tab. Detailed needs a trip's route, so a blank form is Simple.
+         Detailed opens first, since the office opens the form from the
+         trip; a driver's way in, Departures or the driver's line, asks for
+         Simple by name. */
+      layouts: [
+        { id: 'simple', name: 'Simple' },
+        { id: 'detailed', name: 'Detailed', trip: true, first: true },
+      ],
+      // The Detailed layout's price: the Billing tab's lines as saved, and
+      // the estimated miles a typed price's calculator figure falls back on
+      // where the route has none. The trip's files say whether the customer
+      // sent the leg an itinerary.
+      columns: [
+        'quoted_price', 'est_miles',
+        'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
+        'trip_documents(label,leg,leg_id,created_at)',
+      ],
+      /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
+         this runs onto as many sheets as the stops need, and the height is
+         the paper's rather than a limit -- a short itinerary still draws a
+         whole page of it, because that is what comes out of the printer. */
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
+      copies: subject => copiesOf(subject.trip).map(leg => ({
+        ...subject,
+        leg,
+        // The bus came from the assignment the form was opened on, and an
+        // assignment is one leg's: the other leg's copy names none, and its
+        // line is blank for the pen.
+        assignment: subject.assignment && onLeg(subject.trip, leg, subject.assignment) ? subject.assignment : null,
+      })),
+      copyName: subject => copyDays(subject.trip, subject.leg),
+      typed: { always: true, fields: ITINERARY_FIELDS },
+      render: itinerary,
+      fileName: itineraryFileName,
+      drawn: (card, blank) => { if (blank) ruleToFoot(card); },
+    },
+    {
       id: 'envelope',
       name: 'Driver trip envelope',
       group: 'Drivers',
@@ -2552,64 +2614,6 @@
       typed: { fields: ['.scheduler-hos__fill'] },
       render: hoursOfService,
       fileName: hosFileName,
-    },
-    {
-      id: 'driver-itinerary',
-      name: 'Driver trip itinerary',
-      group: 'Drivers',
-      short: 'Itinerary',
-      icon: '#m-route',
-      /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
-         because it is personal, one name and one seat; the plan for the day is
-         the same for every driver and every bus on the leg, and `trip_stops`
-         are keyed by trip and leg with no bus among them. */
-      binds: 'trip+leg',
-      blank: true,
-      /* One sheet for the leg, handed to each of its drivers, so its mark is
-         every seat's on the leg at once. It is the driver's sheet that is
-         marked, so the Detailed layout, the office's, offers no tick. Nor
-         does a leg whose customer sent an itinerary: that file is the sheet
-         its drivers are handed, and the board's document panel keeps its
-         tick. */
-      marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary',
-        unless: (trip, leg) => !!trip && !!legItinerary(trip, leg) },
-      /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
-         yard at both ends, each wait and the leg's miles and hours from the
-         Route tab. Detailed needs a trip's route, so a blank form is Simple.
-         Detailed opens first, since the office opens the form from the
-         trip; a driver's way in, Departures or the driver's line, asks for
-         Simple by name. */
-      layouts: [
-        { id: 'simple', name: 'Simple' },
-        { id: 'detailed', name: 'Detailed', trip: true, first: true },
-      ],
-      // The Detailed layout's price: the Billing tab's lines as saved, and
-      // the estimated miles a typed price's calculator figure falls back on
-      // where the route has none. The trip's files say whether the customer
-      // sent the leg an itinerary.
-      columns: [
-        'quoted_price', 'est_miles',
-        'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
-        'trip_documents(label,leg,leg_id,created_at)',
-      ],
-      /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
-         this runs onto as many sheets as the stops need, and the height is
-         the paper's rather than a limit -- a short itinerary still draws a
-         whole page of it, because that is what comes out of the printer. */
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
-      copies: subject => copiesOf(subject.trip).map(leg => ({
-        ...subject,
-        leg,
-        // The bus came from the assignment the form was opened on, and an
-        // assignment is one leg's: the other leg's copy names none, and its
-        // line is blank for the pen.
-        assignment: subject.assignment && onLeg(subject.trip, leg, subject.assignment) ? subject.assignment : null,
-      })),
-      copyName: subject => copyDays(subject.trip, subject.leg),
-      typed: { always: true, fields: ITINERARY_FIELDS },
-      render: itinerary,
-      fileName: itineraryFileName,
-      drawn: (card, blank) => { if (blank) ruleToFoot(card); },
     },
     {
       id: 'customer-quote',
@@ -3724,7 +3728,7 @@
       item.href = `print.html?form=driver-itinerary&assignment=${encodeURIComponent(a.id)}&trip=${encodeURIComponent(trip)}`
         + `&leg=${encodeURIComponent(leg)}&from=forms`;
       item.append(...face({ ...itineraryForm,
-        short: `Itinerary for ${a.partner?.name || 'a partner'}${split || routeName(found.trip, leg) ? `, ${copyDays(found.trip, leg)}` : ''}` }));
+        short: `Route for ${a.partner?.name || 'a partner'}${split || routeName(found.trip, leg) ? `, ${copyDays(found.trip, leg)}` : ''}` }));
       rows.appendChild(item);
     }
 
@@ -4026,7 +4030,7 @@
     // A bus a partner covers has its partner's driver, whom the office prints nothing personal for.
     if (!copies.length && data.partner_id) {
       return say('info', `${data.partner?.name || 'A partner'} covers this bus.`,
-        `Its driver is the partner's own, so the office prints no ${form.name.toLowerCase()} for it. Its itinerary, headed with the partner, is on the trip's Forms.`);
+        `Its driver is the partner's own, so the office prints no ${form.name.toLowerCase()} for it. Its Route, headed with the partner, is on the trip's Forms.`);
     }
     if (!copies.length) {
       return say('info', 'This bus has no driver yet.',

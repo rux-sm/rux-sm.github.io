@@ -123,7 +123,7 @@ reads only the ones before it. Nothing is written until step 10.
     done, press Save, keep the update box's line, "Quote not sent", and
     answer the lists prompt by `rules.md`.
 11. **After the save.** Read it back with `get_trip`, then Forms on the
-    bar's right-click menu, Itinerary, Detailed: one sheet with the stops, each wait's status,
+    bar's right-click menu, Route, Detailed: one sheet with the stops, each wait's status,
     the hours, the miles, the rate and the price, as the save wrote them.
 12. **Reply.** Draft the email in Missive by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
@@ -169,7 +169,7 @@ reads only the ones before it. Nothing is written until step 10.
   when Passengers is above the seats, Mark buses done. A vehicle's window
   starts with Runs it, our bus and driver or a partner; a partner's bus
   has no seats, sits in its partner's row on the board, and its itinerary
-  for the partner is Forms' Itinerary for <partner>.
+  for the partner is Forms' Route for <partner>.
 - **Billing:** a tile of Quoted, Paid and Balance over confirmed or not;
   Quote: one card, a row per line and their total, each row opening that line's
   window and its right-click menu holding Move, Use calculator price and
@@ -183,9 +183,9 @@ reads only the ones before it. Nothing is written until step 10.
   from Samsara in its ⋮; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
 - **Forms,** on the bar's right-click menu: Quote for the customer, and
-  Envelope, Hours of service and Itinerary for the drivers. The Quote offers
+  Route, Envelope and Hours of service for the drivers. The Quote offers
   to mark it sent the moment it is opened: leave the offer alone. The
-  itinerary's Simple layout is the driver's sheet, which says Rest in sleeper
+  Route's Simple layout is the driver's sheet, which says Rest in sleeper
   on a stop whose wait counts as sleeper berth, and Detailed the office's,
   with the yard, each wait's status, the day totals and the price.
 

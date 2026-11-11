@@ -90,7 +90,7 @@ can read or change. Its Rules tab says how a quote is priced and lists where
 it copies the spreadsheet's quirks, each worked out at the saved rates.
 
 `print.html` is the forms this app fills in and prints. On its own it lists
-them; with a form named in the query it reads that form's subject and draws it,
+them, in the order the office prints them, Quote, Route, Envelope and Hours of service, the driver itinerary listed as Route because an itinerary is the customer's file; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
 a multi-stop layout, on the 6 by 9 envelope itself; the hours-of-service record
 is one per seat too, in the top half of Letter, dated back 7 days from the leg.

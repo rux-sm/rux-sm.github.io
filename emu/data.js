@@ -1,8 +1,8 @@
 /* ==========================================================================
    data.js — Emu's reads and writes
    --------------------------------------------------------------------------
-   Every call goes to a emu_ table or the emu-backups bucket, which row
-   security opens to the owner alone; any other account reads and writes
+   Every call goes to a emu_ table or the emu-backups or emu-collection
+   bucket, which row security opens to the owner alone; any other account reads and writes
    nothing. The client is the account's, from /account.js.
    ========================================================================== */
 (() => {
@@ -11,6 +11,8 @@
   const client = window.Rux?.account?.client ?? null;
   const fail = error => { if (error) throw error; };
   const BUCKET = 'emu-backups';
+  // The bucket of everything but the games, each file's bytes under their SHA-1; `emu_files` lists them.
+  const COLLECTION = 'emu-collection';
   // A path in the bucket: Supabase takes a narrower set of characters than a
   // Mac's or a file's name may hold, such as the curly apostrophe macOS puts
   // in a Mac's name.
@@ -63,7 +65,31 @@
     notes: () => all(() => client.from('emu_notes').select('*')),
     saves: () => all(() => client.from('emu_saves').select('*').order('system').order('name')),
     saveKeys: () => all(() => client.from('emu_saves').select('system, name, kind, location')),
-    bios: () => all(() => client.from('emu_bios').select('*').order('name')),
+    // Everything but the games, which Supabase holds: each file as it stands,
+    // by its path, or those under one folder.
+    files: (folder = '') => all(() => client.from('emu_files_now').select('*').not('sha1', 'is', null).like('path', `${folder}%`).order('path')),
+    // The BIOS, keys and firmware among them, each by its name under bios/.
+    bios: async () => (await data.files('bios/')).map(f => ({ name: f.path.slice('bios/'.length), size: f.size, sha1: f.sha1 })),
+    // A file put in Supabase: its bytes under their fingerprint, read by
+    // `bytes` only when no file there has the same, then a row for this copy.
+    async putFile({ path, sha1, size, saved, mac }, bytes) {
+      const { data: have, error } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
+      fail(error);
+      if (!have.length) fail((await client.storage.from(COLLECTION).upload(sha1, await bytes(), { upsert: true, contentType: 'application/octet-stream' })).error);
+      fail((await client.from('emu_files').insert({ path, sha1, size, saved_at: saved, mac })).error);
+    },
+    // A file taken out of Supabase with every copy kept of it, and its bytes
+    // where no other file has the same.
+    async dropFile(path) {
+      const { data: rows, error } = await client.from('emu_files').select('sha1').eq('path', path);
+      fail(error);
+      fail((await client.from('emu_files').delete().eq('path', path)).error);
+      for (const sha1 of new Set(rows.map(r => r.sha1).filter(Boolean))) {
+        const { data: left, error: e } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
+        fail(e);
+        if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
+      }
+    },
     // How each Mac stood when its saves were last gathered.
     macs: () => all(() => client.from('emu_macs').select('*').order('name')),
     async drive() {

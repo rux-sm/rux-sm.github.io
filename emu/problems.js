@@ -34,7 +34,7 @@
       if (!systems.has(system)) continue;
       for (const need of R.needsOf(system, emu, bios).filter(x => !x.ok && !x.optional)) {
         groups.get('bios').push({ title: need.label, system,
-          words: need.wrong ? `${emu.emulator} needs it, and the file named so is not the right one` : `${emu.emulator} needs it in bios/${system}/`,
+          words: need.wrong ? `${emu.emulator} needs it, and the file named so is not the right one` : `${emu.emulator} needs it: put it in the drive's bios/${system}/, and Update`,
           href: 'emulators.html' });
       }
     }

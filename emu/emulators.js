@@ -2,9 +2,9 @@
    emulators.js — the Emulators page
    --------------------------------------------------------------------------
    One profile per emulator, from emulators.json, each a fold with the same
-   parts in the same order: the systems it plays; its version on the drive,
-   the newest its project has out as Update last asked, and each Mac's; each file it needs and whether the drive's bios folder
-   holds it; every kind of file it writes, where that sits on a Mac, the
+   parts in the same order: the systems it plays; the version Supabase
+   holds, the newest its project has out as Update last asked, and each
+   Mac's; each file it needs and whether Supabase holds it; every kind of file it writes, where that sits on a Mac, the
    setting that moves it and what becomes of it; the settings to have; and
    what is worth knowing. ES-DE, the library, is the last profile.
    A profile is addressed as #<name>, as Status links to it, and opens there.
@@ -63,8 +63,8 @@
   const where = f => `${f.besideGame ? 'Beside the game' : f.path ? `In ${f.path}` : 'Wherever its setting says'} · ${f.key ? `moved by ${f.key}` : 'no setting moves it'}`;
 
   // One emulator's profile. `on(mac)` is this app as a Mac reported it, and `needs` its files by system.
-  function profile({ name, rule, systems, why, saves, needs, on }, { macs, drive }) {
-    const installer = R.installerOf(drive, name);
+  function profile({ name, rule, systems, why, saves, needs, on }, { macs, drive, files }) {
+    const installer = R.installerOf(files, name);
     const kept = R.keptVersion(installer);
     // The newest its project has out, as Update last asked; a rolling build's is never a to-do.
     const out = drive?.newest?.[name] ? R.plainVersion(drive.newest[name]) : null;
@@ -89,9 +89,9 @@
     parts.push(about);
 
     parts.push(part('Version', facts([
-      ['On the drive', installer ? `${kept ?? 'A build'} · ${installer.name}` : 'No installer for it in emulation/emulators/'],
+      ['In Supabase', installer ? `${kept ?? 'A build'} · ${installer.name}` : 'No installer for it yet'],
       ['Newest out', out ? `${out}${rule.feed?.rolling ? ' · a new build every few days' : ''}`
-        : rule.feed ? 'Not asked yet: Update asks its project' : 'Not followed: the drive keeps a development build'],
+        : rule.feed ? 'Not asked yet: Update asks its project' : 'Not followed: it is a development build'],
       ...stands.map(s => [`${s.mac.name}${s.mac.live ? ' · this Mac' : ''}`,
         s.version === null ? 'Not installed' : says ? s.version : 'Installed; the app does not say its version']),
     ])));
@@ -115,11 +115,11 @@
       }).filter(Boolean);
       return [p.kind, [where({ ...p, besideGame: !p.path && rule.besideGame }), ...each].join('\n'), BECOMES.shared];
     });
-    const files = (rule.files ?? []).map(f => [f.kind, where(f), BECOMES[f.class]]);
+    const others = (rule.files ?? []).map(f => [f.kind, where(f), BECOMES[f.class]]);
     parts.push(part('Files',
       facts([['Its folder on a Mac', home ?? 'None of its own'],
         ...(saves ? [['In the collection', saves]] : [])]),
-      rows([...places, ...files])));
+      rows([...places, ...others])));
 
     const config = rule.config?.file ?? rule.config;
     const manages = rule.manages ?? [];
@@ -147,9 +147,9 @@
   }
 
   async function load() {
-    let emulators, bios, drive, games, saved, live;
+    let emulators, files, drive, games, saved, live;
     try {
-      [emulators, bios, drive, games, saved, live] = await Promise.all([R.emulators(), R.data.bios(), R.data.drive(),
+      [emulators, files, drive, games, saved, live] = await Promise.all([R.emulators(), R.data.files(), R.data.drive(),
         R.data.gameKeys(), R.data.macs(), R.helper.onMac ? R.helper.mac() : null]);
     } catch (error) { console.error(error); R.notice('Emu could not read the emulators. Try again.'); return; }
     $('emu-empty').hidden = Boolean(drive);
@@ -158,7 +158,9 @@
     const macs = [...saved.filter(m => m.name !== here?.name), ...(here ? [here] : [])].sort((a, b) => a.name.localeCompare(b.name));
     const count = new Map();
     for (const g of games) count.set(g.system, (count.get(g.system) ?? 0) + 1);
-    const all = { macs, drive };
+    // The BIOS, keys and firmware among the files, each by its name under bios/.
+    const bios = files.filter(f => f.path.startsWith('bios/')).map(f => ({ name: f.path.slice('bios/'.length), sha1: f.sha1 }));
+    const all = { macs, drive, files };
     const gamesOf = n => (n ? `${n} ${n === 1 ? 'game' : 'games'}` : 'no games yet');
 
     const items = Object.entries(emulators.macSaves).map(([name, rule]) => {

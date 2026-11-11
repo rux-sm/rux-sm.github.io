@@ -4,7 +4,7 @@
    Home is the games recently played and the favourites, each a shelf of
    box art, then a tile for each system with games, showing its console,
    app.js's consoleOf, and what stands in its way: an emulator this Mac has
-   not installed, or a BIOS the drive lacks. Above them a line says what this
+   not installed, or a BIOS Supabase lacks. Above them a line says what this
    Mac can play now, with the next step beside it: the helper to start, the
    drive to plug in, or what is left on Status. A system's tile opens its games as a grid, at #<system>, with all
    of them, the favourites or the recently played; the breadcrumb, Back or B
@@ -45,7 +45,7 @@
   const countOf = n => `${n} ${n === 1 ? 'game' : 'games'}`;
   // Whether this Mac can play a system now, or null where no helper with the drive answers.
   const ready = system => (helper?.collection ? helper.systems.includes(system) : null);
-  // Each file a system's emulator needs that the drive's bios folder lacks.
+  // Each file a system's emulator needs that Supabase lacks.
   const lacks = system => R.needsOf(system, emulators.systems[system], bios).filter(n => !n.ok && !n.optional);
   // What stands in a system's way, as tags.
   const standing = system => [
@@ -196,7 +196,7 @@
     const emulator = emulators.systems[system]?.emulator;
     const missing = lacks(system).map(x => x.label);
     const why = [
-      missing.length ? `The drive lacks ${missing.join(', ')}.` : '',
+      missing.length ? `Supabase lacks ${missing.join(', ')}.` : '',
       ready(system) === false ? `${emulator} is not installed on this Mac.` : '',
     ].filter(Boolean);
     if (!why.length) return say(countOf(n));

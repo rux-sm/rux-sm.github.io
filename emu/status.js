@@ -1,10 +1,10 @@
 /* ==========================================================================
    status.js — the Status page
    --------------------------------------------------------------------------
-   What is done and what is left. The drive, from its last scan: each BIOS
-   a system's emulator needs, each emulator's installer kept and whether its
-   project has a newer one out, and saves
-   still in a folder from before each emulator had its own. Then this Mac,
+   What is done and what is left. The collection: each BIOS a system's
+   emulator needs and each emulator's installer, which Supabase holds for
+   every Mac, whether its project has a newer one out, and from the drive's
+   last scan, saves still in a folder from before each emulator had its own. Then this Mac,
    live from Rux Emu Helper, helper.js, when it is running here, and every
    other Mac as Update last saved it there, folded shut below it so the page
    is about the Mac in hand. Each Mac lists its emulators in
@@ -31,11 +31,11 @@
   const LATER = ['Not needed yet', 'rux--tag--gray'];
   const ABSENT = ['Not installed', 'rux--tag--gray'];
   const files = n => `${n} ${n === 1 ? 'file' : 'files'}`;
-  // Whether the drive keeps an installer named for an app.
-  const keptOn = (drive, name) => Boolean(R.installerOf(drive, name));
+  // Whether Supabase keeps an installer named for an app.
+  const kept = (held, name) => Boolean(R.installerOf(held, name));
   // An emulator's profile on the Emulators page.
   const profile = name => `emulators.html#${R.slug(name)}`;
-  const absent = (drive, name) => keptOn(drive, name) ? 'Its installer is on the drive' : 'No installer for it on the drive yet';
+  const absent = (held, name) => kept(held, name) ? 'Its installer is in Supabase' : 'No installer for it in Supabase yet';
 
   // A state as a tag that keeps its width beside a long line.
   const state = t => { const box = el('span', 'emu-state'); box.append(tag(t, true)); return box; };
@@ -66,8 +66,8 @@
     return wrap;
   }
 
-  // The drive, from its last scan.
-  function driveRows(emulators, bios, drive, saves, used) {
+  // The collection: what Supabase holds for every Mac, and the drive from its last scan.
+  function driveRows(emulators, bios, drive, saves, used, held) {
     const rows = [];
     const missing = [];
     for (const [system, emu] of Object.entries(emulators.systems)) {
@@ -75,18 +75,18 @@
       for (const n of R.needsOf(system, emu, bios)) if (!n.ok && !n.optional) missing.push(`${R.systemName(system)}: ${n.label}${n.wrong ? ', not the right file' : ''}`);
     }
     rows.push({ what: 'BIOS and keys', state: missing.length ? TODO : DONE,
-      detail: missing.length ? `Put in the drive's bios folder:\n${missing.join('\n')}` : 'Every file a system with games needs is in the bios folder' });
+      detail: missing.length ? `Put in the drive's bios folder, and Update:\n${missing.join('\n')}` : 'Every file a system with games needs is in Supabase' });
 
     const names = [...new Set(Object.values(emulators.systems).map(e => e.emulator))].filter(used);
-    const noInstaller = names.filter(n => !keptOn(drive, n));
-    rows.push({ what: 'Installers kept on the drive', state: noInstaller.length ? TODO : DONE,
-      detail: noInstaller.length ? `None yet in emulation/emulators/ for ${noInstaller.join(', ')}` : `One for each of ${names.join(', ')}` });
+    const noInstaller = names.filter(n => !kept(held, n));
+    rows.push({ what: 'Installers kept in Supabase', state: noInstaller.length ? TODO : DONE,
+      detail: noInstaller.length ? `None yet for ${noInstaller.join(', ')}: put it in the drive's emulation/emulators/, and Update` : `One for each of ${names.join(', ')}` });
 
     // Each installer against the newest its project has out, once Update has asked.
     if (drive.newest) {
-      const newer = R.newerOut(emulators, drive);
-      rows.push({ what: 'The newest versions on the drive', state: newer.length ? TODO : DONE,
-        detail: newer.length ? `Download into emulation/emulators/:\n${newer.map(n => `${n.name} ${n.newest}, in place of ${n.kept}`).join('\n')}`
+      const newer = R.newerOut(emulators, drive, held);
+      rows.push({ what: 'The newest versions in Supabase', state: newer.length ? TODO : DONE,
+        detail: newer.length ? `Download into the drive's emulation/emulators/, and Update:\n${newer.map(n => `${n.name} ${n.newest}, in place of ${n.kept}`).join('\n')}`
           : 'Each installer is the newest its project has out' });
     }
 
@@ -106,13 +106,13 @@
   }
 
   // One Mac, from its last gathering.
-  function macRows(mac, emulators, used, drive) {
+  function macRows(mac, emulators, used, held) {
     const rows = [];
     const f = mac.frontend ?? {};
     const reads = f.romDirectory && /\/emulation\/roms\/?$/.test(f.romDirectory);
     rows.push({ what: `${f.name ?? 'ES-DE'}, the library`, href: profile(f.name ?? 'ES-DE'),
       state: !f.app ? ABSENT : reads ? DONE : TODO,
-      detail: !f.app ? absent(drive, f.name ?? 'ES-DE')
+      detail: !f.app ? absent(held, f.name ?? 'ES-DE')
         : reads ? `${f.app.version ?? 'Installed'} · reads ${f.romDirectory}`
         : f.romDirectory ? `Reads ${f.romDirectory}: point it at the drive's roms folder`
         : 'Open it once and point its ROM folder at the drive\'s roms folder' });
@@ -127,7 +127,7 @@
         const left = (e.places ?? []).filter(p => p.files && !/\/emulation\/saves\//.test(p.dir)).map(p => `${files(p.files)} in ${p.dir}`);
         rows.push(left.length
           ? { what, href, state: TODO, detail: `Not installed, and its old folder holds saves: move them to the drive's saves/${folderOf(e.emulator)}/\n${left.join('\n')}` }
-          : { what, href, state: ABSENT, detail: absent(drive, e.emulator) });
+          : { what, href, state: ABSENT, detail: absent(held, e.emulator) });
         continue;
       }
       if (!used(e.emulator)) {
@@ -176,9 +176,11 @@
 
   async function load() {
     try {
-      const [emulators, bios, drive, games, saves, macs] = await Promise.all([
-        R.emulators(), R.data.bios(), R.data.drive(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
-      read = { emulators, bios, drive, games, saves, macs };
+      const [emulators, held, drive, games, saves, macs] = await Promise.all([
+        R.emulators(), R.data.files(), R.data.drive(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
+      // The BIOS, keys and firmware among the files, each by its name under bios/.
+      const bios = held.filter(f => f.path.startsWith('bios/')).map(f => ({ name: f.path.slice('bios/'.length), sha1: f.sha1 }));
+      read = { emulators, held, bios, drive, games, saves, macs };
     } catch (error) { console.error(error); R.notice('Emu could not read the status. Try again.'); return; }
     draw();
     readThisMac();
@@ -191,7 +193,7 @@
   }
 
   function draw() {
-    const { emulators, bios, drive, games, saves, macs } = read;
+    const { emulators, held, bios, drive, games, saves, macs } = read;
     // An emulator is needed once any system it plays has a game.
     const withGames = new Set(games.map(g => g.system));
     const used = name => Object.entries(emulators.systems).some(([s, e]) => e.emulator === name && withGames.has(s));
@@ -199,14 +201,14 @@
     const out = $('emu-status');
     out.replaceChildren();
     if (drive) {
-      out.append(section('The drive', `From the scan of ${R.when(drive.scanned_at)}.`,
-        driveRows(emulators, bios, drive, saves, used)));
+      out.append(section('The collection', `What Supabase holds for every Mac, and the drive from the scan of ${R.when(drive.scanned_at)}.`,
+        driveRows(emulators, bios, drive, saves, used, held)));
     } else {
       out.append(el('p', 'rux--type-body-01', 'No scan yet. Update scans the drive.'));
     }
     // This Mac, read now, stands in for its last report.
     const here = live && { name: live.mac, macos: live.macos, frontend: live.frontend, emulators: live.emulators, live: true };
-    const rowsOf = mac => macRows(ordered(mac, emulators), emulators, used, drive);
+    const rowsOf = mac => macRows(ordered(mac, emulators), emulators, used, held);
     const macSection = (mac, rows) => section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
       mac.live
         ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'

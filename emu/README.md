@@ -43,13 +43,15 @@ save, and whether this Mac changed, and saves on a yes: every game and save in t
 rux's notes, moving the notes of a game the organize tool renamed, removing
 what is no longer on the drive, replacing the BIOS list and the drive's
 row, uploading the backup zip to the `emu-backups` bucket, which keeps
-every backup of the last 30 days and the newest of each month before, and
-this Mac's report with any save it keeps itself. It writes the scan, the
+every backup of the last 30 days and the newest of each month before, this Mac's report with
+any save it keeps itself, and into Supabase each BIOS, key, firmware and installer the drive
+holds that it lacks, a newer installer taking its emulator's older one's place. It writes the scan, the
 fingerprints and the zip back to the drive, as the Mac scan does.
 
-Then it says what is done and what is left. For the drive, from its last
-scan: each BIOS a system with games needs, each emulator's installer
-kept and whether its project has a newer one out, and saves still in a folder from before each emulator had its own.
+Then it says what is done and what is left. For the collection: each BIOS
+a system with games needs and each emulator's installer, which Supabase
+holds, whether its project has a newer one out, and saves on the drive
+still in a folder from before each emulator had its own.
 For this Mac live from the helper, and each other as Update last saved it,
 folded shut below it until opened: ES-DE reading the drive's games, each
 emulator saving into its folder on the drive, and each retired app in
@@ -59,7 +61,7 @@ when its old folder still holds saves. An emulator whose systems have no
 games is not needed yet.
 
 `emulators.html` shows one profile per emulator from `emulators.json`, each
-a fold Status links to: its version on the drive and each Mac, each file it
+a fold Status links to: the version Supabase holds and each Mac's, each file it
 needs, every kind of file it writes with the setting that moves it, the
 settings to have, and what is worth knowing. `docs/emulator-setup.md` is how
 each is set up on a Mac.
@@ -109,9 +111,8 @@ as it stands with the saves it keeps itself, the drive for Update's scan,
 and each emulator's newest version out, asked of its project's feed. The app carries its own `emulators.json`, so build it again after a
 change.
 
-`tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
-firmware and installers too large for Supabase, into
-`~/Documents/Emu backups/`, recorded on the drive for the Saves page.
+`tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, the firmware and
+the installers, into `~/Documents/Emu backups/`, recorded on the drive for the Saves page.
 
 ## How it works
 
@@ -119,8 +120,8 @@ firmware and installers too large for Supabase, into
 saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and
 the `emu-backups` bucket the backup zips. `emu_files` lists each copy of
 each file the `emu-collection` bucket holds, its bytes there under its
-SHA-1 and its newest copy in the view `emu_files_now`; nothing fills them
-yet. Only the owner reads them, and
+SHA-1 and its newest copy in the view `emu_files_now`: the BIOS, keys,
+firmware and installers every Mac is given. Only the owner reads them, and
 `docs/database-access.md` is the rule. Nothing from the collection is ever
 written here, because this repository is public.
 

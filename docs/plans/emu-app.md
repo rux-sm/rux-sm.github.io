@@ -157,7 +157,7 @@ Emulators, chosen fresh rather than kept from what is installed:
 - **The table lives in `app.js`** beside each system's preferred format, so
   the app and the scan read one list.
 - **A needed file is checked by name and, where libretro's list knows it, by
-  MD5;** keys are checked by name only and never read.
+  SHA-1,** against what Supabase holds; the scan lists keys by name only.
 - **Each emulator's settings stay on each Mac;** the Emulators page says where
   each keeps them, its saves and its installer.
 - **`emu/docs/emulator-setup.md` is the how-to** for installing each one on a

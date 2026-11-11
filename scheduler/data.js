@@ -4260,7 +4260,7 @@
      type shows as the label itself, so Something else stores the
      name typed. */
   const DOC_TYPES = [
-    ['Itinerary', 'Itinerary'], ['Contract', 'Contract'], ['PO', 'Purchase order'],
+    ['Itinerary', 'Itinerary'], ['Contract', 'Signed contract'], ['PO', 'Purchase order'],
     ['Invoice', 'Invoice'], ['Hotel confirmation', 'Hotel confirmation'],
   ];
   const DOC_OTHER = 'other';
@@ -10613,18 +10613,22 @@
          sent offers its marks; the contract opens its window; the others
          open the window of their entries. The rows are the milestones: PO
          received is on while there is a PO, Invoice sent while there is an
-         invoice, the contract while it is signed. */
+         invoice, the contract while it is signed. A step taken leads with a
+         filled check and one not taken with an empty circle, as Carbon's
+         progress indicator marks complete and incomplete steps. */
       const billLayer = el('div', 'rux--layer-two');
       const billTile = el('div', 'rux--tile scheduler-billing-steps');
       billLayer.appendChild(billTile);
       const step = ({ id, name, done, much = '', meta, drafted, press }) => {
-        const row = el('button', `scheduler-billing-step${drafted ? ' scheduler-drafted' : ''}`);
+        const row = el('button', `scheduler-billing-step scheduler-billing-step--marked${done ? ' scheduler-billing-step--done' : ''}${drafted ? ' scheduler-drafted' : ''}`);
         row.type = 'button';
         row.id = id;
+        const mark = svgUse(done ? '#m-check_circle-fill' : '#m-radio_button_unchecked', '16', '0 0 32 32');
+        mark.classList.add('scheduler-billing-step__mark');
         const top = el('span', 'scheduler-item__line');
         top.append(el('span', `scheduler-item__name${done ? '' : ' scheduler-fleet-tile__none'}`, name),
           el('span', 'scheduler-item__much', much));
-        row.append(top, el('span', 'scheduler-item__meta', meta));
+        row.append(mark, top, el('span', 'scheduler-item__meta', meta));
         row.title = [name, meta, much].filter(Boolean).join(' · ');
         row.addEventListener('click', () => press(row));
         return row;
@@ -10746,7 +10750,11 @@
           fileItem(progress, file.name).fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
           return;
         }
-        askFileType(file.name, label => { editing.filesWaiting.push({ file, label }); draw(); });
+        askFileType(file.name, label => {
+          editing.filesWaiting.push({ file, label });
+          draw();
+          fileFillsBilling(label);
+        });
       }
       filesBody = null;
       filesNote = null;
@@ -17200,11 +17208,28 @@
     await show();
   }
 
+  /* A purchase order or a signed contract added in the editor fills its
+     Billing row, dated today, while the row is still empty: a PO adds one
+     PO, and a contract marks it signed, which may confirm the trip. Save
+     writes the row as it writes one filled by hand. */
+  function fileFillsBilling(label) {
+    if (!editing || panelEl.hidden) return;
+    const today = iso(new Date());
+    if (label === 'PO' && stepOn('poReceived') && !poPending.length) {
+      poPending.push({ ref: null, amount: null, date: today });
+      redrawPos();
+    } else if (label === 'Contract' && stepOn('contractSigned') && !editing.contract) {
+      editing.contract = { on: today, note: null };
+      redrawContract();
+    } else return;
+    refreshDirty();
+  }
+
   /* An upload from any entry point. `item` is the Files tab's Carbon file item
      when the upload started there; elsewhere the toasts say how it went. A PO
-     turns the Billing tab's PO received switch on in the open editor, which
-     Save then writes. An itinerary goes to `leg`, the leg on screen or the
-     bar's, on a trip of more than one; the toast says which. */
+     or a contract fills its Billing row in the open editor. An itinerary goes
+     to `leg`, the leg on screen or the bar's, on a trip of more than one; the
+     toast says which. */
   async function uploadFrom(tripId, label, file, item, leg = null) {
     const legId = label === 'Itinerary' ? docLegId(tripId, leg) : null;
     if (!(await isPdf(file))) {
@@ -17212,7 +17237,7 @@
       else toast('error', 'Only PDF files can be added. Export it as a PDF first.');
       return false;
     }
-    if (!item) toast('working', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
+    if (!item) toast('working', `Uploading the ${docTypeName({ label }).toLowerCase()}…`);
     try {
       await uploadDocument(tripId, label, file, legId);
     } catch (err) {
@@ -17221,11 +17246,7 @@
       return false;
     }
     item?.done();
-    if (label === 'PO' && editing?.id === tripId && !panelEl.hidden && !poPending.length) {
-      poPending.push({ ref: null, amount: null, date: iso(new Date()) });
-      redrawPos();
-      refreshDirty();
-    }
+    if (editing?.id === tripId) fileFillsBilling(label);
     await refreshDocuments(tripId);
     const trip = legId ? shapedTrip(tripId) : null;
     toast('success', `${file.name} was added ${trip ? `for ${fileLegPhrase(trip, legId)}` : 'to the trip'}.`);

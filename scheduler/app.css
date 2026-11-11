@@ -3736,6 +3736,18 @@ a.scheduler-tip__go { text-decoration: none; }
   text-align: start;
   cursor: pointer;
 }
+/* A Billing step's mark leads its name's line, and its state lines up under the name. */
+.scheduler-billing-step--marked {
+  grid-template-columns: 1rem minmax(0, 1fr);
+  column-gap: var(--rux-spacing-03);
+}
+.scheduler-billing-step--marked > :not(.scheduler-billing-step__mark) { grid-column: 2; }
+.scheduler-billing-step__mark {
+  grid-area: 1 / 1;
+  align-self: center;
+  color: var(--rux-icon-secondary);
+}
+.scheduler-billing-step--done .scheduler-billing-step__mark { color: var(--rux-support-success); }
 .scheduler-billing-step:hover { background: var(--rux-layer-hover); }
 /* A row a draft filled keeps its words in line with the others beside the mark. */
 .scheduler-billing-step.scheduler-drafted { padding-inline-start: calc(var(--rux-spacing-05) - 2px); }

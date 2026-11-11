@@ -2,7 +2,7 @@
 type: plan
 ---
 
-# Plan: Roms becomes Rux Emu
+# Plan: Emu becomes Rux Emu
 
 ## Goal
 
@@ -15,7 +15,7 @@ the class prefix `emu-`, the commit scope `emu`, the database tables
 ## Decisions
 
 - **One commit moves `roms/` to `emu/`** with `git mv`, renames every
-  `roms-` class, the `window.Roms` global, the page titles and the header,
+  `roms-` class, the `window.Emu` global, the page titles and the header,
   and updates `switcher.json`, the Names table in `AGENTS.md`,
   `docs/database-access.md` and `tools/inline-sprite.mjs`; the plans
   `roms-*.md` become `emu-*.md`.
@@ -28,8 +28,8 @@ the class prefix `emu-`, the commit scope `emu`, the database tables
   published pages read the new names.
 - **Supabase cannot rename a bucket, and SQL cannot make or drop one,** so
   `emu-backups` is made private in the dashboard, its four owner rules come
-  in the same migration, the four backups in `roms-backups` are copied across
-  signed in as rux, and `roms-backups` is deleted in the dashboard once the
+  in the same migration, the four backups in `emu-backups` are copied across
+  signed in as rux, and `emu-backups` is deleted in the dashboard once the
   copies are checked.
 - **The drive's `Check this Mac.command` opens `/emu/status.html`,** put on
   the drive again by `check-mac.mjs --install`.
@@ -47,6 +47,6 @@ None open.
 - [ ] Show rux the migration for the tables and the bucket rules, and apply
   it on a yes, then push.
 - [ ] Make `emu-backups` in the dashboard, copy the four backups across, and
-  delete `roms-backups` once they are checked.
+  delete `emu-backups` once they are checked.
 - [ ] Put the new `Check this Mac.command` on the drive, and check every page
   in Chrome on :8641.

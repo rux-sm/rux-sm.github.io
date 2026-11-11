@@ -14,7 +14,7 @@ unfinished, and `docs/plans/` holds the plans.
 rux-sm.github.io: `/` is `index.html` here, and every folder named like a
 URL path is that app — `design/` at `/design/`, `scheduler/` at
 `/scheduler/`, `ln/` at `/ln/`, `pixels/` at `/pixels/`, `sevens/` at
-`/sevens/`, `coins/` at `/coins/`. **A push to `main` publishes**, after CI
+`/sevens/`, `coins/` at `/coins/`, `emu/` at `/emu/`. **A push to `main` publishes**, after CI
 runs the check.
 There is no release, no tag and no separate publish step.
 
@@ -175,6 +175,7 @@ Every app has one word, and its names derive from it.
 | Pixels | `pixels/` | Rux Pixels on a wide screen, a bar of places below it | `pixels-` | `pixels` |
 | Sevens | `sevens/` | Rux Sevens | `sevens-` | `sevens` |
 | Coins | `coins/` | Rux Coins | `coins-` | `coins` |
+| Emu | `emu/` | Rux Emu | `emu-` | `emu` |
 
 - **`game-` and `frame-` are no app's prefix.** They are Design's shared
   sheets, the games' and the page frame's, which an app links beside its own

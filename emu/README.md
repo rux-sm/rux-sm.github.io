@@ -1,0 +1,138 @@
+# Emu
+
+The game collection on rux's portable drive: every game, which version it
+is, and what needs fixing — one app on [design](../design/), served at
+**rux-sm.github.io/emu/**.
+
+The repository root's `AGENTS.md` is the policy, and
+`docs/plans/emu-app.md` is what is still to build.
+
+## What it is
+
+`index.html` is the Collection: every game the last scan found, with search
+and a filter per system and per status, a table on a wide screen and a list
+on a phone. A game's status is its worst problem, as Problems lists them, or Good.
+A game opens in a side panel with everything the scan read: its region,
+version and format, each file's header and fingerprints, a Switch game's
+update and add-ons, and its saves; rux's marks, played, finished and
+favourite, and a note on it are saved from there.
+
+`problems.html` lists every game that needs a look, under one heading per
+kind, worst first: a missing disc or track, a copy not on the list, a bad
+header, an encrypted 3DS copy, a game to convert or rename, the newest
+revision or update when the drive holds an older one, a converted game's
+original still in the drive's to-delete folder, a BIOS file an emulator
+needs, and a save whose game is not on the drive. It says when that folder
+is safe to empty:
+when every game converted from what is in it is marked as playing.
+
+`saves.html` shows the three copies of the saves, on the drive, in Supabase
+and on each Mac, with each backup in Supabase to download, and Back up this
+Mac's saves, which uploads the report `tools/check-mac.mjs` wrote to the
+drive and any save this Mac keeps itself; then every save by system, on the drive or a Mac, each
+with its kind, dates, how to restore it and rux's note on it.
+
+`status.html` starts with Update, which scans the drive in Chrome through
+the emulation folder rux picks once, and runs by itself when the page opens
+and Chrome already allows that folder. It shows how many games are new,
+changed or gone since the last save, and any Mac's report newer than the
+one saved, and saves on a yes: every game and save in the scan, leaving
+rux's notes, moving the notes of a game the organize tool renamed, removing
+what is no longer on the drive, replacing the BIOS list and the drive's
+row, uploading the backup zip to the `emu-backups` bucket, which keeps
+every backup of the last 30 days and the newest of each month before, and
+each Mac's report with any save it keeps itself. It writes the scan, the
+fingerprints and the zip back to the drive, as the Mac scan does.
+
+Then it says what is done and what is left. For the drive, from its last
+scan: each BIOS a system with games needs, each emulator's installer
+kept, and saves still in a folder from before each emulator had its own.
+For each Mac, from its last report: ES-DE reading the drive's games, each
+emulator saving into its folder on the drive, and each retired app in
+`emulators.json` still there or still holding files. Installing an app is
+what says a Mac plays with it, so one not installed is grey, and red only
+when its old folder still holds saves. An emulator whose systems have no
+games is not needed yet.
+
+`emulators.html` shows each system's emulator from `emulators.json`, why it
+is the one, each file it needs and whether the drive holds it, and where its
+saves, settings and installer live. `docs/emulator-setup.md` is how each is
+set up on a Mac.
+
+## The scan
+
+    node emu/tools/scan-roms.mjs "/Volumes/<drive>/emulation"
+
+`tools/scan-roms.mjs` runs `scan.js`, the scan the Status page will run
+too, which reads every game in the drive's emulation roms folder
+and the BIOS in its bios folder, and writes the scan and the kept
+fingerprints to a scans folder beside them, on the drive, and packs the
+saves, BIOS and keys into a zip in its backups folder. It reads the games
+and never changes them. Each save is matched to its game the way its
+emulator names it, by file name, title ID, disc ID or serial, as
+`emulators.json` says for each system. The first scan fingerprints every file; the next
+reads only files that are new or changed. `--headers-only` skips the
+fingerprints, for a quick look. Key files among the BIOS are listed by name
+and never read.
+
+When the drive's emulation folder holds a lists folder, every game is matched
+against the No-Intro and Redump lists as libretro publishes them, and every
+Switch game against titledb's versions list; `scan.js` says how.
+A CHD is matched by the tracks inside it, which the organize tool keeps when
+it makes the CHD, or chdman extracts once on a Mac.
+
+    node emu/tools/organize-roms.mjs "/Volumes/<drive>/emulation"          what it would do
+    node emu/tools/organize-roms.mjs "/Volumes/<drive>/emulation" --yes    do it
+
+`tools/organize-roms.mjs` turns PlayStation BIN and CUE games and PlayStation
+2 ISOs into CHDs, adds a playlist beside a game on more than one disc, and
+renames every other file and its saves to its list name, keeping each
+rename for the next save. It touches only games whose every
+file is on the list, checks each CHD before its original moves, and moves
+originals to a to-delete folder on the drive instead of deleting them. Scan
+again after it. chdman comes from Homebrew's `rom-tools`.
+
+    node emu/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
+
+    node emu/tools/check-mac.mjs "/Volumes/<drive>/emulation"
+    node emu/tools/check-mac.mjs --install "/Volumes/<drive>/emulation"
+
+`tools/check-mac.mjs` writes how this Mac stands to the drive's
+`macs/<Mac>/report.json`: each app installed and its version, and where
+each emulator saves, as `emulators.json` says or its own settings moved it.
+A save kept on this Mac rather than the drive is copied in beside it.
+`--install` puts it on the drive with `Check this Mac.command`, which runs it
+with a double-click and opens the Status page.
+
+`tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
+firmware and installers too large for Supabase, into
+`~/Documents/Emu backups/`, recorded on the drive for the Saves page.
+
+## How it works
+
+`emu_games`, `emu_bios`, `emu_saves` and `emu_drive` hold the last scan
+saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and the `emu-backups` bucket the
+backup zips; only the owner reads them, and `docs/database-access.md` is the
+rule. Nothing from the
+collection is ever written here, because this repository is public.
+
+| | |
+| :--- | :--- |
+| `data.js` | the reads and writes |
+| `emulators.json` | each system's emulator, why, how it names a save, what it needs, and where each keeps saves on a Mac; the scan and the gather tool read it too |
+| `scan.js` | the scan, for the Mac tool and the page alike |
+| `drive.js` | the drive as `scan.js` reads it in Chrome, from a folder rux picks |
+| `zip.js` | the backup zip, packed in the page |
+| `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
+| `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
+| `update.js` | Update, on the Status page |
+| `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
+| `app.css` | the filters, rows and the side panel's facts, under `emu-` |
+| `overrides.css` | the side panel hidden when closed and full width on a phone |
+
+The local preview on :8640 has no log-in and reads nothing; use the cloud
+preview on :8641 or the published site.
+
+## Check
+
+    npm run check        from the repository root

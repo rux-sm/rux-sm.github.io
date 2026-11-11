@@ -1,0 +1,51 @@
+/* app.css -- Emu's own layout, under the emu- prefix. Every colour is a
+   --rux-* token. Design's components are used as they are and never restyled. */
+
+/* The side nav is persistent from 66rem, so the page clears its 16rem there,
+   and keeps .rux--content's own 2rem beside it. templates/app-shell.html
+   explains why this is a padding and not a grid offset. */
+@media (min-width: 66rem) {
+  .emu-main { padding-inline-start: 18rem; }
+}
+
+/* The search and filters, one row that wraps. */
+.emu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
+.emu-filters > * { min-inline-size: 0; }
+.emu-filters__search { flex: 1 1 12rem; }
+
+/* A table on a wide screen, the same games as a list on a phone. */
+.emu-narrow { display: none; }
+@media (max-width: 41.98rem) {
+  .emu-wide { display: none; }
+  .emu-narrow { display: block; }
+}
+
+/* A game in the table opens in the side panel. */
+.emu-game { cursor: pointer; }
+.emu-size { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th.emu-size .rux--table-header-label { justify-content: flex-end; }
+
+/* A phone row: the title over its system and size, the status tag beside. */
+.emu-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rux-spacing-05); inline-size: 100%; text-align: start; }
+.emu-row__main { display: grid; min-inline-size: 0; }
+.emu-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+
+/* The side panel's facts: a label over each value. */
+.emu-facts { display: grid; gap: var(--rux-spacing-05); }
+.emu-facts dt { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+.emu-facts dd { overflow-wrap: anywhere; }
+.emu-hash { font-family: var(--rux-code-01-font-family, monospace); font-size: .75rem; }
+
+/* A step's buttons side by side, wrapping on a phone. */
+.emu-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); }
+
+/* An emulator's row: its needs as tags that wrap, then its saves and settings side by side. */
+.emu-emulator { display: grid; gap: var(--rux-spacing-04); }
+.emu-tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.emu-facts--row { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+
+/* A Status row's state keeps its width, so its words are never cut. */
+.emu-state { flex: none; }
+
+/* A save's files, one to a line. */
+.emu-files { white-space: pre-line; font-size: .75rem; }

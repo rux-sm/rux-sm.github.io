@@ -37,10 +37,10 @@
       "icon": "/coins/brand/icon.svg"
     },
     {
-      "name": "Roms",
-      "path": "/roms/",
+      "name": "Emu",
+      "path": "/emu/",
       "description": "The game collection",
-      "icon": "/roms/brand/icon.svg"
+      "icon": "/emu/brand/icon.svg"
     },
     {
       "name": "Design",

@@ -266,8 +266,6 @@ None open.
 
 ## Tasks
 
-- [ ] Install ES-DE and each emulator fresh on both Macs, following
-  `roms/docs/emulator-setup.md`, and keep each installer on the drive.
-- [ ] Move the RetroArch and Azahar saves, and the other Mac's Dolphin,
-  PCSX2, Cemu and Switch saves, into `emulation/saves/`, as the how-to says.
+- [ ] Set up the second Mac following `roms/docs/emulator-setup.md`, first
+  copying its Dolphin, PCSX2, Cemu and Switch saves into `emulation/saves/`.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.

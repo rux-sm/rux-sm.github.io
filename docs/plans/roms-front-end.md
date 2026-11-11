@@ -43,9 +43,6 @@ Roms is `docs/plans/roms-app.md`.
 
 ## Questions
 
-- Rename the app Rux Emu? That changes its address to `/emu/`, its prefix,
-  the `roms_*` tables and the `roms-backups` bucket, and the drive's
-  `Check this Mac.command`, and is planned on its own if yes.
 - libretro has no Switch box art. Should Switch tiles use the game's own
   icon, which Ryujinx shows, read from the game file by the scan?
 

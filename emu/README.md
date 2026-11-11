@@ -9,8 +9,9 @@ The repository root's `AGENTS.md` is the policy, and
 
 ## What it is
 
-`index.html` is the Library: every game as box art from libretro's
-thumbnails, a shelf per system, with a search. `collection.html` is the
+`index.html` is the Library: the recently played and the favourites as
+shelves of box art from libretro's thumbnails, then a tile for each system
+that opens its games as a grid, with a search. `collection.html` is the
 same games as a table, with a filter per system and per status. A game's
 status is its worst problem, as Problems lists them, or Good. A game opens
 in a side panel, `game-panel.js`, with its cover and Play on the Library,

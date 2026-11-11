@@ -65,3 +65,19 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; text-align: center; overflow-wrap: anywhere; }
 .emu-cover-name { font-size: .875rem; line-height: 1.125rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .emu-panel-art { max-inline-size: 16rem; }
+
+/* THE LIBRARY'S HOME AND GRIDS. A system's tile is Carbon's clickable tile,
+   holding a square of four of its covers over its name and count. A system's
+   games, or a search's, wrap into as many columns of covers as fit. */
+.emu-systems { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--rux-spacing-05); padding: 4px; margin: -4px; }
+.emu-system { display: grid; gap: var(--rux-spacing-04); }
+.emu-system__art { display: grid; grid-template: 1fr 1fr / 1fr 1fr; gap: 2px; aspect-ratio: 1; overflow: hidden; }
+.emu-system__art > * { background: var(--rux-layer-02); min-inline-size: 0; min-block-size: 0; overflow: hidden; }
+.emu-system__art img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.emu-system__count { color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; }
+.emu-grid[hidden] { display: none; }
+.emu-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: var(--rux-spacing-06) var(--rux-spacing-05); padding: 4px; margin: -4px; }
+@media (max-width: 41.98rem) {
+  .emu-grid { grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); }
+  .emu-systems { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+}

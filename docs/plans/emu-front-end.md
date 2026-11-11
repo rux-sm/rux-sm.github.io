@@ -6,17 +6,24 @@ type: plan
 
 ## Goal
 
-Emu's front page becomes a wall of box art for every game on the drive,
-one row per system, and Play on a game opens it in its emulator on the
+Emu's front page is a tile for each system, opening a grid of box art for
+every game it has, and Play on a game opens it in its emulator on the
 MacBook Pro, so the site, not ES-DE, is where a game is picked. The rest of
 Emu is `docs/plans/emu-app.md`.
 
 ## Decisions
 
-- **The front page is the library:** one row of box art per system, newest
-  played first, with search; a game opens a side panel with its art, notes,
-  save, played and favourite, and Play. The Collection table moves to its
-  own page.
+- **The front page is the library:** the recently played and the
+  favourites as rows of box art, then a tile for each system with games,
+  four of its covers on it, with a search across every game; a system's
+  tile opens its games as a grid, all of them, its favourites or its
+  recently played, at its own address so Back and a bookmark work. A game
+  opens a side panel with its art, notes, played and favourite, and Play.
+  The Collection table is its own page.
+- **Play marks when a game was last played,** in `emu_notes.played_at`, for
+  Recently played; it changes no mark or note.
+- **Covers show a game's name without its list's tags,** region, languages
+  and revision, which its panel keeps.
 - **Play asks Rux Emu Helper to open the game,** because a web page cannot
   open a Mac app itself; the helper is `docs/plans/emu-helper.md`.
 - **Box art comes from libretro's thumbnails by each game's list name,**
@@ -24,7 +31,8 @@ Emu is `docs/plans/emu-app.md`.
   thumbnails.libretro.com and cached by the browser, and nothing is stored.
   A game the lists do not name shows its title on a plain tile.
 - **A controller moves around the page** through Chrome's Gamepad API: the
-  stick or pad moves between tiles, A opens a game, A again plays, B goes back.
+  stick or pad moves to the nearest tile or cover in that direction, A opens
+  a system, then a game, then plays it, and B goes back a step.
 - **Play shows only where it can work:** where the helper answers and has
   the collection. Elsewhere, such as the phone, the page is the library to
   browse, with no Play button.

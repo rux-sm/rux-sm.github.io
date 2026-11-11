@@ -146,7 +146,15 @@
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1>Library</h1>
+        <!-- A system's games carry the way back to the Library above their name.
+             The wrapper hides it, since Carbon's reset shows every nav. -->
+        <div id="emu-crumbs" hidden><nav aria-label="Breadcrumb">
+          <ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">
+            <li class="rux--breadcrumb-item"><a class="rux--link" href="#">Library</a></li>
+            <li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#" aria-current="page" id="emu-crumb"></a></li>
+          </ol>
+        </nav></div>
+        <h1 id="emu-title">Library</h1>
         <div id="emu-error" hidden>
           <div class="rux--inline-notification rux--inline-notification--error" role="alert">
             <div class="rux--inline-notification__details">
@@ -168,9 +176,25 @@
             </div>
             <p class="rux--type-body-01" id="emu-sum" role="status"></p>
           </div>
+          <!-- A system's games, all of them, the favourites or the recently played.
+               The wrapper hides it, since Carbon's switcher sets its own display. -->
+          <div id="emu-show-wrap" hidden><div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Show" id="emu-show">
+            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-show="all">
+              <span class="rux--content-switcher__label">All games</span>
+            </button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-show="favourites">
+              <span class="rux--content-switcher__label">Favourites</span>
+            </button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-show="recent">
+              <span class="rux--content-switcher__label">Recent</span>
+            </button>
+          </div></div>
           <div id="emu-none" hidden><p>No games match.</p></div>
-          <!-- One shelf of box art per system, from library.js. -->
-          <div class="rux--stack-vertical rux--stack-scale-7" id="emu-shelves"></div>
+          <!-- The Library's home, from library.js: the recently played and the
+               favourites as shelves, then a tile for each system. -->
+          <div id="emu-home" hidden><div class="rux--stack-vertical rux--stack-scale-7" id="emu-home-list"></div></div>
+          <!-- A system's games, or every game a search finds, as a grid of covers. -->
+          <ul class="emu-grid" role="list" id="emu-grid" hidden></ul>
         </div>
       </div>
     </div>
@@ -199,6 +223,7 @@
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/menu.js"></script>
 <script src="/design/js/form-controls.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
 <script src="/design/js/modal.js"></script>

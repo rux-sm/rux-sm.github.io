@@ -506,8 +506,9 @@
   const SWITCH_EXTRAS = new Set(['mods', 'updates_dlc']);
   // Secrets that sit among the BIOS files: listed by name, never read.
   const SECRET = /\.keys$/i;
-  // The tracks and discs of one game share its title.
-  const titleOf = stem => stem.replace(/\s*\((Track|Disc) \d+\)/g, '').trim();
+  // The tracks and discs of one game share its title. An Xbox disc that
+  // extract-xiso rebuilt is named .xiso.iso, whose .xiso is not the game's.
+  const titleOf = stem => stem.replace(/\.xiso$/i, '').replace(/\s*\((Track|Disc) \d+\)/g, '').trim();
   const REGIONS = /^(USA|Europe|Japan|World|Canada|Korea|Asia|Australia|Brazil|Spain|France|Germany|Italy|Netherlands|Sweden|China)$/;
   // A BIOS the system list knows, by name, under that system's emulator's
   // folder in the list, since one small file can equal another system's.

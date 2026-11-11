@@ -77,6 +77,8 @@
     }
     $('emu-panel').hidden = false;
     $('emu-panel').classList.add('rux--side-panel--open');
+    // A game opens at its top, whatever the last one was scrolled to.
+    for (const s of [$('emu-panel'), body.parentElement]) s.scrollTop = 0;
     $('emu-panel-close').focus();
   }
   // rux's marks and note on the game, saved on Save. `plays` is asked only of
@@ -129,7 +131,7 @@
       for (const [k] of [['played'], ['finished'], ['favourite'], ['plays']]) row[k] = Boolean(form.elements[k]?.checked ?? n[k]);
       try {
         await R.data.saveNotes(row);
-        g.notes = row;
+        g.notes = { ...n, ...row };
         g.status = R.statusOf(g);
         said.textContent = 'Saved.';
         onSaved(g);

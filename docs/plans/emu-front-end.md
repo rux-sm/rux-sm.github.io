@@ -46,6 +46,5 @@ Emu is `docs/plans/emu-app.md`.
   to its own page.
 - [ ] Add Play to the game's side panel, through the helper.
 - [ ] Move around the library with a controller.
-- [ ] Add the ares setting to `emu/docs/emulator-setup.md`.
 - [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
   Status, and from the MacBook Pro.

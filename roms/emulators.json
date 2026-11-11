@@ -373,7 +373,8 @@
         "Ryujinx.app"
       ],
       "homes": [
-        "~/Library/Application Support/Ryujinx"
+        "~/Library/Application Support/Ryujinx",
+        "~/Library/Containers/V380-Ori.Astris/Data/Library/Application Support/Ryujinx"
       ],
       "places": [
         {

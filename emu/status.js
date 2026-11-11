@@ -3,14 +3,17 @@
    --------------------------------------------------------------------------
    What is done and what is left. The drive, from its last scan: each BIOS
    a system's emulator needs, each emulator's installer kept, and saves
-   still in a folder from before each emulator had its own. Then each Mac,
-   from the last time Check this Mac.command ran on it: ES-DE reading the
+   still in a folder from before each emulator had its own. Then each Mac:
+   this one live from Rux Emu Helper, helper.js, when it is running here,
+   and every other from the last time Check this Mac.command ran on it, each
+   emulator in emulators.json's order: ES-DE reading the
    drive's games, each emulator saving into its folder on the drive, and each
    retired app still there or still holding files. Installing an app is what
    says a Mac plays with it, so one that is not installed is only said, unless
    its old folder still holds saves. An emulator whose systems have no games
    yet is not needed yet.
-   Update, above them, is update.js, and they are drawn again after it saves.
+   Update, above them, is update.js, and they are drawn again after it saves;
+   this Mac is read again each time the page comes back into view.
    ========================================================================== */
 (() => {
   'use strict';
@@ -147,13 +150,33 @@
     return rows;
   }
 
-  async function load() {
-    let emulators, bios, drive, games, saves, macs;
-    try {
-      [emulators, bios, drive, games, saves, macs] = await Promise.all([
-        R.emulators(), R.data.bios(), R.data.drive(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
-    } catch (error) { console.error(error); R.notice('Emu could not read the status. Try again.'); return; }
+  // A Mac's emulators in emulators.json's order, its retired apps after.
+  const ordered = (mac, emulators) => {
+    const order = [...Object.keys(emulators.macSaves ?? {}), ...Object.keys(emulators.retired ?? {})];
+    return { ...mac, emulators: [...(mac.emulators ?? [])].sort((a, b) => order.indexOf(a.emulator) - order.indexOf(b.emulator)) };
+  };
 
+  let read = null;
+  let live = null;
+
+  async function load() {
+    try {
+      const [emulators, bios, drive, games, saves, macs] = await Promise.all([
+        R.emulators(), R.data.bios(), R.data.drive(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
+      read = { emulators, bios, drive, games, saves, macs };
+    } catch (error) { console.error(error); R.notice('Emu could not read the status. Try again.'); return; }
+    draw();
+    readThisMac();
+  }
+
+  async function readThisMac() {
+    if (!R.helper.onMac) return;
+    live = await R.helper.mac();
+    if (read) draw();
+  }
+
+  function draw() {
+    const { emulators, bios, drive, games, saves, macs } = read;
     // An emulator is needed once any system it plays has a game.
     const withGames = new Set(games.map(g => g.system));
     const used = name => Object.entries(emulators.systems).some(([s, e]) => e.emulator === name && withGames.has(s));
@@ -166,15 +189,43 @@
     } else {
       out.append(el('p', 'rux--type-body-01', 'No scan yet. Update scans the drive.'));
     }
-    for (const mac of macs) {
-      out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}`,
-        `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Update, to check it again.`,
-        macRows(mac, emulators, used, drive)));
+    // This Mac, read now, stands in for its last report.
+    const here = live && { name: live.mac, macos: live.macos, frontend: live.frontend, emulators: live.emulators, live: true };
+    const all = [...macs.filter(m => m.name !== here?.name), ...(here ? [here] : [])].sort((a, b) => a.name.localeCompare(b.name));
+    for (const mac of all) {
+      out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
+        mac.live
+          ? 'Live from Rux Emu Helper. To back up the saves this Mac keeps itself, double-click Check this Mac.command on the drive, then Update.'
+          : `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Update, to check it again.`,
+        macRows(ordered(mac, emulators), emulators, used, drive)));
     }
-    if (!macs.length) {
+    if (!all.length) {
       out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Update.'));
     }
+    if (R.helper.onMac && !live) out.append(startHelper());
   }
+
+  // On a Mac whose helper is not answering, a way to start it and see this Mac live.
+  function startHelper() {
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-3');
+    const said = el('p', 'rux--type-body-01', 'Rux Emu Helper is not running on this Mac, so this Mac is not shown live.');
+    said.setAttribute('role', 'status');
+    const b = el('button', 'rux--btn rux--btn--secondary', 'Start Rux Emu Helper');
+    b.type = 'button';
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      R.helper.start();
+      said.textContent = 'Starting…';
+      for (let i = 0; i < 10 && !live; i += 1) { await new Promise(r => setTimeout(r, 1000)); live = await R.helper.mac(); }
+      if (live) draw();
+      else { said.textContent = 'It did not start. Install it from the drive: Install Rux Emu Helper.command.'; b.disabled = false; }
+    });
+    box.append(said, b);
+    return box;
+  }
+
   load();
   document.addEventListener('emu:saved', load);
+  // The helper may be started or quit, or an emulator set up, while the page is away.
+  window.addEventListener('focus', readThisMac);
 })();

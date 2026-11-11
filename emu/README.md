@@ -110,9 +110,9 @@ with a double-click and opens the Status page.
 puts it on the drive with `Install Rux Emu Helper.command`, which copies it
 into Applications. The menu bar helper answers only the Rux Emu site, on
 `127.0.0.1:47647`: `/status` says the collection and each system it can
-play, and `/play` opens one game from the collection's roms folder as
-`launch` in `emulators.json` says, read from the drive's `tools/`, so run
-`check-mac.mjs --install` after changing it.
+play, `/mac` how this Mac stands, read as `check-mac.mjs` does, and `/play`
+opens one game from the roms folder as `launch` in `emulators.json` says.
+The app carries its own `emulators.json`, so build it again after a change.
 
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
 firmware and installers too large for Supabase, into
@@ -130,14 +130,14 @@ written here, because this repository is public.
 | :--- | :--- |
 | `data.js` | the reads and writes |
 | `emulators.json` | each system's emulator, why, how it names a save, what it needs, how it opens a game, and where each keeps saves on a Mac; the scan, the gather tool and the helper read it too |
-| `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game |
+| `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game and to read this Mac |
 | `scan.js` | the scan, for the Mac tool and the page alike |
 | `drive.js` | the drive as `scan.js` reads it in Chrome, from a folder rux picks |
 | `zip.js` | the backup zip, packed in the page |
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `update.js` | Update, on the Status page |
-| `game-panel.js`, `helper.js`, `gamepad.js` | one game in the side panel; asking Rux Emu Helper to play; a controller as moves |
+| `game-panel.js`, `helper.js`, `gamepad.js` | one game in the side panel; asking Rux Emu Helper to play and to read this Mac; a controller as moves |
 | `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |

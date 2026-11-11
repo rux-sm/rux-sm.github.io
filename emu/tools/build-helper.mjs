@@ -6,7 +6,8 @@
 // It needs Xcode's Swift, so it runs on a Mac that builds the site; the Mac
 // that installs the helper needs nothing. The app runs on Apple silicon and
 // Intel, is signed for this Mac only (macOS asks once to open it), and is
-// replaced whole each time.
+// replaced whole each time. The site's emulators.json goes inside it, and its
+// version is the one main.swift says.
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -21,6 +22,7 @@ if (!root || !fs.existsSync(path.join(root, 'roms'))) {
 }
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.join(here, '..', 'helper', 'main.swift');
+const version = fs.readFileSync(source, 'utf8').match(/^let version = "(\d+)"$/m)[1];
 const name = 'Rux Emu Helper';
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'emu-helper-'));
 
@@ -28,6 +30,8 @@ try {
   const app = path.join(tmp, `${name}.app`);
   const macos = path.join(app, 'Contents', 'MacOS');
   fs.mkdirSync(macos, { recursive: true });
+  fs.mkdirSync(path.join(app, 'Contents', 'Resources'));
+  fs.copyFileSync(path.join(here, '..', 'emulators.json'), path.join(app, 'Contents', 'Resources', 'emulators.json'));
   const parts = ['arm64', 'x86_64'].map((arch) => {
     const out = path.join(tmp, `helper-${arch}`);
     execFileSync('swiftc', ['-O', '-target', `${arch}-apple-macos13.0`, source, '-o', out], { stdio: 'inherit' });
@@ -42,8 +46,8 @@ try {
   <key>CFBundleIdentifier</key><string>io.github.rux-sm.emu-helper</string>
   <key>CFBundleExecutable</key><string>helper</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>1</string>
-  <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleShortVersionString</key><string>${version}</string>
+  <key>CFBundleVersion</key><string>${version}</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
   <key>CFBundleURLTypes</key><array><dict>
@@ -70,7 +74,7 @@ echo "${name} is installed: its game controller is in the menu bar."
 read -k 1 "?Press any key to close."
 `);
   fs.chmodSync(installer, 0o755);
-  console.log(`${name}.app and Install ${name}.command are on ${root}.`);
+  console.log(`${name}.app ${version} and Install ${name}.command are on ${root}.`);
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });
 }

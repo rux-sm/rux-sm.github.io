@@ -129,7 +129,9 @@ Problems lists a save with no game.
 Double-click `Install Rux Emu Helper.command` on the drive. Its game
 controller appears in the menu bar, and it starts at each log-in. The first
 time the Rux Emu site asks it something, Chrome asks whether the site may
-reach this Mac: Allow.
+reach this Mac: Allow. While it runs, the Status page shows this Mac live:
+what is installed, where each emulator saves and each retired app left
+behind.
 
 ## Checking a Mac
 
@@ -137,8 +139,8 @@ reach this Mac: Allow.
 its own settings or its default folder, and writes how this Mac stands to
 the drive's `macs` folder, with a copy of any save this Mac keeps itself;
 then the Status page opens, and Update saves it. The Status page then shows
-how this Mac stands: what is installed, where each emulator saves,
-and each retired app still there or still holding files. That list is also the check
+how this Mac stood for every other Mac to see: what is installed, where each
+emulator saves, and each retired app still there or still holding files. That list is also the check
 that `emulators.json` names each one's folders rightly; correct `macSaves` there when one is not found. After
 changing `emulators.json`, put the tool on the drive again:
 

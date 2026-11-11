@@ -3,9 +3,11 @@
    --------------------------------------------------------------------------
    The menu bar app on the Mac, emu/helper/main.swift, answers this site on
    127.0.0.1:47647: `status` is the collection it found and each system it
-   can play, or null when no helper answers, and `play` opens one game. A
-   game's file is the one its emulator opens: a multi-disc game's playlist, a
-   disc's cue sheet, a Wii U game's own file, else its only file.
+   can play, or null when no helper answers; `mac` is how this Mac stands,
+   read now, in the shape of check-mac.mjs's report, or null; and `play`
+   opens one game. A game's file is the one its emulator opens: a multi-disc
+   game's playlist, a disc's cue sheet, a Wii U game's own file, else its
+   only file.
    `start` opens the helper through the rux-emu:// link it registers.
    ========================================================================== */
 (() => {
@@ -16,6 +18,14 @@
   async function status() {
     try {
       const r = await fetch(`${BASE}/status`, { signal: AbortSignal.timeout(1500) });
+      return r.ok ? await r.json() : null;
+    } catch { return null; }
+  }
+
+  // Counting each save folder's files takes the helper a moment.
+  async function mac() {
+    try {
+      const r = await fetch(`${BASE}/mac`, { signal: AbortSignal.timeout(15000) });
       return r.ok ? await r.json() : null;
     } catch { return null; }
   }
@@ -40,5 +50,5 @@
   const onMac = /Mac/.test(navigator.platform) && navigator.maxTouchPoints < 2;
   const start = () => { location.href = 'rux-emu://open'; };
 
-  window.Emu = Object.assign(window.Emu || {}, { helper: { status, play, fileOf, onMac, start } });
+  window.Emu = Object.assign(window.Emu || {}, { helper: { status, mac, play, fileOf, onMac, start } });
 })();

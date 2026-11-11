@@ -17,8 +17,12 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 
 - **It is a Swift app, `Rux Emu Helper.app`, built from `emu/helper/`,**
   because a new Mac has no Node, and Swift needs nothing beside the app.
-- **It starts at log-in and has no window,** registered as a log-in item when
-  first opened; macOS asks once to open it, since it is not from the App Store.
+- **It starts at log-in, with no window and an icon in the menu bar** that
+  says whether it has the collection and has Quit; macOS asks once to open
+  it, since it is not from the App Store.
+- **The site starts it when it is not running,** through a `rux-emu://` link
+  the helper registers, since a page cannot start an app any other way; Chrome
+  asks once, and Always allow keeps it from asking.
 - **The site talks to it on `127.0.0.1` only,** never the network, and it
   answers only requests from the Rux Emu site; Chrome asks once whether the
   site may reach this Mac, and Allow keeps it.
@@ -41,8 +45,8 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 
 ## Questions
 
-- Should the helper show a small icon in the menu bar, to see it is running
-  and quit it, or stay out of sight?
+- Keep ES-DE installed as the way to play without internet, since the site
+  needs it to load, or remove it once the site's library and Play work?
 
 ## Tasks
 

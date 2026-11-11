@@ -271,10 +271,6 @@
         {
           "pattern": "^complex_4627.*\\.bin$",
           "label": "flash BIOS"
-        },
-        {
-          "file": "xbox_hdd.qcow2",
-          "label": "hard disk image"
         }
       ]
     }

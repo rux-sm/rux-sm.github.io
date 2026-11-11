@@ -56,12 +56,9 @@ The setup kit, so any Mac is set up from the server in one step:
 - **`emu/tools/build-kit.mjs` downloads each emulator's Mac installer,** from
   the project's own releases on a yes, into the server's `emulators/mac/`,
   with each download's address in `emulators.json`.
-- **`Set up this Mac.command` on the server** installs ES-DE and each
-  emulator from those copies, copies the BIOS, keys and firmware, and writes
-  each one's settings so it reads games from the Mac's library folder and
-  keeps saves where Syncthing mirrors them.
-- **The Status page is the kit's checklist:** each emulator's Mac copy
-  and version on the server, and whether this Mac's settings point at it.
+- **Rux Emu Helper sets up a Mac from those copies,** as
+  `docs/plans/emu-helper.md` says, pointing each emulator at the Mac's
+  library folder and at the saves Syncthing mirrors.
 - **A PC follows the same way later,** from `emulators/windows/`, where
   nearly every emulator runs portably and needs no install.
 
@@ -83,5 +80,4 @@ The setup kit, so any Mac is set up from the server in one step:
   kept there.
 - [ ] Serve the games over HTTPS on Tailscale, and add Download to this Mac,
   Remove from this Mac and the mark of what this Mac holds.
-- [ ] Write `emu/tools/build-kit.mjs`, the download addresses, and
-  `Set up this Mac.command`, and show the kit on the Status page.
+- [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

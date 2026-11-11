@@ -31,8 +31,8 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
   site sends can open anything else.
 - **The collection is wherever it is found:** the T7 now, the home server's
   share later, and the helper tells the site which.
-- **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs ES-DE
-  and each emulator from the installers kept beside the games, copies the
+- **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each
+  emulator from the installers kept beside the games, copies the
   keys and firmware, and writes each emulator's settings so it reads games
   from and saves to the collection; the how-to stays the record of what it
   does.

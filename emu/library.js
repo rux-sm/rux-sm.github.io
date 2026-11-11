@@ -5,8 +5,8 @@
    box art, then a tile for each system with games, showing its console,
    app.js's consoleOf. A system's tile opens its games as a grid, at #<system>, with all
    of them, the favourites or the recently played; the breadcrumb, Back or B
-   returns home. A search finds every game from home, or a system's from
-   there. Covers show a game's name without its list's region and language
+   returns home. ?game=<system>/<title>, from Search or Problems, opens
+   that game's panel over its system. Covers show a game's name without its list's region and language
    tags, which the panel keeps.
 
    A game opens in the side panel, game-panel.js, with its cover and Play
@@ -32,7 +32,6 @@
   // A system's games: all of them, its favourites or its recently played.
   let showing = 'all';
 
-  const search = $('emu-search');
   const keyOf = g => `${g.system}/${g.title}`;
   // A game's name without the bracketed tags its list adds: region, languages, revision.
   const nameOf = g => g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title;
@@ -140,15 +139,13 @@
   function render() {
     const system = route();
     const name = system && R.systemName(system);
-    const q = search.value.trim().toLowerCase();
     $('emu-crumbs').hidden = !system;
     $('emu-crumb').textContent = name ?? '';
     $('emu-crumb').href = system ? `#${system}` : '#';
     $('emu-title').textContent = name ?? 'Library';
     document.title = system ? `${name} — Emu` : 'Emu';
-    search.placeholder = system ? `Search ${name}` : 'Search all games';
     $('emu-show-wrap').hidden = !system;
-    const home = !system && !q;
+    const home = !system;
     $('emu-home').hidden = !home;
     $('emu-grid').hidden = home;
     if (home) {
@@ -157,14 +154,14 @@
       $('emu-none').hidden = true;
       return;
     }
-    let list = games.filter(g => (!system || g.system === system) && (!q || g.title.toLowerCase().includes(q)));
-    if (system && showing === 'favourites') list = list.filter(g => g.notes?.favourite);
-    if (system && showing === 'recent') list = list.filter(playedAt).sort(byPlayed);
+    let list = games.filter(g => g.system === system);
+    if (showing === 'favourites') list = list.filter(g => g.notes?.favourite);
+    if (showing === 'recent') list = list.filter(playedAt).sort(byPlayed);
     $('emu-grid').replaceChildren(...list.map(coverItem));
     $('emu-sum').textContent = countOf(list.length);
     $('emu-none').hidden = list.length > 0;
-    $('emu-none').querySelector('p').textContent = showing === 'favourites' && !q ? 'No favourites yet. Mark one in its panel.'
-      : showing === 'recent' && !q ? 'Nothing played here yet.' : 'No games match.';
+    $('emu-none').querySelector('p').textContent = showing === 'favourites' ? 'No favourites yet. Mark one in its panel.'
+      : showing === 'recent' ? 'Nothing played here yet.' : 'No games here.';
   }
 
   // The switcher back on All games, as a system opens; content-switcher.js
@@ -316,7 +313,6 @@
   $('emu-panel-close').addEventListener('click', e => { e.stopImmediatePropagation(); closeGame(); }, true);
 
   window.addEventListener('hashchange', () => {
-    search.value = '';
     showAll();
     if (panelOpen()) R.gamePanel.close();
     render();
@@ -327,7 +323,6 @@
     backTo = null;
   });
   $('emu-show').addEventListener('rux:content-switcher-selected', e => { showing = e.detail.option.dataset.show; render(); });
-  search.addEventListener('input', render);
 
   async function load() {
     let rows, notes;
@@ -343,6 +338,15 @@
     $('emu-empty').hidden = games.length > 0;
     $('emu-library').hidden = games.length === 0;
     render();
+    // The game ?game= names, opened once and taken off the address.
+    const url = new URL(location.href);
+    const key = url.searchParams.get('game');
+    if (key) {
+      url.searchParams.delete('game');
+      history.replaceState(null, '', url);
+      const g = games.find(x => keyOf(x) === key);
+      if (g) openGame(g);
+    }
   }
 
   // The helper may be started or quit while the page is open.

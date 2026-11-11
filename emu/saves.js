@@ -71,15 +71,13 @@
   }
 
   function render() {
-    const q = $('emu-search').value.trim().toLowerCase();
-    const list = saves.filter(s => !q || s.name.toLowerCase().includes(q) || (s.note ?? '').toLowerCase().includes(q));
-    $('emu-sum').textContent = `${list.length} ${list.length === 1 ? 'save' : 'saves'}, ${R.size(list.reduce((a, s) => a + Number(s.size), 0))}`;
+    $('emu-sum').textContent = `${saves.length} ${saves.length === 1 ? 'save' : 'saves'}, ${R.size(saves.reduce((a, s) => a + Number(s.size), 0))}`;
     const out = $('emu-groups');
     out.replaceChildren();
     const order = Object.keys(R.SYSTEMS);
-    const systems = [...new Set(list.map(s => s.system))].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    const systems = [...new Set(saves.map(s => s.system))].sort((a, b) => order.indexOf(a) - order.indexOf(b));
     for (const system of systems) {
-      const rows = list.filter(s => s.system === system);
+      const rows = saves.filter(s => s.system === system);
       const box = el('div', 'rux--contained-list rux--layout--size-lg rux--contained-list--on-page');
       const head = el('div', 'rux--contained-list__header');
       head.append(el('h2', 'rux--contained-list__label', `${R.systemName(system)} (${rows.length})`));
@@ -213,11 +211,16 @@
       $('emu-unsorted').hidden = false;
     }
     $('emu-list').hidden = false;
-    const q = new URLSearchParams(location.search).get('q');
-    if (q) $('emu-search').value = q;
     render();
-    if (q) { const only = saves.filter(s => s.name === q); if (only.length === 1) openSave(only[0]); }
+    // The save ?save=<system>/<name> names, from a game's panel or Problems, opened once.
+    const url = new URL(location.href);
+    const key = url.searchParams.get('save');
+    if (key) {
+      url.searchParams.delete('save');
+      history.replaceState(null, '', url);
+      const s = saves.find(x => `${x.system}/${x.name}` === key);
+      if (s) openSave(s);
+    }
   }
-  $('emu-search').addEventListener('input', render);
   load();
 })();

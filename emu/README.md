@@ -11,12 +11,14 @@ The repository root's `AGENTS.md` is the policy, and
 
 `index.html` is the Library: the recently played and the favourites as
 shelves of box art from libretro's thumbnails, then a tile for each system,
-showing its console, that opens its games as a grid, with a search. `collection.html` is the
+showing its console, that opens its games as a grid. `collection.html` is the
 same games as a table, with a filter per system and per status. A game's
 status is its worst problem, as Problems lists them, or Good. A game opens
 in a side panel, `game-panel.js`, with its cover and Play on the Library,
 which asks Rux Emu Helper, then its region, version and format, each file's
 header and fingerprints, a Switch game's add-ons, its saves, and rux's notes.
+Search, in every page's header, `search.js`, finds any game by its title
+and opens it on the Library; ⌘K opens it too.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad
@@ -129,8 +131,9 @@ written here, because this repository is public.
 | `update.js` | Update, on the Status page |
 | `game-panel.js`, `helper.js`, `gamepad.js` | one game in the side panel; asking Rux Emu Helper to play and to read this Mac; a controller as moves |
 | `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
+| `search.js` | Search, in every page's header |
 | `app.css` | the filters, rows and the side panel's facts, under `emu-` |
-| `overrides.css` | the side panel hidden when closed and full width on a phone |
+| `overrides.css` | the side panel hidden when closed and full width on a phone; a search result as a row, not a link |
 
 The local preview on :8640 has no log-in and reads nothing; use the cloud
 preview on :8641 or the published site.

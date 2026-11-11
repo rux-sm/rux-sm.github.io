@@ -1,8 +1,8 @@
 /* ==========================================================================
    collection.js — the Collection page
    --------------------------------------------------------------------------
-   Every game the last scan found, by system then title, with search and a
-   filter per system and per status. A wide screen shows a table; a phone
+   Every game the last scan found, by system then title, with a filter per
+   system and per status; the header's Search, search.js, finds one by title. A wide screen shows a table; a phone
    shows the same games as a list. A game opens in the side panel,
    game-panel.js.
    ========================================================================== */
@@ -18,10 +18,8 @@
   let saves = [];
 
   function shown() {
-    const q = $('emu-search').value.trim().toLowerCase();
     const sys = $('emu-filter-system').value, status = $('emu-filter-status').value;
-    return games.filter(g => (!q || g.title.toLowerCase().includes(q))
-      && (!sys || g.system === sys) && (!status || g.status === status));
+    return games.filter(g => (!sys || g.system === sys) && (!status || g.status === status));
   }
 
   function render() {
@@ -77,15 +75,9 @@
       const n = games.filter(g => g.status === key).length;
       if (n) $('emu-filter-status').append(option(key, `${label} (${n})`));
     }
-    // A link from Problems names its game as ?q=, which fills the search.
-    const q = new URLSearchParams(location.search).get('q');
-    if (q) $('emu-search').value = q;
     render();
-    if (q) { const only = shown(); if (only.length === 1) openGame(only[0]); }
   }
 
-  for (const id of ['emu-search', 'emu-filter-system', 'emu-filter-status']) {
-    $(id).addEventListener(id === 'emu-search' ? 'input' : 'change', render);
-  }
+  for (const id of ['emu-filter-system', 'emu-filter-status']) $(id).addEventListener('change', render);
   load();
 })();

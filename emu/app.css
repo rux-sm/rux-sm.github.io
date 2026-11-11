@@ -8,10 +8,9 @@
   .emu-main { padding-inline-start: 18rem; }
 }
 
-/* The search and filters, one row that wraps. */
+/* The filters, side by side in one row that wraps. */
 .emu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
-.emu-filters > * { min-inline-size: 0; }
-.emu-filters__search { flex: 1 1 12rem; }
+.emu-filters > * { flex: none; min-inline-size: 0; }
 
 /* A table on a wide screen, the same games as a list on a phone. */
 .emu-narrow { display: none; }

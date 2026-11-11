@@ -57,6 +57,7 @@
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="emu-search-open" data-rux-open="emu-search-modal" aria-label="Search games" title="Search games (⌘K)"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
   </div>
   <!-- ACCOUNT:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -161,11 +162,6 @@
 
         <div class="rux--stack-vertical rux--stack-scale-3" id="emu-list" hidden>
           <div class="emu-filters">
-            <div class="rux--search rux--layout--size-md emu-filters__search" role="search">
-              <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
-              <label class="rux--label" for="emu-search">Search</label>
-              <input id="emu-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search titles" autocomplete="off">
-            </div>
             <div class="rux--form-item">
               <div class="rux--select rux--select--inline rux--layout--size-md">
                 <label class="rux--label rux--visually-hidden" for="emu-filter-system">System</label>
@@ -218,6 +214,29 @@
     </div>
   </div>
 </main>
+<!-- Search, from the header's button: any game by its title, from search.js. -->
+<div class="rux--layer-one rux--modal" id="emu-search-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="emu-search-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="emu-search-h">Search games</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content emu-search">
+      <div class="rux--search rux--layout--size-lg" role="search" aria-labelledby="emu-search-h">
+        <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+        <label class="rux--label rux--visually-hidden" for="emu-search-input">Search games</label>
+        <input id="emu-search-input" class="rux--search-input" type="text" role="searchbox" placeholder="Title" autocomplete="off" autofocus>
+        <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg></button>
+      </div>
+      <p class="rux--type-helper-text-01 emu-row__sub" id="emu-search-note" role="status" hidden></p>
+      <div class="rux--contained-list rux--contained-list--inset-rulers"><ul role="list" aria-label="Games found" id="emu-search-list" hidden></ul></div>
+    </div>
+  </div>
+</div>
 
 <!-- The game opened, from collection.js: Carbon's side panel over the page.
      overrides.css hides it with [hidden] and lets it fill a phone. -->
@@ -250,6 +269,7 @@
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
+<script src="search.js"></script>
 <script src="game-panel.js"></script>
 <script src="collection.js"></script>
 </body>

@@ -46,11 +46,16 @@
     ]));
     const own = saves.filter(s => s.system === g.system && s.game === g.title);
     if (own.length) {
-      body.append(el('h3', 'rux--type-heading-02', 'Saves'), facts(own.map(s =>
-        [s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save', `Last saved ${R.date(s.saved_at)}${s.note ? ` · ${s.note}` : ''}`])));
-      const a = el('a', 'rux--link', 'Open in Saves');
-      a.href = `saves.html?q=${encodeURIComponent(g.title)}`;
-      body.append(a);
+      // Each save opens in Saves.
+      const ul = el('ul', 'rux--list--unordered');
+      for (const s of own) {
+        const li = el('li', 'rux--list__item');
+        const a = el('a', 'rux--link', `${s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save'}, last saved ${R.date(s.saved_at)}${s.note ? ` · ${s.note}` : ''}`);
+        a.href = `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}`;
+        li.append(a);
+        ul.append(li);
+      }
+      body.append(el('h3', 'rux--type-heading-02', 'Saves'), ul);
     }
     body.append(notesForm(g, onSaved));
     for (const x of g.extras ?? []) {

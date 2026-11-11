@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Every game with a problem, under one heading per kind of problem, worst
    kind first; a game with two problems is under both. Each row says what is
-   wrong and opens the game in Collection. Two kinds belong to no game: a
+   wrong and opens the game in the Library. Two kinds belong to no game: a
    file an emulator needs that the drive lacks, which opens Emulators, and a
    save whose game is not on the drive, which opens Saves.
    ========================================================================== */
@@ -26,7 +26,7 @@
     games = R.withNotes(games, notes);
 
     const groups = new Map(Object.keys(R.STATUS).filter(k => k !== 'good').map(k => [k, []]));
-    for (const g of games) for (const [kind, words] of R.problemsOf(g)) groups.get(kind)?.push({ title: g.title, system: g.system, words, href: `collection.html?q=${encodeURIComponent(g.title)}` });
+    for (const g of games) for (const [kind, words] of R.problemsOf(g)) groups.get(kind)?.push({ title: g.title, system: g.system, words, href: `./?game=${encodeURIComponent(`${g.system}/${g.title}`)}#${g.system}` });
     const withProblems = new Set([...groups.values()].flat().map(x => `${x.system}/${x.title}`));
     // A system with games, or the Xbox's files, whose emulator lacks a file it needs.
     const systems = new Set(games.map(g => g.system));
@@ -39,7 +39,7 @@
       }
     }
     for (const s of saves.filter(x => !x.game)) {
-      groups.get('orphan').push({ title: s.name, system: s.system, words: 'No game on the drive by this name', href: `saves.html?q=${encodeURIComponent(s.name)}` });
+      groups.get('orphan').push({ title: s.name, system: s.system, words: 'No game on the drive by this name', href: `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}` });
     }
     $('emu-sum').textContent = withProblems.size
       ? `${withProblems.size} of ${games.length} games need a look.`

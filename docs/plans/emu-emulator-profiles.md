@@ -18,12 +18,13 @@ the home server `docs/plans/emu-server.md`.
 
 One rule for every emulator:
 
-- **Every kind of file an emulator writes has one of four classes,** named
+- **Every kind of file an emulator writes has one of five classes,** named
   in `emulators.json`: shared, which is saves, memory cards and save states,
   carried both ways; collected, which is screenshots, carried from the Mac to
   the collection; provided, which is BIOS, keys and firmware, carried from
-  the collection to the Mac; and local, which is settings, caches, logs and
-  recent lists, never carried.
+  the collection to the Mac; the Mac's own, which is settings, controls and
+  per-game settings, backed up to the collection; and local, which is caches,
+  logs and recent lists, never carried.
 - **An emulator keeps its files in its own folder on the Mac, and the helper
   carries them to and from the collection,** because no setting moves every
   file: Dolphin's and Azahar's save states, Mesen 2's firmware and Cemu's
@@ -51,6 +52,17 @@ One rule for every emulator:
   the default is beside the game, as mGBA's, ares's and melonDS's is; its own
   updater off; DuckStation's one card per game and PCSX2's folder cards; and
   xemu's welcome screen off. Every other setting is the Mac's own.
+- **Each Mac's settings are backed up after a session that changed them,**
+  into `settings/<mac>/<emulator>/` in the collection with the last five
+  copies kept, and the profile puts any of them back on that Mac.
+- **One set of settings per emulator can be kept as preferred,** from the
+  profile, into `settings/preferred/<emulator>/`; a new Mac starts from it,
+  and any Mac takes it only when asked, with the settings Emu manages
+  written over it.
+- **A settings file is stored with the Mac's home folder written as `~`,**
+  so a set kept on one Mac opens on another, and a file or line that holds a
+  log-in, as PCSX2's `secrets.ini` and Dolphin's achievements token do, is
+  left out.
 - **The collection is found, never named in an emulator's setting,** so the
   drive mounting under another name, or the home server replacing it, changes
   nothing on a Mac.
@@ -79,8 +91,9 @@ The profile, the same for every emulator, in this order:
   it.
 - **Files:** each kind it writes under its class, where it is on the Mac,
   where it is in the collection, and whether this Mac is in step.
-- **Settings:** each one Emu manages and its value, and where the settings
-  file is.
+- **Settings:** each one Emu manages and its value, where the settings
+  file is, this Mac's backups to put back, and the preferred set to keep or
+  take.
 - **Worth knowing:** one or two lines, such as that it writes a save only
   when the game stops.
 
@@ -127,8 +140,6 @@ What each emulator's source and the installers on the drive say:
 
 ## Questions
 
-- Are controls and graphics each Mac's own, as above, or the same on every
-  Mac?
 - Does Cemu stay on a development build, since its last release is Intel
   only?
 
@@ -142,6 +153,8 @@ What each emulator's source and the installers on the drive say:
   feeds during Update.
 - [ ] Make the helper carry: fingerprints, the five kept copies, both kept
   when both changed, and the session around Play.
+- [ ] Make the helper back up each Mac's settings, put a backup back, and
+  keep and take the preferred set.
 - [ ] Draw the Emulators page as one profile per emulator, link Status to
   it, and say on a game's panel whether its saves are in step.
 - [ ] Move the MacBook Pro over: each emulator back to its own folders with

@@ -193,7 +193,7 @@ Backups, three copies of everything small:
 
 - **The drive** holds the collection's copy of the saves.
 - **Supabase** holds the offsite copy, in a private `emu-backups` bucket
-  only the owner reads: the scan packs `saves/`, `bios/` and the keys into
+  only the owner reads: the scan packs `saves/`, `settings/`, `bios/` and the keys into
   one dated zip on the drive, and Update uploads it with the scan, signed in
   as rux.
 - **Each Mac** keeps a third copy: `emu/tools/backup-saves.mjs` copies the

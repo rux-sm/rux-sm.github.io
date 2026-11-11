@@ -38,8 +38,6 @@
   const fileKey = f => `${f.from}/${f.rel ?? f.name}|${Number(f.size)}|${f.saved}`;
 
   const sha1Of = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-1', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
-  // Supabase takes a narrower set of characters in a file's path than a file name may hold.
-  const safe = p => p.split('/').map(part => part.replace(/[^\w !\-.*'()&$@=;:+,?]/g, '_')).join('/');
 
   // A game from the scan as its row: the scan's own names, in the table's.
   const rowOf = (g, scanned) => ({
@@ -193,9 +191,8 @@
         const uploads = [];
         const files = [];
         for (const f of pending.mac.files) {
-          const stored = safe(f.stored);
-          uploads.push({ stored, blob: new Blob([await R.helper.macSave(f.stored)]) });
-          files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
+          uploads.push({ stored: f.stored, blob: new Blob([await R.helper.macSave(f.stored)]) });
+          files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored: f.stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
         }
         await R.data.saveMacSaves(pending.mac, uploads, R.saveRules.group(files, games, emulators.systems));
       }

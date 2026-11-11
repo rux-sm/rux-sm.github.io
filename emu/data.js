@@ -11,6 +11,10 @@
   const client = window.Rux?.account?.client ?? null;
   const fail = error => { if (error) throw error; };
   const BUCKET = 'emu-backups';
+  // A path in the bucket: Supabase takes a narrower set of characters than a
+  // Mac's or a file's name may hold, such as the curly apostrophe macOS puts
+  // in a Mac's name.
+  const inBucket = p => p.split('/').map(part => part.replace(/[^\w !\-.*'()&$@=;:+,?]/g, '_')).join('/');
 
   // Supabase answers at most 1000 rows a request, so a long read is paged.
   const all = async make => {
@@ -142,12 +146,12 @@
       }, { onConflict: 'name' })).error);
       const folder = `macs/${mac}/${made.slice(0, 10)}`;
       for (const f of files) {
-        fail((await client.storage.from(BUCKET).upload(`${folder}/${f.stored}`, f.blob,
+        fail((await client.storage.from(BUCKET).upload(inBucket(`${folder}/${f.stored}`), f.blob,
           { upsert: true, contentType: 'application/octet-stream' })).error);
       }
       const rows = saves.map(s => ({
         system: s.system, name: s.name, kind: s.kind, location: mac, game: s.game,
-        files: s.files.map(f => ({ ...f, object: `${folder}/${f.stored}` })),
+        files: s.files.map(f => ({ ...f, object: inBucket(`${folder}/${f.stored}`) })),
         size: s.size, created_at: s.created, saved_at: s.saved, backed_up_at: made, scanned_at: made,
       }));
       await inBatches(rows, batch => client.from('emu_saves').upsert(batch, { onConflict: 'system,name,kind,location' }));
@@ -156,11 +160,11 @@
         fail((await client.from('emu_saves').delete()
           .eq('system', k.system).eq('name', k.name).eq('kind', k.kind).eq('location', mac)).error);
       }
-      const { data: dates, error } = await client.storage.from(BUCKET).list(`macs/${mac}`, { limit: 1000 });
+      const { data: dates, error } = await client.storage.from(BUCKET).list(inBucket(`macs/${mac}`), { limit: 1000 });
       fail(error);
       const kept = keep(dates.map(d => d.name));
       for (const d of dates.filter(x => !kept.has(x.name))) {
-        const objects = await allObjects(`macs/${mac}/${d.name}`);
+        const objects = await allObjects(inBucket(`macs/${mac}/${d.name}`));
         for (let i = 0; i < objects.length; i += 100) fail((await client.storage.from(BUCKET).remove(objects.slice(i, i + 100))).error);
       }
     },

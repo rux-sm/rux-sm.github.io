@@ -21,9 +21,11 @@ The home server, so the drive is not carried between Macs:
 - **rux's old gaming PC becomes the collection's home,** holding the games,
   BIOS, keys, firmware, installers and backups; it only stores, and every
   game is played on another machine.
-- **It starts on rux's spare SSD alone,** and a second drive of at least its
-  size is attached later to mirror it, which TrueNAS does without starting
-  over; until then the T7 is its copy, and Supabase the saves'.
+- **The collection starts on rux's spare SSD alone,** and a second drive of
+  at least its size is attached later to mirror it, which TrueNAS does without
+  starting over; until then the T7 is its copy, and Supabase the saves'.
+- **TrueNAS runs from a small drive of its own,** 16 GB or more, since it
+  takes its whole boot drive and keeps no files there.
 - **It runs TrueNAS Community Edition,** free storage software made for a
   mirrored pair, which shares the collection over the network to Macs and,
   later, a PC.

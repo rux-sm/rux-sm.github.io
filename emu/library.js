@@ -5,7 +5,9 @@
    search across them all. A game opens in the side panel, game-panel.js,
    with its cover and Play above what the scan read. Play asks Rux Emu
    Helper on this Mac, helper.js, and shows only on a Mac; when the helper
-   is not running there, the panel offers to start it.
+   is not running there, the panel offers to start it. A controller,
+   gamepad.js, or the arrow keys move between covers, a shelf up or down
+   landing on the cover nearest above or below; A opens and plays, B closes.
    ========================================================================== */
 (() => {
   'use strict';
@@ -106,7 +108,68 @@
     return area;
   }
 
-  const openGame = g => R.gamePanel.open(g, { saves, onSaved: render, top: [cover(g, 'emu-panel-art'), playArea(g)] });
+  // The cover a game was opened from, to come back to when its panel closes.
+  let opener = null;
+  const openGame = g => {
+    if (document.activeElement?.classList.contains('emu-cover')) opener = document.activeElement;
+    R.gamePanel.open(g, { saves, onSaved: render, top: [cover(g, 'emu-panel-art'), playArea(g)] });
+    $('emu-panel-body').querySelector('.rux--btn')?.focus({ focusVisible: true });
+  };
+
+  // MOVING WITH A CONTROLLER OR THE ARROW KEYS. Scrolling into view is
+  // instant: Carbon's motion has no answer for following a focus.
+  // A cover is brought fully inside its shelf, and the shelf inside the window,
+  // with room for the focus ring; the panel scrolls its own items into view.
+  const show = node => {
+    node.focus({ focusVisible: true, preventScroll: true });
+    const shelf = node.closest('.emu-shelf');
+    if (!shelf) { node.scrollIntoView({ block: 'nearest' }); return; }
+    const n = node.getBoundingClientRect(), s = shelf.getBoundingClientRect(), room = 8;
+    if (n.right > s.right - room) shelf.scrollLeft += n.right - s.right + room;
+    else if (n.left < s.left + room) shelf.scrollLeft -= s.left - n.left + room;
+    const top = node.closest('section').getBoundingClientRect();
+    if (top.top < room) window.scrollBy(0, top.top - room);
+    else if (n.bottom > innerHeight - room) window.scrollBy(0, n.bottom - innerHeight + room);
+  };
+  const panelOpen = () => !$('emu-panel').hidden;
+  function move(way) {
+    const here = document.activeElement;
+    if (panelOpen()) {
+      const items = [...$('emu-panel').querySelectorAll('button, input, textarea, a[href]')].filter(n => !n.disabled && n.offsetParent);
+      const i = items.indexOf(here);
+      const next = items[Math.min(items.length - 1, Math.max(0, i + (way === 'up' || way === 'left' ? -1 : 1)))];
+      if (next) show(next);
+      return;
+    }
+    const shelves = [...document.querySelectorAll('.emu-shelf')];
+    if (!here?.classList.contains('emu-cover')) { const first = shelves[0]?.querySelector('.emu-cover'); if (first) show(first); return; }
+    const shelf = here.closest('.emu-shelf');
+    if (way === 'left' || way === 'right') {
+      const li = here.closest('li')[way === 'left' ? 'previousElementSibling' : 'nextElementSibling'];
+      if (li) show(li.querySelector('.emu-cover'));
+      return;
+    }
+    const to = shelves[shelves.indexOf(shelf) + (way === 'up' ? -1 : 1)];
+    if (!to) return;
+    const x = here.getBoundingClientRect().left;
+    const nearest = [...to.querySelectorAll('.emu-cover')]
+      .reduce((best, b) => (Math.abs(b.getBoundingClientRect().left - x) < Math.abs(best.getBoundingClientRect().left - x) ? b : best));
+    show(nearest);
+  }
+  function back() {
+    if (!panelOpen()) return;
+    R.gamePanel.close();
+    if (opener) show(opener);
+  }
+  R.onPad(m => {
+    if (m === 'a') { const here = document.activeElement; if (here && here !== document.body) here.click(); else move('down'); }
+    else if (m === 'b') back();
+    else move(m);
+  });
+  document.addEventListener('keydown', e => {
+    const way = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' }[e.key];
+    if (way && document.activeElement?.classList.contains('emu-cover')) { e.preventDefault(); move(way); }
+  });
 
   async function load() {
     let rows, notes;

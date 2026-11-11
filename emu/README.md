@@ -137,7 +137,7 @@ written here, because this repository is public.
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `update.js` | Update, on the Status page |
-| `game-panel.js`, `helper.js` | one game in the side panel; asking Rux Emu Helper what it sees, and to play |
+| `game-panel.js`, `helper.js`, `gamepad.js` | one game in the side panel; asking Rux Emu Helper to play; a controller as moves |
 | `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |

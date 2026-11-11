@@ -42,6 +42,5 @@ Emu is `docs/plans/emu-app.md`.
 
 ## Tasks
 
-- [ ] Move around the library with a controller.
 - [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
   Status, and from the MacBook Pro.

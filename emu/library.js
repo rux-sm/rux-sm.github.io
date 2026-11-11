@@ -7,7 +7,8 @@
    Helper on this Mac, helper.js, and shows only on a Mac; when the helper
    is not running there, the panel offers to start it. A controller,
    gamepad.js, or the arrow keys move between covers, a shelf up or down
-   landing on the cover nearest above or below; A opens and plays, B closes.
+   landing on the cover nearest above or below; A opens and plays, B closes,
+   as each controller labels them.
    ========================================================================== */
 (() => {
   'use strict';

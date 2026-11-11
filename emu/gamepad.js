@@ -3,10 +3,13 @@
    --------------------------------------------------------------------------
    Chrome's Gamepad API read once a frame while a controller is connected,
    and told as moves: up, down, left and right from the d-pad or the left
-   stick, `a` from the bottom face button and `b` from the right one, by
-   position, as the standard mapping numbers them. A held direction repeats
-   after 400ms, then every 120ms; a face button counts once per press. Moves
-   are told only while the page has focus. `R.onPad(fn)` hears them.
+   stick, and `a` and `b` from the face buttons as they are labelled: on a
+   Nintendo layout, a Pro Controller or a controller in its mode, A is the
+   right button and B the bottom one; on any other, A is the bottom one.
+   Chrome names a controller by its maker's number, Nintendo's 057e. A held
+   direction repeats after 400ms, then every 120ms; a face button counts once
+   per press. Moves are told only while the page has focus. `R.onPad(fn)`
+   hears them.
    ========================================================================== */
 (() => {
   'use strict';
@@ -23,7 +26,7 @@
     const state = {
       up: button(12) || axis(1) < -0.5, down: button(13) || axis(1) > 0.5,
       left: button(14) || axis(0) < -0.5, right: button(15) || axis(0) > 0.5,
-      a: button(0), b: button(1),
+      a: button(nintendo(pad) ? 1 : 0), b: button(nintendo(pad) ? 0 : 1),
     };
     for (const [move, on] of Object.entries(state)) {
       if (!on) { delete held[move]; continue; }
@@ -33,6 +36,7 @@
     }
     frame = requestAnimationFrame(read);
   }
+  const nintendo = pad => /vendor: ?057e/i.test(pad.id);
   const tell = move => { if (document.hasFocus()) for (const fn of listeners) fn(move); };
   const listen = () => { if (!frame) frame = requestAnimationFrame(read); };
   window.addEventListener('gamepadconnected', listen);

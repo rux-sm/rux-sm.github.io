@@ -29,6 +29,9 @@ Emu is `docs/plans/emu-app.md`.
   the collection. Elsewhere, such as the phone, the page is the library to
   browse, with no Play button.
 - **A Switch game shows a plain tile with its name** until its art is settled.
+- **ES-DE goes once the library and Play work,** since without internet a
+  game is opened from its own emulator, whose settings already save to the
+  collection.
 - **ares opens N64 games without its Transfer Pak prompt,** by the
   `NoFilePrompt` setting the how-to sets, so Play goes straight to the game.
 
@@ -44,3 +47,5 @@ Emu is `docs/plans/emu-app.md`.
 - [ ] Add Play to the game's side panel, through the helper.
 - [ ] Move around the library with a controller.
 - [ ] Add the ares setting to `emu/docs/emulator-setup.md`.
+- [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
+  Status, and from the MacBook Pro.

@@ -45,8 +45,7 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 
 ## Questions
 
-- Keep ES-DE installed as the way to play without internet, since the site
-  needs it to load, or remove it once the site's library and Play work?
+None open.
 
 ## Tasks
 

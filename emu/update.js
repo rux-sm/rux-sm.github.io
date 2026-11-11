@@ -1,19 +1,20 @@
 /* ==========================================================================
    update.js — Update, on the Status page
    --------------------------------------------------------------------------
-   Scans the drive in Chrome with scan.js, through a folder rux picks once,
-   the drive's emulation folder, and reads each Mac's report that Check this
-   Mac.command wrote to its `macs/` folder. It says what changed since the
-   last save, or that nothing is, and saves on a yes: every game and save, the BIOS list and the
-   drive's row, the backup zip to Supabase, and each Mac's report with any
-   save it keeps itself.
+   Scans the drive with scan.js, read and written through Rux Emu Helper,
+   drive.js, so it runs on a Mac with the helper running and the drive
+   plugged in, and reads how this Mac stands and each save it keeps itself
+   from the helper too. It says what changed since the last save, or that
+   nothing is, and saves on a yes: every game and save, the BIOS list and the
+   drive's row, the backup zip to Supabase, and this Mac's report with any
+   save it keeps itself, each uploaded file by file.
 
    It writes back to the drive what the Mac scan writes: the fingerprints,
    so the next scan hashes only what changed, the scan file the organize
    tool reads, and the backup zip, the newest five kept.
 
-   It runs when Status opens if Chrome already lets it read the folder, and
-   again on a click; nothing is saved until Save.
+   It runs when Status opens if the helper has the drive, and again on a
+   click; nothing is saved until Save.
    ========================================================================== */
 (() => {
   'use strict';
@@ -28,48 +29,15 @@
   const said = text => { $('emu-update-status').textContent = text; };
   const gb = n => `${(n / 1e9).toFixed(1)} GB`;
 
-  // The drive's folder as Chrome gave it, kept in this browser so it is picked once;
-  // the store keeps the name it had when the app was Roms, so the choice is not lost.
-  const handles = (mode, act) => new Promise((resolve, reject) => {
-    const open = indexedDB.open('roms', 1);
-    open.onupgradeneeded = () => open.result.createObjectStore('handles');
-    open.onerror = () => reject(open.error);
-    open.onsuccess = () => {
-      const tx = open.result.transaction('handles', mode);
-      const req = act(tx.objectStore('handles'));
-      tx.oncomplete = () => resolve(req.result);
-      tx.onerror = () => reject(tx.error);
-    };
-  });
+  // A value with its keys in order, so a saved JSON column compares with a fresh one.
+  const canon = v => Array.isArray(v) ? v.map(canon)
+    : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
+  // How a Mac stands, its emulators by name, since the helper lists them in no set order.
+  const standing = m => JSON.stringify(canon({ macos: m.macos ?? null, chip: m.chip ?? null, frontend: m.frontend ?? null,
+    emulators: [...(m.emulators ?? [])].sort((a, b) => a.emulator.localeCompare(b.emulator)) }));
+  const fileKey = f => `${f.from}/${f.rel ?? f.name}|${Number(f.size)}|${f.saved}`;
 
-  // The folder, asked for only on a click, since Chrome asks only then.
-  async function folder(click) {
-    let top = await handles('readonly', store => store.get('drive')).catch(() => null);
-    if (top) {
-      const state = await top.queryPermission({ mode: 'readwrite' });
-      if (state === 'granted') return top;
-      if (!click) return null;
-      if (await top.requestPermission({ mode: 'readwrite' }) === 'granted') return top;
-    }
-    if (!click) return null;
-    said('Choose the emulation folder on the drive.');
-    top = await window.showDirectoryPicker({ id: 'emu-drive', mode: 'readwrite' });
-    try { await top.getDirectoryHandle('roms'); }
-    catch { said('That folder holds no roms folder. Choose the drive\'s emulation folder.'); return null; }
-    await handles('readwrite', store => store.put(top, 'drive'));
-    return top;
-  }
-
-  const write = async (top, rel, data) => {
-    const parts = rel.split('/');
-    let dir = top;
-    for (const p of parts.slice(0, -1)) dir = await dir.getDirectoryHandle(p, { create: true });
-    const w = await (await dir.getFileHandle(parts.at(-1), { create: true })).createWritable();
-    await w.write(data);
-    await w.close();
-  };
-
-  const sha1Of = async bytes => { const h = await window.hashwasm.createSHA1(); h.init(); h.update(bytes); return h.digest('hex'); };
+  const sha1Of = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-1', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
   // Supabase takes a narrower set of characters in a file's path than a file name may hold.
   const safe = p => p.split('/').map(part => part.replace(/[^\w !\-.*'()&$@=;:+,?]/g, '_')).join('/');
 
@@ -93,20 +61,21 @@
 
   async function run(click) {
     if (running) return;
-    if (!window.showDirectoryPicker) { said('Update needs Chrome, which can read a folder you choose.'); return; }
     running = true;
     $('emu-update').disabled = true;
     $('emu-check').hidden = true;
     pending = null;
     try {
-      const top = await folder(click);
-      if (!top) {
-        if (!click) said('Update reads the drive. Plug it in and click Update.');
+      const helper = R.helper.onMac ? await R.helper.status() : null;
+      if (!helper?.collection) {
+        said(!R.helper.onMac ? 'Update runs on a Mac, through Rux Emu Helper.'
+          : !helper ? (click ? 'Rux Emu Helper is not running on this Mac. Start it below, then Update.' : '')
+          : 'Update reads the drive. Plug it in and click Update.');
         return;
       }
       said('Reading the drive…');
       let last = 0;
-      const drive = R.drive.driveOf(top, {
+      const drive = R.drive.driveOf({
         progress(read, all) {
           if (Date.now() - last < 500) return;
           last = Date.now();
@@ -133,27 +102,27 @@
       }
 
       said('Writing the scan to the drive…');
-      await write(top, 'scans/fingerprints.json', JSON.stringify(cache));
-      await write(top, `scans/scan_${date}.json`, JSON.stringify(scan, null, 1));
+      await drive.write('scans/fingerprints.json', JSON.stringify(cache));
+      await drive.write(`scans/scan_${date}.json`, JSON.stringify(scan, null, 1));
       if (zip) {
-        await write(top, `backups/${zip.name}`, zip);
-        const backups = await top.getDirectoryHandle('backups');
+        await drive.write(`backups/${zip.name}`, zip);
         const old = (await drive.list('backups')).map(x => x.name).filter(n => /^emu-backup_.*\.zip$/.test(n)).sort().slice(0, -5);
-        for (const n of old) await backups.removeEntry(n);
+        for (const n of old) await drive.remove(`backups/${n}`);
       }
 
-      // Each Mac's report newer than the one saved.
+      // This Mac, when how it stands or a save it keeps itself differs from the last saved.
+      said('Reading this Mac…');
       const games = scan.games;
-      const [saved, savedSaves, savedMacs, savedDrive] = await Promise.all([R.data.gameKeys(), R.data.saveKeys(), R.data.macs(), R.data.drive()]);
-      const macs = [];
-      for (const it of await drive.list('macs')) {
-        if (!it.dir) continue;
-        const text = await drive.text(`macs/${it.name}/report.json`, 'utf8');
-        if (!text) continue;
-        const m = JSON.parse(text);
-        const before = savedMacs.find(x => x.name === m.mac);
-        if (before && new Date(before.gathered_at) >= new Date(m.made)) continue;
-        macs.push({ dir: `macs/${it.name}`, m });
+      const [saved, savedSaves, savedMacs, savedDrive, report, macFiles] = await Promise.all([
+        R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves()]);
+      let mac = null;
+      if (report) {
+        const before = savedMacs.find(x => x.name === report.mac);
+        const had = new Set(savedSaves.filter(x => x.location === report.mac).flatMap(x => x.files ?? []).map(fileKey));
+        const has = new Set(macFiles.map(fileKey));
+        if (!before || standing(before) !== standing(report) || had.size !== has.size || [...has].some(k => !had.has(k))) {
+          mac = { ...report, files: macFiles };
+        }
       }
 
       const before = new Map(saved.map(g => [key(g), g]));
@@ -164,8 +133,8 @@
       const savesNow = new Set(scan.saves.map(saveKey));
       const savesGone = savedSaves.filter(s => s.location === DRIVE && !savesNow.has(saveKey(s)));
       const savesNew = scan.saves.filter(s => !savedSaves.some(x => x.location === DRIVE && saveKey(x) === saveKey(s)));
-      // Nothing to save: the same games, saves and backup, and no Mac's new report.
-      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !macs.length
+      // Nothing to save: the same games, saves and backup, and this Mac as it was.
+      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac
         && (scan.backup?.sha1 ?? null) === (savedDrive?.backup?.sha1 ?? null)) {
         said(`Nothing new since the last save. Scanned ${R.when(scan.scanned)}.`);
         return;
@@ -187,8 +156,7 @@
           renames: scan.renames,
         },
         zip,
-        macs,
-        drive,
+        mac,
       };
       const counts = [
         `${games.length} games`,
@@ -198,13 +166,12 @@
       ].filter(Boolean).join(', ');
       $('emu-check-text').textContent = [
         `${counts}. ${scan.saves.length} saves.`,
-        macs.length ? `New from ${macs.map(x => x.m.mac).join(' and ')}.` : '',
+        mac ? `${mac.mac} has changed${mac.files.length ? `, with ${mac.files.length} saves it keeps itself` : ''}.` : '',
         zip ? `Saving also uploads the backup, ${(zip.size / 1e6).toFixed(1)} MB.` : '',
       ].filter(Boolean).join(' ');
       said(`Scanned ${R.when(scan.scanned)}.`);
       $('emu-check').hidden = false;
     } catch (error) {
-      if (error?.name === 'AbortError') { said(''); return; }
       console.error(error);
       said(error?.message ? `The scan stopped: ${error.message}` : 'The scan stopped. Try again.');
     } finally {
@@ -220,18 +187,17 @@
       said('Saving…');
       await R.data.saveScan(pending.scan);
       if (pending.zip) await R.data.uploadBackup(pending.zip);
-      // Each Mac's report, and any save it keeps itself, matched to its game.
-      const [games, emulators] = await Promise.all([R.data.games(), R.emulators()]);
-      for (const { dir, m } of pending.macs) {
+      // This Mac's report, and any save it keeps itself, matched to its game.
+      if (pending.mac) {
+        const [games, emulators] = await Promise.all([R.data.games(), R.emulators()]);
         const uploads = [];
         const files = [];
-        for (const f of m.files) {
+        for (const f of pending.mac.files) {
           const stored = safe(f.stored);
-          const bytes = await pending.drive.read(`${dir}/${f.stored}`, 0, f.size);
-          uploads.push({ stored, blob: new Blob([bytes]) });
+          uploads.push({ stored, blob: new Blob([await R.helper.macSave(f.stored)]) });
           files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
         }
-        await R.data.saveMacSaves(m, uploads, R.saveRules.group(files, games, emulators.systems));
+        await R.data.saveMacSaves(pending.mac, uploads, R.saveRules.group(files, games, emulators.systems));
       }
       said(`Saved ${R.when(new Date().toISOString())}.`);
       $('emu-check').hidden = true;

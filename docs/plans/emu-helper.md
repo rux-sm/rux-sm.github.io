@@ -39,9 +39,8 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 - **The helper is kept beside the games and built by
   `emu/tools/build-helper.mjs`,** so the T7 or the server always carries the
   version that matches the site.
-- **It replaces the test shortcut, Rux Emu Open, and in time
-  `Check this Mac.command` and the folder Update asks for,** since the
-  helper reads the Mac and the collection itself.
+- **It replaces the test shortcut, Rux Emu Open,** since the site starts
+  games through it.
 
 ## Questions
 
@@ -50,7 +49,5 @@ None open.
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Run Update through the helper, with no folder to choose, and retire
-  `Check this Mac.command`.
 - [ ] Add Set up this Mac, installing and pointing every emulator.
 - [ ] Read the collection from the home server's share once it is built.

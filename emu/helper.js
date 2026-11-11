@@ -4,16 +4,26 @@
    The menu bar app on the Mac, emu/helper/main.swift, answers this site on
    127.0.0.1:47647: `status` is the collection it found and each system it
    can play, or null when no helper answers; `mac` is how this Mac stands,
-   read now, in the shape of check-mac.mjs's report, or null; and `play`
-   opens one game. A game's file is the one its emulator opens: a multi-disc
-   game's playlist, a disc's cue sheet, a Wii U game's own file, else its
-   only file.
-   `start` opens the helper through the rux-emu:// link it registers.
+   read now, or null; `macSaves` each save this Mac keeps itself and
+   `macSave` one's bytes; and `play` opens one game. `call` is any of its
+   calls, drive.js's too: a missing thing is null, and any other refusal,
+   or one where `must` is set, an error saying why. A game's file is the one
+   its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
+   Wii U game's own file, else its only file. `start` opens the helper
+   through the rux-emu:// link it registers.
    ========================================================================== */
 (() => {
   'use strict';
 
   const BASE = 'http://127.0.0.1:47647';
+
+  async function call(path, init = {}, must = false) {
+    const r = await fetch(`${BASE}${path}`, init);
+    if (r.ok) return r;
+    if (r.status === 404 && !must) return null;
+    const out = await r.json().catch(() => ({}));
+    throw new Error(out.error ?? 'Rux Emu Helper refused.');
+  }
 
   async function status() {
     try {
@@ -29,6 +39,9 @@
       return r.ok ? await r.json() : null;
     } catch { return null; }
   }
+
+  const macSaves = async () => (await call('/mac/saves', {}, true)).json();
+  const macSave = async stored => new Uint8Array(await (await call(`/mac/save?stored=${encodeURIComponent(stored)}`, {}, true)).arrayBuffer());
 
   const fileOf = game => {
     const names = (game.files ?? []).map(f => f.name.replace(`${game.system}/`, ''));
@@ -50,5 +63,5 @@
   const onMac = /Mac/.test(navigator.platform) && navigator.maxTouchPoints < 2;
   const start = () => { location.href = 'rux-emu://open'; };
 
-  window.Emu = Object.assign(window.Emu || {}, { helper: { status, mac, play, fileOf, onMac, start } });
+  window.Emu = Object.assign(window.Emu || {}, { helper: { call, status, mac, macSaves, macSave, play, fileOf, onMac, start } });
 })();

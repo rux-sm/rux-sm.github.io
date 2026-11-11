@@ -58,6 +58,10 @@ try {
 `);
   execFileSync('codesign', ['--force', '--sign', '-', app]);
 
+  // What Check this Mac.command was, which the helper replaces: the command,
+  // its tool and copy of emulators.json, and the reports it wrote.
+  for (const old of ['Check this Mac.command', 'tools', 'macs']) fs.rmSync(path.join(root, old), { recursive: true, force: true });
+
   const dest = path.join(root, `${name}.app`);
   fs.rmSync(dest, { recursive: true, force: true });
   execFileSync('ditto', [app, dest]);

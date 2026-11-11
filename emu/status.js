@@ -5,8 +5,8 @@
    a system's emulator needs, each emulator's installer kept, and saves
    still in a folder from before each emulator had its own. Then each Mac:
    this one live from Rux Emu Helper, helper.js, when it is running here,
-   and every other from the last time Check this Mac.command ran on it, each
-   emulator in emulators.json's order: ES-DE reading the
+   and every other as Update last saved it there, each emulator in
+   emulators.json's order: ES-DE reading the
    drive's games, each emulator saving into its folder on the drive, and each
    retired app still there or still holding files. Installing an app is what
    says a Mac plays with it, so one that is not installed is only said, unless
@@ -195,12 +195,12 @@
     for (const mac of all) {
       out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
         mac.live
-          ? 'Live from Rux Emu Helper. To back up the saves this Mac keeps itself, double-click Check this Mac.command on the drive, then Update.'
-          : `From ${R.when(mac.gathered_at)}. Double-click Check this Mac.command on the drive, then Update, to check it again.`,
+          ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'
+          : `As Update last saved it there, ${R.when(mac.gathered_at)}.`,
         macRows(ordered(mac, emulators), emulators, used, drive)));
     }
     if (!all.length) {
-      out.append(el('p', 'rux--type-body-01', 'No Mac has reported yet: double-click Check this Mac.command on the drive, then Update.'));
+      out.append(el('p', 'rux--type-body-01', 'No Mac has been saved yet: Update on a Mac with Rux Emu Helper saves it.'));
     }
     if (R.helper.onMac && !live) out.append(startHelper());
   }

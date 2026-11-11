@@ -122,7 +122,7 @@
       return files.filter(f => f.name.endsWith('.zip'));
     },
 
-    // A Mac's report and saves, from check-mac.mjs, read on this device:
+    // A Mac's report and saves, from Rux Emu Helper on that Mac:
     // how the Mac stands written first, then each file uploaded under
     // `macs/<Mac>/<date>/`, each save written with the Mac as its location
     // and leaving its note, the Mac's saves no longer gathered deleted, and

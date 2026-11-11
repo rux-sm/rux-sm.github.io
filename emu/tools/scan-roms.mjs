@@ -65,17 +65,14 @@ const drive = {
       return new Uint8Array(buf.buffer, buf.byteOffset, n);
     } finally { fs.closeSync(fd); }
   },
-  chunks: (rel) => fs.createReadStream(abs(rel), { highWaterMark: 8 << 20 }),
   async text(rel, enc) { return fs.existsSync(abs(rel)) ? fs.readFileSync(abs(rel), enc) : null; },
   async exists(rel) { return fs.existsSync(abs(rel)); },
-  hasher() {
+  async fingerprint(rel) {
     const md5 = crypto.createHash('md5');
     const sha1 = crypto.createHash('sha1');
     let crc = 0;
-    return {
-      update(b) { md5.update(b); sha1.update(b); crc = zlib.crc32(b, crc); },
-      digest: () => ({ crc32: (crc >>> 0).toString(16).padStart(8, '0'), md5: md5.digest('hex'), sha1: sha1.digest('hex') }),
-    };
+    for await (const b of fs.createReadStream(abs(rel), { highWaterMark: 8 << 20 })) { md5.update(b); sha1.update(b); crc = zlib.crc32(b, crc); }
+    return { crc32: (crc >>> 0).toString(16).padStart(8, '0'), md5: md5.digest('hex'), sha1: sha1.digest('hex') };
   },
   // The SHA-1 of what a CHD holds: each track of a CD, or the image of a DVD,
   // as the lists fingerprint them.

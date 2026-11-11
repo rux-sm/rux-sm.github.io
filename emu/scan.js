@@ -2,23 +2,22 @@
    scan.js — reading the collection on the drive
    --------------------------------------------------------------------------
    One scan, run by emu/tools/scan-roms.mjs on a Mac and by the Status page
-   in Chrome, so the two never read a game differently. It reads every game
-   under the drive's `roms/`, its headers and fingerprints, matches each
-   against the lists of known good copies in `lists/`, and matches each save
-   under `saves/` to its game by saves-rules.js.
+   through Rux Emu Helper, so the two never read a game differently. It
+   reads every game under the drive's `roms/`, its headers and
+   fingerprints, matches each against the lists of known good copies in
+   `lists/`, and matches each save under `saves/` to its game by
+   saves-rules.js.
 
    It reads the drive only through `drive`, which each side supplies, every
    path relative to the drive's emulation folder and joined by `/`:
      list(rel)           the visible entries of a folder, sorted, as
                          { name, dir, size, mtimeMs, birthtimeMs }, or []
      read(rel, at, n)    n bytes from offset `at`, as a Uint8Array
-     chunks(rel)         the whole file, as Uint8Arrays in order
      text(rel, enc)      the file as text, 'utf8' or 'latin1', or null
      exists(rel)         whether a file is there
-     hasher()            { update(bytes), digest() → { crc32, md5, sha1 } },
-                         or a promise of one
+     fingerprint(rel)    the whole file's { crc32, md5, sha1 }, in hex
      inside(rel)         a CHD's track fingerprints, or null where it cannot
-     progress(read, all) told now and then how many new bytes are hashed
+     progress(read, all) told after each file how many new bytes are hashed
 
    It returns the scan, the fingerprints to keep, and the files the backup
    zip packs; writing them is the caller's.
@@ -536,13 +535,10 @@
       // knows from the files it was made from; the file is still read.
       if (cache[key]?.sha1) return cache[key];
       if (headersOnly) return null;
-      const h = await drive.hasher();
-      for await (const chunk of drive.chunks(f)) {
-        h.update(chunk);
-        bytesRead += chunk.length;
-        drive.progress?.(bytesRead, bytesTotal);
-      }
-      const out = { ...cache[key], ...h.digest() };
+      const sums = await drive.fingerprint(f);
+      bytesRead += stats.get(f).size;
+      drive.progress?.(bytesRead, bytesTotal);
+      const out = { ...cache[key], ...sums };
       cache[key] = out;
       return out;
     }

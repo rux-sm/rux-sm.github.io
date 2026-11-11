@@ -21,8 +21,8 @@ lists and stored in its system's preferred format.
   folders. A game is one entry in a system folder; the tracks and discs of
   one game count as one game, and a Switch game's updates, add-ons and mods
   are kept with the game they belong to.
-- **The scan is `emu/scan.js`, run by Update on the Status page in Chrome
-  or by `emu/tools/scan-roms.mjs` on a Mac;** it writes its results to a
+- **The scan is `emu/scan.js`, run by Update on the Status page through
+  Rux Emu Helper or by `emu/tools/scan-roms.mjs` on a Mac;** it writes its results to a
   scans folder on the drive, never into this repository, and Update saves
   them on a yes. A scan only reads the games.
 - **The list lives in the Supabase project, in `emu_*` tables, and only
@@ -211,20 +211,15 @@ Saves found wherever each emulator keeps them, and backed up from the app:
   default and the setting that moves it, because each keeps them its own
   way: in `~/Library/Application Support`, beside the game, or in a
   NAND or memory card folder.
-- **`emu/tools/check-mac.mjs` finds every save on this Mac,** reading
-  each installed emulator's settings for a moved save folder and its
-  default otherwise, and writes this Mac's report to the drive's `macs/`
-  folder with a copy of any save not on the drive; it only reads the saves.
-- **`Check this Mac.command`, kept on the drive, runs it with a double-click**
-  and opens the Status page, so no terminal is needed; it needs Node on the
-  Mac.
-- **Update, on the Status page, saves a Mac's report** from the drive,
+- **Rux Emu Helper finds every save on this Mac,** reading each installed
+  emulator's settings for a moved save folder and its default otherwise,
+  because the page cannot read `~/Library` itself; it only reads the saves.
+- **Update, on the Status page, saves this Mac's report** from the helper,
   uploading any save it keeps itself file by file to the
   `emu-backups` bucket, and records each save by its game and Mac.
-  The page cannot read `~/Library` itself, which Chrome keeps from pages.
 - **The rules that match a save to its game live in one module,**
   `emu/saves-rules.js`, which the scan imports and the page loads, so they
-  never match a save differently; the Mac check only copies.
+  never match a save differently; the helper only lists and reads.
 - **A save beside a game on the drive is a save,** not a game, since mGBA
   and melonDS keep one there by default.
 - **Each save says where it lives,** the T7 or a Mac by name, and when it was

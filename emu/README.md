@@ -27,27 +27,25 @@ is safe to empty:
 when every game converted from what is in it is marked as playing.
 
 `saves.html` shows the three copies of the saves, on the drive, in Supabase
-and on each Mac, with each backup in Supabase to download, and Back up this
-Mac's saves, which uploads the report `tools/check-mac.mjs` wrote to the
-drive and any save this Mac keeps itself; then every save by system, on the drive or a Mac, each
-with its kind, dates, how to restore it and rux's note on it.
+and on each Mac, with each backup in Supabase to download; then every save
+by system, on the drive or a Mac, each with its kind, dates, how to restore
+it and rux's note on it.
 
-`status.html` starts with Update, which scans the drive in Chrome through
-the emulation folder rux picks once, and runs by itself when the page opens
-and Chrome already allows that folder. It shows how many games are new,
-changed or gone since the last save, and any Mac's report newer than the
-one saved, and saves on a yes: every game and save in the scan, leaving
+`status.html` starts with Update, which scans the drive through Rux Emu
+Helper on a Mac, and runs by itself when the page opens and the helper has
+the drive. It shows how many games are new, changed or gone since the last
+save, and whether this Mac changed, and saves on a yes: every game and save in the scan, leaving
 rux's notes, moving the notes of a game the organize tool renamed, removing
 what is no longer on the drive, replacing the BIOS list and the drive's
 row, uploading the backup zip to the `emu-backups` bucket, which keeps
 every backup of the last 30 days and the newest of each month before, and
-each Mac's report with any save it keeps itself. It writes the scan, the
+this Mac's report with any save it keeps itself. It writes the scan, the
 fingerprints and the zip back to the drive, as the Mac scan does.
 
 Then it says what is done and what is left. For the drive, from its last
 scan: each BIOS a system with games needs, each emulator's installer
 kept, and saves still in a folder from before each emulator had its own.
-For each Mac, from its last report: ES-DE reading the drive's games, each
+For this Mac live from the helper, and each other as Update last saved it: ES-DE reading the drive's games, each
 emulator saving into its folder on the drive, and each retired app in
 `emulators.json` still there or still holding files. Installing an app is
 what says a Mac plays with it, so one not installed is grey, and red only
@@ -94,25 +92,15 @@ again after it. chdman comes from Homebrew's `rom-tools`.
 
     node emu/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
 
-    node emu/tools/check-mac.mjs "/Volumes/<drive>/emulation"
-    node emu/tools/check-mac.mjs --install "/Volumes/<drive>/emulation"
-
-`tools/check-mac.mjs` writes how this Mac stands to the drive's
-`macs/<Mac>/report.json`: each app installed and its version, and where
-each emulator saves, as `emulators.json` says or its own settings moved it.
-A save kept on this Mac rather than the drive is copied in beside it.
-`--install` puts it on the drive with `Check this Mac.command`, which runs it
-with a double-click and opens the Status page.
-
     node emu/tools/build-helper.mjs "/Volumes/<drive>/emulation"
 
 `tools/build-helper.mjs` builds Rux Emu Helper from `helper/main.swift` and
 puts it on the drive with `Install Rux Emu Helper.command`, which copies it
 into Applications. The menu bar helper answers only the Rux Emu site, on
-`127.0.0.1:47647`: `/status` says the collection and each system it can
-play, `/mac` how this Mac stands, read as `check-mac.mjs` does, and `/play`
-opens one game from the roms folder as `launch` in `emulators.json` says.
-The app carries its own `emulators.json`, so build it again after a change.
+`127.0.0.1:47647`, with the calls `helper/main.swift` lists: Play, this Mac
+as it stands with the saves it keeps itself, and the drive for Update's
+scan. The app carries its own `emulators.json`, so build it again after a
+change.
 
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the
 firmware and installers too large for Supabase, into
@@ -129,10 +117,10 @@ written here, because this repository is public.
 | | |
 | :--- | :--- |
 | `data.js` | the reads and writes |
-| `emulators.json` | each system's emulator, why, how it names a save, what it needs, how it opens a game, and where each keeps saves on a Mac; the scan, the gather tool and the helper read it too |
-| `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game and to read this Mac |
+| `emulators.json` | each system's emulator, why, how it names a save, what it needs, how it opens a game, and where each keeps saves on a Mac; the scan and the helper read it too |
+| `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game, read this Mac and read and write the drive |
 | `scan.js` | the scan, for the Mac tool and the page alike |
-| `drive.js` | the drive as `scan.js` reads it in Chrome, from a folder rux picks |
+| `drive.js` | the drive as `scan.js` reads it, through the helper |
 | `zip.js` | the backup zip, packed in the page |
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |

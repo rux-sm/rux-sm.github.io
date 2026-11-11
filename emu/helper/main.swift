@@ -1,28 +1,40 @@
 // Rux Emu Helper — the Mac's sidekick for the Rux Emu site.
 //
 // A menu bar app with no window. It answers the site on 127.0.0.1 only,
-// and only requests whose Origin is the site's, with three calls:
+// and only requests whose Origin is the site's:
 //
-//   GET  /status   what the helper sees: the collection it found, and each
-//                  system whose emulator is installed and can be played
-//   GET  /mac      how this Mac stands, read now: the report check-mac.mjs
-//                  writes, less the saves it copies
-//   POST /play     { "system": "n64", "file": "<file in roms/n64/>" } opens
-//                  that one game in its system's emulator
+//   GET    /status         what the helper sees: the collection it found, and
+//                          each system whose emulator is installed and can be
+//                          played
+//   POST   /play           { "system": "n64", "file": "<file in roms/n64/>" }
+//                          opens that one game in its system's emulator
+//   GET    /mac            how this Mac stands, read now: each app and its
+//                          version, and each place an emulator saves to
+//   GET    /mac/saves      each save this Mac keeps itself, not on the drive
+//   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
+//   GET    /drive/list     ?path=, a folder of the collection, for the scan
+//   GET    /drive/stat     ?path=, a file's size and last-changed time
+//   GET    /drive/file     ?path=&at=&n=, a file's bytes, or n of them from at
+//   GET    /drive/fingerprint  ?path=, a file's CRC32, MD5 and SHA-1, in hex
+//   PUT    /drive/file     ?path=, the body written there, folders made
+//   DELETE /drive/file     ?path=, that one file removed
 //
 // The collection is the first `/Volumes/<drive>/emulation` holding a `roms`
-// folder. What the helper knows of each emulator, how it opens a game and
-// where it keeps saves on a Mac, is the site's `emulators.json`, which
-// build-helper.mjs puts inside the app, so it reads a Mac with no drive
-// plugged in. A file must sit inside `roms/<system>/` once links are
-// followed, so nothing the site sends can open anything else.
+// folder, and every /drive path is inside it once links are followed. What
+// the helper knows of each emulator, how it opens a game and where it keeps
+// saves on a Mac, is the site's `emulators.json`, which build-helper.mjs puts
+// inside the app, so it reads a Mac with no drive plugged in. A game must
+// sit inside `roms/<system>/`, and a Mac's save must be one /mac/saves
+// lists, so nothing the site sends can open or read anything else.
 
 import AppKit
+import CryptoKit
 import Network
 import ServiceManagement
 import SystemConfiguration
+import zlib
 
-let version = "2"
+let version = "3"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -106,11 +118,13 @@ func play(_ body: Data) -> (Int, [String: Any]) {
 
 // MARK: This Mac
 
-// How this Mac stands, as check-mac.mjs says it: its macOS, ES-DE's and each
-// emulator's app and version, the folder ES-DE reads games from, each place
-// an emulator saves to with how many files it holds, and how many files each
-// retired app still holds. A place's setting in the emulator's own settings
-// file wins over its default.
+// How this Mac stands: its macOS, ES-DE's and each emulator's app and
+// version, the folder ES-DE reads games from, each place an emulator saves
+// to with how many files it holds, and how many files each retired app still
+// holds; and each save it keeps itself rather than on the drive. Where each
+// emulator keeps saves is `macSaves` in emulators.json: its folder in
+// ~/Library, and for each place it saves to, the default and the setting in
+// its own settings file that moves it, which wins.
 
 let home = NSHomeDirectory()
 let files = FileManager.default
@@ -214,11 +228,44 @@ func placesOf(_ where_: [String: Any], _ homeDir: String) -> [(place: [String: A
   }
 }
 
+let homeOf = { (w: [String: Any]) in (w["homes"] as? [String] ?? []).map(expand).first(where: exists) }
+let appsOf = { (w: [String: Any]) in w["apps"] as? [String] ?? [] }
+let iso: ISO8601DateFormatter = {
+  let f = ISO8601DateFormatter()
+  f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+  return f
+}()
+
+// One place an emulator saves to, by its number in emulators.json.
+struct Place { let index: Int; let rule: [String: Any]; let dir: String?; let from: String }
+// An emulator as this Mac has it: the systems it plays, its data folder, and its places.
+struct Saver { let name: String; let rule: [String: Any]; let plays: [String]; let home: String?; let places: [Place] }
+
+func savers() -> [Saver] {
+  let systems = rules["systems"] as? [String: Any] ?? [:]
+  return (rules["macSaves"] as? [String: Any] ?? [:]).compactMap { name, value in
+    guard let w = value as? [String: Any] else { return nil }
+    let home = homeOf(w)
+    let plays = systems.compactMap { ($0.value as? [String: Any])?["emulator"] as? String == name ? $0.key : nil }.sorted()
+    let places = home.map { placesOf(w, $0).enumerated().map { Place(index: $0.offset, rule: $0.element.place, dir: $0.element.dir, from: $0.element.from) } } ?? []
+    return Saver(name: name, rule: w, plays: plays, home: home, places: places)
+  }
+}
+
+// The saves in one place: each file under 50 MB that its include matches, where it has one.
+func saves(in place: Place) -> [(rel: String, path: String, size: Int)] {
+  guard let dir = place.dir, exists(dir) else { return [] }
+  let include = (place.rule["include"] as? String).flatMap { try? NSRegularExpression(pattern: $0) }
+  return walk(dir).compactMap { f in
+    guard f.size < 50_000_000 else { return nil }
+    let rel = String(f.path.dropFirst(dir.count + 1))
+    if let include, !["/" + rel, rel].contains(where: { include.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { return nil }
+    return (rel, f.path, f.size)
+  }
+}
+
 func macReport() -> [String: Any] {
   let frontend = rules["frontend"] as? [String: Any] ?? [:]
-  let systems = rules["systems"] as? [String: Any] ?? [:]
-  let homeOf = { (w: [String: Any]) in (w["homes"] as? [String] ?? []).map(expand).first(where: exists) }
-  let appsOf = { (w: [String: Any]) in w["apps"] as? [String] ?? [] }
 
   // The folder ES-DE reads games from, from its own settings file.
   let esde = expand(frontend["settings"] as? String ?? "") + "/" + (frontend["config"] as? String ?? "")
@@ -227,33 +274,21 @@ func macReport() -> [String: Any] {
   var emulators: [[String: Any]] = []
   // Every folder an emulator saves to, so a retired app's folder holding them is not counted twice.
   var gathered: [String] = []
-  for (emulator, value) in rules["macSaves"] as? [String: Any] ?? [:] {
-    guard let w = value as? [String: Any] else { continue }
-    let homeDir = homeOf(w)
-    let plays = systems.compactMap { ($0.value as? [String: Any])?["emulator"] as? String == emulator ? $0.key : nil }.sorted()
+  for e in savers() {
     var places: [[String: Any]] = []
     var count = 0, size = 0
-    if let homeDir {
-      for (place, dir, from) in placesOf(w, homeDir) {
-        if let dir { gathered.append(dir) }
-        let found = dir.map(exists) ?? false
-        // A folder linked to the drive, as Ryujinx's is, is said where the link leads.
-        let shown = dir.map { found ? real($0) : $0 }
-        var n = 0
-        if let dir, found {
-          let include = (place["include"] as? String).flatMap { try? NSRegularExpression(pattern: $0) }
-          for f in walk(dir) where f.size < 50_000_000 {
-            let rel = String(f.path.dropFirst(dir.count + 1))
-            if let include, !["/" + rel, rel].contains(where: { include.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }) { continue }
-            n += 1; size += f.size
-          }
-        }
-        count += n
-        places.append(["dir": orNull(shown.map(tilde)), "from": from, "found": found, "files": n])
-      }
+    for place in e.places {
+      if let dir = place.dir { gathered.append(dir) }
+      let found = place.dir.map(exists) ?? false
+      // A folder linked to the drive, as Ryujinx's is, is said where the link leads.
+      let shown = place.dir.map { found ? real($0) : $0 }
+      let held = saves(in: place)
+      count += held.count
+      size += held.reduce(0) { $0 + $1.size }
+      places.append(["dir": orNull(shown.map(tilde)), "from": place.from, "found": found, "files": held.count])
     }
-    emulators.append(["emulator": emulator, "systems": plays, "app": orNull(appOf(appsOf(w))),
-                      "data": orNull(homeDir.map(tilde)), "places": places, "files": count, "size": size])
+    emulators.append(["emulator": e.name, "systems": e.plays, "app": orNull(appOf(appsOf(e.rule))),
+                      "data": orNull(e.home.map(tilde)), "places": places, "files": count, "size": size])
   }
 
   for (emulator, value) in rules["retired"] as? [String: Any] ?? [:] {
@@ -281,11 +316,9 @@ func macReport() -> [String: Any] {
   var u = utsname()
   uname(&u)
   let chip = withUnsafeBytes(of: &u.machine) { String(cString: $0.bindMemory(to: CChar.self).baseAddress!) }
-  let made = ISO8601DateFormatter()
-  made.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
   return [
     "mac": SCDynamicStoreCopyComputerName(nil, nil) as String? ?? ProcessInfo.processInfo.hostName,
-    "made": made.string(from: Date()),
+    "made": iso.string(from: Date()),
     "macos": "\(v.majorVersion).\(v.minorVersion)" + (v.patchVersion > 0 ? ".\(v.patchVersion)" : ""),
     "chip": chip,
     "frontend": ["name": frontend["name"] as? String ?? "ES-DE", "app": orNull(appOf(appsOf(frontend))), "romDirectory": orNull(roms.map(tilde))],
@@ -293,10 +326,116 @@ func macReport() -> [String: Any] {
   ]
 }
 
+// Each save this Mac keeps itself, not on the drive: its emulator and the
+// systems it plays, its path within its place for matching it to its game,
+// `stored` naming it for /mac/save, the folder it came from for restoring
+// it, its size, and when it was made and last saved.
+func macSaves() -> [[String: Any]] {
+  let drive = collection().map { real($0.path) + "/" }
+  var out: [[String: Any]] = []
+  for e in savers() {
+    for place in e.places {
+      for f in saves(in: place) {
+        if let drive, real(f.path).hasPrefix(drive) { continue }
+        let a = try? files.attributesOfItem(atPath: f.path)
+        out.append(["emulator": e.name, "systems": e.plays, "rel": f.rel, "stored": "\(e.name)/\(place.index)/\(f.rel)",
+                    "from": (f.path as NSString).deletingLastPathComponent, "size": f.size,
+                    "created": orNull((a?[.creationDate] as? Date).map(iso.string)),
+                    "saved": orNull((a?[.modificationDate] as? Date).map(iso.string))])
+      }
+    }
+  }
+  return out
+}
+
+// One save /mac/saves lists, by its `stored` name, and nothing else.
+func macSavePath(_ stored: String) -> String? {
+  let parts = stored.split(separator: "/", maxSplits: 2).map(String.init)
+  guard parts.count == 3, let index = Int(parts[1]),
+        let place = savers().first(where: { $0.name == parts[0] })?.places.first(where: { $0.index == index }) else { return nil }
+  return saves(in: place).first { $0.rel == parts[2] }?.path
+}
+
+// MARK: The drive, for the site's scan
+
+// A path inside the collection, links followed, or nil for one outside it.
+func drivePath(_ rel: String) -> String? {
+  guard let root = collection() else { return nil }
+  let base = real(root.path)
+  let p = URL(fileURLWithPath: base).appendingPathComponent(rel).standardizedFileURL.path
+  let parent = (p as NSString).deletingLastPathComponent
+  let resolved = exists(p) ? real(p) : (exists(parent) ? real(parent) : parent) + "/" + (p as NSString).lastPathComponent
+  return resolved == base || resolved.hasPrefix(base + "/") ? resolved : nil
+}
+
+func isFolder(_ p: String) -> Bool {
+  var dir: ObjCBool = false
+  return files.fileExists(atPath: p, isDirectory: &dir) && dir.boolValue
+}
+
+let ms = { (d: Any?) in ((d as? Date)?.timeIntervalSince1970 ?? 0) * 1000 }
+
+// A folder's visible entries, sorted by name, as the scan reads them.
+func driveList(_ p: String) -> [[String: Any]] {
+  let names = ((try? files.contentsOfDirectory(atPath: p)) ?? []).filter { !$0.hasPrefix(".") }
+  return names.sorted { Array($0.utf16).lexicographicallyPrecedes(Array($1.utf16)) }.compactMap { name in
+    guard let a = try? files.attributesOfItem(atPath: real(p + "/" + name)) else { return nil }
+    let dir = a[.type] as? FileAttributeType == .typeDirectory
+    return ["name": name, "dir": dir, "size": dir ? 0 : (a[.size] as? NSNumber)?.intValue ?? 0,
+            "mtimeMs": dir ? 0 : ms(a[.modificationDate]), "birthtimeMs": dir ? 0 : ms(a[.creationDate])]
+  }
+}
+
+// n bytes of a file from `at`, or the whole file.
+func bytes(_ p: String, at: UInt64?, n: Int?) -> Data? {
+  guard !isFolder(p), let h = FileHandle(forReadingAtPath: p) else { return nil }
+  defer { try? h.close() }
+  if let at { try? h.seek(toOffset: at) }
+  return (n.map { try? h.read(upToCount: $0) } ?? (try? h.readToEnd())) ?? Data()
+}
+
+// A file's CRC32, MD5 and SHA-1 in one pass, the two digests of each chunk
+// worked at once beside the CRC, so a disc is hashed as fast as it is read.
+func fingerprint(_ p: String) -> [String: Any]? {
+  guard !isFolder(p), let h = FileHandle(forReadingAtPath: p) else { return nil }
+  defer { try? h.close() }
+  var md5 = Insecure.MD5(), sha1 = Insecure.SHA1()
+  var crc = crc32(0, nil, 0)
+  while let chunk = try? h.read(upToCount: 8 << 20), !chunk.isEmpty {
+    let both = DispatchGroup()
+    DispatchQueue.global(qos: .userInitiated).async(group: both) { md5.update(data: chunk) }
+    DispatchQueue.global(qos: .userInitiated).async(group: both) { sha1.update(data: chunk) }
+    chunk.withUnsafeBytes { crc = crc32(crc, $0.bindMemory(to: Bytef.self).baseAddress, uInt($0.count)) }
+    both.wait()
+  }
+  let hex = { (d: any Sequence<UInt8>) in d.map { String(format: "%02x", $0) }.joined() }
+  return ["crc32": String(format: "%08x", crc), "md5": hex(md5.finalize()), "sha1": hex(sha1.finalize())]
+}
+
 // MARK: The local server
+
+struct Request {
+  let method: String, path: String, query: [String: String], origin: String?, length: Int
+  init(_ head: String) {
+    let lines = head.split(separator: "\r\n").map(String.init)
+    let parts = (lines.first ?? "").split(separator: " ").map(String.init)
+    let url = URLComponents(string: parts.count > 1 ? parts[1] : "/")
+    let header = { (name: String) in lines.dropFirst().first { $0.lowercased().hasPrefix(name + ":") }
+      .map { String($0.dropFirst(name.count + 1)).trimmingCharacters(in: .whitespaces) } }
+    method = parts.first ?? ""
+    path = url?.path ?? ""
+    query = Dictionary((url?.queryItems ?? []).map { ($0.name, $0.value ?? "") }, uniquingKeysWith: { a, _ in a })
+    origin = header("origin")
+    length = header("content-length").flatMap { Int($0) } ?? 0
+  }
+}
+
+enum Reply { case json(Int, [String: Any]), list(Int, [[String: Any]]), bytes(Data) }
 
 final class Server {
   let listener: NWListener
+  // The drive and save folders are read off the menu bar's thread.
+  let work = DispatchQueue(label: "rux-emu-helper.work", qos: .userInitiated, attributes: .concurrent)
 
   init() throws {
     let params = NWParameters.tcp
@@ -311,52 +450,105 @@ final class Server {
     read(c, Data())
   }
 
-  // Reads until the headers and the body they announce are in.
+  // Reads until the headers are in, then the body they announce: a PUT's
+  // straight into its file, any other's whole, up to a megabyte.
   func read(_ c: NWConnection, _ sofar: Data) {
     c.receive(minimumIncompleteLength: 1, maximumLength: 65536) { [weak self] data, _, done, error in
+      guard let self else { return }
       var all = sofar
       if let data { all.append(data) }
       if let split = all.range(of: Data("\r\n\r\n".utf8)) {
-        let head = String(decoding: all[..<split.lowerBound], as: UTF8.self)
-        let length = head.split(separator: "\r\n").first { $0.lowercased().hasPrefix("content-length:") }
-          .flatMap { Int($0.split(separator: ":")[1].trimmingCharacters(in: .whitespaces)) } ?? 0
-        let body = all[split.upperBound...]
-        if body.count >= length { self?.answer(c, head, Data(body.prefix(length))); return }
+        let req = Request(String(decoding: all[..<split.lowerBound], as: UTF8.self))
+        let body = Data(all[split.upperBound...])
+        guard let origin = req.origin, allowedOrigins.contains(origin) else {
+          return self.send(c, .json(403, ["error": "Only the Rux Emu site may ask."]), origin: nil)
+        }
+        if req.method == "PUT" { return self.upload(c, req, body, origin) }
+        if body.count >= req.length { return self.answer(c, req, body.prefix(req.length), origin) }
       }
       if done || error != nil || all.count > 1_000_000 { c.cancel(); return }
-      self?.read(c, all)
+      self.read(c, all)
     }
   }
 
-  func answer(_ c: NWConnection, _ head: String, _ body: Data) {
-    let lines = head.split(separator: "\r\n").map(String.init)
-    let parts = (lines.first ?? "").split(separator: " ").map(String.init)
-    let method = parts.first ?? "", path = parts.count > 1 ? parts[1] : ""
-    let header = { (name: String) in lines.dropFirst().first { $0.lowercased().hasPrefix(name + ":") }
-      .map { String($0.dropFirst(name.count + 1)).trimmingCharacters(in: .whitespaces) } }
-    guard let origin = header("origin"), allowedOrigins.contains(origin) else {
-      return send(c, 403, ["error": "Only the Rux Emu site may ask."], origin: nil)
+  func answer(_ c: NWConnection, _ req: Request, _ body: Data, _ origin: String) {
+    if req.method == "OPTIONS" { return send(c, nil, origin: origin) }
+    let q = req.query
+    let off = { (reply: @escaping () -> Reply) in
+      self.work.async { let r = reply(); DispatchQueue.main.async { self.send(c, r, origin: origin) } }
     }
-    if method == "OPTIONS" { return send(c, 204, nil, origin: origin) }
-    switch (method, path) {
-    case ("GET", "/status"): send(c, 200, status(), origin: origin)
-    case ("GET", "/mac"):
-      // Counting each save folder's files takes a moment, so it is done off the menu bar's thread.
-      DispatchQueue.global(qos: .userInitiated).async {
-        let report = macReport()
-        DispatchQueue.main.async { self.send(c, 200, report, origin: origin) }
+    let missing = Reply.json(404, ["error": "That is not in the collection."])
+    switch (req.method, req.path) {
+    case ("GET", "/status"): send(c, .json(200, status()), origin: origin)
+    case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
+    case ("GET", "/mac"): off { .json(200, macReport()) }
+    case ("GET", "/mac/saves"): off { .list(200, macSaves()) }
+    case ("GET", "/mac/save"):
+      off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
+        ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
+    case ("GET", "/drive/list"):
+      off { drivePath(q["path"] ?? "").map { .list(200, isFolder($0) ? driveList($0) : []) } ?? missing }
+    case ("GET", "/drive/stat"):
+      off {
+        guard let p = drivePath(q["path"] ?? ""), !isFolder(p), let a = try? files.attributesOfItem(atPath: p) else { return missing }
+        return .json(200, ["size": (a[.size] as? NSNumber)?.intValue ?? 0, "mtimeMs": ms(a[.modificationDate])])
       }
-    case ("POST", "/play"): let (code, out) = play(body); send(c, code, out, origin: origin)
-    default: send(c, 404, ["error": "No such call."], origin: origin)
+    case ("GET", "/drive/file"):
+      off { drivePath(q["path"] ?? "").flatMap { bytes($0, at: q["at"].flatMap { UInt64($0) }, n: q["n"].flatMap { Int($0) }) }.map(Reply.bytes) ?? missing }
+    case ("GET", "/drive/fingerprint"):
+      off { drivePath(q["path"] ?? "").flatMap(fingerprint).map { .json(200, $0) } ?? missing }
+    case ("DELETE", "/drive/file"):
+      guard let p = drivePath(q["path"] ?? ""), exists(p), !isFolder(p), (try? files.removeItem(atPath: p)) != nil else { return send(c, missing, origin: origin) }
+      send(c, .json(200, ["removed": q["path"] ?? ""]), origin: origin)
+    default: send(c, .json(404, ["error": "No such call."]), origin: origin)
     }
   }
 
-  func send(_ c: NWConnection, _ code: Int, _ json: [String: Any]?, origin: String?) {
-    let body = json.flatMap { try? JSONSerialization.data(withJSONObject: $0) } ?? Data()
-    var head = "HTTP/1.1 \(code) \(code < 300 ? "OK" : "Refused")\r\nContent-Type: application/json\r\nContent-Length: \(body.count)\r\nConnection: close\r\n"
+  // A PUT /drive/file: the body written beside its file as it arrives, then
+  // put in its place, so a write cut short leaves the file as it was.
+  func upload(_ c: NWConnection, _ req: Request, _ first: Data, _ origin: String) {
+    guard req.path == "/drive/file", let target = drivePath(req.query["path"] ?? ""), !isFolder(target) else {
+      return send(c, .json(404, ["error": "That is not in the collection."]), origin: origin)
+    }
+    let dir = (target as NSString).deletingLastPathComponent
+    let part = dir + "/." + (target as NSString).lastPathComponent + ".part"
+    guard (try? files.createDirectory(atPath: dir, withIntermediateDirectories: true)) != nil,
+          files.createFile(atPath: part, contents: nil), let h = FileHandle(forWritingAtPath: part) else {
+      return send(c, .json(500, ["error": "The helper could not write to the drive."]), origin: origin)
+    }
+    var left = req.length
+    let take = { (d: Data) in let piece = d.prefix(left); h.write(piece); left -= piece.count }
+    let finish = { (whole: Bool) in
+      try? h.close()
+      if whole, (try? files.removeItem(atPath: target)) != nil || !exists(target), (try? files.moveItem(atPath: part, toPath: target)) != nil {
+        return self.send(c, .json(200, ["written": req.query["path"] ?? ""]), origin: origin)
+      }
+      try? files.removeItem(atPath: part)
+      self.send(c, .json(500, ["error": "The write to the drive did not finish."]), origin: origin)
+    }
+    func next() {
+      if left <= 0 { return finish(true) }
+      c.receive(minimumIncompleteLength: 1, maximumLength: 1 << 20) { data, _, done, error in
+        if let data { take(data) }
+        if left <= 0 { finish(true) } else if done || error != nil { finish(false) } else { next() }
+      }
+    }
+    take(first)
+    next()
+  }
+
+  func send(_ c: NWConnection, _ reply: Reply?, origin: String?) {
+    var code = 204, type = "application/json", body = Data()
+    switch reply {
+    case .json(let n, let json)?: code = n; body = (try? JSONSerialization.data(withJSONObject: json)) ?? Data()
+    case .list(let n, let json)?: code = n; body = (try? JSONSerialization.data(withJSONObject: json)) ?? Data()
+    case .bytes(let data)?: code = 200; type = "application/octet-stream"; body = data
+    case nil: break
+    }
+    var head = "HTTP/1.1 \(code) \(code < 300 ? "OK" : "Refused")\r\nContent-Type: \(type)\r\nContent-Length: \(body.count)\r\nConnection: close\r\n"
     if let origin {
       // Chrome asks before a public site reaches this Mac; these headers say yes.
-      head += "Access-Control-Allow-Origin: \(origin)\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST\r\n"
+      head += "Access-Control-Allow-Origin: \(origin)\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n"
       head += "Access-Control-Allow-Headers: Content-Type\r\nAccess-Control-Allow-Private-Network: true\r\n"
     }
     c.send(content: Data((head + "\r\n").utf8) + body, completion: .contentProcessed { _ in c.cancel() })

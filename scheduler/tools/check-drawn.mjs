@@ -13,7 +13,8 @@
 //     spacing scale;
 //   - every mark in a bar taking a press on 24px by its row's 18px.
 // `--themes=g100,white` names the themes, `--themes=all` every one; Gray 100
-// alone when none is named. Needs Chrome on this Mac, or `CHROME` naming
+// alone when none is named; `DRAWN_LINES=60` lists more of each fault than
+// eight. Needs Chrome on this Mac, or `CHROME` naming
 // one; says so and passes when there is none.
 import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -186,7 +187,7 @@ async function main() {
       if (!bad.length) { ok('drawn', `${theme}: ${counts.text} texts on their size, tracking and contrast, ${counts.gaps} rows and grids on the scale, ${counts.marks} marks pressed on 24px by 18px`); continue; }
       for (const [kind, list] of bad) {
         fail('drawn', `${theme}: ${SAID[kind]}, ${list.reduce((n, f) => n + f.n, 0)} in ${list.length} place${list.length > 1 ? 's' : ''}`);
-        for (const f of list.slice(0, 8)) console.log(`          ${String(f.n).padStart(4)}× ${f.what}  ${f.where}`);
+        for (const f of list.slice(0, Number(process.env.DRAWN_LINES) || 8)) console.log(`          ${String(f.n).padStart(4)}× ${f.what}  ${f.where}`);
       }
     }
   } catch (e) {

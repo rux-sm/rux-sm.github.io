@@ -489,7 +489,11 @@ button.scheduler-row-head__num::after {
   --scheduler-paid: color-mix(in oklab, var(--rux-support-success-inverse) 60%, var(--rux-text-inverse));
   /* The route's planned times and estimates, the tip's ink taken toward its
      surface, which holds them at 4.5 to 1. */
-  --scheduler-route-quiet: color-mix(in srgb, var(--rux-text-inverse) 65%, var(--rux-background-inverse));
+  --scheduler-route-quiet: color-mix(in srgb, var(--rux-text-inverse) 70%, var(--rux-background-inverse));
+  /* Words in red, a late time and theme.css's Delete, take the inverse red toward the
+     tip's ink, as Paid's green is taken, since the red alone is a mark's
+     colour and under 4.5 to 1 on the tip in the light themes. */
+  --scheduler-late: color-mix(in oklab, var(--rux-support-error-inverse) 70%, var(--rux-text-inverse));
 }
 .scheduler-tip svg:has(> use[href="#i-warning--alt--filled"]) {
   fill: color-mix(in srgb, var(--rux-support-warning-inverse) 50%, var(--rux-icon-inverse));
@@ -556,7 +560,7 @@ button.scheduler-row-head__num::after {
 .scheduler-route__actual { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-route__actual:is(.scheduler-route__actual--expected, .scheduler-route__actual--none) { color: var(--scheduler-route-quiet); font-weight: var(--rux-body-compact-01-font-weight); }
 .scheduler-route__actual--expected { font-style: italic; }
-.scheduler-route__actual.scheduler-route__actual--late { color: var(--rux-status-red); font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-route__actual.scheduler-route__actual--late { color: var(--scheduler-late, var(--rux-status-red)); font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-route__late { margin-inline-start: var(--rux-spacing-02); }
 /* The pickup on time in Carbon's green check, in the support colour for an
    inverse surface. */
@@ -924,7 +928,8 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > *) .scheduler-row-head__alert {
   display: flex;
   flex: none;
-  margin-inline-start: var(--rux-spacing-03);
+  /* With the line's own 4px gap, 8px after the number. */
+  margin-inline-start: var(--rux-spacing-02);
   color: var(--scheduler-head-low);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(.scheduler-row-head__kit > [data-tone="error"]) .scheduler-row-head__alert { color: var(--scheduler-head-critical); }
@@ -1547,10 +1552,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    as the client is. The name gives way and the count is never cut short. */
 .scheduler-bar__multi { display: flex; align-items: baseline; gap: var(--rux-spacing-02); }
 .scheduler-bar__multi > :first-child { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
-.scheduler-bar__count { flex: none; font-weight: var(--rux-body-compact-01-font-weight); opacity: .85; }
+.scheduler-bar__count { flex: none; font-weight: var(--rux-body-compact-01-font-weight); opacity: var(--scheduler-quiet, .85); }
 /* The route's name, on a leg of more than one route, as dim as the count;
    it gives way after the destination does. */
-.scheduler-bar__route { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; font-weight: var(--rux-body-compact-01-font-weight); opacity: .85; }
+.scheduler-bar__route { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; font-weight: var(--rux-body-compact-01-font-weight); opacity: var(--scheduler-quiet, .85); }
 .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
 /* Times in figures of one width, so down the board they line up, their
    mark 4px before them as every row's mark is; the a or
@@ -1564,7 +1569,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar__time, .scheduler-road__times { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-bar__time:has(.scheduler-bar__none), .scheduler-road__say { font-weight: var(--rux-label-01-font-weight); }
 .scheduler-bar__ampm,
-.scheduler-figures__ampm { font-size: max(.85em, var(--rux-label-01-font-size)); opacity: .85; }
+.scheduler-figures__ampm { font-size: max(.85em, var(--rux-label-01-font-size)); opacity: var(--scheduler-quiet, .85); }
 /* An empty figure's dash is a value, not a field's placeholder, so it takes
    the helper text's ink, which holds 4.5 to 1 on the second layer. */
 .scheduler-figures__none { color: var(--rux-text-helper); font-weight: var(--rux-body-compact-01-font-weight); }
@@ -1643,7 +1648,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* A phone's bar lays its lines across the whole trip, so it has no head
    and no tail. */
 .scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-tail-paint: none; }
-.scheduler-bar__age { flex: none; font-size: var(--rux-label-01-font-size); opacity: .85; }
+.scheduler-bar__age { flex: none; font-size: var(--rux-label-01-font-size); opacity: var(--scheduler-quiet, .85); }
 /* The destination is a name, 14px. EVERY TIME ON THE MAC'S BOARD IS THE
    BAR'S 12px, a pair with its track, a time alone and a live bar's alike,
    since two 14px times, a +1 and a track do not fit a day. A phone's bar
@@ -1866,14 +1871,17 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who
-   drives it -- and dim is who it is for. */
-.scheduler-bar__client, .scheduler-bar__contact { opacity: .85; }
+   drives it -- and dim is who it is for. THE BAR'S ONE QUIET STEP is
+   `--scheduler-quiet`, 85% of its ink, which holds 4.5 to 1 on every
+   colour of Carbon's four themes; a theme whose bar inks stand nearer their
+   fills sets its own in theme.css, the most each of its colours allows. */
+.scheduler-bar__client, .scheduler-bar__contact { opacity: var(--scheduler-quiet, .85); }
 /* "No times", and a seat no one fills, are as quiet as the client, the
    faintest a bar's words go, and in the times row at the times' own 12px. */
-.scheduler-bar__none { opacity: .85; }
+.scheduler-bar__none { opacity: var(--scheduler-quiet, .85); }
 /* A tag after the destination, the maintenance page's Return: plain weight,
    dim as the client is, and never cut short. */
-.scheduler-bar__ref { flex: none; font-weight: var(--rux-body-compact-01-font-weight); opacity: .85; }
+.scheduler-bar__ref { flex: none; font-weight: var(--rux-body-compact-01-font-weight); opacity: var(--scheduler-quiet, .85); }
 /* A bar of the selected trip that is not the selected bar: its other buses
    and its other leg. It wears the selection's own ring, so the whole trip
    reads as selected; an outline inside the bar costs none of its writing. The
@@ -2511,7 +2519,7 @@ a.scheduler-tip__go { text-decoration: none; }
   overflow: hidden;
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
-.scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
+.scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 75%, transparent); }
 /* THE CARD'S ROWS, floating or docked on a phone: 16px in from the card's
    sides, as a Carbon popover's content is, each warning and each one-line
    update Carbon's small row, 32px, in its 14px reading size on an 18px line
@@ -2667,8 +2675,7 @@ a.scheduler-tip__go { text-decoration: none; }
    order. Every name keeps its width and the row cuts at its end, so a
    second seat, filled or empty, is never folded away; a lone name too long
    for the row ends in "…". */
-/* Six pixels between crew members, a step under the row's usual eight, so a
-   driver and a relief read as one crew rather than a list. */
+/* Crew members stand the row's 8px apart. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
 .scheduler-bar__crew > .scheduler-crew:not(:only-child) { flex: none; }
 
@@ -2913,7 +2920,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 /* The bar's one quiet step, which holds 4.5 to 1 on every colour. */
-.scheduler-road__say--quiet { opacity: .85; }
+.scheduler-road__say--quiet { opacity: var(--scheduler-quiet, .85); }
 
 /* With the time row off, the times go with it. */
 .scheduler-week--no-time .scheduler-road__times { display: none; }
@@ -5080,6 +5087,7 @@ a.scheduler-tip__go { text-decoration: none; }
   color: var(--rux-text-primary);
   --tip-rule: var(--rux-border-subtle-01);
   --scheduler-route-quiet: var(--rux-text-secondary);
+  --scheduler-late: var(--rux-text-error);
   --rux-status-green: inherit;
   --rux-status-red: inherit;
   --rux-status-blue: inherit;

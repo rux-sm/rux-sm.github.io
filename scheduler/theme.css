@@ -177,11 +177,16 @@
   --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-border: var(--rux-border-subtle-01);
 }
-/* A RUX-DARK BAR READS IN ORDER OF NEED: the destination and the times are
-   bold, the times in even-width figures so they line up, the customer stays
-   in the bar's ink, and the contact steps back to two thirds of it. A row
-   that says there are no times stays plain, so an absence does not shout. */
-[data-theme="rux-dark"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 66%, transparent); }
+/* THE BAR'S QUIET STEP, app.css's `--scheduler-quiet`, in a theme whose bar
+   inks stand nearer their fills than Carbon's: the most each of its colours
+   allows at 4.5 to 1, measured on its bars. Ant Dark's green and Apple
+   Light's bars stand under 5 to 1 at full ink, so they have no quiet step. */
+[data-theme="rux-100"] { --scheduler-quiet: .87; }
+[data-theme="geist-dark"] { --scheduler-quiet: .94; }
+[data-theme="ant-dark"] { --scheduler-quiet: .92; }
+[data-theme="ant-dark"] .scheduler-bar--green { --scheduler-quiet: 1; }
+[data-theme="apple-light"] { --scheduler-quiet: 1; }
+[data-theme="apple-dark"] { --scheduler-quiet: .98; }
 /* Its trip not yet confirmed is red's deep step, 0.34, at 95% of the chroma
    Display P3 holds there, so it stays rich on a P3 screen while standing
    back from the board, and its hover is a step lighter at the same strength. */
@@ -216,7 +221,8 @@
    least, and its red is lifted to make 4.9 on the green bar. Ant's bars, which
    ant-dark and pixel-dark both paint, are bright enough that white itself
    holds only 4.5 to 5.2 on four of them, so their words take the palest
-   tints that still show a hue, 3.7 to 1 at the least, on the green bar. */
+   tints that still show a hue, 4.7 to 1 or more on the blue and red bars,
+   and on the green bar, where white itself is 4.55, the bar's own ink. */
 :root,
 [data-theme="white"],
 [data-theme="g10"] {
@@ -261,9 +267,14 @@
 }
 [data-theme="ant-dark"],
 [data-theme="pixel-dark"] {
-  --scheduler-age-new: #d9f7be;
-  --scheduler-age-week: #fff1b8;
-  --scheduler-age-old: #ffe1de;
+  --scheduler-age-new: #effbe6;
+  --scheduler-age-week: #fff8db;
+  --scheduler-age-old: #fff0ef;
+}
+:is([data-theme="ant-dark"], [data-theme="pixel-dark"]) .scheduler-bar--green {
+  --scheduler-age-new: currentColor;
+  --scheduler-age-week: currentColor;
+  --scheduler-age-old: currentColor;
 }
 
 /* THE AMBER TRIP BAR, the placeholder, follows the rule its theme's other
@@ -1633,7 +1644,7 @@
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
 /* A press row lights with the inverse hover. Carbon's field and buttons inside take the inverse surface's colours: the field the inverse
-   hover with an edge of the ink, the ink for words and a ghost button, the inverse focus, the inverse red for Delete, and a button
+   hover with an edge of the ink, the ink for words and a ghost button, the inverse focus, the tip's red for words for Delete, and a button
    that cannot act yet a faint wash of the ink. The phone's docked sheet, which shows the route the same way, keeps the page's own. */
 [data-theme] .scheduler-trip-tip .scheduler-tip__go:hover { background: var(--rux-background-inverse-hover); }
 [data-theme] .scheduler-trip-tip .scheduler-tip--card {
@@ -1648,7 +1659,7 @@
   --rux-background-active: color-mix(in srgb, var(--rux-text-inverse) 24%, transparent);
   --rux-focus: var(--rux-focus-inverse);
   --rux-focus-inset: var(--rux-background-inverse);
-  --rux-button-danger-secondary: var(--rux-support-error-inverse);
+  --rux-button-danger-secondary: var(--scheduler-late);
   --rux-button-disabled: color-mix(in srgb, var(--rux-text-inverse) 18%, transparent);
   --rux-text-on-color-disabled: color-mix(in srgb, var(--rux-text-inverse) 45%, transparent);
 }

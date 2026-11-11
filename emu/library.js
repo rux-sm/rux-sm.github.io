@@ -2,8 +2,8 @@
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
    Home is the games recently played and the favourites, each a shelf of
-   box art, then a tile for each system with games, showing four of its
-   covers. A system's tile opens its games as a grid, at #<system>, with all
+   box art, then a tile for each system with games, showing its console,
+   app.js's consoleOf. A system's tile opens its games as a grid, at #<system>, with all
    of them, the favourites or the recently played; the breadcrumb, Back or B
    returns home. A search finds every game from home, or a system's from
    there. Covers show a game's name without its list's region and language
@@ -42,14 +42,13 @@
   // The system #<system> names, or null for home.
   const route = () => { const s = decodeURIComponent(location.hash.slice(1)); return R.SYSTEMS[s] ? s : null; };
 
-  // A game's art: the first of its pictures that loads, else `none()`. A
-  // system's tile loads its four at once, as there are few.
-  function art(g, none, eager = false) {
+  // A game's art: the first of its pictures that loads, else `none()`.
+  function art(g, none) {
     const urls = R.artOf(g);
     if (!urls.length) { none(); return null; }
     const img = el('img');
     img.alt = '';
-    img.loading = eager ? 'eager' : 'lazy';
+    img.loading = 'lazy';
     img.decoding = 'async';
     let i = 0;
     img.addEventListener('error', () => { i += 1; if (i < urls.length) img.src = urls[i]; else { img.remove(); none(); } });
@@ -92,22 +91,20 @@
     return section;
   }
 
-  // A system's tile: four of its covers, spread through its list, over its name and count.
+  // A system's tile: its console over its name and count.
   function systemTile(system, list) {
     const li = el('li');
     const a = el('a', 'rux--tile rux--tile--clickable');
     a.href = `#${system}`;
     a.dataset.system = system;
     const box = el('div', 'emu-system');
-    const collage = el('div', 'emu-system__art');
-    collage.setAttribute('aria-hidden', 'true');
-    for (let i = 0; i < 4; i += 1) {
-      const cell = el('div');
-      const g = list[Math.floor((i * list.length) / 4)];
-      if (g && i < list.length) { const img = art(g, () => {}, true); if (img) cell.append(img); }
-      collage.append(cell);
-    }
-    box.append(collage, el('p', 'rux--type-heading-02', R.systemName(system)), el('p', 'emu-system__count', countOf(list.length)));
+    const picture = el('div', 'emu-system__art');
+    const img = el('img');
+    img.alt = '';
+    img.src = R.consoleOf(system).url;
+    img.addEventListener('error', () => img.remove());
+    picture.append(img);
+    box.append(picture, el('p', 'rux--type-heading-02', R.systemName(system)), el('p', 'emu-system__count', countOf(list.length)));
     a.append(box);
     li.append(a);
     return li;
@@ -130,9 +127,15 @@
       const here = games.filter(g => g.system === system);
       if (here.length) ul.append(systemTile(system, here));
     }
+    // libretro's console pictures ask for their credit wherever they show.
+    const credit = el('p', 'emu-system__count');
+    credit.append('Console pictures from ', link('libretro\u2019s RetroArch assets', 'https://github.com/libretro/retroarch-assets'),
+      ', ', link('CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/'), '.');
     section.append(h2, ul);
+    if (Object.keys(R.SYSTEMS).some(s => !R.consoleOf(s).own)) section.append(credit);
     out.append(section);
   }
+  const link = (text, href) => { const a = el('a', 'rux--link', text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
 
   function render() {
     const system = route();

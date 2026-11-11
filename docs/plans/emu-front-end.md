@@ -15,11 +15,15 @@ Emu is `docs/plans/emu-app.md`.
 
 - **The front page is the library:** the recently played and the
   favourites as rows of box art, then a tile for each system with games,
-  four of its covers on it, with a search across every game; a system's
+  its console on it, with a search across every game; a system's
   tile opens its games as a grid, all of them, its favourites or its
   recently played, at its own address so Back and a bookmark work. A game
   opens a side panel with its art, notes, played and favourite, and Play.
   The Collection table is its own page.
+- **A system's tile shows rux's own pixel art of its console,** drawn into
+  `emu/brand/systems/`, and until then libretro's Systematic picture of it,
+  CC BY 4.0, loaded from libretro's GitHub and credited below the tiles;
+  consoles' own photos and logos are their makers' and stay out.
 - **Play marks when a game was last played,** in `emu_notes.played_at`, for
   Recently played; it changes no mark or note.
 - **Covers show a game's name without its list's tags,** region, languages
@@ -49,6 +53,9 @@ Emu is `docs/plans/emu-app.md`.
   icon, which Ryujinx shows, read from the game file by the scan?
 
 ## Tasks
+
+- [ ] Draw a pixel-art console for each system into `emu/brand/systems/`,
+  as `<system>.png`, and list each in `DRAWN` in `emu/app.js`.
 
 - [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
   Status, and from the MacBook Pro.

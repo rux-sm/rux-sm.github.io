@@ -67,13 +67,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-panel-art { max-inline-size: 16rem; }
 
 /* THE LIBRARY'S HOME AND GRIDS. A system's tile is Carbon's clickable tile,
-   holding a square of four of its covers over its name and count. A system's
+   holding a picture of its console over its name and count. A system's
    games, or a search's, wrap into as many columns of covers as fit. */
 .emu-systems { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--rux-spacing-05); padding: 4px; margin: -4px; }
 .emu-system { display: grid; gap: var(--rux-spacing-04); }
-.emu-system__art { display: grid; grid-template: 1fr 1fr / 1fr 1fr; gap: 2px; aspect-ratio: 1; overflow: hidden; }
-.emu-system__art > * { background: var(--rux-layer-02); min-inline-size: 0; min-block-size: 0; overflow: hidden; }
-.emu-system__art img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* The picture is pinned inside its frame, so a large one never sets the tile's size. */
+.emu-system { min-inline-size: 0; }
+.emu-system__art { position: relative; aspect-ratio: 4 / 3; background: var(--rux-layer-02); }
+.emu-system__art img { position: absolute; inset-block-start: var(--rux-spacing-05); inset-inline-start: var(--rux-spacing-05); inline-size: calc(100% - 2 * var(--rux-spacing-05)); block-size: calc(100% - 2 * var(--rux-spacing-05)); object-fit: contain; }
 .emu-system__count { color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; }
 .emu-grid[hidden] { display: none; }
 .emu-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: var(--rux-spacing-06) var(--rux-spacing-05); padding: 4px; margin: -4px; }

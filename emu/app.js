@@ -43,6 +43,20 @@
     return [...new Set(names)].map(n => `https://thumbnails.libretro.com/${encodeURIComponent(set)}/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`);
   };
 
+  // A system's console, for its tile on the Library: rux's own pixel art in
+  // brand/systems/<system>.png once a system is listed in DRAWN, else the
+  // picture of the console in libretro's RetroArch assets, Systematic set,
+  // which is CC BY 4.0 and credited where it shows.
+  // The Wii, Wii U and Switch take a model's picture, which reads more
+  // plainly at a tile's size than the set's own.
+  const DRAWN = new Set([]);
+  const CONSOLE_ART = 'https://raw.githubusercontent.com/libretro/retroarch-assets/master/xmb/systematic/png/';
+  const CONSOLES = {
+    ...ART, wii: 'Nintendo - Wii RVL-001 WT', wiiu: 'Nintendo - Wii U WUP-001 W', switch: 'Nintendo - Switch HAC-001',
+  };
+  const consoleOf = system => (DRAWN.has(system) ? { url: `brand/systems/${system}.png`, own: true }
+    : { url: `${CONSOLE_ART}${encodeURIComponent(CONSOLES[system])}.png`, own: false });
+
   // Each system's emulator, why, how it names a save and what it needs, from
   // emulators.json, which the scan reads too.
   let emulatorsRead = null;
@@ -146,7 +160,7 @@
   };
 
   window.Emu = Object.assign(window.Emu || {}, {
-    SYSTEMS, systemName, PREFERRED, artOf, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
+    SYSTEMS, systemName, PREFERRED, artOf, consoleOf, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
     size, date, when, el, tag, option, notice,
   });
 })();

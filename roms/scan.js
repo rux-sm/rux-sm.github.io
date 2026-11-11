@@ -691,12 +691,34 @@
       const st = stats.get(f);
       return { name, size: st.size, created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString() };
     };
+    // A system whose emulator keeps its whole data folder here says by
+    // `savesIn` which of its files are saves; the rest are not saves and stay
+    // out of the backup zip.
+    const notSave = f => {
+      const [, sys, ...rest] = f.split('/');
+      const only = emulators[sys]?.savesIn;
+      return Boolean(only && !new RegExp(only).test(rest.join('/')));
+    };
+    // Ryujinx names a save folder by number under `bis/user/save`, and keeps
+    // the game's title ID as the first eight bytes, little-endian, of the
+    // `ExtraData0` beside it, so the save is matched as if under that ID.
+    const titleIds = new Map();
+    const withTitleId = async (dir, rel) => {
+      const folder = rel.match(/^(.*?bis\/user\/save\/[0-9a-f]{16})\//i)?.[1];
+      if (!folder) return rel;
+      if (!titleIds.has(folder)) {
+        const b = await drive.read(join(dir, folder, 'ExtraData0'), 0, 8).catch(() => null);
+        titleIds.set(folder, b?.length === 8 ? u64le(b, 0).toString(16).padStart(16, '0') : null);
+      }
+      return titleIds.get(folder) ? `${titleIds.get(folder)}/${rel}` : rel;
+    };
     const saveTops = await listOf('saves');
     for (const top of saveTops) {
       if (!top.dir) continue;
       const dir = join('saves', top.name);
       for (const f of await walk(dir)) {
-        const rel = f.slice(dir.length + 1);
+        if (notSave(f)) continue;
+        const rel = await withTitleId(dir, f.slice(dir.length + 1));
         const file = record(f, f.slice('saves/'.length));
         if (emulators[top.name]) { saveFiles.push({ rel, systems: saveRules.systemsOf(top.name, emulators), file }); continue; }
         const hit = saveRules.match(rel, Object.keys(emulators), out, emulators);
@@ -760,7 +782,8 @@
     // The saves, those beside their games too, and the BIOS and keys, which
     // the backup zip packs; a file of 50 MB or more, like the Switch
     // firmware, stays on the drive and the Macs.
-    const packed = [...await walk('saves'), ...besideGames.map(b => b.path), ...biosFiles].filter(f => stats.get(f).size < 50e6);
+    const packed = [...(await walk('saves')).filter(f => !notSave(f)), ...besideGames.map(b => b.path), ...biosFiles]
+      .filter(f => stats.get(f).size < 50e6);
 
     return {
       scan: {

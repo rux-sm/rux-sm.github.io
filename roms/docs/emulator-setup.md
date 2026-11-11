@@ -68,11 +68,17 @@ correct `settings` for it in `roms/emulators.json`.
   MLC path to `<drive>/saves/wiiu/mlc01`. Saves sit under the game's title
   ID in it. Make the `.wua` from the game's folder in Tools, Title Manager.
 - **Ryujinx, Switch.** From [ryujinx.app](https://ryujinx.app/download), the
-  macOS download. Copy `prod.keys` and `title.keys` from
-  `<drive>/bios/switch/` into the `system` folder that File, Open Ryujinx
-  Folder shows, and install the firmware from the zip beside them. Ryujinx
-  has no setting that moves its saves, so they stay in that folder, under
-  `bis/user/save`, where the Mac check finds them.
+  macOS download. Ryujinx has no setting that moves its saves, so its whole
+  folder, keys, firmware, profile and saves, lives at
+  `<drive>/saves/switch/Ryujinx`, and the Mac's own folder is a link to it.
+  Open Ryujinx once and quit it, then:
+
+      mv ~/Library/Application\ Support/Ryujinx ~/.Trash/Ryujinx-empty
+      ln -s "<drive>/saves/switch/Ryujinx" ~/Library/Application\ Support/Ryujinx
+
+  A save sits in `bis/user/save` under a numbered folder, whose
+  `ExtraData0` holds the game's title ID, which is how the scan matches it.
+  The scan reads only that folder, so the firmware stays out of the backup.
 - **xemu, Xbox.** Settings, System: the MCPX boot ROM, the flash ROM and the
   hard disk image from `<drive>/bios/xbox/`.
 

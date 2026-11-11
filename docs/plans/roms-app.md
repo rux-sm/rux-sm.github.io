@@ -173,8 +173,8 @@ Saves:
   there.
 - **A save is matched to its game the way its emulator names it:** Mesen,
   mGBA, melonDS and ares by the game's file name, Azahar and Cemu by
-  title ID, Dolphin by disc ID, and DuckStation and PCSX2 by the disc's
-  serial, which for a CHD comes from the list's entry for the disc, so no
+  title ID, Ryujinx by the title ID its save folder's `ExtraData0` holds,
+  Dolphin by disc ID, and DuckStation and PCSX2 by the disc's serial, which for a CHD comes from the list's entry for the disc, so no
   disc is extracted to read it.
 - **The organize tool renames a save named after its game's file with the
   game,** because those emulators find a save only by that name.
@@ -271,6 +271,3 @@ None open.
 - [ ] Move the RetroArch and Azahar saves, and the other Mac's Dolphin,
   PCSX2, Cemu and Switch saves, into `emulation/saves/`, as the how-to says.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
-- [ ] Keep Ryujinx's saves on the drive and match each to its game, once
-  its folder is read on a real install; it names save folders by number, not
-  by title ID.

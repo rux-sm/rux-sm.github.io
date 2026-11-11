@@ -136,6 +136,7 @@
       "emulator": "Ryujinx",
       "why": "The Switch emulator with a supported Apple Silicon build, from ryujinx.app; Eden calls its Mac build experimental.",
       "saves": "titleId",
+      "savesIn": "^Ryujinx/bis/user/save/",
       "settings": "~/Library/Application Support/Ryujinx",
       "needs": [
         {

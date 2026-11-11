@@ -161,7 +161,9 @@ Emulators, chosen fresh rather than kept from what is installed:
 - **Each emulator's settings stay on each Mac;** the Emulators page says where
   each keeps them, its saves and its installer.
 - **`roms/docs/emulator-setup.md` is the how-to** for installing each one on a
-  Mac and pointing it at the drive, so both Macs are set up the same.
+  Mac and pointing it at the drive.
+- **The MacBook Pro is the one Mac that plays;** the iMac only updates the
+  library, so no emulator is set up there.
 - **The Xbox BIOS and hard disk image stay,** for when Xbox games join.
 
 Saves:
@@ -266,6 +268,6 @@ None open.
 
 ## Tasks
 
-- [ ] Set up the second Mac following `roms/docs/emulator-setup.md`, first
-  copying its Dolphin, PCSX2, Cemu and Switch saves into `emulation/saves/`.
+- [ ] Copy the iMac's Dolphin, PCSX2, Cemu and Switch saves into
+  `emulation/saves/`, as the how-to says, then remove its emulators.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.

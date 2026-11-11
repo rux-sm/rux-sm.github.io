@@ -6,8 +6,7 @@ type: how-to
 
 Each system's emulator, and why it is the one, is in `roms/emulators.json`,
 which the Emulators page shows. This is how each is installed on a Mac and
-pointed at the drive, so both Macs play from the same games and the same
-saves. `<drive>` below is the drive's `emulation` folder, such as
+pointed at the drive, so the Mac plays from the drive's games and saves. `<drive>` below is the drive's `emulation` folder, such as
 `/Volumes/<drive>/emulation`.
 
 ## Before the first emulator
@@ -114,7 +113,7 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
    before pointing Azahar at it.
 4. **Save states** belong to the emulator that made them and are left
    behind; the Little Mermaid one goes with RetroArch.
-5. **The other Mac's saves.** Before removing an emulator there, copy its
+5. **A Mac that no longer plays.** Before removing an emulator there, copy its
    saves into the system's folder: Dolphin's GC and Wii folders, PCSX2's and
    DuckStation's memory cards, Cemu's `mlc01/usr/save`, and the Switch
    emulator's `nand/user/save`.

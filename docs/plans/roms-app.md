@@ -148,10 +148,10 @@ Emulators, chosen fresh rather than kept from what is installed:
 | DS | melonDS | the most accurate, native on macOS | nothing for DS games; DSi BIOS and firmware only for DSi-only games |
 | 3DS | Azahar | the maintained successor to Citra | nothing for a decrypted `.3ds` |
 | PS1 | DuckStation | the most accurate and fastest, reads CHD and `.m3u`, one memory card per game | a PS1 BIOS, `scph5501.bin` for USA games |
-| PS2 | PCSX2 | the only mature PS2 emulator; it runs under Rosetta, as only unofficial forks are native | a PS2 BIOS |
+| PS2 | PCSX2 | the only mature PS2 emulator; its Mac build runs under Rosetta, and only unofficial forks are native | a PS2 BIOS |
 | GameCube, Wii | Dolphin | the only mature one, reads RVZ | nothing |
-| Wii U | Cemu | the only mature one, native on macOS | nothing for a `.wua` |
-| Switch | Eden | the most active, with the best Apple Silicon support now Ryubing only maintains | `prod.keys`, `title.keys` and firmware |
+| Wii U | Cemu | the only mature one; its automatic builds are native, the 2.6 release runs under Rosetta | nothing for a `.wua` |
+| Switch | Ryujinx | the one with a supported Apple Silicon build; Eden calls its Mac build experimental | `prod.keys`, `title.keys` and firmware |
 | Xbox | xemu | the only mature one, for when Xbox games join | the MCPX and flash BIOS and a hard disk image |
 
 - **The table lives in `app.js`** beside each system's preferred format, so
@@ -172,7 +172,7 @@ Saves:
   emulator keeps saves inside its NAND or MLC folder, that whole folder lives
   there.
 - **A save is matched to its game the way its emulator names it:** Mesen,
-  mGBA, melonDS and ares by the game's file name, Azahar, Cemu and Eden by
+  mGBA, melonDS and ares by the game's file name, Azahar and Cemu by
   title ID, Dolphin by disc ID, and DuckStation and PCSX2 by the disc's
   serial, which for a CHD comes from the list's entry for the disc, so no
   disc is extracted to read it.
@@ -271,3 +271,6 @@ None open.
 - [ ] Move the RetroArch and Azahar saves, and the other Mac's Dolphin,
   PCSX2, Cemu and Switch saves, into `emulation/saves/`, as the how-to says.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
+- [ ] Keep Ryujinx's saves on the drive and match each to its game, once
+  its folder is read on a real install; it names save folders by number, not
+  by title ID.

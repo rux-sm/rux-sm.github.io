@@ -62,13 +62,17 @@ correct `settings` for it in `roms/emulators.json`.
   folder `<drive>/saves/gc/GC`. Config, Paths: the Wii NAND root to
   `<drive>/saves/gc/Wii`. Dolphin names a GameCube save by the disc's ID and
   keeps a Wii one under it.
-- **Cemu, Wii U.** General settings: the MLC path to `<drive>/saves/wiiu/mlc01`.
-  Saves sit under the game's title ID in it. Make the `.wua` from the
-  game's folder in Tools, Title Manager.
-- **Eden, Switch.** Copy `prod.keys` and `title.keys` from
-  `<drive>/bios/switch/` into Eden's keys folder and install the firmware
-  from the zip beside them. Settings, Filesystem: the NAND folder to
-  `<drive>/saves/switch/nand`. Saves sit under the game's title ID in it.
+- **Cemu, Wii U.** The `cemu-bin-macos-arm64` download from
+  [Cemu's automatic builds](https://cemu.info/ActionBuilds.php) is native on
+  Apple Silicon; the 2.6 release runs under Rosetta. General settings: the
+  MLC path to `<drive>/saves/wiiu/mlc01`. Saves sit under the game's title
+  ID in it. Make the `.wua` from the game's folder in Tools, Title Manager.
+- **Ryujinx, Switch.** From [ryujinx.app](https://ryujinx.app/download), the
+  macOS download. Copy `prod.keys` and `title.keys` from
+  `<drive>/bios/switch/` into the `system` folder that File, Open Ryujinx
+  Folder shows, and install the firmware from the zip beside them. Ryujinx
+  has no setting that moves its saves, so they stay in that folder, under
+  `bis/user/save`, where the Mac check finds them.
 - **xemu, Xbox.** Settings, System: the MCPX boot ROM, the flash ROM and the
   hard disk image from `<drive>/bios/xbox/`.
 

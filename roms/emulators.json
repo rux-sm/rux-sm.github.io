@@ -101,7 +101,7 @@
     },
     "ps2": {
       "emulator": "PCSX2",
-      "why": "The only mature PS2 emulator; it runs under Rosetta, as only unofficial forks are native.",
+      "why": "The only mature PS2 emulator; its Mac build runs under Rosetta, and only unofficial forks are native.",
       "saves": "serial",
       "settings": "~/Library/Application Support/PCSX2",
       "needs": [
@@ -127,16 +127,16 @@
     },
     "wiiu": {
       "emulator": "Cemu",
-      "why": "The only mature Wii U emulator, native on macOS; a .wua needs no keys.",
+      "why": "The only mature Wii U emulator; its automatic builds are native on Apple Silicon, where the 2.6 release runs under Rosetta. A .wua needs no keys.",
       "saves": "titleId",
       "settings": "~/Library/Application Support/Cemu",
       "needs": []
     },
     "switch": {
-      "emulator": "Eden",
-      "why": "The most active Switch emulator, with the best Apple Silicon support now Ryubing only maintains.",
+      "emulator": "Ryujinx",
+      "why": "The Switch emulator with a supported Apple Silicon build, from ryujinx.app; Eden calls its Mac build experimental.",
       "saves": "titleId",
-      "settings": "~/Library/Application Support/eden",
+      "settings": "~/Library/Application Support/Ryujinx",
       "needs": [
         {
           "file": "prod.keys",
@@ -368,23 +368,16 @@
         }
       ]
     },
-    "Eden": {
+    "Ryujinx": {
       "apps": [
-        "Eden.app",
-        "eden.app"
+        "Ryujinx.app"
       ],
       "homes": [
-        "~/Library/Application Support/eden"
+        "~/Library/Application Support/Ryujinx"
       ],
-      "config": {
-        "file": "config/qt-config.ini",
-        "format": "ini"
-      },
       "places": [
         {
-          "path": "nand",
-          "key": "Data%20Storage/nand_directory",
-          "include": "^user/save/"
+          "path": "bis/user/save"
         }
       ]
     },
@@ -419,19 +412,6 @@
         {
           "path": "states",
           "key": "savestate_directory"
-        }
-      ]
-    },
-    "Ryujinx": {
-      "apps": [
-        "Ryujinx.app"
-      ],
-      "homes": [
-        "~/Library/Application Support/Ryujinx"
-      ],
-      "places": [
-        {
-          "path": "bis/user/save"
         }
       ]
     },

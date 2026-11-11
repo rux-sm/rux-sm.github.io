@@ -2,8 +2,8 @@
    emulators.js — the Emulators page
    --------------------------------------------------------------------------
    One profile per emulator, from emulators.json, each a fold with the same
-   parts in the same order: the systems it plays; its version on the drive
-   and on each Mac; each file it needs and whether the drive's bios folder
+   parts in the same order: the systems it plays; its version on the drive,
+   the newest its project has out as Update last asked, and each Mac's; each file it needs and whether the drive's bios folder
    holds it; every kind of file it writes, where that sits on a Mac, the
    setting that moves it and what becomes of it; the settings to have; and
    what is worth knowing. ES-DE, the library, is the last profile.
@@ -31,11 +31,6 @@
     own: ['This Mac\'s settings', 'rux--tag--gray'], collected: ['Stays on this Mac', 'rux--tag--gray'],
     local: ['Stays on this Mac', 'rux--tag--gray'],
   };
-
-  // A version as its numbers alone: `v2.6.3` and `0.1-12640-gbb4e9ac5e` as the drive's installer names them.
-  const plain = v => String(v).replace(/^v/, '').replace(/-g[0-9a-f]+$/, '');
-  // The version in an installer's name, before its `-macOS`: numbers, or a build's seven letters.
-  const versionIn = name => name.match(/-(\d[\w.]*(?:-\d+)?|[0-9a-f]{7})-mac/i)?.[1] ?? null;
 
   const heading = text => el('h3', 'rux--type-heading-02', text);
   const part = (title, ...nodes) => { const s = el('section', 'rux--stack-vertical rux--stack-scale-4'); s.append(heading(title), ...nodes); return s; };
@@ -68,20 +63,24 @@
   const where = f => `${f.besideGame ? 'Beside the game' : f.path ? `In ${f.path}` : 'Wherever its setting says'} · ${f.key ? `moved by ${f.key}` : 'no setting moves it'}`;
 
   // One emulator's profile. `on(mac)` is this app as a Mac reported it, and `needs` its files by system.
-  function profile({ name, rule, systems, why, saves, needs, on }, { macs, installers }) {
-    const installer = installers.find(i => R.slug(i.name).includes(R.slug(name)));
-    const kept = installer && versionIn(installer.name);
+  function profile({ name, rule, systems, why, saves, needs, on }, { macs, drive }) {
+    const installer = R.installerOf(drive, name);
+    const kept = R.keptVersion(installer);
+    // The newest its project has out, as Update last asked; a rolling build's is never a to-do.
+    const out = drive?.newest?.[name] ? R.plainVersion(drive.newest[name]) : null;
+    const newer = out && kept && out !== kept && !rule.feed?.rolling;
     const says = rule.reportsVersion !== false;
     const stands = macs.map(mac => {
       const app = on(mac);
       return { mac, version: !app ? null : says ? app.version ?? 'Installed' : 'Installed' };
     });
-    const differs = says && kept ? stands.filter(s => s.version && plain(s.version) !== kept).length : 0;
+    const differs = says && kept ? stands.filter(s => s.version && R.plainVersion(s.version) !== kept).length : 0;
 
     const title = el('span', 'emu-row__main');
     title.append(el('span', '', name), el('span', 'emu-row__sub', systems.length ? systems.map(R.systemName).join(', ') : 'The library'));
     const tags = el('span', 'emu-tags emu-state');
     if (differs) tags.append(tag([`${differs} ${differs === 1 ? 'Mac differs' : 'Macs differ'}`, 'rux--tag--red'], true));
+    if (newer) tags.append(tag([`${out} is out`, 'rux--tag--red'], true));
     tags.append(tag(kept ? [kept, 'rux--tag--gray'] : ['No installer', 'rux--tag--red'], true));
 
     const parts = [];
@@ -91,6 +90,8 @@
 
     parts.push(part('Version', facts([
       ['On the drive', installer ? `${kept ?? 'A build'} · ${installer.name}` : 'No installer for it in emulation/emulators/'],
+      ['Newest out', out ? `${out}${rule.feed?.rolling ? ' · a new build every few days' : ''}`
+        : rule.feed ? 'Not asked yet: Update asks its project' : 'Not followed: the drive keeps a development build'],
       ...stands.map(s => [`${s.mac.name}${s.mac.live ? ' · this Mac' : ''}`,
         s.version === null ? 'Not installed' : says ? s.version : 'Installed; the app does not say its version']),
     ])));
@@ -157,7 +158,7 @@
     const macs = [...saved.filter(m => m.name !== here?.name), ...(here ? [here] : [])].sort((a, b) => a.name.localeCompare(b.name));
     const count = new Map();
     for (const g of games) count.set(g.system, (count.get(g.system) ?? 0) + 1);
-    const all = { macs, installers: drive?.installers ?? [] };
+    const all = { macs, drive };
     const gamesOf = n => (n ? `${n} ${n === 1 ? 'game' : 'games'}` : 'no games yet');
 
     const items = Object.entries(emulators.macSaves).map(([name, rule]) => {

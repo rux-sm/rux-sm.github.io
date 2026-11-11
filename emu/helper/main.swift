@@ -12,6 +12,8 @@
 //                          version, and each place an emulator saves to
 //   GET    /mac/saves      each save this Mac keeps itself, not on the drive
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
+//   GET    /newest         the newest version of each emulator its project
+//                          has out, asked of the feed emulators.json names
 //   GET    /drive/list     ?path=, a folder of the collection, for the scan
 //   GET    /drive/stat     ?path=, a file's size and last-changed time
 //   GET    /drive/file     ?path=&at=&n=, a file's bytes, or n of them from at
@@ -25,7 +27,9 @@
 // saves on a Mac, is the site's `emulators.json`, which build-helper.mjs puts
 // inside the app, so it reads a Mac with no drive plugged in. A game must
 // sit inside `roms/<system>/`, and a Mac's save must be one /mac/saves
-// lists, so nothing the site sends can open or read anything else.
+// lists, so nothing the site sends can open or read anything else. The one
+// thing it asks of the internet is each project's feed, at the addresses
+// inside the app, and it sends them nothing but the question.
 
 import AppKit
 import CryptoKit
@@ -34,7 +38,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "3"
+let version = "4"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -228,7 +232,17 @@ func placesOf(_ where_: [String: Any], _ homeDir: String) -> [(place: [String: A
   }
 }
 
-let homeOf = { (w: [String: Any]) in (w["homes"] as? [String] ?? []).map(expand).first(where: exists) }
+// An emulator's folder on this Mac: of those it may use, the one whose
+// settings file was written last, else the first that is there.
+let homeOf = { (w: [String: Any]) -> String? in
+  let there = (w["homes"] as? [String] ?? []).map(expand).filter(exists)
+  let file = (w["config"] as? [String: Any])?["file"] as? String
+  let written = { (home: String) -> Date in
+    file.flatMap { (try? files.attributesOfItem(atPath: home + "/" + $0))?[.modificationDate] as? Date } ?? .distantPast
+  }
+  let last = there.map(written).max()
+  return there.first { written($0) == last }
+}
 let appsOf = { (w: [String: Any]) in w["apps"] as? [String] ?? [] }
 let iso: ISO8601DateFormatter = {
   let f = ISO8601DateFormatter()
@@ -354,6 +368,75 @@ func macSavePath(_ stored: String) -> String? {
   guard parts.count == 3, let index = Int(parts[1]),
         let place = savers().first(where: { $0.name == parts[0] })?.places.first(where: { $0.index == index }) else { return nil }
   return saves(in: place).first { $0.rel == parts[2] }?.path
+}
+
+// MARK: The newest versions
+
+// A feed's answer as JSON, or nil when it does not answer.
+func asked(_ address: String) -> Any? {
+  guard let url = URL(string: address) else { return nil }
+  var req = URLRequest(url: url, timeoutInterval: 15)
+  req.setValue("rux-emu-helper", forHTTPHeaderField: "User-Agent")
+  req.setValue("application/json", forHTTPHeaderField: "Accept")
+  let done = DispatchSemaphore(value: 0)
+  var out: Any?
+  URLSession.shared.dataTask(with: req) { data, response, _ in
+    if (response as? HTTPURLResponse)?.statusCode == 200, let data { out = try? JSONSerialization.jsonObject(with: data) }
+    done.signal()
+  }.resume()
+  done.wait()
+  return out
+}
+
+// The newest version a feed names. A `github` project's is its latest
+// release's tag; with `tags`, the greatest tag that pattern matches, for a
+// project that tags without releasing; with `count`, the first tag and the
+// commits from it to the second, as a rolling build numbers itself. Any
+// other feed is a `url` and the `path` to the version in its JSON.
+func newestOf(_ feed: [String: Any]) -> String? {
+  if let repo = feed["github"] as? String {
+    let api = "https://api.github.com/repos/\(repo)"
+    if let count = feed["count"] as? [String], count.count == 2 {
+      guard let n = (asked("\(api)/compare/\(count[0])...\(count[1])") as? [String: Any])?["ahead_by"] as? Int else { return nil }
+      return "\(count[0])-\(n)"
+    }
+    if let pattern = feed["tags"] as? String {
+      let names = (asked("\(api)/tags?per_page=100") as? [[String: Any]] ?? []).compactMap { $0["name"] as? String }
+      return names.filter { $0.range(of: pattern, options: .regularExpression) != nil }.max()
+    }
+    return (asked("\(api)/releases/latest") as? [String: Any])?["tag_name"] as? String
+  }
+  guard let url = feed["url"] as? String, let path = feed["path"] as? String else { return nil }
+  var v = asked(url)
+  for k in path.components(separatedBy: ".") {
+    if let i = Int(k) { v = (v as? [Any]).flatMap { $0.indices.contains(i) ? $0[i] : nil } } else { v = (v as? [String: Any])?[k] }
+  }
+  return v as? String
+}
+
+// Each emulator's newest version by its name, every feed asked at once. A
+// whole answer is kept an hour, since GitHub answers 60 unsigned questions
+// an hour and Status asks each time it opens.
+var newestKept: (at: Date, found: [String: Any])?
+let newestLock = NSLock()
+func newest() -> [String: Any] {
+  newestLock.lock()
+  defer { newestLock.unlock() }
+  if let kept = newestKept, Date().timeIntervalSince(kept.at) < 3600 { return kept.found }
+  var feeds: [(name: String, feed: [String: Any])] = (rules["macSaves"] as? [String: Any] ?? [:]).compactMap { name, value in
+    ((value as? [String: Any])?["feed"] as? [String: Any]).map { (name, $0) }
+  }
+  if let f = rules["frontend"] as? [String: Any], let name = f["name"] as? String, let feed = f["feed"] as? [String: Any] { feeds.append((name, feed)) }
+  var found: [String: Any] = [:]
+  let each = NSLock()
+  DispatchQueue.concurrentPerform(iterations: feeds.count) { i in
+    guard let v = newestOf(feeds[i].feed) else { return }
+    each.lock()
+    found[feeds[i].name] = v
+    each.unlock()
+  }
+  if found.count == feeds.count { newestKept = (Date(), found) }
+  return found
 }
 
 // MARK: The drive, for the site's scan
@@ -483,6 +566,7 @@ final class Server {
     case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/mac"): off { .json(200, macReport()) }
     case ("GET", "/mac/saves"): off { .list(200, macSaves()) }
+    case ("GET", "/newest"): off { .json(200, newest()) }
     case ("GET", "/mac/save"):
       off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
         ?? .json(404, ["error": "That is not a save this Mac keeps."]) }

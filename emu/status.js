@@ -2,7 +2,8 @@
    status.js — the Status page
    --------------------------------------------------------------------------
    What is done and what is left. The drive, from its last scan: each BIOS
-   a system's emulator needs, each emulator's installer kept, and saves
+   a system's emulator needs, each emulator's installer kept and whether its
+   project has a newer one out, and saves
    still in a folder from before each emulator had its own. Then this Mac,
    live from Rux Emu Helper, helper.js, when it is running here, and every
    other Mac as Update last saved it there, folded shut below it so the page
@@ -31,7 +32,7 @@
   const ABSENT = ['Not installed', 'rux--tag--gray'];
   const files = n => `${n} ${n === 1 ? 'file' : 'files'}`;
   // Whether the drive keeps an installer named for an app.
-  const keptOn = (drive, name) => (drive?.installers ?? []).some(i => R.slug(i.name).includes(R.slug(name)));
+  const keptOn = (drive, name) => Boolean(R.installerOf(drive, name));
   // An emulator's profile on the Emulators page.
   const profile = name => `emulators.html#${R.slug(name)}`;
   const absent = (drive, name) => keptOn(drive, name) ? 'Its installer is on the drive' : 'No installer for it on the drive yet';
@@ -80,6 +81,14 @@
     const noInstaller = names.filter(n => !keptOn(drive, n));
     rows.push({ what: 'Installers kept on the drive', state: noInstaller.length ? TODO : DONE,
       detail: noInstaller.length ? `None yet in emulation/emulators/ for ${noInstaller.join(', ')}` : `One for each of ${names.join(', ')}` });
+
+    // Each installer against the newest its project has out, once Update has asked.
+    if (drive.newest) {
+      const newer = R.newerOut(emulators, drive);
+      rows.push({ what: 'The newest versions on the drive', state: newer.length ? TODO : DONE,
+        detail: newer.length ? `Download into emulation/emulators/:\n${newer.map(n => `${n.name} ${n.newest}, in place of ${n.kept}`).join('\n')}`
+          : 'Each installer is the newest its project has out' });
+    }
 
     // A save's folder is its emulator's when it is named for a system.
     const old = new Map();

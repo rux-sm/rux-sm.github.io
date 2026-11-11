@@ -150,16 +150,20 @@ What each emulator's source and the installers on the drive say:
 
 ## Questions
 
-None open.
+- Is Supabase the collection's home for everything but the games, with the
+  page carrying saves between the helper and Supabase as it uploads a Mac's
+  saves now, so the drive and the home server hold only games, installers
+  and a backup? Everything but the games is under 2 GB, the project's plan
+  holds 100 GB, and saves then follow to any Mac with the internet and no
+  drive; the helper keeps no log-in, so a save waits on the Mac until the
+  site is open.
 
 ## Tasks
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Make the helper ask the feeds during Update, and show the newest on
-  each profile. Settle which folder mGBA writes its settings in, since its
-  source names `~/.config/mgba`, and name the setting that turns off the
-  updater in Azahar, mGBA and Ryujinx.
+- [ ] Install the helper on the MacBook Pro from the drive and Update
+  there, which settles which folder mGBA writes its settings in.
 - [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive, and move
   the GameCube save into `GC/USA/`.
 - [ ] Make the helper install from the drive with a receipt.

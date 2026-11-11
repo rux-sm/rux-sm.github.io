@@ -50,7 +50,11 @@
     ],
     "notes": [
       "It finds Ryujinx and xemu only in /Applications."
-    ]
+    ],
+    "feed": {
+      "url": "https://updates.es-de.org/latest_release.json",
+      "path": "stable.version"
+    }
   },
   "systems": {
     "nes": {
@@ -396,14 +400,18 @@
         "It makes a save state every five minutes, as slot 11.",
         "A folder setting counts only with its Override setting on, and with that folder missing it saves in its own without saying so.",
         "The app says version 1.0 whatever its version is."
-      ]
+      ],
+      "feed": {
+        "github": "SourMesen/Mesen2"
+      }
     },
     "mGBA": {
       "apps": [
         "mGBA.app"
       ],
       "homes": [
-        "~/Library/Application Support/mGBA"
+        "~/Library/Application Support/mGBA",
+        "~/.config/mgba"
       ],
       "config": {
         "file": "config.ini",
@@ -444,12 +452,20 @@
           "path": "library.sqlite3"
         }
       ],
-      "manages": [],
+      "manages": [
+        {
+          "key": "ports.qt/updateAutoCheck",
+          "value": "0",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
       "notes": [
         "Saves, save states, screenshots and cheats sit beside the game unless each has a folder set.",
-        "It writes a save a moment after the game does.",
-        "It offers to update itself."
-      ]
+        "It writes a save a moment after the game does."
+      ],
+      "feed": {
+        "github": "mgba-emu/mgba"
+      }
     },
     "ares": {
       "apps": [
@@ -499,7 +515,10 @@
       "notes": [
         "It adds the system's name to its saves folder, as Nintendo 64/, and a folder setting must end in a slash.",
         "Saves and save states sit beside the game unless a folder is set."
-      ]
+      ],
+      "feed": {
+        "github": "ares-emulator/ares"
+      }
     },
     "melonDS": {
       "apps": [
@@ -551,7 +570,10 @@
         "Saves, save states and cheats sit beside the game unless each has a folder set.",
         "It writes a save two seconds after the game does.",
         "With its own BIOS on, it writes this Mac's console settings into the firmware file."
-      ]
+      ],
+      "feed": {
+        "github": "melonDS-emu/melonDS"
+      }
     },
     "Azahar": {
       "apps": [
@@ -625,13 +647,21 @@
           "path": "log"
         }
       ],
-      "manages": [],
+      "manages": [
+        {
+          "key": "Miscellaneous/check_for_update_on_start",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
       "notes": [
         "Opened with a storage folder missing, it puts its own back into its settings and saves there from then on.",
         "Its SD card and console storage folders count only with use_custom_storage on.",
-        "It writes a save as the game does.",
-        "It offers to update itself."
-      ]
+        "It writes a save as the game does."
+      ],
+      "feed": {
+        "github": "azahar-emu/azahar"
+      }
     },
     "DuckStation": {
       "apps": [
@@ -725,7 +755,15 @@
       "notes": [
         "It writes a memory card five seconds after the game does.",
         "It has no numbered releases, only the newest build, counted from 0.1."
-      ]
+      ],
+      "feed": {
+        "github": "stenzek/duckstation",
+        "count": [
+          "0.1",
+          "latest"
+        ],
+        "rolling": true
+      }
     },
     "PCSX2": {
       "apps": [
@@ -820,7 +858,11 @@
       "notes": [
         "Its Mac build is for Intel, and runs through Rosetta on Apple Silicon.",
         "It writes a folder memory card moments after the game does."
-      ]
+      ],
+      "feed": {
+        "url": "https://api.pcsx2.net/v1/stableReleases?pageSize=1",
+        "path": "data.0.version"
+      }
     },
     "Dolphin": {
       "apps": [
@@ -899,7 +941,11 @@
         "It adds the region to a GameCube save folder, as GC/USA/.",
         "Its Wii storage holds installed channels and console settings beside the saves.",
         "It writes a GameCube save within a second of the game."
-      ]
+      ],
+      "feed": {
+        "github": "dolphin-emu/dolphin",
+        "tags": "^[0-9]{4}[a-z]?$"
+      }
     },
     "Cemu": {
       "apps": [
@@ -1042,13 +1088,22 @@
           "path": "~/Library/Logs/Ryujinx"
         }
       ],
-      "manages": [],
+      "manages": [
+        {
+          "key": "update_checker_type",
+          "value": "Off",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
       "notes": [
         "It names each save folder by a number from its own index, so saves move only together with that index.",
         "Everything it keeps is one folder, which no setting splits.",
-        "The app says version 1.2 for 1.3.3.",
-        "It offers to update itself."
-      ]
+        "The app says version 1.2 for 1.3.3."
+      ],
+      "feed": {
+        "url": "https://update.ryujinx.app/latest/query?rc=stable&os=mac&arch=arm64",
+        "path": "tag"
+      }
     },
     "xemu": {
       "apps": [
@@ -1108,7 +1163,10 @@
         "It makes a new EEPROM where it finds none.",
         "One disk image holds every game's saves, so one Mac plays at a time.",
         "Screenshots go wherever it was started from unless a folder is set."
-      ]
+      ],
+      "feed": {
+        "github": "xemu-project/xemu"
+      }
     }
   },
   "retired": {

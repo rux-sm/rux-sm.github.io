@@ -3,10 +3,10 @@
    --------------------------------------------------------------------------
    Scans the drive with scan.js, read and written through Rux Emu Helper,
    drive.js, so it runs on a Mac with the helper running and the drive
-   plugged in, and reads how this Mac stands and each save it keeps itself
-   from the helper too. It says what changed since the last save, or that
+   plugged in, and reads how this Mac stands, each save it keeps itself and
+   each emulator's newest version out from the helper too. It says what changed since the last save, or that
    nothing is, and saves on a yes: every game and save, the BIOS list and the
-   drive's row, the backup zip to Supabase, and this Mac's report with any
+   drive's row with the newest versions, the backup zip to Supabase, and this Mac's report with any
    save it keeps itself, each uploaded file by file.
 
    It writes back to the drive what the Mac scan writes: the fingerprints,
@@ -111,8 +111,13 @@
       // This Mac, when how it stands or a save it keeps itself differs from the last saved.
       said('Reading this Mac…');
       const games = scan.games;
-      const [saved, savedSaves, savedMacs, savedDrive, report, macFiles] = await Promise.all([
-        R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves()]);
+      const [saved, savedSaves, savedMacs, savedDrive, report, macFiles, asked] = await Promise.all([
+        R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves(), R.helper.newest()]);
+      // Each emulator's newest version out: what the feeds said now, over what they last said for any that did not answer.
+      const newest = { ...savedDrive?.newest, ...asked };
+      // A rolling build has a new number every few days, which alone is nothing to save.
+      const steady = n => canon(Object.fromEntries(Object.entries(n).filter(([name]) => !emulators.macSaves[name]?.feed?.rolling)));
+      const sameNewest = JSON.stringify(steady(newest)) === JSON.stringify(steady(savedDrive?.newest ?? {}));
       let mac = null;
       if (report) {
         const before = savedMacs.find(x => x.name === report.mac);
@@ -132,7 +137,7 @@
       const savesGone = savedSaves.filter(s => s.location === DRIVE && !savesNow.has(saveKey(s)));
       const savesNew = scan.saves.filter(s => !savedSaves.some(x => x.location === DRIVE && saveKey(x) === saveKey(s)));
       // Nothing to save: the same games, saves and backup, and this Mac as it was.
-      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac
+      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac && sameNewest
         && (scan.backup?.sha1 ?? null) === (savedDrive?.backup?.sha1 ?? null)) {
         said(`Nothing new since the last save. Scanned ${R.when(scan.scanned)}.`);
         return;
@@ -149,13 +154,14 @@
           })),
           drive: {
             to_delete: scan.toDelete, unsorted_saves: scan.unsortedSaves, backups: scan.backups,
-            backup: scan.backup, installers: scan.installers, scanned_at: scan.scanned,
+            backup: scan.backup, installers: scan.installers, newest, scanned_at: scan.scanned,
           },
           renames: scan.renames,
         },
         zip,
         mac,
       };
+      const newer = R.newerOut(emulators, pending.scan.drive);
       const counts = [
         `${games.length} games`,
         added.length ? `${added.length} new` : '',
@@ -165,6 +171,7 @@
       $('emu-check-text').textContent = [
         `${counts}. ${scan.saves.length} saves.`,
         mac ? `${mac.mac} has changed${mac.files.length ? `, with ${mac.files.length} saves it keeps itself` : ''}.` : '',
+        sameNewest ? '' : `The newest versions out have changed${newer.length ? `: ${newer.map(n => `${n.name} ${n.newest}`).join(', ')}` : ''}.`,
         zip ? `Saving also uploads the backup, ${(zip.size / 1e6).toFixed(1)} MB.` : '',
       ].filter(Boolean).join(' ');
       said(`Scanned ${R.when(scan.scanned)}.`);

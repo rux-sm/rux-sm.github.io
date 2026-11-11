@@ -47,7 +47,7 @@ fingerprints and the zip back to the drive, as the Mac scan does.
 
 Then it says what is done and what is left. For the drive, from its last
 scan: each BIOS a system with games needs, each emulator's installer
-kept, and saves still in a folder from before each emulator had its own.
+kept and whether its project has a newer one out, and saves still in a folder from before each emulator had its own.
 For this Mac live from the helper, and each other as Update last saved it,
 folded shut below it until opened: ES-DE reading the drive's games, each
 emulator saving into its folder on the drive, and each retired app in
@@ -103,8 +103,8 @@ again after it. chdman comes from Homebrew's `rom-tools`.
 puts it on the drive with `Install Rux Emu Helper.command`, which copies it
 into Applications. The menu bar helper answers only the Rux Emu site, on
 `127.0.0.1:47647`, with the calls `helper/main.swift` lists: Play, this Mac
-as it stands with the saves it keeps itself, and the drive for Update's
-scan. The app carries its own `emulators.json`, so build it again after a
+as it stands with the saves it keeps itself, the drive for Update's scan,
+and each emulator's newest version out, asked of its project's feed. The app carries its own `emulators.json`, so build it again after a
 change.
 
 `tools/backup-saves.mjs` is each Mac's copy: the newest backup zip, and the

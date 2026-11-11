@@ -152,6 +152,21 @@
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };
   // A name as lowercase letters and digits: how an installer is matched to its app, and an emulator's profile is addressed.
   const slug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // An emulator's versions. `installerOf` is its installer on the drive, by
+  // its name, and `keptVersion` the version in that file's name, before its
+  // `-macOS`: numbers, or a build's seven letters. `plainVersion` is a
+  // version as the installer names it, `v2.6.3` and `0.1-12640-gbb4e9ac5e`
+  // without the v and the commit. `newerOut` is each emulator whose project
+  // has out another version than the drive keeps; a rolling build is left
+  // out, being always a few commits on.
+  const plainVersion = v => String(v).replace(/^v/, '').replace(/-g[0-9a-f]+$/, '');
+  const installerOf = (drive, name) => (drive?.installers ?? []).find(i => slug(i.name).includes(slug(name))) ?? null;
+  const keptVersion = installer => installer?.name.match(/-(\d[\w.]*(?:-\d+)?|[0-9a-f]{7})-mac/i)?.[1] ?? null;
+  const newerOut = (emulators, drive) => Object.entries(drive?.newest ?? {}).map(([name, v]) => {
+    const rule = emulators.macSaves[name] ?? (emulators.frontend.name === name ? emulators.frontend : null);
+    const kept = keptVersion(installerOf(drive, name));
+    return rule?.feed && !rule.feed.rolling && kept && plainVersion(v) !== kept ? { name, kept, newest: plainVersion(v) } : null;
+  }).filter(Boolean);
   const option = (value, text) => { const o = document.createElement('option'); o.value = value; o.textContent = text; return o; };
 
   // Folds of Design's accordion, whose script opens and shuts them: `fold` is
@@ -193,6 +208,6 @@
 
   window.Emu = Object.assign(window.Emu || {}, {
     SYSTEMS, systemName, PREFERRED, artOf, consoleOf, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
-    size, date, when, el, tag, option, slug, fold, folds, notice,
+    size, date, when, el, tag, option, slug, plainVersion, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

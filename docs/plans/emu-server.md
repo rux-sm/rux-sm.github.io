@@ -17,11 +17,6 @@ The home server, so the drive is not carried between Macs:
 
 - **Until the server is built, the T7 stays the collection's home,** carried
   between Macs as now, and everything Emu does today reads it.
-- **The PC's Windows shares `C:\emulation` as `emulation`,** reached from a
-  Mac at `smb://RUX/emulation` with rux's Microsoft account; the 1 TB NVMe has
-  no room beside Windows for the collection, so the copy waits for the
-  TrueNAS drives, and the T7, in APFS that Windows cannot read, stays its home.
-
 - **rux's old gaming PC becomes the collection's home,** holding the games,
   BIOS, keys, firmware, installers and backups; it only stores, and every
   game is played on another machine.
@@ -32,8 +27,9 @@ The home server, so the drive is not carried between Macs:
   the saves'.
 - **The drives are CMR, never SMR,** since an SMR drive slows to a crawl
   rebuilding a ZFS mirror.
-- **TrueNAS runs from a drive of its own,** 16 GB or more, since it takes its
-  whole boot drive and keeps no files there.
+- **TrueNAS runs from the PC's 1 TB NVMe, in place of Windows,** which the
+  PC no longer needs, so no boot drive is bought; TrueNAS takes its whole
+  boot drive and keeps no files there.
 - **Its 32 GB of memory is ZFS's cache,** so listings, the nightly scan and
   repeated reads come from memory, not the disks.
 - **It is on wired Ethernet,** since TrueNAS has no Wi-Fi.
@@ -53,7 +49,7 @@ The home server, so the drive is not carried between Macs:
 - **Download to this Mac, in a game's side panel,** writes the game into the
   Mac's own library folder, under its system's folder as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
-  Remove from this Mac frees the space. ES-DE reads that folder.
+  Remove from this Mac frees the space. Play opens a game from there.
 - **The download goes straight into the folder through Chrome,** which lets a
   page write into a folder rux chooses once; Safari cannot, so the app says
   to use Chrome for it.
@@ -77,8 +73,6 @@ The setup kit, so any Mac is set up from the server in one step:
 
 ## Questions
 
-- Does the PC still need Windows? If not, its 1 TB NVMe starts TrueNAS and
-  no boot drive is bought; if so, the spare SSD or a small new one does.
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
 
@@ -87,8 +81,9 @@ The setup kit, so any Mac is set up from the server in one step:
 - [ ] Check the case has two free 3.5" bays and the board two free SATA
   ports, then buy two 8 TB WD Red Plus (WD80EFPX), with SATA cables if the
   board came without spares.
-- [ ] Install TrueNAS on the small SSD, make the mirrored pool and share the
-  collection, then copy it on.
+- [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
+  its 1 TB NVMe, make the mirrored pool and share the collection, and copy
+  it on.
 - [ ] Add Tailscale and Syncthing on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.

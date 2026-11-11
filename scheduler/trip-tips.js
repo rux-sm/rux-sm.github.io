@@ -306,7 +306,7 @@
     if (!slot.live) {
       const host = el('div', 'scheduler-card__live-map-box');
       holder.replaceWith(host);
-      const map = window.SchedulerPlaces.baseMap(host, LiveMap.style(), { scrollWheelZoom: false });
+      const map = window.SchedulerPlaces.baseMap(host, LiveMap.style(), { scrollWheelZoom: false, zoom: false });
       if (!map) { host.replaceWith(el('p', 'scheduler-card__live-none', window.SchedulerPlaces.unavailable() || "The map didn't load.")); return; }
       slot.live = { host, map, layer: null, pin: null, busId: null, style: LiveMap.style() };
     } else holder.replaceWith(slot.live.host);
@@ -1019,9 +1019,17 @@
       }
     }
     const day = v => (v ? new Date(`${String(v).slice(0, 10)}T12:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : null);
-    const facts = [driver.phone ? showPhone(driver.phone) : null, driver.language ? `Speaks ${({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language}` : null,
-      driver.license_exp ? `Licence to ${day(driver.license_exp)}` : null, driver.med_card_expiry ? `Medical card to ${day(driver.med_card_expiry)}` : null];
-    for (const words of facts.filter(Boolean)) tip.appendChild(el('div', 'scheduler-tip__row', words));
+    /* Their facts stand in two groups, each tight as the bus tip's lines
+       are and 16px from the next: how to reach them, then their papers. */
+    const group = lines => {
+      const said = lines.filter(Boolean);
+      if (!said.length) return;
+      const row = el('div', 'scheduler-tip__row');
+      row.append(...said.map(words => el('div', null, words)));
+      tip.appendChild(row);
+    };
+    group([driver.phone ? showPhone(driver.phone) : null, driver.language ? `Speaks ${({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language}` : null]);
+    group([driver.license_exp ? `Licence to ${day(driver.license_exp)}` : null, driver.med_card_expiry ? `Medical card to ${day(driver.med_card_expiry)}` : null]);
     if (next) tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__next', `Next: ${next}`));
     const foot = footer();
     if (driver.phone) {

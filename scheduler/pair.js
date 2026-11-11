@@ -108,6 +108,14 @@
     if (text != null) n.textContent = text;
     return n;
   };
+  /* A status in a table's row, on every list page: Carbon's small tag, the
+     size it gives a dense row. `colour` is the tag's colour class, written
+     whole, such as `rux--tag--green`, so the class check can read it. */
+  const statusTag = (label, colour) => {
+    const tag = el('span', `rux--tag rux--layout--size-sm ${colour}`);
+    tag.appendChild(el('span', 'rux--tag__label', label));
+    return tag;
+  };
   const svgUse = (href, size, viewBox, cls) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     if (cls) svg.setAttribute('class', cls);
@@ -475,5 +483,5 @@
     return { say, result, table, textError, comboError, guard, start, historyLink };
   }
 
-  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse, textField, selectField, dateRange, dialogError };
+  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse, statusTag, textField, selectField, dateRange, dialogError };
 })();

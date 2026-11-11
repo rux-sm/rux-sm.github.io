@@ -182,13 +182,44 @@
      opens on the point, or on the yard at a region's scale when there is none,
      and a tap puts the pin there and hands `onSet` the point. `.show(point)`
      moves the pin and the view to a point, or takes the pin away for null. */
+  /* The zoom: two of Design's ghost icon buttons, in and out, in the map's
+     top corner where Leaflet's own stood. Each glyph is the sprite's copied
+     in, as the pin's is, since Chrome paints no `<use>` of the hidden sprite
+     inside Leaflet's panes. */
+  function zoomButtons(m) {
+    const L = window.L;
+    const control = L.control({ position: 'topleft' });
+    control.onAdd = () => {
+      const box = L.DomUtil.create('div', 'scheduler-map-zoom');
+      for (const [label, href, step] of [['Zoom in', '#i-add', 1], ['Zoom out', '#i-subtract', -1]]) {
+        const press = document.createElement('button');
+        press.type = 'button';
+        press.className = 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm';
+        press.setAttribute('aria-label', label);
+        press.title = label;
+        press.innerHTML = `<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">${document.querySelector(href)?.innerHTML ?? ''}</svg>`;
+        press.addEventListener('click', () => m.setZoom(m.getZoom() + step));
+        box.appendChild(press);
+      }
+      // A press on a button is the button's, not a tap on the map under it.
+      L.DomEvent.disableClickPropagation(box);
+      return box;
+    };
+    control.addTo(m);
+  }
+
   /* A Leaflet map over Geoapify's street map, `osm-bright` or another of its
-     styles such as `dark-matter`, with the credit the free plan asks for.
+     styles such as `dark-matter`, with Design's zoom buttons unless
+     `options.zoom` is false, and the credit the free plan asks for.
      `.style(name)` draws it in another style; null with no Leaflet or key. */
   function baseMap(host, style = 'osm-bright', options = {}) {
     if (!window.L || !key) return null;
     const L = window.L;
-    const m = L.map(host, { attributionControl: true, ...options });
+    const { zoom = true, ...rest } = options;
+    // Leaflet's own zoom is never drawn: a map's controls are Design's, app.css's `.scheduler-map`.
+    const m = L.map(host, { attributionControl: true, ...rest, zoomControl: false });
+    host.classList.add('scheduler-map');
+    if (zoom) zoomButtons(m);
     m.attributionControl.setPrefix(false);
     let tiles = null;
     m.style = name => {

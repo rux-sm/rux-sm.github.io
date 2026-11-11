@@ -704,10 +704,10 @@ expect('no answer for the bus: the inspection alone, amber within 45 days, and n
 expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
-const fuel = h => { const f = h.querySelector('.scheduler-row-head__fuel'); return f ? [text(f, '.scheduler-row-head__fuel-pct'), f.dataset.level ?? null, f.style.getPropertyValue('--scheduler-tank')] : null; };
-expect('the fuel: its percent over a meter filled to it, low at 25% and critical at 10%',
+const fuel = h => { const f = h.querySelector('.scheduler-row-head__fuel'); return f ? [text(f, '.scheduler-row-head__fuel-pct'), f.dataset.level ?? null, f.style.getPropertyValue('--scheduler-tank-lit')] : null; };
+expect('the fuel: its percent and a gauge lit to the nearest quarter, one block while any is left, low at 25% and critical at 10%',
   [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 52, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }].map(l => fuel(busHead(l))),
-  [['68%', 'normal', '68%'], ['20%', 'low', '20%'], ['8%', 'critical', '8%']]);
+  [['68%', 'normal', '3'], ['20%', 'low', '1'], ['8%', 'critical', '1']]);
 expect('a bus that reports no fuel draws no fuel', fuel(busHead({ engine: 'on', mph: 30, fuel: null })), null);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
@@ -805,7 +805,7 @@ const card = Tips.driverCard({
   marks: DriverHead.marksOf({ license_exp: dayIn(5) }, [], null, today), next: 'Galveston, Sat, Nov 7' }, { photo: () => Promise.resolve('') });
 expect('a driver\'s card: their name over their priority, what they do now and in which bus, their clocks, their marks, their facts, their next trip, and Call, Send trips and Open driver',
   [text(card, '.scheduler-tip__name'), text(card, '.scheduler-tip__by'), text(card, '.scheduler-tip__now'), card.querySelectorAll('.scheduler-tip__clock').length,
-    card.querySelectorAll('.scheduler-tip__lamp--warning').length, [...card.querySelectorAll('.scheduler-tip__row')].filter(r => !String(r.className).includes('scheduler-tip__lamp')).map(r => r.textContent).filter(t => /^(Speaks|Licence|\(956\))/.test(t)).length,
+    card.querySelectorAll('.scheduler-tip__lamp--warning').length, [...card.querySelectorAll('.scheduler-tip__row')].filter(r => !String(r.className).includes('scheduler-tip__lamp')).flatMap(r => [...r.children]).map(line => line.textContent).filter(t => /^(Speaks|Licence|\(956\))/.test(t)).length,
     text(card, '.scheduler-tip__next'), [...card.querySelectorAll('.scheduler-tip__foot a')].map(a => a.textContent)],
   ['Rigoberto Soto', 'Priority 2 · Part-time', 'Driving · in 218 · at the wheel', 3, 1, 3, 'Next: Galveston, Sat, Nov 7', ['Call', 'Send trips', 'Open driver']]);
 

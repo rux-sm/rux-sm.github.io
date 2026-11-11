@@ -319,7 +319,7 @@
 
   function lineRow(line, page, bus, member) {
     const row = el('li', `scheduler-departures__line scheduler-departures__line--${line.state}`);
-    const mark = svgUse(MARKS[line.state], 18);
+    const mark = svgUse(MARKS[line.state], 16);
     mark.classList.add('scheduler-departures__mark');
     const label = el('span', 'scheduler-departures__what', line.label);
     label.prepend(el('span', 'rux--visually-hidden', `${SAID[line.state]}: `));
@@ -336,7 +336,7 @@
       tick.dataset.hold = `tick:${id}`;
       tick.title = 'Mark as done';
       tick.setAttribute('aria-label', `Mark as done: ${of}`);
-      const hint = svgUse('#m-check_circle', 18);
+      const hint = svgUse('#m-check_circle', 16);
       hint.classList.add('scheduler-departures__hint');
       tick.append(mark, hint);
       row.append(tick, label);
@@ -421,7 +421,7 @@
       fold.type = 'button';
       fold.dataset.hold = `fold:${keyOf(page)}`;
       fold.setAttribute('aria-expanded', String(open));
-      const mark = svgUse(MARKS.done, 18);
+      const mark = svgUse(MARKS.done, 16);
       mark.classList.add('scheduler-departures__mark');
       const arrow = svgUse('#m-keyboard_arrow_down');
       arrow.classList.add('scheduler-departures__arrow');
@@ -471,7 +471,7 @@
       const [confirm, ...steps] = member.lines[0]?.key === 'confirmed' ? member.lines : [null, ...member.lines];
       const headline = el('div', `scheduler-departures__who${confirm ? ` scheduler-departures__who--${confirm.state}` : ''}`);
       if (confirm) {
-        const mark = svgUse(MARKS[confirm.state], 18);
+        const mark = svgUse(MARKS[confirm.state], 16);
         mark.classList.add('scheduler-departures__mark');
         headline.append(mark, el('span', 'rux--visually-hidden', `${confirm.state === 'done' ? 'Confirmed' : confirm.label}: `));
       }

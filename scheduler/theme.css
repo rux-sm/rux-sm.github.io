@@ -182,8 +182,6 @@
    in the bar's ink, and the contact steps back to two thirds of it. A row
    that says there are no times stays plain, so an absence does not shout. */
 [data-theme="rux-dark"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 66%, transparent); }
-[data-theme="rux-dark"] .scheduler-bar__time { font-weight: 600; font-variant-numeric: tabular-nums; }
-[data-theme="rux-dark"] .scheduler-bar__time:has(.scheduler-bar__none) { font-weight: 400; }
 /* Its trip not yet confirmed is red's deep step, 0.34, at 95% of the chroma
    Display P3 holds there, so it stays rich on a P3 screen while standing
    back from the board, and its hover is a step lighter at the same strength. */
@@ -1127,6 +1125,8 @@
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;
+  /* A track's and a meter's ends, round as the bar's corners are. */
+  --scheduler-meter-radius: 100vmax;
   /* The roster's priority tiles take the 8px Design gives these themes' tiles. */
   --scheduler-tile-radius: 8px;
   /* A rounded region closes a list that reaches its edge, so there the last

@@ -12,7 +12,7 @@
 (() => {
   'use strict';
 
-  const { $, el } = window.SchedulerPair;
+  const { $, el, statusTag } = window.SchedulerPair;
   const FollowUp = window.SchedulerFollowUp;
   const pair = window.SchedulerPair.page({ list: 'trips', one: 'trip' });
 
@@ -54,11 +54,11 @@
   /* One status per trip, the furthest it has gone: cancelled, then paid,
      invoiced, confirmed, and otherwise a quote. */
   const STATUS = [
-    { key: 'cancelled', label: 'Cancelled', tag: 'rux--tag--red', is: t => !!t.cancelled_at },
-    { key: 'paid', label: 'Paid', tag: 'rux--tag--green', is: t => !!t.balance_paid },
-    { key: 'invoiced', label: 'Invoiced', tag: 'rux--tag--teal', is: t => !!t.invoiced },
-    { key: 'confirmed', label: 'Confirmed', tag: 'rux--tag--blue', is: t => !!t.confirmed },
-    { key: 'quote', label: 'Quote', tag: 'rux--tag--gray', is: () => true },
+    { key: 'cancelled', label: 'Cancelled', colour: 'rux--tag--red', is: t => !!t.cancelled_at },
+    { key: 'paid', label: 'Paid', colour: 'rux--tag--green', is: t => !!t.balance_paid },
+    { key: 'invoiced', label: 'Invoiced', colour: 'rux--tag--teal', is: t => !!t.invoiced },
+    { key: 'confirmed', label: 'Confirmed', colour: 'rux--tag--blue', is: t => !!t.confirmed },
+    { key: 'quote', label: 'Quote', colour: 'rux--tag--gray', is: () => true },
   ];
   const statusOf = t => STATUS.find(s => s.is(t));
 
@@ -152,7 +152,7 @@
       tr.dataset.id = t.id;
       tr.dataset.href = hrefOf(t);
 
-      const when = el('td', null, dates(t));
+      const when = el('td', 'scheduler-trips-when', dates(t));
 
       const trip = el('td');
       const lines = el('div', 'scheduler-pair-cell__lines');
@@ -169,9 +169,7 @@
       const status = statusOf(t);
       const state = el('td');
       const tagLines = el('div', 'scheduler-pair-cell__lines');
-      const tag = el('span', `rux--tag rux--layout--size-sm ${status.tag}`);
-      tag.appendChild(el('span', 'rux--tag__label', status.label));
-      tagLines.appendChild(tag);
+      tagLines.appendChild(statusTag(status.label, status.colour));
       // The reason is written out, since a tooltip never shows on a phone.
       if (t.cancelled_at && t.cancellation_reason) {
         tagLines.appendChild(el('span', 'scheduler-pair-cell__detail', t.cancellation_reason));

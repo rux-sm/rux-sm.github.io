@@ -7,8 +7,9 @@
    readings at the start in their own rows. What it draws:
    - For a bus Samsara answers for, in whatever week is shown, its state:
      the speed and mph, green while moving, or Idle, Off or a dash and how
-     long, amber past SPEEDING or IDLE_MS. The fuel is a percent with a pump
-     on the phone's column and a gauge from E to F on the full tile. Fuel
+     long, amber past SPEEDING or IDLE_MS. The fuel is one gauge of four
+     blocks, over its percent on the phone's column and between E and F on
+     the full tile. Fuel
      is grey until low, orange, or
      critical, red. DEF is drawn only while it is low, since a normal DEF
      needs nothing of the office. The full tile labels lost signal and
@@ -141,14 +142,13 @@
     return box;
   }
 
-  // The fuel: the pump, a meter filled to the tank's share and its percent,
-  // grey until low or critical. A phone's narrow column omits the pump.
+  // The fuel: a gauge of four blocks and its percent, grey until low or
+  // critical.
   function fuelReadout(pct) {
     const box = el('span', 'scheduler-row-head__fuel');
     const lv = levelOf(pct, FUEL);
     if (lv) box.dataset.level = lv;
-    box.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, pct ?? 0))}%`);
-    // The Mac's tile draws the meter in quarters, to the nearest, as a fuel gauge reads, and one lit while any fuel is left.
+    // The gauge is lit in quarters, to the nearest, as a fuel gauge reads, and one while any fuel is left.
     const tank = Math.max(0, Math.min(100, pct ?? 0));
     box.style.setProperty('--scheduler-tank-lit', String(tank > 0 ? Math.max(1, Math.round(tank / 25)) : 0));
     const pump = svgUse('#i-gas-station', '16', '0 0 32 32');
@@ -315,7 +315,7 @@
     if (body.childElementCount) head.insertBefore(body, head.querySelector(':scope > .scheduler-row-head__equip'));
 
     if (opts.tip) {
-      const lines = tipOf(bus, live);
+      const lines = tipLines(bus, live);
       let box = opts.tip.querySelector('.scheduler-tip__live');
       if (!lines.length) box?.remove();
       else {
@@ -323,13 +323,12 @@
           box = el('div', 'scheduler-tip__row scheduler-tip__live');
           opts.tip.querySelector('.scheduler-tip__head')?.after(box);
         }
-        box.replaceChildren(...lines.map(l => el('div', null, l)));
-        // The lamp's line is the last, and leads with the lamp in its tone.
-        if (lamp) {
-          const said = box.lastElementChild;
-          said.className = `scheduler-tip__lamp scheduler-tip__lamp--${lamp.tone}`;
-          said.prepend(svgUse(lamp.icon, '16', '0 0 32 32'));
-        }
+        // A line the tile's alert stands for leads with that alert's mark in its tone.
+        box.replaceChildren(...lines.map(({ words, tone }) => {
+          const said = el('div', tone ? `scheduler-tip__lamp scheduler-tip__lamp--${tone}` : null, words);
+          if (tone) said.prepend(svgUse(TONE_ICON[tone], '16', '0 0 32 32'));
+          return said;
+        }));
       }
     }
   }
@@ -368,27 +367,37 @@
     return equip;
   }
 
+  // The mark a line leads with: the warning triangle or the error circle, as the tile's alert is.
+  const TONE_ICON = { warning: '#i-warning--alt--filled', error: '#i-warning--filled' };
+
   /* The lines the number's toggletip adds: its papers' words while one
      expires within WARN_DAYS, and while the bus is answered for, what it is
-     doing. */
-  function tipOf(bus, live) {
-    const papers = papersOf(bus).map(p => p.words);
-    if (!live) {
-      const insp = inspection(bus);
-      return papers.length ? papers : insp ? [insp.words] : [];
-    }
+     doing. Each is `{ words, tone }`, the tone `warning` or `error` on a
+     line the tile's alert stands for, so the tip marks what the tile
+     warns of. */
+  function tipLines(bus, live) {
+    const papers = papersOf(bus);
+    const insp = inspection(bus);
+    // An inspection further off than WARN_DAYS is a fact, not an alert; a nearer one is among the papers.
+    const papersOrInspection = papers.length ? papers : insp ? [{ words: insp.words, tone: null }] : [];
+    if (!live) return papersOrInspection;
+    const state = stateOf(live);
+    const lamp = lampOf(live);
+    const toned = found => (found ? { words: found.word, tone: found.tone } : null);
     return [
-      stateOf(live).words,
+      { words: state.words, tone: state.tone === 'warning' ? 'warning' : null },
       live.place,
       [live.fuel != null ? `Fuel ${live.fuel}%` : null, live.def != null ? `DEF ${live.def}%` : null].filter(Boolean).join(' · ') || null,
       live.odometer != null ? `${live.odometer.toLocaleString()} mi` : null,
       live.seen ? `Last seen ${ago(live.seen)} ago` : null,
-      ...(papers.length ? papers : [inspection(bus)?.words]),
-      live.fault ? [lampOf(live).word, ...(live.faults ?? [])].join(' · ') : null,
-      unsafeOf(live)?.word,
-      overdueOf(live)?.word,
-    ].filter(Boolean);
+      ...papersOrInspection,
+      lamp ? { words: [lamp.word, ...(live.faults ?? [])].join(' · '), tone: lamp.tone } : null,
+      toned(unsafeOf(live)),
+      toned(overdueOf(live)),
+    ].filter(Boolean).map(line => (typeof line === 'string' ? { words: line, tone: null } : line));
   }
+  // The same lines as words alone.
+  const tipOf = (bus, live) => tipLines(bus, live).map(line => line.words);
 
   window.SchedulerBusHead = { draw, alertEl, equipEl, tipOf, stateOf, papersOf, unsafeOf, overdueOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

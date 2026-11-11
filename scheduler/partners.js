@@ -20,7 +20,7 @@
 (() => {
   'use strict';
 
-  const { $, el, svgUse } = window.SchedulerPair;
+  const { $, el, svgUse, statusTag } = window.SchedulerPair;
   const showPhone = window.SchedulerPhone.format;
   const pair = window.SchedulerPair.page({ list: 'partners', one: 'partner' });
   const { say, result } = pair;
@@ -140,7 +140,8 @@
       line.append(said.text);
       papers.appendChild(line);
 
-      const status = el('td', null, p.status === 'active' ? 'Active' : 'Inactive');
+      const status = el('td');
+      status.appendChild(p.status === 'active' ? statusTag('Active', 'rux--tag--green') : statusTag('Inactive', 'rux--tag--gray'));
       tr.append(who, papers, status);
       body.appendChild(tr);
     }

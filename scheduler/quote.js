@@ -697,7 +697,9 @@
       row.className = 'scheduler-quote-mileage__row';
       row.dataset.id = m.id ?? '';
       const rate = textField({ id: `scheduler-quote-m-rate-${n}`, label: 'Rate in dollars per mile', hidden: true, value: m.rate === '' ? '' : Number(m.rate).toFixed(2), placeholder: '0.00' });
-      const note = textField({ id: `scheduler-quote-m-note-${n}`, label: 'Note', hidden: true, value: m.note });
+      const note = textField({ id: `scheduler-quote-m-note-${n}`, label: 'Note', value: m.note });
+      // app.css shows this label only where the note stands on a line of its own, under its rate.
+      note.querySelector('label').classList.add('scheduler-quote-mileage__note-label');
       note.querySelector('input').inputMode = 'text';
 
       const radio = document.createElement('div');

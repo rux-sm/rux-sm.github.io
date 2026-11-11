@@ -760,14 +760,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 
 /* An update's author on the trip card is 16px, a step under Carbon's
    smallest avatar, so it is a mark beside the words, as the note's pin is,
-   and not a row of its own. */
-.scheduler-card__face.rux--user-avatar { inline-size: 1rem; block-size: 1rem; font-size: .5625rem; }
+   and not a row of its own. Its one letter is label-01's 12px, Carbon's
+   smallest type, in the ink Design gives the avatar's fill. */
+.scheduler-card__face.rux--user-avatar { inline-size: 1rem; block-size: 1rem; font-size: var(--rux-label-01-font-size); }
 .scheduler-card__face .rux--user-avatar__photo { inline-size: 1rem; block-size: 1rem; }
 
 /* A face on a trip bar, and one under a chat message for who has seen it,
    is 16px, as an update's author on the trip card is, the alert count's size. */
 .scheduler-presence__face.rux--user-avatar,
-.scheduler-team-msg__seen-face.rux--user-avatar { inline-size: 1rem; block-size: 1rem; font-size: .5625rem; }
+.scheduler-team-msg__seen-face.rux--user-avatar { inline-size: 1rem; block-size: 1rem; font-size: var(--rux-label-01-font-size); }
 .scheduler-presence__face .rux--user-avatar__photo,
 .scheduler-team-msg__seen-face .rux--user-avatar__photo { inline-size: 1rem; block-size: 1rem; }
 
@@ -957,6 +958,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   background: none;
   color: var(--rux-text-primary);
   font: inherit;
+  letter-spacing: inherit;
 }
 
 /* NO LEADING RULES IN THE PANEL'S TOOLBAR. On the page these cells ARE the
@@ -1079,11 +1081,6 @@ button[data-attached]:hover,
   pointer-events: none;
 }
 
-/* A face on the trip card: Carbon's avatar writes its initial in inverse text,
-   which is dark in the dark themes and vanishes on the avatar's fill, so the
-   initial takes the on-colour text every fill is picked to hold. The class
-   pair is Carbon's own specificity for a size variant. */
-.scheduler-card .rux--user-avatar { color: var(--rux-text-on-color); }
 
 /* THE COMPANY'S LOGO, ESCAMILLA without TOUR BUSES, is 16px tall on
    Carbon's bar of edge-to-edge 48px squares, rux-dark's among them, and 20px
@@ -1356,7 +1353,7 @@ button[data-attached]:hover,
   align-items: center;
   gap: var(--rux-spacing-02);
   min-inline-size: 0;
-  padding: 0.1875rem var(--rux-spacing-03);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -1601,7 +1598,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    read, then fades, and toast.js closes the toast when the fade ends -- so
    the fade is the clock and there is no second one to agree with it. Nothing
    counts the wait down on screen, as Carbon's toast draws nothing. */
-.scheduler-toast__timed { animation: scheduler-toast-leave 240ms ease-in var(--scheduler-toast-wait, 5s) forwards; }
+.scheduler-toast__timed { animation: scheduler-toast-leave 240ms cubic-bezier(0.2, 0, 1, 0.9) var(--scheduler-toast-wait, 5s) forwards; }
 @keyframes scheduler-toast-leave {
   to { opacity: 0; }
 }

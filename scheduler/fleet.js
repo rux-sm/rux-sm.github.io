@@ -25,7 +25,7 @@
 (() => {
   'use strict';
 
-  const { $, el, svgUse } = window.SchedulerPair;
+  const { $, el, svgUse, statusTag } = window.SchedulerPair;
   const pair = window.SchedulerPair.page({ list: 'buses', one: 'bus' });
   const { say, result } = pair;
 
@@ -143,9 +143,9 @@
     return outOn(windows, iso(today())) ? 'out' : 'active';
   }
   const STATE = {
-    active: { label: 'Active', tag: 'rux--tag rux--tag--green' },
-    out: { label: 'Out of service', tag: 'rux--tag rux--tag--magenta' },
-    inactive: { label: 'Inactive', tag: 'rux--tag rux--tag--gray' },
+    active: { label: 'Active', colour: 'rux--tag--green' },
+    out: { label: 'Out of service', colour: 'rux--tag--magenta' },
+    inactive: { label: 'Inactive', colour: 'rux--tag--gray' },
   };
 
 
@@ -323,9 +323,7 @@
 
       const where = state(b, outByBus.get(b.id));
       const status = el('td');
-      const tag = el('div', STATE[where].tag);
-      tag.appendChild(el('span', 'rux--tag__label', STATE[where].label));
-      status.appendChild(tag);
+      status.appendChild(statusTag(STATE[where].label, STATE[where].colour));
 
       const due = el('td');
       due.appendChild(indicator(service(b)));
@@ -512,7 +510,7 @@
     tag.hidden = !loaded;
     if (loaded) {
       const where = state(loaded, out);
-      tag.className = STATE[where].tag;
+      tag.className = `rux--tag ${STATE[where].colour}`;
       tag.querySelector('.rux--tag__label').textContent = STATE[where].label;
     }
     // A bus not yet saved has no trips, so no Trips tab.

@@ -3,9 +3,10 @@
    --------------------------------------------------------------------------
    What is done and what is left. The drive, from its last scan: each BIOS
    a system's emulator needs, each emulator's installer kept, and saves
-   still in a folder from before each emulator had its own. Then each Mac:
-   this one live from Rux Emu Helper, helper.js, when it is running here,
-   and every other as Update last saved it there, each emulator in
+   still in a folder from before each emulator had its own. Then this Mac,
+   live from Rux Emu Helper, helper.js, when it is running here, and every
+   other Mac as Update last saved it there, folded shut below it so the page
+   is about the Mac in hand. Each Mac lists its emulators in
    emulators.json's order: ES-DE reading the
    drive's games, each emulator saving into its folder on the drive, and each
    retired app still there or still holding files. Installing an app is what
@@ -158,6 +159,8 @@
 
   let read = null;
   let live = null;
+  // Whether the other Macs are unfolded, kept across a redraw.
+  let othersOpen = false;
 
   async function load() {
     try {
@@ -191,18 +194,56 @@
     }
     // This Mac, read now, stands in for its last report.
     const here = live && { name: live.mac, macos: live.macos, frontend: live.frontend, emulators: live.emulators, live: true };
-    const all = [...macs.filter(m => m.name !== here?.name), ...(here ? [here] : [])].sort((a, b) => a.name.localeCompare(b.name));
-    for (const mac of all) {
-      out.append(section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
-        mac.live
-          ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'
-          : `As Update last saved it there, ${R.when(mac.gathered_at)}.`,
-        macRows(ordered(mac, emulators), emulators, used, drive)));
+    const rowsOf = mac => macRows(ordered(mac, emulators), emulators, used, drive);
+    const macSection = (mac, rows) => section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
+      mac.live
+        ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'
+        : `As Update last saved it there, ${R.when(mac.gathered_at)}.`,
+      rows);
+    if (here) out.append(macSection(here, rowsOf(here)));
+    if (R.helper.onMac && !live) out.append(startHelper());
+    const others = macs.filter(m => m.name !== here?.name).sort((a, b) => a.name.localeCompare(b.name))
+      .map(mac => ({ mac, rows: rowsOf(mac) }));
+    if (others.length) {
+      const left = others.reduce((n, o) => n + o.rows.filter(r => r.state === TODO).length, 0);
+      out.append(otherMacs(here ? 'Other Macs' : 'Macs', left, others.map(o => macSection(o.mac, o.rows))));
     }
-    if (!all.length) {
+    if (!here && !others.length) {
       out.append(el('p', 'rux--type-body-01', 'No Mac has been saved yet: Update on a Mac with Rux Emu Helper saves it.'));
     }
-    if (R.helper.onMac && !live) out.append(startHelper());
+  }
+
+  // The Macs that are not this one, in one fold of Design's accordion, shut
+  // until opened, its heading saying what they have left to do.
+  function otherMacs(title, left, sections) {
+    const list = el('ul', 'rux--accordion rux--accordion--end rux--layout--size-lg');
+    const item = el('li', `rux--accordion__item${othersOpen ? ' rux--accordion__item--active' : ''}`);
+    const heading = el('button', 'rux--accordion__heading');
+    heading.type = 'button';
+    heading.setAttribute('aria-expanded', String(othersOpen));
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('class', 'rux--accordion__arrow');
+    arrow.setAttribute('width', '16');
+    arrow.setAttribute('height', '16');
+    arrow.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#i-chevron--right');
+    arrow.append(use);
+    const name = el('div', 'rux--accordion__title emu-row');
+    name.append(el('span', 'emu-row__main', `${title} (${sections.length})`),
+      state(left ? [`${left} to do`, 'rux--tag--red'] : ['All done', 'rux--tag--green']));
+    heading.append(arrow, name);
+    const wrapper = el('div', 'rux--accordion__wrapper');
+    const content = el('div', 'rux--accordion__content rux--stack-vertical rux--stack-scale-6');
+    content.id = 'emu-other-macs';
+    heading.setAttribute('aria-controls', content.id);
+    content.append(...sections);
+    wrapper.append(content);
+    item.append(heading, wrapper);
+    item.addEventListener('rux:accordion-opened', () => { othersOpen = true; });
+    item.addEventListener('rux:accordion-closed', () => { othersOpen = false; });
+    list.append(item);
+    return list;
   }
 
   // On a Mac whose helper is not answering, a way to start it and see this Mac live.

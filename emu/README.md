@@ -46,7 +46,8 @@ fingerprints and the zip back to the drive, as the Mac scan does.
 Then it says what is done and what is left. For the drive, from its last
 scan: each BIOS a system with games needs, each emulator's installer
 kept, and saves still in a folder from before each emulator had its own.
-For this Mac live from the helper, and each other as Update last saved it: ES-DE reading the drive's games, each
+For this Mac live from the helper, and each other as Update last saved it,
+folded shut below it until opened: ES-DE reading the drive's games, each
 emulator saving into its folder on the drive, and each retired app in
 `emulators.json` still there or still holding files. Installing an app is
 what says a Mac plays with it, so one not installed is grey, and red only

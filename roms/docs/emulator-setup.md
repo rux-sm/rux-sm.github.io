@@ -96,7 +96,8 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
    another: EEPROM at 0 for 2 KB, four Controller Paks at 0x800 for 32 KB
    each, SRAM at 0x20800 for 32 KB, and flash at 0x28800 for 128 KB. ares
    keeps each kind as its own file named after the game, `<game>.eeprom`,
-   `.ram`, `.flash` and `.pak`, at the size its game list gives, such as
+   `.ram`, `.flash` and `.pak`, in `<drive>/saves/n64/Nintendo 64/`, at the
+   size its game list gives, such as
    512 bytes of EEPROM for most games. The EEPROM part is copied as it is;
    the SRAM and flash parts hold each four bytes reversed, and ares reads them
    in the cartridge's order, so each group of four is turned back. A Controller

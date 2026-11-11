@@ -269,6 +269,4 @@ None open.
 
 ## Tasks
 
-- [ ] Copy the iMac's Dolphin, PCSX2, Cemu and Switch saves into
-  `emulation/saves/`, as the how-to says, then remove its emulators.
 - [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.

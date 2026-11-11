@@ -51,7 +51,10 @@ correct `settings` for it in `roms/emulators.json`.
 - **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** Settings, Paths:
   Saves to `<drive>/saves/gb/`, for all three; mGBA writes `<game>.sav`.
   The GBA BIOS is optional, in Settings, BIOS.
-- **ares, N64.** Settings, Paths: Saves to `<drive>/saves/n64/`.
+- **ares, N64.** Settings, Paths: Saves to `<drive>/saves/n64/`. Quit ares
+  and set `NoFilePrompt: true` under `General` in
+  `~/Library/Application Support/ares/settings.bml`, so a game that can use
+  the Transfer Pak opens without asking for a Game Boy game.
 - **melonDS, DS.** Config, Path settings: Save files to
   `<drive>/saves/nds/`. The BIOS and firmware are optional for DS games; a
   DSi-only game needs the DSi files.

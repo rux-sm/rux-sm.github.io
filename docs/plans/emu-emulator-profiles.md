@@ -34,8 +34,12 @@ One rule for every emulator:
   app is the drive's version, writes the settings Emu manages, brings down
   what is newer in the collection, starts the game, and when the emulator
   quits takes up what changed and tells the page.
-- **The helper also carries when the collection appears and when any
-  emulator quits,** so a game opened from ES-DE or the Dock is not left out.
+- **The helper also carries when the collection appears, when any emulator
+  quits and when the Mac goes to sleep,** so a game opened from ES-DE or the
+  Dock, or left open under a closed lid, is not left out.
+- **The helper's menu bar icon says where the saves stand:** carrying, or
+  all in the collection and safe to unplug, since that is where the eye is
+  when the drive comes out.
 - **The collection keeps its layout,** `saves/<system>/` as the scan reads
   it; `emulators.json` maps each place on the Mac to its folder there.
 - **A save is carried whole, as the scan groups it:** one file per game for
@@ -45,8 +49,10 @@ One rule for every emulator:
   contents.
 - **Nothing is overwritten unseen:** the helper remembers each save's
   fingerprint at its last carry; changed on one side, it is copied; changed
-  on both, both are kept and the game's panel asks which to play; and the
-  collection keeps the last five copies of each save.
+  on both, the newest plays and the other is kept; and the collection keeps
+  the last five copies of each save.
+- **Play never waits on a question:** the game's panel says when two copies
+  were found and which is playing, with one press to use the other.
 - **Emu manages a short list of settings per emulator,** written before each
   Play and shown on its profile: its save folders inside its own home where
   the default is beside the game, as mGBA's, ares's and melonDS's is; its own
@@ -83,8 +89,12 @@ Versions:
   `updates.es-de.org` for ES-DE.
 - **A newer one out is a to-do to download it onto the drive,** never an
   update on one Mac alone, so a save state made on one Mac opens on another.
+- **Cemu stays on a development build, named by its build,** since its last
+  release is Intel only.
 
-The profile, the same for every emulator, in this order:
+The profile, the same for every emulator, in this order, in plain words:
+the page says in the collection, backed up or stays on this Mac, and the
+class names stay in `emulators.json`.
 
 - **Version:** this Mac's, the drive's and the newest.
 - **Needs:** each BIOS, key or firmware file, and whether the collection has
@@ -140,25 +150,29 @@ What each emulator's source and the installers on the drive say:
 
 ## Questions
 
-- Does Cemu stay on a development build, since its last release is Intel
-  only?
+None open.
 
 ## Tasks
 
+In this order, so what can lose a save comes last and proves itself first:
+
 - [ ] Write each emulator's files into `emulators.json`: class, place on
-  the Mac, folder in the collection, the settings Emu manages, its version
-  key and its feed. Settle which folder mGBA writes its settings in, since
-  its source names `~/.config/mgba`.
-- [ ] Make the helper install from the drive with a receipt, and ask the
-  feeds during Update.
-- [ ] Make the helper carry: fingerprints, the five kept copies, both kept
-  when both changed, and the session around Play.
+  the Mac, folder in the collection, the settings Emu manages and its
+  version key, and draw the Emulators page as one profile per emulator from
+  it, with Status linking to each.
+- [ ] Make the helper ask the feeds during Update, and show the newest on
+  each profile. Settle which folder mGBA writes its settings in, since its
+  source names `~/.config/mgba`.
+- [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive, and move
+  the GameCube save into `GC/USA/`.
+- [ ] Make the helper install from the drive with a receipt.
 - [ ] Make the helper back up each Mac's settings, put a backup back, and
   keep and take the preferred set.
-- [ ] Draw the Emulators page as one profile per emulator, link Status to
-  it, and say on a game's panel whether its saves are in step.
-- [ ] Move the MacBook Pro over: each emulator back to its own folders with
-  the drive's saves carried down, the GameCube save into `GC/USA/`, and
-  xemu's EEPROM into the collection.
+- [ ] Make the helper carry for mGBA alone, on the iMac with mGBA installed
+  from the drive: fingerprints, the five kept copies, the newest playing when
+  both changed, the session around Play, sleep and the menu bar icon.
+- [ ] Carry for the other emulators, a full backup first, the simple ones
+  first and Dolphin's Wii storage, Cemu, Ryujinx and xemu last, with xemu's
+  EEPROM beside its disk image; say on a game's panel whether its saves are
+  in step.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.
-- [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive.

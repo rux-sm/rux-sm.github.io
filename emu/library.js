@@ -3,7 +3,10 @@
    --------------------------------------------------------------------------
    Home is the games recently played and the favourites, each a shelf of
    box art, then a tile for each system with games, showing its console,
-   app.js's consoleOf. A system's tile opens its games as a grid, at #<system>, with all
+   app.js's consoleOf, and what stands in its way: an emulator this Mac has
+   not installed, or a BIOS the drive lacks. Above them a line says what this
+   Mac can play now, with the next step beside it: the helper to start, the
+   drive to plug in, or what is left on Status. A system's tile opens its games as a grid, at #<system>, with all
    of them, the favourites or the recently played; the breadcrumb, Back or B
    returns home. ?game=<system>/<title>, from Search or Problems, opens
    that game's panel over its system. Covers show a game's name without its list's region and language
@@ -29,6 +32,8 @@
   let games = [];
   let saves = [];
   let helper = null;
+  let emulators = null;
+  let bios = [];
   // A system's games: all of them, its favourites or its recently played.
   let showing = 'all';
 
@@ -38,6 +43,15 @@
   const playedAt = g => g.notes?.played_at ?? null;
   const byPlayed = (a, b) => new Date(playedAt(b)) - new Date(playedAt(a));
   const countOf = n => `${n} ${n === 1 ? 'game' : 'games'}`;
+  // Whether this Mac can play a system now, or null where no helper with the drive answers.
+  const ready = system => (helper?.collection ? helper.systems.includes(system) : null);
+  // Each file a system's emulator needs that the drive's bios folder lacks.
+  const lacks = system => R.needsOf(system, emulators.systems[system], bios).filter(n => !n.ok && !n.optional);
+  // What stands in a system's way, as tags.
+  const standing = system => [
+    ...(lacks(system).length ? [['Missing BIOS', 'rux--tag--red']] : []),
+    ...(ready(system) === false ? [['Not installed', 'rux--tag--gray']] : []),
+  ];
   // The system #<system> names, or null for home.
   const route = () => { const s = decodeURIComponent(location.hash.slice(1)); return R.SYSTEMS[s] ? s : null; };
 
@@ -104,6 +118,8 @@
     img.addEventListener('error', () => img.remove());
     picture.append(img);
     box.append(picture, el('p', 'rux--type-heading-02', R.systemName(system)), el('p', 'emu-system__count', countOf(list.length)));
+    const tags = standing(system);
+    if (tags.length) { const row = el('div', 'emu-tags'); row.append(...tags.map(t => R.tag(t, true))); box.append(row); }
     a.append(box);
     li.append(a);
     return li;
@@ -117,9 +133,13 @@
     const favourites = games.filter(g => g.notes?.favourite);
     if (favourites.length) out.append(shelf('emu-favourites', 'Favourites', favourites));
     const section = el('section', 'rux--stack-vertical rux--stack-scale-3');
-    section.setAttribute('aria-labelledby', 'emu-systems-title');
-    const h2 = el('h2', 'rux--type-heading-03', 'Systems');
-    h2.id = 'emu-systems-title';
+    // The systems are headed only under a shelf: alone, they are the Library.
+    if (recent.length || favourites.length) {
+      const h2 = el('h2', 'rux--type-heading-03', 'Systems');
+      h2.id = 'emu-systems-title';
+      section.setAttribute('aria-labelledby', h2.id);
+      section.append(h2);
+    } else section.setAttribute('aria-label', 'Systems');
     const ul = el('ul', 'emu-systems');
     ul.setAttribute('role', 'list');
     for (const system of Object.keys(R.SYSTEMS)) {
@@ -130,11 +150,58 @@
     const credit = el('p', 'emu-system__count');
     credit.append('Console pictures from ', link('libretro\u2019s RetroArch assets', 'https://github.com/libretro/retroarch-assets'),
       ', ', link('CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/'), '.');
-    section.append(h2, ul);
+    section.append(ul);
     if (Object.keys(R.SYSTEMS).some(s => !R.consoleOf(s).own)) section.append(credit);
     out.append(section);
   }
   const link = (text, href) => { const a = el('a', 'rux--link', text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
+
+  // Starts the helper, and waits up to ten seconds for it to answer.
+  async function startHelper() {
+    R.helper.start();
+    for (let i = 0; i < 10 && !helper; i += 1) { await new Promise(r => setTimeout(r, 1000)); helper = await R.helper.status(); }
+    return Boolean(helper);
+  }
+
+  // The line above the page and the step beside it: what is here, what this
+  // Mac can play now, and what would let it play the rest.
+  function say(text, ...steps) {
+    $('emu-sum').textContent = text;
+    $('emu-now').replaceChildren(...steps);
+    $('emu-now').hidden = !steps.length;
+  }
+  const step = (text, href) => { const a = el('a', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', text); a.href = href; return a; };
+  function sayHome() {
+    const count = countOf(games.length);
+    if (!R.helper.onMac) return say(count);
+    if (!helper) {
+      const start = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', 'Start Rux Emu Helper');
+      start.type = 'button';
+      start.addEventListener('click', async () => {
+        start.disabled = true;
+        $('emu-sum').textContent = `${count}. Starting Rux Emu Helper…`;
+        if (await startHelper()) render();
+        else { $('emu-sum').textContent = `${count}. It did not start. Install it from the drive: Install Rux Emu Helper.command.`; start.disabled = false; }
+      });
+      return say(`${count}. Rux Emu Helper is not running on this Mac, so nothing plays yet.`, start);
+    }
+    if (!helper.collection) return say(`${count}. Plug in the drive to play.`);
+    const systems = Object.keys(R.SYSTEMS).filter(s => games.some(g => g.system === s));
+    const n = systems.filter(ready).length;
+    if (n === systems.length) return say(`${count}, and every console is ready on this Mac.`);
+    return say(`${count}. ${n} of ${systems.length} consoles ${n === 1 ? 'is' : 'are'} ready on this Mac.`, step('See what is left', 'status.html'));
+  }
+  // A system's line: its games, and what stands in its way with its emulator's profile to open.
+  function saySystem(system, n) {
+    const emulator = emulators.systems[system]?.emulator;
+    const missing = lacks(system).map(x => x.label);
+    const why = [
+      missing.length ? `The drive lacks ${missing.join(', ')}.` : '',
+      ready(system) === false ? `${emulator} is not installed on this Mac.` : '',
+    ].filter(Boolean);
+    if (!why.length) return say(countOf(n));
+    say(`${countOf(n)}. ${why.join(' ')}`, step(`${emulator}\u2019s profile`, `emulators.html#${R.slug(emulator)}`));
+  }
 
   function render() {
     const system = route();
@@ -150,7 +217,7 @@
     $('emu-grid').hidden = home;
     if (home) {
       drawHome();
-      $('emu-sum').textContent = countOf(games.length);
+      sayHome();
       $('emu-none').hidden = true;
       return;
     }
@@ -158,7 +225,7 @@
     if (showing === 'favourites') list = list.filter(g => g.notes?.favourite);
     if (showing === 'recent') list = list.filter(playedAt).sort(byPlayed);
     $('emu-grid').replaceChildren(...list.map(coverItem));
-    $('emu-sum').textContent = countOf(list.length);
+    saySystem(system, list.length);
     $('emu-none').hidden = list.length > 0;
     $('emu-none').querySelector('p').textContent = showing === 'favourites' ? 'No favourites yet. Mark one in its panel.'
       : showing === 'recent' ? 'Nothing played here yet.' : 'No games here.';
@@ -191,10 +258,8 @@
     if (!helper) {
       said.textContent = 'Rux Emu Helper is not running on this Mac.';
       area.append(said, button('Start Rux Emu Helper', async () => {
-        R.helper.start();
         said.textContent = 'Starting…';
-        for (let i = 0; i < 10 && !helper; i += 1) { await new Promise(r => setTimeout(r, 1000)); helper = await R.helper.status(); }
-        if (helper) openGame(g); else said.textContent = 'It did not start. Install it from the drive: Install Rux Emu Helper.command.';
+        if (await startHelper()) openGame(g); else said.textContent = 'It did not start. Install it from the drive: Install Rux Emu Helper.command.';
       }, 'rux--btn rux--btn--secondary'));
     } else if (!helper.collection) {
       said.textContent = 'Plug in the drive to play.';
@@ -327,7 +392,8 @@
   async function load() {
     let rows, notes;
     try {
-      [rows, notes, saves, helper] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(), R.helper.status()]);
+      [rows, notes, saves, helper, emulators, bios] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
+        R.helper.status(), R.emulators(), R.data.bios()]);
     } catch (error) {
       console.error(error);
       R.notice('Emu could not read the collection. Try again.');
@@ -349,7 +415,13 @@
     }
   }
 
-  // The helper may be started or quit while the page is open.
-  window.addEventListener('focus', async () => { helper = await R.helper.status(); });
+  // The helper may be started or quit, the drive plugged in or an emulator
+  // installed, while the page is away: the page is drawn again when what the
+  // helper says has changed, unless a game is open.
+  window.addEventListener('focus', async () => {
+    const before = JSON.stringify(helper);
+    helper = await R.helper.status();
+    if (emulators && JSON.stringify(helper) !== before && !panelOpen()) render();
+  });
   load();
 })();

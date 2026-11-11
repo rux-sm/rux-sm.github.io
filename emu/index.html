@@ -170,7 +170,11 @@
         </div>
 
         <div class="rux--stack-vertical rux--stack-scale-6" id="emu-library" hidden>
-          <p class="rux--type-body-01" id="emu-sum" role="status"></p>
+          <!-- What is here and what this Mac can play, with the next step beside it, from library.js. -->
+          <div class="rux--stack-vertical rux--stack-scale-3">
+            <p class="rux--type-body-01" id="emu-sum" role="status"></p>
+            <div class="emu-actions" id="emu-now" hidden></div>
+          </div>
           <!-- A system's games, all of them, the favourites or the recently played.
                The wrapper hides it, since Carbon's switcher sets its own display. -->
           <div id="emu-show-wrap" hidden><div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Show" id="emu-show">

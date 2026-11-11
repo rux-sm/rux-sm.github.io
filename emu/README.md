@@ -11,7 +11,9 @@ The repository root's `AGENTS.md` is the policy, and
 
 `index.html` is the Library: the recently played and the favourites as
 shelves of box art from libretro's thumbnails, then a tile for each system,
-showing its console, that opens its games as a grid. `collection.html` is the
+showing its console and what stands in its way on this Mac, that opens its
+games as a grid; a line above says what this Mac can play now and the next
+step. `collection.html` is the
 same games as a table, with a filter per system and per status. A game's
 status is its worst problem, as Problems lists them, or Good. A game opens
 in a side panel, `game-panel.js`, with its cover and Play on the Library,

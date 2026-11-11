@@ -56,10 +56,11 @@ what says a Mac plays with it, so one not installed is grey, and red only
 when its old folder still holds saves. An emulator whose systems have no
 games is not needed yet.
 
-`emulators.html` shows each system's emulator from `emulators.json`, why it
-is the one, each file it needs and whether the drive holds it, and where its
-saves, settings and installer live. `docs/emulator-setup.md` is how each is
-set up on a Mac.
+`emulators.html` shows one profile per emulator from `emulators.json`, each
+a fold Status links to: its version on the drive and each Mac, each file it
+needs, every kind of file it writes with the setting that moves it, the
+settings to have, and what is worth knowing. `docs/emulator-setup.md` is how
+each is set up on a Mac.
 
 ## The scan
 
@@ -121,7 +122,7 @@ written here, because this repository is public.
 | | |
 | :--- | :--- |
 | `data.js` | the reads and writes |
-| `emulators.json` | each system's emulator, why, how it names a save, what it needs, how it opens a game, and where each keeps saves on a Mac; the scan and the helper read it too |
+| `emulators.json` | each system's emulator, why, how it names a save, what it needs and how it opens a game; and each emulator's profile: where it keeps saves on a Mac, every other file it writes by class, the settings to have and its notes; the scan and the helper read it too |
 | `helper/main.swift` | Rux Emu Helper, the menu bar app the site asks to play a game, read this Mac and read and write the drive |
 | `scan.js` | the scan, for the Mac tool and the page alike |
 | `drive.js` | the drive as `scan.js` reads it, through the helper |

@@ -12,7 +12,8 @@
    retired app still there or still holding files. Installing an app is what
    says a Mac plays with it, so one that is not installed is only said, unless
    its old folder still holds saves. An emulator whose systems have no games
-   yet is not needed yet.
+   yet is not needed yet. Each emulator's line opens its profile on the
+   Emulators page.
    Update, above them, is update.js, and they are drawn again after it saves;
    this Mac is read again each time the page comes back into view.
    ========================================================================== */
@@ -30,14 +31,15 @@
   const ABSENT = ['Not installed', 'rux--tag--gray'];
   const files = n => `${n} ${n === 1 ? 'file' : 'files'}`;
   // Whether the drive keeps an installer named for an app.
-  const flat = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const keptOn = (drive, name) => (drive?.installers ?? []).some(i => flat(i.name).includes(flat(name)));
+  const keptOn = (drive, name) => (drive?.installers ?? []).some(i => R.slug(i.name).includes(R.slug(name)));
+  // An emulator's profile on the Emulators page.
+  const profile = name => `emulators.html#${R.slug(name)}`;
   const absent = (drive, name) => keptOn(drive, name) ? 'Its installer is on the drive' : 'No installer for it on the drive yet';
 
   // A state as a tag that keeps its width beside a long line.
   const state = t => { const box = el('span', 'emu-state'); box.append(tag(t, true)); return box; };
 
-  // A list of rows under a heading, each row a thing, what is true of it and its state.
+  // A list of rows under a heading, each row a thing, what is true of it and its state; a row with an `href` is a link.
   function section(title, note, rows) {
     const box = el('div', 'rux--contained-list rux--layout--size-lg rux--contained-list--on-page');
     const head = el('div', 'rux--contained-list__header');
@@ -50,7 +52,7 @@
       const li = el('li', 'rux--contained-list-item');
       const content = el('div', 'rux--contained-list-item__content emu-row');
       const main = el('span', 'emu-row__main');
-      main.append(el('span', '', r.what));
+      if (r.href) { const a = el('a', 'rux--link', r.what); a.href = r.href; main.append(a); } else main.append(el('span', '', r.what));
       if (r.detail) main.append(el('span', 'emu-row__sub emu-files', r.detail));
       content.append(main, state(r.state));
       li.append(content);
@@ -99,7 +101,7 @@
     const rows = [];
     const f = mac.frontend ?? {};
     const reads = f.romDirectory && /\/emulation\/roms\/?$/.test(f.romDirectory);
-    rows.push({ what: `${f.name ?? 'ES-DE'}, the library`,
+    rows.push({ what: `${f.name ?? 'ES-DE'}, the library`, href: profile(f.name ?? 'ES-DE'),
       state: !f.app ? ABSENT : reads ? DONE : TODO,
       detail: !f.app ? absent(drive, f.name ?? 'ES-DE')
         : reads ? `${f.app.version ?? 'Installed'} · reads ${f.romDirectory}`
@@ -111,20 +113,21 @@
     for (const e of (mac.emulators ?? []).filter(x => !x.retired)) {
       const systems = (e.systems ?? []).map(R.systemName).join(', ');
       const what = `${e.emulator}: ${systems}`;
+      const href = profile(e.emulator);
       if (!e.app) {
         const left = (e.places ?? []).filter(p => p.files && !/\/emulation\/saves\//.test(p.dir)).map(p => `${files(p.files)} in ${p.dir}`);
         rows.push(left.length
-          ? { what, state: TODO, detail: `Not installed, and its old folder holds saves: move them to the drive's saves/${folderOf(e.emulator)}/\n${left.join('\n')}` }
-          : { what, state: ABSENT, detail: absent(drive, e.emulator) });
+          ? { what, href, state: TODO, detail: `Not installed, and its old folder holds saves: move them to the drive's saves/${folderOf(e.emulator)}/\n${left.join('\n')}` }
+          : { what, href, state: ABSENT, detail: absent(drive, e.emulator) });
         continue;
       }
       if (!used(e.emulator)) {
-        rows.push({ what, state: LATER, detail: `${e.app.version ?? 'Installed'} · no games for it yet` });
+        rows.push({ what, href, state: LATER, detail: `${e.app.version ?? 'Installed'} · no games for it yet` });
         continue;
       }
       const version = e.app.version ?? 'Installed';
       if (emulators.macSaves?.[e.emulator]?.inHardDisk) {
-        rows.push({ what, state: DONE, detail: `${version} · saves inside its hard disk image` });
+        rows.push({ what, href, state: DONE, detail: `${version} · saves inside its hard disk image` });
         continue;
       }
       const folder = `saves/${folderOf(e.emulator)}`;
@@ -133,11 +136,11 @@
       const elsewhere = places.filter(p => p.dir && !onDrive.test(p.dir) && (p.from === 'setting' || p.files));
       const where = places.filter(p => p.dir).map(p => `${files(p.files ?? 0)} in ${p.dir}`).join('\n');
       if (!e.data) {
-        rows.push({ what, state: TODO, detail: `${version} · open it once and set its saves to the drive's ${folder}/` });
+        rows.push({ what, href, state: TODO, detail: `${version} · open it once and set its saves to the drive's ${folder}/` });
       } else if (elsewhere.length || !places.some(p => p.dir && onDrive.test(p.dir))) {
-        rows.push({ what, state: TODO, detail: `${version} · move its saves and point it at the drive's ${folder}/\n${where}` });
+        rows.push({ what, href, state: TODO, detail: `${version} · move its saves and point it at the drive's ${folder}/\n${where}` });
       } else {
-        rows.push({ what, state: DONE, detail: `${version} · saves to the drive\n${where}` });
+        rows.push({ what, href, state: DONE, detail: `${version} · saves to the drive\n${where}` });
       }
     }
 
@@ -216,34 +219,12 @@
   // The Macs that are not this one, in one fold of Design's accordion, shut
   // until opened, its heading saying what they have left to do.
   function otherMacs(title, left, sections) {
-    const list = el('ul', 'rux--accordion rux--accordion--end rux--layout--size-lg');
-    const item = el('li', `rux--accordion__item${othersOpen ? ' rux--accordion__item--active' : ''}`);
-    const heading = el('button', 'rux--accordion__heading');
-    heading.type = 'button';
-    heading.setAttribute('aria-expanded', String(othersOpen));
-    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    arrow.setAttribute('class', 'rux--accordion__arrow');
-    arrow.setAttribute('width', '16');
-    arrow.setAttribute('height', '16');
-    arrow.setAttribute('aria-hidden', 'true');
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-    use.setAttribute('href', '#i-chevron--right');
-    arrow.append(use);
-    const name = el('div', 'rux--accordion__title emu-row');
-    name.append(el('span', 'emu-row__main', `${title} (${sections.length})`),
-      state(left ? [`${left} to do`, 'rux--tag--red'] : ['All done', 'rux--tag--green']));
-    heading.append(arrow, name);
-    const wrapper = el('div', 'rux--accordion__wrapper');
-    const content = el('div', 'rux--accordion__content rux--stack-vertical rux--stack-scale-6');
-    content.id = 'emu-other-macs';
-    heading.setAttribute('aria-controls', content.id);
-    content.append(...sections);
-    wrapper.append(content);
-    item.append(heading, wrapper);
+    const item = R.fold([el('span', 'emu-row__main', `${title} (${sections.length})`),
+      state(left ? [`${left} to do`, 'rux--tag--red'] : ['All done', 'rux--tag--green'])],
+      sections, { id: 'emu-other-macs', open: othersOpen });
     item.addEventListener('rux:accordion-opened', () => { othersOpen = true; });
     item.addEventListener('rux:accordion-closed', () => { othersOpen = false; });
-    list.append(item);
-    return list;
+    return R.folds([item]);
   }
 
   // On a Mac whose helper is not answering, a way to start it and see this Mac live.

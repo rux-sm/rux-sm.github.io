@@ -150,7 +150,39 @@
 
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };
+  // A name as lowercase letters and digits: how an installer is matched to its app, and an emulator's profile is addressed.
+  const slug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
   const option = (value, text) => { const o = document.createElement('option'); o.value = value; o.textContent = text; return o; };
+
+  // Folds of Design's accordion, whose script opens and shuts them: `fold` is
+  // one, a heading over the nodes it holds, and `folds` the list around them.
+  // The body takes `id`, which the heading names as what it controls.
+  const fold = (title, content, { id, open = false } = {}) => {
+    const item = el('li', `rux--accordion__item${open ? ' rux--accordion__item--active' : ''}`);
+    const heading = el('button', 'rux--accordion__heading');
+    heading.type = 'button';
+    heading.setAttribute('aria-expanded', String(open));
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('class', 'rux--accordion__arrow');
+    arrow.setAttribute('width', '16');
+    arrow.setAttribute('height', '16');
+    arrow.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#i-chevron--right');
+    arrow.append(use);
+    const name = el('div', 'rux--accordion__title emu-row');
+    name.append(...title);
+    heading.append(arrow, name);
+    const wrapper = el('div', 'rux--accordion__wrapper');
+    const body = el('div', 'rux--accordion__content rux--stack-vertical rux--stack-scale-6');
+    body.id = id;
+    heading.setAttribute('aria-controls', id);
+    body.append(...content);
+    wrapper.append(body);
+    item.append(heading, wrapper);
+    return item;
+  };
+  const folds = items => { const ul = el('ul', 'rux--accordion rux--accordion--end rux--layout--size-lg'); ul.append(...items); return ul; };
 
   const notice = (text = '') => {
     const box = document.getElementById('emu-error');
@@ -161,6 +193,6 @@
 
   window.Emu = Object.assign(window.Emu || {}, {
     SYSTEMS, systemName, PREFERRED, artOf, consoleOf, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
-    size, date, when, el, tag, option, notice,
+    size, date, when, el, tag, option, slug, fold, folds, notice,
   });
 })();

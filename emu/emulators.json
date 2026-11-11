@@ -6,7 +6,51 @@
     "apps": [
       "ES-DE.app"
     ],
-    "config": "settings/es_settings.xml"
+    "config": "settings/es_settings.xml",
+    "files": [
+      {
+        "kind": "Settings and controls",
+        "class": "own",
+        "path": "settings"
+      },
+      {
+        "kind": "Gamelists, with play counts and favourites",
+        "class": "own",
+        "path": "gamelists"
+      },
+      {
+        "kind": "Collections",
+        "class": "own",
+        "path": "collections"
+      },
+      {
+        "kind": "Scraped pictures and videos",
+        "class": "local",
+        "path": "downloaded_media",
+        "key": "MediaDirectory"
+      },
+      {
+        "kind": "Themes",
+        "class": "local",
+        "path": "themes",
+        "key": "UserThemeDirectory"
+      },
+      {
+        "kind": "Logs",
+        "class": "local",
+        "path": "logs"
+      }
+    ],
+    "manages": [
+      {
+        "key": "ApplicationUpdaterFrequency",
+        "value": "never",
+        "why": "The installer on the drive is the version every Mac has."
+      }
+    ],
+    "notes": [
+      "It finds Ryujinx and xemu only in /Applications."
+    ]
   },
   "systems": {
     "nes": {
@@ -292,11 +336,66 @@
       "places": [
         {
           "path": "Saves",
-          "key": "Preferences.SaveDataFolder"
+          "key": "Preferences.SaveDataFolder",
+          "kind": "Saves"
         },
         {
-          "path": "SaveStates"
+          "path": "SaveStates",
+          "key": "Preferences.SaveStateFolder",
+          "kind": "Save states"
         }
+      ],
+      "reportsVersion": false,
+      "files": [
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "Screenshots",
+          "key": "Preferences.ScreenshotFolder"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "settings.json"
+        },
+        {
+          "kind": "Per-game settings",
+          "class": "own",
+          "path": "GameConfig"
+        },
+        {
+          "kind": "Cheats",
+          "class": "own",
+          "path": "Cheats"
+        },
+        {
+          "kind": "Firmware",
+          "class": "provided",
+          "path": "Firmware"
+        },
+        {
+          "kind": "Recent games",
+          "class": "local",
+          "path": "RecentGames"
+        },
+        {
+          "kind": "Movies and recordings",
+          "class": "local",
+          "path": "Movies, Avi, Wave"
+        }
+      ],
+      "manages": [
+        {
+          "key": "Preferences.AutomaticallyCheckForUpdates",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "It writes a save only when the game stops or another one loads.",
+        "It makes a save state every five minutes, as slot 11.",
+        "A folder setting counts only with its Override setting on, and with that folder missing it saves in its own without saying so.",
+        "The app says version 1.0 whatever its version is."
       ]
     },
     "mGBA": {
@@ -313,11 +412,43 @@
       "besideGame": true,
       "places": [
         {
-          "key": "ports.qt/savegamePath"
+          "key": "ports.qt/savegamePath",
+          "kind": "Saves"
         },
         {
-          "key": "ports.qt/savestatePath"
+          "key": "ports.qt/savestatePath",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "besideGame": true,
+          "key": "ports.qt/screenshotPath"
+        },
+        {
+          "kind": "Cheats",
+          "class": "own",
+          "besideGame": true,
+          "key": "ports.qt/cheatsPath"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "config.ini, qt.ini"
+        },
+        {
+          "kind": "Its list of games",
+          "class": "local",
+          "path": "library.sqlite3"
+        }
+      ],
+      "manages": [],
+      "notes": [
+        "Saves, save states, screenshots and cheats sit beside the game unless each has a folder set.",
+        "It writes a save a moment after the game does.",
+        "It offers to update itself."
       ]
     },
     "ares": {
@@ -335,8 +466,39 @@
       "places": [
         {
           "path": "Saves",
-          "key": "Paths/Saves"
+          "key": "Paths/Saves",
+          "kind": "Saves and save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "besideGame": true,
+          "key": "Paths/Screenshots"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "settings.bml"
+        },
+        {
+          "kind": "Debugging logs",
+          "class": "local",
+          "besideGame": true,
+          "key": "Paths/Debugging"
+        }
+      ],
+      "manages": [
+        {
+          "key": "General/AutoSaveMemory",
+          "value": "true",
+          "why": "A save is written every 30 seconds, not only when the game closes."
+        }
+      ],
+      "notes": [
+        "It adds the system's name to its saves folder, as Nintendo 64/, and a folder setting must end in a slash.",
+        "Saves and save states sit beside the game unless a folder is set."
       ]
     },
     "melonDS": {
@@ -353,8 +515,42 @@
       "besideGame": true,
       "places": [
         {
-          "key": "SaveFilePath"
+          "key": "SaveFilePath",
+          "kind": "Saves"
+        },
+        {
+          "key": "SavestatePath",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "Cheats",
+          "class": "own",
+          "besideGame": true,
+          "key": "CheatFilePath"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "melonDS.toml"
+        },
+        {
+          "kind": "Wi-Fi and console settings",
+          "class": "own",
+          "path": "wfcsettings.bin"
+        },
+        {
+          "kind": "BIOS and firmware",
+          "class": "provided",
+          "key": "DS.BIOS9Path, DS.BIOS7Path, DS.FirmwarePath"
+        }
+      ],
+      "manages": [],
+      "notes": [
+        "Saves, save states and cheats sit beside the game unless each has a folder set.",
+        "It writes a save two seconds after the game does.",
+        "With its own BIOS on, it writes this Mac's console settings into the firmware file."
       ]
     },
     "Azahar": {
@@ -372,13 +568,69 @@
         {
           "path": "sdmc",
           "key": "Data%20Storage/sdmc_directory",
-          "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/"
+          "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
+          "kind": "Game saves and extra data, on its SD card"
         },
         {
           "path": "nand",
           "key": "Data%20Storage/nand_directory",
-          "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/"
+          "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
+          "kind": "System saves, in its console storage"
+        },
+        {
+          "path": "states",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "Keys and console files",
+          "class": "provided",
+          "path": "sysdata"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "config/qt-config.ini"
+        },
+        {
+          "kind": "Per-game settings",
+          "class": "own",
+          "path": "config/custom"
+        },
+        {
+          "kind": "Cheats",
+          "class": "own",
+          "path": "cheats"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "screenshots",
+          "key": "screenshotPath"
+        },
+        {
+          "kind": "Mods and textures",
+          "class": "local",
+          "path": "load"
+        },
+        {
+          "kind": "Shader cache",
+          "class": "local",
+          "path": "shaders"
+        },
+        {
+          "kind": "Its log",
+          "class": "local",
+          "path": "log"
+        }
+      ],
+      "manages": [],
+      "notes": [
+        "Opened with a storage folder missing, it puts its own back into its settings and saves there from then on.",
+        "Its SD card and console storage folders count only with use_custom_storage on.",
+        "It writes a save as the game does.",
+        "It offers to update itself."
       ]
     },
     "DuckStation": {
@@ -395,12 +647,84 @@
       "places": [
         {
           "path": "memcards",
-          "key": "MemoryCards/Directory"
+          "key": "MemoryCards/Directory",
+          "kind": "Memory cards"
         },
         {
           "path": "savestates",
-          "key": "Folders/SaveStates"
+          "key": "Folders/SaveStates",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "BIOS",
+          "class": "provided",
+          "path": "bios",
+          "key": "BIOS/SearchDirectory"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "settings.ini"
+        },
+        {
+          "kind": "Per-game settings",
+          "class": "own",
+          "path": "gamesettings",
+          "key": "Folders/GameSettings"
+        },
+        {
+          "kind": "Controller profiles",
+          "class": "own",
+          "path": "inputprofiles",
+          "key": "Folders/InputProfiles"
+        },
+        {
+          "kind": "Cheats and patches",
+          "class": "own",
+          "path": "cheats, patches",
+          "key": "Folders/Cheats, Folders/Patches"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "screenshots",
+          "key": "Folders/Screenshots"
+        },
+        {
+          "kind": "Covers",
+          "class": "local",
+          "path": "covers",
+          "key": "Folders/Covers"
+        },
+        {
+          "kind": "Cache",
+          "class": "local",
+          "path": "cache",
+          "key": "Folders/Cache"
+        },
+        {
+          "kind": "Play time",
+          "class": "local",
+          "path": "playtime.dat"
+        }
+      ],
+      "manages": [
+        {
+          "key": "MemoryCards/Card1Type",
+          "value": "PerGame",
+          "why": "One card per game, named by the disc's serial, so every Mac names a card alike."
+        },
+        {
+          "key": "AutoUpdater/CheckAtStartup",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "It writes a memory card five seconds after the game does.",
+        "It has no numbered releases, only the newest build, counted from 0.1."
       ]
     },
     "PCSX2": {
@@ -417,12 +741,85 @@
       "places": [
         {
           "path": "memcards",
-          "key": "Folders/MemoryCards"
+          "key": "Folders/MemoryCards",
+          "kind": "Memory cards"
         },
         {
           "path": "sstates",
-          "key": "Folders/Savestates"
+          "key": "Folders/Savestates",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "BIOS",
+          "class": "provided",
+          "path": "bios",
+          "key": "Folders/Bios"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "inis/PCSX2.ini"
+        },
+        {
+          "kind": "Per-game settings",
+          "class": "own",
+          "path": "gamesettings",
+          "key": "Folders/GameSettings"
+        },
+        {
+          "kind": "Controller profiles",
+          "class": "own",
+          "path": "inputprofiles",
+          "key": "Folders/InputProfiles"
+        },
+        {
+          "kind": "Cheats and patches",
+          "class": "own",
+          "path": "cheats, patches",
+          "key": "Folders/Cheats, Folders/Patches"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "snaps",
+          "key": "Folders/Snapshots"
+        },
+        {
+          "kind": "Covers",
+          "class": "local",
+          "path": "covers",
+          "key": "Folders/Covers"
+        },
+        {
+          "kind": "Cache",
+          "class": "local",
+          "path": "cache",
+          "key": "Folders/Cache"
+        },
+        {
+          "kind": "Logs",
+          "class": "local",
+          "path": "logs",
+          "key": "Folders/Logs"
+        },
+        {
+          "kind": "Achievements log-in",
+          "class": "local",
+          "path": "inis/secrets.ini"
+        }
+      ],
+      "manages": [
+        {
+          "key": "AutoUpdater/CheckAtStartup",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "Its Mac build is for Intel, and runs through Rosetta on Apple Silicon.",
+        "It writes a folder memory card moments after the game does."
       ]
     },
     "Dolphin": {
@@ -439,16 +836,69 @@
       "places": [
         {
           "path": "GC",
-          "key": "Core/GCIFolderAPath"
+          "key": "Core/GCIFolderAPath",
+          "kind": "GameCube saves"
         },
         {
           "path": "Wii",
           "key": "General/NANDRootPath",
-          "include": "^title/"
+          "include": "^title/",
+          "kind": "Wii saves, in its console storage"
         },
         {
-          "path": "StateSaves"
+          "path": "StateSaves",
+          "kind": "Save states"
         }
+      ],
+      "files": [
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "Config"
+        },
+        {
+          "kind": "Per-game settings and cheats",
+          "class": "own",
+          "path": "GameSettings"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "ScreenShots"
+        },
+        {
+          "kind": "Textures and mods",
+          "class": "local",
+          "path": "Load",
+          "key": "General/LoadPath"
+        },
+        {
+          "kind": "Cache",
+          "class": "local",
+          "path": "Cache"
+        },
+        {
+          "kind": "Logs",
+          "class": "local",
+          "path": "Logs"
+        },
+        {
+          "kind": "Achievements log-in",
+          "class": "local",
+          "path": "Config/RetroAchievements.ini"
+        }
+      ],
+      "manages": [
+        {
+          "key": "AutoUpdate/UpdateTrack",
+          "value": "",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "It adds the region to a GameCube save folder, as GC/USA/.",
+        "Its Wii storage holds installed channels and console settings beside the saves.",
+        "It writes a GameCube save within a second of the game."
       ]
     },
     "Cemu": {
@@ -466,8 +916,63 @@
         {
           "path": "mlc01",
           "key": "mlc_path",
-          "include": "^usr/save/"
+          "include": "^usr/save/",
+          "kind": "Saves, in its console storage"
         }
+      ],
+      "reportsVersion": false,
+      "files": [
+        {
+          "kind": "Keys",
+          "class": "provided",
+          "path": "keys.txt"
+        },
+        {
+          "kind": "Settings",
+          "class": "own",
+          "path": "settings.xml"
+        },
+        {
+          "kind": "Controller profiles",
+          "class": "own",
+          "path": "controllerProfiles"
+        },
+        {
+          "kind": "Per-game profiles",
+          "class": "own",
+          "path": "gameProfiles"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "screenshots"
+        },
+        {
+          "kind": "Graphic packs",
+          "class": "local",
+          "path": "graphicPacks"
+        },
+        {
+          "kind": "Shader cache",
+          "class": "local",
+          "path": "~/Library/Caches/Cemu/shaderCache"
+        },
+        {
+          "kind": "Its log",
+          "class": "local",
+          "path": "log.txt"
+        }
+      ],
+      "manages": [
+        {
+          "key": "check_update",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "Its console storage holds installed updates and add-ons beside the saves; only usr/save/ is a save.",
+        "The build on the drive is a development build, since the last release is for Intel, and says version 0.0.0."
       ]
     },
     "Ryujinx": {
@@ -480,8 +985,69 @@
       ],
       "places": [
         {
-          "path": "bis/user/save"
+          "path": "bis/user/save",
+          "kind": "Saves"
         }
+      ],
+      "reportsVersion": false,
+      "files": [
+        {
+          "kind": "The index of its saves",
+          "class": "shared",
+          "path": "bis/system/save"
+        },
+        {
+          "kind": "Keys",
+          "class": "provided",
+          "path": "system"
+        },
+        {
+          "kind": "Firmware",
+          "class": "provided",
+          "path": "bis/system/Contents"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "Config.json"
+        },
+        {
+          "kind": "Per-game settings, updates and add-ons",
+          "class": "own",
+          "path": "games"
+        },
+        {
+          "kind": "Profiles",
+          "class": "own",
+          "path": "system/Profiles.json"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "path": "screenshots"
+        },
+        {
+          "kind": "Mods",
+          "class": "local",
+          "path": "mods"
+        },
+        {
+          "kind": "Shader cache",
+          "class": "local",
+          "path": "games/<title>/cache"
+        },
+        {
+          "kind": "Logs",
+          "class": "local",
+          "path": "~/Library/Logs/Ryujinx"
+        }
+      ],
+      "manages": [],
+      "notes": [
+        "It names each save folder by a number from its own index, so saves move only together with that index.",
+        "Everything it keeps is one folder, which no setting splits.",
+        "The app says version 1.2 for 1.3.3.",
+        "It offers to update itself."
       ]
     },
     "xemu": {
@@ -492,7 +1058,57 @@
         "~/Library/Application Support/xemu/xemu"
       ],
       "places": [],
-      "inHardDisk": true
+      "inHardDisk": true,
+      "files": [
+        {
+          "kind": "The hard disk image, with every save and save state inside",
+          "class": "shared",
+          "key": "sys.files.hdd_path"
+        },
+        {
+          "kind": "The console's EEPROM",
+          "class": "shared",
+          "path": "eeprom.bin",
+          "key": "sys.files.eeprom_path"
+        },
+        {
+          "kind": "BIOS and boot ROM",
+          "class": "provided",
+          "key": "sys.files.flashrom_path, sys.files.bootrom_path"
+        },
+        {
+          "kind": "Settings and controls",
+          "class": "own",
+          "path": "xemu.toml"
+        },
+        {
+          "kind": "Screenshots",
+          "class": "collected",
+          "key": "general.screenshot_dir"
+        },
+        {
+          "kind": "Shader cache",
+          "class": "local",
+          "path": "shaders"
+        }
+      ],
+      "manages": [
+        {
+          "key": "general.show_welcome",
+          "value": "false",
+          "why": "It loads no BIOS or disk while its welcome screen is on."
+        },
+        {
+          "key": "general.updates.check",
+          "value": "false",
+          "why": "The installer on the drive is the version every Mac has."
+        }
+      ],
+      "notes": [
+        "It makes a new EEPROM where it finds none.",
+        "One disk image holds every game's saves, so one Mac plays at a time.",
+        "Screenshots go wherever it was started from unless a folder is set."
+      ]
     }
   },
   "retired": {

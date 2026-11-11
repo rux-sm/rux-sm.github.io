@@ -156,20 +156,18 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Write each emulator's files into `emulators.json`: class, place on
-  the Mac, folder in the collection, the settings Emu manages and its
-  version key, and draw the Emulators page as one profile per emulator from
-  it, with Status linking to each.
 - [ ] Make the helper ask the feeds during Update, and show the newest on
   each profile. Settle which folder mGBA writes its settings in, since its
-  source names `~/.config/mgba`.
+  source names `~/.config/mgba`, and name the setting that turns off the
+  updater in Azahar, mGBA and Ryujinx.
 - [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive, and move
   the GameCube save into `GC/USA/`.
 - [ ] Make the helper install from the drive with a receipt.
 - [ ] Make the helper back up each Mac's settings, put a backup back, and
   keep and take the preferred set.
 - [ ] Make the helper carry for mGBA alone, on the iMac with mGBA installed
-  from the drive: fingerprints, the five kept copies, the newest playing when
+  from the drive, each place in `emulators.json` naming its folder in the
+  collection: fingerprints, the five kept copies, the newest playing when
   both changed, the session around Play, sleep and the menu bar icon.
 - [ ] Carry for the other emulators, a full backup first, the simple ones
   first and Dolphin's Wii storage, Cemu, Ryujinx and xemu last, with xemu's

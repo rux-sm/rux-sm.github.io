@@ -61,7 +61,7 @@
       "emulator": "melonDS",
       "why": "The most accurate DS emulator, native on macOS.",
       "saves": "name",
-      "settings": "~/Library/Application Support/melonDS",
+      "settings": "~/Library/Preferences/melonDS",
       "needs": [
         {
           "file": "bios7.bin",
@@ -242,7 +242,7 @@
         "melonDS.app"
       ],
       "homes": [
-        "~/Library/Application Support/melonDS"
+        "~/Library/Preferences/melonDS"
       ],
       "config": {
         "file": "melonDS.toml",

@@ -30,9 +30,10 @@ bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
 other account reads it.
 
 The Emu tables, `emu_games`, `emu_bios`, `emu_saves`, `emu_notes`,
-`emu_drive` and `emu_macs`, ask `is_owner()` in `owner_all`, and so does every rule on the
-`emu-backups` bucket: the game collection, its saves and their backups are
-the owner's alone.
+`emu_drive`, `emu_macs` and `emu_files`, ask `is_owner()` in `owner_all`, and so does every rule on the
+`emu-backups` and `emu-collection` buckets: the game collection, its saves
+and their backups are the owner's alone. `emu_files_now` is a view that asks
+as its reader.
 
 The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
 `staff_read`: only the owner makes puzzles and sees the players. A player,

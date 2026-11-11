@@ -117,7 +117,10 @@ firmware and installers too large for Supabase, into
 
 `emu_games`, `emu_bios`, `emu_saves` and `emu_drive` hold the last scan
 saved, `emu_macs` how each Mac stood, `emu_notes` rux's marks and notes, and
-the `emu-backups` bucket the backup zips; only the owner reads them, and
+the `emu-backups` bucket the backup zips. `emu_files` lists each copy of
+each file the `emu-collection` bucket holds, its bytes there under its
+SHA-1 and its newest copy in the view `emu_files_now`; nothing fills them
+yet. Only the owner reads them, and
 `docs/database-access.md` is the rule. Nothing from the collection is ever
 written here, because this repository is public.
 

@@ -42,9 +42,11 @@ One rule for every emulator:
   lists and moves each file between them, as Update uploads a Mac's saves; a
   file too large to pass through the page goes straight between the helper
   and Supabase by a link the page signs, good for minutes.
-- **A table lists each file Supabase holds, with its fingerprint and when it
-  was saved,** so the page compares without downloading and the Saves page
-  lists them.
+- **`emu_files` lists each copy of each file Supabase holds, with its
+  fingerprint and when it was saved,** so the page compares without
+  downloading and the Saves page lists them; the bytes sit in the
+  `emu-collection` bucket under their SHA-1, so a copy kept is a row and the
+  same bytes are held once.
 - **Play is one session, the same for every console:** the page brings down
   what is newer, the helper checks the app is the version Supabase holds,
   writes the settings Emu manages and starts the game, and when the emulator
@@ -170,8 +172,6 @@ In this order, so what can lose a save comes last and proves itself first:
 
 - [ ] Install the helper on the MacBook Pro from the drive and Update
   there, which settles which folder mGBA writes its settings in.
-- [ ] Make the bucket and the table of its files, owner-only, with a file
-  size limit past the largest installer.
 - [ ] Move the BIOS, keys, firmware and installers into Supabase, the newer
   Azahar, PCSX2 and Dolphin among them, and read needs and installers from
   there on the profiles and Status.

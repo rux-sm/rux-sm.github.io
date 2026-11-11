@@ -127,12 +127,6 @@ What each emulator's source and the installers on the drive say:
 
 ## Questions
 
-- Is this the way: the helper carries saves between each Mac and the
-  collection, in place of emulators writing straight to the drive in
-  `docs/plans/emu-app.md` and of Syncthing in `docs/plans/emu-server.md`? The
-  smaller way keeps saves written to the drive until the server is built,
-  with Play refusing to start without the drive and writing the paths back
-  first, and leaves Dolphin's and Azahar's save states on one Mac.
 - Are controls and graphics each Mac's own, as above, or the same on every
   Mac?
 - Does Cemu stay on a development build, since its last release is Intel
@@ -153,6 +147,5 @@ What each emulator's source and the installers on the drive say:
 - [ ] Move the MacBook Pro over: each emulator back to its own folders with
   the drive's saves carried down, the GameCube save into `GC/USA/`, and
   xemu's EEPROM into the collection.
-- [ ] Rewrite `emu/docs/emulator-setup.md`, and correct the saves in
-  `docs/plans/emu-app.md` and `docs/plans/emu-server.md`.
+- [ ] Rewrite `emu/docs/emulator-setup.md`.
 - [ ] Download the newer Azahar, PCSX2 and Dolphin onto the drive.

@@ -161,18 +161,18 @@ Emulators, chosen fresh rather than kept from what is installed:
 - **Each emulator's settings stay on each Mac;** the Emulators page says where
   each keeps them, its saves and its installer.
 - **`emu/docs/emulator-setup.md` is the how-to** for installing each one on a
-  Mac and pointing it at the drive.
+  Mac.
 - **The MacBook Pro is the one Mac that plays;** the iMac only updates the
   library, so no emulator is set up there.
 - **The Xbox BIOS and hard disk image stay,** for when Xbox games join.
 
 Saves:
 
-- **Saves live on the drive, one folder per emulator,** under
-  `emulation/saves/<system>/`, named for the first system it plays, so both
-  Macs play from the same saves and the scan sees every one; where an
-  emulator keeps saves inside its NAND or MLC folder, that whole folder lives
-  there.
+- **The collection's copy of the saves is on the drive, one folder per
+  emulator,** under `emulation/saves/<system>/`, named for the first system
+  it plays, which the scan reads; each emulator saves in its own folder on
+  the Mac, and Rux Emu Helper carries saves between the two, as
+  `docs/plans/emu-emulator-profiles.md` says.
 - **A save is matched to its game the way its emulator names it:** Mesen,
   mGBA, melonDS and ares by the game's file name, Azahar and Cemu by
   title ID, Ryujinx by the title ID its save folder's `ExtraData0` holds,
@@ -191,7 +191,7 @@ Saves:
 
 Backups, three copies of everything small:
 
-- **The drive** holds the saves the emulators play from.
+- **The drive** holds the collection's copy of the saves.
 - **Supabase** holds the offsite copy, in a private `emu-backups` bucket
   only the owner reads: the scan packs `saves/`, `bios/` and the keys into
   one dated zip on the drive, and Update uploads it with the scan, signed in

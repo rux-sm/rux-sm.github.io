@@ -33,9 +33,9 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
   share later, and the helper tells the site which.
 - **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each
   emulator from the installers kept beside the games, copies the
-  keys and firmware, and writes each emulator's settings so it reads games
-  from and saves to the collection; the how-to stays the record of what it
-  does.
+  keys and firmware, and writes the settings Emu manages, as
+  `docs/plans/emu-emulator-profiles.md` lists them; the how-to stays the
+  record of what it does.
 - **The helper is kept beside the games and built by
   `emu/tools/build-helper.mjs`,** so the T7 or the server always carries the
   version that matches the site.

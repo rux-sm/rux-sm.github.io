@@ -41,9 +41,10 @@ The home server, so the drive is not carried between Macs:
 - **Tailscale reaches it from anywhere,** for the Mac that is not at home.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
-- **Saves are kept on each Mac and mirrored to the server with Syncthing,**
-  since an emulator writing a save over the network loses it if the
-  connection drops; the server's copy is the one the scan reads.
+- **Saves are kept on each Mac, and Rux Emu Helper carries them to and from
+  the server,** as `docs/plans/emu-emulator-profiles.md` says, since an
+  emulator writing a save over the network loses it if the connection drops;
+  the server's copy is the one the scan reads.
 - **The server scans itself every night and saves the scan to Supabase,**
   with a key kept only on the server, so Update is needed only for the T7.
 - **Download to this Mac, in a game's side panel,** writes the game into the
@@ -67,7 +68,7 @@ The setup kit, so any Mac is set up from the server in one step:
   with each download's address in `emulators.json`.
 - **Rux Emu Helper sets up a Mac from those copies,** as
   `docs/plans/emu-helper.md` says, pointing each emulator at the Mac's
-  library folder and at the saves Syncthing mirrors.
+  library folder.
 - **A PC follows the same way later,** from `emulators/windows/`, where
   nearly every emulator runs portably and needs no install.
 
@@ -84,7 +85,7 @@ The setup kit, so any Mac is set up from the server in one step:
 - [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
   its 1 TB NVMe, make the mirrored pool and share the collection, and copy
   it on.
-- [ ] Add Tailscale and Syncthing on the server and each Mac.
+- [ ] Add Tailscale on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Serve the games over HTTPS on Tailscale, and add Download to this Mac,

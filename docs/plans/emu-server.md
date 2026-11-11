@@ -17,9 +17,10 @@ The home server, so the drive is not carried between Macs:
 
 - **Until the server is built, the T7 stays the collection's home,** carried
   between Macs as now, and everything Emu does today reads it.
-- **Until TrueNAS, the PC's Windows shares a copy on its 1 TB NVMe,** as
-  `emulation`, over the home network, since Windows cannot read the T7's
-  APFS; nothing plays from it, and its `to-delete` folder is left behind.
+- **The PC's Windows shares `C:\emulation` as `emulation`,** reached from a
+  Mac at `smb://RUX/emulation` with rux's Microsoft account; the 1 TB NVMe has
+  no room beside Windows for the collection, so the copy waits for the
+  TrueNAS drives, and the T7, in APFS that Windows cannot read, stays its home.
 
 - **rux's old gaming PC becomes the collection's home,** holding the games,
   BIOS, keys, firmware, installers and backups; it only stores, and every
@@ -74,8 +75,6 @@ The setup kit, so any Mac is set up from the server in one step:
 
 ## Tasks
 
-- [ ] Share `emulation` from the PC's Windows, set it never to sleep, and
-  copy the T7 onto it from the MacBook.
 - [ ] Buy the TrueNAS parts: a 64 to 256 GB SSD to start TrueNAS from, and
   two matching 2 TB drives for a mirrored pool, in the board's free NVMe
   slots or SATA ports.

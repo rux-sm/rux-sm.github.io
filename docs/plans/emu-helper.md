@@ -50,7 +50,6 @@ None open.
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Use the helper for Play on the site.
 - [ ] Show each Mac's status live from the helper.
 - [ ] Run Update through the helper, with no folder to choose, and retire
   `Check this Mac.command`.

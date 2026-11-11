@@ -9,13 +9,13 @@ The repository root's `AGENTS.md` is the policy, and
 
 ## What it is
 
-`index.html` is the Collection: every game the last scan found, with search
-and a filter per system and per status, a table on a wide screen and a list
-on a phone. A game's status is its worst problem, as Problems lists them, or Good.
-A game opens in a side panel with everything the scan read: its region,
-version and format, each file's header and fingerprints, a Switch game's
-update and add-ons, and its saves; rux's marks, played, finished and
-favourite, and a note on it are saved from there.
+`index.html` is the Library: every game as box art from libretro's
+thumbnails, a shelf per system, with a search. `collection.html` is the
+same games as a table, with a filter per system and per status. A game's
+status is its worst problem, as Problems lists them, or Good. A game opens
+in a side panel, `game-panel.js`, with its cover and Play on the Library,
+which asks Rux Emu Helper, then its region, version and format, each file's
+header and fingerprints, a Switch game's add-ons, its saves, and rux's notes.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad
@@ -137,7 +137,8 @@ written here, because this repository is public.
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `update.js` | Update, on the Status page |
-| `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
+| `game-panel.js`, `helper.js` | one game in the side panel; asking Rux Emu Helper what it sees, and to play |
+| `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `app.css` | the filters, rows and the side panel's facts, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

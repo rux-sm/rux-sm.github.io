@@ -26,7 +26,7 @@
     games = R.withNotes(games, notes);
 
     const groups = new Map(Object.keys(R.STATUS).filter(k => k !== 'good').map(k => [k, []]));
-    for (const g of games) for (const [kind, words] of R.problemsOf(g)) groups.get(kind)?.push({ title: g.title, system: g.system, words, href: `./?q=${encodeURIComponent(g.title)}` });
+    for (const g of games) for (const [kind, words] of R.problemsOf(g)) groups.get(kind)?.push({ title: g.title, system: g.system, words, href: `collection.html?q=${encodeURIComponent(g.title)}` });
     const withProblems = new Set([...groups.values()].flat().map(x => `${x.system}/${x.title}`));
     // A system with games, or the Xbox's files, whose emulator lacks a file it needs.
     const systems = new Set(games.map(g => g.system));

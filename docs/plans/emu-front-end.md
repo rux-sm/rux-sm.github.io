@@ -42,9 +42,6 @@ Emu is `docs/plans/emu-app.md`.
 
 ## Tasks
 
-- [ ] Make the front page the box-art library, and move the Collection table
-  to its own page.
-- [ ] Add Play to the game's side panel, through the helper.
 - [ ] Move around the library with a controller.
 - [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
   Status, and from the MacBook Pro.

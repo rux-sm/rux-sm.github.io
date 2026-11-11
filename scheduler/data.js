@@ -6157,11 +6157,22 @@
     invoice: {
       title: 'Invoices', add: 'Add invoice',
       list: () => invPending, set: rows => { invPending = rows; }, redraw: () => redrawInvoices(),
-      blank: () => ({ number: null, date: iso(new Date()) }),
-      said: e => ({ name: e.number ? `Invoice ${e.number}` : 'Invoice, no number', much: '', meta: e.date ? mdy(e.date) : 'No date' }),
-      // An invoice's amount feeds no total, so it is not asked for; one an older row holds is kept.
-      fields: (e, id) => [dateOne(id('date'), 'Date', e.date), textField(id('number'), 'Invoice number', e.number)],
-      read: val => ({ number: val('number') || null, date: isoOrNull(val('date')) }),
+      blank: () => ({ number: null, amount: null, date: iso(new Date()) }),
+      said: e => ({ name: e.number ? `Invoice ${e.number}` : 'Invoice, no number', much: e.amount == null ? '' : usd(Number(e.amount) || 0),
+        meta: e.date ? mdy(e.date) : 'No date' }),
+      /* The amount is typed from the invoice, never filled in, because what
+         was billed can differ from the quote, and the quote is shown under
+         the field to check it against. */
+      fields: (e, id) => {
+        const amount = moneyField(id('amount'), 'Amount', e.amount);
+        const { price } = billingNow();
+        if (price > 0) {
+          amount.querySelector('.rux--text-input__field-outer-wrapper').appendChild(el('div', 'rux--form__helper-text',
+            `The quote is ${usdCents(price)}.`));
+        }
+        return [dateOne(id('date'), 'Date', e.date), textField(id('number'), 'Invoice number', e.number), amount];
+      },
+      read: val => ({ number: val('number') || null, amount: money(val('amount')), date: isoOrNull(val('date')) }),
       // Adding an invoice is what marks it sent, so one is kept with only its date.
       kept: () => true,
     },
@@ -10666,6 +10677,7 @@
         if (stepOn('invoiced')) {
           const n = invPending.length, one = invPending[0];
           rows.push(step({ id: 'scheduler-f-bill-invoices', name: 'Invoices', done: n > 0,
+            much: invPending.some(v => v.amount != null) ? usd(sumOf(invPending)) : '',
             meta: !n ? 'None' : n > 1 ? plural(n, 'invoice', 'invoices')
               : [one.number ? `Invoice ${one.number}` : 'No number', one.date ? mdy(one.date) : 'No date'].join(' · '),
             press: () => openEntriesDialog('invoice') }));

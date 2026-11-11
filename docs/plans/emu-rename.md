@@ -34,12 +34,11 @@ the class prefix `emu-`, the commit scope `emu`, the database tables
 - **The drive's `Check this Mac.command` opens `/emu/status.html`,** put on
   the drive again by `check-mac.mjs --install`.
 - **The app keeps its icon;** only its name changes.
+- **`/roms/` finds nothing once the app moves,** since nothing points at it.
 
 ## Questions
 
-- `/roms/` will find nothing once the app moves, as GitHub Pages has no
-  redirects. Is a bookmark or a phone home-screen icon pointing at it? If
-  so, a page at `/roms/` that sends on to `/emu/` keeps it working.
+None open.
 
 ## Tasks
 

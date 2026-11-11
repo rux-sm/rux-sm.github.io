@@ -30,6 +30,14 @@ Install ES-DE and, at its first start, point its ROM directory at
 choose the emulator in `roms/emulators.json` under Other settings, Alternative
 emulators, so ES-DE launches the standalone and not a RetroArch core.
 
+ES-DE on macOS offers Mesen only as a RetroArch core, so NES and SNES get a
+Mesen 2 entry of their own: copy the `nes` and `snes` systems from
+`ES-DE.app/Contents/Resources/resources/systems/macos/es_systems.xml` into
+`~/ES-DE/custom_systems/es_systems.xml`, inside one `<systemList>`, and add
+as each one's first command:
+
+    <command label="Mesen 2 (Standalone)">/Applications/Mesen.app/Contents/MacOS/Mesen %ROM%</command>
+
 ## Each emulator
 
 Where an emulator's settings name a folder for saves, it is

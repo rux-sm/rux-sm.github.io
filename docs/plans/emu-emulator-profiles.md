@@ -187,6 +187,8 @@ In this order, so what can lose a save comes last and proves itself first:
   theirs from the drive's `bios` folder.
 - [ ] Carry xemu's disk image only when a game was played, since opening
   xemu alone changes it and every carry sends all 60 MB.
+- [ ] Stop Update gathering the saves Emu carries as a Mac's own, since
+  it uploads a second copy of each to the backups bucket.
 - [ ] Have the Saves page list Supabase, and a game's panel say whether
   its saves are in step, with one press to use the other copy where two
   were found; then remove from the drive the save folders Supabase and

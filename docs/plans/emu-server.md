@@ -117,9 +117,9 @@ The setup kit, so any Mac is set up in one step:
 
 ## Tasks
 
-- [ ] Copy the collection onto the `games` share, leaving out
-  `to-delete`.
-- [ ] Copy the collection from the server to the T7.
+- [ ] Refresh the T7 from the server, as its backup, with one command.
+- [ ] Have Rux Emu Helper find the collection on the `games` share, whose
+  roms folder sits at the share's top, not under `emulation/`.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Add Download to this Mac with its progress, Remove from this Mac in

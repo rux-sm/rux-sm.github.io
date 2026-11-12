@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "create-basic-test-items-and-defaults",
@@ -10,6 +10,12 @@
     "Procurement",
     "Manufacturing",
     "Warehousing"
+  ],
+  "codes": [
+    "D2R-02",
+    "D2R-07",
+    "D2R-05",
+    "D2R-09"
   ],
   "updated": "2026-11-02",
   "status": "draft",

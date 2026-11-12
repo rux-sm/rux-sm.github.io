@@ -1,0 +1,456 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "invoice-a-project-contract",
+  "title": "Invoice a project contract",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Project · Invoicing",
+  "modules": [
+    "Project",
+    "Invoicing"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Project ➔ Contract 360",
+  "session": "Contract 360",
+  "sessionCode": "tpctm1300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "What a contract line has earned is invoiced to the customer, in the way the line is set up to charge."
+      }
+    ],
+    "text": "What a contract line has earned is invoiced to the customer, in the way the line is set up to charge."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Every way of invoicing ends in a billable line in "
+      },
+      {
+        "t": "session",
+        "code": "cisli3600m000",
+        "name": "Invoicing 360"
+      },
+      {
+        "t": "text",
+        "v": ", from which the invoice is made. What puts the line there depends on the contract line's invoice type: an installment approved and transferred, a deliverable shipped, progress reported, or actual costs processed. This task is the installment way; the others are under Variants."
+      }
+    ],
+    "text": "Every way of invoicing ends in a billable line in Invoicing 360 (cisli3600m000), from which the invoice is made. What puts the line there depends on the contract line's invoice type: an installment approved and transferred, a deliverable shipped, progress reported, or actual costs processed. This task is the installment way; the others are under Variants."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the contract, and on its Installments tab add the installments for the line, or choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Generate Installments..."
+                },
+                {
+                  "t": "text",
+                  "v": " to make them from the line's installment schedule"
+                }
+              ],
+              "text": "Open the contract, and on its Installments tab add the installments for the line, or choose Actions ➔ Generate Installments... to make them from the line's installment schedule"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One row per installment, with its project, element and amount"
+                }
+              ],
+              "text": "One row per installment, with its project, element and amount"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select an installment and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Approve"
+                }
+              ],
+              "text": "Select an installment and click Approve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approved for Invoicing ticked"
+                }
+              ],
+              "text": "Approved for Invoicing ticked"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transfer..."
+                }
+              ],
+              "text": "Click Transfer..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Transferred to Invoicing ticked"
+                }
+              ],
+              "text": "Transferred to Invoicing ticked"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cisli3600m000",
+                  "name": "Invoicing 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Invoicing ➔ Invoicing 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", and find the billable lines for the contract"
+                }
+              ],
+              "text": "Open Invoicing 360 (cisli3600m000), Invoicing ➔ Invoicing 360, and find the billable lines for the contract"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Confirmed"
+                }
+              ],
+              "text": "Status Confirmed"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the lines and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Create Invoice"
+                },
+                {
+                  "t": "text",
+                  "v": ", then confirm the device twice"
+                }
+              ],
+              "text": "Select the lines and click Create Invoice, then confirm the device twice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The invoice prints, one line per installment"
+                }
+              ],
+              "text": "The invoice prints, one line per installment"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Delivery Based"
+              }
+            ],
+            "text": "Delivery Based"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Add the item as a deliverable on the contract line, activate it and release it to warehousing, then ship it as usual. Its billable line is made when the shipment is confirmed. A deliverable item needs serial tracking if the shipment is to make an installation in Service"
+              }
+            ],
+            "text": "Add the item as a deliverable on the contract line, activate it and release it to warehousing, then ship it as usual. Its billable line is made when the shipment is confirmed. A deliverable item needs serial tracking if the shipment is to make an installation in Service"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Progress Invoice"
+              }
+            ],
+            "text": "Progress Invoice"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Report the element's progress, or complete its activity, then run "
+              },
+              {
+                "t": "session",
+                "code": "tppin1210m000",
+                "name": "Create Progress Invoice Installments"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Project ➔ Invoicing ➔ Progress ➔ Create Progress Invoice Installments"
+              },
+              {
+                "t": "text",
+                "v": ", for the contract line, and approve and transfer them"
+              }
+            ],
+            "text": "Report the element's progress, or complete its activity, then run Create Progress Invoice Installments (tppin1210m000), Project ➔ Invoicing ➔ Progress ➔ Create Progress Invoice Installments, for the contract line, and approve and transfer them"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Unit Rate"
+              }
+            ],
+            "text": "Unit Rate"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Report the progress units, such as hours, on the element, approve them, and create the progress invoice installments for the line"
+              }
+            ],
+            "text": "Report the progress units, such as hours, on the element, approve them, and create the progress invoice installments for the line"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Installment with Progress Payment"
+              }
+            ],
+            "text": "Installment with Progress Payment"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Tick Progress Payment on the line with a Progress Payment % and a Progress Liquidation %, for example an invoice for 50 % of the price when costs reach 75 %"
+              }
+            ],
+            "text": "Tick Progress Payment on the line with a Progress Payment % and a Progress Liquidation %, for example an invoice for 50 % of the price when costs reach 75 %"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Cost-Plus"
+              }
+            ],
+            "text": "Cost-Plus"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Book the hours or costs, process them in "
+              },
+              {
+                "t": "session",
+                "code": "tpppc4802m000",
+                "name": "Process Transactions"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Project ➔ Project Accounting ➔ Processing ➔ Process Transactions"
+              },
+              {
+                "t": "text",
+                "v": ", then approve them in "
+              },
+              {
+                "t": "session",
+                "code": "tppin4810m000",
+                "name": "Cost-Plus Transactions to be Invoiced"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Project ➔ Invoicing ➔ Cost-Plus ➔ Cost-Plus Transactions to be Invoiced"
+              }
+            ],
+            "text": "Book the hours or costs, process them in Process Transactions (tpppc4802m000), Project ➔ Project Accounting ➔ Processing ➔ Process Transactions, then approve them in Cost-Plus Transactions to be Invoiced (tppin4810m000), Project ➔ Invoicing ➔ Cost-Plus ➔ Cost-Plus Transactions to be Invoiced"
+          }
+        ]
+      }
+    ]
+  }
+}

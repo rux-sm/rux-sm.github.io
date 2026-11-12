@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "create-a-warehouse",
@@ -8,6 +8,7 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [],
   "updated": "2026-11-02",
   "status": "draft",
   "summary": "make a warehouse at your site that keeps its stock on locations, ready to receive, store and ship.",

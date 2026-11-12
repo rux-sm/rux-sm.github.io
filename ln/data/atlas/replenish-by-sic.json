@@ -1,0 +1,422 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "replenish-by-sic",
+  "title": "Replenish by SIC",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing · Procurement",
+  "modules": [
+    "Warehousing",
+    "Procurement"
+  ],
+  "codes": [
+    "P2D-03"
+  ],
+  "role": "Buyer",
+  "roles": [
+    "Buyer"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Order Advice (SIC)",
+  "session": "Generate Order Advice (SIC)",
+  "sessionCode": "whina3200m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An item that has fallen below its reorder point is bought again, through a purchase order advice turned into a purchase order."
+      }
+    ],
+    "text": "An item that has fallen below its reorder point is bought again, through a purchase order advice turned into a purchase order."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The item's order system is SIC, it has no Items - Planning row, its default supply source is Purchase, and it has one buy-from business partner. Its reorder point and order method are set in "
+        },
+        {
+          "t": "session",
+          "code": "tcibd2600m000",
+          "name": "Item - Ordering"
+        },
+        {
+          "t": "text",
+          "v": ", or per site in "
+        },
+        {
+          "t": "session",
+          "code": "tcibd2150m000",
+          "name": "Items - Ordering by Site"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "The item's order system is SIC, it has no Items - Planning row, its default supply source is Purchase, and it has one buy-from business partner. Its reorder point and order method are set in Item - Ordering (tcibd2600m000), or per site in Items - Ordering by Site (tcibd2150m000)."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "SIC, statistical inventory control, plans by stock level, not by demand. When the economic stock, on hand plus on order less allocated, falls below the item's reorder point, generating order advice proposes an order, sized by the item's order method. It suits cheap items with steady demand. It does not explode bills of material, use forecasts, or make distribution orders."
+      }
+    ],
+    "text": "SIC, statistical inventory control, plans by stock level, not by demand. When the economic stock, on hand plus on order less allocated, falls below the item's reorder point, generating order advice proposes an order, sized by the item's order method. It suits cheap items with steady demand. It does not explode bills of material, use forecasts, or make distribution orders."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the item range, Supply Source "
+                },
+                {
+                  "t": "literal",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " and Order System "
+                },
+                {
+                  "t": "literal",
+                  "v": "SIC"
+                }
+              ],
+              "text": "Set the item range, Supply Source Purchase and Order System SIC"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick Order Advice by Warehouse to plan each warehouse on its own"
+                }
+              ],
+              "text": "Tick Order Advice by Warehouse to plan each warehouse on its own"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Otherwise all warehouses' stock is counted together"
+                }
+              ],
+              "text": "Otherwise all warehouses' stock is counted together"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the series for purchase advice and the order horizon, then click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Enter the series for purchase advice and the order horizon, then click GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report of each advice and its quantity — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order advice"
+                }
+              ],
+              "text": "A report of each advice and its quantity — order advice"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whina3110m000",
+                  "name": "Purchase Order Advice"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Purchase Order Advice"
+                },
+                {
+                  "t": "text",
+                  "v": ", and check the advice"
+                }
+              ],
+              "text": "Open Purchase Order Advice (whina3110m000), Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Purchase Order Advice, and check the advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse, item, supplier and quantity"
+                }
+              ],
+              "text": "The warehouse, item, supplier and quantity"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the advice"
+                }
+              ],
+              "text": "Confirm the advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirmed is ticked"
+                }
+              ],
+              "text": "Confirmed is ticked"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Transfer Purchase Order Advice..."
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the purchase order series and type, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transfer"
+                }
+              ],
+              "text": "Choose Actions ➔ Transfer Purchase Order Advice..., enter the purchase order series and type, and click Transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report naming the purchase order made — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchase order"
+                }
+              ],
+              "text": "A report naming the purchase order made — purchase order"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No advice is made"
+              }
+            ],
+            "text": "No advice is made"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The economic stock must be below the reorder point within the order horizon, and the item's order system must be SIC"
+              }
+            ],
+            "text": "The economic stock must be below the reorder point within the order horizon, and the item's order system must be SIC"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order system cannot be set to SIC"
+              }
+            ],
+            "text": "The order system cannot be set to SIC"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Remove the item's Items - Planning row first"
+              }
+            ],
+            "text": "Remove the item's Items - Planning row first"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

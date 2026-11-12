@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "verify-the-inventory-increase",
@@ -20,6 +20,9 @@
     "Procurement",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "cancel-shipment",
@@ -11,8 +11,13 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [
+    "O2C-08"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Shipments ➔ Cancel Shipments",
   "session": "Cancel Shipments",
   "sessionCode": "whinh4230m500",

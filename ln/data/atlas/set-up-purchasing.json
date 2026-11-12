@@ -1,0 +1,501 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-purchasing",
+  "title": "Set up purchasing",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Procurement · Common",
+  "modules": [
+    "Procurement",
+    "Common"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Procurement ➔ Parameters ➔ Procurement",
+  "session": "Procurement Parameters",
+  "sessionCode": "tdpur0100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A company can buy: it has a purchase office, users with purchasing defaults, order types with their activities, and items that know where they are bought."
+      }
+    ],
+    "text": "A company can buy: it has a purchase office, users with purchasing defaults, order types with their activities, and items that know where they are bought."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The company's parameters say which parts of purchasing are used and how orders are numbered. A purchase office and each site can take those settings or keep their own. A user's profile gives every new order its office, site, warehouse, series and order type. The order type's activities are the steps every order of that type runs through. The item's purchase data, by site and by supplier, fills the order line."
+      }
+    ],
+    "text": "The company's parameters say which parts of purchasing are used and how orders are numbered. A purchase office and each site can take those settings or keep their own. A user's profile gives every new order its office, site, warehouse, series and order type. The order type's activities are the steps every order of that type runs through. The item's purchase data, by site and by supplier, fills the order line."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "chip",
+                  "v": "Procurement Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the parts used, such as Requisitions, Requests for Quotation, Contracts, Schedules and Vendor Rating, and set the default availability type"
+                }
+              ],
+              "text": "In Procurement Parameters, tick the parts used, such as Requisitions, Requests for Quotation, Contracts, Schedules and Vendor Rating, and set the default availability type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur0100m400",
+                  "name": "Purchase Order Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Parameters ➔ Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", set the number group and the series and order types for subcontracting, return rejections and direct delivery"
+                }
+              ],
+              "text": "In Purchase Order Parameters (tdpur0100m400), Procurement ➔ Parameters ➔ Orders, set the number group and the series and order types for subcontracting, return rejections and direct delivery"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur0111m000",
+                  "name": "Procurement Settings by Site"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ General ➔ Sites"
+                },
+                {
+                  "t": "text",
+                  "v": ", add each site that buys, keeping Use Global Procurement Parameters ticked unless the site differs"
+                }
+              ],
+              "text": "In Procurement Settings by Site (tdpur0111m000), Procurement ➔ Master Data ➔ General ➔ Sites, add each site that buys, keeping Use Global Procurement Parameters ticked unless the site differs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One row per site, with its address and logistic company"
+                }
+              ],
+              "text": "One row per site, with its address and logistic company"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur0112m000",
+                  "name": "Purchase Offices"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ General ➔ Offices"
+                },
+                {
+                  "t": "text",
+                  "v": ", make the office with its address and site, and on Order (1) its order series"
+                }
+              ],
+              "text": "In Purchase Offices (tdpur0112m000), Procurement ➔ Master Data ➔ General ➔ Offices, make the office with its address and site, and on Order (1) its order series"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur0143m000",
+                  "name": "Procurement User Profiles"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ General ➔ User Profiles"
+                },
+                {
+                  "t": "text",
+                  "v": ", give each buyer their office, buyer code, device, site, warehouse, order series and purchase order type"
+                }
+              ],
+              "text": "In Procurement User Profiles (tdpur0143m000), Procurement ➔ Master Data ➔ General ➔ User Profiles, give each buyer their office, buyer code, device, site, warehouse, order series and purchase order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur0194m000",
+                  "name": "Purchase Order Types"
+                },
+                {
+                  "t": "text",
+                  "v": ", open each type and check its Activities: each step's sequence, whether it runs automatically, and the device it prints to"
+                }
+              ],
+              "text": "In Purchase Order Types (tdpur0194m000), open each type and check its Activities: each step's sequence, whether it runs automatically, and the device it prints to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a standard order: print, release to warehousing, receipt, claims, return notes, invoices, process delivered"
+                }
+              ],
+              "text": "For a standard order: print, release to warehousing, receipt, claims, return notes, invoices, process delivered"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0102m000",
+                  "name": "Items - Purchase Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ Items ➔ Item Purchase Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": ", set what new items take for purchasing"
+                }
+              ],
+              "text": "In Items - Purchase Defaults (tdipu0102m000), Procurement ➔ Master Data ➔ Items ➔ Item Purchase Defaults, set what new items take for purchasing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For each bought item, open "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0601m000",
+                  "name": "Item - Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " and fill its buying and receiving data, then add a row per site where it differs"
+                }
+              ],
+              "text": "For each bought item, open Item - Purchase (tdipu0601m000) and fill its buying and receiving data, then add a row per site where it differs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its Item - Business Partner tab, add each supplier, with Preferred and status Approved"
+                }
+              ],
+              "text": "On its Item - Business Partner tab, add each supplier, with Preferred and status Approved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The supplier appears in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0110m200",
+                  "name": "Approved Supplier List"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+                }
+              ],
+              "text": "The supplier appears in Approved Supplier List (tdipu0110m200), Procurement ➔ Master Data ➔ Items ➔ Approved Supplier List"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

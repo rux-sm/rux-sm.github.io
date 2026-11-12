@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "screens",
   "entries": [
@@ -174,6 +174,12 @@
       "name": "Item Defaults",
       "purpose": "Sets the default data a new item is created with.",
       "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults"
+    },
+    {
+      "code": "tcibd0103m000",
+      "name": "Conversion Factors",
+      "purpose": "Converts one unit into another, for every item, for an item group, or for one item.",
+      "route": "Master Data ➔ Code Definitions ➔ Logistic Codes ➔ Conversion Factors"
     },
     {
       "code": "tcibd0106m000",
@@ -476,6 +482,18 @@
       "route": "Drill In from Price Books; the plural list is at Common - Pricing - Prices - Price Books"
     },
     {
+      "code": "tdpur0100m400",
+      "name": "Purchase Order Parameters",
+      "purpose": "Holds the company's purchase order settings, such as the number groups, the order types used for subcontracting, rejections and direct deliveries, backorders, history and change codes.",
+      "route": "Procurement ➔ Parameters ➔ Orders"
+    },
+    {
+      "code": "tdpur0112m000",
+      "name": "Purchase Offices",
+      "purpose": "Defines each purchase office, the site and enterprise unit it belongs to, and the series and defaults its requisitions, RFQs, orders, contracts and prices use.",
+      "route": "Procurement ➔ Master Data ➔ General ➔ Offices"
+    },
+    {
       "code": "tdpur0143m000",
       "name": "Procurement User Profiles",
       "purpose": "Holds each user's purchasing defaults, among them the purchase office, site, warehouse and purchase order type new orders start with.",
@@ -528,6 +546,12 @@
       "name": "Purchase Order Intake Workbench",
       "purpose": "Shows purchase order work that needs attention, in one place.",
       "route": "Procurement ➔ Orders ➔ Order Intake Workbench"
+    },
+    {
+      "code": "tdsls0500m400",
+      "name": "Sales Order Parameters",
+      "purpose": "Holds the company-wide rules for sales orders, from numbering and history to backorders, blocking and kit handling.",
+      "route": "Sales ➔ Parameters ➔ Orders"
     },
     {
       "code": "tdsls4100m000",
@@ -678,6 +702,12 @@
       "name": "Calculate Estimated End Item Unit Costs",
       "purpose": "Works out the estimated unit cost of an end item.",
       "route": "runs automatically when estimates freeze; no filed source gives a manual route"
+    },
+    {
+      "code": "tiedm0110m000",
+      "name": "Engineering Item",
+      "purpose": "Holds engineering items, the design-side copies of items whose revisions EDM moves into the item master and the bills of material.",
+      "route": "by its code; no menu entry in the navigation extract"
     },
     {
       "code": "tiipd0102m100",

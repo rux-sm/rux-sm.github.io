@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_ship-from-stock",
@@ -23,8 +23,13 @@
     "Sales",
     "Warehousing"
   ],
+  "codes": [
+    "O2C-08"
+  ],
+  "role": null,
+  "roles": [],
   "status": "approved",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",

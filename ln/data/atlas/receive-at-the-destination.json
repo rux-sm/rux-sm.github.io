@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "receive-at-the-destination",
@@ -22,8 +22,15 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [
+    "P2D-11"
+  ],
+  "role": "Material Handler",
+  "roles": [
+    "Material Handler"
+  ],
   "status": "approved",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
@@ -363,6 +370,36 @@
               }
             ],
             "text": "The shipment isn't confirmed. Go back to step 2 of Ship"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Fewer arrived than were shipped"
+              }
+            ],
+            "text": "Fewer arrived than were shipped"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Receive the quantity that arrived. Tick Final only if no more will come: LN warns "
+              },
+              {
+                "t": "literal",
+                "v": "No other shipment lines can be received anymore if this line is marked as final."
+              },
+              {
+                "t": "text",
+                "v": " After put-away, delete or cancel the open remainder line on the warehousing order"
+              }
+            ],
+            "text": "Receive the quantity that arrived. Tick Final only if no more will come: LN warns No other shipment lines can be received anymore if this line is marked as final. After put-away, delete or cancel the open remainder line on the warehousing order"
           }
         ]
       }

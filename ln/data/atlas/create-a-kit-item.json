@@ -1,0 +1,643 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-a-kit-item",
+  "title": "Create a kit item",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Master Data · Sales · Manufacturing",
+  "modules": [
+    "Master Data",
+    "Sales",
+    "Manufacturing"
+  ],
+  "codes": [
+    "D2R-02"
+  ],
+  "role": "Manufacturing Engineer",
+  "roles": [
+    "Manufacturing Engineer"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Master Data ➔ Items ➔ Items",
+  "session": "Items",
+  "sessionCode": "tcibd0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An item that is sold as a kit, whose sales order line brings its components in as lines of their own, and which has a standard cost."
+      }
+    ],
+    "text": "An item that is sold as a kit, whose sales order line brings its components in as lines of their own, and which has a standard cost."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Each component already exists as an item. Your company has an item group for kits."
+        }
+      ],
+      "text": "Each component already exists as an item. Your company has an item group for kits."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A kit is a phantom item with a bill of material. The production bill of material is what kit handling reads to put the components on the sales order. A job shop bill of material, generated from it for a site, is what costing reads. So a kit needs both, and the standard cost comes last."
+      }
+    ],
+    "text": "A kit is a phantom item with a bill of material. The production bill of material is what kit handling reads to put the components on the sales order. A job shop bill of material, generated from it for a site, is what costing reads. So a kit needs both, and the standard cost comes last."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the kit's item code and description, leave the item type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Product"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose the kit item group, and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click New, enter the kit's item code and description, leave the item type Product, choose the kit item group, and click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item, with Sites, Enterprise Units and the other tabs below it"
+                }
+              ],
+              "text": "The item, with Sites, Enterprise Units and the other tabs below it"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the inventory unit"
+                }
+              ],
+              "text": "Set the inventory unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN asks "
+                },
+                {
+                  "t": "literal",
+                  "v": "Change other units with same value too?"
+                },
+                {
+                  "t": "text",
+                  "v": ". Answer "
+                },
+                {
+                  "t": "literal",
+                  "v": "Yes"
+                }
+              ],
+              "text": "LN asks Change other units with same value too?. Answer Yes"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Under Subentities, click the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales"
+                },
+                {
+                  "t": "text",
+                  "v": " link. Under Shipping, set Component Handling to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Component Lines"
+                },
+                {
+                  "t": "text",
+                  "v": ", then save"
+                }
+              ],
+              "text": "Under Subentities, click the Sales link. Under Shipping, set Component Handling to Component Lines, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the item, click the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production"
+                },
+                {
+                  "t": "text",
+                  "v": " link. Under As Material, tick Phantom, then save"
+                }
+              ],
+              "text": "Back on the item, click the Production link. Under As Material, tick Phantom, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Production Bill of Material"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", and enter the kit item with an effective date on or before today"
+                }
+              ],
+              "text": "Choose References ➔ Production Bill of Material, click New, and enter the kit item with an effective date on or before today"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new revision, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "New"
+                }
+              ],
+              "text": "A new revision, status New"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add one line for each component with its quantity, then save"
+                }
+              ],
+              "text": "Add one line for each component with its quantity, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Approve Revision"
+                }
+              ],
+              "text": "Choose Actions ➔ Approve Revision"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The status reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "Approved"
+                }
+              ],
+              "text": "The status reads Approved"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Generate ➔ Job Shop BOM"
+                },
+                {
+                  "t": "text",
+                  "v": ", set the site, and click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Choose Actions ➔ Generate ➔ Job Shop BOM, set the site, and click GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A message names the job shop bill of material it made — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "job shop BOM"
+                }
+              ],
+              "text": "A message names the job shop bill of material it made — job shop BOM"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the item, open that job shop bill of material for the site, then set it to "
+                },
+                {
+                  "t": "chip",
+                  "v": "Use for Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Use for Costing"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Approve Revision"
+                }
+              ],
+              "text": "Back on the item, open that job shop bill of material for the site, then set it to Use for Planning and Use for Costing, and Approve Revision"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Available for Planning, Use for Planning and Use for Costing are ticked, and the status reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "Approved"
+                }
+              ],
+              "text": "Available for Planning, Use for Planning and Use for Costing are ticked, and the status reads Approved"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the item's Details tab, clear or change the item signal"
+                }
+              ],
+              "text": "On the item's Details tab, clear or change the item signal"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Enterprise Units tab, tick the costing row and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Calculate and Actualize Standard Costs..."
+                }
+              ],
+              "text": "On the Enterprise Units tab, tick the costing row and choose Actions ➔ Calculate and Actualize Standard Costs..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The row shows the kit's standard cost"
+                }
+              ],
+              "text": "The row shows the kit's standard cost"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Component Handling cannot be changed on the item's sales data"
+              }
+            ],
+            "text": "Component Handling cannot be changed on the item's sales data"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Turn on Extended Kit Handling Implemented in the sales order parameters or the sales office, and check the item type and its default supply source"
+              }
+            ],
+            "text": "Turn on Extended Kit Handling Implemented in the sales order parameters or the sales office, and check the item type and its default supply source"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The kit has no standard cost after step 11"
+              }
+            ],
+            "text": "The kit has no standard cost after step 11"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check the job shop bill of material is approved and set to Use for Costing for the site on the costing row"
+              }
+            ],
+            "text": "Check the job shop bill of material is approved and set to Use for Costing for the site on the costing row"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "backflush",
@@ -11,8 +11,13 @@
   "modules": [
     "Manufacturing"
   ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours",
   "session": "Backflush Materials and Hours",
   "sessionCode": "tisfc0220m000",

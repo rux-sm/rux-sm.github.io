@@ -1,0 +1,938 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "repair-a-customer-part",
+  "title": "Repair a customer's part",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Service · Warehousing · People",
+  "modules": [
+    "Service",
+    "Warehousing",
+    "People"
+  ],
+  "codes": [
+    "ASM-08"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Service ➔ Depot Repair ➔ Maintenance Sales Orders",
+  "session": "Maintenance Sales Orders",
+  "sessionCode": "tsmsc1100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A part the customer sends in is received, repaired on a work order, shipped back and costed for invoicing."
+      }
+    ],
+    "text": "A part the customer sends in is received, repaired on a work order, shipped back and costed for invoicing."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The maintenance sales order receives the part; receiving it on a part maintenance line makes the work order. The work order's activities, labor and material record the repair, and completing it signs it off. The order then ships the part back and is costed, which hands it to invoicing, as the "
+      },
+      {
+        "t": "text",
+        "v": "maintenance sales order"
+      },
+      {
+        "t": "text",
+        "v": " concept explains."
+      }
+    ],
+    "text": "The maintenance sales order receives the part; receiving it on a part maintenance line makes the work order. The work order's activities, labor and material record the repair, and completing it signs it off. The order then ships the part back and is costed, which hands it to invoicing, as the maintenance sales order concept explains."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the sold-to business partner, the service type, the sales representative, the customer order and the start and finish times"
+                }
+              ],
+              "text": "Click New and enter the sold-to business partner, the service type, the sales representative, the customer order and the start and finish times"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order number, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "The order number, status Free"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Part Maintenance tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the item and its serial number; answer Yes if LN offers to create the serial number"
+                }
+              ],
+              "text": "On the Part Maintenance tab, click New and enter the item and its serial number; answer Yes if LN offers to create the serial number"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A line, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "A line, status Free"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save, then choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release"
+                }
+              ],
+              "text": "Save, then choose Release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order and line "
+                },
+                {
+                  "t": "literal",
+                  "v": "Released"
+                }
+              ],
+              "text": "Order and line Released"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the line, and on its Logistics tab click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Receipt"
+                }
+              ],
+              "text": "Open the line, and on its Logistics tab click Item Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Quantity "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": ", order "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": ", and on the line a work order, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "work order"
+                }
+              ],
+              "text": "Quantity 1, order In Process, and on the line a work order, status Free — work order"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the work order in "
+                },
+                {
+                  "t": "session",
+                  "code": "tswcs2100m000",
+                  "name": "Work Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", and on the Activities tab add a reference activity, or generate activities from a master routing"
+                }
+              ],
+              "text": "Open the work order in Work Orders (tswcs2100m000), and on the Activities tab add a reference activity, or generate activities from a master routing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its labor resources fill in on the Labor Resource tab"
+                }
+              ],
+              "text": "Its labor resources fill in on the Labor Resource tab"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set each labor task's required quantity, and add the material on the Material Resource tab with its activity line"
+                }
+              ],
+              "text": "Set each labor task's required quantity, and add the material on the Material Resource tab with its activity line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Plan Order..."
+                },
+                {
+                  "t": "text",
+                  "v": " and process it"
+                }
+              ],
+              "text": "Choose Plan Order... and process it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order and activities "
+                },
+                {
+                  "t": "literal",
+                  "v": "Planned"
+                }
+              ],
+              "text": "Order and activities Planned"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the activities and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release"
+                }
+              ],
+              "text": "Select the activities and choose Release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Released"
+                }
+              ],
+              "text": "Released"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Book the hours: in Hours and Expenses choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Work Order Hours"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the work order, labor line and time, then process them in "
+                },
+                {
+                  "t": "session",
+                  "code": "bptmm1203m000",
+                  "name": "Process Hours and Expenses"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ People ➔ Hours and Expenses ➔ Process Hours and Expenses"
+                },
+                {
+                  "t": "text",
+                  "v": ", by work order"
+                }
+              ],
+              "text": "Book the hours: in Hours and Expenses choose References ➔ Work Order Hours, enter the work order, labor line and time, then process them in Process Hours and Expenses (bptmm1203m000), Common ➔ People ➔ Hours and Expenses ➔ Process Hours and Expenses, by work order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Issue the material: in "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2300m000",
+                  "name": "Warehouse Manager Dashboard"
+                },
+                {
+                  "t": "text",
+                  "v": " select the work order, generate the outbound advice and release the lines"
+                }
+              ],
+              "text": "Issue the material: in Warehouse Manager Dashboard (whinh2300m000) select the work order, generate the outbound advice and release the lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Material Resource tab shows the actual quantities"
+                }
+              ],
+              "text": "The Material Resource tab shows the actual quantities"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check material, hours and labor on the work order, select the activities and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Complete"
+                },
+                {
+                  "t": "text",
+                  "v": ", answering Yes to update the actual quantities and to close the activities"
+                }
+              ],
+              "text": "Check material, hours and labor on the work order, select the activities and choose Complete, answering Yes to update the actual quantities and to close the activities"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": ", activities "
+                },
+                {
+                  "t": "literal",
+                  "v": "Signed-Off"
+                },
+                {
+                  "t": "text",
+                  "v": "; after a refresh, the order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Signed-Off"
+                }
+              ],
+              "text": "Order Completed, activities Signed-Off; after a refresh, the order Signed-Off"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Close Order"
+                }
+              ],
+              "text": "Choose Actions ➔ Close Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Work order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Closed"
+                }
+              ],
+              "text": "Work order Closed"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the Warehouse Manager Dashboard select the maintenance sales order, generate and release the outbound advice, then freeze the shipment, print the packing slip and confirm"
+                }
+              ],
+              "text": "In the Warehouse Manager Dashboard select the maintenance sales order, generate and release the outbound advice, then freeze the shipment, print the packing slip and confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The part shipped, the order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                }
+              ],
+              "text": "The part shipped, the order Completed"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the order's Coverage Line tab add what is charged: description, quantity, unit, sales price, coverage type and cost component"
+                }
+              ],
+              "text": "On the order's Coverage Line tab add what is charged: description, quantity, unit, sales price, coverage type and cost component"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Print Draft Invoice"
+                },
+                {
+                  "t": "text",
+                  "v": " and check it, including the tax code, then choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Cost"
+                }
+              ],
+              "text": "Choose Actions ➔ Print Draft Invoice and check it, including the tax code, then choose Cost"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Costed"
+                }
+              ],
+              "text": "Order Costed"
+            }
+          ],
+          "id": "15",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No work order appears"
+              }
+            ],
+            "text": "No work order appears"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order must be released before the item receipt on the part maintenance line"
+              }
+            ],
+            "text": "The order must be released before the item receipt on the part maintenance line"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Warehousing shows nothing for the order"
+              }
+            ],
+            "text": "Warehousing shows nothing for the order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Release the maintenance sales order"
+              }
+            ],
+            "text": "Release the maintenance sales order"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Hours cannot be booked"
+              }
+            ],
+            "text": "Hours cannot be booked"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The work order's activity must be "
+              },
+              {
+                "t": "literal",
+                "v": "Released"
+              }
+            ],
+            "text": "The work order's activity must be Released"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The customer sends a core for an exchange"
+              }
+            ],
+            "text": "The customer sends a core for an exchange"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Receive it on a Part Receipt line with Use Residual Value ticked at "
+              },
+              {
+                "t": "literal",
+                "v": "0"
+              },
+              {
+                "t": "text",
+                "v": ", make the work order yourself, receive the core on it, and deliver the finished assembly on a Part Delivery line"
+              }
+            ],
+            "text": "Receive it on a Part Receipt line with Use Residual Value ticked at 0, make the work order yourself, receive the core on it, and deliver the finished assembly on a Part Delivery line"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The repair is done by a subcontractor"
+              }
+            ],
+            "text": "The repair is done by a subcontractor"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On the work order add the part as an outgoing subassembly and release it, which makes a subcontracting purchase order with the part on its material supply lines. With the subcontractor's price, choose "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Create Quote"
+              },
+              {
+                "t": "text",
+                "v": " on the maintenance sales order, approve, print and accept the quote when the customer orders. Receive the repaired part on the purchase order, confirm it as an incoming subassembly, complete the work order and ship as usual"
+              }
+            ],
+            "text": "On the work order add the part as an outgoing subassembly and release it, which makes a subcontracting purchase order with the part on its material supply lines. With the subcontractor's price, choose Actions ➔ Create Quote on the maintenance sales order, approve, print and accept the quote when the customer orders. Receive the repaired part on the purchase order, confirm it as an incoming subassembly, complete the work order and ship as usual"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A work order with no sales order"
+              }
+            ],
+            "text": "A work order with no sales order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Create it in Work Orders with its sold-to business partner, then plan, release, process and sign it off the same way"
+              }
+            ],
+            "text": "Create it in Work Orders with its sold-to business partner, then plan, release, process and sign it off the same way"
+          }
+        ]
+      }
+    ]
+  }
+}

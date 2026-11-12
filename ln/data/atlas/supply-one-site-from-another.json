@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "supply-one-site-from-another",
@@ -11,8 +11,11 @@
   "modules": [
     "Enterprise Planning"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-25",
+  "updated": "2026-11-08",
   "route": "Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)",
   "session": "Supplying Relationships (old)",
   "sessionCode": "cprpd7130m000",

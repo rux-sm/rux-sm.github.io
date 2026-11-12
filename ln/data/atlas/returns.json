@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "returns",
@@ -11,23 +11,65 @@
   "modules": [
     "Sales"
   ],
+  "codes": [
+    "O2C-06"
+  ],
+  "role": "Sales Operations Specialist",
+  "roles": [
+    "Sales Operations Specialist"
+  ],
   "status": null,
-  "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
+  "updated": "2026-11-12",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
   "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Take goods back from a customer."
+        "v": "Goods a customer sends back are received into a warehouse, and the customer is credited."
       }
     ],
-    "text": "Take goods back from a customer."
+    "text": "Goods a customer sends back are received into a warehouse, and the customer is credited."
   },
-  "before": [],
-  "why": null,
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A sales order type for returns, set up in "
+        },
+        {
+          "t": "session",
+          "code": "tdsls0594m000",
+          "name": "Order Types"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
+        },
+        {
+          "t": "text",
+          "v": ", as Return Inventory or Return Rejects with a warehousing order type that receives."
+        }
+      ],
+      "text": "A sales order type for returns, set up in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types, as Return Inventory or Return Rejects with a warehousing order type that receives."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A return is a sales order of a return order type, with negative quantities. It names the order, shipment or invoice it reverses and the reason. Approving it prints a return materials authorization, warehousing receives the goods, and invoicing credits the customer."
+      }
+    ],
+    "text": "A return is a sales order of a return order type, with negative quantities. It names the order, shipment or invoice it reverses and the reason. Approving it prints a return materials authorization, warehousing receives the goods, and invoicing credits the customer."
+  },
   "blocks": [
     {
       "kind": "steps",
@@ -52,32 +94,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "set up a return order type in "
+                  "v": "On the Sales Orders tab, tick the original order and click "
                 },
                 {
-                  "t": "session",
-                  "code": "tdsls0594m000",
-                  "name": "Order Types"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "path",
-                  "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
+                  "t": "chip",
+                  "v": "Copy"
                 }
               ],
-              "text": "set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types"
+              "text": "On the Sales Orders tab, tick the original order and click Copy"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "tdsls4201s000",
+                  "name": "Copy Sales Order"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens with the original order as the source"
                 }
               ],
-              "text": "—"
+              "text": "Copy Sales Order (tdsls4201s000) opens with the original order as the source"
             }
           ],
           "id": "1",
@@ -99,24 +137,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "make it Return Inventory or Return Rejects. Give it a warehousing order type that receives"
+                  "v": "Choose the copy template, and in Target choose the return order type, then copy, and copy again on the second screen"
                 }
               ],
-              "text": "make it Return Inventory or Return Rejects. Give it a warehousing order type that receives"
+              "text": "Choose the copy template, and in Target choose the return order type, then copy, and copy again on the second screen"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "A report lists each source line and the return line made from it — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "return order"
                 }
               ],
-              "text": "—"
+              "text": "A report lists each source line and the return line made from it — return order"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -133,19 +182,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "create a sales order of that type, and give it the original document and a return reason"
+                  "v": "Open the new order"
                 }
               ],
-              "text": "create a sales order of that type, and give it the original document and a return reason"
+              "text": "Open the new order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": ", the return order type, and a negative order amount"
                 }
               ],
-              "text": "—"
+              "text": "Status Free, the return order type, and a negative order amount"
             }
           ],
           "id": "3",
@@ -167,19 +224,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "copy the lines from the original document; they arrive with a negative quantity and amount"
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Sales Order Details"
+                },
+                {
+                  "t": "text",
+                  "v": " and look under Returns"
                 }
               ],
-              "text": "copy the lines from the original document; they arrive with a negative quantity and amount"
+              "text": "Choose References ➔ Sales Order Details and look under Returns"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Original Document Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", the original order number, and a Return Reason"
                 }
               ],
-              "text": "—"
+              "text": "Original Document Type Order, the original order number, and a Return Reason"
             }
           ],
           "id": "4",
@@ -201,10 +274,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "approve the order and release it to warehousing, which receives the goods"
+                  "v": "Enter a Return Reason if there is none, then save and exit"
                 }
               ],
-              "text": "approve the order and release it to warehousing, which receives the goods"
+              "text": "Enter a Return Reason if there is none, then save and exit"
             },
             {
               "tokens": [
@@ -235,10 +308,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "release it to invoicing, then process it"
+                  "v": "Check each order line: a negative quantity, and the warehouse the goods go back to. Set the lot or serial if you know it"
                 }
               ],
-              "text": "release it to invoicing, then process it"
+              "text": "Check each order line: a negative quantity, and the warehouse the goods go back to. Set the lot or serial if you know it"
             },
             {
               "tokens": [
@@ -253,18 +326,118 @@
           "id": "6",
           "optional": false,
           "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve the order"
+                }
+              ],
+              "text": "Approve the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A Return Materials Authorization prints, and the status reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                }
+              ],
+              "text": "A Return Materials Authorization prints, and the status reads In Process"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Once warehousing has received the goods, look at the Actual Delivery Lines tab"
+                }
+              ],
+              "text": "Once warehousing has received the goods, look at the Actual Delivery Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A receipt and the negative delivered quantity"
+                }
+              ],
+              "text": "A receipt and the negative delivered quantity"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Invoice Lines tab"
+                }
+              ],
+              "text": "Look at the Invoice Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line is released to invoicing, "
+                },
+                {
+                  "t": "literal",
+                  "v": "To be Invoiced"
+                }
+              ],
+              "text": "The line is released to invoicing, To be Invoiced"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
-        }
-      ],
-      "text": "Not documented for this release."
     }
   ],
   "example": {
@@ -275,8 +448,56 @@
   "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order cannot be saved"
+              }
+            ],
+            "text": "The order cannot be saved"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A Return Reason must be entered under Returns"
+              }
+            ],
+            "text": "A Return Reason must be entered under Returns"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The goods cannot be received"
+              }
+            ],
+            "text": "The goods cannot be received"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The line needs a lot or serial for a tracked item; set it on the line, or warehousing sets it before the receipt"
+              }
+            ],
+            "text": "The line needs a lot or serial for a tracked item; set it on the line, or warehousing sets it before the receipt"
+          }
+        ]
+      }
+    ]
   },
   "variants": {
     "kind": "variants",

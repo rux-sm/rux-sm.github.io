@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "release-to-warehousing",
@@ -23,8 +23,13 @@
     "Sales",
     "Warehousing"
   ],
+  "codes": [
+    "O2C-04"
+  ],
+  "role": null,
+  "roles": [],
   "status": "approved",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",

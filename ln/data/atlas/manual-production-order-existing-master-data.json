@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "manual-production-order-existing-master-data",
@@ -8,6 +8,10 @@
   "modules": [
     "Manufacturing",
     "Warehousing"
+  ],
+  "codes": [
+    "P2D-04",
+    "P2D-06"
   ],
   "updated": "2026-11-02",
   "status": "approved",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "create-a-business-partner",
@@ -9,6 +9,10 @@
     "Common",
     "Procurement",
     "Sales"
+  ],
+  "codes": [
+    "S2P-01",
+    "B2C-01"
   ],
   "updated": "2026-11-02",
   "status": "draft",

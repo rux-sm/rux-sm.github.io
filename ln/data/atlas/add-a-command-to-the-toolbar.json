@@ -1,0 +1,218 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "add-a-command-to-the-toolbar",
+  "title": "Add a command to the toolbar",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory",
+  "session": "Warehouse - Item Inventory",
+  "sessionCode": "whwmd2515m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A command from a menu, such as one under References, is one click away on the session's toolbar."
+      }
+    ],
+    "text": "A command from a menu, such as one under References, is one click away on the session's toolbar."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The toolbar is personalized like the form. Any entry of the session's Actions, References or Views menus can be copied onto it, as text, an icon or both."
+      }
+    ],
+    "text": "The toolbar is personalized like the form. Any entry of the session's Actions, References or Views menus can be copied onto it, as text, an icon or both."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the gear at the top right and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Personalization ➔ Personalize Toolbar..."
+                }
+              ],
+              "text": "Click the gear at the top right and choose Personalization ➔ Personalize Toolbar..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A toolbar preview and the session's menus as a tree"
+                }
+              ],
+              "text": "A toolbar preview and the session's menus as a tree"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the command, for example Stock Point Inventory under References"
+                }
+              ],
+              "text": "Find the command, for example Stock Point Inventory under References"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Right-click it and choose Copy to Toolbar"
+                }
+              ],
+              "text": "Right-click it and choose Copy to Toolbar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its properties, with a Display Style of text, icon, or icon and text"
+                }
+              ],
+              "text": "Its properties, with a Display Style of text, icon, or icon and text"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                },
+                {
+                  "t": "text",
+                  "v": " and exit"
+                }
+              ],
+              "text": "Click Save and exit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The command is on the toolbar"
+                }
+              ],
+              "text": "The command is on the toolbar"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

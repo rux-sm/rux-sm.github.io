@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "exception-messages",
@@ -11,8 +11,13 @@
   "modules": [
     "Enterprise Planning"
   ],
+  "codes": [
+    "P2D-02"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner",
   "session": "Exception Messages by Planner",
   "sessionCode": "cprao1120m000",
@@ -21,13 +26,48 @@
     "tokens": [
       {
         "t": "text",
-        "v": "List what planning says about the orders that already exist."
+        "v": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with."
       }
     ],
-    "text": "List what planning says about the orders that already exist."
+    "text": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with."
   },
-  "before": [],
-  "why": null,
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Order planning has run with Exception Messages Save ticked on its Options tab. Each planner's message profile is in "
+        },
+        {
+          "t": "session",
+          "code": "cprao1110m000",
+          "name": "Exception Message Types"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Plan Analysis ➔ Exception Message Types"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Order planning has run with Exception Messages Save ticked on its Options tab. Each planner's message profile is in Exception Message Types (cprao1110m000), Planning ➔ Plan Analysis ➔ Exception Message Types."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planning compares the receipts it has with what is needed and writes a message wherever they differ: reschedule in, reschedule out, cancel, negative inventory, or an error that stops an order being planned or transferred. The messages are made during order planning, kept until the next run, and filed under the planner of each plan item, or a blank planner where there is none."
+      }
+    ],
+    "text": "Planning compares the receipts it has with what is needed and writes a message wherever they differ: reschedule in, reschedule out, cancel, negative inventory, or an error that stops an order being planned or transferred. The messages are made during order planning, kept until the next run, and filed under the planner of each plan item, or a blank planner where there is none."
+  },
   "blocks": [
     {
       "kind": "steps",
@@ -52,19 +92,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "planning compares the receipts that exist with what is needed"
+                  "v": "Choose the planner and the scenario, leaving the planner blank for items with none"
                 }
               ],
-              "text": "planning compares the receipts that exist with what is needed"
+              "text": "Choose the planner and the scenario, leaving the planner blank for items with none"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "One row per plan item, with how many messages it has, the highest priority, and the earliest date"
                 }
               ],
-              "text": "—"
+              "text": "One row per plan item, with how many messages it has, the highest priority, and the earliest date"
             }
           ],
           "id": "1",
@@ -86,19 +126,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "it raises a message where they differ"
+                  "v": "Open a plan item's row"
                 }
               ],
-              "text": "it raises a message where they differ"
+              "text": "Open a plan item's row"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "cprao1125m000",
+                  "name": "Exception Messages"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": ", one line per message, with the order, its date, and what to do, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "Reschedule into 24-06-20 02:31:27."
                 }
               ],
-              "text": "—"
+              "text": "Exception Messages (cprao1125m000), one line per message, with the order, its date, and what to do, such as Reschedule into 24-06-20 02:31:27."
             }
           ],
           "id": "2",
@@ -120,10 +169,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a reschedule message asks for a receipt earlier or later"
+                  "v": "Act on a message on the order it names"
                 }
               ],
-              "text": "a reschedule message asks for a receipt earlier or later"
+              "text": "Act on a message on the order it names"
             },
             {
               "tokens": [
@@ -154,10 +203,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a cancel message marks a receipt nothing needs"
+                  "v": "For a message you will not act on, tick Accept"
                 }
               ],
-              "text": "a cancel message marks a receipt nothing needs"
+              "text": "For a message you will not act on, tick Accept"
             },
             {
               "tokens": [
@@ -188,19 +237,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a tolerance in days, set per message type, keeps small shifts quiet"
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Views ➔ Hide Accepted Exception Messages"
                 }
               ],
-              "text": "a tolerance in days, set per message type, keeps small shifts quiet"
+              "text": "Choose Views ➔ Hide Accepted Exception Messages"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Only the messages still to deal with"
                 }
               ],
-              "text": "—"
+              "text": "Only the messages still to deal with"
             }
           ],
           "id": "5",
@@ -208,16 +261,6 @@
           "produces": false
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
-        }
-      ],
-      "text": "Not documented for this release."
     }
   ],
   "example": {

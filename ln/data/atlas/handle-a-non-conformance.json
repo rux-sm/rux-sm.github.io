@@ -1,0 +1,611 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "handle-a-non-conformance",
+  "title": "Handle a non-conformance",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Quality · Manufacturing · Warehousing",
+  "modules": [
+    "Quality",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "codes": [
+    "I2R-01",
+    "I2R-02"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
+  "session": "Report Operations Completed",
+  "sessionCode": "tisfc0130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A part rejected at an operation is recorded, reviewed, dispositioned and scrapped, with the write-off linked to the report."
+      }
+    ],
+    "text": "A part rejected at an operation is recorded, reviewed, dispositioned and scrapped, with the write-off linked to the report."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A rejected quantity lets you raise a "
+      },
+      {
+        "t": "text",
+        "v": "non-conformance report"
+      },
+      {
+        "t": "text",
+        "v": " that inherits the order. It is submitted and assigned to a review board, which decides the disposition. The rejected part goes to quarantine first, so processing the quarantine after the disposition makes the adjustment order and links it back."
+      }
+    ],
+    "text": "A rejected quantity lets you raise a non-conformance report that inherits the order. It is submitted and assigned to a review board, which decides the disposition. The rejected part goes to quarantine first, so processing the quarantine after the disposition makes the adjustment order and links it back."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For the production order, enter an additional rejected quantity on the operation"
+                }
+              ],
+              "text": "For the production order, enter an additional rejected quantity on the operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The cumulative rejected quantity goes up"
+                }
+              ],
+              "text": "The cumulative rejected quantity goes up"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the line and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "NCMR"
+                }
+              ],
+              "text": "Select the line and click NCMR"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "qmncm1600m000",
+                  "name": "Non-Conformance Reports"
+                },
+                {
+                  "t": "text",
+                  "v": ", status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": ", with the order's data"
+                }
+              ],
+              "text": "Non-Conformance Reports (qmncm1600m000), status Open, with the order's data"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Material tab, enter a description, the quantity, material type, severity and reject reason"
+                }
+              ],
+              "text": "On the Material tab, enter a description, the quantity, material type, severity and reject reason"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Disposition tab, enter the review board or an owner and the planned review date, then click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Submit"
+                }
+              ],
+              "text": "On the Disposition tab, enter the review board or an owner and the planned review date, then click Submit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Submitted"
+                }
+              ],
+              "text": "Status Submitted"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Assign"
+                }
+              ],
+              "text": "Choose Actions ➔ Assign"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Assigned"
+                },
+                {
+                  "t": "text",
+                  "v": "; the disposition fields open"
+                }
+              ],
+              "text": "Status Assigned; the disposition fields open"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the operation, select the line and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Move to Quarantine"
+                },
+                {
+                  "t": "text",
+                  "v": ", generate a lot for a lot-controlled item, and process it"
+                }
+              ],
+              "text": "Back on the operation, select the line and choose Move to Quarantine, generate a lot for a lot-controlled item, and process it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The rejected quantity is in quarantine, linked to the report"
+                }
+              ],
+              "text": "The rejected quantity is in quarantine, linked to the report"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the report, enter the material disposition, type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Scrap"
+                },
+                {
+                  "t": "text",
+                  "v": " with a reason, cause and responsible code, and the non-material disposition"
+                }
+              ],
+              "text": "On the report, enter the material disposition, type Scrap with a reason, cause and responsible code, and the non-material disposition"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Kind of Order "
+                },
+                {
+                  "t": "literal",
+                  "v": "Adjustment Order"
+                }
+              ],
+              "text": "Kind of Order Adjustment Order"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Disposition"
+                }
+              ],
+              "text": "Click Disposition"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Dispositioned"
+                }
+              ],
+              "text": "Status Dispositioned"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd2672m100",
+                  "name": "Quarantine Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process"
+                }
+              ],
+              "text": "In Quarantine Inventory (whwmd2672m100), Warehousing ➔ Receipts/Inspections ➔ Quarantine Inventory, choose Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An adjustment order, shown on the report"
+                }
+              ],
+              "text": "An adjustment order, shown on the report"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No fault found"
+              }
+            ],
+            "text": "No fault found"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the type to No Fault Found; nothing is ordered, and on the production order the rejected quantity is reversed back to work in progress"
+              }
+            ],
+            "text": "Set the type to No Fault Found; nothing is ordered, and on the production order the rejected quantity is reversed back to work in progress"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A rejected receipt, returned to the supplier"
+              }
+            ],
+            "text": "A rejected receipt, returned to the supplier"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Reject part of the warehouse inspection with a reject reason, then click Report under Non-Conforming Material Report on the inspection. The lot and serial carry over; set the disposition to Return to Vendor and process the quarantine, which makes a purchase return order"
+              }
+            ],
+            "text": "Reject part of the warehouse inspection with a reject reason, then click Report under Non-Conforming Material Report on the inspection. The lot and serial carry over; set the disposition to Return to Vendor and process the quarantine, which makes a purchase return order"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A bad lot found in production"
+              }
+            ],
+            "text": "A bad lot found in production"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Raise the report from Report Operations Completed, disposition it Return to Vendor, process the return on the production warehouse order, which adds a new material line and an inspection order; reject the quantity with a reason there and link it. Or split the production order's material onto the lot, cancel the piece on the production warehouse order, generate an inventory inspection for it, reject it with a report and return it to the vendor in the same way"
+              }
+            ],
+            "text": "Raise the report from Report Operations Completed, disposition it Return to Vendor, process the return on the production warehouse order, which adds a new material line and an inspection order; reject the quantity with a reason there and link it. Or split the production order's material onto the lot, cancel the piece on the production warehouse order, generate an inventory inspection for it, reject it with a report and return it to the vendor in the same way"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Repaired within the same order"
+              }
+            ],
+            "text": "Repaired within the same order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Disposition it Use As Is, block the operation so it cannot complete, and append a rework operation to the production order with its instructions, steps and process variables; the routing sheet prints as modified"
+              }
+            ],
+            "text": "Disposition it Use As Is, block the operation so it cannot complete, and append a rework operation to the production order with its instructions, steps and process variables; the routing sheet prints as modified"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Repaired on a new order"
+              }
+            ],
+            "text": "Repaired on a new order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Disposition it Repair with further work required; processing the quarantine makes a new production order for the repair, linked to the report"
+              }
+            ],
+            "text": "Disposition it Repair with further work required; processing the quarantine makes a new production order for the repair, linked to the report"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A deviation found at the supplier"
+              }
+            ],
+            "text": "A deviation found at the supplier"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Block the purchase order line, then make the report by hand with origin Not Applicable and link the lot, which must already exist; with No Fault Found the kind of order is Not Applicable"
+              }
+            ],
+            "text": "Block the purchase order line, then make the report by hand with origin Not Applicable and link the lot, which must already exist; with No Fault Found the kind of order is Not Applicable"
+          }
+        ]
+      }
+    ]
+  }
+}

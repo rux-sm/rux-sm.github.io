@@ -1,0 +1,380 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "configure-a-product-variant",
+  "title": "Configure a product variant",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Sales",
+  "modules": [
+    "Manufacturing",
+    "Sales"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Manufacturing ➔ Project ➔ Project Engineering ➔ Generate (Project) Structure for Product Variant",
+  "session": "Generate (Project) Structure for Product Variant",
+  "sessionCode": "tipcs2220m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A customer's choice of options becomes an item of its own, with its bill of material, routing and price, ready to make and sell."
+      }
+    ],
+    "text": "A customer's choice of options becomes an item of its own, with its bill of material, routing and price, ready to make and sell."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "link",
+          "v": "Set up a configurable item",
+          "href": "set-up-a-configurable-item.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Set up a configurable item."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A product variant records one set of options for a generic item. The configurator checks the options against the constraints and prices them. Generating the structure then makes a real item for the variant, named by its constraints, with a bill of material and routing holding only the lines its options select."
+      }
+    ],
+    "text": "A product variant records one set of options for a generic item. The configurator checks the options against the constraints and prices them. Generating the structure then makes a real item for the variant, named by its constraints, with a bill of material and routing holding only the lines its options select."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Product Variants ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf5501m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the generic item with type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Standard Variant"
+                },
+                {
+                  "t": "text",
+                  "v": ", and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Configure..."
+                }
+              ],
+              "text": "In Product Variants (tipcf5501m000), click New, enter the generic item with type Standard Variant, and click Configure..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tipcf5120m000",
+                  "name": "Product Configurator"
+                },
+                {
+                  "t": "text",
+                  "v": ", one line per feature"
+                }
+              ],
+              "text": "Product Configurator (tipcf5120m000), one line per feature"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose an option for each feature, save and close"
+                }
+              ],
+              "text": "Choose an option for each feature, save and close"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An invalid combination is refused with its constraint's message"
+                }
+              ],
+              "text": "An invalid combination is refused with its constraint's message"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the variant, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Calculate Sales Price Structure"
+                },
+                {
+                  "t": "text",
+                  "v": ", give it a description, and save"
+                }
+              ],
+              "text": "In the variant, choose Actions ➔ Calculate Sales Price Structure, give it a description, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The variant's sales price"
+                }
+              ],
+              "text": "The variant's sales price"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Generate (Project) Structure for Product Variant, enter the generic item and the variant and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate"
+                },
+                {
+                  "t": "text",
+                  "v": ". Answer "
+                },
+                {
+                  "t": "literal",
+                  "v": "No"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Start Configurator?"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "Yes"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Generate (project) structure?"
+                }
+              ],
+              "text": "In Generate (Project) Structure for Product Variant, enter the generic item and the variant and click Generate. Answer No to Start Configurator? and Yes to Generate (project) structure?"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the new item in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Items"
+                }
+              ],
+              "text": "Find the new item in Items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An item named by the code constraint, Customized, linked to the variant"
+                }
+              ],
+              "text": "An item named by the code constraint, Customized, linked to the variant"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check its "
+                },
+                {
+                  "t": "session",
+                  "code": "tibom3100m000",
+                  "name": "Job Shop Bills of Material"
+                },
+                {
+                  "t": "text",
+                  "v": " and routing"
+                }
+              ],
+              "text": "Check its Job Shop Bills of Material (tibom3100m000) and routing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only the lines its options select, source Configurator (PCF)"
+                }
+              ],
+              "text": "Only the lines its options select, source Configurator (PCF)"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

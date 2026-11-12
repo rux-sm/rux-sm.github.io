@@ -1,0 +1,485 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "return-goods-to-a-supplier",
+  "title": "Return goods to a supplier",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Procurement",
+  "modules": [
+    "Procurement"
+  ],
+  "codes": [
+    "S2P-10"
+  ],
+  "role": "Buyer",
+  "roles": [
+    "Buyer"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Goods you bought leave your warehouse for the supplier, and the order is ready for the supplier's credit."
+      }
+    ],
+    "text": "Goods you bought leave your warehouse for the supplier, and the order is ready for the supplier's credit."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A purchase order type whose Return Order column reads Return Inventory, in "
+        },
+        {
+          "t": "session",
+          "code": "tdpur0194m000",
+          "name": "Purchase Order Types"
+        },
+        {
+          "t": "text",
+          "v": ", and a reason of type Return of Goods in "
+        },
+        {
+          "t": "session",
+          "code": "tcmcs0105m000",
+          "name": "Reasons"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "A purchase order type whose Return Order column reads Return Inventory, in Purchase Order Types (tdpur0194m000), and a reason of type Return of Goods in Reasons (tcmcs0105m000)."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A purchase return is a purchase order of a return order type, with negative quantities. It names the order it reverses and a reason. Approving it hands the line to warehousing, which takes the goods out of stock, and the negative receipt is what the supplier's credit is matched to."
+      }
+    ],
+    "text": "A purchase return is a purchase order of a return order type, with negative quantities. It names the order it reverses and a reason. Approving it hands the line to warehousing, which takes the goods out of stock, and the negative receipt is what the supplier's credit is matched to."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Purchase Orders tab, tick the order you are returning against and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Copy"
+                }
+              ],
+              "text": "On the Purchase Orders tab, tick the order you are returning against and click Copy"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Copy Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": " opens with that order as the source"
+                }
+              ],
+              "text": "Copy Purchase Order opens with that order as the source"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Target choose the number series, the return order type and the return reason, keep Use Received Quantities ticked, and copy"
+                }
+              ],
+              "text": "In Target choose the number series, the return order type and the return reason, keep Use Received Quantities ticked, and copy"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report lists each source line and the return line made from it — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "return order"
+                }
+              ],
+              "text": "A report lists each source line and the return line made from it — return order"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the new order"
+                }
+              ],
+              "text": "Open the new order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": ", the return order type, and a negative order amount"
+                }
+              ],
+              "text": "Status Created, the return order type, and a negative order amount"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Purchase Order Details"
+                },
+                {
+                  "t": "text",
+                  "v": " and look under Returns"
+                }
+              ],
+              "text": "Choose References ➔ Purchase Order Details and look under Returns"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Original Document Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", the original order number, and the return reason"
+                }
+              ],
+              "text": "Original Document Type Order, the original order number, and the return reason"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save and exit, then check each line: the negative quantity to return and the warehouse it leaves from. On the Receiving tab set the lot or serial if you know it"
+                }
+              ],
+              "text": "Save and exit, then check each line: the negative quantity to return and the warehouse it leaves from. On the Receiving tab set the lot or serial if you know it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve the order"
+                }
+              ],
+              "text": "Approve the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the goods leave the warehouse once warehousing has shipped them"
+                }
+              ],
+              "text": "Status In Process, and the goods leave the warehouse once warehousing has shipped them"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the line's status"
+                }
+              ],
+              "text": "Open the line's status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release Purchase Orders to Warehousing "
+                },
+                {
+                  "t": "literal",
+                  "v": "Executed"
+                },
+                {
+                  "t": "text",
+                  "v": ", with the warehousing document number"
+                }
+              ],
+              "text": "Release Purchase Orders to Warehousing Executed, with the warehousing document number"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Payable Receipts tab"
+                }
+              ],
+              "text": "Look at the Payable Receipts tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt with a negative received quantity, and on its Finance tab Invoicing Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "The receipt with a negative received quantity, and on its Finance tab Invoicing Status Free"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order cannot be saved"
+              }
+            ],
+            "text": "The order cannot be saved"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A Return Reason must be entered under Returns"
+              }
+            ],
+            "text": "A Return Reason must be entered under Returns"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The goods cannot leave the warehouse"
+              }
+            ],
+            "text": "The goods cannot leave the warehouse"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The line needs a lot or serial for a tracked item; set it on the Receiving tab, or warehousing sets it"
+              }
+            ],
+            "text": "The line needs a lot or serial for a tracked item; set it on the Receiving tab, or warehousing sets it"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

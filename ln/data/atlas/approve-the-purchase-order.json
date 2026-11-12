@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "approve-the-purchase-order",
@@ -23,8 +23,15 @@
     "Procurement",
     "Warehousing"
   ],
+  "codes": [
+    "S2P-07"
+  ],
+  "role": "Buyer",
+  "roles": [
+    "Buyer"
+  ],
   "status": "review",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
   "session": "Purchase Order Intake Workbench",
   "sessionCode": "tdpur4601m200",

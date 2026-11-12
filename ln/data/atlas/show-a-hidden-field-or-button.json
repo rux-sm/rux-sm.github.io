@@ -1,0 +1,338 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "show-a-hidden-field-or-button",
+  "title": "Show a hidden field or button",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A column, field or button the screen hides is shown, for you alone or for everyone."
+      }
+    ],
+    "text": "A column, field or button the screen hides is shown, for you alone or for everyone."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Every screen carries more fields and buttons than it shows. Personalizing the form changes what this screen shows, in what order and how it looks. It only works where your user template allows application personalization."
+      }
+    ],
+    "text": "Every screen carries more fields and buttons than it shows. Personalizing the form changes what this screen shows, in what order and how it looks. It only works where your user template allows application personalization."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the gear at the top right and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Personalization ➔ Personalize Form..."
+                }
+              ],
+              "text": "Click the gear at the top right and choose Personalization ➔ Personalize Form..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The form opens in an editor, with a Fields list on the right"
+                }
+              ],
+              "text": "The form opens in an editor, with a Fields list on the right"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Display Hidden Objects"
+                }
+              ],
+              "text": "Choose Actions ➔ Display Hidden Objects"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Hidden fields and buttons show with dotted borders"
+                }
+              ],
+              "text": "Hidden fields and buttons show with dotted borders"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the one you want, for example the Release Manual Activities button, or find a column in the Fields list's Hidden tab"
+                }
+              ],
+              "text": "Select the one you want, for example the Release Manual Activities button, or find a column in the Fields list's Hidden tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its properties, with a Hidden check box"
+                }
+              ],
+              "text": "Its properties, with a Hidden check box"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Clear Hidden. To make a field stand out instead, tick Text Size Large or Text Style Bold"
+                }
+              ],
+              "text": "Clear Hidden. To make a field stand out instead, tick Text Size Large or Text Style Bold"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                },
+                {
+                  "t": "text",
+                  "v": " and exit"
+                }
+              ],
+              "text": "Click Save and exit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Personalizations have been saved. Please restart the session to see the changes."
+                }
+              ],
+              "text": "Personalizations have been saved. Please restart the session to see the changes."
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the session and open it again"
+                }
+              ],
+              "text": "Close the session and open it again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The field or button is there"
+                }
+              ],
+              "text": "The field or button is there"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Personalize Form is not offered"
+              }
+            ],
+            "text": "Personalize Form is not offered"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Allow Application Personalization must be ticked in your user data template"
+              }
+            ],
+            "text": "Allow Application Personalization must be ticked in your user data template"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The change does not show"
+              }
+            ],
+            "text": "The change does not show"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Close the session completely and open it again"
+              }
+            ],
+            "text": "Close the session completely and open it again"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "cross-the-boundary",
@@ -26,8 +26,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-02"
+  ],
+  "role": null,
+  "roles": [],
   "status": "draft",
-  "updated": "2026-10-25",
+  "updated": "2026-11-12",
   "route": "Planning ➔ Order Planning ➔ Confirm Order Planning",
   "session": "Confirm Order Planning",
   "sessionCode": "cprrp1200m000",

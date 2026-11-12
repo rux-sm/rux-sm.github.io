@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "put-the-demand-inside-the-horizon",
@@ -23,6 +23,9 @@
     "Enterprise Planning",
     "Sales"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "approved",
   "updated": "2026-11-02",
   "route": "Planning ➔ Order Planning ➔ Item Order Plan",

@@ -1,0 +1,409 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "inspect-at-a-production-operation",
+  "title": "Inspect at a production operation",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Quality · Manufacturing",
+  "modules": [
+    "Quality",
+    "Manufacturing"
+  ],
+  "codes": [
+    "I2R-04"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Quality ➔ Master Data ➔ Test Procedures ➔ Testing Combinations",
+  "session": "Testing Combinations",
+  "sessionCode": "qmptc0119m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An operation of a production order is held for Quality, tested, and released for reporting once the test passes."
+      }
+    ],
+    "text": "An operation of a production order is held for Quality, tested, and released for reporting once the test passes."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A characteristic, such as a temperature, with its norm and limits; a test group; and a standard test procedure for them."
+        }
+      ],
+      "text": "A characteristic, such as a temperature, with its norm and limits; a test group; and a standard test procedure for them."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A testing combination with origin Routing links a reference operation to a standard test procedure. Any production order with that reference operation has the operation blocked for Quality when it is released. The quantity to inspect on the operation gives the order inspection its quantity; recording the measurements passes or fails the test, and processing the inspection unblocks the operation and fills in its completed quantity."
+      }
+    ],
+    "text": "A testing combination with origin Routing links a reference operation to a standard test procedure. Any production order with that reference operation has the operation blocked for Quality when it is released. The quantity to inspect on the operation gives the order inspection its quantity; recording the measurements passes or fails the test, and processing the inspection unblocks the operation and fills in its completed quantity."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", set Origin to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Routing (TI)"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the reference operation and the standard test procedure, and set it to QM only recommends and block the operation"
+                }
+              ],
+              "text": "Click New, set Origin to Routing (TI), enter the reference operation and the standard test procedure, and set it to QM only recommends and block the operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release a production order whose routing uses that reference operation"
+                }
+              ],
+              "text": "Release a production order whose routing uses that reference operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The operation is blocked and not open for input"
+                }
+              ],
+              "text": "The operation is blocked and not open for input"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0130m000",
+                  "name": "Report Operations Completed"
+                },
+                {
+                  "t": "text",
+                  "v": ", open the operation's details and enter the quantity to inspect"
+                }
+              ],
+              "text": "In Report Operations Completed (tisfc0130m000), open the operation's details and enter the quantity to inspect"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the order inspection for the order in "
+                },
+                {
+                  "t": "session",
+                  "code": "qmptc1620m100",
+                  "name": "Order Inspections"
+                }
+              ],
+              "text": "Open the order inspection for the order in Order Inspections (qmptc1620m100)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its order quantity is the quantity to inspect, and the tests are ready"
+                }
+              ],
+              "text": "Its order quantity is the quantity to inspect, and the tests are ready"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the inspection order and record each measurement"
+                }
+              ],
+              "text": "Open the inspection order and record each measurement"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Result "
+                },
+                {
+                  "t": "literal",
+                  "v": "Pass"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "literal",
+                  "v": "Fail"
+                }
+              ],
+              "text": "Result Pass or Fail"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Lines tab set each line to Complete"
+                }
+              ],
+              "text": "On the Lines tab set each line to Complete"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Line "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "Accepted"
+                }
+              ],
+              "text": "Line Completed and Accepted"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Complete and process the order inspection"
+                }
+              ],
+              "text": "Complete and process the order inspection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the operation, open its details, save and exit"
+                }
+              ],
+              "text": "Back on the operation, open its details, save and exit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The completed quantity filled in, then the usual completion messages and the delivered quantity"
+                }
+              ],
+              "text": "The completed quantity filled in, then the usual completion messages and the delivered quantity"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

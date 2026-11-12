@@ -1,0 +1,596 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "plan-preventive-maintenance",
+  "title": "Plan preventive maintenance",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Service",
+  "modules": [
+    "Service"
+  ],
+  "codes": [
+    "ASM-03"
+  ],
+  "role": "Maintenance Planner",
+  "roles": [
+    "Maintenance Planner"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Service ➔ Master Data ➔ Preventive Maintenance ➔ Preventive Maintenance Scenarios",
+  "session": "Preventive Maintenance Scenarios",
+  "sessionCode": "tsspc1130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Maintenance that must be done regularly on customer or company equipment is planned ahead, and each planned activity becomes a service order when it is due."
+      }
+    ],
+    "text": "Maintenance that must be done regularly on customer or company equipment is planned ahead, and each planned activity becomes a service order when it is due."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The equipment is in the "
+        },
+        {
+          "t": "text",
+          "v": "installed base"
+        },
+        {
+          "t": "text",
+          "v": " as serialized items, and the reference activities exist, with their resource requirements in Reference Activity - Resource Requirements ("
+        },
+        {
+          "t": "session",
+          "code": "tsacm2120m000"
+        },
+        {
+          "t": "text",
+          "v": ")."
+        }
+      ],
+      "text": "The equipment is in the installed base as serialized items, and the reference activities exist, with their resource requirements in Reference Activity - Resource Requirements (tsacm2120m000)."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A maintenance scenario lists reference activities and how often each is done: so many times a year, by a pattern, or by usage such as distance or hours. Its rule book says which serialized items or installation groups it applies to. Generating the maintenance plan turns that into planned activities with dates, copying each reference activity's resource requirements. Released planned activities are transferred to service orders, which are then run as usual."
+      }
+    ],
+    "text": "A maintenance scenario lists reference activities and how often each is done: so many times a year, by a pattern, or by usage such as distance or hours. Its rule book says which serialized items or installation groups it applies to. Generating the maintenance plan turns that into planned activities with dates, copying each reference activity's resource requirements. Released planned activities are transferred to service orders, which are then run as usual."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and give the scenario a description"
+                }
+              ],
+              "text": "Click New and give the scenario a description"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A scenario number"
+                }
+              ],
+              "text": "A scenario number"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Scenario Lines tab, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ New Time Based"
+                },
+                {
+                  "t": "text",
+                  "v": ", or "
+                },
+                {
+                  "t": "chip",
+                  "v": "New Usage Based"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "chip",
+                  "v": "New Time Based Pattern"
+                }
+              ],
+              "text": "On the Scenario Lines tab, choose Actions ➔ New Time Based, or New Usage Based or New Time Based Pattern"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A scenario line"
+                }
+              ],
+              "text": "A scenario line"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose the reference activity and the frequency, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " times per year, and an item if the line is for one item only"
+                }
+              ],
+              "text": "Choose the reference activity and the frequency, such as 2 times per year, and an item if the line is for one item only"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat for each activity, then save"
+                }
+              ],
+              "text": "Repeat for each activity, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One line per activity"
+                }
+              ],
+              "text": "One line per activity"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Rule Book tab, add the items, serial numbers or installation groups the scenario applies to, with the effective date"
+                }
+              ],
+              "text": "On the Rule Book tab, add the items, serial numbers or installation groups the scenario applies to, with the effective date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tsspc2200m000",
+                  "name": "Generate Maintenance Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Service ➔ Preventive Maintenance ➔ Generate Maintenance Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", and choose the range of items, serial numbers and dates, when the cycle starts, the status for the planned activities, and the reports"
+                }
+              ],
+              "text": "Open Generate Maintenance Plan (tsspc2200m000), Service ➔ Preventive Maintenance ➔ Generate Maintenance Plan, and choose the range of items, serial numbers and dates, when the cycle starts, the status for the planned activities, and the reports"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate it with Simulation ticked, check the report, then generate again without"
+                }
+              ],
+              "text": "Generate it with Simulation ticked, check the report, then generate again without"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned activities in "
+                },
+                {
+                  "t": "session",
+                  "code": "tsspc2100m000",
+                  "name": "Planned Activities"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Service ➔ Preventive Maintenance ➔ Planned Activities"
+                }
+              ],
+              "text": "Planned activities in Planned Activities (tsspc2100m000), Service ➔ Preventive Maintenance ➔ Planned Activities"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the planned activities, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Switch Status"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose Released, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Switch"
+                }
+              ],
+              "text": "Select the planned activities, choose Actions ➔ Switch Status, choose Released, and click Switch"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Released"
+                }
+              ],
+              "text": "Status Released"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "tsspc2220m000",
+                  "name": "Transfer Planned Activities to Field Service"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Service ➔ Preventive Maintenance ➔ Transfer Planned Activities to Field Service"
+                }
+              ],
+              "text": "Run Transfer Planned Activities to Field Service (tsspc2220m000), Service ➔ Preventive Maintenance ➔ Transfer Planned Activities to Field Service"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Service orders with the activities and their requirements; each planned activity "
+                },
+                {
+                  "t": "literal",
+                  "v": "Final"
+                },
+                {
+                  "t": "text",
+                  "v": ", with its service order"
+                }
+              ],
+              "text": "Service orders with the activities and their requirements; each planned activity Final, with its service order"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Plan, release and carry out the service orders as in "
+                },
+                {
+                  "t": "link",
+                  "v": "Run a field service order",
+                  "href": "run-a-field-service-order.md"
+                }
+              ],
+              "text": "Plan, release and carry out the service orders as in Run a field service order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No planned activities are generated"
+              }
+            ],
+            "text": "No planned activities are generated"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The serialized item or installation group must be in the scenario's rule book"
+              }
+            ],
+            "text": "The serialized item or installation group must be in the scenario's rule book"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Planned activities will not transfer"
+              }
+            ],
+            "text": "Planned activities will not transfer"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Switch them to Released first, and match the transfer's settings to them"
+              }
+            ],
+            "text": "Switch them to Released first, and match the transfer's settings to them"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

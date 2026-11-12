@@ -1,0 +1,764 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-customer-project",
+  "title": "Set up a customer project",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Project · Planning",
+  "modules": [
+    "Project",
+    "Planning"
+  ],
+  "codes": [
+    "C2C-01",
+    "P2P-01"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Project ➔ Contract 360",
+  "session": "Contract 360",
+  "sessionCode": "tpctm1300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A customer order is in LN as a contract and an active project, with its budget released, so planning, purchasing and warehousing can supply it."
+      }
+    ],
+    "text": "A customer order is in LN as a contract and an active project, with its budget released, so planning, purchasing and warehousing can supply it."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The contract says what is sold and how it is invoiced; the project says what work is done and what it costs, as the "
+      },
+      {
+        "t": "text",
+        "v": "project contract"
+      },
+      {
+        "t": "text",
+        "v": " concept explains. A project is copied from a template and reworked, linked to a contract line, and activated after the contract. Releasing its budget and work authorization lets other modules use it, and its control data becomes the demand that project requirements planning (PRP) plans."
+      }
+    ],
+    "text": "The contract says what is sold and how it is invoiced; the project says what work is done and what it costs, as the project contract concept explains. A project is copied from a template and reworked, linked to a contract line, and activated after the contract. Releasing its budget and work authorization lets other modules use it, and its control data becomes the demand that project requirements planning (PRP) plans."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the contract header: the sold-to business partner, sales office, currency and contract type"
+                }
+              ],
+              "text": "Click New and enter the contract header: the sold-to business partner, sales office, currency and contract type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The header's values are the defaults for its lines"
+                }
+              ],
+              "text": "The header's values are the defaults for its lines"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Contract Line tab, add a line for each way the customer pays, with its contract type, invoice type, invoicing method and amount"
+                }
+              ],
+              "text": "On the Contract Line tab, add a line for each way the customer pays, with its contract type, invoice type, invoicing method and amount"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "Status Free"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tppdm6500m100",
+                  "name": "Project 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Project ➔ Project 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", select a template project and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Duplicate"
+                }
+              ],
+              "text": "Open Project 360 (tppdm6500m100), Project ➔ Project 360, select a template project and click Duplicate"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tppdm7840m000",
+                  "name": "Copy Project"
+                }
+              ],
+              "text": "Copy Project (tppdm7840m000)"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the new project number, description, address, project manager, enterprise unit and warehouse, choose what to copy on the Options tab, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Copy"
+                }
+              ],
+              "text": "Enter the new project number, description, address, project manager, enterprise unit and warehouse, choose what to copy on the Options tab, and click Copy"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report, and the new project, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "A report, and the new project, status Free"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the project and rework its elements, element budget and activities"
+                }
+              ],
+              "text": "Open the project and rework its elements, element budget and activities"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose when the budget's demand falls due: by element dates, activity dates, or a child activity in "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Element Relationships"
+                }
+              ],
+              "text": "Choose when the budget's demand falls due: by element dates, activity dates, or a child activity in References ➔ Element Relationships"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the contract, select each line and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Link to Project Structure"
+                },
+                {
+                  "t": "text",
+                  "v": ", and link the project, element or activity"
+                }
+              ],
+              "text": "Back on the contract, select each line and choose References ➔ Link to Project Structure, and link the project, element or activity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each element linked to a line"
+                }
+              ],
+              "text": "Each element linked to a line"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Activate the contract and its lines, then activate the project"
+                }
+              ],
+              "text": "Activate the contract and its lines, then activate the project"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both "
+                },
+                {
+                  "t": "literal",
+                  "v": "Active"
+                }
+              ],
+              "text": "Both Active"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the project's Elements tab choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Update Budget Status..."
+                },
+                {
+                  "t": "text",
+                  "v": ", set the new status to Actual for the whole range, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Update"
+                }
+              ],
+              "text": "On the project's Elements tab choose Actions ➔ Update Budget Status..., set the new status to Actual for the whole range, and click Update"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Update Work Authorization Status..."
+                },
+                {
+                  "t": "text",
+                  "v": ", from "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": ", for elements and activities, and run it in Update mode"
+                }
+              ],
+              "text": "Choose Actions ➔ Update Work Authorization Status..., from Free to Released, for elements and activities, and run it in Update mode"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "tpptc1230m000",
+                  "name": "Generate Control Data"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Project ➔ Budgeting ➔ Bottom Up Budget ➔ Control Data ➔ Generate Control Data"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the project"
+                }
+              ],
+              "text": "Run Generate Control Data (tpptc1230m000), Project ➔ Budgeting ➔ Bottom Up Budget ➔ Control Data ➔ Generate Control Data, for the project"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Control data per element: item, quantity and cost"
+                }
+              ],
+              "text": "Control data per element: item, quantity and cost"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "tppss6200m000",
+                  "name": "Generate Planned PRP Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Project ➔ Requirements Planning ➔ Generate Planned PRP Orders ➔ Generate Planned PRP Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the project"
+                }
+              ],
+              "text": "Run Generate Planned PRP Orders (tppss6200m000), Project ➔ Requirements Planning ➔ Generate Planned PRP Orders ➔ Generate Planned PRP Orders, for the project"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned PRP warehouse or purchase orders, by the item's project order system"
+                }
+              ],
+              "text": "Planned PRP warehouse or purchase orders, by the item's project order system"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve and transfer the planned PRP warehouse orders in "
+                },
+                {
+                  "t": "session",
+                  "code": "tppss6235m000",
+                  "name": "Transfer Planned PRP Warehouse Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Project ➔ Requirements Planning ➔ Planned PRP Warehouse Orders ➔ Transfer Planned PRP Warehouse Orders"
+                }
+              ],
+              "text": "Approve and transfer the planned PRP warehouse orders in Transfer Planned PRP Warehouse Orders (tppss6235m000), Project ➔ Requirements Planning ➔ Planned PRP Warehouse Orders ➔ Transfer Planned PRP Warehouse Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Warehouse orders that issue to the project"
+                }
+              ],
+              "text": "Warehouse orders that issue to the project"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run order planning, then "
+                },
+                {
+                  "t": "session",
+                  "code": "cppat1210m000",
+                  "name": "Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the purchase orders"
+                }
+              ],
+              "text": "Run order planning, then Transfer Order Planning (cppat1210m000), Planning ➔ Plan Transfer ➔ Transfer Order Planning, for the purchase orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase orders pegged to the project"
+                }
+              ],
+              "text": "Purchase orders pegged to the project"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The project will not activate"
+              }
+            ],
+            "text": "The project will not activate"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Link it to a contract line and activate the contract and line first"
+              }
+            ],
+            "text": "Link it to a contract line and activate the contract and line first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Planning makes nothing for the project"
+              }
+            ],
+            "text": "Planning makes nothing for the project"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the budget status to Actual, the work authorization to Released, and generate the control data"
+              }
+            ],
+            "text": "Set the budget status to Actual, the work authorization to Released, and generate the control data"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

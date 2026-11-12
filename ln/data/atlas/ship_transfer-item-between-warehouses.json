@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "ship_transfer-item-between-warehouses",
@@ -22,8 +22,15 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [
+    "P2D-10"
+  ],
+  "role": "Material Handler",
+  "roles": [
+    "Material Handler"
+  ],
   "status": "approved",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",

@@ -1,0 +1,787 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-job-shop-site",
+  "title": "Set up a site's shop floor",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Common · People",
+  "modules": [
+    "Manufacturing",
+    "Common",
+    "People"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Manufacturing ➔ Master Data ➔ Organization ➔ Production Departments",
+  "session": "Production Departments",
+  "sessionCode": "tirou2100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A site has the departments, work centers, machines, rates and reference operations that its routings and production orders need."
+      }
+    ],
+    "text": "A site has the departments, work centers, machines, rates and reference operations that its routings and production orders need."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Job Shop by Site is Active in "
+        },
+        {
+          "t": "session",
+          "code": "tcemm4600m000",
+          "name": "Concept Activation"
+        },
+        {
+          "t": "text",
+          "v": ", and the site, its enterprise unit and a calendar with a shift exist."
+        }
+      ],
+      "text": "Job Shop by Site is Active in Concept Activation (tcemm4600m000), and the site, its enterprise unit and a calendar with a shift exist."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Under Job Shop by Site, everything a routing points at belongs to one site. A production department groups the work centers that sit together and gives them an enterprise unit and a calendar. A costing work center sits above the planning work centers, so an operation can move to another work center after its costs are frozen. Machines are machine types placed in a work center as capacity groups, each with its machine numbers. Reference operations are the library of operations a routing is built from."
+      }
+    ],
+    "text": "Under Job Shop by Site, everything a routing points at belongs to one site. A production department groups the work centers that sit together and gives them an enterprise unit and a calendar. A costing work center sits above the planning work centers, so an operation can move to another work center after its costs are frozen. Machines are machine types placed in a work center as capacity groups, each with its machine numbers. Reference operations are the library of operations a routing is built from."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "timfc0120m000",
+                  "name": "User Profiles"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Master Data ➔ Organization ➔ User Profiles"
+                },
+                {
+                  "t": "text",
+                  "v": ", give each user who works with production orders a profile, with a site to keep them to it or All Sites Allowed"
+                }
+              ],
+              "text": "In User Profiles (timfc0120m000), Manufacturing ➔ Master Data ➔ Organization ➔ User Profiles, give each user who works with production orders a profile, with a site to keep them to it or All Sites Allowed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make the production department for the site, with its enterprise unit and calendar"
+                }
+              ],
+              "text": "Make the production department for the site, with its enterprise unit and calendar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The department's Work Centers tab, empty for now"
+                }
+              ],
+              "text": "The department's Work Centers tab, empty for now"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou0101m000",
+                  "name": "Work Centers"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers"
+                },
+                {
+                  "t": "text",
+                  "v": ", make a work center of type Costing in that department, with an operation rate code and Use as Calculation Office ticked"
+                }
+              ],
+              "text": "In Work Centers (tirou0101m000), Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers, make a work center of type Costing in that department, with an operation rate code and Use as Calculation Office ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tirou0601m000",
+                  "name": "Work Center"
+                },
+                {
+                  "t": "text",
+                  "v": " for it"
+                }
+              ],
+              "text": "Work Center (tirou0601m000) for it"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make each planning work center of type Work Center, naming the costing work center and a labor rate code on its Details tab"
+                }
+              ],
+              "text": "Make each planning work center of type Work Center, naming the costing work center and a labor rate code on its Details tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The department lists them under Work Centers"
+                }
+              ],
+              "text": "The department lists them under Work Centers"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou4160m000",
+                  "name": "Machine Types"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Repetitive ➔ Shop Layout ➔ Machine Types"
+                },
+                {
+                  "t": "text",
+                  "v": ", make a type for each kind of machine"
+                }
+              ],
+              "text": "In Machine Types (tirou4160m000), Manufacturing ➔ Repetitive ➔ Shop Layout ➔ Machine Types, make a type for each kind of machine"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a work center with machines, tick Machine Capacity Groups before it is used on any order, and add each machine type and how many there are on the Machine Capacity Groups tab"
+                }
+              ],
+              "text": "For a work center with machines, tick Machine Capacity Groups before it is used on any order, and add each machine type and how many there are on the Machine Capacity Groups tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One line per machine type"
+                }
+              ],
+              "text": "One line per machine type"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou4162m000",
+                  "name": "Machine Numbers"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Machine Numbers"
+                },
+                {
+                  "t": "text",
+                  "v": ", give each machine a number and a priority"
+                }
+              ],
+              "text": "In Machine Numbers (tirou4162m000), Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Machine Numbers, give each machine a number and a priority"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The capacity group lists its machine numbers"
+                }
+              ],
+              "text": "The capacity group lists its machine numbers"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "ticpr0150m000",
+                  "name": "Operation Rate Codes"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Standard Costs ➔ Master Data ➔ Operation Rate Codes"
+                },
+                {
+                  "t": "text",
+                  "v": ", make a code with its currency"
+                }
+              ],
+              "text": "In Operation Rate Codes (ticpr0150m000), Common ➔ Standard Costs ➔ Master Data ➔ Operation Rate Codes, make a code with its currency"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "ticpr1151m000",
+                  "name": "Operation Rates"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Standard Costs ➔ Master Data ➔ Operation Rates"
+                },
+                {
+                  "t": "text",
+                  "v": ", give the code its rates for a cost calculation code: a labor and a machine line, each with its rate, cost component and effective date, and approve them"
+                }
+              ],
+              "text": "In Operation Rates (ticpr1151m000), Common ➔ Standard Costs ➔ Master Data ➔ Operation Rates, give the code its rates for a cost calculation code: a labor and a machine line, each with its rate, cost component and effective date, and approve them"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Green Approved checks"
+                }
+              ],
+              "text": "Green Approved checks"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou4150m000",
+                  "name": "Reference Operations"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations"
+                },
+                {
+                  "t": "text",
+                  "v": ", make each operation with its work center, machine type, times and labor"
+                }
+              ],
+              "text": "In Reference Operations (tirou4150m000), Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations, make each operation with its work center, machine type, times and labor"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tcccp0160m000",
+                  "name": "Period Tables"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Calendars ➔ Periods ➔ Period Tables"
+                },
+                {
+                  "t": "text",
+                  "v": ", make a table, then generate its periods for the year in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcccp0170m000",
+                  "name": "Periods"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Calendars ➔ Periods ➔ Periods"
+                }
+              ],
+              "text": "In Period Tables (tcccp0160m000), Common ➔ Calendars ➔ Periods ➔ Period Tables, make a table, then generate its periods for the year in Periods (tcccp0170m000), Common ➔ Calendars ➔ Periods ➔ Periods"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One period per month or week"
+                }
+              ],
+              "text": "One period per month or week"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "bpmdm0100m000",
+                  "name": "People Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ People ➔ Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose that period table and the time unit for hours"
+                }
+              ],
+              "text": "In People Parameters (bpmdm0100m000), Common ➔ People ➔ Parameters, choose that period table and the time unit for hours"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production order hours can be booked"
+                }
+              ],
+              "text": "Production order hours can be booked"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where the sites do not share global data, name a fallback calculation office in "
+                },
+                {
+                  "t": "session",
+                  "code": "timfc0180m000",
+                  "name": "Production Settings by Site"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Master Data ➔ Organization ➔ Settings by Site"
+                }
+              ],
+              "text": "Where the sites do not share global data, name a fallback calculation office in Production Settings by Site (timfc0180m000), Manufacturing ➔ Master Data ➔ Organization ➔ Settings by Site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Machine Capacity Groups cannot be ticked"
+              }
+            ],
+            "text": "Machine Capacity Groups cannot be ticked"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The work center has been used on a production order, or its calendar has no shift"
+              }
+            ],
+            "text": "The work center has been used on a production order, or its calendar has no shift"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A reference operation will not take a machine type"
+              }
+            ],
+            "text": "A reference operation will not take a machine type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Its work center does not have Machine Capacity Groups ticked"
+              }
+            ],
+            "text": "Its work center does not have Machine Capacity Groups ticked"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Hours cannot be booked on a production order"
+              }
+            ],
+            "text": "Hours cannot be booked on a production order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Generate the periods of the table the people parameters name"
+              }
+            ],
+            "text": "Generate the periods of the table the people parameters name"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

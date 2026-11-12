@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "create-the-three-items",
@@ -25,8 +25,15 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "D2R-02"
+  ],
+  "role": "Manufacturing Engineer",
+  "roles": [
+    "Manufacturing Engineer"
+  ],
   "status": "draft",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Master Data ➔ Items ➔ Items",
   "session": "Items",
   "sessionCode": "tcibd0501m000",

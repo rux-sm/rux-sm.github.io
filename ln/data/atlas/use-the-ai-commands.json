@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "use-the-ai-commands",
@@ -9,6 +9,7 @@
     "Warehousing",
     "Sales"
   ],
+  "codes": [],
   "updated": "2026-10-25",
   "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",

@@ -1,0 +1,252 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "find-help-on-a-screen-or-field",
+  "title": "Find help on a screen or field",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Order",
+  "sessionCode": "tisfc0101m100",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "You have Infor's own explanation of the screen you are on, one of its fields, or the values a field can take."
+      }
+    ],
+    "text": "You have Infor's own explanation of the screen you are on, one of its fields, or the values a field can take."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Every session has a help page. It says what the session is for, defines its fields, lists the values a field can take, and links to step-by-step topics. It opens in a separate browser window, so the session stays as it was."
+      }
+    ],
+    "text": "Every session has a help page. It says what the session is for, defines its fields, lists the values a field can take, and links to step-by-step topics. It opens in a separate browser window, so the session stays as it was."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "?"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top right and choose Help, or press "
+                },
+                {
+                  "t": "literal",
+                  "v": "h"
+                }
+              ],
+              "text": "Click ? at the top right and choose Help, or press h"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The session's help page opens in a new window"
+                }
+              ],
+              "text": "The session's help page opens in a new window"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Scroll to Field Information"
+                }
+              ],
+              "text": "Scroll to Field Information"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each field with its meaning"
+                }
+              ],
+              "text": "Each field with its meaning"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a field with set values, such as the order's status, click Allowed values"
+                }
+              ],
+              "text": "For a field with set values, such as the order's status, click Allowed values"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "What each value means, such as Created and Modify"
+                }
+              ],
+              "text": "What each value means, such as Created and Modify"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For one field only, right-click it or its column title and choose Field Help"
+                }
+              ],
+              "text": "For one field only, right-click it or its column title and choose Field Help"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The help opens at that field, with links to related topics"
+                }
+              ],
+              "text": "The help opens at that field, with links to related topics"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To find a screen you do not know how to reach, type a word in the help's search box"
+                }
+              ],
+              "text": "To find a screen you do not know how to reach, type a word in the help's search box"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Every topic that names it, with session codes"
+                }
+              ],
+              "text": "Every topic that names it, with session codes"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

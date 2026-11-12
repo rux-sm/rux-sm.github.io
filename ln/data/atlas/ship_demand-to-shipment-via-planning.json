@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "ship_demand-to-shipment-via-planning",
@@ -23,8 +23,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "O2C-08"
+  ],
+  "role": null,
+  "roles": [],
   "status": "draft",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",

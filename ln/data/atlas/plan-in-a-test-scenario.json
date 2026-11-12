@@ -1,0 +1,395 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "plan-in-a-test-scenario",
+  "title": "Plan in a test scenario",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Planning",
+  "modules": [
+    "Planning"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Planning ➔ Master Planning ➔ Item Master Plan",
+  "session": "Item Master Plan",
+  "sessionCode": "cprmp2101m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "You try a change to the plan in a copy of it, see what supply it needs, and carry the planned orders and demand you want over to the real plan."
+      }
+    ],
+    "text": "You try a change to the plan in a copy of it, see what supply it needs, and carry the planned orders and demand you want over to the real plan."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A test scenario exists beside the actual one, initialized for the item."
+        }
+      ],
+      "text": "A test scenario exists beside the actual one, initialized for the item."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A scenario is a separate copy of the plan. Demand and planned orders entered or generated in a test scenario touch nothing in the actual one, which keeps the real orders. When the test looks right, its planned orders are copied to the actual scenario, and its special demand is copied by hand."
+      }
+    ],
+    "text": "A scenario is a separate copy of the plan. Demand and planned orders entered or generated in a test scenario touch nothing in the actual one, which keeps the real orders. When the test looks right, its planned orders are copied to the actual scenario, and its special demand is copied by hand."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the item's master plan in the actual scenario"
+                }
+              ],
+              "text": "Open the item's master plan in the actual scenario"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its demand, orders and projected inventory as they are"
+                }
+              ],
+              "text": "Its demand, orders and projected inventory as they are"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Search for the same item in the test scenario"
+                }
+              ],
+              "text": "Search for the same item in the test scenario"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "cpdsp2100m000",
+                  "name": "Special Demand by Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Special Demand by Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", add the demand you want to try, with a date and quantity, in the test scenario"
+                }
+              ],
+              "text": "In Special Demand by Item (cpdsp2100m000), Planning ➔ Order Planning ➔ Special Demand by Item, add the demand you want to try, with a date and quantity, in the test scenario"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " for the test scenario, with Item Master Plan's Generate ticked"
+                }
+              ],
+              "text": "Run Generate Order Planning (Item) (cprrp1220m000) for the test scenario, with Item Master Plan's Generate ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the test scenario's master plan and "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                }
+              ],
+              "text": "Look at the test scenario's master plan and Item Order Plan (cprrp0520m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Planned orders that cover the demand, and projected inventory at zero"
+                }
+              ],
+              "text": "Planned orders that cover the demand, and projected inventory at zero"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Copy Planned Orders to Scenarios..."
+                },
+                {
+                  "t": "text",
+                  "v": ", set the test scenario as the source and the actual one as the target, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Copy"
+                }
+              ],
+              "text": "Choose Actions ➔ Copy Planned Orders to Scenarios..., set the test scenario as the source and the actual one as the target, and click Copy"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the actual scenario's item order plan"
+                }
+              ],
+              "text": "Open the actual scenario's item order plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The planned orders are there, and the special demand is not"
+                }
+              ],
+              "text": "The planned orders are there, and the special demand is not"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Special Demand by Item, add the same demand to the actual scenario, then plan it again"
+                }
+              ],
+              "text": "In Special Demand by Item, add the same demand to the actual scenario, then plan it again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The demand shows in the actual scenario"
+                }
+              ],
+              "text": "The demand shows in the actual scenario"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Issue the materials · LN Notes · Updated 2 Nov 2026"; } }</style>
+<style>@page { @bottom-left { content: "Issue the materials · LN Notes · Updated 12 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -109,20 +109,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d7754b042cd364728c71859851939d45e89dfc1d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
-<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Code</dt><dd>P2D-06</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Issue the materials</h1>
 <p class="rux--type-body-long-01">The materials are shipped to the work center, and the order is <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span>.</span>.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>12 steps</dd></div><div><dt>Updated</dt><dd>2 Nov 2026</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Code</dt><dd>P2D-06</dd></div><div><dt>Length</dt><dd>12 steps</dd></div><div><dt>Updated</dt><dd>12 Nov 2026</dd></div></dl>
 <p class="ln-strip">Task 5 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> · next: <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the order complete and check the stock</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
@@ -165,6 +165,16 @@
 <tr><td data-k="Symptom">The issue stops short and a shortage report prints</td><td data-k="What to do">A component is short and negative stock isn't allowed. The quantity waits in <span class="ln-t-named">To Issue by Warehouse</span>; restock it, then go on from <a class="rux--link" href="#step-8">step 5.8</a></td></tr>
 <tr><td data-k="Symptom">A Loading badge stays over the lines' <span class="ln-t-named">Actions</span> button</td><td data-k="What to do">Click <span class="ln-t-press">Refresh</span> on the <span class="ln-t-named">Outbound Lines</span> toolbar</td></tr>
 <tr><td data-k="Symptom">The lines are already <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> or <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></td><td data-k="What to do">The material is set to process by itself. Go on to <a class="rux--link" href="#step-12">step 5.12</a></td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2 ln-proc__h2--sect" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__sect">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Variations</th></tr><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Case">Pick from the Warehouse Manager Dashboard</td><td data-k="What changes"><p>In <a class="rux--link" href="../screens/whinh2300m000.html"><span class="ln-t-named">Warehouse Manager Dashboard</span></a> (<span class="ln-t-exact ln-t-word">whinh2300m000</span>), tick the issue order and click Generate Outbound Advice; a shortage shows as <span class="ln-t-exact">Shortage of 74 ea for Outbound Order Line …</span> (<span class="ln-t-exact ln-t-word">tcstl0001</span>). Open the Picking List link, check the advised locations and quantities in <a class="rux--link" href="../screens/whinh4525m100.html"><span class="ln-t-named">Picking List</span></a> (<span class="ln-t-exact ln-t-word">whinh4525m100</span>), and click Pick Run. The order stays on the dashboard with its short lines open until the stock arrives</p></td></tr>
 </tbody>
 </table></div>
 </section>

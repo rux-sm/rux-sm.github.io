@@ -1,0 +1,494 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "make-a-rework-order",
+  "title": "Make a rework order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing",
+  "modules": [
+    "Manufacturing"
+  ],
+  "codes": [
+    "P2D-07"
+  ],
+  "role": "Production Operator",
+  "roles": [
+    "Production Operator"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A finished item that needs repair is reworked on a production order of its own, with the work and any extra material recorded, and put back into stock."
+      }
+    ],
+    "text": "A finished item that needs repair is reworked on a production order of its own, with the work and any extra material recorded, and put back into stock."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A reason of type Rework / Over Issue exists in "
+        },
+        {
+          "t": "session",
+          "code": "tcmcs0105m000",
+          "name": "Reasons"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Master Data ➔ Code Definitions ➔ Logistic Codes ➔ Reasons"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "A reason of type Rework / Over Issue exists in Reasons (tcmcs0105m000), Master Data ➔ Code Definitions ➔ Logistic Codes ➔ Reasons."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A rework order is a production order flagged as rework, for an item you already have. It carries no routing and no bill of material of its own: the item itself is its first material, and you add the operations and any other material by hand. From release on, it runs like any production order."
+      }
+    ],
+    "text": "A rework order is a production order flagged as rework, for an item you already have. It carries no routing and no bill of material of its own: the item itself is its first material, and you add the operations and any other material by hand. From release on, it runs like any production order."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose the item to rework, and tick Rework Order"
+                }
+              ],
+              "text": "Click New, choose the item to rework, and tick Rework Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN asks for a rework reason"
+                }
+              ],
+              "text": "LN asks for a rework reason"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Zoom to the reason, choose it, and click OK"
+                }
+              ],
+              "text": "Zoom to the reason, choose it, and click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The bill of material and routing go blank"
+                }
+              ],
+              "text": "The bill of material and routing go blank"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the quantity to rework and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Enter the quantity to rework and click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order number, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Created"
+                }
+              ],
+              "text": "The order number, status Created"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Operations tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose a reference operation for the work"
+                }
+              ],
+              "text": "On the Operations tab, click New and choose a reference operation for the work"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN may ask "
+                },
+                {
+                  "t": "literal",
+                  "v": "(Re)plan this operation with the production rate as defined for Reference Operation ...?"
+                },
+                {
+                  "t": "text",
+                  "v": "; answer "
+                },
+                {
+                  "t": "literal",
+                  "v": "Yes"
+                }
+              ],
+              "text": "LN may ask (Re)plan this operation with the production rate as defined for Reference Operation ...?; answer Yes"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Materials tab, check the line for the item itself, and add any other material with its warehouse and net quantity, then save"
+                }
+              ],
+              "text": "On the Materials tab, check the line for the item itself, and add any other material with its warehouse and net quantity, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Order..."
+                },
+                {
+                  "t": "text",
+                  "v": " and release it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000",
+                  "name": "Release Production Orders"
+                }
+              ],
+              "text": "Click Release Order... and release it in Release Production Orders (tisfc0204m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Released"
+                }
+              ],
+              "text": "Status Released"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Issue the materials, enter the hours, and report the operation completed, as for any production order"
+                }
+              ],
+              "text": "Issue the materials, enter the hours, and report the operation completed, as for any production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the receipt is put away in "
+                },
+                {
+                  "t": "session",
+                  "code": "timfc0101m000",
+                  "name": "Production Warehouse Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", from "
+                },
+                {
+                  "t": "chip",
+                  "v": "References"
+                }
+              ],
+              "text": "Check the receipt is put away in Production Warehouse Orders (timfc0101m000), from References"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Put Away"
+                }
+              ],
+              "text": "Status Put Away"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report the order completed, then close it in "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0201m000",
+                  "name": "Close Production Orders"
+                }
+              ],
+              "text": "Report the order completed, then close it in Close Production Orders (ticst0201m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "literal",
+                  "v": "Closed"
+                }
+              ],
+              "text": "Status Completed, then Closed"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

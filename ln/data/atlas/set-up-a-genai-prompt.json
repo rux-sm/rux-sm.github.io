@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "set-up-a-genai-prompt",
@@ -9,6 +9,7 @@
     "Tools",
     "Warehousing"
   ],
+  "codes": [],
   "updated": "2026-10-25",
   "status": "draft",
   "summary": "put a one-click AI command on an LN screen, check its answer, improve it, and take it away.",

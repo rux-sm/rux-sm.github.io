@@ -1,0 +1,495 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "price-an-item-by-a-matrix",
+  "title": "Price an item by a matrix",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Sales · Procurement · Common",
+  "modules": [
+    "Sales",
+    "Procurement",
+    "Common"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Common ➔ Pricing ➔ Prices ➔ Price Books",
+  "session": "Price Books",
+  "sessionCode": "tdpcg0111m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A sales or purchase order line takes its price from a price book chosen by who buys and what is bought, for example a customer and a product class."
+      }
+    ],
+    "text": "A sales or purchase order line takes its price from a price book chosen by who buys and what is bought, for example a customer and a product class."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A price book holds prices by item. A matrix definition names the attributes a price is chosen by, such as Sold-to BP and Product Class, and its priority says which definition LN tries first. A sales price matrix then links a combination of those attributes to a price book. On the order line, LN finds the first matrix that matches and takes its price book's price."
+      }
+    ],
+    "text": "A price book holds prices by item. A matrix definition names the attributes a price is chosen by, such as Sold-to BP and Product Class, and its priority says which definition LN tries first. A sales price matrix then links a combination of those attributes to a price book. On the order line, LN finds the first matrix that matches and takes its price book's price."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", give the book a description, set Type to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Sales"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick General Use and Used for Contracts, and save"
+                }
+              ],
+              "text": "Click New, give the book a description, set Type to Sales, tick General Use and Used for Contracts, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpcg0611m000",
+                  "name": "Price Book"
+                },
+                {
+                  "t": "text",
+                  "v": " with an empty Lines section"
+                }
+              ],
+              "text": "Price Book (tdpcg0611m000) with an empty Lines section"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for each item: the price, currency, unit and effective date, and leave the expiry date empty"
+                }
+              ],
+              "text": "Add a line for each item: the price, currency, unit and effective date, and leave the expiry date empty"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpcg0110m000",
+                  "name": "Matrix Definitions"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Pricing ➔ Matrix Definitions"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", set Matrix Type to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Sales Price"
+                },
+                {
+                  "t": "text",
+                  "v": ", and choose the attributes, for example Sold-to BP and Product Class"
+                }
+              ],
+              "text": "Open Matrix Definitions (tdpcg0110m000), Common ➔ Pricing ➔ Matrix Definitions, click New, set Matrix Type to Sales Price, and choose the attributes, for example Sold-to BP and Product Class"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpcg0120m000",
+                  "name": "Matrix Priorities"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Pricing ➔ Matrix Priorities"
+                },
+                {
+                  "t": "text",
+                  "v": ", and give the definition a priority and an effective date"
+                }
+              ],
+              "text": "Open Matrix Priorities (tdpcg0120m000), Common ➔ Pricing ➔ Matrix Priorities, and give the definition a priority and an effective date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The definitions in the order LN tries them"
+                }
+              ],
+              "text": "The definitions in the order LN tries them"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpcg0130m010",
+                  "name": "Sales Price Matrices"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Common ➔ Pricing ➔ Prices ➔ Sales Price Matrices"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " for your definition, enter the effective date, link the price book, and fill in the attributes"
+                }
+              ],
+              "text": "Open Sales Price Matrices (tdpcg0130m010), Common ➔ Pricing ➔ Prices ➔ Sales Price Matrices, click New for your definition, enter the effective date, link the price book, and fill in the attributes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a sales order line for a matching customer and item"
+                }
+              ],
+              "text": "Enter a sales order line for a matching customer and item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Price Origin "
+                },
+                {
+                  "t": "literal",
+                  "v": "Price Structure"
+                },
+                {
+                  "t": "text",
+                  "v": ", your matrix, and the price book's price"
+                }
+              ],
+              "text": "Price Origin Price Structure, your matrix, and the price book's price"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The line keeps another price"
+              }
+            ],
+            "text": "The line keeps another price"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A matrix with a higher priority matched first; check Matrix Priorities and the effective dates"
+              }
+            ],
+            "text": "A matrix with a higher priority matched first; check Matrix Priorities and the effective dates"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No price comes in at all"
+              }
+            ],
+            "text": "No price comes in at all"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The customer and item need a price book that applies to them"
+              }
+            ],
+            "text": "The customer and item need a price book that applies to them"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Purchase prices"
+              }
+            ],
+            "text": "Purchase prices"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the book's Type to "
+              },
+              {
+                "t": "literal",
+                "v": "Purchase"
+              },
+              {
+                "t": "text",
+                "v": ", the Matrix Type to "
+              },
+              {
+                "t": "literal",
+                "v": "Purchase Price"
+              },
+              {
+                "t": "text",
+                "v": " with attributes such as Buy-from BP and Product Class, and link them in "
+              },
+              {
+                "t": "session",
+                "code": "tdpcg0130m020",
+                "name": "Purchase Price Matrices"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Common ➔ Pricing ➔ Prices ➔ Purchase Price Matrices"
+              },
+              {
+                "t": "text",
+                "v": ". The purchase order line shows Price Origin "
+              },
+              {
+                "t": "literal",
+                "v": "Price Structure"
+              },
+              {
+                "t": "text",
+                "v": " and the matrix"
+              }
+            ],
+            "text": "Set the book's Type to Purchase, the Matrix Type to Purchase Price with attributes such as Buy-from BP and Product Class, and link them in Purchase Price Matrices (tdpcg0130m020), Common ➔ Pricing ➔ Prices ➔ Purchase Price Matrices. The purchase order line shows Price Origin Price Structure and the matrix"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "receive-against-the-order",
@@ -23,8 +23,13 @@
     "Procurement",
     "Warehousing"
   ],
+  "codes": [
+    "S2P-24"
+  ],
+  "role": null,
+  "roles": [],
   "status": "review",
-  "updated": "2026-11-01",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",

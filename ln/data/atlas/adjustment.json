@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "adjustment",
@@ -11,8 +11,13 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [
+    "P2D-13"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-25",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders",
   "session": "Adjustment Orders",
   "sessionCode": "whinh5120m000",
@@ -21,13 +26,21 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Adjust stock with an adjustment order."
+        "v": "The stock LN holds at a location is set to what is really there, with a reason, and the change is valued and posted."
       }
     ],
-    "text": "Adjust stock with an adjustment order."
+    "text": "The stock LN holds at a location is set to what is really there, with a reason, and the change is valued and posted."
   },
   "before": [],
-  "why": null,
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An adjustment order is entered by hand, unlike a cycle counting order, which LN generates; quality dispositions are the exception that make one. Each line gives the stock point and the quantity that should be there, and LN works out the variance. Processing the order books the variance into inventory and values it."
+      }
+    ],
+    "text": "An adjustment order is entered by hand, unlike a cycle counting order, which LN generates; quality dispositions are the exception that make one. Each line gives the stock point and the quantity that should be there, and LN works out the variance. Processing the order books the variance into inventory and values it."
+  },
   "blocks": [
     {
       "kind": "steps",
@@ -52,19 +65,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "for a serialized item, open the line's stock point details, where its serial numbers are kept"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the warehouse, a reason for adjustment and the employee"
                 }
               ],
-              "text": "for a serialized item, open the line's stock point details, where its serial numbers are kept"
+              "text": "Click New and enter the warehouse, a reason for adjustment and the employee"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "An order number, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": ", and Manual Adjustment ticked"
                 }
               ],
-              "text": "—"
+              "text": "An order number, status Open, and Manual Adjustment ticked"
             }
           ],
           "id": "1",
@@ -86,19 +115,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "counted more than LN holds: add the serial numbers"
+                  "v": "Add a line for the item and choose its location"
                 }
               ],
-              "text": "counted more than LN holds: add the serial numbers"
+              "text": "Add a line for the item and choose its location"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Stock Point Inventory shows what LN holds there"
                 }
               ],
-              "text": "—"
+              "text": "Stock Point Inventory shows what LN holds there"
             }
           ],
           "id": "2",
@@ -120,10 +149,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "counted fewer: leave the adjusted quantity at 0"
+                  "v": "For a lot-controlled item enter the lot, and for a FIFO or LIFO item the inventory date"
                 }
               ],
-              "text": "counted fewer: leave the adjusted quantity at 0"
+              "text": "For a lot-controlled item enter the lot, and for a FIFO or LIFO item the inventory date"
             },
             {
               "tokens": [
@@ -154,36 +183,157 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "counted fewer: enter a negative variance for each missing serial"
+                  "v": "In Inventory Adjusted, enter the quantity that should be there"
                 }
               ],
-              "text": "counted fewer: enter a negative variance for each missing serial"
+              "text": "In Inventory Adjusted, enter the quantity that should be there"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Variance shows the difference, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "-100.0000"
                 }
               ],
-              "text": "—"
+              "text": "Variance shows the difference, such as -100.0000"
             }
           ],
           "id": "4",
           "optional": false,
           "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the line and look at the Price tab"
+                }
+              ],
+              "text": "Open the line and look at the Price tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The inventory value and the transaction amount of the variance"
+                }
+              ],
+              "text": "The inventory value and the transaction amount of the variance"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process"
+                }
+              ],
+              "text": "Choose Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "End of process."
+                },
+                {
+                  "t": "text",
+                  "v": " ("
+                },
+                {
+                  "t": "literal",
+                  "v": "whinhs5500"
+                },
+                {
+                  "t": "text",
+                  "v": "), and the order reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "Processed"
+                }
+              ],
+              "text": "End of process. (whinhs5500), and the order reads Processed"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the item in "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                }
+              ],
+              "text": "Check the item in Inventory 360 (whwmd4300m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new on-hand quantity"
+                }
+              ],
+              "text": "The new on-hand quantity"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
-        }
-      ],
-      "text": "Not documented for this release."
     }
   ],
   "example": {
@@ -245,7 +395,33 @@
   },
   "variants": {
     "kind": "variants",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A serialized item"
+              }
+            ],
+            "text": "A serialized item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Open the line's stock point details, where its serial numbers are kept. Counted more than LN holds: add the serial numbers. Counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+              }
+            ],
+            "text": "Open the line's stock point details, where its serial numbers are kept. Counted more than LN holds: add the serial numbers. Counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+          }
+        ]
+      }
+    ]
   }
 }

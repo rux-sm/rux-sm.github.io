@@ -1,0 +1,282 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "block-a-stock-point",
+  "title": "Block stock at one location",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "codes": [
+    "P2D-15"
+  ],
+  "role": "Warehouse Supervisor",
+  "roles": [
+    "Warehouse Supervisor"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Stock Point",
+  "session": "Stock Point Blocking",
+  "sessionCode": "whwmd6130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Some or all of an item's stock at one location is on hold, so it cannot be issued or shipped, and the hold is lifted when it is no longer needed."
+      }
+    ],
+    "text": "Some or all of an item's stock at one location is on hold, so it cannot be issued or shipped, and the hold is lifted when it is no longer needed."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A block on a stock point holds a quantity of one item at one location, or all of it. The reason for blocking decides whether planning still counts the blocked stock as available. The block keeps who made it and when."
+      }
+    ],
+    "text": "A block on a stock point holds a quantity of one item at one location, or all of it. The reason for blocking decides whether planning still counts the blocked stock as available. The block keeps who made it and when."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whinr1540m000",
+                  "name": "Stock Point Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ", select the item's location and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Stock Point Blocking"
+                }
+              ],
+              "text": "In Stock Point Inventory (whinr1540m000), select the item's location and choose References ➔ Stock Point Blocking"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Stock Point Blocking"
+                },
+                {
+                  "t": "text",
+                  "v": " for that warehouse, location and item, empty"
+                }
+              ],
+              "text": "Stock Point Blocking for that warehouse, location and item, empty"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose the Reason for Blocking"
+                }
+              ],
+              "text": "Click New and choose the Reason for Blocking"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the quantity to block, or tick Fully Blocked to block all of it, and save"
+                }
+              ],
+              "text": "Enter the quantity to block, or tick Fully Blocked to block all of it, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A row with the reason and your user name"
+                }
+              ],
+              "text": "A row with the reason and your user name"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the item in "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                }
+              ],
+              "text": "Check the item in Inventory 360 (whwmd4300m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On Hand unchanged and Blocked showing the quantity"
+                }
+              ],
+              "text": "On Hand unchanged and Blocked showing the quantity"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To lift the block, select its row and delete it"
+                }
+              ],
+              "text": "To lift the block, select its row and delete it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The list is empty and Blocked reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " again"
+                }
+              ],
+              "text": "The list is empty and Blocked reads 0 again"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

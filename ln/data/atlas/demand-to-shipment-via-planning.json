@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "demand-to-shipment-via-planning",
@@ -11,6 +11,13 @@
     "Procurement",
     "Manufacturing",
     "Warehousing"
+  ],
+  "codes": [
+    "O2C-04",
+    "P2D-02",
+    "S2P-24",
+    "P2D-06",
+    "O2C-08"
   ],
   "updated": "2026-10-22",
   "status": "draft",

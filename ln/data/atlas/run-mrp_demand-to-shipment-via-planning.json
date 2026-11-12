@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "run-mrp_demand-to-shipment-via-planning",
@@ -26,8 +26,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-02"
+  ],
+  "role": null,
+  "roles": [],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-11-12",
   "route": null,
   "session": null,
   "sessionCode": null,

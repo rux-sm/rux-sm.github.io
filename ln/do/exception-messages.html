@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Exception Messages by Planner · LN Notes · Updated 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Exception Messages by Planner · LN Notes · Updated 12 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -110,20 +110,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d7754b042cd364728c71859851939d45e89dfc1d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
-<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Enterprise Planning</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Code</dt><dd>P2D-02</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Exception Messages by Planner</h1>
-<p class="rux--type-body-long-01">List what planning says about the orders that already exist.</p>
+<p class="rux--type-body-long-01">You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with.</p>
 </div>
-<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Length</dt><dd>5 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div></dl>
+<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Code</dt><dd>P2D-02</dd></div><div><dt>Length</dt><dd>5 steps</dd></div><div><dt>Updated</dt><dd>12 Nov 2026</dd></div></dl>
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 <div class="ln-unwalked"><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
@@ -136,27 +136,28 @@
 </div></div>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>Order planning has run with Exception Messages Save ticked on its Options tab. Each planner's message profile is in <span class="ln-t-named">Exception Message Types</span> (<span class="ln-t-exact ln-t-word">cprao1110m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Plan Analysis</span><span class="sep">➔</span><span class="dest ln-t-whole">Exception Message Types</span></span>.</li></ul>
+</section>
+<section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Plan Analysis</span><span class="sep">➔</span><span class="dest ln-t-whole">Exception Messages by Planner</span></span> (<span class="ln-t-exact ln-t-word">cprao1120m000</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Planning compares the receipts it has with what is needed and writes a message wherever they differ: reschedule in, reschedule out, cancel, negative inventory, or an error that stops an order being planned or transferred. The messages are made during order planning, kept until the next run, and filed under the planner of each plan item, or a blank planner where there is none.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">planning compares the receipts that exist with what is needed</td><td data-k="You should see"></td></tr>
-<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">it raises a message where they differ</td><td data-k="You should see"></td></tr>
-<tr id="step-3"><td data-k="Step"><b>3</b></td><td data-k="Action">a reschedule message asks for a receipt earlier or later</td><td data-k="You should see"></td></tr>
-<tr id="step-4"><td data-k="Step"><b>4</b></td><td data-k="Action">a cancel message marks a receipt nothing needs</td><td data-k="You should see"></td></tr>
-<tr id="step-5"><td data-k="Step"><b>5</b></td><td data-k="Action">a tolerance in days, set per message type, keeps small shifts quiet</td><td data-k="You should see"></td></tr>
+<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">Choose the planner and the scenario, leaving the planner blank for items with none</td><td data-k="You should see">One row per plan item, with how many messages it has, the highest priority, and the earliest date</td></tr>
+<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">Open a plan item's row</td><td data-k="You should see"><span class="ln-t-named">Exception Messages</span> (<span class="ln-t-exact ln-t-word">cprao1125m000</span>), one line per message, with the order, its date, and what to do, such as <span class="ln-t-exact">Reschedule into 24-06-20 02:31:27.</span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>3</b></td><td data-k="Action">Act on a message on the order it names</td><td data-k="You should see"></td></tr>
+<tr id="step-4"><td data-k="Step"><b>4</b></td><td data-k="Action">For a message you will not act on, tick Accept</td><td data-k="You should see"></td></tr>
+<tr id="step-5"><td data-k="Step"><b>5</b></td><td data-k="Action">Choose <span class="ln-t-route"><span class="ln-t-whole">Views</span><span class="sep">➔</span><span class="dest ln-t-whole">Hide Accepted Exception Messages</span></span></td><td data-k="You should see">Only the messages still to deal with</td></tr>
 </tbody>
 </table></div>
 
 </section>
-<section class="ln-proc__gaps">
-<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="gaps">Known gaps</h2>
-<p>The library has no source yet for part of each of these, so this Document leaves that part out rather than guess.</p>
-<ul class="ln-proc__list"><li>Steps</li></ul>
-</section>
+
 <section class="ln-proc__screens">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2 ln-proc__h2--sect" id="screens">Sessions used</h2>
 <div class="rux--data-table-container ln-proc__table ln-proc__sect">
@@ -177,7 +178,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b></b></td><td data-k="Expected result">List what planning says about the orders that already exist</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b></b></td><td data-k="Expected result">You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -206,20 +207,22 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Plan Analysis</span><span class="sep">➔</span><span class="dest ln-t-whole">Exception Messages by Planner</span></span> (<span class="ln-t-exact ln-t-word">cprao1120m000</span>)</p><h1 class="ln-step__do">Planning compares the receipts that exist with what is needed</h1></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Plan Analysis</span><span class="sep">➔</span><span class="dest ln-t-whole">Exception Messages by Planner</span></span> (<span class="ln-t-exact ln-t-word">cprao1120m000</span>)</p><h1 class="ln-step__do">Choose the planner and the scenario, leaving the planner blank for items with none</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One row per plan item, with how many messages it has, the highest priority, and the earliest date</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">It raises a message where they differ</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open a plan item's row</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Exception Messages</span> (<span class="ln-t-exact ln-t-word">cprao1125m000</span>), one line per message, with the order, its date, and what to do, such as <span class="ln-t-exact">Reschedule into 24-06-20 02:31:27.</span></p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">A reschedule message asks for a receipt earlier or later</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Act on a message on the order it names</h1></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">A cancel message marks a receipt nothing needs</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">For a message you will not act on, tick Accept</h1></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">A tolerance in days, set per message type, keeps small shifts quiet</h1></div>
-    <div class="ln-step__prose"><p><span class="ln-gap">Not documented for this release.</span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Hide Accepted Exception Messages</span></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Views</span><span class="sep">➔</span><span class="dest ln-t-whole">Hide Accepted Exception Messages</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Only the messages still to deal with</p></div>
   </li>
 </ol>
 <div class="ln-confirm" data-confirm="exception-messages">
@@ -230,9 +233,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-24">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-31">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-24" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -246,6 +249,13 @@
       <div class="rux--accordion__title">Your values</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div></div></div>
+  </li>
+  <li class="rux--accordion__item" id="why-guided">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Why LN works this way</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Planning compares the receipts it has with what is needed and writes a message wherever they differ: reschedule in, reschedule out, cancel, negative inventory, or an error that stops an order being planned or transferred. The messages are made during order planning, kept until the next run, and filed under the planner of each plan item, or a blank planner where there is none.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

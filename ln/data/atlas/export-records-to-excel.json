@@ -1,0 +1,352 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "export-records-to-excel",
+  "title": "Export records to Excel",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Master Data ➔ Items ➔ Items",
+  "session": "Items",
+  "sessionCode": "tcibd0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The records of a list are in an Excel file on your computer, to read, total or turn into an import file."
+      }
+    ],
+    "text": "The records of a list are in an Excel file on your computer, to read, total or turn into an import file."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Most lists in LN can export what they show. Quick Export takes the rows and columns in view; Advanced Export lets you choose every row, split dates from times, and use a set of fields you picked in advance, including fields the screen hides and record text. The file downloads through your browser."
+      }
+    ],
+    "text": "Most lists in LN can export what they show. Quick Export takes the rows and columns in view; Advanced Export lets you choose every row, split dates from times, and use a set of fields you picked in advance, including fields the screen hides and record text. The file downloads through your browser."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the records to export, or tick none to export every row in view"
+                }
+              ],
+              "text": "Tick the records to export, or tick none to export every row in view"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Quick Export"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
+                }
+              ],
+              "text": "Click Quick Export on the toolbar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The first time, Excel Integration Settings opens"
+                }
+              ],
+              "text": "The first time, Excel Integration Settings opens"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If it opened, keep Rows "
+                },
+                {
+                  "t": "literal",
+                  "v": "Visible"
+                },
+                {
+                  "t": "text",
+                  "v": ", Fields "
+                },
+                {
+                  "t": "literal",
+                  "v": "Current tab"
+                },
+                {
+                  "t": "text",
+                  "v": " and Default Export "
+                },
+                {
+                  "t": "literal",
+                  "v": "Quick Export"
+                },
+                {
+                  "t": "text",
+                  "v": ", then save and exit"
+                }
+              ],
+              "text": "If it opened, keep Rows Visible, Fields Current tab and Default Export Quick Export, then save and exit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "1 records processed. Finalizing..."
+                }
+              ],
+              "text": "1 records processed. Finalizing..."
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the file from your browser's downloads"
+                }
+              ],
+              "text": "Open the file from your browser's downloads"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A sheet named after the session code, company, date and time, with a "
+                },
+                {
+                  "t": "literal",
+                  "v": "data"
+                },
+                {
+                  "t": "text",
+                  "v": " tab and an "
+                },
+                {
+                  "t": "literal",
+                  "v": "enums"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "A sheet named after the session code, company, date and time, with a data tab and an enums tab"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For more control, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Export and Import ➔ Advanced Export..."
+                },
+                {
+                  "t": "text",
+                  "v": " instead, set Rows to "
+                },
+                {
+                  "t": "literal",
+                  "v": "All"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the three options, and export"
+                }
+              ],
+              "text": "For more control, choose Actions ➔ Export and Import ➔ Advanced Export... instead, set Rows to All, tick the three options, and export"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Every row, with dates and times in separate columns"
+                }
+              ],
+              "text": "Every row, with dates and times in separate columns"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing downloads"
+              }
+            ],
+            "text": "Nothing downloads"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Look in the browser's downloads list; the file is named after the session code"
+              }
+            ],
+            "text": "Look in the browser's downloads list; the file is named after the session code"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The file lacks a column you need"
+              }
+            ],
+            "text": "The file lacks a column you need"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Use a predefined set, as in the notes, then Advanced Export"
+              }
+            ],
+            "text": "Use a predefined set, as in the notes, then Advanced Export"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

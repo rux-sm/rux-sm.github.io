@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "run-order-planning-for-one-item",
@@ -8,6 +8,10 @@
   "modules": [
     "Enterprise Planning",
     "Sales"
+  ],
+  "codes": [
+    "O2C-04",
+    "P2D-02"
   ],
   "updated": "2026-11-02",
   "status": "approved",

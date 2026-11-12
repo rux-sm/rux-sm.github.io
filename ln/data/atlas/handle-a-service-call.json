@@ -1,0 +1,377 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "handle-a-service-call",
+  "title": "Handle a service call",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Service",
+  "modules": [
+    "Service"
+  ],
+  "codes": [
+    "ASM-06"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Service ➔ Call Management ➔ Customer Call 360",
+  "session": "Customer Call 360",
+  "sessionCode": "tsclm1509m100",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A customer's report of a problem is registered, worked within its response time, and either solved on the spot or passed on to a service order or a maintenance sales order."
+      }
+    ],
+    "text": "A customer's report of a problem is registered, worked within its response time, and either solved on the spot or passed on to a service order or a maintenance sales order."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A call records who reported what, on which serialized item. Its response time gives it a priority and the latest times to start and finish solving it, and a timer measures the work. A call is solved by the helpdesk, assigned to a support engineer, or transferred: to a service order for work at the site, or to a maintenance sales order for a repair in the shop. Its Obligations tab shows any contract or warranty covering the item."
+      }
+    ],
+    "text": "A call records who reported what, on which serialized item. Its response time gives it a priority and the latest times to start and finish solving it, and a timer measures the work. A call is solved by the helpdesk, assigned to a support engineer, or transferred: to a service order for work at the site, or to a maintenance sales order for a repair in the shop. Its Obligations tab shows any contract or warranty covering the item."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Register the call: the business partner, the item and its serial number, a description of the problem, and the required activity"
+                }
+              ],
+              "text": "Register the call: the business partner, the item and its serial number, a description of the problem, and the required activity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The latest solution start and finish times; a warning if the customer has open calls or is blocked"
+                }
+              ],
+              "text": "The latest solution start and finish times; a warning if the customer has open calls or is blocked"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Obligations tab"
+                }
+              ],
+              "text": "Look at the Obligations tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Any contract or warranty covering the item"
+                }
+              ],
+              "text": "Any contract or warranty covering the item"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Assign it, if someone else handles it, to a service center or support engineer in "
+                },
+                {
+                  "t": "session",
+                  "code": "tsclm1513m000",
+                  "name": "Calls to be Assigned"
+                }
+              ],
+              "text": "Assign it, if someone else handles it, to a service center or support engineer in Calls to be Assigned (tsclm1513m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Assigned"
+                }
+              ],
+              "text": "Status Assigned"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Start working it: set it In Process and switch the timer on"
+                }
+              ],
+              "text": "Start working it: set it In Process and switch the timer on"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                }
+              ],
+              "text": "Status In Process"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Use the diagnostics to narrow the problem, if a diagnostic tree exists for the item"
+                }
+              ],
+              "text": "Use the diagnostics to narrow the problem, if a diagnostic tree exists for the item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An expected problem and solution"
+                }
+              ],
+              "text": "An expected problem and solution"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To solve it, enter the actual problem, the actual solution, the activity taken, the time spent and the down time, then choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Solve"
+                }
+              ],
+              "text": "To solve it, enter the actual problem, the actual solution, the activity taken, the time spent and the down time, then choose Solve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Solved"
+                }
+              ],
+              "text": "Status Solved"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the customer is satisfied, accept the solution"
+                }
+              ],
+              "text": "When the customer is satisfied, accept the solution"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Accepted"
+                }
+              ],
+              "text": "Status Accepted"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If it needs work at the site, choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transfer to Service Order"
+                },
+                {
+                  "t": "text",
+                  "v": " instead; if the part must come in for repair, transfer it to a maintenance sales order"
+                }
+              ],
+              "text": "If it needs work at the site, choose Transfer to Service Order instead; if the part must come in for repair, transfer it to a maintenance sales order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The related order on the Register tab"
+                }
+              ],
+              "text": "The related order on the Register tab"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

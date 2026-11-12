@@ -1,0 +1,483 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "inspect-stock-in-inventory",
+  "title": "Inspect stock in inventory",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Quality · Warehousing",
+  "modules": [
+    "Quality",
+    "Warehousing"
+  ],
+  "codes": [
+    "I2R-06"
+  ],
+  "role": "Quality Inspector",
+  "roles": [
+    "Quality Inspector"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Quality ➔ Inspection ➔ Order Inspections",
+  "session": "Order Inspections",
+  "sessionCode": "qmptc1620m100",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Stock already in a warehouse is inspected against a test procedure, and what fails is rejected or scrapped with a reason."
+      }
+    ],
+    "text": "Stock already in a warehouse is inspected against a test procedure, and what fails is rejected or scrapped with a reason."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An order inspection with origin Inventory Inspection is linked to a warehouse inventory inspection, which names the stock point, how much is inspected, and how much is approved, rejected or scrapped. An inspection order under it samples the stock and records the test data from a standard test procedure; a failed test can raise a non-conformance report."
+      }
+    ],
+    "text": "An order inspection with origin Inventory Inspection is linked to a warehouse inventory inspection, which names the stock point, how much is inspected, and how much is approved, rejected or scrapped. An inspection order under it samples the stock and records the test data from a standard test procedure; a failed test can raise a non-conformance report."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and set Origin to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Inventory Inspection"
+                }
+              ],
+              "text": "Click New and set Origin to Inventory Inspection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the Warehouse Inspection lookup and click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " there"
+                }
+              ],
+              "text": "Open the Warehouse Inspection lookup and click New there"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Warehouse Inventory Inspection"
+                }
+              ],
+              "text": "Warehouse Inventory Inspection"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the item, the warehouse and the location"
+                }
+              ],
+              "text": "Enter the item, the warehouse and the location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An inspection number, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Open"
+                }
+              ],
+              "text": "An inspection number, status Open"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the lines, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose the lot, for a lot-controlled item"
+                }
+              ],
+              "text": "On the lines, click New and choose the lot, for a lot-controlled item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory on Hand for that stock point"
+                }
+              ],
+              "text": "Inventory on Hand for that stock point"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the line's Inspection Result tab, enter the quantity to inspect, then the quantities approved, rejected and scrapped, each with its reason"
+                }
+              ],
+              "text": "On the line's Inspection Result tab, enter the quantity to inspect, then the quantities approved, rejected and scrapped, each with its reason"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the order inspection, check the logistic data, then on the Inspection Orders grid click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Back on the order inspection, check the logistic data, then on the Inspection Orders grid click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An inspection order, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                }
+              ],
+              "text": "An inspection order, status Free"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the test quantity and link a standard test procedure"
+                }
+              ],
+              "text": "Enter the test quantity and link a standard test procedure"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Test Data tab fills with one row per sample and characteristic"
+                }
+              ],
+              "text": "The Test Data tab fills with one row per sample and characteristic"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter each measurement"
+                }
+              ],
+              "text": "Enter each measurement"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Result "
+                },
+                {
+                  "t": "literal",
+                  "v": "Pass"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "literal",
+                  "v": "Fail"
+                },
+                {
+                  "t": "text",
+                  "v": " against the limits on the line's Limits tab"
+                }
+              ],
+              "text": "Result Pass or Fail against the limits on the line's Limits tab"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a failed test, select it and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate NCMR"
+                }
+              ],
+              "text": "For a failed test, select it and click Generate NCMR"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A non-conformance report for it"
+                }
+              ],
+              "text": "A non-conformance report for it"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Complete the inspection order, then on the order inspection choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Set Status To"
+                },
+                {
+                  "t": "text",
+                  "v": " to complete it"
+                }
+              ],
+              "text": "Complete the inspection order, then on the order inspection choose Actions ➔ Set Status To to complete it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The accepted, rejected and destroyed quantities"
+                }
+              ],
+              "text": "The accepted, rejected and destroyed quantities"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

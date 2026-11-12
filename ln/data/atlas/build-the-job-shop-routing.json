@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-routing",
@@ -25,8 +25,15 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "D2R-05"
+  ],
+  "role": "Manufacturing Engineer",
+  "roles": [
+    "Manufacturing Engineer"
+  ],
   "status": "draft",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings",
   "session": "Job Shop Routings",
   "sessionCode": "tirou4100m000",

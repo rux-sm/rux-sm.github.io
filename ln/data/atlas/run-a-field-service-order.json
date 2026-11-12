@@ -1,0 +1,639 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-a-field-service-order",
+  "title": "Run a field service order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Service",
+  "modules": [
+    "Service"
+  ],
+  "codes": [
+    "ASM-04"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Service ➔ Field Service ➔ Orders",
+  "session": "Service Orders",
+  "sessionCode": "tssoc2100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Service work at a customer's site is planned, done, reported and costed, ready to invoice, and the order is closed."
+      }
+    ],
+    "text": "Service work at a customer's site is planned, done, reported and costed, ready to invoice, and the order is closed."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The order names the customer and the serialized item the work is on. Its activities say what is done and who does it. Planning allocates material and engineers, release lets the work start, the engineer reports hours and material, and costing checks contract and warranty and hands the costs to invoicing, as the "
+      },
+      {
+        "t": "text",
+        "v": "service order"
+      },
+      {
+        "t": "text",
+        "v": " concept explains."
+      }
+    ],
+    "text": "The order names the customer and the serialized item the work is on. Its activities say what is done and who does it. Planning allocates material and engineers, release lets the work start, the engineer reports hours and material, and costing checks contract and warranty and hands the costs to invoicing, as the service order concept explains."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", check the order series, and enter the business partner, the item and its serial number"
+                }
+              ],
+              "text": "Click New, check the order series, and enter the business partner, the item and its serial number"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The service office and, on the Execution tab, the service type fill in"
+                }
+              ],
+              "text": "The service office and, on the Execution tab, the service type fill in"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Activities tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose a reference activity, and on its Assignment tab add the service engineer"
+                }
+              ],
+              "text": "On the Activities tab, click New, choose a reference activity, and on its Assignment tab add the service engineer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save, then choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Print ➔ Service Order Documents"
+                },
+                {
+                  "t": "text",
+                  "v": " if the customer needs an acknowledgment"
+                }
+              ],
+              "text": "Save, then choose Actions ➔ Print ➔ Service Order Documents if the customer needs an acknowledgment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the error and process reports in "
+                },
+                {
+                  "t": "session",
+                  "code": "tssoc2260m000",
+                  "name": "Service Order Resource Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", and process"
+                }
+              ],
+              "text": "Choose Plan, tick the error and process reports in Service Order Resource Planning (tssoc2260m000), and process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Planned"
+                }
+              ],
+              "text": "Status Planned"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release"
+                }
+              ],
+              "text": "Choose Release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": "; the engineer sees the assignment"
+                }
+              ],
+              "text": "Status Released; the engineer sees the assignment"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the work is done, open the order and on the Material tab set each line's required quantity to what was used"
+                }
+              ],
+              "text": "When the work is done, open the order and on the Material tab set each line's required quantity to what was used"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Hours Accounting Line tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the employee, activity line, task and labor time, select the line and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Process Now"
+                }
+              ],
+              "text": "On the Hours Accounting Line tab, click New, enter the employee, activity line, task and labor time, select the line and choose Actions ➔ Process Now"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " and answer Yes to report the order completed"
+                }
+              ],
+              "text": "Choose Actions ➔ Complete and answer Yes to report the order completed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                }
+              ],
+              "text": "Status Completed"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Cost"
+                },
+                {
+                  "t": "text",
+                  "v": ", and cost it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tssoc2290m000",
+                  "name": "Cost Service Order"
+                }
+              ],
+              "text": "Choose Actions ➔ Cost, and cost it in Cost Service Order (tssoc2290m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Costed"
+                },
+                {
+                  "t": "text",
+                  "v": "; its costs go to invoicing"
+                }
+              ],
+              "text": "Status Costed; its costs go to invoicing"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Once the invoice is printed and processed, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Close"
+                },
+                {
+                  "t": "text",
+                  "v": " and process it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tssoc2201m000",
+                  "name": "Close Service Order"
+                }
+              ],
+              "text": "Once the invoice is printed and processed, choose Actions ➔ Close and process it in Close Service Order (tssoc2201m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Closed"
+                }
+              ],
+              "text": "Status Closed"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Not all cost lines are posted to finance"
+              },
+              {
+                "t": "text",
+                "v": " when closing"
+              }
+            ],
+            "text": "Not all cost lines are posted to finance when closing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Print and process the order's invoice first"
+              }
+            ],
+            "text": "Print and process the order's invoice first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No Hours Accounting tab on the order"
+              }
+            ],
+            "text": "No Hours Accounting tab on the order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Tick Hours Accounting for the field service screen in the user's service profile"
+              }
+            ],
+            "text": "Tick Hours Accounting for the field service screen in the user's service profile"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Planning skips an activity"
+              }
+            ],
+            "text": "Planning skips an activity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Each activity needs a planned start time and a duration, on a valid serialized item"
+              }
+            ],
+            "text": "Each activity needs a planned start time and a duration, on a valid serialized item"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The supplier delivers the material to the site"
+              }
+            ],
+            "text": "The supplier delivers the material to the site"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Add the material line with Delivery Type Supplier Direct Delivery, the ship-to address and an estimated price; planning makes the purchase order"
+              }
+            ],
+            "text": "Add the material line with Delivery Type Supplier Direct Delivery, the ship-to address and an estimated price; planning makes the purchase order"
+          }
+        ]
+      }
+    ]
+  }
+}

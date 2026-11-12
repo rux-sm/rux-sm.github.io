@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "release-the-order",
@@ -23,8 +23,15 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-04"
+  ],
+  "role": "Production Planner",
+  "roles": [
+    "Production Planner"
+  ],
   "status": "approved",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",

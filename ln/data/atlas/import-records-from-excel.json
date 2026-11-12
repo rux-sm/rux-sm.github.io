@@ -1,0 +1,417 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "import-records-from-excel",
+  "title": "Import records from Excel",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Master Data ➔ Items ➔ Items",
+  "session": "Items",
+  "sessionCode": "tcibd0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Records are added to a session, or values in it are changed, from an Excel file."
+      }
+    ],
+    "text": "Records are added to a session, or values in it are changed, from an Excel file."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An exported file is also an import template: its columns are the session's fields. LN reads each row, adds it as a new record or overwrites the record it matches, and writes a report with a status for every row."
+      }
+    ],
+    "text": "An exported file is also an import template: its columns are the session's fields. LN reads each row, adds it as a new record or overwrites the record it matches, and writes a report with a status for every row."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Export the session as in "
+                },
+                {
+                  "t": "link",
+                  "v": "Export records to Excel",
+                  "href": "export-records-to-excel.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", to get its columns"
+                }
+              ],
+              "text": "Export the session as in Export records to Excel, to get its columns"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Change the rows to what you want. To add a record, give it a new key; to change records, change only the values. Keep the session's required fields, delete the other columns if you like, and save the file"
+                }
+              ],
+              "text": "Change the rows to what you want. To add a record, give it a new key; to change records, change only the values. Keep the session's required fields, delete the other columns if you like, and save the file"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Export and Import ➔ Import"
+                }
+              ],
+              "text": "Choose Actions ➔ Export and Import ➔ Import"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Import dialog opens"
+                }
+              ],
+              "text": "The Import dialog opens"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Zoom on File and choose your saved file"
+                }
+              ],
+              "text": "Zoom on File and choose your saved file"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The file name is filled in"
+                }
+              ],
+              "text": "The file name is filled in"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set Open After Import to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Prompt"
+                },
+                {
+                  "t": "text",
+                  "v": ". To add records, tick Add New Records and clear Overwrite Existing Records; to change records, do the opposite"
+                }
+              ],
+              "text": "Set Open After Import to Prompt. To add records, tick Add New Records and clear Overwrite Existing Records; to change records, do the opposite"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Import"
+                }
+              ],
+              "text": "Click Import"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "1 rows processed. Finalizing..."
+                },
+                {
+                  "t": "text",
+                  "v": ", then a report file in your downloads"
+                }
+              ],
+              "text": "1 rows processed. Finalizing..., then a report file in your downloads"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the report"
+                }
+              ],
+              "text": "Open the report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each row's Import Status is "
+                },
+                {
+                  "t": "literal",
+                  "v": "ok"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "info"
+                },
+                {
+                  "t": "text",
+                  "v": " when nothing changed, or "
+                },
+                {
+                  "t": "literal",
+                  "v": "error"
+                },
+                {
+                  "t": "text",
+                  "v": " with the reason in Import Message"
+                }
+              ],
+              "text": "Each row's Import Status is ok, info when nothing changed, or error with the reason in Import Message"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A row comes back "
+              },
+              {
+                "t": "literal",
+                "v": "error"
+              }
+            ],
+            "text": "A row comes back error"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Read its Import Message; a required field of that session is often missing from the file"
+              }
+            ],
+            "text": "Read its Import Message; a required field of that session is often missing from the file"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A row comes back "
+              },
+              {
+                "t": "literal",
+                "v": "info"
+              }
+            ],
+            "text": "A row comes back info"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing in it differed from the record already there"
+              }
+            ],
+            "text": "Nothing in it differed from the record already there"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

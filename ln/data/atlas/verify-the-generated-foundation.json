@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "verify-the-generated-foundation",
@@ -23,6 +23,9 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "approved",
   "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",

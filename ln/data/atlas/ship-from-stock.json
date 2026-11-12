@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "ship-from-stock",
@@ -8,6 +8,10 @@
   "modules": [
     "Sales",
     "Warehousing"
+  ],
+  "codes": [
+    "O2C-04",
+    "O2C-08"
   ],
   "updated": "2026-11-01",
   "status": "approved",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "create-a-site",
@@ -11,6 +11,9 @@
   "modules": [
     "Master Data"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": null,
   "updated": "2026-10-25",
   "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites",

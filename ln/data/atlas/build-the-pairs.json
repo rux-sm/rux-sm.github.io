@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "build-the-pairs",
@@ -26,8 +26,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",

@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Receive at the destination · LN Notes · Updated 1 Nov 2026"; } }</style>
+<style>@page { @bottom-left { content: "Receive at the destination · LN Notes · Updated 12 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -109,20 +109,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d7754b042cd364728c71859851939d45e89dfc1d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
-<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Warehousing</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Code</dt><dd>P2D-11</dd></div><div><dt>Role</dt><dd>Material Handler</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Receive at the destination</h1>
 <p class="rux--type-body-long-01">The receipt says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>,</span> and the stock is in the destination warehouse.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>5 steps</dd></div><div><dt>Updated</dt><dd>1 Nov 2026</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Code</dt><dd>P2D-11</dd></div><div><dt>Role</dt><dd>Material Handler</dd></div><div><dt>Length</dt><dd>5 steps</dd></div><div><dt>Updated</dt><dd>12 Nov 2026</dd></div></dl>
 <p class="ln-strip">Task 6 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/verify-it-worked_transfer-item-between-warehouses.html">Verify it worked</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
@@ -151,6 +151,7 @@
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Symptom">The inbound line isn't there yet</td><td data-k="What to do">The shipment isn't confirmed. Go back to <a class="rux--link" href="../do/ship_transfer-item-between-warehouses.html#step-2">step 5.2</a> (Ship)</td></tr>
+<tr><td data-k="Symptom">Fewer arrived than were shipped</td><td data-k="What to do">Receive the quantity that arrived. Tick Final only if no more will come: LN warns <span class="ln-t-exact">No other shipment lines can be received anymore if this line is marked as final.</span> After put-away, delete or cancel the open remainder line on the warehousing order</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -243,10 +244,11 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 1</div>
+      <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The inbound line isn't there yet</b><p>The shipment isn't confirmed. Go back to step 2 of <a class="rux--link" href="../do/ship_transfer-item-between-warehouses.html">Ship</a></p></li>
+  <li><b>Fewer arrived than were shipped</b><p>Receive the quantity that arrived. Tick Final only if no more will come: LN warns <span class="ln-t-exact">No other shipment lines can be received anymore if this line is marked as final.</span> After put-away, delete or cancel the open remainder line on the warehousing order</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

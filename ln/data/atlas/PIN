@@ -1,9 +1,9 @@
-commit   526182d88c9d999aa7e14126c49022d4306bbd88
-date     2026-11-03T05:05:36Z
-subject  docs(plans): Fold the re-walk into the new parts
-contract 24 
+commit   d7754b042cd364728c71859851939d45e89dfc1d
+date     2026-11-12T16:36:40Z
+subject  feat(tools): Export a task's codes and role
+contract 25 
 tier     export
-sha256   bf5b481c7f73f67fe5f14fc1c09527667ec56af7d8eb8522d445e052e31f8c0b
+sha256   09246ee4c0c1e221f30ff1dccfcd6c8c055ad707b7f52242b64076bafeebdfa9
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

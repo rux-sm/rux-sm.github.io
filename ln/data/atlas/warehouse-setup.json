@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "warehouse-setup",
@@ -11,6 +11,9 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": null,
   "updated": "2026-10-22",
   "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",

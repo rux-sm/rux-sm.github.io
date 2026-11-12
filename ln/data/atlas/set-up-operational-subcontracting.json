@@ -1,0 +1,561 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-operational-subcontracting",
+  "title": "Set up operational subcontracting",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Procurement · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Procurement",
+    "Warehousing"
+  ],
+  "codes": [
+    "D2R-08"
+  ],
+  "role": "Buyer",
+  "roles": [
+    "Buyer"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Manufacturing ➔ Subcontracting ➔ Operation Subcontractors List",
+  "session": "Operation Subcontractors List",
+  "sessionCode": "tisub2100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "One operation of a routing is done by a subcontractor, who is sent the material it needs and sends back the part it makes."
+      }
+    ],
+    "text": "One operation of a routing is done by a subcontractor, who is sent the material it needs and sends back the part it makes."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "In "
+        },
+        {
+          "t": "session",
+          "code": "tcemm4600m100",
+          "name": "Concept Activation"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Master Data ➔ Enterprise Model ➔ Company Data ➔ Concept Activation"
+        },
+        {
+          "t": "text",
+          "v": ", Job Shop by Site and Resources by Site are Active, and in "
+        },
+        {
+          "t": "session",
+          "code": "tccom0500m000",
+          "name": "Implemented Software Components"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Master Data ➔ Enterprise Model ➔ Company Data ➔ Implemented Software Components"
+        },
+        {
+          "t": "text",
+          "v": ", Subcontracting with Material Flow is ticked."
+        }
+      ],
+      "text": "In Concept Activation (tcemm4600m100), Master Data ➔ Enterprise Model ➔ Company Data ➔ Concept Activation, Job Shop by Site and Resources by Site are Active, and in Implemented Software Components (tccom0500m000), Master Data ➔ Enterprise Model ➔ Company Data ➔ Implemented Software Components, Subcontracting with Material Flow is ticked."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "With material flow, the subcontractor is modelled as a site of your own with a warehouse at their address. The bill of material line for the operation is shipped to that warehouse by a transfer order, and what comes back is a separate item, received on the subcontracting purchase order and issued to the next operation."
+      }
+    ],
+    "text": "With material flow, the subcontractor is modelled as a site of your own with a warehouse at their address. The bill of material line for the operation is shipped to that warehouse by a transfer order, and what comes back is a separate item, received on the subcontracting purchase order and issued to the next operation."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make a purchase order type with Subcontracting Order ticked and its own series, with Generate Supply Orders for Subcontracting among its activities"
+                }
+              ],
+              "text": "Make a purchase order type with Subcontracting Order ticked and its own series, with Generate Supply Orders for Subcontracting among its activities"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make the subcontractor a business partner with the sold-to, ship-to, buy-from, ship-from, invoice-from and pay-to roles, and add it in Subcontractors ("
+                },
+                {
+                  "t": "session",
+                  "code": "tisub0120m000"
+                },
+                {
+                  "t": "text",
+                  "v": ")"
+                }
+              ],
+              "text": "Make the subcontractor a business partner with the sold-to, ship-to, buy-from, ship-from, invoice-from and pay-to roles, and add it in Subcontractors (tisub0120m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make a site for the subcontractor at their address, in the planning cluster of the site that uses them, with Subcontractor Site ticked and the subcontractor named on External Relations, and Procurement and Warehousing on under Settings"
+                }
+              ],
+              "text": "Make a site for the subcontractor at their address, in the planning cluster of the site that uses them, with Subcontractor Site ticked and the subcontractor named on External Relations, and Procurement and Warehousing on under Settings"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add that site to the subcontractor's locations, used by your production site"
+                }
+              ],
+              "text": "Add that site to the subcontractor's locations, used by your production site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make a Normal warehouse at the subcontractor's site: Supply System Order Controlled/Single, supplied from the warehouse the material is issued from, Inventory Management clear, and the subcontractor as sold-to and ship-to"
+                }
+              ],
+              "text": "Make a Normal warehouse at the subcontractor's site: Supply System Order Controlled/Single, supplied from the warehouse the material is issued from, Inventory Management clear, and the subcontractor as sold-to and ship-to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make a work center of type Subcontracting at your own site, and a reference operation with no work center"
+                }
+              ],
+              "text": "Make a work center of type Subcontracting at your own site, and a reference operation with no work center"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "chip",
+                  "v": "Operation Subcontractors List"
+                },
+                {
+                  "t": "text",
+                  "v": ", link the reference operation to the subcontractor and their site, for planning and costing"
+                }
+              ],
+              "text": "In Operation Subcontractors List, link the reference operation to the subcontractor and their site, for planning and costing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Make the item that comes back: order system Manual, Subassembly ticked, default supply source Not Applicable, the same inventory unit as the finished item, and an operation subcontracting price on its purchase data"
+                }
+              ],
+              "text": "Make the item that comes back: order system Manual, Subassembly ticked, default supply source Not Applicable, the same inventory unit as the finished item, and an operation subcontracting price on its purchase data"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Give the material that goes out a row for the subcontractor's site, whose supply source becomes Distribution, and warehouse data for the subcontractor's warehouse"
+                }
+              ],
+              "text": "Give the material that goes out a row for the subcontractor's site, whose supply source becomes Distribution, and warehouse data for the subcontractor's warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "ticpr1161m000",
+                  "name": "Operation Subcontracting Rates"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Operation Subcontracting Rates"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the rate for the operation, finished item, subcontractor and site, with the item that comes back"
+                }
+              ],
+              "text": "In Operation Subcontracting Rates (ticpr1161m000), Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Operation Subcontracting Rates, enter the rate for the operation, finished item, subcontractor and site, with the item that comes back"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the finished item's routing, tick Subcontracting on the operation, give it the subcontracting work center, the item that comes back as Subassembly and the warehouse it comes back to"
+                }
+              ],
+              "text": "On the finished item's routing, tick Subcontracting on the operation, give it the subcontracting work center, the item that comes back as Subassembly and the warehouse it comes back to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its bill of material, link the material that goes out to that operation, then cost the finished item"
+                }
+              ],
+              "text": "On its bill of material, link the material that goes out to that operation, then cost the finished item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

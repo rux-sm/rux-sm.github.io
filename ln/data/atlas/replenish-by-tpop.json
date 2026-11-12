@@ -1,0 +1,345 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "replenish-by-tpop",
+  "title": "Replenish by TPOP",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (TPOP)",
+  "session": "Generate Orders (TPOP)",
+  "sessionCode": "whinh2201m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A warehouse that has fallen below an item's reorder point is filled from another warehouse by a transfer order."
+      }
+    ],
+    "text": "A warehouse that has fallen below an item's reorder point is filled from another warehouse by a transfer order."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The item's order system is SIC and Floor Stock is clear in "
+        },
+        {
+          "t": "session",
+          "code": "whwmd4600m000",
+          "name": "Item - Warehousing"
+        },
+        {
+          "t": "text",
+          "v": ". In "
+        },
+        {
+          "t": "session",
+          "code": "whwmd2510m000",
+          "name": "Item Data by Warehouse"
+        },
+        {
+          "t": "text",
+          "v": ", the receiving warehouse's Supply tab has Supply System "
+        },
+        {
+          "t": "literal",
+          "v": "Time-Phased Order Point"
+        },
+        {
+          "t": "text",
+          "v": ", Supply from Warehouse ticked, and the supply company and warehouse. The reorder point is in "
+        },
+        {
+          "t": "session",
+          "code": "tcibd2600m000",
+          "name": "Item - Ordering"
+        },
+        {
+          "t": "text",
+          "v": ", or per site in "
+        },
+        {
+          "t": "session",
+          "code": "tcibd2150m000",
+          "name": "Items - Ordering by Site"
+        },
+        {
+          "t": "text",
+          "v": ". "
+        },
+        {
+          "t": "session",
+          "code": "whinh0120m000",
+          "name": "Default Order Types by Origin"
+        },
+        {
+          "t": "text",
+          "v": " names the transfer order type for the two warehouses."
+        }
+      ],
+      "text": "The item's order system is SIC and Floor Stock is clear in Item - Warehousing (whwmd4600m000). In Item Data by Warehouse (whwmd2510m000), the receiving warehouse's Supply tab has Supply System Time-Phased Order Point, Supply from Warehouse ticked, and the supply company and warehouse. The reorder point is in Item - Ordering (tcibd2600m000), or per site in Items - Ordering by Site (tcibd2150m000). Default Order Types by Origin (whinh0120m000) names the transfer order type for the two warehouses."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "TPOP, time-phased order point, pulls stock between warehouses in fixed cycles, such as a supply warehouse feeding a shop floor one. Generating orders compares each warehouse's stock with the reorder point within the order horizon and makes a warehousing transfer order from the supply warehouse."
+      }
+    ],
+    "text": "TPOP, time-phased order point, pulls stock between warehouses in fixed cycles, such as a supply warehouse feeding a shop floor one. Generating orders compares each warehouse's stock with the reorder point within the order horizon and makes a warehousing transfer order from the supply warehouse."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the item range, the order system, the site and the warehouses"
+                }
+              ],
+              "text": "Set the item range, the order system, the site and the warehouses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the order horizon's factor and constant"
+                }
+              ],
+              "text": "Set the order horizon's factor and constant"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the options to combine, activate and process the transfer orders, and click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Tick the options to combine, activate and process the transfer orders, and click GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report of each transfer order, from which warehouse to which, and the quantity — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "transfer order"
+                }
+              ],
+              "text": "A report of each transfer order, from which warehouse to which, and the quantity — transfer order"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the order in "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Orders ➔ Orders"
+                }
+              ],
+              "text": "Open the order in Warehousing Orders (whinh2100m000), Warehousing ➔ Orders ➔ Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A transfer from the supply warehouse to yours, of the order type for that pair"
+                }
+              ],
+              "text": "A transfer from the supply warehouse to yours, of the order type for that pair"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No transfer is made"
+              }
+            ],
+            "text": "No transfer is made"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receiving warehouse's supply system must be Time-Phased Order Point, and its stock below the reorder point within the horizon"
+              }
+            ],
+            "text": "The receiving warehouse's supply system must be Time-Phased Order Point, and its stock below the reorder point within the horizon"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order type is wrong"
+              }
+            ],
+            "text": "The order type is wrong"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Add a row for the two warehouses in Default Order Types by Origin"
+              }
+            ],
+            "text": "Add a row for the two warehouses in Default Order Types by Origin"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

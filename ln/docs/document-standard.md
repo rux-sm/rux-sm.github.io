@@ -11,7 +11,8 @@ follows. A guide that misses a part is unfinished; the work to close it is in
 ## The parts, in order
 
 1. **Brand block**, on the first page only: the Rux mark and LN Notes, the
-   module, and Client and Prepared by lines.
+   module, the team's process code and the role where the guide has them,
+   and Client and Prepared by lines.
    The page builds them empty, because the site is public. On the owner's
    own copy, after log-in, Prepared by carries the account's name and Client
    reads LN training environment; anyone else's stays empty to write on.

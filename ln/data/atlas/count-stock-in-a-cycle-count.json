@@ -1,0 +1,385 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "count-stock-in-a-cycle-count",
+  "title": "Count stock in a cycle count",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "codes": [
+    "P2D-16"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Generate Cycle Counting Orders",
+  "session": "Generate Cycle Counting Orders",
+  "sessionCode": "whinh5200m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The stock at each location is counted against what LN holds, and any difference is booked with a reason."
+      }
+    ],
+    "text": "The stock at each location is counted against what LN holds, and any difference is booked with a reason."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "LN generates cycle counting orders for the stock points in a range, at the frequency the items are set to be counted. Each order has a count number, which goes up each time the order is counted again. Every line must be marked counted before the order can be processed, and processing books the variances into inventory."
+      }
+    ],
+    "text": "LN generates cycle counting orders for the stock points in a range, at the frequency the items are set to be counted. Each order has a count number, which goes up each time the order is counted again. Every line must be marked counted before the order can be processed, and processing books the variances into inventory."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Narrow the ranges to the site, warehouse and locations to count, and tick Force Cycle Count to count them now"
+                }
+              ],
+              "text": "Narrow the ranges to the site, warehouse and locations to count, and tick Force Cycle Count to count them now"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Print tab, choose the series and tick Cycle Counting Report and Print Inventories, then click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate"
+                }
+              ],
+              "text": "On the Print tab, choose the series and tick Cycle Counting Report and Print Inventories, then click Generate"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A list of the orders made, and a counting list by warehouse, zone and location with a space for each counted quantity"
+                }
+              ],
+              "text": "A list of the orders made, and a counting list by warehouse, zone and location with a space for each counted quantity"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh5100m000",
+                  "name": "Cycle Counting Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", and open the order"
+                }
+              ],
+              "text": "Open Cycle Counting Orders (whinh5100m000), Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Cycle Counting Orders, and open the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": ", one line per item and location, with the stock point inventory"
+                }
+              ],
+              "text": "Status Open, one line per item and location, with the stock point inventory"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On each line, enter the quantity counted"
+                }
+              ],
+              "text": "On each line, enter the quantity counted"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Variance shows the difference"
+                }
+              ],
+              "text": "Variance shows the difference"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where there is a variance, open the line and enter a Reason for Variance and the counting date"
+                }
+              ],
+              "text": "Where there is a variance, open the line and enter a Reason for Variance and the counting date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick Counted on every line"
+                }
+              ],
+              "text": "Tick Counted on every line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process"
+                }
+              ],
+              "text": "Choose Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "End of process."
+                },
+                {
+                  "t": "text",
+                  "v": " ("
+                },
+                {
+                  "t": "literal",
+                  "v": "whinhs5500"
+                },
+                {
+                  "t": "text",
+                  "v": "), and the order reads "
+                },
+                {
+                  "t": "literal",
+                  "v": "Processed"
+                }
+              ],
+              "text": "End of process. (whinhs5500), and the order reads Processed"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order cannot be processed"
+              }
+            ],
+            "text": "The order cannot be processed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Every line must be ticked Counted, and any line needing approval must be approved"
+              }
+            ],
+            "text": "Every line must be ticked Counted, and any line needing approval must be approved"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

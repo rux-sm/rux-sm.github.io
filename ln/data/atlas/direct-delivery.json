@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "direct-delivery",
@@ -7,27 +7,51 @@
   "process": null,
   "previous": null,
   "next": null,
-  "module": "Sales",
+  "module": "Sales · Procurement",
   "modules": [
-    "Sales"
+    "Sales",
+    "Procurement"
   ],
+  "codes": [
+    "O2C-07"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
+  "updated": "2026-11-12",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
   "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Have the supplier deliver straight to the customer, so that Warehousing is not involved."
+        "v": "The supplier ships straight to the customer, and the sales order is ready to invoice without the goods passing through a warehouse."
       }
     ],
-    "text": "Have the supplier deliver straight to the customer, so that Warehousing is not involved."
+    "text": "The supplier ships straight to the customer, and the sales order is ready to invoice without the goods passing through a warehouse."
   },
-  "before": [],
-  "why": null,
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A sales order type whose activities include Generate Purchase Orders, and a purchase order type for drop shipments."
+        }
+      ],
+      "text": "A sales order type whose activities include Generate Purchase Orders, and a purchase order type for drop shipments."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A line with delivery type Direct Delivery is bought instead of picked. Approving the order generates a purchase order of a drop shipment type, with no warehouse. When the supplier says it has shipped, you record a purchase receipt, and that receipt is passed back to the sales order as its delivery."
+      }
+    ],
+    "text": "A line with delivery type Direct Delivery is bought instead of picked. Approving the order generates a purchase order of a drop shipment type, with no warehouse. When the supplier says it has shipped, you record a purchase receipt, and that receipt is passed back to the sales order as its delivery."
+  },
   "blocks": [
     {
       "kind": "steps",
@@ -52,10 +76,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "set the line's delivery type to Direct Delivery. Set it by hand, or from the shortage menu that appears when stock is short"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the customer and an order type that generates purchase orders"
                 }
               ],
-              "text": "set the line's delivery type to Direct Delivery. Set it by hand, or from the shortage menu that appears when stock is short"
+              "text": "Click New, enter the customer and an order type that generates purchase orders"
             },
             {
               "tokens": [
@@ -86,10 +118,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "generate the purchase order for the line, from a purchase order advice or directly"
+                  "v": "Add the line and set its Delivery Type to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Direct Delivery"
+                },
+                {
+                  "t": "text",
+                  "v": ", unless the item's sales data already sets it"
                 }
               ],
-              "text": "generate the purchase order for the line, from a purchase order advice or directly"
+              "text": "Add the line and set its Delivery Type to Direct Delivery, unless the item's sales data already sets it"
             },
             {
               "tokens": [
@@ -120,36 +160,308 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "record the supplier's receipt in Procurement and send the delivery back to the sales order"
+                  "v": "Approve the order"
                 }
               ],
-              "text": "record the supplier's receipt in Procurement and send the delivery back to the sales order"
+              "text": "Approve the order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
                 }
               ],
-              "text": "—"
+              "text": "Status In Process"
             }
           ],
           "id": "3",
           "optional": false,
           "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the line's Monitor tab, Status"
+                }
+              ],
+              "text": "Open the line's Monitor tab, Status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The generated purchase order and line — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchase order"
+                }
+              ],
+              "text": "The generated purchase order and line — purchase order"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the purchase order"
+                }
+              ],
+              "text": "Open the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A drop shipment order type, no warehouse on the line, status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Created"
+                }
+              ],
+              "text": "A drop shipment order type, no warehouse on the line, status Created"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve and print it as usual"
+                }
+              ],
+              "text": "Approve and print it as usual"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Sent"
+                }
+              ],
+              "text": "Status Sent"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the supplier reports the shipment, tick the line and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Receive..."
+                }
+              ],
+              "text": "When the supplier reports the shipment, tick the line and choose Actions ➔ Receive..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4106m000",
+                  "name": "Purchase Receipts"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the line"
+                }
+              ],
+              "text": "Purchase Receipts (tdpur4106m000) opens for the line"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the packing slip, the quantity received and the shipping date, then click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Confirm Receipt"
+                }
+              ],
+              "text": "Enter the packing slip, the quantity received and the shipping date, then click Confirm Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A receipt number and a green Confirmed check"
+                }
+              ],
+              "text": "A receipt number and a green Confirmed check"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the purchase order line's status"
+                }
+              ],
+              "text": "Open the purchase order line's status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Receipts and Update Sales / Service Order with Delivery Information both "
+                },
+                {
+                  "t": "literal",
+                  "v": "Executed"
+                }
+              ],
+              "text": "Purchase Receipts and Update Sales / Service Order with Delivery Information both Executed"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the sales order, open Monitor, Status"
+                }
+              ],
+              "text": "Back on the sales order, open Monitor, Status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A delivery line, "
+                },
+                {
+                  "t": "literal",
+                  "v": "Awaiting definite invoice."
+                }
+              ],
+              "text": "A delivery line, Awaiting definite invoice."
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
-        }
-      ],
-      "text": "Not documented for this release."
     }
   ],
   "example": {
@@ -160,8 +472,56 @@
   "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No purchase order appears on approval"
+              }
+            ],
+            "text": "No purchase order appears on approval"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The sales order type needs Generate Purchase Orders among its activities"
+              }
+            ],
+            "text": "The sales order type needs Generate Purchase Orders among its activities"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The sales order does not move to invoicing"
+              }
+            ],
+            "text": "The sales order does not move to invoicing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Confirm the purchase receipt; the update activity runs from it"
+              }
+            ],
+            "text": "Confirm the purchase receipt; the update activity runs from it"
+          }
+        ]
+      }
+    ]
   },
   "variants": {
     "kind": "variants",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "model-the-dataset",
@@ -23,6 +23,9 @@
     "Tools",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "draft",
   "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",

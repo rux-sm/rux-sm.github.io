@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-bill-of-material",
@@ -25,8 +25,15 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "D2R-07"
+  ],
+  "role": "Manufacturing Engineer",
+  "roles": [
+    "Manufacturing Engineer"
+  ],
   "status": "draft",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material",
   "session": "Job Shop Bills of Material",
   "sessionCode": "tibom3100m000",

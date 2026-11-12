@@ -1,0 +1,530 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "subcontract-an-operation-without-material-flow",
+  "title": "Subcontract an operation without material flow",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Procurement · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Procurement",
+    "Warehousing"
+  ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Generate Subcontracting Purchase Documents",
+  "session": "Generate Subcontracting Purchase Documents",
+  "sessionCode": "tisfc2250m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "One operation of a production order is done by a subcontractor, paid for by a purchase order for a service, while the material goes to the subcontractor's work center as an ordinary issue."
+      }
+    ],
+    "text": "One operation of a production order is done by a subcontractor, paid for by a purchase order for a service, while the material goes to the subcontractor's work center as an ordinary issue."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "On the item's routing, Subcontracting with Material Flow is cleared, and the subcontracted operation is ticked Subcontracting, with the subcontractor's work center and a reference operation linked to the subcontractor. On the bill of material, the material is linked to that operation. A purchase order type for subcontracting, such as "
+        },
+        {
+          "t": "literal",
+          "v": "SUB"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "On the item's routing, Subcontracting with Material Flow is cleared, and the subcontracted operation is ticked Subcontracting, with the subcontractor's work center and a reference operation linked to the subcontractor. On the bill of material, the material is linked to that operation. A purchase order type for subcontracting, such as SUB."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Without material flow the subcontractor is a work center of your own, and its operation is bought as a cost item. The material for that operation is issued to the work center as usual. The purchase order is for the service only; its receipt reports the operation's quantity as done by the subcontractor, and its invoice must be processed before the production order can close."
+      }
+    ],
+    "text": "Without material flow the subcontractor is a work center of your own, and its operation is bought as a cost item. The material for that operation is issued to the work center as usual. The purchase order is for the service only; its receipt reports the operation's quantity as done by the subcontractor, and its invoice must be processed before the production order can close."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create the production order and release it, with the shortage check if wanted, in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000",
+                  "name": "Release Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
+                }
+              ],
+              "text": "Create the production order and release it, with the shortage check if wanted, in Release Production Orders (tisfc0204m000), Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An issue warehousing order to the subcontractor's work center"
+                }
+              ],
+              "text": "An issue warehousing order to the subcontractor's work center"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Print the order documents in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0408m000",
+                  "name": "Print Production Order Documents"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Print Production Order Documents"
+                },
+                {
+                  "t": "text",
+                  "v": ", with Subcontracting Note ticked"
+                }
+              ],
+              "text": "Print the order documents in Print Production Order Documents (tisfc0408m000), Manufacturing ➔ Job Shop ➔ Production Control ➔ Print Production Order Documents, with Subcontracting Note ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report the internal operations before the subcontracted one complete"
+                }
+              ],
+              "text": "Report the internal operations before the subcontracted one complete"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Generate the purchase document: choose Purchase Order, the site and the production order, the subcontracting series and order type, and keep Previous Operation Must be Completed ticked"
+                }
+              ],
+              "text": "Generate the purchase document: choose Purchase Order, the site and the production order, the subcontracting series and order type, and keep Previous Operation Must be Completed ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report naming the purchase order and its line for the service item — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchase order"
+                }
+              ],
+              "text": "A report naming the purchase order and its line for the service item — purchase order"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve and print the purchase order"
+                }
+              ],
+              "text": "Approve and print the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The print carries the production order and operation it is for"
+                }
+              ],
+              "text": "The print carries the production order and operation it is for"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In warehousing, generate and release the outbound advice for the issue order, and pick it"
+                }
+              ],
+              "text": "In warehousing, generate and release the outbound advice for the issue order, and pick it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A picking list to the subcontractor's work center; a shipment, if the order type by origin makes one"
+                }
+              ],
+              "text": "A picking list to the subcontractor's work center; a shipment, if the order type by origin makes one"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the subcontractor has done the work, receive the purchase order line in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4106m000",
+                  "name": "Purchase Receipts"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Confirm Receipt"
+                }
+              ],
+              "text": "When the subcontractor has done the work, receive the purchase order line in Purchase Receipts (tdpur4106m000) and click Confirm Receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the production order's operation, From Subcontracting shows the quantity"
+                }
+              ],
+              "text": "On the production order's operation, From Subcontracting shows the quantity"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report the remaining operations complete; the last one receives the goods and can make the lot"
+                }
+              ],
+              "text": "Report the remaining operations complete; the last one receives the goods and can make the lot"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report the order complete and close it once the supplier's invoice is processed"
+                }
+              ],
+              "text": "Report the order complete and close it once the supplier's invoice is processed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "Closed"
+                }
+              ],
+              "text": "Status Closed"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order will not close"
+              }
+            ],
+            "text": "The production order will not close"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The subcontracting purchase invoice must be processed first"
+              }
+            ],
+            "text": "The subcontracting purchase invoice must be processed first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No purchase order is generated"
+              }
+            ],
+            "text": "No purchase order is generated"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The operation before it must be complete, or clear Previous Operation Must be Completed"
+              }
+            ],
+            "text": "The operation before it must be complete, or clear Previous Operation Must be Completed"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Work in progress goes to the subcontractor"
+              }
+            ],
+            "text": "Work in progress goes to the subcontractor"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Material is linked to an internal operation before the subcontracted one, and only extra material, such as a sealant, to the subcontracted one. Release makes one issue order per work center. The work in progress is shipped without shipping documents"
+              }
+            ],
+            "text": "Material is linked to an internal operation before the subcontracted one, and only extra material, such as a sealant, to the subcontracted one. Release makes one issue order per work center. The work in progress is shipped without shipping documents"
+          }
+        ]
+      }
+    ]
+  }
+}

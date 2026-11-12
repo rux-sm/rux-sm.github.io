@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "inventory-blocking",
@@ -11,8 +11,15 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [
+    "P2D-15"
+  ],
+  "role": "Warehouse Supervisor",
+  "roles": [
+    "Warehouse Supervisor"
+  ],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location",
   "session": "Inventory Blocking by Zone/Location",
   "sessionCode": "whwmd6110m000",

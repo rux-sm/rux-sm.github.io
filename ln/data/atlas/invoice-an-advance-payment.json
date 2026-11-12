@@ -1,0 +1,393 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "invoice-an-advance-payment",
+  "title": "Invoice an advance payment",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Project · Invoicing · Financials",
+  "modules": [
+    "Project",
+    "Invoicing",
+    "Financials"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Project ➔ Contract Management ➔ Contract Lines",
+  "session": "Contract Lines",
+  "sessionCode": "tpctm1110m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The customer is invoiced for an advance on a project contract line, the payment is received, and the advance waits to be settled against later invoices."
+      }
+    ],
+    "text": "The customer is invoiced for an advance on a project contract line, the payment is received, and the advance waits to be settled against later invoices."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The customer's financial business partner group has a control account for advance invoices and payment requests and an account for advance receipts. A tax code for advance payments, used for sales with tax on payments. The mapping scheme maps the project revenue advance installment documents to those accounts."
+        }
+      ],
+      "text": "The customer's financial business partner group has a control account for advance invoices and payment requests and an account for advance receipts. A tax code for advance payments, used for sales with tax on payments. The mapping scheme maps the project revenue advance installment documents to those accounts."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An advance payment request is an invoice for money not yet earned. It posts to an advance control account and an interim revenue account rather than to revenue, with tax on payment. When the customer pays, the advance moves to an advance-received account, where it waits until it is settled against the real invoices."
+      }
+    ],
+    "text": "An advance payment request is an invoice for money not yet earned. It posts to an advance control account and an interim revenue account rather than to revenue, with tax on payment. When the customer pays, the advance moves to an advance-received account, where it waits until it is settled against the real invoices."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the contract line's Invoicing tab, set Advance Payments to By Contract Line, Advance Payment Type to Invoice, and choose full or partial liquidation"
+                }
+              ],
+              "text": "On the contract line's Invoicing tab, set Advance Payments to By Contract Line, Advance Payment Type to Invoice, and choose full or partial liquidation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its Advance Payments tab, add an advance with the project, element, activity, revenue code, planned invoice date and amount"
+                }
+              ],
+              "text": "On its Advance Payments tab, add an advance with the project, element, activity, revenue code, planned invoice date and amount"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Advance Amount To Be Settled shows the amount"
+                }
+              ],
+              "text": "Advance Amount To Be Settled shows the amount"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its Tax tab, check the advance payment tax code"
+                }
+              ],
+              "text": "On its Tax tab, check the advance payment tax code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Approve"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transfer..."
+                },
+                {
+                  "t": "text",
+                  "v": " and transfer it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tppin4200m000",
+                  "name": "Transfer Transactions to Invoicing"
+                }
+              ],
+              "text": "Click Approve, then Transfer... and transfer it in Transfer Transactions to Invoicing (tppin4200m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "cisli3600m000",
+                  "name": "Invoicing 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", select the billable line and create the invoice"
+                }
+              ],
+              "text": "In Invoicing 360 (cisli3600m000), select the billable line and create the invoice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An advance invoice with tax, open in the customer's receivables"
+                }
+              ],
+              "text": "An advance invoice with tax, open in the customer's receivables"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Map and post the integration transactions and finalize the batch"
+                }
+              ],
+              "text": "Map and post the integration transactions and finalize the batch"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advance on the advance control account, the tax and the interim revenue posted"
+                }
+              ],
+              "text": "The advance on the advance control account, the tax and the interim revenue posted"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the customer pays, book the receipt against the invoice"
+                }
+              ],
+              "text": "When the customer pays, book the receipt against the invoice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advance moves to the advance-received account"
+                }
+              ],
+              "text": "The advance moves to the advance-received account"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check what is still to settle in "
+                },
+                {
+                  "t": "session",
+                  "code": "tfgld1450m000",
+                  "name": "Print Account Matching Transactions"
+                },
+                {
+                  "t": "text",
+                  "v": " for the advance-received account"
+                }
+              ],
+              "text": "Check what is still to settle in Print Account Matching Transactions (tfgld1450m000) for the advance-received account"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advance unmatched until it is settled"
+                }
+              ],
+              "text": "The advance unmatched until it is settled"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

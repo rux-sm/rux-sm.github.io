@@ -1,0 +1,353 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "read-a-work-centers-load",
+  "title": "Read a work center's load",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Planning · Manufacturing",
+  "modules": [
+    "Planning",
+    "Manufacturing"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Planning ➔ Resource Planning ➔ Resource Master Plan",
+  "session": "Resource Master Plan",
+  "sessionCode": "cprmp3501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "You see, period by period, how much of a work center's capacity the planned and actual orders need, and where it is overloaded."
+      }
+    ],
+    "text": "You see, period by period, how much of a work center's capacity the planned and actual orders need, and where it is overloaded."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "In "
+        },
+        {
+          "t": "session",
+          "code": "cprpd0100m000",
+          "name": "Planning Parameters"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Parameters ➔ Planning"
+        },
+        {
+          "t": "text",
+          "v": ", master and order planning are implemented, with Online Update Resource Master Plan ticked. The work center has a calendar in "
+        },
+        {
+          "t": "session",
+          "code": "tirou0101m000",
+          "name": "Work Centers"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers"
+        },
+        {
+          "t": "text",
+          "v": ", whose hours are in "
+        },
+        {
+          "t": "session",
+          "code": "tcccp0120m000",
+          "name": "Calendar Working Hours"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Common ➔ Calendars ➔ Calendar Working Hours ➔ Calendar Working Hours"
+        },
+        {
+          "t": "text",
+          "v": ", and its machines in "
+        },
+        {
+          "t": "session",
+          "code": "tirou4161m000",
+          "name": "Machine Capacity Groups"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Machine Capacity Groups"
+        },
+        {
+          "t": "text",
+          "v": ". "
+        },
+        {
+          "t": "session",
+          "code": "cprpd2100m000",
+          "name": "Work Centers - Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Master Data ➔ Items ➔ Work Centers - Planning"
+        },
+        {
+          "t": "text",
+          "v": ", sets how many machines and people are available."
+        }
+      ],
+      "text": "In Planning Parameters (cprpd0100m000), Planning ➔ Parameters ➔ Planning, master and order planning are implemented, with Online Update Resource Master Plan ticked. The work center has a calendar in Work Centers (tirou0101m000), Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers, whose hours are in Calendar Working Hours (tcccp0120m000), Common ➔ Calendars ➔ Calendar Working Hours ➔ Calendar Working Hours, and its machines in Machine Capacity Groups (tirou4161m000), Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Machine Capacity Groups. Work Centers - Planning (cprpd2100m000), Planning ➔ Master Data ➔ Items ➔ Work Centers - Planning, sets how many machines and people are available."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Each routing operation needs hours on its work center: its cycle time times the order quantity. Planning adds those hours up per period and sets them against the hours the work center has, which come from its calendar times its machines or people. Free capacity is what is left; a negative figure means the work center is overloaded in that period."
+      }
+    ],
+    "text": "Each routing operation needs hours on its work center: its cycle time times the order quantity. Planning adds those hours up per period and sets them against the hours the work center has, which come from its calendar times its machines or people. Free capacity is what is left; a negative figure means the work center is overloaded in that period."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose the scenario, the plan level, the work center, and whether labor or machine capacity is critical"
+                }
+              ],
+              "text": "Choose the scenario, the plan level, the work center, and whether labor or machine capacity is critical"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the Capacity Overview tab"
+                }
+              ],
+              "text": "Read the Capacity Overview tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Per period: available, free and required capacity in hours, and the capacity left for promising orders"
+                }
+              ],
+              "text": "Per period: available, free and required capacity in hours, and the capacity left for promising orders"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find periods with negative free capacity"
+                }
+              ],
+              "text": "Find periods with negative free capacity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The periods the work center is overloaded"
+                }
+              ],
+              "text": "The periods the work center is overloaded"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the Origin of Capacity Use tab"
+                }
+              ],
+              "text": "Open the Origin of Capacity Use tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "How much of each period's load comes from planned orders, production orders, project activities and service orders"
+                }
+              ],
+              "text": "How much of each period's load comes from planned orders, production orders, project activities and service orders"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For the orders behind the load, open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0530m000",
+                  "name": "Resource Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Resource Planning ➔ Resource Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", with a start date and period length, and its Detail tab"
+                }
+              ],
+              "text": "For the orders behind the load, open Resource Order Plan (cprrp0530m000), Planning ➔ Resource Planning ➔ Resource Order Plan, with a start date and period length, and its Detail tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each order and operation with its start, finish and hours"
+                }
+              ],
+              "text": "Each order and operation with its start, finish and hours"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

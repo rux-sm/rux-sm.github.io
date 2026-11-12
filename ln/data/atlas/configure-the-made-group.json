@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "configure-the-made-group",
@@ -25,6 +25,9 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "draft",
   "updated": "2026-11-02",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",

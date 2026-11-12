@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "report-the-operation-complete-and-confirm-warehouse-receipt",
@@ -20,8 +20,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
   "status": "approved",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",

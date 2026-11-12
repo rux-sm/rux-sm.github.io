@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "enter-the-business-partner",
@@ -21,8 +21,14 @@
     "Procurement",
     "Sales"
   ],
+  "codes": [
+    "S2P-01",
+    "B2C-01"
+  ],
+  "role": null,
+  "roles": [],
   "status": "draft",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Master Data ➔ Business Partners ➔ Easy Entry Business Partner",
   "session": "Easy Entry Business Partner",
   "sessionCode": "tccom4201m000",

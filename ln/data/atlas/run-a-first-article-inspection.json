@@ -1,0 +1,456 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-a-first-article-inspection",
+  "title": "Run a first article inspection",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Quality · Manufacturing · Warehousing",
+  "modules": [
+    "Quality",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Quality ➔ Inspection ➔ First Article",
+  "session": "First Article",
+  "sessionCode": "qmptc2150m900",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The first piece made of a new or changed item is inspected against its specification before more are accepted, and its first article inspection is approved."
+      }
+    ],
+    "text": "The first piece made of a new or changed item is inspected against its specification before more are accepted, and its first article inspection is approved."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "In "
+        },
+        {
+          "t": "session",
+          "code": "qmptc0126m000",
+          "name": "Generic First Article Inspection Rules"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Quality ➔ Master Data ➔ Test Procedures ➔ Generic First Article Inspection Rules"
+        },
+        {
+          "t": "text",
+          "v": ", the rules for production, purchase and sales, with any conformance documents. A test group, characteristics and a standard test procedure; a quality group marked for FAI with its rule and procedure, and the item in it; and in "
+        },
+        {
+          "t": "session",
+          "code": "qmptc0119m000",
+          "name": "Testing Combinations"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Quality ➔ Master Data ➔ Test Procedures ➔ Testing Combinations"
+        },
+        {
+          "t": "text",
+          "v": ", a combination for each kind of order, with blocking method Block."
+        }
+      ],
+      "text": "In Generic First Article Inspection Rules (qmptc0126m000), Quality ➔ Master Data ➔ Test Procedures ➔ Generic First Article Inspection Rules, the rules for production, purchase and sales, with any conformance documents. A test group, characteristics and a standard test procedure; a quality group marked for FAI with its rule and procedure, and the item in it; and in Testing Combinations (qmptc0119m000), Quality ➔ Master Data ➔ Test Procedures ➔ Testing Combinations, a combination for each kind of order, with blocking method Block."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "First article inspection, FAI, checks that production meets the engineering and specification requirements, to avoid scrap or rework later. It applies to orders from production, purchase and purchase schedules, and sales. Rules decide when an order needs one; releasing such an order makes an FAI number, and the receipt is blocked in warehousing until Quality inspects and processes it. A full FAI is for a new product; a partial one reports only the changed feature or process."
+      }
+    ],
+    "text": "First article inspection, FAI, checks that production meets the engineering and specification requirements, to avoid scrap or rework later. It applies to orders from production, purchase and purchase schedules, and sales. Rules decide when an order needs one; releasing such an order makes an FAI number, and the receipt is blocked in warehousing until Quality inspects and processes it. A full FAI is for a new product; a partial one reports only the changed feature or process."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create the production order for an item marked for first article"
+                }
+              ],
+              "text": "Create the production order for an item marked for first article"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order's FAI tag is on"
+                }
+              ],
+              "text": "The order's FAI tag is on"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release the order"
+                }
+              ],
+              "text": "Release the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An FAI number for the item in "
+                },
+                {
+                  "t": "session",
+                  "code": "qmptc2150m900",
+                  "name": "First Article"
+                }
+              ],
+              "text": "An FAI number for the item in First Article (qmptc2150m900)"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Report the order or operation complete"
+                }
+              ],
+              "text": "Report the order or operation complete"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receipt waits in warehousing, blocked for Quality"
+                }
+              ],
+              "text": "The receipt waits in warehousing, blocked for Quality"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "qmptc1620m100",
+                  "name": "Order Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Quality ➔ Inspection ➔ Order Inspections"
+                },
+                {
+                  "t": "text",
+                  "v": ", and open the inspection for the production order"
+                }
+              ],
+              "text": "Open Order Inspections (qmptc1620m100), Quality ➔ Inspection ➔ Order Inspections, and open the inspection for the production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its inspection order, enter the test data and complete the lines"
+                }
+              ],
+              "text": "On its inspection order, enter the test data and complete the lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each line "
+                },
+                {
+                  "t": "literal",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " and accepted; the FAI "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                }
+              ],
+              "text": "Each line Completed and accepted; the FAI In Process"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Set Status To ➔ Complete"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process"
+                }
+              ],
+              "text": "Choose Actions ➔ Set Status To ➔ Complete, then Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order inspection "
+                },
+                {
+                  "t": "literal",
+                  "v": "Processed"
+                },
+                {
+                  "t": "text",
+                  "v": "; the FAI approved"
+                }
+              ],
+              "text": "The order inspection Processed; the FAI approved"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Process the warehouse inspection"
+                }
+              ],
+              "text": "Process the warehouse inspection"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Quality reports the documentation accepted; the goods are received"
+                }
+              ],
+              "text": "Quality reports the documentation accepted; the goods are received"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A purchased item"
+              }
+            ],
+            "text": "A purchased item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the purchase order line to FAI; the receipt is blocked for Quality, and the order inspection has origin Purchase"
+              }
+            ],
+            "text": "Set the purchase order line to FAI; the receipt is blocked for Quality, and the order inspection has origin Purchase"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A sold item"
+              }
+            ],
+            "text": "A sold item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the sales order to FAI inspection; the outbound line waits as To be Inspected, and the shipment is made once the inspection is processed"
+              }
+            ],
+            "text": "Set the sales order to FAI inspection; the outbound line waits as To be Inspected, and the shipment is made once the inspection is processed"
+          }
+        ]
+      }
+    ]
+  }
+}

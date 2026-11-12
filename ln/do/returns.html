@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Sales returns · LN Notes · Updated 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Sales returns · LN Notes · Updated 12 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -110,20 +110,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="526182d88c9d999aa7e14126c49022d4306bbd88">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d7754b042cd364728c71859851939d45e89dfc1d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
-<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Sales</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Module</dt><dd>Sales</dd></div><div><dt>Code</dt><dd>O2C-06</dd></div><div><dt>Role</dt><dd>Sales Operations Specialist</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Sales returns</h1>
-<p class="rux--type-body-long-01">Take goods back from a customer.</p>
+<p class="rux--type-body-long-01">Goods a customer sends back are received into a warehouse, and the customer is credited.</p>
 </div>
-<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Sales</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div></dl>
+<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Sales</dd></div><div><dt>Code</dt><dd>O2C-06</dd></div><div><dt>Role</dt><dd>Sales Operations Specialist</dd></div><div><dt>Length</dt><dd>9 steps</dd></div><div><dt>Updated</dt><dd>12 Nov 2026</dd></div></dl>
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 <div class="ln-unwalked"><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
@@ -136,39 +136,58 @@
 </div></div>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>A sales order type for returns, set up in <span class="ln-t-named">Order Types</span> (<span class="ln-t-exact ln-t-word">tdsls0594m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Types</span></span>, as Return Inventory or Return Rejects with a warehousing order type that receives.</li></ul>
+</section>
+<section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Intake Workbench</span></span> (<span class="ln-t-exact ln-t-word">tdsls4601m200</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A return is a sales order of a return order type, with negative quantities. It names the order, shipment or invoice it reverses and the reason. Approving it prints a return materials authorization, warehousing receives the goods, and invoicing credits the customer.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">set up a return order type in <span class="ln-t-named">Order Types</span> (<span class="ln-t-exact ln-t-word">tdsls0594m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Types</span></span></td><td data-k="You should see"></td></tr>
-<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">make it Return Inventory or Return Rejects. Give it a warehousing order type that receives</td><td data-k="You should see"></td></tr>
-<tr id="step-3"><td data-k="Step"><b>3</b></td><td data-k="Action">create a sales order of that type, and give it the original document and a return reason</td><td data-k="You should see"></td></tr>
-<tr id="step-4"><td data-k="Step"><b>4</b></td><td data-k="Action">copy the lines from the original document; they arrive with a negative quantity and amount</td><td data-k="You should see"></td></tr>
-<tr id="step-5"><td data-k="Step"><b>5</b></td><td data-k="Action">approve the order and release it to warehousing, which receives the goods</td><td data-k="You should see"></td></tr>
-<tr id="step-6"><td data-k="Step"><b>6</b></td><td data-k="Action">release it to invoicing, then process it</td><td data-k="You should see"></td></tr>
+<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">On the Sales Orders tab, tick the original order and click <span class="ln-t-named">Copy</span></td><td data-k="You should see"><span class="ln-t-named">Copy Sales Order</span> (<span class="ln-t-exact ln-t-word">tdsls4201s000</span>) opens with the original order as the source</td></tr>
+<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">Choose the copy template, and in Target choose the return order type, then copy, and copy again on the second screen</td><td data-k="You should see"><span class="ln-proc__see">A report lists each source line and the return line made from it</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">return order</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>3</b></td><td data-k="Action">Open the new order</td><td data-k="You should see">Status <span class="ln-t-exact ln-t-word">Free</span>, the return order type, and a negative order amount</td></tr>
+<tr id="step-4"><td data-k="Step"><b>4</b></td><td data-k="Action">Choose <span class="ln-t-route"><span class="ln-t-whole">References</span><span class="sep">➔</span><span class="dest ln-t-whole">Sales Order Details</span></span> and look under Returns</td><td data-k="You should see">Original Document Type <span class="ln-t-exact ln-t-word">Order</span>, the original order number, and a Return Reason</td></tr>
+<tr id="step-5"><td data-k="Step"><b>5</b></td><td data-k="Action">Enter a Return Reason if there is none, then save and exit</td><td data-k="You should see"></td></tr>
+<tr id="step-6"><td data-k="Step"><b>6</b></td><td data-k="Action">Check each order line: a negative quantity, and the warehouse the goods go back to. Set the lot or serial if you know it</td><td data-k="You should see"></td></tr>
+<tr id="step-7"><td data-k="Step"><b>7</b></td><td data-k="Action">Approve the order</td><td data-k="You should see">A Return Materials Authorization prints, and the status reads <span class="ln-t-exact">In Process</span></td></tr>
+<tr id="step-8"><td data-k="Step"><b>8</b></td><td data-k="Action">Once warehousing has received the goods, look at the Actual Delivery Lines tab</td><td data-k="You should see">A receipt and the negative delivered quantity</td></tr>
+<tr id="step-9"><td data-k="Step"><b>9</b></td><td data-k="Action">Look at the Invoice Lines tab</td><td data-k="You should see">The line is released to invoicing, <span class="ln-t-exact">To be Invoiced</span></td></tr>
 </tbody>
 </table></div>
 
 </section>
-<section class="ln-proc__gaps">
-<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="gaps">Known gaps</h2>
-<p>The library has no source yet for part of each of these, so this Document leaves that part out rather than guess.</p>
-<ul class="ln-proc__list"><li>Steps</li></ul>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="wrong">If something goes wrong</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Symptom">The order cannot be saved</td><td data-k="What to do">A Return Reason must be entered under Returns</td></tr>
+<tr><td data-k="Symptom">The goods cannot be received</td><td data-k="What to do">The line needs a lot or serial for a tracked item; set it on the line, or warehousing sets it before the receipt</td></tr>
+</tbody>
+</table></div>
 </section>
+
 <section class="ln-proc__screens">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2 ln-proc__h2--sect" id="screens">Sessions used</h2>
 <div class="rux--data-table-container ln-proc__table ln-proc__sect">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tdsls4601m200.html">Order Intake Workbench</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tdsls4601m200</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Intake Workbench</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
+  <li><b>Session</b><p><a class="rux--link" href="../screens/tdsls4601m200.html"><span class="ln-t-named">Sales Order Intake Workbench</span></a> (<span class="ln-t-exact ln-t-word">tdsls4601m200</span>)<br><span class="ln-quiet">Shows sales order work that needs attention, in one place.</span></p></li>
+  <li><b>Ideas</b><p><a class="rux--link" href="../ideas/business-partner.html">Business partner</a> · <a class="rux--link" href="../ideas/embedded-genai.html">Embedded GenAI</a></p></li>
 </ul>
 </section>
 <section class="ln-paper-only">
@@ -177,7 +196,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b></b></td><td data-k="Expected result">Take goods back from a customer</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b></b></td><td data-k="Expected result">Goods a customer sends back are received into a warehouse, and the customer is credited</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -206,23 +225,43 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Set up a return order type in <span class="ln-t-named">Order Types</span> (<span class="ln-t-exact ln-t-word">tdsls0594m000</span>)</h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Types</span></span></p></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Sales</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Order Intake Workbench</span></span> (<span class="ln-t-exact ln-t-word">tdsls4601m200</span>)</p><h1 class="ln-step__do">On the Sales Orders tab, tick the original order and click <span class="ln-t-named">Copy</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Copy Sales Order</span> (<span class="ln-t-exact ln-t-word">tdsls4201s000</span>) opens with the original order as the source</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Make it Return Inventory or Return Rejects</h1><p class="ln-step__note">Give it a warehousing order type that receives</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Choose the copy template, and in Target choose the return order type, then copy, and copy again on the second screen</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A report lists each source line and the return line made from it</p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-124">Return order</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-124" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="2/0" data-at="1.2" data-label="Return order">
+      </div></div>
+    </div></div></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Create a sales order of that type, and give it the original document and a return reason</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open the new order</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status <span class="ln-t-exact ln-t-word">Free</span>, the return order type, and a negative order amount</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Copy the lines from the original document</h1><p class="ln-step__note">They arrive with a negative quantity and amount</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Sales Order Details</span> and look under Returns</h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">References</span><span class="sep">➔</span><span class="dest ln-t-whole">Sales Order Details</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Original Document Type <span class="ln-t-exact ln-t-word">Order</span>, the original order number, and a Return Reason</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Approve the order and release it to warehousing, which receives the goods</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Enter a Return Reason if there is none, then save and exit</h1></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Release it to invoicing, then process it</h1></div>
-    <div class="ln-step__prose"><p><span class="ln-gap">Not documented for this release.</span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check each order line: a negative quantity, and the warehouse the goods go back to</h1><p class="ln-step__note">Set the lot or serial if you know it</p></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Approve the order</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A Return Materials Authorization prints, and the status reads <span class="ln-t-exact">In Process</span></p></div>
+  </li>
+  <li data-k="8" data-ref="8" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Once warehousing has received the goods, look at the Actual Delivery Lines tab</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A receipt and the negative delivered quantity</p></div>
+  </li>
+  <li data-k="9" data-ref="9" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Look at the Invoice Lines tab</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The line is released to invoicing, <span class="ln-t-exact">To be Invoiced</span></p></div>
   </li>
 </ol>
 <div class="ln-confirm" data-confirm="returns">
@@ -233,9 +272,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-31">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-60">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-60" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -249,6 +288,23 @@
       <div class="rux--accordion__title">Your values</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div></div></div>
+  </li>
+  <li class="rux--accordion__item" id="stuck">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Stuck? · 2</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
+  <li><b>The order cannot be saved</b><p>A Return Reason must be entered under Returns</p></li>
+  <li><b>The goods cannot be received</b><p>The line needs a lot or serial for a tracked item; set it on the line, or warehousing sets it before the receipt</p></li>
+</ul></div></div>
+  </li>
+  <li class="rux--accordion__item" id="why-guided">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Why LN works this way</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>A return is a sales order of a return order type, with negative quantities. It names the order, shipment or invoice it reverses and the reason. Approving it prints a return materials authorization, warehousing receives the goods, and invoicing credits the customer.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

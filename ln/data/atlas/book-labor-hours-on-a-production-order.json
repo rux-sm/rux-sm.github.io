@@ -1,0 +1,339 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "book-labor-hours-on-a-production-order",
+  "title": "Book labor hours on a production order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · People",
+  "modules": [
+    "Manufacturing",
+    "People"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The hours worked on an operation are recorded and processed, so the order carries its labor cost."
+      }
+    ],
+    "text": "The hours worked on an operation are recorded and processed, so the order carries its labor cost."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Hours are booked per employee against an order and operation, in a period. They count for nothing until they are processed, which posts them to the order. The labor type defaults from the people parameters."
+      }
+    ],
+    "text": "Hours are booked per employee against an order and operation, in a period. They count for nothing until they are processed, which posts them to the order. The labor type defaults from the people parameters."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the order and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Hours Accounting"
+                }
+              ],
+              "text": "Tick the order and choose References ➔ Hours Accounting"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "bptmm1120m000",
+                  "name": "Production Order Hours"
+                },
+                {
+                  "t": "text",
+                  "v": " for the order, its operation and the current period"
+                }
+              ],
+              "text": "Production Order Hours (bptmm1120m000) for the order, its operation and the current period"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the order, operation or period is not the one you want, click New View and choose them"
+                }
+              ],
+              "text": "If the order, operation or period is not the one you want, click New View and choose them"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the employee, the start day and time, and the labor time in hours. The reference operation and work center fill in from the operation"
+                }
+              ],
+              "text": "Click New and enter the employee, the start day and time, and the labor time in hours. The reference operation and work center fill in from the operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save"
+                }
+              ],
+              "text": "Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The hours show under Regular"
+                }
+              ],
+              "text": "The hours show under Regular"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Process Hours and Expenses..."
+                }
+              ],
+              "text": "Choose Actions ➔ Process Hours and Expenses..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "bptmm1203m000",
+                  "name": "Process Hours and Expenses"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Process Hours and Expenses (bptmm1203m000) opens"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Narrow the ranges to this employee, period and production order, tick Process Report, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process"
+                }
+              ],
+              "text": "Narrow the ranges to this employee, period and production order, tick Process Report, and click Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back in Production Order Hours"
+                }
+              ],
+              "text": "Back in Production Order Hours"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Processed shows a green check"
+                }
+              ],
+              "text": "Processed shows a green check"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

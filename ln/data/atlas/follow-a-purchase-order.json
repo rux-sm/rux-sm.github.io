@@ -1,0 +1,344 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "follow-a-purchase-order",
+  "title": "Follow a purchase order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Procurement",
+  "modules": [
+    "Procurement"
+  ],
+  "codes": [
+    "S2P-25"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "You see where each line of a purchase order stands: what it waits for next, what has been received, and whether it has been invoiced."
+      }
+    ],
+    "text": "You see where each line of a purchase order stands: what it waits for next, what has been received, and whether it has been invoiced."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Each purchase order line runs through the activities of its order type, one after another: approve, print, release to warehousing, receive, then invoice. The line remembers which activity it is ready for, which warehousing order it made, and what was received and invoiced against it."
+      }
+    ],
+    "text": "Each purchase order line runs through the activities of its order type, one after another: approve, print, release to warehousing, receive, then invoice. The line remembers which activity it is ready for, which warehousing order it made, and what was received and invoiced against it."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Purchase Orders tab, open the order"
+                }
+              ],
+              "text": "On the Purchase Orders tab, open the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4100m900",
+                  "name": "Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": " with its lines"
+                }
+              ],
+              "text": "Purchase Order (tdpur4100m900) with its lines"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Receipts tab"
+                }
+              ],
+              "text": "Look at the Receipts tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each receipt with its date, receipt number, packing slip, received, approved and rejected quantity, and Final Receipt"
+                }
+              ],
+              "text": "Each receipt with its date, receipt number, packing slip, received, approved and rejected quantity, and Final Receipt"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Payable Receipts tab, Finance"
+                }
+              ],
+              "text": "Look at the Payable Receipts tab, Finance"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Invoiced quantity and amount, and Invoicing Status, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " before the invoice"
+                }
+              ],
+              "text": "Invoiced quantity and amount, and Invoicing Status, such as Free before the invoice"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Lines Monitor"
+                }
+              ],
+              "text": "Choose References ➔ Lines Monitor"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4501m000",
+                  "name": "Purchase Order Lines Monitor"
+                },
+                {
+                  "t": "text",
+                  "v": ", one row per line, with the linked objects of the selected line above, such as its warehouse order"
+                }
+              ],
+              "text": "Purchase Order Lines Monitor (tdpur4501m000), one row per line, with the linked objects of the selected line above, such as its warehouse order"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Status tab"
+                }
+              ],
+              "text": "Look at the Status tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ready For names the next activity, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "tdpur4106m000 Awaiting Receipts - Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", with Approved, Blocked, Final Receipt and Canceled"
+                }
+              ],
+              "text": "Ready For names the next activity, such as tdpur4106m000 Awaiting Receipts - Warehouse, with Approved, Blocked, Final Receipt and Canceled"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Look at the Quantities tab"
+                }
+              ],
+              "text": "Look at the Quantities tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ordered and received quantity per line"
+                }
+              ],
+              "text": "Ordered and received quantity per line"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To open what a line made, select the linked object and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Open Object"
+                }
+              ],
+              "text": "To open what a line made, select the linked object and click Open Object"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse order or other document"
+                }
+              ],
+              "text": "The warehouse order or other document"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "add-the-costing-rows",
@@ -23,8 +23,15 @@
     "Common",
     "Manufacturing"
   ],
+  "codes": [
+    "D2R-09"
+  ],
+  "role": "Controller",
+  "roles": [
+    "Controller"
+  ],
   "status": "draft",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Master Data ➔ Items ➔ Items",
   "session": "Items",
   "sessionCode": "tcibd0501m000",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "release-block",
@@ -11,8 +11,13 @@
   "modules": [
     "Sales"
   ],
+  "codes": [
+    "O2C-04"
+  ],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-11-12",
   "route": null,
   "session": null,
   "sessionCode": null,

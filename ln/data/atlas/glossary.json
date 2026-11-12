@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "glossary",
   "entries": [
@@ -51,6 +51,13 @@
       "purpose": "Any party you trade with, where customer and supplier are two roles on one partner and not two separate records.",
       "explanation": "LN keeps one record for every party you trade with, and gives it roles. Customer and supplier are two roles on one partner, not two lists. The roles carry defaults, so an order type or office that looks wrong on an order is usually right for the partner chosen. A missing role fails only when an order needs it, such as a purchased item with no supplier to buy it from.",
       "sources": [
+        "tccom4500m000",
+        "tccom4110s000",
+        "tccom4111s000",
+        "tccom4112s000",
+        "tccom4121s000",
+        "tccom4122s000",
+        "tccom4124s000",
         "tccom4520m000",
         "tdsls4601m200",
         "tdpur4100m900",
@@ -99,6 +106,78 @@
         "tccom4500m000",
         "tdsls4101m000",
         "tdsls4601m200"
+      ]
+    },
+    {
+      "id": "installed-base",
+      "name": "Installed base",
+      "terms": [
+        "installed base",
+        "serialized item",
+        "physical breakdown",
+        "item breakdown",
+        "installation group",
+        "as-built structure",
+        "as-maintained structure"
+      ],
+      "purpose": "What Service knows about the equipment it looks after: serialized items, their physical breakdown, and the installation groups they are kept in.",
+      "explanation": "Service tracks equipment one unit at a time. Each unit is a serialized item with a lifetime serial number, which can be built from other serialized items in a physical breakdown. Units at one place for one owner form an installation group. Contracts, warranties, maintenance plans and service orders all point at these.",
+      "sources": [
+        "tscfg2100m000",
+        "tscfg2110m000",
+        "tscfg1110m000",
+        "tscfg0110m000",
+        "tsbsc1100m000",
+        "tsmdm2100m000"
+      ]
+    },
+    {
+      "id": "maintenance-sales-order",
+      "name": "Maintenance sales order",
+      "terms": [
+        "maintenance sales order",
+        "maintenance work order",
+        "part maintenance line",
+        "part receipt line",
+        "part delivery line",
+        "part loan line",
+        "coverage line",
+        "residual value",
+        "depot repair"
+      ],
+      "purpose": "The order for repairing a customer's part in your own shop, and the work order that does the repair.",
+      "explanation": "In depot repair the customer sends a part in, it is repaired in your shop, and it goes back. The maintenance sales order is the customer side, what comes in, what goes out and what is charged. The work order is the shop side, the activities, labor and material of the repair. A part maintenance line links the two; the work order can also stand alone.",
+      "sources": [
+        "tsmsc1100m000",
+        "tsmsc1100m100",
+        "tsmsc1110m100",
+        "tswcs2100m000",
+        "tswcs2100m100",
+        "tswcs3200m000",
+        "tswcs2110m000",
+        "tsacm1101m100"
+      ]
+    },
+    {
+      "id": "non-conformance-report",
+      "name": "Non-conformance report",
+      "terms": [
+        "non-conformance report",
+        "non-conforming material report",
+        "disposition",
+        "review board",
+        "quarantine inventory"
+      ],
+      "purpose": "The record of material or work that does not meet its requirement, how it is reviewed, and what is decided about it.",
+      "explanation": "A non-conformance report, or NCMR, records something that failed: a rejected quantity at an operation, a rejected receipt, a failed test, or a deviation found at a supplier. A review board or owner decides what happens to it, such as scrap, return to vendor, use as is or no fault found. The decision is carried out on the quarantined stock, which makes the adjustment or return order.",
+      "sources": [
+        "qmncm1600m000",
+        "qmncm0106m000",
+        "qmncm0107m000",
+        "tcppl0140m000",
+        "whwmd2672m100",
+        "whwmd2171m000",
+        "tisfc0209m000"
       ]
     },
     {
@@ -160,6 +239,34 @@
       ]
     },
     {
+      "id": "project-contract",
+      "name": "Project contract",
+      "terms": [
+        "contract line",
+        "project",
+        "project element",
+        "installment",
+        "advance payment",
+        "progress payment",
+        "project requirements planning"
+      ],
+      "purpose": "How a customer project is split in two in LN Project: the contract holds what is sold and how it is invoiced, the project holds the work, its budget and its costs.",
+      "explanation": "In LN Project a customer order becomes two linked things. The contract says what the customer pays and when, line by line. The project says what work is done, what it should cost and what it did cost. Each contract line is linked to the project's elements or activities, and the project cannot start until that link and the contract are active.",
+      "sources": [
+        "tpctm1300m000",
+        "tpctm1100m000",
+        "tppdm6500m100",
+        "tppdm7840m000",
+        "tpptc2201m000",
+        "tppss2205m000",
+        "tpptc1230m000",
+        "tppin4251m000",
+        "tppin1210m000",
+        "tppin4810m000",
+        "tppin4110m000"
+      ]
+    },
+    {
       "id": "release",
       "name": "Release",
       "terms": [
@@ -192,6 +299,62 @@
         "cppat1210m000",
         "cprrp1220m000",
         "cprrp1100m000"
+      ]
+    },
+    {
+      "id": "service-contract",
+      "name": "Service contract",
+      "terms": [
+        "service contract",
+        "coverage term",
+        "cost-covering method",
+        "contract template",
+        "installment template",
+        "contract installment",
+        "contract quote"
+      ],
+      "purpose": "A sales agreement to look after a customer's equipment for a period, saying what is covered, how service costs are covered, and how the contract is invoiced.",
+      "explanation": "A service contract says which of the customer's equipment is looked after, for how long, what the service costs it covers, and what the customer pays for it. Service orders and calls on covered equipment check it, so covered costs are charged to the contract instead of invoiced. The contract itself is invoiced in installments, and its revenue can be spread over its periods.",
+      "sources": [
+        "tsctm3100m000",
+        "tsctm3600m000",
+        "tsctm3620m000",
+        "tsctm1610m300",
+        "tsctm0150m000",
+        "tsctm4110m000",
+        "tsctm4100m100",
+        "tsctm4201m000",
+        "tsctm4203m000",
+        "tsctm4550m000",
+        "tsctm4250m000",
+        "tsctm4251m000",
+        "tsctm2100m000"
+      ]
+    },
+    {
+      "id": "service-order",
+      "name": "Service order",
+      "terms": [
+        "service order",
+        "service order activity",
+        "service type",
+        "service resource planning",
+        "field change order",
+        "delivery type"
+      ],
+      "purpose": "The order for service work at the customer's site or in the company: activities, engineers, material, hours and costs, through to invoicing.",
+      "explanation": "A service order plans and records repair or maintenance work on a customer's equipment, usually at their site. It comes from a service call, preventive maintenance, a field change order, a project or by hand. Its activities get engineers and material, the engineers report hours and material, and costing the order sends its costs to invoicing, checked against any contract or warranty.",
+      "sources": [
+        "tssoc2100m000",
+        "tssoc2100m100",
+        "tssoc2260m000",
+        "tssoc2200m000",
+        "tssoc2290m000",
+        "tssoc2201m000",
+        "tssoc2511m000",
+        "tssoc2140m000",
+        "tssoc0100m000",
+        "tsmdm0100m000"
       ]
     },
     {
@@ -291,6 +454,30 @@
         "whinh4630m000",
         "whinh4131m000",
         "whinh0100m000"
+      ]
+    },
+    {
+      "id": "warranty",
+      "name": "Warranty",
+      "terms": [
+        "warranty",
+        "warranty template",
+        "generic warranty",
+        "warranty coverage terms"
+      ],
+      "purpose": "The guarantee that a part is repaired free or for less within a period, set up once and checked by calls, service orders and maintenance sales orders.",
+      "explanation": "A warranty says what repair costs are covered, and for how long, after a unit is delivered or put into use. It is set up as a template with coverage terms and linked to a service item, so each serialized item of it gets its own copy when delivered. Calls, service orders and maintenance sales orders then check it, and covered costs are charged to the warranty instead of the customer.",
+      "sources": [
+        "tsctm0120m000",
+        "tsctm1120m500",
+        "tsctm5100m000",
+        "tsctm5101m000",
+        "tsmdm2100m000",
+        "tsmdm2105m000",
+        "tscfg2100m000",
+        "tsclm1100m000",
+        "tssoc2100m000",
+        "tsmsc1100m000"
       ]
     },
     {

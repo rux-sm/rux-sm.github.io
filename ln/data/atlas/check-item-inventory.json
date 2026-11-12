@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "check-item-inventory",
@@ -8,6 +8,7 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [],
   "updated": "2026-11-01",
   "status": "approved",
   "summary": "find out how much of one item you have, where it is, and how much other orders already took.",

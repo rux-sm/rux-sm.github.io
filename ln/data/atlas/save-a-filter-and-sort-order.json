@@ -1,0 +1,268 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "save-a-filter-and-sort-order",
+  "title": "Save a filter and sort order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools",
+  "modules": [
+    "Tools"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A list opens showing only the records you want, in the order you want, every time."
+      }
+    ],
+    "text": "A list opens showing only the records you want, in the order you want, every time."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Typing in the filter row above a column filters the list for now. Saving it gives the filter a name you can pick again, and a saved filter can also sort the list and be made the one the session starts with."
+      }
+    ],
+    "text": "Typing in the filter row above a column filters the list for now. Saving it gives the filter a name you can pick again, and a saved filter can also sort the list and be made the one the session starts with."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type a value in the filter row above a column, for example the site, and press Tab"
+                }
+              ],
+              "text": "Type a value in the filter row above a column, for example the site, and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only the matching lines"
+                }
+              ],
+              "text": "Only the matching lines"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the filter button at the right end of the column titles and choose Save Current Filter as..., give it a name, and click OK"
+                }
+              ],
+              "text": "Click the filter button at the right end of the column titles and choose Save Current Filter as..., give it a name, and click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To start with it every time, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Saved Filters ➔ Set Current Filter as Default"
+                },
+                {
+                  "t": "text",
+                  "v": " from the same button"
+                }
+              ],
+              "text": "To start with it every time, choose Saved Filters ➔ Set Current Filter as Default from the same button"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "To sort, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Views ➔ Saved Filters ➔ Manage Filters..."
+                },
+                {
+                  "t": "text",
+                  "v": ", select the filter, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Define Sort Order..."
+                },
+                {
+                  "t": "text",
+                  "v": ", pick the field and Descending, and click OK"
+                }
+              ],
+              "text": "To sort, choose Views ➔ Saved Filters ➔ Manage Filters..., select the filter, choose Actions ➔ Define Sort Order..., pick the field and Descending, and click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose the filter from "
+                },
+                {
+                  "t": "command",
+                  "route": "Views ➔ Saved Filters"
+                }
+              ],
+              "text": "Choose the filter from Views ➔ Saved Filters"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lines in the new order, newest first"
+                }
+              ],
+              "text": "The lines in the new order, newest first"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

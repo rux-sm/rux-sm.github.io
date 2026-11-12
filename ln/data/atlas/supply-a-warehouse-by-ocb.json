@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "supply-a-warehouse-by-ocb",
@@ -11,8 +11,11 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": null,
-  "updated": "2026-11-01",
+  "updated": "2026-11-08",
   "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)",
   "session": "Generate Orders (OCB)",
   "sessionCode": "whinh2205m000",

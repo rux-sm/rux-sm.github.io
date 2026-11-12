@@ -1,0 +1,388 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "subcontract-an-operation",
+  "title": "Subcontract an operation",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Procurement · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Procurement",
+    "Warehousing"
+  ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Subcontracting ➔ Generate Subcontracting Purchase Documents",
+  "session": "Generate Subcontracting Purchase Documents",
+  "sessionCode": "tisfc2250m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A production order's subcontracted operation gets a purchase order, its material is shipped to the subcontractor, and what comes back is received and used."
+      }
+    ],
+    "text": "A production order's subcontracted operation gets a purchase order, its material is shipped to the subcontractor, and what comes back is received and used."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "link",
+          "v": "Set up operational subcontracting",
+          "href": "set-up-operational-subcontracting.md"
+        },
+        {
+          "t": "text",
+          "v": ", and a released production order for the finished item."
+        }
+      ],
+      "text": "Set up operational subcontracting, and a released production order for the finished item."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The production order shows which operation is subcontracted. Generating the purchase documents makes a subcontracting purchase order for the item that comes back, with material supply lines for what goes out. Approving it makes a warehouse transfer to the subcontractor's warehouse; receiving the purchase order brings the item back and reports the operation's quantity."
+      }
+    ],
+    "text": "The production order shows which operation is subcontracted. Generating the purchase documents makes a subcontracting purchase order for the item that comes back, with material supply lines for what goes out. Approving it makes a warehouse transfer to the subcontractor's warehouse; receiving the purchase order brings the item back and reports the operation's quantity."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose Purchase Order, the site and the production order, and the subcontracting order series and type, then click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Choose Purchase Order, the site and the production order, and the subcontracting order series and type, then click GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report naming the purchase order — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchase order"
+                }
+              ],
+              "text": "A report naming the purchase order — purchase order"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the purchase order"
+                }
+              ],
+              "text": "Open the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its line is the item that comes back, marked Subcontracted; the Material Supply Lines tab holds what goes out, to the subcontractor's warehouse"
+                }
+              ],
+              "text": "Its line is the item that comes back, marked Subcontracted; the Material Supply Lines tab holds what goes out, to the subcontractor's warehouse"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Approve it"
+                }
+              ],
+              "text": "Approve it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status "
+                },
+                {
+                  "t": "literal",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a warehouse transfer order on the supply line"
+                }
+              ],
+              "text": "Status In Process, and a warehouse transfer order on the supply line"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ship the transfer to the subcontractor's warehouse"
+                }
+              ],
+              "text": "Ship the transfer to the subcontractor's warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The transfer's outbound line "
+                },
+                {
+                  "t": "literal",
+                  "v": "Shipped"
+                }
+              ],
+              "text": "The transfer's outbound line Shipped"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the part comes back, receive the purchase order line and confirm the receipt"
+                }
+              ],
+              "text": "When the part comes back, receive the purchase order line and confirm the receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open Subcontracted Operations ("
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc2110m000"
+                },
+                {
+                  "t": "text",
+                  "v": ") for the production order"
+                }
+              ],
+              "text": "Open Subcontracted Operations (tisfc2110m000) for the production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Quantity Returned from Subcontracting shows what came back"
+                }
+              ],
+              "text": "Quantity Returned from Subcontracting shows what came back"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Finish the order as usual"
+                }
+              ],
+              "text": "Finish the order as usual"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Work in progress goes to the subcontractor"
+              }
+            ],
+            "text": "Work in progress goes to the subcontractor"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Material is issued to internal operations first, and the part they make goes out as a subassembly with any extra material. Both are on the purchase line's material supply lines and are transferred together, on separate picking lists and shipments for each warehouse but one load"
+              }
+            ],
+            "text": "Material is issued to internal operations first, and the part they make goes out as a subassembly with any extra material. Both are on the purchase line's material supply lines and are transferred together, on separate picking lists and shipments for each warehouse but one load"
+          }
+        ]
+      }
+    ]
+  }
+}

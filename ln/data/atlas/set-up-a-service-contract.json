@@ -1,0 +1,594 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-service-contract",
+  "title": "Set up a service contract",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Service · Invoicing",
+  "modules": [
+    "Service",
+    "Invoicing"
+  ],
+  "codes": [
+    "ASM-07"
+  ],
+  "role": "Service Technician",
+  "roles": [
+    "Service Technician"
+  ],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Service ➔ Contract Management ➔ Service Contracts",
+  "session": "Service Contracts",
+  "sessionCode": "tsctm3100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A customer's equipment is under a service contract, its first installment is with invoicing, and its revenue can be recognized period by period."
+      }
+    ],
+    "text": "A customer's equipment is under a service contract, its first installment is with invoicing, and its revenue can be recognized period by period."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The header and its templates set the period, invoicing and pricing; the configuration names what is covered; the coverage terms say which service costs the contract carries. Activating the original contract change makes it valid for new service orders, and the installments invoice it, as the "
+      },
+      {
+        "t": "text",
+        "v": "service contract"
+      },
+      {
+        "t": "text",
+        "v": " concept explains."
+      }
+    ],
+    "text": "The header and its templates set the period, invoicing and pricing; the configuration names what is covered; the coverage terms say which service costs the contract carries. Activating the original contract change makes it valid for new service orders, and the installments invoice it, as the service contract concept explains."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose the contract series, the business partner, a description and the contract type"
+                }
+              ],
+              "text": "Click New, choose the contract series, the business partner, a description and the contract type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tsctm3600m000",
+                  "name": "Service Contract"
+                },
+                {
+                  "t": "text",
+                  "v": ", with the service office, the duration and the installment template filled in"
+                }
+              ],
+              "text": "Service Contract (tsctm3600m000), with the service office, the duration and the installment template filled in"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the installment template and the pricing method"
+                }
+              ],
+              "text": "Check the installment template and the pricing method"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Changes tab, open contract change "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": " Original Contract"
+                }
+              ],
+              "text": "On the Changes tab, open contract change 10 Original Contract"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tsctm3620m000",
+                  "name": "Service Contract Change"
+                }
+              ],
+              "text": "Service Contract Change (tsctm3620m000)"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its Configuration tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose the item and serial number to cover"
+                }
+              ],
+              "text": "On its Configuration tab, click New and choose the item and serial number to cover"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tsctm1610m300",
+                  "name": "Service Contract Configuration"
+                }
+              ],
+              "text": "Service Contract Configuration (tsctm1610m300)"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the coverage terms: what is covered and by which cost-covering method, with the cost and sales amounts"
+                }
+              ],
+              "text": "Enter the coverage terms: what is covered and by which cost-covering method, with the cost and sales amounts"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Print the contract document for the customer"
+                }
+              ],
+              "text": "Print the contract document for the customer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When it is approved, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Activate Contract Change"
+                }
+              ],
+              "text": "When it is approved, choose Actions ➔ Activate Contract Change"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The contract is active for new service orders and calls"
+                }
+              ],
+              "text": "The contract is active for new service orders and calls"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the contract's Installments tab, select the first installment, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Switch Status on Contract Installments"
+                },
+                {
+                  "t": "text",
+                  "v": ", from Free to Accepted, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Change"
+                }
+              ],
+              "text": "On the contract's Installments tab, select the first installment, choose Actions ➔ Switch Status on Contract Installments, from Free to Accepted, and click Change"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Installment "
+                },
+                {
+                  "t": "literal",
+                  "v": "Accepted"
+                }
+              ],
+              "text": "Installment Accepted"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Transfer Installments"
+                },
+                {
+                  "t": "text",
+                  "v": ", with transfer status On Hold, and transfer"
+                }
+              ],
+              "text": "Choose Actions ➔ Transfer Installments, with transfer status On Hold, and transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The installment is in invoicing"
+                }
+              ],
+              "text": "The installment is in invoicing"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For revenue, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Estimated Revenues"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Calculate/Confirm Contract Revenues"
+                },
+                {
+                  "t": "text",
+                  "v": " with Calculate Revenue ticked"
+                }
+              ],
+              "text": "For revenue, choose References ➔ Estimated Revenues, then Actions ➔ Calculate/Confirm Contract Revenues with Calculate Revenue ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Revenue per period in "
+                },
+                {
+                  "t": "session",
+                  "code": "tsctm4550m000",
+                  "name": "Estimated Contract Revenues per Period"
+                }
+              ],
+              "text": "Revenue per period in Estimated Contract Revenues per Period (tsctm4550m000)"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Review it, run the same action again with Confirm Revenue ticked, then recognize it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tsctm4251m000",
+                  "name": "Recognize Contract Revenue"
+                },
+                {
+                  "t": "text",
+                  "v": " for the periods"
+                }
+              ],
+              "text": "Review it, run the same action again with Confirm Revenue ticked, then recognize it in Recognize Contract Revenue (tsctm4251m000) for the periods"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "An existing service order is not covered"
+              }
+            ],
+            "text": "An existing service order is not covered"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A contract is valid only for service orders and calls made after it is activated"
+              }
+            ],
+            "text": "A contract is valid only for service orders and calls made after it is activated"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "An installment will not transfer"
+              }
+            ],
+            "text": "An installment will not transfer"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Switch it from Free to Accepted first"
+              }
+            ],
+            "text": "Switch it from Free to Accepted first"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

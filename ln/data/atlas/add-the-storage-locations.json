@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "add-the-storage-locations",
@@ -22,6 +22,9 @@
   "modules": [
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "draft",
   "updated": "2026-11-02",
   "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouse - Locations",

@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "issue-material-to-the-job-shop",
@@ -23,8 +23,13 @@
     "Manufacturing",
     "Warehousing"
   ],
+  "codes": [
+    "P2D-06"
+  ],
+  "role": null,
+  "roles": [],
   "status": "approved",
-  "updated": "2026-11-02",
+  "updated": "2026-11-12",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
@@ -826,7 +831,67 @@
   },
   "variants": {
     "kind": "variants",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Pick from the Warehouse Manager Dashboard"
+              }
+            ],
+            "text": "Pick from the Warehouse Manager Dashboard"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "In "
+              },
+              {
+                "t": "session",
+                "code": "whinh2300m000",
+                "name": "Warehouse Manager Dashboard"
+              },
+              {
+                "t": "text",
+                "v": ", tick the issue order and click Generate Outbound Advice; a shortage shows as "
+              },
+              {
+                "t": "literal",
+                "v": "Shortage of 74 ea for Outbound Order Line …"
+              },
+              {
+                "t": "text",
+                "v": " ("
+              },
+              {
+                "t": "literal",
+                "v": "tcstl0001"
+              },
+              {
+                "t": "text",
+                "v": "). Open the Picking List link, check the advised locations and quantities in "
+              },
+              {
+                "t": "session",
+                "code": "whinh4525m100",
+                "name": "Picking List"
+              },
+              {
+                "t": "text",
+                "v": ", and click Pick Run. The order stays on the dashboard with its short lines open until the stock arrives"
+              }
+            ],
+            "text": "In Warehouse Manager Dashboard (whinh2300m000), tick the issue order and click Generate Outbound Advice; a shortage shows as Shortage of 74 ea for Outbound Order Line … (tcstl0001). Open the Picking List link, check the advised locations and quantities in Picking List (whinh4525m100), and click Pick Run. The order stays on the dashboard with its short lines open until the stock arrives"
+          }
+        ]
+      }
+    ]
   }
 }

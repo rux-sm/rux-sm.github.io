@@ -1,0 +1,699 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-configurable-item",
+  "title": "Set up a configurable item",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing · Sales",
+  "modules": [
+    "Manufacturing",
+    "Sales"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "One generic item, with one generic bill of material, routing and price list, stands in for every variant its options can make, and an invalid combination is refused."
+      }
+    ],
+    "text": "One generic item, with one generic bill of material, routing and price list, stands in for every variant its options can make, and an invalid combination is refused."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The component items exist, a work center and reference operations exist for the routing, and "
+        },
+        {
+          "t": "session",
+          "code": "tcibd0102m000",
+          "name": "Item Defaults"
+        },
+        {
+          "t": "text",
+          "v": " has two rows for the generic item group: one for item type Generic, whose item production defaults name a Job Shop Site, and one for item type Product, with costing data, which the generated items copy."
+        }
+      ],
+      "text": "The component items exist, a work center and reference operations exist for the routing, and Item Defaults (tcibd0102m000) has two rows for the generic item group: one for item type Generic, whose item production defaults name a Job Shop Site, and one for item type Product, with costing data, which the generated items copy."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The product configurator, PCF, builds variants from a generic item. Features and their options are what a customer chooses. Constraints are small programs: validation constraints refuse a combination or decide whether a BOM line applies, and parameter substitution constraints build the variant's item code, description and price. The generic BOM and routing carry every possible line, each line kept or dropped by its constraint."
+      }
+    ],
+    "text": "The product configurator, PCF, builds variants from a generic item. Features and their options are what a customer chooses. Constraints are small programs: validation constraints refuse a combination or decide whether a BOM line applies, and parameter substitution constraints build the variant's item code, description and price. The generic BOM and routing carry every possible line, each line kept or dropped by its constraint."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Product Configuration Parameters, set Product Configurator Version to Interpreter Version, clear Identifying Item Code, set the item code's sequence number to positions 46 to 47, tick Allow Reuse of Product Variants, and save"
+                }
+              ],
+              "text": "In Product Configuration Parameters, set Product Configurator Version to Interpreter Version, clear Identifying Item Code, set the item code's sequence number to positions 46 to 47, tick Allow Reuse of Product Variants, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On its Constraint Expression tab, keep the keywords and give every parameter row a name, then save"
+                }
+              ],
+              "text": "On its Constraint Expression tab, keep the keywords and give every parameter row a name, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m000",
+                  "name": "Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", create the generic item: item type Generic, its item group, default supply source Job Shop. In "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd2100m000",
+                  "name": "Items - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", set its With PCS to Off"
+                }
+              ],
+              "text": "In Items (tcibd0501m000), Master Data ➔ Items ➔ Items, create the generic item: item type Generic, its item group, default supply source Job Shop. In Items - Ordering (tcibd2100m000), set its With PCS to Off"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tirou0100m000",
+                  "name": "Job Shop Master Data Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", leave Approve Structures Automatically clear, so generated structures can be checked before approval"
+                }
+              ],
+              "text": "In Job Shop Master Data Parameters (tirou0100m000), leave Approve Structures Automatically clear, so generated structures can be checked before approval"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Product Features ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf0150m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), create each feature with option domain Alphanumeric and Select Option ticked; in Options by Product Feature ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf0160m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), add its options"
+                }
+              ],
+              "text": "In Product Features (tipcf0150m000), create each feature with option domain Alphanumeric and Select Option ticked; in Options by Product Feature (tipcf0160m000), add its options"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Product Features by Configurable Item ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf1101m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), add the features to the generic item in sequence"
+                }
+              ],
+              "text": "In Product Features by Configurable Item (tipcf1101m000), add the features to the generic item in sequence"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its options come over by themselves"
+                }
+              ],
+              "text": "Its options come over by themselves"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Configurable Item - Constraint IDs ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf2101m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), number the constraints; in Configurable Item - Constraints ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf2110m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), give each a section and its code"
+                }
+              ],
+              "text": "In Configurable Item - Constraint IDs (tipcf2101m000), number the constraints; in Configurable Item - Constraints (tipcf2110m000), give each a section and its code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compile them in Compile Constraints by Configurable Item ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf2201m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), with Show Compilation Errors Only ticked"
+                }
+              ],
+              "text": "Compile them in Compile Constraints by Configurable Item (tipcf2201m000), with Show Compilation Errors Only ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No error report"
+                }
+              ],
+              "text": "No error report"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Put the refusing constraint on its feature line in step 6"
+                }
+              ],
+              "text": "Put the refusing constraint on its feature line in step 6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Generic Bill of Material ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf3110m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), add every line, with the constraint that selects it on the optional ones; in Generic Routing ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf3120m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), add the operations"
+                }
+              ],
+              "text": "In Generic Bill of Material (tipcf3110m000), add every line, with the constraint that selects it on the optional ones; in Generic Routing (tipcf3120m000), add the operations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Configurable Item - Settings for Data Generation ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf3101m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), point the Item Code and Description fields at their constraints"
+                }
+              ],
+              "text": "In Configurable Item - Settings for Data Generation (tipcf3101m000), point the Item Code and Description fields at their constraints"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In Generic Price Lists ("
+                },
+                {
+                  "t": "session",
+                  "code": "tipcf4101m000"
+                },
+                {
+                  "t": "text",
+                  "v": "), add the sales price lines"
+                }
+              ],
+              "text": "In Generic Price Lists (tipcf4101m000), add the sales price lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Compile error "
+              },
+              {
+                "t": "literal",
+                "v": "'p_' already declared"
+              }
+            ],
+            "text": "Compile error 'p_' already declared"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Name every parameter row on the Constraint Expression tab, then compile again"
+              }
+            ],
+            "text": "Name every parameter row on the Constraint Expression tab, then compile again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A constraint passes the compile but misbehaves at run time"
+              }
+            ],
+            "text": "A constraint passes the compile but misbehaves at run time"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Write each "
+              },
+              {
+                "t": "literal",
+                "v": "if"
+              },
+              {
+                "t": "text",
+                "v": " over several lines, never on one"
+              }
+            ],
+            "text": "Write each if over several lines, never on one"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Cannot generate unique item code"
+              },
+              {
+                "t": "text",
+                "v": " on a repeat configuration"
+              }
+            ],
+            "text": "Cannot generate unique item code on a repeat configuration"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Clear Identifying Item Code and give the code a sequence number position"
+              }
+            ],
+            "text": "Clear Identifying Item Code and give the code a sequence number position"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

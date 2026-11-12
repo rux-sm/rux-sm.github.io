@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "confirm-there-is-stock",
@@ -20,6 +20,9 @@
     "Sales",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "approved",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",

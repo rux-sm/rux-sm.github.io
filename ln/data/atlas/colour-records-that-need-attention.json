@@ -1,0 +1,328 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "colour-records-that-need-attention",
+  "title": "Colour records that need attention",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Tools · Planning",
+  "modules": [
+    "Tools",
+    "Planning"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-08",
+  "route": "Planning ➔ Order Planning ➔ Planned Orders",
+  "session": "Planned Orders",
+  "sessionCode": "cprrp1100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Records that meet a condition stand out in colour, such as planned purchase orders with no supplier."
+      }
+    ],
+    "text": "Records that meet a condition stand out in colour, such as planned purchase orders with no supplier."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A conditional format is a rule kept for one session: when a record's fields meet its conditions, LN colours a field or the row. A planned purchase order cannot be transferred without a buy-from business partner, so colouring the empty ones shows what to fix before transferring."
+      }
+    ],
+    "text": "A conditional format is a rule kept for one session: when a record's fields meet its conditions, LN colours a field or the row. A planned purchase order cannot be transferred without a buy-from business partner, so colouring the empty ones shows what to fix before transferring."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the gear at the top right and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Conditional Formatting ➔ Edit Conditions"
+                }
+              ],
+              "text": "Click the gear at the top right and choose Conditional Formatting ➔ Edit Conditions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ttadv9502m000",
+                  "name": "Conditional Formatting"
+                },
+                {
+                  "t": "text",
+                  "v": " lists the formats for this session"
+                }
+              ],
+              "text": "Conditional Formatting (ttadv9502m000) lists the formats for this session"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An empty format, "
+                },
+                {
+                  "t": "session",
+                  "code": "ttadv9502m100"
+                },
+                {
+                  "t": "text",
+                  "v": " by its status bar"
+                }
+              ],
+              "text": "An empty format, ttadv9502m100 by its status bar"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Give it a description, keep Enabled ticked and Creation Level "
+                },
+                {
+                  "t": "literal",
+                  "v": "User"
+                },
+                {
+                  "t": "text",
+                  "v": ", and set Field and Formatted Field to the Buy-from BP column"
+                }
+              ],
+              "text": "Give it a description, keep Enabled ticked and Creation Level User, and set Field and Formatted Field to the Buy-from BP column"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "At the line level click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and leave the first condition as Buy-from BP equal to nothing"
+                }
+              ],
+              "text": "At the line level click New and leave the first condition as Buy-from BP equal to nothing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "IF ( Buy-from BP ="
+                }
+              ],
+              "text": "IF ( Buy-from BP ="
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a second line for Order Type equal to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Planned Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", and pick a background colour"
+                }
+              ],
+              "text": "Add a second line for Order Type equal to Planned Purchase Order, and pick a background colour"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "AND Order Type = Planned Purchase Order )"
+                }
+              ],
+              "text": "AND Order Type = Planned Purchase Order )"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                },
+                {
+                  "t": "text",
+                  "v": " and exit, twice"
+                }
+              ],
+              "text": "Click Save and exit, twice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The empty Buy-from BP cells of planned purchase orders are coloured"
+                }
+              ],
+              "text": "The empty Buy-from BP cells of planned purchase orders are coloured"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

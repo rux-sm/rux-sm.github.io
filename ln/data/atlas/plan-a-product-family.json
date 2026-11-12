@@ -1,0 +1,407 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "plan-a-product-family",
+  "title": "Plan a product family",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Planning",
+  "modules": [
+    "Planning"
+  ],
+  "codes": [
+    "P2D-01"
+  ],
+  "role": null,
+  "roles": [],
+  "status": null,
+  "updated": "2026-11-12",
+  "route": "Planning ➔ Master Planning ➔ Item Master Plan",
+  "session": "Item Master Plan",
+  "sessionCode": "cprmp2101m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The forecasts of several items are added up on a family item, the family is planned once, and its production plan is shared back down by percentage."
+      }
+    ],
+    "text": "The forecasts of several items are added up on a family item, the family is planned once, and its production plan is shared back down by percentage."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The family and its members are plan items, and "
+        },
+        {
+          "t": "session",
+          "code": "cprpd3110m000",
+          "name": "Aggregation Relationships"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Master Data ➔ Items ➔ Aggregation Relationships"
+        },
+        {
+          "t": "text",
+          "v": ", holds a row for each member: Aggregate from Sub-Item with a Demand Forecast percentage, or Disaggregate to Sub-Item with a Production Plan percentage."
+        }
+      ],
+      "text": "The family and its members are plan items, and Aggregation Relationships (cprpd3110m000), Planning ➔ Master Data ➔ Items ➔ Aggregation Relationships, holds a row for each member: Aggregate from Sub-Item with a Demand Forecast percentage, or Disaggregate to Sub-Item with a Production Plan percentage."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A family is a plan item that stands for a group of items. Its aggregation relationships say which members' figures roll up to it and in what share, and which sub-families take a share of its plan back. Aggregating copies the members' forecasts up; planning the family makes one production plan for the whole group; disaggregating splits that plan down again."
+      }
+    ],
+    "text": "A family is a plan item that stands for a group of items. Its aggregation relationships say which members' figures roll up to it and in what share, and which sub-families take a share of its plan back. Aggregating copies the members' forecasts up; planning the family makes one production plan for the whole group; disaggregating splits that plan down again."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In each member's item master plan, enter its demand forecast in the period it falls in"
+                }
+              ],
+              "text": "In each member's item master plan, enter its demand forecast in the period it falls in"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the family's item master plan and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Aggregation ➔ Aggregate Channel, Plans, Orders..."
+                }
+              ],
+              "text": "Open the family's item master plan and choose Actions ➔ Aggregation ➔ Aggregate Channel, Plans, Orders..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprmp2250m000",
+                  "name": "Aggregate Channel, Plans & Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " for the family"
+                }
+              ],
+              "text": "Aggregate Channel, Plans & Orders (cprmp2250m000) for the family"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick Demand Forecast only, keep Update Mode "
+                },
+                {
+                  "t": "literal",
+                  "v": "Overwrite"
+                },
+                {
+                  "t": "text",
+                  "v": ", and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Aggregate"
+                }
+              ],
+              "text": "Tick Demand Forecast only, keep Update Mode Overwrite, and click Aggregate"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The family's master plan shows the members' forecasts added up"
+                }
+              ],
+              "text": "The family's master plan shows the members' forecasts added up"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Plan the family with "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": ", with Item Master Plan's Generate ticked"
+                }
+              ],
+              "text": "Plan the family with Generate Order Planning (Item) (cprrp1220m000), with Item Master Plan's Generate ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Production plans appear on the family's "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                }
+              ],
+              "text": "Production plans appear on the family's Item Order Plan (cprrp0520m000)"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on the family's master plan, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Aggregation ➔ Disaggregate Channel, Plans, Orders..."
+                }
+              ],
+              "text": "Back on the family's master plan, choose Actions ➔ Aggregation ➔ Disaggregate Channel, Plans, Orders..."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprmp2260m000",
+                  "name": "Disaggregate Channel, Plans & Orders"
+                }
+              ],
+              "text": "Disaggregate Channel, Plans & Orders (cprmp2260m000)"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set Rule to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Disaggregate Percentage"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick Production Plan/ Orders/ Receipts only, and click "
+                },
+                {
+                  "t": "chip",
+                  "v": "Disaggregate"
+                }
+              ],
+              "text": "Set Rule to Disaggregate Percentage, tick Production Plan/ Orders/ Receipts only, and click Disaggregate"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The sub-family's item order plan holds its share of the family's production plan"
+                }
+              ],
+              "text": "The sub-family's item order plan holds its share of the family's production plan"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Forecast the family, not the members"
+              }
+            ],
+            "text": "Forecast the family, not the members"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Enter the demand forecast on the family and disaggregate the forecast instead of the production plan: the relationships carry the members' shares of Demand Forecast, such as 60 and 40 or 80 and 20, and each member's demand forecast update in Items - Planning is set to "
+              },
+              {
+                "t": "literal",
+                "v": "(Dis)aggregate"
+              }
+            ],
+            "text": "Enter the demand forecast on the family and disaggregate the forecast instead of the production plan: the relationships carry the members' shares of Demand Forecast, such as 60 and 40 or 80 and 20, and each member's demand forecast update in Items - Planning is set to (Dis)aggregate"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Several levels"
+              }
+            ],
+            "text": "Several levels"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Relationships can roll categories up to a category summary and summaries up to a plant summary at 100%, and disaggregate a category down to its component parts at a lower plan level"
+              }
+            ],
+            "text": "Relationships can roll categories up to a category summary and summaries up to a plant summary at 100%, and disaggregate a category down to its component parts at a lower plan level"
+          }
+        ]
+      }
+    ]
+  }
+}

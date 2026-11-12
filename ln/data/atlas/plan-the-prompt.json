@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "task",
   "id": "plan-the-prompt",
@@ -20,6 +20,9 @@
     "Tools",
     "Warehousing"
   ],
+  "codes": [],
+  "role": null,
+  "roles": [],
   "status": "draft",
   "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",

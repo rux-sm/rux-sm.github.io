@@ -1,5 +1,5 @@
 {
-  "contract": 24,
+  "contract": 25,
   "tier": "export",
   "kind": "process",
   "id": "transfer-item-between-warehouses",
@@ -7,6 +7,11 @@
   "module": "Warehousing",
   "modules": [
     "Warehousing"
+  ],
+  "codes": [
+    "P2D-17",
+    "P2D-10",
+    "P2D-11"
   ],
   "updated": "2026-11-01",
   "status": "approved",

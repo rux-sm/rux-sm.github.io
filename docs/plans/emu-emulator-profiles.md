@@ -135,7 +135,7 @@ What each emulator's source and the installers on the drive say:
 | Emulator | Drive | Newest | Build | Settings on a Mac | No setting moves |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Mesen 2 | 2.1.1 | 2.1.1 | Apple Silicon | `~/Library/Application Support/Mesen2/settings.json` | firmware, cheats, per-game settings, recent games |
-| mGBA | 0.10.5 | 0.10.5 | universal | `~/Library/Application Support/mGBA/config.ini` | its game library |
+| mGBA | 0.10.5 | 0.10.5 | universal | `~/.config/mgba/config.ini` | its game library |
 | ares | v148 | v148 | universal | `~/Library/Application Support/ares/settings.bml` | nothing |
 | melonDS | 1.1 | 1.1 | universal, not notarized | `~/Library/Preferences/melonDS/melonDS.toml` | its Wi-Fi settings file |
 | Azahar | 2125.1.3 | 2126.2 | Apple Silicon, not notarized | `~/Library/Application Support/Azahar/config/qt-config.ini` | save states, cheats, keys, mods, shader cache |
@@ -176,9 +176,10 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Install the helper on the MacBook Pro from the drive and Update
-  there, which settles which folder mGBA writes its settings in there; on
-  the iMac, installed new by the helper, it is `~/.config/mgba/`.
+- [ ] Have the helper read and write mGBA's settings in `~/.config/mgba/`
+  alone, where mGBA 0.10.5 keeps them on both Macs, and move the MacBook
+  Pro's save folder there from `~/Library/Application Support/mGBA/config.ini`,
+  which mGBA never reads, so Status stops saying it saves to the drive.
 - [ ] Carry for mGBA alone, on the iMac with mGBA installed: each place in
   `emulators.json` naming its folder in Supabase, fingerprints, the five
   kept copies, the newest playing when both changed, the session around

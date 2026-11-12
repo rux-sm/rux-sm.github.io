@@ -49,8 +49,8 @@ console has. The saves this builds on are
 - **Two accounts on one Mac share that Mac's emulator folders,** so Play
   first puts away the saves of the account that played last and lays down
   the signed-in account's.
-- **A download comes from the home server to a Mac on rux's Tailscale,**
-  whichever account is signed in.
+- **A download's link is signed for any account on the list,** as
+  `docs/plans/emu-server.md` says, so no machine needs more than the log-in.
 - **`docs/database-access.md` says the new rule** in the commit that
   applies it.
 

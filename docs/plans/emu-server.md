@@ -47,7 +47,14 @@ The home server, so the drive is not carried between Macs:
   later, a PC.
 - **It runs with no screen, managed from a browser;** its i7-13700K's
   built-in graphics shows the installer once, so it needs no graphics card.
-- **Tailscale reaches it from anywhere,** for the Mac that is not at home.
+- **It has one public address, through a tunnel it opens outward,** so any
+  machine reaches it with nothing installed, and no port on the router is
+  opened. Only the game downloads are on that address; TrueNAS's own pages
+  and its shares stay inside the home.
+- **The log-in is the guard.** The site asks Supabase for a link to one
+  game, Supabase gives it only to one of rux's accounts, signed and good for
+  minutes, and the server sends a file only on such a link, so it keeps no
+  accounts or passwords of its own.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
 - **Saves are kept on each Mac and carried to and from Supabase,** as
@@ -62,8 +69,8 @@ The home server, so the drive is not carried between Macs:
 - **The download goes straight into the folder through Chrome,** which lets a
   page write into a folder rux chooses once; Safari cannot, so the app says
   to use Chrome for it.
-- **The server sends a game only to Tailscale devices,** over HTTPS at its
-  Tailscale address, answering only the app's own site.
+- **The server sends a game only on a signed link,** over HTTPS, answering
+  only the app's own site.
 - **The Collection marks what this Mac holds,** from the library folder it
   reads, so a game to download and one ready to play are told apart.
 
@@ -82,15 +89,22 @@ The setup kit, so any Mac is set up in one step:
 
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
+- Which tunnel carries the downloads? Cloudflare Tunnel and Tailscale Funnel
+  are free and may limit files the size of a disc game; a forwarded port
+  with its own certificate has no limit and opens the router. Recommended:
+  measure one large download through Cloudflare Tunnel first.
 
 ## Tasks
 
 - [ ] Copy the collection onto the `games` share, leaving out
   `to-delete`.
 - [ ] Copy the collection from the server to the T7.
-- [ ] Add Tailscale on the server and each Mac.
+- [ ] Give the server its public address through the tunnel, the downloads
+  alone on it.
+- [ ] Sign a game's link in Supabase for one of rux's accounts, and have the
+  server refuse a request without one.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Serve the games over HTTPS on Tailscale, and add Download to this Mac,
+- [ ] Serve the games over HTTPS on signed links, and add Download to this Mac,
   Remove from this Mac and the mark of what this Mac holds.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

@@ -34,12 +34,13 @@ scroll by a scroll timeline. It holds the days near the view, three weeks
 either side, drawn again as the view nears where they end. The driver
 list's band stands above its list the same way.
 
-A scroll up or down settles on a row: where it stops, the nearest bus, or
-driver in the list, stands under the band as the first does, its card 8px
-from it. At a list's foot the last card stands 8px from the foot instead.
-Sideways the strip settles on a day, the nearest standing at the bus
-column's edge, and a flick crosses as many days as it is thrown; a phone's
-swipe moves it one day.
+A scroll stops where the hand leaves it, between rows and days. Once the
+board has stood still for a second it glides to the nearest of each: the
+bus, or driver in the list, under the band as the first stands, its card 8px
+from it, and the day at the bus column's edge. At a list's foot the last
+card stands 8px from the foot instead. A press, a key or the wheel in that
+second starts it again. A phone's swipe moves the strip one day, and its
+rows stop by the browser's own snap.
 
 ## The trip bar, on six lines
 

@@ -114,8 +114,8 @@ const helpers = `window.__strip = (() => {
     marks: [...document.querySelectorAll('.scheduler-row-head[data-bus-id]')].filter(h => h.querySelector('.scheduler-row-head__oos')).map(h => h.dataset.busId),
     stripes: [...document.querySelectorAll('.scheduler-track > .scheduler-oos')].map(o => (o.parentElement.dataset.busId ?? 'u') + '|' + o.style.getPropertyValue('--scheduler-start') + '|' + o.style.getPropertyValue('--scheduler-span')),
   });
-  // Once the strip has stood still for half a second, and the trips owed near it have had their frames.
-  const rest = async () => { let last = NaN, still = 0; while (still < 10) { await wait(50); still = sch.scrollLeft === last ? still + 1 : 0; last = sch.scrollLeft; } await wait(1200); };
+  // Once the strip has stood still for two seconds, past the second after which the board settles on a day and a row, and the trips owed near it have had their frames.
+  const rest = async () => { let last = NaN, still = 0; while (still < 40) { await wait(50); still = sch.scrollLeft === last ? still + 1 : 0; last = sch.scrollLeft; } await wait(1200); };
   // Each frame's work, from its start to after it is drawn.
   let frames = [], on = false, t0 = 0;
   const ch = new MessageChannel();

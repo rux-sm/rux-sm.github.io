@@ -1387,7 +1387,7 @@
     // The days round the week asked for, before the strip is placed on it, so a day is there to measure.
     const at = Math.max(0, daysBetween(weekStart, cursor));
     drawBand([at, at + WEEK], true);
-    // A mark at each day's edge, inside what scrolls, for the strip to settle on, since the days' own cells stand outside it.
+    // A mark at each day's edge, inside what scrolls, for a compact board under a mouse to stop on, since the days' own cells stand outside it.
     const snaps = el('div', 'scheduler-snaps');
     snaps.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < days; i++) snaps.appendChild(el('i'));
@@ -10931,8 +10931,8 @@
       : box.right > last ? Math.min(box.right - last, box.left - first) : 0;
     const w = stripStart ? dayWidth() : 0;
     if (w && inline === 'start') {
-      // The day the bar starts in, counted from the first column; a pixel in, so a bar on a day's edge is that day's.
-      const at = Math.round(schEl.scrollLeft / w) + Math.floor((box.left - first + TIP_GAP + 1) / w);
+      // The day the bar starts in, counted from the strip's first wherever the strip stands; a pixel in, so a bar on a day's edge is that day's.
+      const at = Math.floor((schEl.scrollLeft + box.left - first + TIP_GAP + 1) / w);
       const length = daysBetween(stripStart, stripEnd) + 1;
       return Math.max(0, Math.min(length - inView(), at)) * w - schEl.scrollLeft;
     }
@@ -20214,7 +20214,8 @@
   /* ── Scrolling the strip ──
      The browser scrolls the strip both ways, a trackpad's gesture with its
      own momentum and an arrow's or a pick's by its own smooth scroll, and
-     it settles on a day's edge, as app.css says. A scroll sideways holds the board still, through
+     it stops where the hand leaves it; `settleAfterRest` lines it up once
+     it has stood still. A scroll sideways holds the board still, through
      `weekMotion`: no read draws and no live change redraws
      until the browser says it has stopped, `scrollend`. While it runs the
      trips near the view are drawn and the label follows the week in view;
@@ -20283,7 +20284,8 @@
       pruneFar(days);
       markHeads();
       markUnread(days);
-      rowsFit = setTimeout(() => { if (!weekMotion) fitLanesInView(); }, ROWS_FIT_MS);
+      // A fit can move the rows, so the board is settled again after it.
+      rowsFit = setTimeout(() => { if (!weekMotion) { fitLanesInView(); settleBoard(); } }, ROWS_FIT_MS);
     }
     readAround();
     if (liveHeld) liveRefresh();
@@ -20306,6 +20308,54 @@
     followScroll();
   }, { passive: true });
   schEl?.addEventListener('scrollend', scrollStopped);
+
+  /* A PANE SETTLES ONCE IT HAS STOOD STILL. The browser's own scroll snap
+     takes the end of every scroll for itself, so the board and the roster
+     have none: a scroll stops where the hand leaves it, and SETTLE_REST_MS
+     after the pane last moved it goes, by the browser's smooth scroll, to
+     the nearest row under the band, its card 8px from it as the first row's
+     is, and the board to the nearest day at the bus column's edge as well.
+     A row's place is its top less its scroll margin, and the pane's foot is
+     one too, where the last rows stand. A press, a key or the wheel
+     meanwhile starts the wait again, and nothing settles under a bar in
+     hand. The rows have fitted their trips by then, ROWS_FIT_MS after the
+     stop. A compact board pages by app.css's snap and the swipe instead. It
+     answers the function that starts the wait where none is running. */
+  const SETTLE_REST_MS = 1000;
+  function settleAfterRest(pane, placesOf, across) {
+    let timer = 0;
+    const settle = () => {
+      timer = 0;
+      if (barsInHand || pageEl?.getAttribute('data-board') === 'compact') return;
+      const rows = placesOf();
+      const edge = pane.getBoundingClientRect().top + pane.clientTop
+        + (parseFloat(getComputedStyle(pane).scrollPaddingTop) || 0)
+        + (rows.length ? parseFloat(getComputedStyle(rows[0]).scrollMarginTop) || 0 : 0);
+      const foot = pane.scrollHeight - pane.clientHeight;
+      let top = pane.scrollTop;
+      let near = Infinity;
+      for (const row of rows) {
+        const box = row.getBoundingClientRect();
+        // A row shut has no height and no place.
+        if (!box.height) continue;
+        const at = Math.max(0, Math.min(foot, pane.scrollTop + box.top - edge));
+        if (Math.abs(at - pane.scrollTop) < near) { near = Math.abs(at - pane.scrollTop); top = at; }
+      }
+      const w = across && stripStart ? dayWidth() : 0;
+      const left = w ? Math.min(Math.round(pane.scrollLeft / w) * w, pane.scrollWidth - pane.clientWidth) : pane.scrollLeft;
+      if (Math.abs(left - pane.scrollLeft) < 1 && Math.abs(top - pane.scrollTop) < 1) return;
+      pane.scrollTo({ left, top, behavior: boardStill() ? 'instant' : 'smooth' });
+    };
+    const wait = () => { clearTimeout(timer); timer = setTimeout(settle, SETTLE_REST_MS); };
+    pane.addEventListener('scroll', () => { clearTimeout(timer); timer = 0; }, { passive: true });
+    pane.addEventListener('scrollend', wait);
+    for (const type of ['wheel', 'pointerdown', 'touchstart', 'keydown']) {
+      pane.addEventListener(type, () => { if (timer) wait(); }, { passive: true });
+    }
+    return () => { if (!timer) wait(); };
+  }
+  const settleBoard = schEl ? settleAfterRest(schEl, () => gridEl.querySelectorAll('.scheduler-track'), true) : () => {};
+  if (availEl) settleAfterRest(availEl, () => availGrid.querySelectorAll('.scheduler-avail__name'), false);
 
   /* What is held runs out at its reach from its centre, so once the view is
      half that from it, more is read around it, quietly, while the hand is

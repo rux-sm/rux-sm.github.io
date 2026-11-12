@@ -60,7 +60,11 @@
   --scheduler-editor-w: 22rem;
 }
 
-.scheduler-week {
+/* What a week counts its columns and gaps by, and so do the two bands that
+   stand above a week, outside what scrolls: the board's and the roster's. */
+.scheduler-week,
+.scheduler-band,
+.scheduler-avail__days {
   --scheduler-days: 7;
   /* On Maintenance's weeks the bus column is as wide as its content, so a
      wider bus number widens the column rather than clipping. The strip
@@ -150,11 +154,13 @@
   --scheduler-row-clear: var(--rux-spacing-02);
   --scheduler-lane-gap: calc(2 * var(--scheduler-row-clear));
   --scheduler-side-clear: var(--rux-spacing-03);
+}
+.scheduler-week {
   position: relative;
   overflow: auto;
-  /* The grid is its own scroll pane, so the day header sticks to its top and the
-     bus column to its left. The 15rem is a no-script estimate of the chrome
-     above; app.js measures the pane's top and replaces the cap. */
+  /* The grid is its own scroll pane, so the bus column sticks to its left;
+     the day band stands above it. The 15rem is a no-script estimate of the
+     chrome above; app.js measures the pane's top and replaces the cap. */
   max-block-size: max(24rem, calc(100dvh - 15rem));
   overscroll-behavior: contain;
   background: var(--rux-layer);
@@ -189,9 +195,9 @@
    so it is the browser's own, as design/docs/motion.md says. The padding
    and a bar's margin keep a bar data.js reveals clear of the bus column and
    the day band. */
-.scheduler-week--scroll {
-  scroll-padding-inline-start: var(--scheduler-head-w);
-  scroll-padding-block-start: 2rem;
+.scheduler-week--scroll { scroll-padding-inline-start: var(--scheduler-head-w); }
+.scheduler-week--scroll,
+.scheduler-band {
   /* THE DAYS IN VIEW STAND 8PX CLEAR OF ALL FOUR EDGES, the gap between two
      bars, when the strip stands on a day's edge: `--scheduler-edge`, a bar's own 4px
      clear space again, is added beside the bus column and, by app.js, at
@@ -199,8 +205,7 @@
      column it is the column's own width, which the head cells leave
      unpainted, so the day before shows its last 4px there: empty, or a
      trip running on into the days in view. Under the band and at the foot
-     a row's own 4px is added to the same way, by the band's margin and the
-     grid's padding. */
+     a row's own 4px is added to the same way, by the grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
   /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 89PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
@@ -224,23 +229,8 @@
 .scheduler-week--scroll .scheduler-track > .scheduler-bar:not([data-folded]) {
   scroll-margin-block-start: calc(2 * var(--scheduler-row-clear));
 }
-.scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head) { margin-inline-end: var(--scheduler-edge); }
-/* The band runs on across the edge its corner leaves unpainted, its rules
-   and its surface, so it never breaks there where no day stands under it,
-   as in the loading skeleton or at the strip's start; over a day it is the
-   same surface and rule the day's cell shows there. The run-on is placed
-   from the corner's padding box, so it reaches past it by the band's own
-   rules and no further, none where a theme fills the band instead. */
-.scheduler-week--scroll .scheduler-corner::after {
-  content: '';
-  position: absolute;
-  inset-inline-start: 100%;
-  inset-block: calc(-1 * var(--scheduler-band-rule-w));
-  inline-size: calc(var(--scheduler-edge) + 1px);
-  border-block: inherit;
-  background: inherit;
-  pointer-events: none;
-}
+.scheduler-band > .scheduler-corner,
+.scheduler-week--scroll .scheduler-row-head { margin-inline-end: var(--scheduler-edge); }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and
@@ -258,13 +248,13 @@
      columns would let the bus column scroll away once the week overflows. */
   min-inline-size: min-content;
 }
-/* 4px more at the foot, and under each day band by its margin, so the first
-   and last rows' cards stand 8px from the band and the foot, as two cards
-   stand apart. */
+/* 4px more at the foot and under the day band, so the first and last rows'
+   cards stand 8px from the band and the foot, as two cards stand apart:
+   the grid's own padding where the band stands above the week, and the
+   band's margin where it is in the grid, on Maintenance. */
 .scheduler-grid { padding-block-end: var(--scheduler-row-clear); }
-.scheduler-corner,
-.scheduler-days,
-.scheduler-avail__days > .scheduler-avail__day { margin-block-end: var(--scheduler-row-clear); }
+:is(.scheduler-week--scroll, .scheduler-week--avail) > .scheduler-grid { padding-block-start: var(--scheduler-row-clear); }
+.scheduler-grid > :is(.scheduler-corner, .scheduler-days) { margin-block-end: var(--scheduler-row-clear); }
 .scheduler-row { display: contents; }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty
    Unassigned row would still take a slot in the grid without this. */
@@ -274,16 +264,62 @@
    than going blank. */
 .scheduler-grid--busy { opacity: .55; }
 
-/* THE DAY BAND holds the days' header cells in one row across the board,
-   stuck to its top as one box and laid out as a grid of its own on the
-   board's day columns, so a change in the rows below never lays the cells
-   out again, whatever the strip's length. */
+/* THE DAY BAND holds the days' header cells in one row, laid out as a grid
+   of its own on the board's day columns, so a change in the rows below never
+   lays the cells out again, whatever the strip's length. On Maintenance,
+   whose board scrolls with the page, it is in the grid and stuck to its
+   top. */
 .scheduler-corner,
 .scheduler-days {
   position: sticky;
   inset-block-start: 0;
   z-index: 4;
 }
+/* ON THE BOARD THE BAND STANDS ABOVE THE WEEK, OUTSIDE WHAT SCROLLS, because
+   a browser's bounce at a scroll's end moves everything the scrolling box
+   holds, a stuck header with it: here a pull at the board's top or foot
+   bounces the rows and the band holds still. It draws the band's surface
+   and rules once, across its width, so its cells draw neither, its corner
+   stands over the bus column, and its days follow the week sideways: their
+   travel is tied to the week's own scroll by a scroll timeline, named on
+   the week and scoped on the frame the two share, so the browser moves them
+   with the trips and no script runs on a scroll. It is the scroll's
+   position, not a motion in time, so Carbon's curves have no part in it.
+   From the strip's first day to its last the days travel as far as the week
+   can scroll, which app.js measures and writes on the band as a length. The
+   box that travels is the strip's whole width and holds only the days near
+   the view, data.js's `drawBand`, since each frame of a scroll costs by the
+   cells it holds. At the strip's two far ends a sideways bounce moves the
+   rows alone, since a timeline ends where the scroll does. */
+.scheduler-frame { timeline-scope: --scheduler-strip; }
+.scheduler-frame > .scheduler-week--scroll { scroll-timeline: --scheduler-strip inline; }
+.scheduler-band {
+  position: relative;
+  flex: none;
+  display: flex;
+  box-sizing: border-box;
+  block-size: 2rem;
+  overflow: clip;
+  background: var(--scheduler-band-surface);
+  border-block: var(--scheduler-band-rule-w) solid var(--rux-border-subtle-01);
+}
+.scheduler-band > :is(.scheduler-corner, .scheduler-days) { position: relative; flex: none; z-index: auto; }
+/* The corner over the days, which slide under it. */
+.scheduler-band > .scheduler-corner { z-index: 1; }
+.scheduler-band :is(.scheduler-corner, .scheduler-day) { block-size: 100%; border-block: 0; }
+@keyframes scheduler-band-follow { to { translate: calc(-1 * var(--scheduler-strip-reach, 0px)) 0; } }
+.scheduler-band > .scheduler-days {
+  animation: scheduler-band-follow linear both;
+  animation-timeline: --scheduler-strip;
+}
+/* A browser with no scroll timeline: app.js writes how far the week has
+   scrolled on the band as it scrolls, and the days stand that far back. */
+@supports not ((animation-timeline: --scheduler-strip) and (timeline-scope: --scheduler-strip)) {
+  .scheduler-band > .scheduler-days { animation: none; translate: calc(-1 * var(--scheduler-strip-at, 0px)) 0; }
+}
+/* A mark at each day's edge, inside what scrolls, where a compact board
+   under a mouse stops; it has no height and draws nothing. */
+.scheduler-snaps { display: none; }
 .scheduler-days {
   grid-column: 2 / -1;
   display: grid;
@@ -293,7 +329,8 @@
    surface, in a theme that separates a header by filling it, or the pane's own
    surface between two rules, in one that separates by a line. Both edges are
    drawn, because this band has the toolbar above it and the grid below. It
-   stays opaque either way: bars scroll under it. */
+   is opaque either way: the days slide under its corner, and on
+   Maintenance bars scroll under it. */
 .scheduler-corner,
 .scheduler-day {
   background: var(--scheduler-band-surface);
@@ -807,7 +844,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    the marks show where a day starts. With the week out, the names stand
    behind their own rule, as the bus column's numbers do, from the day band
    down; shut, the pane's edge is theirs and they draw none. */
-.scheduler-aside[data-week] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
+.scheduler-aside[data-week] :is(.scheduler-week--avail .scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
    ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 88px, a 72px card
@@ -822,7 +859,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
 .scheduler-row-head :is(.scheduler-row-head__fuel-end, .scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
 /* The tile and the column's 1px rule beside it. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll { --scheduler-head-min: var(--scheduler-tile-head); }
+.scheduler-page:not([data-board="compact"]) :is(.scheduler-week--scroll, .scheduler-band) { --scheduler-head-min: var(--scheduler-tile-head); }
 /* THE HEAD'S ROWS start on the bar's first line, so the number stands level
    with the destination, and on six lines end on the card's 8px inset; each
    view has its own, below. Every part names the one column, inside the
@@ -1085,7 +1122,8 @@ button.scheduler-row-head__num:focus { outline: none; }
    window has widened loads full to its edge, and the pane cuts the days it
    cannot hold. render() takes the grid's skeleton class off as it draws the
    board. */
-.scheduler-week--scroll > .scheduler-grid--skeleton { --scheduler-days: 21; }
+.scheduler-week--scroll > .scheduler-grid--skeleton,
+.scheduler-band--skeleton { --scheduler-days: 21; }
 
 /* While a trip is dragged a copy of its bar rides with the pointer, lifted,
    and glides into the row it would land in; the bar itself dims where it
@@ -3936,8 +3974,8 @@ a.scheduler-tip__go { text-decoration: none; }
    chevron. Open, the first and last of its seven days are 4px wider, so a
    mark stands 8px from the week's edges as two marks stand 8px apart; the
    seven are `--scheduler-rail-week-w`'s. */
-.scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-head-w); }
-.scheduler-aside[data-week] .scheduler-avail__grid {
+.scheduler-aside:not([data-week]) :is(.scheduler-avail__grid, .scheduler-avail__days) { grid-template-columns: var(--scheduler-head-w); }
+.scheduler-aside[data-week] :is(.scheduler-avail__grid, .scheduler-avail__days) {
   --scheduler-edge-day: calc(var(--scheduler-day-track) + var(--scheduler-gap-clear));
   grid-template-columns: var(--scheduler-head-w) var(--scheduler-edge-day) repeat(5, var(--scheduler-day-track)) var(--scheduler-edge-day);
 }
@@ -3954,12 +3992,15 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* In the aside the names' column is the rail's tiles less the edge a theme
    draws round the pane, which is inside the pane's width, so the tiles and
-   the week fill the pane to the pixel and nothing scrolls sideways. */
-.scheduler-aside .scheduler-week--avail {
+   the week fill the pane to the pixel and nothing scrolls sideways. The
+   band above the pane counts the same columns. */
+.scheduler-aside :is(.scheduler-week--avail, .scheduler-avail__days) {
   --scheduler-head-w: calc(var(--scheduler-rail-w) - 2 * var(--scheduler-region-edge-width, 0px));
   /* Each day column is Carbon's md, 40px, a 32px mark and the 4px either
      side of it; `--scheduler-rail-week-w`'s. */
   --scheduler-day-track: var(--rux-layout-size-height-md);
+}
+.scheduler-aside .scheduler-week--avail {
   /* Takes what the head leaves of the height app.js gives the aside: a short
      list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`
      viewport cap. */
@@ -3973,8 +4014,11 @@ a.scheduler-tip__go { text-decoration: none; }
    can overflow and scroll; here that would stop the name column shrinking and
    give the roster a sideways scroll. */
 .scheduler-avail__grid { align-content: start; inline-size: 100%; }
-.scheduler-avail__days,
 .scheduler-avail__row { display: contents; }
+/* THE ROSTER'S BAND stands above the pane, outside what scrolls, as the
+   board's does, so a pull at the list's top bounces the drivers under it. It
+   is a grid on the pane's own columns. */
+.scheduler-avail__days { flex: none; display: grid; }
 
 .scheduler-avail__name,
 .scheduler-avail__cell,
@@ -3999,17 +4043,13 @@ a.scheduler-tip__go { text-decoration: none; }
    as a trip's shortcuts do, because the card is fixed beside the tile and
    would otherwise sit under the board. */
 .scheduler-avail__name:has(.rux--popover--open) { z-index: 6; }
-/* The header row sticks to the top of the pane on the header band's accent.
-   Its 2rem is explicit so it matches the board's day band whatever the row
-   height. */
+/* The header row, on the header band's accent. Its 2rem is explicit so it
+   matches the board's day band whatever the row height. */
 .scheduler-avail__days > .scheduler-avail__day {
   /* The band's 2rem holds its rules, level with the board's band. */
   box-sizing: border-box;
   block-size: 2rem;
   line-height: 2rem;
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 3;
   background: var(--scheduler-band-surface);
   /* Carbon's table header type, set on the row so "Driver" and the day letters
      share it. `line-height` stays at the 2rem above, which centres a label in
@@ -4142,10 +4182,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* Away on time off today, in the ink their time off takes in the week. */
 .scheduler-avail__doing[data-trip="away"] { color: var(--rux-tag-color-red); }
 
-/* The corner stays above the day letters when the roster scrolls sideways.
-   It needs the header row's two-class specificity to beat their z-index 3. */
 .scheduler-avail__days > .scheduler-avail__day--head {
-  z-index: 4;
   font-size: var(--rux-heading-compact-01-font-size);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
@@ -4175,15 +4212,13 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__days > :not(.scheduler-avail__day--on-day) + .scheduler-avail__day--on-day { border-start-start-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--on-day:not(:has(+ .scheduler-avail__day--on-day)) { border-start-end-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
-/* The roster's corner, sticky in both axes, holding the Sort button flush
+/* The roster's corner, holding the Sort button flush
    to its edge and the band's full height, as the toolbar's buttons stand,
    so its open menu hangs from the band's foot; the button's own inset puts
    its label on the names' 16px. Declared here, after `.scheduler-avail__day`,
    whose zero padding and centring also match this cell at the same
    specificity. */
 .scheduler-avail__day--head {
-  position: sticky;
-  inset-inline-start: 0;
   display: flex;
   align-items: stretch;
   padding-inline: 0;
@@ -4597,7 +4632,13 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 @media not (pointer: coarse) {
   .scheduler-page[data-board="compact"] .scheduler-week--scroll { scroll-snap-type: x mandatory; }
-  .scheduler-page[data-board="compact"] .scheduler-week--scroll .scheduler-day {
+  .scheduler-page[data-board="compact"] .scheduler-snaps {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: repeat(var(--scheduler-days), var(--scheduler-day-track));
+    block-size: 0;
+  }
+  .scheduler-page[data-board="compact"] .scheduler-snaps > i {
     scroll-snap-align: none start;
     scroll-snap-stop: always;
   }
@@ -5149,24 +5190,14 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-page[data-cover][data-takeover="to-do"] .scheduler-to-do--pane {
   inline-size: min(var(--scheduler-pane-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
 }
-/* The lists' pane keeps its column there, its list scrolling under its head. */
+/* Each keeps its column there: the lists' pane's list scrolls under its
+   head, and the roster's drivers under its head and its day band. */
+.scheduler-page[data-takeover="roster"] .scheduler-aside,
 .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane { display: flex; overflow: hidden; }
 /* Tasks and Departures are both the lists' pane to the rules above, which the board
    names `to-do` whichever is in front, so the one shut stays shut rather than
    standing over the other. */
 .scheduler-page[data-takeover] .scheduler-to-do--pane[hidden] { display: none; }
-/* The head sticks at the top of the card, above the grid's highest layer, the
-   corner cell at 4, and the day row sticks 48px under it. */
-.scheduler-page[data-takeover="roster"] .scheduler-aside__head {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 5;
-}
-.scheduler-page[data-takeover="roster"] .scheduler-avail__days > .scheduler-avail__day {
-  inset-block-start: var(--rux-layout-size-height-lg);
-}
-.scheduler-page[data-takeover="roster"] .scheduler-week--avail { max-block-size: none; overflow: visible; }
-
 /* The dim behind it. Carbon's overlay belongs to its side panel and the roster
    is not one, so the board's own scrim covers all three: it says the week is
    set aside rather than there to be read, and a press on it leaves the panel.

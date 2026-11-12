@@ -123,8 +123,9 @@ const helpers = `window.__strip = (() => {
   const tick = () => { if (!on) return; t0 = performance.now(); ch.port2.postMessage(0); requestAnimationFrame(tick); };
   return {
     ready: async () => {
-      // The strip runs a year and more, so its day header has more than a year of days.
-      await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length > 365, 15000, 'the strip');
+      // The strip runs a year and more, so the week counts more than a year of days, and its band holds those near the view.
+      await until(() => bars() > 0 && Number(document.getElementById('scheduler-week').style.getPropertyValue('--scheduler-days')) > 365
+        && document.querySelectorAll('.scheduler-band .scheduler-day').length > 7, 15000, 'the strip');
       await wait(800);
       // A point over the first rows, inside the window whatever the board's height.
       const box = sch.getBoundingClientRect();

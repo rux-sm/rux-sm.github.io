@@ -450,8 +450,9 @@
                  dot under a day with a trip carrying a warning. data.js
                  draws it. -->
             <div class="scheduler-weekstrip" id="scheduler-weekstrip" role="group" aria-label="This week"></div>
-            <!-- The loading skeleton: the corner, three weeks of day cells and ten
-                 rows of grey placeholders in the real grid's classes, so the first
+            <!-- The loading skeleton: the day band, its corner and three weeks of
+                 day cells, above the week, which scrolls under it, and ten rows of
+                 grey placeholders in the real grid's classes, so the first
                  paint is already the board. The strip shows as many of the days as
                  its pane holds, as Fill the window does. Each bus head is this week's head in grey,
                  its number, display, fuel and kit in the head's own classes, the
@@ -459,32 +460,34 @@
                  rows sizes and shows it as it does a bus's; the week starts on
                  six rows, the board's own, until data.js sets the saved count.
                  render() in data.js replaces all of it. -->
+            <div class="scheduler-band scheduler-band--skeleton" id="scheduler-band">
+              <div class="scheduler-corner"></div>
+              <div class="scheduler-days">
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+              </div>
+            </div>
             <div class="scheduler-week scheduler-week--scroll" id="scheduler-week" role="region" aria-label="Week schedule" aria-busy="true" data-bar-rows="6">
               <div class="scheduler-grid scheduler-grid--skeleton" id="scheduler-grid">
-                <div class="scheduler-corner"></div>
-                <div class="scheduler-days">
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                  <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
-                </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-fuel"></span></div></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
@@ -595,9 +598,9 @@
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
               </button>
             </div>
+            <div class="scheduler-avail__days" id="scheduler-avail-days"><div class="scheduler-avail__day scheduler-avail__day--head"></div></div>
             <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Drivers" aria-busy="true">
               <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid">
-                <div class="scheduler-avail__days"><div class="scheduler-avail__day scheduler-avail__day--head"></div></div>
                 <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="rux--skeleton__text scheduler-skeleton-who"></span></div></div>
                 <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="rux--skeleton__text scheduler-skeleton-who"></span></div></div>
                 <div class="scheduler-avail__row"><div class="scheduler-avail__name"><span class="rux--skeleton__text scheduler-skeleton-who"></span></div></div>

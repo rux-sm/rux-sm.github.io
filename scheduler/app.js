@@ -120,16 +120,19 @@
      edge across two device pixels. That width is written on the week, and
      only changes when the phone turns. */
   function fitStrip(sch) {
-    const corner = sch.querySelector('.scheduler-corner');
+    const band = document.getElementById('scheduler-band');
+    const corner = band?.querySelector('.scheduler-corner');
     if (!corner || !sch.clientWidth) return;
     /* The days stand `--scheduler-edge` clear of the bus column and of the
        pane's right edge, which the corner's margin is. */
     const edge = parseFloat(getComputedStyle(corner).marginInlineEnd) || 0;
     const available = sch.clientWidth - corner.offsetWidth - 2 * edge;
     const pinned = sch.closest('[data-board="compact"]') ? `${Math.floor(available / 2)}px` : '';
-    if (sch.style.getPropertyValue('--scheduler-day-w') !== pinned) {
-      if (pinned) sch.style.setProperty('--scheduler-day-w', pinned);
-      else sch.style.removeProperty('--scheduler-day-w');
+    // The band above the week counts its days by the same width.
+    for (const box of [sch, band]) {
+      if (box.style.getPropertyValue('--scheduler-day-w') === pinned) continue;
+      if (pinned) box.style.setProperty('--scheduler-day-w', pinned);
+      else box.style.removeProperty('--scheduler-day-w');
     }
     const day = parseFloat(getComputedStyle(sch).getPropertyValue('--scheduler-day-w'));
     if (!day) return;
@@ -150,6 +153,30 @@
       fitHeight(sch);
       fitStrip(sch);
     };
+
+    /* The day band stands above the week and its days follow the week
+       sideways by a scroll timeline, app.css's. A browser without one has
+       the distance written on the band as the week scrolls, and app.css
+       stands the days that far back; they may trail the trips by a frame. */
+    const band = document.getElementById('scheduler-band');
+    if (band && !(CSS.supports('animation-timeline', '--scheduler-strip') && CSS.supports('timeline-scope', '--scheduler-strip'))) {
+      const follow = () => band.style.setProperty('--scheduler-strip-at', `${sch.scrollLeft}px`);
+      sch.addEventListener('scroll', follow, { passive: true });
+      follow();
+    }
+    /* How far the week can scroll sideways, the days' whole travel, written
+       on the band whenever the week's width or its strip's changes: the pane
+       and the grid are both observed, and neither is sized by this. */
+    const grid = sch.querySelector('.scheduler-grid');
+    if (band && grid) {
+      const reach = () => {
+        const next = `${Math.max(0, sch.scrollWidth - sch.clientWidth)}px`;
+        if (band.style.getPropertyValue('--scheduler-strip-reach') !== next) band.style.setProperty('--scheduler-strip-reach', next);
+      };
+      const watch = new ResizeObserver(reach);
+      watch.observe(sch);
+      watch.observe(grid);
+    }
 
     // Three triggers: a window resize; the observer, for a box change the
     // window did not cause; and `Rux.schedule.fit`, which data.js calls after

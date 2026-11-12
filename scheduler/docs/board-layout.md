@@ -25,6 +25,15 @@ and is what `scheduler/app.css` draws; what each part says is in
 | A driver row | 40px, Carbon's md: the 32px tile and 4px above and below it |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
 
+## The day band
+
+32px, above the week and outside what scrolls, so a pull at the board's top
+or foot bounces the rows and the band holds still. Its corner stands over
+the bus column and its days follow the strip sideways, tied to the week's
+scroll by a scroll timeline. It holds the days near the view, three weeks
+either side, drawn again as the view nears where they end. The driver
+list's band stands above its list the same way.
+
 ## The trip bar, on six lines
 
 128px tall, 10px above and below its lines and 8px at its sides. A bar

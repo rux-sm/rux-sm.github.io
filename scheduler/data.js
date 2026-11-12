@@ -103,6 +103,8 @@
 
   const gridEl = document.getElementById('scheduler-grid');
   const schEl = document.getElementById('scheduler-week');
+  // The day band, above the week and outside what scrolls, so a pull at the board's top moves the rows under it.
+  const bandEl = document.getElementById('scheduler-band');
   const statusEl = document.getElementById('scheduler-status');
   // `rangeEl` is the calendar's button, and `rangeTextEl` the hidden span
   // inside it that `setRange` writes with the week in view, because
@@ -1039,8 +1041,7 @@
   /* Today's column counted from the bar's first day, held to the bar, so a
      longer bar's live rows stand under today; 0 off the week. */
   function roadDay(bar) {
-    const days = [...(bar.closest('.scheduler-week')?.querySelectorAll('.scheduler-day') ?? [])];
-    const today = days.findIndex(d => d.classList.contains('scheduler-day--today'));
+    const today = todayOnBand();
     if (today < 0) return 0;
     const span = Math.max(1, Math.ceil(Number(bar.dataset.span) || 1));
     return Math.min(span - 1, Math.max(0, Math.floor(today - (Number(bar.dataset.start) || 0))));
@@ -1317,6 +1318,39 @@
     num.replaceChildren(...new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).formatToParts(d)
       .map((part) => (part.type === 'day' ? part.value : el('span', 'scheduler-day__month', part.value))));
   }
+  /* THE BAND HOLDS THE DAYS NEAR THE VIEW ALONE, three weeks either side of
+     it, drawn again once the view comes within a week of where they end. The
+     band's days follow the strip sideways as one box, app.css's, and the
+     browser walks every cell in that box on each frame of a scroll: all of a
+     two-year strip's 735 cost a frame 3.3ms in Chrome, and these 1.1ms. A
+     cell's column is its day's own, set on the first drawn and counted on
+     from it, so the box keeps the strip's whole width. */
+  const BAND_REACH = 21, BAND_EDGE = 7;
+  let bandStart = null, bandDays = 0, bandFrom = 0, bandTo = 0;
+  function drawBand(view, again = false) {
+    const strip = bandEl?.querySelector('.scheduler-days');
+    if (!strip || !bandStart || !view) return;
+    const first = Math.floor(view[0]), last = Math.ceil(view[1]);
+    if (!again && first - BAND_EDGE >= bandFrom && last + BAND_EDGE <= bandTo) return;
+    const from = Math.max(0, Math.min(bandDays, first - BAND_REACH)), to = Math.max(from, Math.min(bandDays, last + BAND_REACH));
+    if (!again && from === bandFrom && to === bandTo) return;
+    const today = iso(new Date());
+    const cells = [];
+    for (let i = from; i < to; i++) cells.push(dayCell(addDays(bandStart, i), today));
+    if (cells.length) cells[0].style.gridColumnStart = String(from + 1);
+    strip.replaceChildren(...cells);
+    bandFrom = from;
+    bandTo = to;
+  }
+  // Today's place on the band, in days from its first, or -1 off it.
+  function todayOnBand() {
+    if (!bandStart) return -1;
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const at = daysBetween(bandStart, now);
+    return at >= 0 && at < bandDays ? at : -1;
+  }
+
   /* Draws the strip's rows, from `weekStart` to `weekEnd`, its day band and
      every bus, and leaves the trips to be drawn as they come near the view. */
   function render(data) {
@@ -1329,6 +1363,7 @@
     // The board's columns follow the days asked for.
     const days = Math.round((weekEnd - weekStart) / DAY) + 1;
     schEl.style.setProperty('--scheduler-days', String(days));
+    bandEl?.style.setProperty('--scheduler-days', String(days));
     const { tracks, rows, driversById, busesById, partnersById, windowsOf } = layOutBoard(data, weekStart, weekEnd);
     boardPartners = partnersById;
     // What the panel reads when a bar is clicked: the bar carries ids, not
@@ -1342,13 +1377,22 @@
     gridEl.removeAttribute('data-animate');
     gridEl.classList.remove('scheduler-grid--skeleton');
     gridEl.replaceChildren();
-    // The corner over the bus numbers is empty: each head draws its own type.
-    gridEl.appendChild(el('div', 'scheduler-corner'));
 
-    const today = iso(new Date());
-    const band = el('div', 'scheduler-days');
-    for (let i = 0; i < days; i++) band.appendChild(dayCell(addDays(weekStart, i), today));
-    gridEl.appendChild(band);
+    // The band's corner over the bus numbers is empty: each head draws its own type.
+    bandEl?.classList.remove('scheduler-band--skeleton');
+    bandEl?.replaceChildren(el('div', 'scheduler-corner'), el('div', 'scheduler-days'));
+    bandStart = weekStart;
+    bandDays = days;
+    bandFrom = bandTo = 0;
+    // The days round the week asked for, before the strip is placed on it, so a day is there to measure.
+    const at = Math.max(0, daysBetween(weekStart, cursor));
+    drawBand([at, at + WEEK], true);
+    /* A mark at each day's edge, inside what scrolls, for a compact board
+       under a mouse to stop on, since the days' own cells stand outside it. */
+    const snaps = el('div', 'scheduler-snaps');
+    snaps.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < days; i++) snaps.appendChild(el('i'));
+    gridEl.appendChild(snaps);
 
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
@@ -1597,7 +1641,7 @@
      phone's share, which costs no layout; measured only before app.js has
      fitted one. */
   const dayWidth = () => window.Rux?.schedule?.day?.()
-    || gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().width || 0;
+    || bandEl?.querySelector('.scheduler-day')?.getBoundingClientRect().width || 0;
   // Where the week in view sits in the strip, in days from its first.
   const stripAt = () => (stripStart ? daysBetween(stripStart, cursor) : -1);
   // Whether the strip runs to every day a view starting on `start` shows.
@@ -1610,7 +1654,7 @@
   function viewDays() {
     const w = dayWidth();
     if (!w || !schEl.clientWidth) return null;
-    const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
+    const head = bandEl?.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
     return [schEl.scrollLeft / w, (schEl.scrollLeft + schEl.clientWidth - head) / w];
   }
 
@@ -1703,6 +1747,7 @@
   function drawNear(days = viewDays()) {
     nearView = stripStart ? days : null;
     if (!nearView) return;
+    drawBand(nearView);
     const [first, last] = nearView;
     const drawn = [];
     for (const row of stripRows) {
@@ -2391,8 +2436,7 @@
       const next = rows[Math.max(0, Math.min(rows.length - 1, at + dir))];
       if (!next) return;
       const box = next.getBoundingClientRect(), pane = schEl.getBoundingClientRect();
-      const ceiling = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().bottom ?? pane.top;
-      if (box.top < ceiling) schEl.scrollTop -= ceiling - box.top + TIP_GAP;
+      if (box.top < pane.top) schEl.scrollTop -= pane.top - box.top + TIP_GAP;
       else if (box.bottom > pane.bottom) schEl.scrollTop += box.bottom - pane.bottom + TIP_GAP;
       aim(next);
     };
@@ -10932,6 +10976,8 @@
   const asideSlot = document.getElementById('scheduler-aside');
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
+  // The roster's day band, above the pane and outside what scrolls, as the board's is.
+  const availBand = document.getElementById('scheduler-avail-days');
   /* THE RAIL: the drivers' tiles, always beside the board but on a phone's,
      and the chevron in its head that slides the week out beside them. Every
      page load starts with the week shut, the tiles alone. */
@@ -11913,9 +11959,10 @@
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
-    /* The column header, then every driver, edge to edge in the pane, in the
-       order the corner's Sort says. */
-    const head = el('div', 'scheduler-avail__days');
+    /* The column header, in the band above the pane, then every driver, edge
+       to edge in the pane, in the order the corner's Sort says. */
+    const head = availBand;
+    head.textContent = '';
     // The corner holds Sort, a ghost button naming the order, which opens its menu.
     const corner = el('div', 'scheduler-avail__day scheduler-avail__day--head');
     const sortButton = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', RAIL_SORTS[view.railSort]);
@@ -11949,7 +11996,6 @@
       cell.dataset.day = String(i);
       head.appendChild(cell);
     }
-    availGrid.appendChild(head);
 
     railOrder(rows).forEach(row => {
       const r = el('div', 'scheduler-avail__row');
@@ -12016,7 +12062,7 @@
   const OPEN = ['scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day', 'scheduler-avail__cell--open',
     'scheduler-avail__cell--whole'];
   function markAvailDays(start, span) {
-    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
+    for (const c of [...availGrid.querySelectorAll('.scheduler-avail__cell--on-day'), ...availBand.querySelectorAll('.scheduler-avail__day--on-day')]) {
       if (c.classList.contains('scheduler-avail__cell--open')) c.removeAttribute('title');
       c.classList.remove(...OPEN);
     }
@@ -12026,12 +12072,12 @@
     // that runs on into the other week are simply not there to light.
     const end = start + Math.max(1, span || 1) - 1;
     for (let i = start; i <= end; i++) {
-      for (const d of availGrid.querySelectorAll(`.scheduler-avail__day[data-day="${i}"]`)) d.classList.add('scheduler-avail__day--on-day');
+      for (const d of availBand.querySelectorAll(`.scheduler-avail__day[data-day="${i}"]`)) d.classList.add('scheduler-avail__day--on-day');
       for (const c of availGrid.querySelectorAll(`.scheduler-avail__cell[data-day="${i}"]`)) c.classList.add('scheduler-avail__cell--on-day');
     }
     // Counted against the days shown, so a trip running on into the other
     // week is judged by the part the roster can see.
-    const days = availGrid.querySelectorAll('.scheduler-avail__days > .scheduler-avail__day--on-day').length;
+    const days = availBand.querySelectorAll(':scope > .scheduler-avail__day--on-day').length;
     if (!days) return;
     for (const r of availGrid.querySelectorAll('.scheduler-avail__row')) {
       const open = [...r.querySelectorAll('.scheduler-avail__cell--on-day')]
@@ -12215,10 +12261,9 @@
   ];
   function placeTip(tip, box, inColumn = false, roomIn = null) {
     const pane = schEl.getBoundingClientRect();
-    const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
-    // The board's room, right of its bus column and under its day band, unless the tip is given its own.
-    const room = roomIn ?? { top: (band ? band.bottom : pane.top) + TIP_GAP, bottom: pane.bottom - TIP_GAP,
+    // The board's room, right of its bus column and under its day band, which the pane starts under, unless the tip is given its own.
+    const room = roomIn ?? { top: pane.top + TIP_GAP, bottom: pane.bottom - TIP_GAP,
       left: (column ? column.right : pane.left) + TIP_GAP, right: pane.right - TIP_GAP };
     /* An icon scrolled out of the board's room leaves nothing to point at, as
        a card's trip does. The column never scrolls across, so a bus number
@@ -12343,10 +12388,9 @@
     const tip = availGrid?.querySelector('.scheduler-avail__card.rux--popover--open');
     if (!tip) return;
     const tile = tip.closest('.scheduler-avail__name');
-    const band = availGrid.querySelector('.scheduler-avail__days')?.getBoundingClientRect() ?? availEl.getBoundingClientRect();
     const pane = availEl.getBoundingClientRect();
     placeTip(tip, tile.getBoundingClientRect(), true,
-      { top: band.bottom + TIP_GAP, bottom: Math.min(pane.bottom, innerHeight) - TIP_GAP, left: TIP_GAP, right: innerWidth - TIP_GAP });
+      { top: pane.top + TIP_GAP, bottom: Math.min(pane.bottom, innerHeight) - TIP_GAP, left: TIP_GAP, right: innerWidth - TIP_GAP });
   }
   availGrid?.addEventListener('rux:popover-opened', e => {
     const tile = e.target.closest('.scheduler-avail__name');
@@ -12474,11 +12518,10 @@
     const box = bar.getBoundingClientRect();
     // Its layout width, which a pop still running does not scale.
     const tip = { width: barShortcuts.offsetWidth };
-    const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
-    const ceiling = band ? band.bottom : pane.top;
+    const ceiling = pane.top;
     const first = (column ? column.right : pane.left) + TIP_GAP;
-    /* A trip scrolled wholly under a sticky band, or out past an edge, leaves
+    /* A trip scrolled wholly under the day band, or out past an edge, leaves
        nothing to point at, so its shortcuts are put out of sight until it
        comes back, rather than riding over the day band after it. Visibility
        rather than `hidden`, so the row still has a size to measure; a row
@@ -12489,17 +12532,22 @@
     /* THE CARD IS ONE SIZE, app.css's 33rem, and never taller than the
        board's room, where its content scrolls inside it. */
     const INSET = 16;
-    const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
+    /* A day's left and right edges, counted from the row's own, since the
+       band holds only the days near the view. */
+    const strip = bar.parentElement.getBoundingClientRect();
+    const dayW = dayWidth();
+    const dayCount = dayW ? Math.round(strip.width / dayW) : 0;
+    const dayAt = i => (i >= 0 && i < dayCount ? { left: strip.left + i * dayW, right: strip.left + (i + 1) * dayW } : null);
     /* A bar out on the road stands its rows in today's column, road-bar.js's
        `--scheduler-today`, so the card goes beside that day instead. */
     const lit = Number(bar.style.getPropertyValue('--scheduler-today')) || 0;
-    const start = Math.max(0, Math.min(days.length - 1, (Number(bar.dataset.start) || 0) + lit));
+    const start = Math.max(0, Math.min(dayCount - 1, (Number(bar.dataset.start) || 0) + lit));
     /* BESIDE THE TRIP, THE CARD IS AS WIDE AS THE TWO DAYS IT STANDS OVER, less
        the 16px in from each of their edges, and no wider than 20rem or
        narrower than 16rem, so it hides no more than the two bars next to it. */
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const span = days[start + 2] && days[start + 1] ? days[start + 2].right - days[start + 1].left
-      : days[start - 1] && days[start - 2] ? days[start - 1].right - days[start - 2].left : 0;
+    const span = dayAt(start + 2) && dayAt(start + 1) ? dayAt(start + 2).right - dayAt(start + 1).left
+      : dayAt(start - 1) && dayAt(start - 2) ? dayAt(start - 1).right - dayAt(start - 2).left : 0;
     const narrowest = 16 * rem;
     if (span) barShortcuts.style.setProperty('--scheduler-card-w', `${Math.max(narrowest, Math.min(20 * rem, span - 2 * INSET))}px`);
     else barShortcuts.style.removeProperty('--scheduler-card-w');
@@ -12526,12 +12574,12 @@
        A bar out on the road stands its rows in today's column, road-bar.js's
        `--scheduler-today`, so the card goes beside that day instead, clear of
        what it says. */
-    const shown = (a, b) => !!days[a] && !!days[b] && days[a].left + INSET >= first && days[b].right - INSET <= pane.right;
+    const shown = (a, b) => !!dayAt(a) && !!dayAt(b) && dayAt(a).left + INSET >= first && dayAt(b).right - INSET <= pane.right;
     const side = shown(start + 1, start + 2) ? 'right' : shown(start - 2, start - 1) ? 'left' : null;
-    if (side && days.length) {
+    if (side && dayCount) {
       const middle = Math.max(box.top, ceiling) / 2 + Math.min(box.bottom, pane.bottom) / 2;
       const y = Math.max(ceiling + TIP_GAP, Math.min(middle - height / 2, pane.bottom - TIP_GAP - height));
-      const x = side === 'right' ? days[start + 1].left + INSET : days[start - 1].right - INSET - tip.width;
+      const x = side === 'right' ? dayAt(start + 1).left + INSET : dayAt(start - 1).right - INSET - tip.width;
       barShortcuts.dataset.side = side;
       barShortcuts.style.setProperty('--scheduler-open-top', `${y - host.top}px`);
       barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
@@ -12557,7 +12605,7 @@
       `${(above ? box.top - height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
     const last = pane.right - tip.width - TIP_GAP;
     // The edge the bar's writing starts at: its own, or today's column's.
-    const edge = lit && days[start] ? Math.max(box.left, days[start].left) : box.left;
+    const edge = lit && dayAt(start) ? Math.max(box.left, dayAt(start).left) : box.left;
     const x = Math.max(first, Math.min(edge, last));
     barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
     // Half a slot in from where the trip's writing starts, wherever the bar ended up.

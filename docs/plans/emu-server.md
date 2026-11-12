@@ -86,9 +86,8 @@ The setup kit, so any Mac is set up in one step:
 ## Tasks
 
 - [ ] Fit the 4 TB WD Red Plus in a free 3.5" bay, on a chipset SATA port.
-- [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
-  its 1 TB NVMe, make a single-drive pool on the 4 TB, share the
-  collection, and copy it on.
+- [ ] Install TrueNAS over Windows on the PC's 1 TB NVMe, make a
+  single-drive pool on the 4 TB, share the collection, and copy it on.
 - [ ] Copy the collection from the server to the T7.
 - [ ] Add Tailscale on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key

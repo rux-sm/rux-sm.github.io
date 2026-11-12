@@ -59,6 +59,8 @@ The home server, so the drive is not carried between Macs:
 - **A dynamic DNS name follows the home's address, with a free Let's
   Encrypt certificate,** so a link keeps working when AT&T changes the
   address.
+- **The published site downloads through that name even at home,** since a
+  page on HTTPS may not fetch the server's plain `http://` address.
 - **The download server reads the games and never writes them,** so the one
   part the internet reaches cannot change the collection.
 - **A broken download resumes where it stopped,** since a disc game is
@@ -120,8 +122,6 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Copy the collection from the server to the T7.
 - [ ] Forward one port on the AT&T gateway to the download server, with a
   dynamic DNS name and a Let's Encrypt certificate.
-- [ ] Run `emu/tools/serve-games.mjs` on the server as a TrueNAS app, as
-  `emu/docs/home-server.md` says.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Add Download to this Mac, resuming a broken download, Remove from this

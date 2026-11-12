@@ -45,6 +45,9 @@
       const parts = rel.split('/');
       const names = parts.slice(0, -1);
       for (let b = parts.at(-1); b.includes('.'); ) { b = b.slice(0, b.lastIndexOf('.')); names.push(b); }
+      // Mesen 2 names a save state after the game and its slot, as `<game>_11.mss`.
+      const slot = parts.at(-1).match(/^(.+)_\d+\.mss$/i);
+      if (slot) names.push(slot[1]);
       return games.find(g => { const st = stemsOf(g); return names.some(n => st.has(n)); });
     },
     // The title ID whole, or split into its two halves as folders, as Azahar and Cemu keep it.

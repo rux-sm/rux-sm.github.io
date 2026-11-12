@@ -113,7 +113,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "16"
+let version = "17"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -297,7 +297,22 @@ func setting(_ file: String, _ format: String, _ key: String) -> String? {
     if let n = v as? NSNumber { return clean(n.stringValue) }
     return nil
   case "toml":
-    return clean(first("^\\s*\(key)\\s*=\\s*(.+)$", text, lines: true))
+    // A bare key is wherever the file holds it; a dotted one is the last
+    // name under the table the rest names, as withSetting writes it.
+    let names = key.components(separatedBy: ".")
+    guard names.count > 1, let last = names.last else { return clean(first("^\\s*\(NSRegularExpression.escapedPattern(for: key))\\s*=\\s*(.+)$", text, lines: true)) }
+    let table = names.dropLast().joined(separator: ".")
+    var inTable = false
+    for line in text.components(separatedBy: .newlines) {
+      let t = line.trimmingCharacters(in: .whitespaces)
+      if t.hasPrefix("["), t.hasSuffix("]") { inTable = String(t.dropFirst().dropLast()) == table; continue }
+      if inTable, let eq = line.firstIndex(of: "="), line[..<eq].trimmingCharacters(in: .whitespaces) == last {
+        // A literal string, in single quotes as xemu writes a path, reads as a quoted one.
+        let v = line[line.index(after: eq)...].trimmingCharacters(in: .whitespaces)
+        return clean(v.count >= 2 && v.hasPrefix("'") && v.hasSuffix("'") ? String(v.dropFirst().dropLast()) : v)
+      }
+    }
+    return nil
   case "bml":
     // A BML tree: each level indented under its parent, a value after a colon.
     guard parts.count > 1, let re = try? NSRegularExpression(pattern: "^\(parts[0])\\s*$", options: [.anchorsMatchLines]),
@@ -849,11 +864,17 @@ var showWaiting: () -> Void = {}
 
 // Each folder of an emulator that Supabase fills: its path there, and where
 // it is inside the emulator's own folder.
-func givenPlaces(_ e: Saver) -> [(from: String, dir: String)] {
+// Each folder in Supabase a provided kind of file comes from, one or a list,
+// with the folder inside the emulator's own it goes to and the files it
+// takes: every one, or those its include matches, as a Switch's keys from
+// beside its firmware.
+func givenPlaces(_ e: Saver) -> [Carried] {
   guard let home = e.home else { return [] }
-  return (e.rule["files"] as? [[String: Any]] ?? []).compactMap { f in
-    guard f["class"] as? String == "provided", let from = f["given"] as? String, let path = f["path"] as? String else { return nil }
-    return (from, home + "/" + path)
+  return (e.rule["files"] as? [[String: Any]] ?? []).flatMap { f -> [Carried] in
+    guard f["class"] as? String == "provided", let path = f["path"] as? String else { return [] }
+    let include = (f["include"] as? String).flatMap { try? NSRegularExpression(pattern: $0) }
+    let froms = (f["given"] as? [String]) ?? (f["given"] as? String).map { [$0] } ?? []
+    return froms.map { Carried(stored: $0, dir: home + "/" + path, include: include) }
   }
 }
 
@@ -862,17 +883,19 @@ func given(_ name: String) -> (Int, [String: Any]) {
   let places = givenPlaces(e)
   let list: [[String: Any]] = places.flatMap { place in
     walk(place.dir).compactMap { f -> [String: Any]? in
-      guard let sha1 = sha1Of(f.path) else { return nil }
-      return ["path": place.from + f.path.dropFirst(place.dir.count), "size": f.size, "sha1": sha1]
+      guard place.holds(String(f.path.dropFirst(place.dir.count + 1))), let sha1 = sha1Of(f.path) else { return nil }
+      return ["path": place.stored + f.path.dropFirst(place.dir.count), "size": f.size, "sha1": sha1]
     }
   }
-  return (200, ["emulator": name, "folders": places.map { $0.from }, "running": running(appsOf(e.rule)), "files": list])
+  return (200, ["emulator": name, "folders": Array(Set(places.map { $0.stored })).sorted(), "running": running(appsOf(e.rule)), "files": list])
 }
 
 // Where a given file goes on this Mac, by its emulator and its path in Supabase.
 func givenAt(_ name: String, _ path: String) -> (e: Saver, at: String)? {
-  guard let e = saver(name), let place = givenPlaces(e).first(where: { path.hasPrefix($0.from + "/") }) else { return nil }
-  let rel = String(path.dropFirst(place.from.count + 1))
+  guard let e = saver(name), let place = givenPlaces(e).first(where: {
+    path.hasPrefix($0.stored + "/") && $0.holds(String(path.dropFirst($0.stored.count + 1)))
+  }) else { return nil }
+  let rel = String(path.dropFirst(place.stored.count + 1))
   return plainName(rel) ? (e, place.dir + "/" + rel) : nil
 }
 

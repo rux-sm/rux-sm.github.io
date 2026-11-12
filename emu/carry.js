@@ -131,10 +131,15 @@
     const here = await H.given(name);
     if (!here?.folders.length || here.running) return 0;
     const mine = new Set(here.files.map(f => f.path));
+    // What the emulator takes from a folder: every file, or those a kind's
+    // include matches, as a Switch's keys and not the firmware beside them.
+    const kinds = ((await R.emulators()).macSaves[name]?.files ?? []).filter(k => k.class === 'provided');
+    const takes = path => kinds.some(k => [k.given ?? []].flat().some(g => path.startsWith(`${g}/`)
+      && (!k.include || [`/${path.slice(g.length + 1)}`, path.slice(g.length + 1)].some(r => new RegExp(k.include).test(r)))));
     let came = 0;
     for (const folder of here.folders) {
       for (const f of await R.data.files(`${folder}/`)) {
-        if (mine.has(f.path)) continue;
+        if (mine.has(f.path) || !takes(f.path)) continue;
         const bytes = await R.data.fileBytes(f.sha1);
         if (await sha1Of(bytes) !== f.sha1) throw new Error(`${nameOf(f.path)} did not arrive whole. Try again.`);
         await H.putGiven(name, f.path, bytes);

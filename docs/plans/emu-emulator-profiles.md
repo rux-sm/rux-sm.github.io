@@ -177,12 +177,13 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Install Rux Emu Helper 16 on the iMac, make its Ryujinx folder a
+- [ ] Install Rux Emu Helper 17 on the iMac, make its Ryujinx folder a
   real one in place of its link to the drive, and play a game there in
   each emulator, which brings its saves from Supabase into its own folder.
-- [ ] Bring Ryujinx's keys and firmware, Mesen 2's firmware and the
-  optional BIOS of mGBA and melonDS from Supabase as DuckStation's, PCSX2's
-  and xemu's BIOS is brought, so a new Mac needs no drive for them.
+- [ ] Install Ryujinx's firmware from the zip Supabase holds: the helper
+  fetching it by a link the page signs, since it is 340 MB, and writing
+  each `.nca` into `bis/system/Contents/registered` as Ryujinx's own
+  Install Firmware does, proven on a Mac that has none.
 - [ ] Remove from the drive the save folders Supabase and each Mac now
   hold, which is every folder under `saves`, once the iMac plays from its
   own.

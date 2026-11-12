@@ -377,7 +377,13 @@
         {
           "kind": "Firmware",
           "class": "provided",
-          "path": "Firmware"
+          "path": "Firmware",
+          "given": [
+            "bios/snes",
+            "bios/fds",
+            "bios/satellaview"
+          ],
+          "include": "\\.(rom|bin)$"
         },
         {
           "kind": "Recent games",
@@ -455,6 +461,13 @@
       ],
       "files": [
         {
+          "kind": "GBA BIOS",
+          "class": "provided",
+          "path": "bios",
+          "key": "ports.qt/gba.bios",
+          "given": "bios/gba"
+        },
+        {
           "kind": "Screenshots",
           "class": "collected",
           "besideGame": true,
@@ -487,6 +500,11 @@
           "key": "ports.qt/savestatePath",
           "value": "{home}/states",
           "why": "Save states sit beside the saves and are carried the same way."
+        },
+        {
+          "key": "ports.qt/gba.bios",
+          "value": "{home}/bios/gba_bios.bin",
+          "why": "The GBA BIOS sits in its own folder on the Mac, brought from Supabase where it is kept."
         },
         {
           "key": "ports.qt/updateAutoCheck",
@@ -607,7 +625,10 @@
         {
           "kind": "BIOS and firmware",
           "class": "provided",
-          "key": "DS.BIOS9Path, DS.BIOS7Path, DS.FirmwarePath"
+          "path": "bios",
+          "key": "DS.BIOS9Path, DS.BIOS7Path, DS.FirmwarePath",
+          "given": "bios/nds",
+          "include": "^(bios7|bios9|firmware)\\.bin$"
         }
       ],
       "manages": [
@@ -620,6 +641,21 @@
           "key": "SavestatePath",
           "value": "{home}/states",
           "why": "Save states sit in its own folder too, and are carried the same way."
+        },
+        {
+          "key": "DS.BIOS9Path",
+          "value": "{home}/bios/bios9.bin",
+          "why": "Its BIOS and firmware sit in its own folder on the Mac, brought from Supabase where they are kept."
+        },
+        {
+          "key": "DS.BIOS7Path",
+          "value": "{home}/bios/bios7.bin",
+          "why": "The same, for the ARM7 BIOS."
+        },
+        {
+          "key": "DS.FirmwarePath",
+          "value": "{home}/bios/firmware.bin",
+          "why": "The same, for the firmware."
         }
       ],
       "notes": [
@@ -1199,7 +1235,9 @@
         {
           "kind": "Keys",
           "class": "provided",
-          "path": "system"
+          "path": "system",
+          "given": "bios/switch",
+          "include": "\\.keys$"
         },
         {
           "kind": "Firmware",

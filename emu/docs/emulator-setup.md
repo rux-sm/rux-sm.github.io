@@ -47,13 +47,19 @@ When the settings folder below is not where an emulator keeps its settings,
 correct `settings` for it in `emu/emulators.json`.
 
 - **Mesen 2, NES and SNES.** Mesen names each save after the game's file.
+  Emu brings the SNES coprocessor, Famicom Disk System and Satellaview
+  firmware from Supabase into its own `Firmware` folder.
 - **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** mGBA writes
-  `<game>.sav`. The GBA BIOS is optional, in Settings, BIOS.
+  `<game>.sav`. The GBA BIOS is optional: put `gba_bios.bin` in
+  `<drive>/bios/gba/`, and once Update puts it in Supabase, Emu brings it
+  into mGBA's own `bios` folder and points mGBA at it.
 - **ares, N64.** Quit ares and set `NoFilePrompt: true` under `General` in
   `~/Library/Application Support/ares/settings.bml`, so a game that can use
   the Transfer Pak opens without asking for a Game Boy game.
 - **melonDS, DS.** The BIOS and firmware are optional for DS games; a
-  DSi-only game needs the DSi files.
+  DSi-only game needs the DSi files. `bios7.bin`, `bios9.bin` and
+  `firmware.bin` in `<drive>/bios/nds/` go to Supabase with Update, and Emu
+  brings them into melonDS's own `bios` folder and points melonDS at them.
 - **Azahar, 3DS.** Azahar keeps each save under the game's title ID, which
   is how the scan matches it.
 - **DuckStation, PS1.** Emu brings its BIOS from Supabase into its own
@@ -76,8 +82,9 @@ correct `settings` for it in `emu/emulators.json`.
   Mac's own, `~/Library/Application Support/Ryujinx`, and never a link to
   the drive. A save sits in `bis/user/save` under a numbered folder, whose
   `ExtraData0` holds the game's title ID, which is how the scan matches it;
-  Emu carries the saves with the index that numbers them, and the firmware
-  stays on the Mac.
+  Emu carries the saves with the index that numbers them, and brings
+  `prod.keys` and `title.keys` from Supabase into its `system` folder. The
+  firmware stays on the Mac: install it once in Tools, Install Firmware.
 - **xemu, Xbox.** Emu brings the MCPX boot ROM and the flash ROM from
   Supabase into xemu's own `bios` folder, keeps the hard disk image, where
   games save, and the EEPROM in its `disk` folder, and turns its welcome

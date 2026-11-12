@@ -180,9 +180,8 @@ In this order, so what can lose a save comes last and proves itself first:
 - [ ] Install Rux Emu Helper 17 on the iMac, make its Ryujinx folder a
   real one in place of its link to the drive, and play a game there in
   each emulator, which brings its saves from Supabase into its own folder.
-- [ ] Copy the MacBook Pro's Ryujinx `bis/system/Contents/registered`,
-  as its Install Firmware wrote it, to `<drive>/bios/switch/Contents/` and
-  Update, then play a Switch game on a Mac whose Ryujinx has no firmware.
+- [ ] Play a Switch game on a Mac whose Ryujinx has no firmware, which
+  brings the installed firmware from Supabase.
 - [ ] Remove from the drive the save folders Supabase and each Mac now
   hold, which is every folder under `saves`, once the iMac plays from its
   own.

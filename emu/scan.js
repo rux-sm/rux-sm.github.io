@@ -778,8 +778,14 @@
 
     // The saves, those beside their games too, and the BIOS and keys, which
     // the backup zip packs; a file of 50 MB or more, like the Switch
-    // firmware, stays on the drive and the Macs.
-    const packed = [...(await walk('saves')).filter(f => !notSave(f)), ...besideGames.map(b => b.path), ...biosFiles]
+    // firmware's zip, stays on the drive and the Macs, and so does a folder
+    // a system needs whole, which is firmware as its emulator installed it,
+    // hundreds of files Supabase holds one by one.
+    const installed = f => {
+      const [, sys, ...rest] = f.split('/');
+      return (emulators[sys]?.needs ?? []).some(n => n.folder && rest.join('/').startsWith(`${n.folder}/`));
+    };
+    const packed = [...(await walk('saves')).filter(f => !notSave(f)), ...besideGames.map(b => b.path), ...biosFiles.filter(f => !installed(f))]
       .filter(f => stats.get(f).size < 50e6);
 
     return {

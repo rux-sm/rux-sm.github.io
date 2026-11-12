@@ -6,39 +6,59 @@ type: plan
 
 ## Goal
 
-The game collection lives on rux's old gaming PC, at home, instead of on the
-T7 carried between Macs, and any Mac, at home or away, is set up in one
-step and downloads the games it plays from it through the Emu app. The rest of
-Emu is `docs/plans/emu-app.md`.
+The game collection lives on rux's old gaming PC, at home, on one 4 TB hard
+drive that a second later makes a mirror, instead of on the T7 carried
+between Macs, and any Mac, at home or away, is set up in one step and
+downloads the games it plays from it through the Emu app. The rest of Emu is
+`docs/plans/emu-app.md`.
 
 ## Decisions
+
+The server, rux's old gaming PC, and what each part does:
+
+| Part | What it is | Its job |
+| :--- | :--- | :--- |
+| Processor | Intel Core i7-13700K | runs TrueNAS, with power to spare |
+| Graphics | Intel UHD Graphics 770, built in | shows the installer once; no graphics card |
+| Board | MSI MPG Z690 EDGE WIFI DDR4 (MS-7D31) | six SATA ports, so the hard drive needs no card |
+| Memory | 32 GB DDR4-3600, two 16 GB Corsair Vengeance | ZFS's cache |
+| Solid-state drive | Samsung 980 PRO 1 TB NVMe | TrueNAS's boot drive |
+| Hard drive | WD Red Plus 4 TB (WD40EFPX), CMR | the collection |
+| Network | Intel I225-V 2.5 GbE, linked at 1 Gbps | the wired connection TrueNAS uses |
+| Wi-Fi | Intel Wi-Fi 6 AX201 | unused, since TrueNAS has no Wi-Fi |
 
 The home server, so the drive is not carried between Macs:
 
 - **Until the server is built, the T7 stays the games' home,** carried
   between Macs as now.
-- **rux's old gaming PC becomes the games' home,** holding the games and the
-  dated backup; everything else is in Supabase, as
+- **The PC becomes the games' home,** holding the games and the dated
+  backup; everything else is in Supabase, as
   `docs/plans/emu-emulator-profiles.md` says. It only stores, and every game
   is played on another machine.
-- **The collection lives on two matching 8 TB CMR NAS hard drives,
-  mirrored,** about 7 TB usable for a collection of 800 GB that grows by
-  hundreds at a time; hard drives cost a third of SSDs per terabyte, and the
-  network, not the drives, sets the speed. The T7 stays a copy, and Supabase
-  the saves'.
-- **The drives are CMR, never SMR,** since an SMR drive slows to a crawl
-  rebuilding a ZFS mirror.
-- **TrueNAS runs from the PC's 1 TB NVMe, in place of Windows,** which the
-  PC no longer needs, so no boot drive is bought; TrueNAS takes its whole
-  boot drive and keeps no files there.
+- **TrueNAS runs from the 980 PRO, in place of Windows,** which the PC no
+  longer needs; TrueNAS takes its whole boot drive and keeps no files there,
+  so the solid-state drive holds no games.
+- **The collection lives on the one 4 TB WD Red Plus,** about 3.6 TB usable
+  for a collection of 800 GB that grows by hundreds at a time; a hard drive
+  costs a third of an SSD per terabyte, and the network, not the drive, sets
+  the speed.
+- **The drive is CMR, never SMR,** since an SMR drive slows to a crawl
+  rebuilding a ZFS mirror, and every WD Red Plus is CMR.
+- **The pool starts as a single drive and becomes a mirror** when a second
+  matching 4 TB is extended onto it, which ZFS does in place with nothing
+  copied off; a mirror is as big as its smaller drive, so the second matches.
+- **Until the mirror, the T7 is the collection's only other copy,** since a
+  single drive's nightly check finds a damaged file but has no second copy
+  to mend it from.
+- **The pool grows past 4 TB by replacing each drive with a bigger one,** one
+  at a time, and takes the new size once both are replaced.
 - **Its 32 GB of memory is ZFS's cache,** so listings, the nightly scan and
-  repeated reads come from memory, not the disks.
-- **It is on wired Ethernet,** since TrueNAS has no Wi-Fi.
-- **It runs TrueNAS Community Edition,** free storage software made for a
-  mirrored pair, which shares the collection over the network to Macs and,
-  later, a PC.
-- **It runs with no screen, managed from a browser;** its i7-13700K's
-  built-in graphics shows the installer once, so it needs no graphics card.
+  repeated reads come from memory, not the disk.
+- **It is on wired Ethernet,** since TrueNAS has no Wi-Fi; the router's
+  1 Gbps, about 110 MB a second, is what a single hard drive keeps up with.
+- **It runs TrueNAS Community Edition,** free storage software that shares
+  the collection over the network to Macs and, later, a PC.
+- **It runs with no screen, managed from a browser.**
 - **Tailscale reaches it from anywhere,** for the Mac that is not at home.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
@@ -74,17 +94,22 @@ The setup kit, so any Mac is set up in one step:
 
 ## Questions
 
+- Does the case have a free 3.5" bay, or does the drive need a 3.5" mount?
+- When is the second 4 TB bought, which ends the T7 being the only other
+  copy?
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
 
 ## Tasks
 
-- [ ] Check the case has two free 3.5" bays and the board two free SATA
-  ports, then buy two 8 TB WD Red Plus (WD80EFPX), with SATA cables if the
-  board came without spares.
+- [ ] Fit the 4 TB WD Red Plus in a 3.5" bay on a SATA port, with the
+  board's SATA cable and a power lead from the supply.
 - [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
-  its 1 TB NVMe, make the mirrored pool and share the collection, and copy
-  it on.
+  the 980 PRO, make a single-drive pool on the 4 TB and share the collection,
+  and copy it on from the T7 through a Mac, since TrueNAS cannot read the
+  T7's APFS.
+- [ ] Buy a second 4 TB WD Red Plus (WD40EFPX) and extend the pool onto it,
+  making it a mirror.
 - [ ] Add Tailscale on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.

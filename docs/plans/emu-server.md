@@ -33,7 +33,11 @@ The home server, so the drive is not carried between Macs:
   boot drive and keeps no files there.
 - **Its 32 GB of memory is ZFS's cache,** so listings, the nightly scan and
   repeated reads come from memory, not the disks.
-- **It is on wired Ethernet,** since TrueNAS has no Wi-Fi.
+- **The drives plug into two of the board's four chipset SATA ports,** not
+  the two on its add-on ASMedia controller, which ZFS trusts less; the MSI
+  MPG Z690 EDGE WIFI DDR4 has all six free, and the NVMe shares none of them.
+- **It is on wired Ethernet,** since TrueNAS has no Wi-Fi; the board's
+  2.5 Gb port links at 1 Gb today, which a 1 Gb switch or router sets.
 - **It runs TrueNAS Community Edition,** free storage software made for a
   mirrored pair, which shares the collection over the network to Macs and,
   later, a PC.
@@ -79,9 +83,8 @@ The setup kit, so any Mac is set up in one step:
 
 ## Tasks
 
-- [ ] Check the case has two free 3.5" bays and the board two free SATA
-  ports, then buy two 8 TB WD Red Plus (WD80EFPX), with SATA cables if the
-  board came without spares.
+- [ ] Check the case has two free 3.5" bays, then buy two 8 TB WD Red Plus
+  (WD80EFPX), with two SATA cables if the board's spares are gone.
 - [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
   its 1 TB NVMe, make the mirrored pool and share the collection, and copy
   it on.

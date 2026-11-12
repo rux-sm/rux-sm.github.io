@@ -66,6 +66,9 @@ The home server, so the drive is not carried between Macs:
 - **The log-in is the guard.** The server sends a file only on a request
   that proves one of rux's accounts is signed in, so it keeps no accounts or
   passwords of its own.
+- **The proof is the signed-in account's own Supabase access token,** which
+  the server checks against Supabase's public signing keys, since that
+  needs no extra Supabase function and puts no secret on the server.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
 - **Saves are kept on each Mac and carried to and from Supabase,** as
@@ -107,10 +110,6 @@ The setup kit, so any Mac is set up in one step:
 
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
-- How does the server know a request is rux's? A link Supabase signs with a
-  secret the server shares, or rux's own Supabase access token checked
-  against Supabase's public signing keys, which puts no secret on the
-  server. Recommended: the access token.
 
 ## Tasks
 

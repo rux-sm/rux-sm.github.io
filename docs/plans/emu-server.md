@@ -59,8 +59,6 @@ The home server, so the drive is not carried between Macs:
 - **A dynamic DNS name follows the home's address, with a free Let's
   Encrypt certificate,** so a link keeps working when AT&T changes the
   address.
-- **Away from home the published site downloads through that name,** since
-  a page on HTTPS may not fetch the server's plain `http://` address.
 - **The download server reads the games and never writes them,** so the one
   part the internet reaches cannot change the collection.
 - **A broken download resumes where it stopped,** since a disc game is
@@ -84,11 +82,13 @@ The home server, so the drive is not carried between Macs:
   Mac's own library folder, under its system's folder as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
   Remove from this Mac frees the space. Play opens a game from there.
-- **The download goes straight into the folder through Chrome,** which lets a
-  page write into a folder rux chooses once; Safari cannot, so the app says
-  to use Chrome for it.
-- **The server sends a game only on a signed link,** over HTTPS, answering
-  only the app's own site.
+- **Rux Emu Helper does every download,** given the page's access token:
+  from the server's home address when it answers, since the gateway loops
+  the public name back slowly, stalling 5 to 19 seconds or failing, and
+  from the public name otherwise. The helper writes the folder itself, so
+  any browser works and Play already needs it on the Mac.
+- **The server answers only the app's own site** in a browser, and anything
+  carrying a signed-in account's token, as the helper does.
 - **The Collection marks what this Mac holds,** from the library folder it
   reads, so a game to download and one ready to play are told apart.
 - **On this Mac is a view of the Collection,** listing only the games this
@@ -114,11 +114,6 @@ The setup kit, so any Mac is set up in one step:
 
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
-- How does a Mac at home download? The gateway loops the public name back
-  to the server slowly, stalling 5 to 19 seconds or failing, while the
-  server's home address answers at once but only over plain `http://`,
-  which the published site may not fetch. Recommended: Rux Emu Helper
-  fetches from the home address when the Mac is at home.
 
 ## Tasks
 
@@ -127,6 +122,8 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Copy the collection from the server to the T7.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Add Download to this Mac, resuming a broken download, Remove from this
-  Mac, the mark of what this Mac holds and the On this Mac view.
+- [ ] Have Rux Emu Helper download a game from the home address or the
+  public name, resuming a broken download, and add Download to this Mac,
+  Remove from this Mac, the mark of what this Mac holds and the On this Mac
+  view.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

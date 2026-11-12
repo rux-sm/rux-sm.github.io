@@ -63,8 +63,10 @@ if (!commit) throw new Error('data/atlas/PIN names no commit -- run sh tools/syn
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 // An account atlas ends without a full stop gets one, unless its last
-// sentence is one the export wrote in place of a gap.
-const sentence = (html) => cap(html).replace(/\.?(<\/strong>)?$/, (m, close) => (close ? '.' + close : '.'));
+// sentence is one the export wrote in place of a gap. A stop already there
+// may sit inside the tags that close the line, as it does after a status tag,
+// and a line that ends in bold takes its stop inside the bold.
+const sentence = (html) => cap(html).replace(/(\.?)((?:<\/[a-z]+>)*)$/, (m, stop, close) => (stop ? m : close === '</strong>' ? '.' + close : close + '.'));
 // A table cell closes without a full stop, as every cell atlas writes does,
 // so a sentence the build moves into one loses its stop.
 const unstop = (html) => html.replace(/\.((?:<\/[a-z]+>)*)$/, '$1');

@@ -33,7 +33,8 @@
 //                          emulator holds in the folders Supabase fills
 //   PUT    /mac/given      ?emulator=&path=<its path in Supabase>, the body
 //                          written as that file
-//   GET    /mac/saves      each save this Mac keeps itself, not on the drive
+//   GET    /mac/saves      each save this Mac keeps itself, neither on the
+//                          drive nor carried to Supabase
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
 //   GET    /newest         the newest version of each emulator its project
 //                          has out, asked of the feed emulators.json names
@@ -112,7 +113,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "15"
+let version = "16"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -444,7 +445,8 @@ func macReport() -> [String: Any] {
   ]
 }
 
-// Each save this Mac keeps itself, not on the drive: its emulator and the
+// Each save this Mac keeps itself, neither on the drive nor carried to
+// Supabase, which holds a carried save already: its emulator and the
 // systems it plays, its path within its place for matching it to its game,
 // `stored` naming it for /mac/save, the folder it came from for restoring
 // it, its size, and when it was made and last saved.
@@ -452,7 +454,7 @@ func macSaves() -> [[String: Any]] {
   let drive = collection().map { real($0.path) + "/" }
   var out: [[String: Any]] = []
   for e in savers() {
-    for place in e.places {
+    for place in e.places where place.rule["stored"] == nil {
       for f in saves(in: place) {
         if let drive, real(f.path).hasPrefix(drive) { continue }
         let a = try? files.attributesOfItem(atPath: f.path)

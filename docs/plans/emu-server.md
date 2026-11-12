@@ -144,7 +144,7 @@ The setup kit, so any Mac is set up in one step:
 
 - [ ] Refresh the T7 from the server, the games and `backups`, as its
   backup, with one command.
-- [ ] Build Rux Emu Helper 15 onto the `games` share, as it is on the T7, and
+- [ ] Build Rux Emu Helper 16 onto the `games` share, as it is on the T7, and
   Update; then prove on a Mac at home that it reads the collection from the
   share with the T7 unplugged, once macOS has given it its permissions again.
 - [ ] Run the scan on the server each night, saving to Supabase with a key

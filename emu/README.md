@@ -31,10 +31,10 @@ original still in the drive's to-delete folder, a BIOS file an emulator
 needs, and a save whose game is not on the drive. It says when that folder is
 safe to empty: when every game converted from what is in it is marked as playing.
 
-`saves.html` shows the three copies of the saves, on the drive, in Supabase
-and on each Mac, with each backup in Supabase to download; then every save
-by system, on the drive or a Mac, each with its kind, dates, how to restore
-it and rux's note on it.
+`saves.html` shows the copies of the saves, on the drive, in Supabase and on
+each Mac, with each backup in Supabase to download; then every save by system,
+on the drive, on a Mac or carried through Supabase, each with its kind, dates
+and how to restore it, and rux's note on a drive's or a Mac's.
 
 `status.html` starts with Update, which scans the drive through Rux Emu Helper on a
 Mac, and runs by itself when the page opens and the helper has the drive. It shows how

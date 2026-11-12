@@ -4,9 +4,12 @@
    Where each of the three copies stands: the drive, Supabase and each Mac,
    with every backup in Supabase to download; Update on the Status page
    saves them.
-   Then every save, the drive's and each Mac's, under one heading per
-   system, each opening in the side panel with its files, dates, where it
-   lives, how to restore it, and rux's note, which is saved from there.
+   Then every save, the drive's, each Mac's and the ones Emu carries, which
+   Supabase holds, under one heading per system, each opening in the side
+   panel with its files, dates, where it lives and how to restore it. A
+   drive's or a Mac's save has rux's note, which is saved from there. A
+   carried save is read from the files Supabase lists and matched to its
+   game by the rules the scan uses.
    ========================================================================== */
 (() => {
   'use strict';
@@ -18,7 +21,28 @@
 
   const KIND = { save: 'Save', state: 'Save state', card: 'Memory card' };
   const DRIVE = 'drive';
+  const SUPABASE = 'Supabase';
   const where = s => (s.location === DRIVE ? 'the drive' : s.location);
+
+  // The saves Emu carries, from the files Supabase lists under saves/: each
+  // system's folder read as the scan reads the drive's, less what a system
+  // says is not a save.
+  function carried(files, games, emulators) {
+    const found = [];
+    for (const f of files) {
+      const [, top, ...rest] = f.path.split('/');
+      const rel = rest.join('/');
+      if (!emulators[top] || !rel) continue;
+      const only = emulators[top].savesIn;
+      if (only && !new RegExp(only).test(rel)) continue;
+      found.push({ rel, systems: R.saveRules.systemsOf(top, emulators),
+        file: { name: f.path, size: Number(f.size), created: f.saved_at, saved: f.saved_at, mac: f.mac } });
+    }
+    return R.saveRules.group(found, games, emulators).map(s => ({
+      ...s, location: SUPABASE, created_at: s.created, saved_at: s.saved, note: null,
+      mac: s.files.map(f => f.mac).filter(Boolean).at(-1) ?? null,
+    }));
+  }
   let saves = [];
   let driveZip = null;
 
@@ -45,10 +69,12 @@
     for (const [host, b] of macs) out.append(tile(host, R.date(b.at), b.folder));
     // Each Mac whose own saves were uploaded, and when last.
     const uploaded = new Map();
-    for (const s of saves.filter(x => x.location !== DRIVE)) {
+    for (const s of saves.filter(x => x.location !== DRIVE && x.location !== SUPABASE)) {
       if (!uploaded.has(s.location) || uploaded.get(s.location) < s.backed_up_at) uploaded.set(s.location, s.backed_up_at);
     }
     for (const [mac, at] of uploaded) out.append(tile(`${mac}'s saves`, R.date(at), 'Uploaded from the Mac'));
+    const held = saves.filter(x => x.location === SUPABASE);
+    if (held.length) out.append(tile('Carried saves', R.date(held.map(x => x.saved_at).sort().at(-1)), `${held.length} in Supabase, on each Mac that plays`));
 
     const ul = $('emu-backup-list');
     ul.replaceChildren();
@@ -89,7 +115,7 @@
         b.type = 'button';
         const main = el('span', 'emu-row__main');
         main.append(el('span', '', s.name), el('span', 'emu-row__sub',
-          [KIND[s.kind], `on ${where(s)}`, `last saved ${R.date(s.saved_at)}`, s.game ? '' : 'no game on the drive', s.note].filter(Boolean).join(' · ')));
+          [KIND[s.kind], s.location === SUPABASE ? 'in Supabase' : `on ${where(s)}`, `last saved ${R.date(s.saved_at)}`, s.game ? '' : 'no game on the drive', s.note].filter(Boolean).join(' · ')));
         b.append(main);
         b.addEventListener('click', () => openSave(s));
         li.append(b);
@@ -106,15 +132,24 @@
     const body = $('emu-panel-body');
     body.replaceChildren();
     const dl = el('dl', 'emu-facts');
-    for (const [k, v] of [['Game', s.game ?? 'None on the drive by this name'], ['Lives on', where(s)],
-      ['Created', R.when(s.created_at)], ['Last saved', R.when(s.saved_at)],
-      ['Backed up', s.location === DRIVE ? (driveZip ? `In ${driveZip.name}` : 'Not yet') : R.when(s.backed_up_at)],
+    const kept = s.location === SUPABASE;
+    for (const [k, v] of [['Game', s.game ?? 'None on the drive by this name'],
+      ['Lives on', kept ? `Supabase, and each Mac that plays it${s.mac ? `; last carried from ${s.mac}` : ''}` : where(s)],
+      ...(kept ? [] : [['Created', R.when(s.created_at)]]), ['Last saved', R.when(s.saved_at)],
+      ...(kept ? [] : [['Backed up', s.location === DRIVE ? (driveZip ? `In ${driveZip.name}` : 'Not yet') : R.when(s.backed_up_at)]]),
       ['Size', R.size(s.size)], ['Files', (s.files ?? []).map(f => f.name).join('\n')]]) {
       const wrap = el('div');
       wrap.append(el('dt', '', k), el('dd', k === 'Files' ? 'emu-files' : '', v));
       dl.append(wrap);
     }
     body.append(dl, restoreOf(s));
+    // A carried save has no row of its own to keep a note in.
+    if (kept) {
+      $('emu-panel').hidden = false;
+      $('emu-panel').classList.add('rux--side-panel--open');
+      $('emu-panel-close').focus();
+      return;
+    }
     const form = el('form', 'rux--stack-vertical rux--stack-scale-5');
     const item = el('div', 'rux--form-item');
     const lw = el('div', 'rux--text-area__label-wrapper');
@@ -177,6 +212,24 @@
       }
       return box;
     }
+    if (s.location === SUPABASE) {
+      box.append(el('p', 'rux--type-body-01', 'Play its game on a Mac and Emu puts it there. Each file can also be downloaded by hand.'));
+      for (const f of s.files ?? []) {
+        const b = el('button', 'rux--btn rux--btn--tertiary', `Download ${f.name.split('/').pop()}`);
+        b.type = 'button';
+        b.addEventListener('click', async () => {
+          try {
+            const link = await R.data.givenLink(f.name);
+            if (!link) throw new Error('gone');
+            location.href = link;
+          } catch (error) { console.error(error); R.notice('That file could not be downloaded. Try again.'); }
+        });
+        const row = el('div', 'emu-actions');
+        row.append(b);
+        box.append(row);
+      }
+      return box;
+    }
     for (const f of s.files ?? []) {
       const row = el('div', 'emu-actions');
       const b = el('button', 'rux--btn rux--btn--tertiary', `Download ${f.name.split('/').pop()}`);
@@ -198,8 +251,12 @@
 
   async function load() {
     let drive, backups;
-    try { [saves, drive, backups] = await Promise.all([R.data.saves(), R.data.drive(), R.data.backups()]); }
-    catch (error) { console.error(error); R.notice('Emu could not read the saves. Try again.'); return; }
+    try {
+      let files, games, emulators;
+      [saves, drive, backups, files, games, emulators] = await Promise.all([R.data.saves(), R.data.drive(), R.data.backups(),
+        R.data.files('saves/'), R.data.games(), R.emulators()]);
+      saves = [...saves, ...carried(files, games, emulators.systems)];
+    } catch (error) { console.error(error); R.notice('Emu could not read the saves. Try again.'); return; }
     $('emu-empty').hidden = Boolean(drive);
     if (!drive) return;
     driveZip = backups[0] ?? null;

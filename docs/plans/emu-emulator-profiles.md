@@ -176,7 +176,7 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Install Rux Emu Helper 15 on the iMac, make its Ryujinx folder a
+- [ ] Install Rux Emu Helper 16 on the iMac, make its Ryujinx folder a
   real one in place of its link to the drive, and play a game there in
   each emulator, which brings its saves from Supabase into its own folder.
 - [ ] Install Rosetta on the MacBook Pro, where PCSX2 does not open
@@ -187,12 +187,10 @@ In this order, so what can lose a save comes last and proves itself first:
   and xemu's BIOS is brought, so a new Mac needs no drive for them.
 - [ ] Carry xemu's disk image only when a game was played, since opening
   xemu alone changes it and every carry sends all 60 MB.
-- [ ] Stop Update gathering the saves Emu carries as a Mac's own, since
-  it uploads a second copy of each to the backups bucket.
-- [ ] Have the Saves page list Supabase, and a game's panel say whether
-  its saves are in step, with one press to use the other copy where two
-  were found; then remove from the drive the save folders Supabase and
-  each Mac now hold, which is every folder under `saves`.
+- [ ] Have a game's panel say whether its saves are in step, with one
+  press to use the other copy where two were found; then remove from the
+  drive the save folders Supabase and each Mac now hold, which is every
+  folder under `saves`.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

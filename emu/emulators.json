@@ -103,7 +103,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
-      "settings": "~/Library/Application Support/mGBA",
+      "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
         "args": [
@@ -117,7 +117,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
-      "settings": "~/Library/Application Support/mGBA",
+      "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
         "args": [
@@ -131,7 +131,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
-      "settings": "~/Library/Application Support/mGBA",
+      "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
         "args": [
@@ -410,7 +410,6 @@
         "mGBA.app"
       ],
       "homes": [
-        "~/Library/Application Support/mGBA",
         "~/.config/mgba"
       ],
       "config": {

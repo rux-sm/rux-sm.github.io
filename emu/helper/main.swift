@@ -87,7 +87,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "9"
+let version = "10"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]

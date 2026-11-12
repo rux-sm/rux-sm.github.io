@@ -176,10 +176,6 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Have the helper read and write mGBA's settings in `~/.config/mgba/`
-  alone, where mGBA 0.10.5 keeps them on both Macs, and move the MacBook
-  Pro's save folder there from `~/Library/Application Support/mGBA/config.ini`,
-  which mGBA never reads, so Status stops saying it saves to the drive.
 - [ ] Carry for mGBA alone, on the iMac with mGBA installed: each place in
   `emulators.json` naming its folder in Supabase, fingerprints, the five
   kept copies, the newest playing when both changed, the session around

@@ -203,10 +203,21 @@
     document.head.appendChild(script);
   }));
 
+  /* A licence card's size in PDF points, the ID-1 card every US licence is,
+     85.60 by 53.98 mm, so a copy prints as large as the card itself. */
+  const CARD = { long: 85.6 / 25.4 * 72, short: 53.98 / 25.4 * 72 };
+  // The size a licence copy is drawn at: the card's own, its long side the
+  // card's long side whichever way it stands, and never past its box.
+  const cardSize = (art, box) => {
+    const [long, short] = art.width >= art.height ? [art.width, art.height] : [art.height, art.width];
+    const scale = Math.min(CARD.long / long, CARD.short / short, box.w / art.width, box.h / art.height);
+    return [art.width * scale, art.height * scale];
+  };
+
   /* The signed PDF with the office's part written in: the licence copy drawn
-     into its box, kept in its own proportions and centred, a photo as it is
-     and a PDF by its first page; and each of `words` on its line, in the
-     ink the driver's answers are written in. */
+     at a real card's size, centred in its box, a photo as it is and a PDF by
+     its first page; and each of `words` on its line, in the ink the driver's
+     answers are written in. */
   async function drawnCopy(url, fileName, licence, words) {
     const bytes = u => fetch(u).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
     const [{ PDFDocument, StandardFonts, rgb }, signed, copy] = await Promise.all([pdfLib(), bytes(url), licence ? bytes(licence.url) : null]);
@@ -216,8 +227,7 @@
       const page = pdf.getPage(at.page);
       const ext = licence.file_name.split('.').pop().toLowerCase();
       const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
-      const scale = Math.min(at.w / art.width, at.h / art.height);
-      const [width, height] = [art.width * scale, art.height * scale];
+      const [width, height] = cardSize(art, at);
       const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
       if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
     }

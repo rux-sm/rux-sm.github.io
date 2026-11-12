@@ -23,8 +23,8 @@
 //                   answers to the fields `of` names, joined by spaces
 //   signature       the drawn signature, `at` with `w` and `h`
 //   signed_on       the day of signing, written in, nothing asked
-//   licence_copy    the box the driver's Licence copy fills, `at` with `w`
-//                   and `h`
+//   licence_copy    the box the driver's Licence copy is centred in, at a
+//                   real card's size, `at` with `w` and `h`
 //   trip_customer   the trip's customer, the campus a school form asks for
 //   trip_dates      the trip's days
 // The last three are the office's: never written at signing, they are

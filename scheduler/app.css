@@ -885,6 +885,25 @@ button.scheduler-row-head__num:focus { outline: none; }
   -webkit-user-select: none;
   user-select: none;
 }
+/* THE STRIP ENDS 8PX CLEAR OF THE PANE'S RIGHT EDGE, as it does of the bus
+   column on the left: the width in view is rarely whole days, so a bar
+   running past the edge is cut into 8px of the row's surface, held at the
+   edge as the head's shadow is at the left, rather than against the pane.
+   It takes no press, as that shadow takes none, and stands over the bars,
+   whose highest is 2. A track stretched to its grid row has a definite
+   height, so 100% is the row's. */
+.scheduler-week--scroll .scheduler-track::after {
+  content: "";
+  position: sticky;
+  inset-inline-end: 0;
+  z-index: 3;
+  display: block;
+  inline-size: calc(var(--scheduler-edge) + var(--scheduler-gap-clear));
+  block-size: 100%;
+  margin-inline-start: auto;
+  background: var(--rux-layer);
+  pointer-events: none;
+}
 /* No rule runs between the days or the drivers in the roster, as none does
    on the board: the tiles are the rows, the day band names the columns, and
    the marks show where a day starts. None stands beside the names either,

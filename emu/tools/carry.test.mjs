@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // carry.test.mjs -- runs carry.js against a stand-in helper and Supabase:
 // one case per way a save can differ between a Mac and Supabase, then what a
-// game's panel is told and the press that plays the copy set aside.
+// game's panel is told and the press that plays the copy set aside, then a
+// save of several files, as Azahar's, carried as one.
 
 import fs from 'node:fs';
 import crypto from 'node:crypto';
@@ -14,7 +15,8 @@ const enc = s => new TextEncoder().encode(s);
 let fails = 0;
 const check = (name, ok) => { if (!ok) fails++; console.log(ok ? '   ok   ' : '  FAIL  ', name); };
 
-async function world({ local = {}, ledger = {}, remote = [] , running = false }) {
+const GB = { emulator: 'mGBA', systems: { gb: { emulator: 'mGBA', saves: 'name' } }, macSaves: { mGBA: { places: [{ stored: 'saves/gb' }, { stored: 'saves/gb/states' }] } } };
+async function world({ local = {}, ledger = {}, remote = [], running = false, rules = GB }) {
   // local: path -> {text, saved}; remote rows oldest first: {path, text, saved}
   const mac = new Map(Object.entries(local).map(([p, v]) => [p, { bytes: enc(v.text), saved: v.saved }]));
   const led = new Map(Object.entries(ledger).map(([p, t]) => [p, sha(enc(t))]));
@@ -38,9 +40,9 @@ async function world({ local = {}, ledger = {}, remote = [] , running = false })
   };
   const store = new Map();
   const localStorage = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
-  const window = { Emu: { data, helper: H, saveRules, emulators: async () => ({ systems: { gb: { emulator: 'mGBA', saves: 'name' } }, macSaves: { mGBA: { places: [{ stored: 'saves/gb' }, { stored: 'saves/gb/states' }] } } }) } };
+  const window = { Emu: { data, helper: H, saveRules, emulators: async () => rules } };
   new Function('window', 'crypto', 'Blob', 'console', 'localStorage', src)(window, globalThis.crypto, Blob, console, localStorage);
-  const out = await window.Emu.carry.run('mGBA');
+  const out = await window.Emu.carry.run(rules.emulator);
   const text = b => new TextDecoder().decode(b);
   return { out, carry: window.Emu.carry, local: p => mac.has(p) ? text(mac.get(p).bytes) : null, remote: p => { const r = now().find(r => r.path === p); return r ? text(blobs.get(r.sha1)) : null; },
     copies: p => rows.filter(r => r.path === p).map(r => text(blobs.get(r.sha1))), ledger: p => led.get(p), sha: t => sha(enc(t)) };
@@ -80,4 +82,19 @@ check('a second press goes back', w.local(P) === 'R' && w.remote(P) === 'R');
 w = await world({ local: { [P]: { text: 'A', saved: 'x' } }, remote: [{ path: P, text: 'A', saved: 'x' }] });
 st = await w.carry.standing(game);
 check('a save never in doubt offers no other copy', st.inStep === true && st.other.length === 0);
+
+// A 3DS save is a folder of files, read from emulators.json as Azahar's places name it.
+const rules = JSON.parse(fs.readFileSync(fileURLToPath(new URL('../emulators.json', import.meta.url)), 'utf8'));
+const N3DS = { emulator: 'Azahar', systems: { n3ds: rules.systems.n3ds }, macSaves: { Azahar: rules.macSaves.Azahar } };
+const D = 'saves/n3ds/sdmc/Nintendo 3DS/0/0/title/00040000/00033500/data/00000001';
+const S1 = `${D}/save00.bin`, S2 = `${D}/system.dat`;
+w = await world({ rules: N3DS, local: { [S1]: { text: 'a2', saved: '2026-01-02T00:00:00Z' }, [S2]: { text: 'b1', saved: '2026-01-01T00:00:00Z' } },
+  ledger: { [S1]: 'a1', [S2]: 'b1' }, remote: [{ path: S1, text: 'a1', saved: '2026-01-01T00:00:00Z' }, { path: S2, text: 'b2', saved: '2026-01-03T00:00:00Z' }] });
+check('a save of several files changed on both sides comes whole from the one saved last', w.local(S1) === 'a1' && w.local(S2) === 'b2' && w.remote(S1) === 'a1' && w.copies(S1).includes('a2') && w.out.both.length === 1);
+w = await world({ rules: N3DS, local: { [S1]: { text: 'a2', saved: 'x' }, [S2]: { text: 'b1', saved: 'x' } }, ledger: { [S1]: 'a1', [S2]: 'b1' },
+  remote: [{ path: S1, text: 'a1', saved: 'x' }, { path: S2, text: 'b1', saved: 'x' }] });
+check('one file of a save changed on this Mac goes up alone', w.remote(S1) === 'a2' && w.out.up === 1 && w.out.down === 0);
+w = await world({ rules: N3DS, remote: [{ path: S1, text: 'a1', saved: 'x' }, { path: S2, text: 'b1', saved: 'x' }] });
+check('a new Mac gets every file of a save', w.local(S1) === 'a1' && w.local(S2) === 'b1' && w.out.down === 2);
+
 process.exit(fails ? 1 : 0);

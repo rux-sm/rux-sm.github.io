@@ -59,7 +59,8 @@ One rule for every emulator:
   Mesen 2, mGBA, ares, melonDS and DuckStation, one folder per game for
   Dolphin, Azahar, Cemu and PCSX2, and everything at once for Ryujinx's save
   tree and for xemu's disk image with its EEPROM, which index their own
-  contents.
+  contents. A place's `whole` in `emulators.json` names the folder, and a
+  save changed on both sides comes whole from the copy saved last.
 - **Nothing is overwritten unseen:** the helper remembers each save's
   fingerprint at its last carry; changed on one side, it is copied; changed
   on both, the newest plays and the other is kept; and Supabase keeps the

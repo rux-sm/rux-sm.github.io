@@ -7,6 +7,9 @@
    with the fingerprint the helper noted at each save's last carry: changed on
    one side, a save is copied to the other; changed on both, the one saved
    last is put on both and the other stays among the copies Supabase keeps.
+   A save is one file, or every file under the folder a place's `whole`
+   names, carried as one so a game whose save is several files never plays
+   files from two copies.
    Nothing is removed from either side, and nothing is written under a
    running emulator. This browser remembers which copy was set aside, so a
    game's panel can offer it: `standing` says how a game's saves stand on
@@ -32,6 +35,15 @@
   const sha1Of = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-1', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
   const foldersOf = rule => (rule?.places ?? []).map(p => p.stored).filter(Boolean);
   const nameOf = path => path.split('/').pop().replace(/\.[^.]+$/, '');
+  // The save a carried file is part of: the folder the first `whole` of its
+  // emulator's places names in its path, else the file alone.
+  const saveOf = (rule, path) => {
+    for (const p of rule?.places ?? []) {
+      const m = p.whole && path.match(new RegExp(p.whole, 'i'));
+      if (m) return m[1];
+    }
+    return path;
+  };
 
   // The copy set aside for each save changed on both sides, by its path, as
   // this browser remembers it: its fingerprint in Supabase.
@@ -42,7 +54,8 @@
   };
 
   async function carryNow(name) {
-    const folders = foldersOf((await R.emulators()).macSaves[name]);
+    const rule = (await R.emulators()).macSaves[name];
+    const folders = foldersOf(rule);
     if (!folders.length) return null;
     const here = await H.carry(name);
     if (!here?.carries) return null;
@@ -71,26 +84,40 @@
       out.down += 1;
     };
 
+    const saves = new Map();
     for (const path of new Set([...mine.keys(), ...kept.keys()])) {
-      const f = mine.get(path);
-      const k = kept.get(path);
-      if (!k) await up(f);
-      else if (!f) await down(k);
-      else if (f.sha1 === k.sha1) { if (f.carried !== f.sha1) await H.markCarried(path, f.sha1); }
-      else if (f.carried === k.sha1) await up(f);
-      else if (f.carried === f.sha1) await down(k);
+      const save = saveOf(rule, path);
+      saves.set(save, [...saves.get(save) ?? [], { path, f: mine.get(path), k: kept.get(path) }]);
+    }
+
+    for (const [save, files] of saves) {
+      if (files.every(({ f, k }) => f && k && f.sha1 === k.sha1)) {
+        for (const { path, f } of files) if (f.carried !== f.sha1) await H.markCarried(path, f.sha1);
+        continue;
+      }
+      // Which side changed since the last carry, a file only one side holds
+      // counting as that side's change, and what differs each way.
+      const ours = files.some(({ f, k }) => f && (!k || f.carried !== f.sha1));
+      const theirs = files.some(({ f, k }) => k && (!f || f.carried !== k.sha1));
+      const ups = files.filter(({ f, k }) => f && f.sha1 !== k?.sha1);
+      const downs = files.filter(({ f, k }) => k && k.sha1 !== f?.sha1);
+      if (!theirs) for (const { f } of ups) await up(f);
+      else if (!ours) for (const { k } of downs) await down(k);
       else {
         // Both changed since the last carry. This Mac's goes up either way, so
         // it is kept; where Supabase's was saved last, it becomes the newest
-        // copy again and comes down.
-        await up(f);
-        const theirs = new Date(k.saved_at ?? 0) > new Date(f.saved ?? 0);
-        if (theirs) {
-          await R.data.keepCopy({ path, sha1: k.sha1, size: k.size, saved: k.saved_at, mac: k.mac }, () => { throw new Error('Supabase no longer holds that save.'); });
-          await down(k);
+        // copy again and comes down, the whole save at once.
+        for (const { f } of ups) await up(f);
+        const last = list => Math.max(0, ...list.map(t => new Date(t ?? 0).getTime() || 0));
+        const later = last(downs.map(({ k }) => k.saved_at)) > last(ups.map(({ f }) => f.saved));
+        if (later) {
+          for (const { path, k } of downs) {
+            await R.data.keepCopy({ path, sha1: k.sha1, size: k.size, saved: k.saved_at, mac: k.mac }, () => { throw new Error('Supabase no longer holds that save.'); });
+            await down(k);
+          }
         }
-        setAside(path, theirs ? f.sha1 : k.sha1);
-        out.both.push(nameOf(path));
+        for (const { path, f, k } of files) if (f && k && f.sha1 !== k.sha1) setAside(path, later ? f.sha1 : k.sha1);
+        out.both.push(save === files[0].path ? nameOf(save) : null);
       }
     }
     return out;
@@ -128,8 +155,9 @@
   const run = name => queued(name, carryNow);
   const give = name => queued(name, giveNow);
 
+  // A whole save's folder names no game, as Azahar's `data` does, so it is said as its saves.
   const told = c => c.both.length
-    ? `Two copies of ${c.both.join(', ')} were found: the one saved last plays, and the other is kept.`
+    ? `Two copies of ${c.both.every(Boolean) ? c.both.join(', ') : 'its saves'} were found: the one saved last plays, and the other is kept.`
     : c.up ? 'Its saves are in Supabase.' : 'Its saves are in step.';
 
   // This Mac's settings for an emulator kept as a new copy where they differ from the newest kept.

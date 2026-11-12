@@ -647,6 +647,7 @@
           "path": "sdmc",
           "key": "Data%20Storage/sdmc_directory",
           "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
+          "whole": "^(saves/n3ds/sdmc/.*?/(?:title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata/[0-9a-f]{8}/[0-9a-f]{8}))/",
           "kind": "Game saves and extra data, on its SD card",
           "stored": "saves/n3ds/sdmc"
         },
@@ -654,6 +655,7 @@
           "path": "nand",
           "key": "Data%20Storage/nand_directory",
           "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
+          "whole": "^(saves/n3ds/nand/.*?/(?:title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata/[0-9a-f]{8}/[0-9a-f]{8}))/",
           "kind": "System saves, in its console storage",
           "stored": "saves/n3ds/nand"
         },
@@ -872,6 +874,7 @@
         {
           "path": "memcards",
           "key": "Folders/MemoryCards",
+          "whole": "^(saves/ps2/[^/]+\\.ps2/[^/]+)/",
           "kind": "Memory cards",
           "stored": "saves/ps2"
         },
@@ -997,6 +1000,7 @@
           "path": "Wii",
           "key": "General/NANDRootPath",
           "include": "^title/",
+          "whole": "^(saves/gc/Wii/title/[0-9a-f]{8}/[0-9a-f]{8})/",
           "kind": "Wii saves, in its console storage",
           "stored": "saves/gc/Wii"
         },
@@ -1087,6 +1091,7 @@
           "path": "mlc01",
           "key": "mlc_path",
           "include": "^usr/save/",
+          "whole": "^(saves/wiiu/mlc01/usr/save/[0-9a-f]{8}/[0-9a-f]{8})/",
           "kind": "Saves, in its console storage",
           "stored": "saves/wiiu/mlc01"
         }
@@ -1166,21 +1171,25 @@
       "places": [
         {
           "path": "bis/user/save",
+          "whole": "^(saves/switch/Ryujinx)/",
           "kind": "Saves",
           "stored": "saves/switch/Ryujinx/bis/user/save"
         },
         {
           "path": "bis/user/saveMeta",
+          "whole": "^(saves/switch/Ryujinx)/",
           "kind": "What it notes about each save",
           "stored": "saves/switch/Ryujinx/bis/user/saveMeta"
         },
         {
           "path": "bis/system/save",
+          "whole": "^(saves/switch/Ryujinx)/",
           "kind": "The index of its saves",
           "stored": "saves/switch/Ryujinx/bis/system/save"
         },
         {
           "path": "sdcard/Nintendo/save",
+          "whole": "^(saves/switch/Ryujinx)/",
           "kind": "Saves on its SD card",
           "stored": "saves/switch/Ryujinx/sdcard/Nintendo/save"
         }
@@ -1264,6 +1273,7 @@
       "places": [
         {
           "path": "disk",
+          "whole": "^(saves/xbox)/",
           "kind": "Its hard disk image, with every save inside, and its EEPROM",
           "stored": "saves/xbox"
         }

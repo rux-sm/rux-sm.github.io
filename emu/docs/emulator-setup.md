@@ -39,8 +39,8 @@ as each one's first command:
 
 ## Each emulator
 
-Mesen 2, mGBA, ares, melonDS, DuckStation and PCSX2 need no save folder
-set by hand: before each Play, Emu points each at a folder inside its own
+Mesen 2, mGBA, ares, melonDS, Azahar, DuckStation, PCSX2 and Dolphin need
+no save folder set by hand: before each Play, Emu points each at a folder inside its own
 on the Mac and carries its saves to and from Supabase. For the others,
 where an emulator's settings name a folder for saves, it is
 `<drive>/saves/<system>/`. An emulator that plays several systems keeps one
@@ -56,9 +56,8 @@ correct `settings` for it in `emu/emulators.json`.
   the Transfer Pak opens without asking for a Game Boy game.
 - **melonDS, DS.** The BIOS and firmware are optional for DS games; a
   DSi-only game needs the DSi files.
-- **Azahar, 3DS.** Emulation, Configure, Storage: both the NAND and the SD
-  card folder under `<drive>/saves/n3ds/`, as `nand` and `sdmc`. Azahar
-  keeps each save under the game's title ID, which is how the scan matches it.
+- **Azahar, 3DS.** Azahar keeps each save under the game's title ID, which
+  is how the scan matches it.
 - **DuckStation, PS1.** Settings, BIOS: the folder `<drive>/bios/psx/`.
   Emu sets card 1 to a separate card per game, so each game's card carries
   its serial.
@@ -66,10 +65,9 @@ correct `settings` for it in `emu/emulators.json`.
   Settings, BIOS: the folder `<drive>/bios/ps2/`. Settings, Memory Cards: a
   new Folder card as card 1, so each game's save is its own folder named by
   its serial.
-- **Dolphin, GameCube and Wii.** Config, GameCube: slot A to GCI Folder, its
-  folder `<drive>/saves/gc/GC`. Config, Paths: the Wii NAND root to
-  `<drive>/saves/gc/Wii`. Dolphin names a GameCube save by the disc's ID and
-  keeps a Wii one under it.
+- **Dolphin, GameCube and Wii.** Config, GameCube: slot A to GCI Folder.
+  Dolphin names a GameCube save by the disc's ID and keeps a Wii one under
+  it.
 - **Cemu, Wii U.** The `cemu-bin-macos-arm64` download from
   [Cemu's automatic builds](https://cemu.info/ActionBuilds.php) is native on
   Apple Silicon; the 2.6 release runs under Rosetta. General settings: the

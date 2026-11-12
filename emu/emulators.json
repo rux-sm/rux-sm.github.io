@@ -647,17 +647,20 @@
           "path": "sdmc",
           "key": "Data%20Storage/sdmc_directory",
           "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
-          "kind": "Game saves and extra data, on its SD card"
+          "kind": "Game saves and extra data, on its SD card",
+          "stored": "saves/n3ds/sdmc"
         },
         {
           "path": "nand",
           "key": "Data%20Storage/nand_directory",
           "include": "/(title/[0-9a-f]{8}/[0-9a-f]{8}/data|extdata)/",
-          "kind": "System saves, in its console storage"
+          "kind": "System saves, in its console storage",
+          "stored": "saves/n3ds/nand"
         },
         {
           "path": "states",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/n3ds/states"
         }
       ],
       "files": [
@@ -704,6 +707,21 @@
         }
       ],
       "manages": [
+        {
+          "key": "Data%20Storage/sdmc_directory",
+          "value": "{home}/sdmc/",
+          "why": "Its SD card sits in its own folder on the Mac, where Emu carries each game's saves to and from Supabase."
+        },
+        {
+          "key": "Data%20Storage/nand_directory",
+          "value": "{home}/nand/",
+          "why": "Its console storage sits in its own folder too."
+        },
+        {
+          "key": "Miscellaneous/check_for_update_on_start\\default",
+          "value": "false",
+          "why": "Azahar reads a setting only when its default mark is off."
+        },
         {
           "key": "Miscellaneous/check_for_update_on_start",
           "value": "false",
@@ -959,17 +977,21 @@
         {
           "path": "GC",
           "key": "Core/GCIFolderAPath",
-          "kind": "GameCube saves"
+          "include": "\\.gci$",
+          "kind": "GameCube saves",
+          "stored": "saves/gc/GC"
         },
         {
           "path": "Wii",
           "key": "General/NANDRootPath",
           "include": "^title/",
-          "kind": "Wii saves, in its console storage"
+          "kind": "Wii saves, in its console storage",
+          "stored": "saves/gc/Wii"
         },
         {
           "path": "StateSaves",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/gc/states"
         }
       ],
       "files": [
@@ -1011,6 +1033,16 @@
         }
       ],
       "manages": [
+        {
+          "key": "Core/GCIFolderAPath",
+          "value": "",
+          "why": "With no folder named, GameCube saves sit in Dolphin's own, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "General/NANDRootPath",
+          "value": "",
+          "why": "With no folder named, its Wii storage sits in its own too."
+        },
         {
           "key": "AutoUpdate/UpdateTrack",
           "value": "",

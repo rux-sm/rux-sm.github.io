@@ -103,7 +103,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "12"
+let version = "13"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -698,13 +698,21 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
 
 // MARK: Carrying saves
 
-// Each folder of an emulator that Emu carries: its path in Supabase, and where
-// it is inside the emulator's own folder, whatever its setting says now.
-func carriedPlaces(_ e: Saver) -> [(stored: String, dir: String)] {
+// Each folder of an emulator that Emu carries: its path in Supabase, where
+// it is inside the emulator's own folder, whatever its setting says now, and
+// which of its files are saves, where it holds other things too.
+struct Carried {
+  let stored: String, dir: String, include: NSRegularExpression?
+  func holds(_ rel: String) -> Bool {
+    guard let include else { return true }
+    return ["/" + rel, rel].contains { include.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }
+  }
+}
+func carriedPlaces(_ e: Saver) -> [Carried] {
   guard let home = e.home else { return [] }
   return (e.rule["places"] as? [[String: Any]] ?? []).compactMap { p in
     guard let stored = p["stored"] as? String, let path = p["path"] as? String else { return nil }
-    return (stored, home + "/" + path)
+    return Carried(stored: stored, dir: home + "/" + path, include: (p["include"] as? String).flatMap { try? NSRegularExpression(pattern: $0) })
   }
 }
 
@@ -732,7 +740,8 @@ func sha1Of(_ path: String) -> String? {
 // Each save in an emulator's carried folders, under 50 MB.
 func carriedFiles(_ e: Saver) -> [(path: String, at: String, size: Int)] {
   carriedPlaces(e).flatMap { place in
-    walk(place.dir).filter { $0.size < 50_000_000 }.map { (place.stored + $0.path.dropFirst(place.dir.count), $0.path, $0.size) }
+    walk(place.dir).filter { $0.size < 50_000_000 && place.holds(String($0.path.dropFirst(place.dir.count + 1))) }
+      .map { (place.stored + $0.path.dropFirst(place.dir.count), $0.path, $0.size) }
   }
 }
 
@@ -752,14 +761,16 @@ func carry(_ name: String) -> (Int, [String: Any]) {
 // Where a carried save is on this Mac, by its path in Supabase: inside the
 // folder with the longest path that holds it, and its emulator.
 func carriedAt(_ path: String) -> (e: Saver, at: String)? {
-  var best: (e: Saver, stored: String, dir: String)? = nil
+  var best: (e: Saver, place: Carried)? = nil
   for e in savers() {
-    for place in carriedPlaces(e) where path.hasPrefix(place.stored + "/") && place.stored.count > (best?.stored.count ?? -1) {
-      best = (e, place.stored, place.dir)
+    for place in carriedPlaces(e) where path.hasPrefix(place.stored + "/") && place.stored.count > (best?.place.stored.count ?? -1) {
+      best = (e, place)
     }
   }
-  guard let best, plainName(String(path.dropFirst(best.stored.count + 1))) else { return nil }
-  return (best.e, best.dir + path.dropFirst(best.stored.count))
+  guard let best else { return nil }
+  let rel = String(path.dropFirst(best.place.stored.count + 1))
+  guard plainName(rel), best.place.holds(rel) else { return nil }
+  return (best.e, best.place.dir + "/" + rel)
 }
 
 func writeCarried(_ path: String, _ saved: String?, _ body: Data) -> (Int, [String: Any]) {

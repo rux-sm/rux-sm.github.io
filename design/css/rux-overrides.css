@@ -596,6 +596,15 @@ a.rux--header__name,
   border-color: var(--rux-border-strong-01);
 }
 
+/* A TABLE THAT SCROLLS SIDEWAYS KEEPS ITS HIDDEN LABELS INSIDE ITS BOX.
+   Carbon's `visually-hidden` is absolute, and with no positioned box around
+   it a hidden heading far along a wide table, as an Edit column's is, is
+   placed from the page and not clipped by the content's `overflow-x: auto`,
+   so a phone's page scrolls sideways by the table's whole width. The
+   content is the box they are placed in, so it clips them as it clips the
+   cells. */
+.rux--data-table-content { position: relative; }
+
 /* A SELECTABLE TAG RINGS LIKE THE OUTLINE BUTTON. Carbon draws it with
    `border-inverse`, the brightest line the theme has, so the trip editor's
    Needs chips shout beside the fields around them. Geist rings an outlined

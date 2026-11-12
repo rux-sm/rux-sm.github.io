@@ -139,7 +139,9 @@
     let came = 0;
     for (const folder of here.folders) {
       for (const f of await R.data.files(`${folder}/`)) {
+        // A folder inside another lists its files twice, so each comes once.
         if (mine.has(f.path) || !takes(f.path)) continue;
+        mine.add(f.path);
         const bytes = await R.data.fileBytes(f.sha1);
         if (await sha1Of(bytes) !== f.sha1) throw new Error(`${nameOf(f.path)} did not arrive whole. Try again.`);
         await H.putGiven(name, f.path, bytes);

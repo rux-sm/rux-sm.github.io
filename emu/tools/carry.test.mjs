@@ -99,11 +99,11 @@ check('a new Mac gets every file of a save', w.local(S1) === 'a1' && w.local(S2)
 
 // A BIOS, key or firmware file Supabase holds is brought where this Mac
 // lacks it, from each folder a kind names and only the files it takes.
-async function giving(name, have, rows) {
+async function giving(name, have, rows, folders = [...new Set(rows.map(p => p.split('/').slice(0, 2).join('/')))]) {
   const blobs = new Map(rows.map(p => [sha(enc(p)), enc(p)]));
   const put = [];
   const H = { onMac: false, status: async () => null,
-    given: async () => ({ folders: [...new Set(rows.map(p => p.split('/').slice(0, 2).join('/')))], running: false, files: have.map(path => ({ path })) }),
+    given: async () => ({ folders, running: false, files: have.map(path => ({ path })) }),
     putGiven: async (_, path) => put.push(path) };
   const data = { files: async folder => rows.filter(p => p.startsWith(folder)).map(path => ({ path, sha1: sha(enc(path)) })), fileBytes: async s => blobs.get(s) };
   const window = { Emu: { data, helper: H, saveRules, emulators: async () => rules } };
@@ -111,8 +111,10 @@ async function giving(name, have, rows) {
   await window.Emu.carry.give(name);
   return put.sort().join();
 }
-check('a Switch\'s keys are brought and its firmware beside them is not',
-  await giving('Ryujinx', [], ['bios/switch/prod.keys', 'bios/switch/title.keys', 'bios/switch/Firmware.22.1.0.zip']) === 'bios/switch/prod.keys,bios/switch/title.keys');
+const FW = 'bios/switch/Contents/registered/0a1b.nca/00';
+check('a Switch\'s keys and installed firmware are brought, each once, and the firmware zip is not',
+  await giving('Ryujinx', [], ['bios/switch/prod.keys', 'bios/switch/title.keys', 'bios/switch/Firmware.22.1.0.zip', FW], ['bios/switch', 'bios/switch/Contents'])
+    === `${FW},bios/switch/prod.keys,bios/switch/title.keys`);
 check('Mesen 2\'s firmware comes from each of its folders, and only what it reads',
   await giving('Mesen 2', ['bios/snes/dsp1.rom'], ['bios/snes/dsp1.rom', 'bios/snes/cx4.rom', 'bios/fds/disksys.rom', 'bios/satellaview/BS-X.bin', 'bios/satellaview/BS-X BIOS (English).sfc'])
     === 'bios/fds/disksys.rom,bios/satellaview/BS-X.bin,bios/snes/cx4.rom');

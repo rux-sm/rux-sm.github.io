@@ -69,8 +69,10 @@
   const needsOf = (system, emulator, bios) => (emulator?.needs ?? []).map(need => {
     const here = bios.filter(b => b.name.split('/')[0] === system);
     const base = b => b.name.split('/').pop().toLowerCase();
-    const named = need.file
-      ? here.find(b => base(b) === need.file.toLowerCase())
+    // A need names one file, a pattern for its name, or a folder held whole,
+    // as a Switch's installed firmware is.
+    const named = need.file ? here.find(b => base(b) === need.file.toLowerCase())
+      : need.folder ? here.find(b => b.name.startsWith(`${system}/${need.folder}/`))
       : here.find(b => new RegExp(need.pattern, 'i').test(base(b)));
     const bySha1 = need.sha1 ? bios.find(b => b.sha1 === need.sha1) : null;
     const file = bySha1 ?? named ?? null;

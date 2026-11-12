@@ -83,8 +83,12 @@ correct `settings` for it in `emu/emulators.json`.
   the drive. A save sits in `bis/user/save` under a numbered folder, whose
   `ExtraData0` holds the game's title ID, which is how the scan matches it;
   Emu carries the saves with the index that numbers them, and brings
-  `prod.keys` and `title.keys` from Supabase into its `system` folder. The
-  firmware stays on the Mac: install it once in Tools, Install Firmware.
+  `prod.keys` and `title.keys` from Supabase into its `system` folder and
+  the firmware into `bis/system/Contents`. The firmware goes in as Ryujinx
+  installed it: on one Mac, Tools, Install Firmware from the zip in
+  `<drive>/bios/switch/`, then copy that Mac's
+  `bis/system/Contents/registered` to `<drive>/bios/switch/Contents/` and
+  Update.
 - **xemu, Xbox.** Emu brings the MCPX boot ROM and the flash ROM from
   Supabase into xemu's own `bios` folder, keeps the hard disk image, where
   games save, and the EEPROM in its `disk` folder, and turns its welcome

@@ -294,8 +294,8 @@
           "secret": true
         },
         {
-          "pattern": "^firmware.*\\.zip$",
-          "label": "firmware"
+          "folder": "Contents/registered",
+          "label": "firmware, as Ryujinx installed it"
         }
       ]
     },
@@ -1242,7 +1242,8 @@
         {
           "kind": "Firmware",
           "class": "provided",
-          "path": "bis/system/Contents"
+          "path": "bis/system/Contents",
+          "given": "bios/switch/Contents"
         },
         {
           "kind": "Settings and controls",

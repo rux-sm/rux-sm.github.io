@@ -25,9 +25,9 @@ The home server, so the drive is not carried between Macs:
   about 3.6 TB usable for a collection of 800 GB, using the drive rux
   already has; hard drives cost a third of SSDs per terabyte, and the
   network, not the drive, sets the speed.
-- **The 2 TB external drive is the backup until a second drive is
-  bought,** since one drive alone loses everything when it fails; Supabase
-  keeps the saves' copy.
+- **The 2 TB T7 becomes the server's backup and the travel copy,**
+  refreshed from it, since one drive alone loses everything when it fails;
+  Supabase keeps the saves' copy.
 - **A matching drive added later turns the pool into a mirror,** which
   TrueNAS does without starting over.
 - **Every drive is CMR, never SMR,** since an SMR drive slows to a crawl
@@ -66,8 +66,6 @@ The home server, so the drive is not carried between Macs:
   Tailscale address, answering only the app's own site.
 - **The Collection marks what this Mac holds,** from the library folder it
   reads, so a game to download and one ready to play are told apart.
-- **The T7 becomes the travel copy and the server's backup,** refreshed from
-  it.
 
 The setup kit, so any Mac is set up in one step:
 
@@ -91,7 +89,7 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
   its 1 TB NVMe, make a single-drive pool on the 4 TB, share the
   collection, and copy it on.
-- [ ] Copy the collection from the server to the 2 TB external drive.
+- [ ] Copy the collection from the server to the T7.
 - [ ] Add Tailscale on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.

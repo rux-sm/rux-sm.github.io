@@ -208,13 +208,13 @@
      with `alertTo` and leaves again once it has gone. */
   const ALERT_ICON = { error: '#i-warning--filled', warning: '#i-warning--alt--filled' };
   const alertTo = (m, tone, words) => {
-    m.classList.remove('scheduler-bar__msg--error', 'scheduler-bar__msg--warning');
-    m.classList.add(`scheduler-bar__msg--${tone}`);
+    m.classList.remove('scheduler-bar__alert--error', 'scheduler-bar__alert--warning');
+    m.classList.add(`scheduler-bar__alert--${tone}`);
     m.querySelector('use')?.setAttribute('href', ALERT_ICON[tone]);
     m.setAttribute('aria-label', `Alerts: ${words}`);
   };
   const alertMark = (tone, words) => {
-    const m = el('button', 'scheduler-bar__msg scheduler-bar__alert');
+    const m = el('button', 'scheduler-bar__alert');
     m.type = 'button';
     m.setAttribute('aria-expanded', 'false');
     m.append(svgUse(ALERT_ICON[tone ?? 'warning'], '16', '0 0 32 32'));

@@ -161,9 +161,8 @@
 }
 [data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
 
-/* Alert badges and card warnings use the same semantic inks as driver status. */
-[data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator) { background: var(--scheduler-mark-warning); }
-[data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--scheduler-mark-error); }
+/* The toolbar's badge and card warnings use the same semantic inks as driver status. */
+[data-theme="rux-dark"] .scheduler-toolbar .rux--btn > .rux--badge-indicator { background: var(--scheduler-mark-warning); }
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--scheduler-mark-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__error > svg { color: var(--scheduler-mark-error); }
 /* rux-dark's standard trip is a raised grey, layer-02, a solid tile on the

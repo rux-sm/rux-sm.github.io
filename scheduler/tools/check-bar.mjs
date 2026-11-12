@@ -162,7 +162,7 @@ function drawn(sectionId, name, later = false) {
 const has = (bar, sel) => !!bar.querySelector(sel);
 const text = (bar, sel) => bar.querySelector(sel)?.textContent ?? null;
 // The warning sign a bar wears for a problem, its colour and its words; a clock is not one.
-const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label').replace(/^Alerts: /, '')}` : null; };
+const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__alert--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label').replace(/^Alerts: /, '')}` : null; };
 const hue = bar => bar.classes().find(c => /^scheduler-bar--(blue|red|teal|green|purple|magenta|amber)$/.test(c))?.slice(15);
 
 let failed = 0;
@@ -554,7 +554,7 @@ expect('a bar out draws no hours, meters or rest of its drivers: those are their
   ['At highway speed', 'Two drivers', 'Resting', 'Engine off', 'Short on hours', 'Wrong bus'].map(n =>
     has(lit(n), '.scheduler-crew__hours, .scheduler-crew__left, .scheduler-crew__rest, .scheduler-crew__rest-time')), [false, false, false, false, false, false]);
 expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
-const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__msg--'))?.slice(20), m.getAttribute('aria-label').split(':')[1]?.trim(), m.querySelector('use')?.getAttribute('href')] : null; };
+const badge = b => { const m = b.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__alert'); return m ? [m.classes().find(c => c.startsWith('scheduler-bar__alert--'))?.slice(22), m.getAttribute('aria-label').split(':')[1]?.trim(), m.querySelector('use')?.getAttribute('href')] : null; };
 expect('each warning is the alert badge in its colour, its name leading the badge\'s words, and the times stay',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => [badge(lit(n)), say(lit(n)), has(row(lit(n)), '.scheduler-road__track')]), [
     [['error', 'Stop lamp', '#i-warning--filled'], null, true], [['error', 'Not rolling', '#i-warning--filled'], null, true], [['error', 'Wrong bus', '#i-warning--filled'], null, true],

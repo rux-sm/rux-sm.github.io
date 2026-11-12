@@ -1705,16 +1705,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__update, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
 .scheduler-bar__drivers > :is(.scheduler-bar__crew, .scheduler-road__who) { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
-/* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
-.scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
-  padding: 0;
-  border-radius: 0;
-  background: none;
-  color: var(--scheduler-fg);
-}
 .scheduler-bar__alert > svg { flex: none; inline-size: 16px; block-size: 16px; }
-.scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--rux-status-red); }
-.scheduler-bar__alert.scheduler-bar__msg--warning > svg { color: var(--scheduler-footer-warning); }
+.scheduler-bar__alert--error > svg { color: var(--rux-status-red); }
+.scheduler-bar__alert--warning > svg { color: var(--scheduler-footer-warning); }
 /* The row's first part gives way by app.css's general rule; the icon never
    does, so the words are what a long update cuts. */
 .scheduler-bar__update :is(.scheduler-bar__lead, .scheduler-bar__age) { flex: none; }
@@ -2606,35 +2599,23 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 
 /* THE ATTENTION MARK, at the destination row's end, so it is read with the
-   trip's name and stays put whatever rows the view menu turns off: a disc
-   holding how many alerts the trip has, filled in the warning colour, or in
-   the error colour when one of them is a bus that does not fit. The fills are
-   the inks every other mark wears, set per theme, and the figure is the ink
-   theme.css names for the warning and the theme's inverse text on the error. It is a glyph
-   high and round, and widens only for a second figure. It stops at the end of
+   trip's name and stays put whatever rows the view menu turns off: a status
+   icon alone, a glyph high and wide, the error's in the driver status red
+   and the warning's in the footer's yellow, above. It stops at the end of
    the trip's first day, however many days the bar runs, so down a week the
-   discs line up; the row itself is not narrowed, so the name still gives way
+   marks line up; the row itself is not narrowed, so the name still gives way
    across the whole bar. */
-.scheduler-bar__msg {
+.scheduler-bar .scheduler-bar__alert {
   flex: none;
   align-self: center;
   box-sizing: border-box;
   min-inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
-  padding-inline: var(--rux-spacing-02);
-  border-radius: calc(var(--scheduler-mark-glyph) / 2);
-  font-size: 0.6875rem;
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  font-variant-numeric: tabular-nums;
-  line-height: var(--scheduler-mark-glyph);
-  letter-spacing: 0;
-  text-align: center;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--scheduler-fg);
 }
-.scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-on-warning); }
-.scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
-/* A plain count, as the trip card gives its updates, is the set's grey: the
-   theme's secondary icon colour under its inverse text. */
-.scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
 /* The name, and the trip's pill after it, take the row's spare room, so
    the faces and the alert sit at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }

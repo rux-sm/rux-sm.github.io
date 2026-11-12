@@ -20327,7 +20327,7 @@
       if (end <= from || start >= from + 7) continue;
       const alert = bar.querySelector(':scope > .scheduler-bar__dest .scheduler-bar__alert');
       if (!alert) continue;
-      const tone = alert.classList.contains('scheduler-bar__msg--error') ? 2 : 1;
+      const tone = alert.classList.contains('scheduler-bar__alert--error') ? 2 : 1;
       for (let d = Math.max(start, from); d < Math.min(end, from + 7); d++) marks[d - from] = Math.max(marks[d - from], tone);
     }
     const today = iso(new Date());

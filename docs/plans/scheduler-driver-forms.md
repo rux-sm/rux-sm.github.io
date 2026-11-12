@@ -106,16 +106,17 @@ code.
   not a table of drivers against forms, which no screen holds past a few
   forms. A row is a form: its title, Once or Yearly, how many drivers are
   asked or Every driver asked, how many of those have signed, as a count
-  and a bar, and how many are waiting. A flagged signing heads the tab
+  and a bar, and how many have it to sign. A flagged signing heads the tab
   until Mark as read, so it is read before the PDF goes to a school.
 - **A form opens on its own view, `drivers.html?form=<id>`:** Ask every
-  driver, Send to those waiting, and its drivers in four groups, Waiting on
-  the driver with the day it was sent or Not sent yet, Ends soon, Signed
+  driver, Send to all who owe it, and its drivers in four groups, To sign
+  with the day it was sent or Not sent yet, Ends soon, Signed
   with Open, and Not asked. Every driver's row has the switch that puts the
   form on their link, saved as it is flipped. Send writes the text through
   `driver-text.js` as the week info message is written.
-- **To sign is asked and not signed; Waiting is sent and not signed.** The
-  tab counts the first and tags the second, so one word never means both.
+- **To sign is asked and not signed, sent or not,** the one count the
+  office reads and the word the driver's link uses; a row says the day it
+  was sent, or Not sent yet.
 - **A driver's profile lists the forms on their link,** on its Documents
   tab: every current form with its switch, where it stands, and Send or
   Open, so one driver is set up without leaving their page.
@@ -135,22 +136,6 @@ code.
 
 ## Tasks
 
-- [ ] Write the database change and test it in PGlite: `driver_forms.ask_everyone`,
-      `driver_form_asks` with a row for every pair that has a send or a
-      signing, `driver_forms_for` handing back asked forms only, `asked` in
-      `get_driver_forms_overview`, `send_driver_forms` asking as it sends,
-      and staff-only functions that ask one driver and everyone. Show rux
-      the SQL and apply it on a yes.
-- [ ] Draw the Forms tab as the list of forms and a form's own view, in
-      `driver-forms.js`, in place of the table, and check both at a phone's
-      width.
-- [ ] List the forms on a driver's link on the profile's Documents tab,
-      with their switches, Send and Open.
-- [ ] Check on a driver's link in Chrome on :8641 that a form switched off
-      leaves My documents and will not open on `share/sign.html`, and one
-      switched on comes back.
-- [ ] Say the new shape in `scheduler/docs/screen-inventory.md` and the new
-      table, column and functions in `scheduler/docs/database-inventory.md`.
 - [ ] Check in Chrome on :8641 with a test driver what the first round left:
       the form on a Spanish link, a second signing replacing the first as the
       current copy, and Send's Copy the text; then delete the test driver,

@@ -15,7 +15,10 @@
    A driver is never deleted here, only set Inactive, so past trips keep the
    driver's name. The schedule link is shown, not made: driver-view.html makes,
    changes and turns off driver links. Its Documents tab lists the driver's
-   current documents, which the Documents page uploads and edits.
+   current documents, which the Documents page uploads and edits, under the
+   forms on their link, which driver-forms.js draws once this page says
+   which driver it read. drivers.html?form=<form id> is a form's own view,
+   driver-forms.js's whole, so this page reads nothing for it.
    ========================================================================== */
 (() => {
   'use strict';
@@ -29,8 +32,10 @@
   const params = new URLSearchParams(location.search);
   const driverId = params.get('id');
   const editing = !!driverId || params.has('new');
-  // The record view shows the list's column only for its notice.
-  if (editing) $('scheduler-drivers-h').hidden = true;
+  // A form's own view, which driver-forms.js draws.
+  const formView = params.has('form');
+  // The record view and a form's show the list's column only for its notice.
+  if (editing || formView) $('scheduler-drivers-h').hidden = true;
 
   // The driver's page a link opens, as Driver view sends it.
   const { DRIVER_LINK } = window.SchedulerDriverText;
@@ -82,6 +87,9 @@
     if (n <= WARN_DAYS) return { kind: 'soon', text: `Expires in ${plural(n, 'day')}`, rank: n };
     return { kind: 'ok', text: longDate(when), rank: n };
   }
+
+  // Says which driver the page holds, for driver-forms.js's list of their forms.
+  const sayDriver = () => document.dispatchEvent(new CustomEvent('scheduler:driver-loaded', { detail: loaded }));
 
   // Each status icon written out whole, so the class sweep can read it.
   const INDICATOR = {
@@ -755,16 +763,20 @@
   let missing = [];  // the kinds kept for each driver that this driver has none of
   let dated = new Map();  // a driver date's column to the kind whose paper sets it
   async function readPapers(id) {
-    const [kinds, docs] = await Promise.all([
+    const [kinds, docs, signedOnLink] = await Promise.all([
       client.from('document_kinds').select('id,name,per_driver,sets_driver_date').order('name'),
       client.from('company_documents').select('id,kind_id,holder,ends_on,parts,note')
         .eq('driver_id', id).is('replaced_at', null).order('created_at', { ascending: false }),
+      client.from('driver_forms').select('kind_id').is('retired_at', null),
     ]);
-    if (kinds.error || docs.error) throw kinds.error || docs.error;
+    if (kinds.error || docs.error || signedOnLink.error) throw kinds.error || docs.error || signedOnLink.error;
     const names = new Map((kinds.data || []).map(k => [k.id, k.name]));
     papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
     const held = new Set(papers.map(d => d.kind_id));
-    missing = (kinds.data || []).filter(k => k.per_driver && !held.has(k.id));
+    // A kind a driver signs on their link is asked for there, in the list
+    // above, and not as an upload.
+    const signedThere = new Set((signedOnLink.data || []).map(f => f.kind_id));
+    missing = (kinds.data || []).filter(k => k.per_driver && !held.has(k.id) && !signedThere.has(k.id));
     dated = new Map((kinds.data || []).filter(k => k.sets_driver_date)
       .map(k => [k.sets_driver_date, papers.find(d => d.kind_id === k.id && d.ends_on) || null]));
   }
@@ -859,7 +871,7 @@
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
     legs = null;
-    if (loaded) { drawLink(); readTrips().then(drawTrips); loadPapers(loaded.id); }
+    if (loaded) { drawLink(); readTrips().then(drawTrips); loadPapers(loaded.id); sayDriver(); }
     // A paper uploaded from here comes back to the Documents tab.
     if (loaded && location.hash === '#documents') {
       const tab = $('scheduler-driver-tab-documents');
@@ -964,6 +976,7 @@
     drawLink();
     readTrips().then(drawTrips);
     loadPapers(loaded.id);
+    sayDriver();
   }
 
   form?.addEventListener('submit', e => {
@@ -1014,6 +1027,7 @@
   /* ══ Start ══════════════════════════════════════════════════════════════ */
   pair.start(async signedIn => {
     client = signedIn;
+    if (formView) return;
     if (!editing) { await loadList(); return; }
     if (!(await loadDriver())) {
       say('info', 'That driver is not in the list', 'Pick a driver from the list below.');

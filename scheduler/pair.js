@@ -228,6 +228,29 @@
     item.appendChild(range);
     return item;
   }
+  /* A Carbon toggle, its switch a button that Design's form-controls.js
+     flips, saying so with `rux:toggle` on the root. `shown` keeps the label
+     over the switch; without it the label is read and not seen, as Carbon's
+     hideLabel has it, and the switch says On or Off beside itself. */
+  function toggle(id, label, on, { shown = false, disabled = false } = {}) {
+    const root = el('div', disabled ? 'rux--toggle rux--toggle--disabled' : 'rux--toggle');
+    const button = el('button', 'rux--toggle__button');
+    Object.assign(button, { id, type: 'button', disabled });
+    button.setAttribute('role', 'switch');
+    button.setAttribute('aria-checked', String(on));
+    button.setAttribute('aria-labelledby', `${id}-l`);
+    const lab = el('label', 'rux--toggle__label');
+    lab.htmlFor = id;
+    lab.id = `${id}-l`;
+    const look = el('div', 'rux--toggle__appearance');
+    const said = el('span', 'rux--toggle__text', on ? 'On' : 'Off');
+    said.setAttribute('aria-hidden', 'true');
+    look.append(el('div', on ? 'rux--toggle__switch rux--toggle__switch--checked' : 'rux--toggle__switch'), said);
+    lab.append(el('span', shown ? 'rux--toggle__label-text' : 'rux--toggle__label-text rux--visually-hidden', label), look);
+    root.append(button, lab);
+    return root;
+  }
+
   function dialogError(id) {
     const error = el('div', 'rux--form__helper-text scheduler-dialog-error');
     error.id = id;
@@ -483,5 +506,5 @@
     return { say, result, table, textError, comboError, guard, start, historyLink };
   }
 
-  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse, statusTag, textField, selectField, dateRange, dialogError };
+  window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse, statusTag, textField, selectField, toggle, dateRange, dialogError };
 })();

@@ -95,7 +95,9 @@ a bus is: a card of the second layer with the bar's corners, 144px wide, 8px cle
 rail's sides as the bus tile is. Its row is Carbon's md, 40px, and the
 card Carbon's sm, 32px, from 4px to 36px of the row. It holds one 18px
 line, 7px inside it above and below and 8px in from its sides, 128px
-wide, and two cards stand 8px apart, as two bars do. The Apple themes, whose Layer 02 is their
+wide, and two cards stand 8px apart, as two bars do. A theme that draws
+a line round each pane draws it inside the rail's 160px, so there the card
+and its line are 2px narrower. The Apple themes, whose Layer 02 is their
 Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |

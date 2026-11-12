@@ -3936,7 +3936,7 @@ a.scheduler-tip__go { text-decoration: none; }
    chevron. Open, the first and last of its seven days are 4px wider, so a
    mark stands 8px from the week's edges as two marks stand 8px apart; the
    seven are `--scheduler-rail-week-w`'s. */
-.scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-rail-w); }
+.scheduler-aside:not([data-week]) .scheduler-avail__grid { grid-template-columns: var(--scheduler-head-w); }
 .scheduler-aside[data-week] .scheduler-avail__grid {
   --scheduler-edge-day: calc(var(--scheduler-day-track) + var(--scheduler-gap-clear));
   grid-template-columns: var(--scheduler-head-w) var(--scheduler-edge-day) repeat(5, var(--scheduler-day-track)) var(--scheduler-edge-day);
@@ -3952,11 +3952,11 @@ a.scheduler-tip__go { text-decoration: none; }
   --scheduler-avail-h: calc(var(--scheduler-tile-card-h) + 2 * var(--scheduler-row-clear));
   max-block-size: 15rem;
 }
-/* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
-   not `1fr`, because a track's automatic minimum is its content and a long
-   name would push the squares out rather than ellipsing. */
+/* In the aside the names' column is the rail's tiles less the edge a theme
+   draws round the pane, which is inside the pane's width, so the tiles and
+   the week fill the pane to the pixel and nothing scrolls sideways. */
 .scheduler-aside .scheduler-week--avail {
-  --scheduler-head-w: var(--scheduler-rail-w);
+  --scheduler-head-w: calc(var(--scheduler-rail-w) - 2 * var(--scheduler-region-edge-width, 0px));
   /* Each day column is Carbon's md, 40px, a 32px mark and the 4px either
      side of it; `--scheduler-rail-week-w`'s. */
   --scheduler-day-track: var(--rux-layout-size-height-md);

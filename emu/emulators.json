@@ -1075,7 +1075,8 @@
           "path": "mlc01",
           "key": "mlc_path",
           "include": "^usr/save/",
-          "kind": "Saves, in its console storage"
+          "kind": "Saves, in its console storage",
+          "stored": "saves/wiiu/mlc01"
         }
       ],
       "reportsVersion": false,
@@ -1123,6 +1124,11 @@
       ],
       "manages": [
         {
+          "key": "mlc_path",
+          "value": "{home}/mlc01",
+          "why": "Its console storage sits in its own folder on the Mac, where Emu carries each game's saves to and from Supabase."
+        },
+        {
           "key": "check_update",
           "value": "false",
           "why": "The installer on the drive is the version every Mac has."
@@ -1141,19 +1147,34 @@
         "~/Library/Application Support/Ryujinx",
         "~/Library/Containers/V380-Ori.Astris/Data/Library/Application Support/Ryujinx"
       ],
+      "config": {
+        "file": "Config.json",
+        "format": "json"
+      },
       "places": [
         {
           "path": "bis/user/save",
-          "kind": "Saves"
+          "kind": "Saves",
+          "stored": "saves/switch/Ryujinx/bis/user/save"
+        },
+        {
+          "path": "bis/user/saveMeta",
+          "kind": "What it notes about each save",
+          "stored": "saves/switch/Ryujinx/bis/user/saveMeta"
+        },
+        {
+          "path": "bis/system/save",
+          "kind": "The index of its saves",
+          "stored": "saves/switch/Ryujinx/bis/system/save"
+        },
+        {
+          "path": "sdcard/Nintendo/save",
+          "kind": "Saves on its SD card",
+          "stored": "saves/switch/Ryujinx/sdcard/Nintendo/save"
         }
       ],
       "reportsVersion": false,
       "files": [
-        {
-          "kind": "The index of its saves",
-          "class": "shared",
-          "path": "bis/system/save"
-        },
         {
           "kind": "Keys",
           "class": "provided",
@@ -1224,20 +1245,19 @@
       "homes": [
         "~/Library/Application Support/xemu/xemu"
       ],
-      "places": [],
+      "config": {
+        "file": "xemu.toml",
+        "format": "toml"
+      },
+      "places": [
+        {
+          "path": "disk",
+          "kind": "Its hard disk image, with every save inside, and its EEPROM",
+          "stored": "saves/xbox"
+        }
+      ],
       "inHardDisk": true,
       "files": [
-        {
-          "kind": "The hard disk image, with every save and save state inside",
-          "class": "shared",
-          "key": "sys.files.hdd_path"
-        },
-        {
-          "kind": "The console's EEPROM",
-          "class": "shared",
-          "path": "eeprom.bin",
-          "key": "sys.files.eeprom_path"
-        },
         {
           "kind": "BIOS and boot ROM",
           "class": "provided",
@@ -1260,6 +1280,16 @@
         }
       ],
       "manages": [
+        {
+          "key": "sys.files.hdd_path",
+          "value": "{home}/disk/xbox_hdd.qcow2",
+          "why": "Its hard disk image sits in its own folder on the Mac, where Emu carries it to and from Supabase."
+        },
+        {
+          "key": "sys.files.eeprom_path",
+          "value": "{home}/disk/eeprom.bin",
+          "why": "Its EEPROM sits beside the disk image and is carried with it."
+        },
         {
           "key": "general.show_welcome",
           "value": "false",

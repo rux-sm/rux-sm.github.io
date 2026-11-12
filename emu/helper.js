@@ -85,7 +85,7 @@
   // An emulator's carried saves on this Mac, or null from a helper too old to carry.
   const carry = async emulator => { const r = await call(`/mac/carry?${at(emulator)}`); return r ? r.json() : null; };
   const carried = async path => new Uint8Array(await (await call(`/mac/carried?path=${encodeURIComponent(path)}`, {}, true)).arrayBuffer());
-  const putCarried = (path, saved, bytes) => call(`/mac/carried?path=${encodeURIComponent(path)}&saved=${encodeURIComponent(saved ?? '')}`, { method: 'POST', body: bytes }, true);
+  const putCarried = (path, saved, bytes) => call(`/mac/carried?path=${encodeURIComponent(path)}&saved=${encodeURIComponent(saved ?? '')}`, { method: 'PUT', body: bytes }, true);
   const markCarried = (path, sha1) => call(`/mac/carried/mark?path=${encodeURIComponent(path)}&sha1=${sha1}`, { method: 'POST' }, true);
 
   const macSaves = async () => (await call('/mac/saves', {}, true)).json();

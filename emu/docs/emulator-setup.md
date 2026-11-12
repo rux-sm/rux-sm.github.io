@@ -39,11 +39,9 @@ as each one's first command:
 
 ## Each emulator
 
-Mesen 2, mGBA, ares, melonDS, Azahar, DuckStation, PCSX2 and Dolphin need
-no save folder set by hand: before each Play, Emu points each at a folder inside its own
-on the Mac and carries its saves to and from Supabase. For the others,
-where an emulator's settings name a folder for saves, it is
-`<drive>/saves/<system>/`. An emulator that plays several systems keeps one
+No emulator needs a save folder set by hand: before each Play, Emu points
+it at a folder inside its own on the Mac and carries its saves to and from
+Supabase. On the drive an emulator that plays several systems keeps one
 folder, named for the first of them, and the scan reads it for all of them.
 When the settings folder below is not where an emulator keeps its settings,
 correct `settings` for it in `emu/emulators.json`.
@@ -70,25 +68,20 @@ correct `settings` for it in `emu/emulators.json`.
   it.
 - **Cemu, Wii U.** The `cemu-bin-macos-arm64` download from
   [Cemu's automatic builds](https://cemu.info/ActionBuilds.php) is native on
-  Apple Silicon; the 2.6 release runs under Rosetta. General settings: the
-  MLC path to `<drive>/saves/wiiu/mlc01`. Saves sit under the game's title
-  ID in it. Make the `.wua` from the game's folder in Tools, Title Manager.
+  Apple Silicon; the 2.6 release runs under Rosetta. Saves sit under the
+  game's title ID in its `mlc01` folder. Make the `.wua` from the game's
+  folder in Tools, Title Manager.
 - **Ryujinx, Switch.** From [ryujinx.app](https://ryujinx.app/download), the
-  macOS download. Ryujinx has no setting that moves its saves, so its whole
-  folder, keys, firmware, profile and saves, lives at
-  `<drive>/saves/switch/Ryujinx`, and the Mac's own folder is a link to it.
-  Open Ryujinx once and quit it, then:
-
-      mv ~/Library/Application\ Support/Ryujinx ~/.Trash/Ryujinx-empty
-      ln -s "<drive>/saves/switch/Ryujinx" ~/Library/Application\ Support/Ryujinx
-
-  A save sits in `bis/user/save` under a numbered folder, whose
-  `ExtraData0` holds the game's title ID, which is how the scan matches it.
-  The scan reads only that folder, so the firmware stays out of the backup.
+  macOS download. Ryujinx keeps everything in one folder, which is the
+  Mac's own, `~/Library/Application Support/Ryujinx`, and never a link to
+  the drive. A save sits in `bis/user/save` under a numbered folder, whose
+  `ExtraData0` holds the game's title ID, which is how the scan matches it;
+  Emu carries the saves with the index that numbers them, and the firmware
+  stays on the Mac.
 - **xemu, Xbox.** Settings, System: the MCPX boot ROM and the flash ROM from
-  `<drive>/bios/xbox/`, and the hard disk image, where games save, from
-  `<drive>/saves/xbox/`. xemu loads none of them while its welcome screen is
-  still on, so its `xemu.toml` needs `show_welcome = false` under `[general]`.
+  `<drive>/bios/xbox/`. Emu keeps the hard disk image, where games save,
+  and the EEPROM in xemu's own `disk` folder, and turns its welcome screen
+  off, since xemu loads none of them while it is on.
 
 ## Moving the RetroArch saves
 

@@ -163,10 +163,6 @@
         continue;
       }
       const version = e.app.version ?? 'Installed';
-      if (emulators.macSaves?.[e.emulator]?.inHardDisk) {
-        rows.push({ what, href, state: DONE, detail: `${version} · saves inside its hard disk image` });
-        continue;
-      }
       // An emulator whose saves Emu carries keeps them in its own folder.
       const carried = (emulators.macSaves?.[e.emulator]?.places ?? []).map((p, i) => p.stored ? e.places?.[i] : null).filter(Boolean);
       if (carried.length) {
@@ -174,6 +170,10 @@
         rows.push(e.data && carried.every(p => p.dir?.startsWith(`${e.data}/`))
           ? { what, href, state: DONE, detail: `${version} · saves carried through Supabase\n${where}` }
           : { what, href, state: TODO, detail: `${version} · press Play once, and Emu points it at its own folder\n${where}` });
+        continue;
+      }
+      if (emulators.macSaves?.[e.emulator]?.inHardDisk) {
+        rows.push({ what, href, state: DONE, detail: `${version} · saves inside its hard disk image` });
         continue;
       }
       const folder = `saves/${folderOf(e.emulator)}`;

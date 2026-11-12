@@ -25,7 +25,7 @@
 //                          folders Emu carries, with its SHA-1 now and at
 //                          its last carry, and whether the emulator runs
 //   GET    /mac/carried    ?path=<its path in Supabase>, one of those
-//   POST   /mac/carried    ?path=&saved=, the body written as that save, at
+//   PUT    /mac/carried    ?path=&saved=, the body written as that save, at
 //                          the moment it was saved, and noted as carried
 //   POST   /mac/carried/mark  ?path=&sha1=, that save noted as carried, when
 //                          it still has that SHA-1
@@ -103,7 +103,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "13"
+let version = "14"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -625,8 +625,9 @@ func quoted(_ v: String) -> String {
 // A settings text with one setting given a value, by the key setting() reads
 // it by, or nil where the helper cannot place it: an INI section and key; a
 // JSON key that the file holds once, its value a text, a number or a yes or
-// no; a TOML key the file holds once; a BML name under its heading. A value
-// stays the kind it was, so a text stays quoted.
+// no; a TOML key the file holds once, or one under its table; a BML name
+// under its heading; an XML tag the file holds once. A value stays the kind
+// it was, so a text stays quoted.
 func withSetting(_ text: String, _ format: String, _ key: String, _ value: String) -> String? {
   let name = { (k: String) in NSRegularExpression.escapedPattern(for: k) }
   switch format {
@@ -639,9 +640,44 @@ func withSetting(_ text: String, _ format: String, _ key: String, _ value: Strin
       g[1] + (g[2].hasPrefix("\"") ? quoted(value) : value)
     }
   case "toml":
-    return replacedOnce(text, "^(\\s*\(name(key))\\s*=\\s*)(.*)$") { g in
-      g[1] + (g[2].hasPrefix("\"") || g[2].hasPrefix("'") ? quoted(value) : value)
+    // A bare key is wherever the file holds it once; a dotted one is the
+    // last name under the table the rest names, added there where missing.
+    let parts = key.components(separatedBy: ".")
+    let plain = ["true", "false"].contains(value) || Double(value) != nil
+    guard parts.count > 1, let last = parts.last else {
+      return replacedOnce(text, "^(\\s*\(name(key))\\s*=\\s*)(.*)$") { g in
+        g[1] + (g[2].hasPrefix("\"") || g[2].hasPrefix("'") ? quoted(value) : value)
+      }
     }
+    let table = parts.dropLast().joined(separator: ".")
+    var lines = text.components(separatedBy: "\n")
+    var inTable = false, end: Int? = nil
+    for (i, line) in lines.enumerated() {
+      let t = line.trimmingCharacters(in: .whitespaces)
+      if t.hasPrefix("["), t.hasSuffix("]") {
+        if inTable { break }
+        inTable = String(t.dropFirst().dropLast()) == table
+        if inTable { end = i }
+        continue
+      }
+      guard inTable else { continue }
+      if !t.isEmpty { end = i }
+      if let eq = line.firstIndex(of: "="), line[..<eq].trimmingCharacters(in: .whitespaces) == last {
+        let old = line[line.index(after: eq)...].trimmingCharacters(in: .whitespaces)
+        lines[i] = "\(last) = \(old.hasPrefix("\"") || old.hasPrefix("'") || !plain ? quoted(value) : value)"
+        return lines.joined(separator: "\n")
+      }
+    }
+    let entry = "\(last) = \(plain ? value : quoted(value))"
+    if let end { lines.insert(entry, at: end + 1) }
+    else {
+      if lines.last == "" { lines.removeLast() }
+      lines += (lines.isEmpty ? [] : [""]) + ["[\(table)]", entry, ""]
+    }
+    return lines.joined(separator: "\n")
+  case "xml":
+    let escaped = value.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;").replacingOccurrences(of: ">", with: "&gt;")
+    return replacedOnce(text, "<\(name(key))>[^<]*</\(name(key))>|<\(name(key))\\s*/>") { _ in "<\(key)>\(escaped)</\(key)>" }
   case "bml":
     let parts = key.components(separatedBy: "/")
     guard parts.count == 2 else { return nil }
@@ -683,10 +719,12 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
   var text = String(data: marked ? raw.dropFirst(mark.count) : raw, encoding: .utf8) ?? ""
   for m in manages {
     guard let key = m["key"] as? String, var value = m["value"] as? String else { continue }
-    // A folder inside the emulator's own, made so the emulator finds it there.
+    // A folder inside the emulator's own, or a file in one, its folder made
+    // so the emulator finds it there.
     if value.hasPrefix("{home}/") {
       value = home + value.dropFirst("{home}".count)
-      try? files.createDirectory(atPath: value, withIntermediateDirectories: true)
+      let folder = (value as NSString).pathExtension.isEmpty ? value : (value as NSString).deletingLastPathComponent
+      try? files.createDirectory(atPath: folder, withIntermediateDirectories: true)
     }
     if let next = withSetting(text, format, key, value) { text = next; set.append(key) } else { left.append(key) }
   }
@@ -737,10 +775,10 @@ func sha1Of(_ path: String) -> String? {
   files.contents(atPath: path).map { Insecure.SHA1.hash(data: $0).map { String(format: "%02x", $0) }.joined() }
 }
 
-// Each save in an emulator's carried folders, under 50 MB.
+// Each save in an emulator's carried folders, under 200 MB, which holds a console's whole disk image.
 func carriedFiles(_ e: Saver) -> [(path: String, at: String, size: Int)] {
   carriedPlaces(e).flatMap { place in
-    walk(place.dir).filter { $0.size < 50_000_000 && place.holds(String($0.path.dropFirst(place.dir.count + 1))) }
+    walk(place.dir).filter { $0.size < 200_000_000 && place.holds(String($0.path.dropFirst(place.dir.count + 1))) }
       .map { (place.stored + $0.path.dropFirst(place.dir.count), $0.path, $0.size) }
   }
 }
@@ -773,19 +811,12 @@ func carriedAt(_ path: String) -> (e: Saver, at: String)? {
   return (best.e, best.place.dir + "/" + rel)
 }
 
-func writeCarried(_ path: String, _ saved: String?, _ body: Data) -> (Int, [String: Any]) {
-  guard let found = carriedAt(path) else { return (404, ["error": "That is not a save Emu carries."]) }
-  let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
-  guard !running(appsOf(found.e.rule)) else { return (409, ["error": "Quit \(app) first: a save cannot change under a running game."]) }
-  guard (try? files.createDirectory(atPath: (found.at as NSString).deletingLastPathComponent, withIntermediateDirectories: true)) != nil,
-        (try? body.write(to: URL(fileURLWithPath: found.at), options: .atomic)) != nil else {
-    return (500, ["error": "The helper could not write that save."])
-  }
+// A carried save just written: given the moment it was saved, and noted as carried.
+func carriedWritten(_ path: String, _ at: String, _ saved: String?) {
   if let when = saved.flatMap(iso.date) ?? saved.flatMap({ ISO8601DateFormatter().date(from: $0) }) {
-    try? files.setAttributes([.modificationDate: when], ofItemAtPath: found.at)
+    try? files.setAttributes([.modificationDate: when], ofItemAtPath: at)
   }
-  note(path, Insecure.SHA1.hash(data: body).map { String(format: "%02x", $0) }.joined())
-  return (200, ["written": path])
+  if let sha1 = sha1Of(at) { note(path, sha1) }
 }
 
 func markCarried(_ path: String, _ sha1: String) -> (Int, [String: Any]) {
@@ -1437,7 +1468,6 @@ final class Server {
     case ("GET", "/mac/carry"): off { let (code, out) = carry(q["emulator"] ?? ""); return .json(code, out) }
     case ("GET", "/mac/carried"):
       off { carriedAt(q["path"] ?? "").flatMap { bytes($0.at, at: nil, n: nil) }.map(Reply.bytes) ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
-    case ("POST", "/mac/carried"): off { let (code, out) = writeCarried(q["path"] ?? "", q["saved"], body); return .json(code, out) }
     case ("POST", "/mac/carried/mark"): off { let (code, out) = markCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
     case ("GET", "/newest"): off { .json(200, newest()) }
     case ("GET", "/mac/save"):
@@ -1461,27 +1491,43 @@ final class Server {
     }
   }
 
-  // A PUT /drive/file: the body written beside its file as it arrives, then
-  // put in its place, so a write cut short leaves the file as it was.
+  // A PUT of a file on the drive or of a carried save: the body written
+  // beside its file as it arrives, then put in its place, so a write cut
+  // short leaves the file as it was.
   func upload(_ c: NWConnection, _ req: Request, _ first: Data, _ origin: String) {
-    guard req.path == "/drive/file", let target = drivePath(req.query["path"] ?? ""), !isFolder(target) else {
-      return send(c, .json(404, ["error": "That is not in the collection."]), origin: origin)
+    let path = req.query["path"] ?? ""
+    var target: String? = nil
+    var written: () -> Void = {}
+    switch req.path {
+    case "/drive/file":
+      target = drivePath(path).flatMap { isFolder($0) ? nil : $0 }
+    case "/mac/carried":
+      guard let found = carriedAt(path) else { return send(c, .json(404, ["error": "That is not a save Emu carries."]), origin: origin) }
+      let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
+      guard !running(appsOf(found.e.rule)) else {
+        return send(c, .json(409, ["error": "Quit \(app) first: a save cannot change under a running game."]), origin: origin)
+      }
+      target = found.at
+      written = { carriedWritten(path, found.at, req.query["saved"]) }
+    default: break
     }
+    guard let target else { return send(c, .json(404, ["error": "That is not in the collection."]), origin: origin) }
     let dir = (target as NSString).deletingLastPathComponent
     let part = dir + "/." + (target as NSString).lastPathComponent + ".part"
     guard (try? files.createDirectory(atPath: dir, withIntermediateDirectories: true)) != nil,
           files.createFile(atPath: part, contents: nil), let h = FileHandle(forWritingAtPath: part) else {
-      return send(c, .json(500, ["error": "The helper could not write to the drive."]), origin: origin)
+      return send(c, .json(500, ["error": "The helper could not write that file."]), origin: origin)
     }
     var left = req.length
     let take = { (d: Data) in let piece = d.prefix(left); h.write(piece); left -= piece.count }
     let finish = { (whole: Bool) in
       try? h.close()
       if whole, (try? files.removeItem(atPath: target)) != nil || !exists(target), (try? files.moveItem(atPath: part, toPath: target)) != nil {
-        return self.send(c, .json(200, ["written": req.query["path"] ?? ""]), origin: origin)
+        written()
+        return self.send(c, .json(200, ["written": path]), origin: origin)
       }
       try? files.removeItem(atPath: part)
-      self.send(c, .json(500, ["error": "The write to the drive did not finish."]), origin: origin)
+      self.send(c, .json(500, ["error": "The write did not finish."]), origin: origin)
     }
     func next() {
       if left <= 0 { return finish(true) }

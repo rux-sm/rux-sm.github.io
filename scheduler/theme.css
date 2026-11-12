@@ -933,6 +933,17 @@
   --scheduler-band-surface: var(--rux-layer-accent-01);
   --scheduler-band-rule-w: 0px;
 }
+/* A SKELETON ON THE ACCENT LAYER takes its grey a layer up, on the band and
+   on a driver's tile: Carbon's skeleton sweep is the accent layer's own
+   colour in Gray 100, so there it hid the block and left the sliver it had
+   not yet covered, a dark tick at every day and a dark square in every tile
+   while the board loaded. The block's own ground is left out, so only the
+   sweep draws. */
+.scheduler-band--skeleton,
+.scheduler-skeleton-who {
+  --rux-skeleton-background: transparent;
+  --rux-skeleton-element: var(--rux-layer-accent-hover-01);
+}
 [data-theme="geist-dark"],
 [data-theme="rux-dark"] {
   --scheduler-band-surface: var(--rux-layer);

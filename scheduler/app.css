@@ -222,14 +222,14 @@
      trip running on into the days in view. Under the band and at the foot
      a row's own 4px is added to the same way, by the grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 89PX, 41px on
+  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 88PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
      change of width shows more of the strip or less and moves no trip. The
-     tile's 89px is its card's 8px clear either side, the card's 8px inset
+     tile's 88px is its card's 8px clear either side, the card's 8px inset
      either side and the 56px between, the least that holds a number, 8px
-     and its alert, and the column's 1px rule. */
+     and its alert. It has no rule beside it, as a compact board's has. */
   --scheduler-strip-day: 175px;
-  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-06) + 1px);
+  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-06));
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
@@ -423,7 +423,9 @@
      under it. */
   background: var(--rux-layer);
   /* The one vertical rule where the sticky column meets the tracks that scroll
-     under it. It stops at the header band: the corner draws none. */
+     under it, on a compact board and Maintenance's weeks; the Mac's board,
+     whose buses are tiles, takes it off below. It stops at the header band:
+     the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
   /* None at the sides, so the state's display fills the column, and at the
      top where the bar's lines start, its clear space and its own padding, so
@@ -495,8 +497,13 @@
   background-repeat: no-repeat;
 }
 /* Where the rows stand on surfaces of their own, the pane draws neither a
-   surface nor the rule: each section's heads carry the rule to its own foot. */
+   surface nor the rule: a compact board's heads carry the rule to each
+   section's own foot. */
 .scheduler-frame > .scheduler-week--scroll:has(> .scheduler-grid--sections) { background: none; }
+/* The Mac's board has no rule beside its tiles, so its pane draws none
+   either: under the band, where the grid's own 4px stands clear of the first
+   head, it would show as a tick while the skeleton is up. */
+.scheduler-page:not([data-board="compact"]) .scheduler-frame > .scheduler-week--scroll { background-image: none; }
 .scheduler-row-head__top {
   display: flex;
   align-items: center;
@@ -891,8 +898,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    parts only the tile shows are drawn here alone. */
 .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
 .scheduler-row-head :is(.scheduler-row-head__fuel-end, .scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
-/* The tile and the column's 1px rule beside it. */
+/* The tile, with no rule beside it: the tiles are the column's edge, and the
+   board comes to rest on a day, so no trip stands cut by it. */
 .scheduler-page:not([data-board="compact"]) :is(.scheduler-week--scroll, .scheduler-band) { --scheduler-head-min: var(--scheduler-tile-head); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head { border-inline-end: 0; }
 /* THE HEAD'S ROWS start on the bar's first line, so the number stands level
    with the destination, and on six lines end on the card's 8px inset; each
    view has its own, below. Every part names the one column, inside the
@@ -918,8 +927,8 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__body) > * { grid-column: 1; }
 /* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
    size and place, as tall as the bar and level with it, 8px from the next
-   bus's tile and from the column's sides, as a bar is from the next bar
-   and the column's rule, and the bar's corners, so the bus and its trips read as one kind of
+   bus's tile and from the column's sides, as a bar is from the next bar,
+   and the bar's corners, so the bus and its trips read as one kind of
    thing across the row. A partner's row and No bus have the same card.
    A shut row draws none. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head:is([data-bus-id], [data-partner], [data-unassigned])::before {

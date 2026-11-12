@@ -55,7 +55,7 @@
   const town = v => {
     const parts = clean(v).split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length < 2) return clean(v);
-    if (/^(united states|usa|us)$/i.test(parts.at(-1))) parts.pop();
+    if (/^(united states( of america)?|usa|us)$/i.test(parts.at(-1))) parts.pop();
     if (parts.length > 1 && /^(texas|tx|oklahoma|ok)(\s+\d{5}(?:-\d{4})?)?$/i.test(parts.at(-1))) parts.pop();
     return parts.at(-1);
   };

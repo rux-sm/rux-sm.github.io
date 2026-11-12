@@ -929,11 +929,15 @@
     const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(row.driver.id)));
     return { away: inBus && !theirs.has(String(inBus.bus_id)) ? panelIndex.buses.get(inBus.bus_id)?.number ?? 'another bus' : null };
   }
+  /* The time off a driver is on today, their `driver_time_off` row, or
+     null: read off the roster's days, so it is known while today is in the
+     board's range, as their next trip is. */
+  const offToday = row => row?.days[daysBetween(availAll.weekStart, new Date(new Date().setHours(0, 0, 0, 0)))]?.offOf ?? null;
   // Each roster head again, with what Samsara and the trips say now.
   function drawDriverHeads() {
     for (const n of availGrid?.querySelectorAll('.scheduler-avail__name[data-driver-id]') ?? []) {
       const row = availAll?.rows.find(r => String(r.driver.id) === n.dataset.driverId);
-      if (row) DriverHead.draw(n, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row));
+      if (row) DriverHead.draw(n, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row), offToday(row));
     }
     const open = availGrid?.querySelector('.scheduler-avail__card.rux--popover--open')?.closest('.scheduler-avail__name');
     if (open) { fillDriverCard(open); placeDriverCard(); }
@@ -11952,7 +11956,7 @@
       /* The cell is the driver's head, driver-head.js's: the name, its one
          icon and the driving time Samsara says they have left. */
       const nameEl = el('div', 'scheduler-avail__name');
-      DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row));
+      DriverHead.draw(nameEl, row.driver, liveDriverOf(row.driver.id), driverAlertsOf(row.driver.id), tripNow(row), offToday(row));
       // The name is a toggle that picks out the driver's trips on the board; see `markDriverTrips`.
       nameEl.dataset.driverId = row.driver.id;
       pickedTo(nameEl, String(row.driver.id) === String(focusDriver));
@@ -12297,13 +12301,15 @@
      number's tip is, beside the tile and fixed to the window, in the room
      under the rail's day band, so it floats over the rail and the board. */
   function driverInfo(id) {
-    const driver = availAll?.rows.find(r => String(r.driver.id) === String(id))?.driver;
+    const row = availAll?.rows.find(r => String(r.driver.id) === String(id));
+    const driver = row?.driver;
     if (!driver) return null;
     const live = liveDriverOf(id);
+    const off = offToday(row);
     const inBus = roadAnswer?.buses?.find(b => b.drivers?.some(d => String(d.driver_id) === String(id)));
     const bus = inBus ? panelIndex.buses?.get(inBus.bus_id)?.number ?? null : null;
     const alerts = driverAlertsOf(id);
-    return { driver, live, bus, marks: DriverHead.marksOf(driver, alerts, live), tells: alerts.filter(a => a.kind === 'tell').map(a => tellOf(id, a)), next: nextTripOf(id) };
+    return { driver, live, bus, marks: DriverHead.marksOf(driver, alerts, live), tells: alerts.filter(a => a.kind === 'tell').map(a => tellOf(id, a)), off: off ? DriverHead.offWords(off) : null, next: nextTripOf(id) };
   }
   /* A leg to tell a driver of, as its card offers it: its words, and the
      board's address for the leg with the Contact list's Tell pressed for the

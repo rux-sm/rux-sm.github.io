@@ -716,8 +716,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 /* A page pair's grid column may shrink below its content, so a wide table
    scrolls inside its own box rather than widening the page: a grid item's
-   `min-width: auto` would otherwise hold it at the table's width. */
-.scheduler-pair-page .rux--css-grid-column { min-inline-size: 0; }
+   `min-width: auto` would otherwise hold it at the table's width. A stack
+   is a grid too, so what stands in one may shrink the same way, as the
+   Drivers page's Forms table does under its tabs. */
+.scheduler-pair-page .rux--css-grid-column,
+.scheduler-pair-page .rux--stack-vertical > * { min-inline-size: 0; }
 /* On a phone a page pair's Show choice is held to 8rem, what its first word
    needs rather than its longest option, so the search and New keep the band;
    app.css holds its box to the same width. */

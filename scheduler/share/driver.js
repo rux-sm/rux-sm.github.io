@@ -87,7 +87,7 @@
      The page hands in what only it holds: the office's names for the trip's
      needs, the answers, the kept views and its words. */
   const Job = window.SchedulerDriverJob;
-  const { clean, dateOnly, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
+  const { clean, dateOnly, rangeText, timeText, todayIso, roleKey, placeText, jobView, keyOf } = Job;
   let requirementNames = new Map();
   const legOf = (ref, trip, driverId) => Job.legOf(ref, trip, driverId, requirementNames);
   // What changed is said in the page's language, which the driver can switch.
@@ -303,13 +303,14 @@
 
   /* A ROW THAT OPENS SOMETHING: Carbon's clickable tile, an icon or a day at
      the left, the words, then a tag and a chevron at the right. A screen's
-     row opens in place; a paper's opens on its own page. */
+     row opens in place; a paper's opens on its own page. A row with nothing
+     to open yet, `disabled`, is a plain tile with the same parts and no
+     chevron, as a signed form's row is. */
   function row({ hash, href, newTab, lead, title, line, end, disabled }) {
-    const a = el('a', 'rux--tile rux--tile--clickable scheduler-driver-row');
+    const a = disabled ? el('div', 'rux--tile scheduler-driver-row') : el('a', 'rux--tile rux--tile--clickable scheduler-driver-row');
     if (hash) linkTo(a, hash);
     else if (href) a.href = href;
     if (newTab || (staffPage && href)) { a.target = '_blank'; a.rel = 'noopener'; }
-    if (disabled) { a.classList.add('rux--link--disabled'); a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true'); }
     if (lead) a.appendChild(lead);
     const words = el('span', 'scheduler-driver-row__words');
     words.appendChild(el('span', 'rux--type-heading-compact-02', title));
@@ -457,7 +458,7 @@
     if (state.status === 'changed') screen.appendChild(changedNotice(state));
 
     // Where to be, and when, first: it is what the driver comes back for.
-    const where = [l.place.name, l.place.address].filter(Boolean).join(', ');
+    const where = placeText(l.place);
     const when = l.relief
       /* A relief driver works to the handoff, not the bus's spot time, so the
          screen gives the one and never the other. With no time set, relief

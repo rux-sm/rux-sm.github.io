@@ -972,15 +972,17 @@
 
   /* A DRIVER'S CARD, from their tile in the driver rail: the bar's driver
      tip with nothing about one trip. Its head is the tip's, their face, their
-     name and under it their priority and Part-time; then what they are doing
+     name and under it their priority and Part-time; then their time off
+     where they are on it today; what they are doing
      now and which bus Samsara has them in, their three clocks and their
      rest; each of their marks' words in its tone; their phone, language and
      papers; their next trip in view; and in its footer Call, Send trips and
      Open driver, links. `info` is what data.js holds of them: `{ driver,
-     live, bus, marks, next }`, `live` their entry in samsara-now's drivers
-     or null, `bus` the number of the bus it has them in, `marks` driver-
-     head.js's, and `next` their next trip's words or null. */
-  function driverCard({ driver, live, bus, marks = [], tells = [], next = null }, board) {
+     live, bus, marks, off, next }`, `live` their entry in samsara-now's
+     drivers or null, `bus` the number of the bus it has them in, `marks`
+     driver-head.js's, `off` its words for time off under way or null, and
+     `next` their next trip's words or null. */
+  function driverCard({ driver, live, bus, marks = [], tells = [], off = null, next = null }, board) {
     const tip = el('div', 'rux--toggletip-content scheduler-tip scheduler-tip--driver');
     tip.dataset.driverId = driver.id;
     const name = driver.name || driver.short_name || 'Unnamed driver';
@@ -990,6 +992,7 @@
       [driver.priority == null ? 'No priority' : `Priority ${driver.priority}`, driver.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
     head.append(faceOf(name, driver.photo_path, board), said);
     tip.appendChild(head);
+    if (off) tip.appendChild(el('div', 'scheduler-tip__row', off));
     tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__now', live?.duty
       ? [(ROAD_DUTY[live.duty] ?? ROAD_DUTY.unknown).word, bus ? `in ${bus}` : null, live.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')
       : 'No hours-of-service clock from Samsara'));

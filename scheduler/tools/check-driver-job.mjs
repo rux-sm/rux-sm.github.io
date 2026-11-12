@@ -182,5 +182,14 @@ expect('a split trip\'s leg says which way it runs, in the driver\'s language, a
   [way(false), way(true), way(true, 'es'), /Outbound|Inbound/.test(window.SchedulerDriverText.legLines(told)[0])],
   ['Outbound', 'Inbound', 'Regreso', false]);
 
+// A place typed as a town carries the town in its name and its address both.
+expect('a pickup whose address opens with its name is written once, and any other keeps both',
+  [{ name: 'Elm City, TX', address: 'Elm City, TX, United States of America' }, { name: 'Lone Oak HS', address: '1 School Rd' }, { name: '', address: '1 School Rd' }]
+    .map(window.SchedulerDriverJob.placeText),
+  ['Elm City, TX, United States of America', 'Lone Oak HS, 1 School Rd', '1 School Rd']);
+expect('a text names a place by its town, past the state and the country however it is spelled',
+  ['Elm City, TX, United States of America', 'Lone Oak HS, 1 School Rd, Elm City, TX 78520, USA', 'Elm City'].map(Text.town),
+  ['Elm City', 'Elm City', 'Elm City']);
+
 console.log(failed ? `\n  ${failed} fault(s) in driver job` : '\n  driver job: every case passed');
 process.exit(failed ? 1 : 0);

@@ -380,9 +380,11 @@
     try { staff = await account.staffProfile(); } catch { /* said below */ }
     if (!staff) { page.say('error', "This account isn't set up as staff yet", 'Ask the owner to set it up.'); return; }
     const picker = $('scheduler-leg-driver');
-    const { data, error } = await client.from('drivers').select('id,name,short_name,language').order('name');
+    const { data, error } = await client.from('drivers').select('id,name,short_name,language,status').order('name');
     if (error) { page.say('error', "The drivers didn't load", 'Reload the page to try again.'); return; }
-    const drivers = data || [];
+    const wanted = new URLSearchParams(location.search).get('driver') || '';
+    // The active drivers, and the one the address names, whose link may still need turning off.
+    const drivers = (data || []).filter(d => (d.status || 'active') === 'active' || d.id === wanted);
     for (const d of drivers) picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));
     picker.addEventListener('change', () => pick(picker.value, drivers).catch(() => page.say('error', 'Something went wrong', 'Pick the driver again.')));
     $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
@@ -391,7 +393,6 @@
     $('scheduler-send-replace').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-replace-modal'), e.currentTarget));
     $('scheduler-send-replace-confirm').addEventListener('click', () => replace().catch(() => problem("The link wasn't replaced, so the old address still works. Try again.")));
     $('scheduler-send-revoke-confirm').addEventListener('click', () => revoke().catch(() => problem("The link wasn't revoked, so it still works. Try again.")));
-    const wanted = new URLSearchParams(location.search).get('driver') || '';
     if (wanted && drivers.some(d => d.id === wanted)) picker.value = wanted;
     await pick(picker.value, drivers);
   }

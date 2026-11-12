@@ -1952,6 +1952,15 @@ const window = {};
     };
   }
 
+  /* A pickup on one line as a screen writes it: its name, then its address,
+     or the address alone where it opens with the name already, as a town
+     named for both does. `jobView` keeps the two joined as they stand, so a
+     leg accepted before compares alike. */
+  const placeText = place => {
+    const name = clean(place?.name), address = clean(place?.address);
+    return name && address.toLowerCase().startsWith(name.toLowerCase()) ? address : [name, address].filter(Boolean).join(', ');
+  };
+
   /* THE DRIVER'S JOB, AS FAR AS A CHANGE TO IT IS TOLD: what Accept keeps
      and a later load compares, each value text as the card writes it, so a
      change reads as the driver would read it. A view kept before holds the
@@ -2087,7 +2096,7 @@ const window = {};
   window.SchedulerDriverJob = {
     clean, dateOnly, dayFmt, dayText, rangeText, timeText, todayIso,
     ROLE_KEY, roleKey, roleLabel, isRelief, activeSeats, stopsForLeg, requirementsOf, contactsOf, contactOf, itinerariesOf,
-    legOf, jobView, sayIn, changesBetween, keyOf, stateOf, changesSince, viewNow,
+    legOf, placeText, jobView, sayIn, changesBetween, keyOf, stateOf, changesSince, viewNow,
   };
 })();
 

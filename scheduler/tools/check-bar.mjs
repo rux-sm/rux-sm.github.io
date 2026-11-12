@@ -799,6 +799,21 @@ expect('an expired paper: the red mark and no gauge, free or not, the tile marke
 expect('a red mark from Samsara stands before an amber one of the papers, with no gauge',
   tripTile({ duty: 'driving', left_ms: 5 * H }, { away: '133' }, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }),
   ['#i-warning--filled', '#i-BPMN-link--fill', 'driving', true]);
+// Time off under way is said on the tile where a trip's duty mark stands, and a trip under way keeps its own.
+const offNow = { start_date: dayIn(-1), end_date: dayIn(2), reason: 'personal' };
+const offTile = (live, onTrip, off) => {
+  DriverHead.draw(tripCell, { id: 'd3', name: 'Ana Ruiz' }, live, [], onTrip, off);
+  const doing = tripCell.querySelector('.scheduler-avail__doing');
+  return [doing.hidden ? null : doing.querySelector('use').getAttribute('href'), doing.hidden ? null : doing.dataset.trip, /Time off through /.test(tripCell.querySelector('.scheduler-avail__line').getAttribute('aria-label'))];
+};
+expect('a driver on time off today has the crossed calendar and their label says until when; on a trip under way the duty mark stands; with no time off, neither',
+  [offTile({ duty: 'off', left_ms: 10 * H }, null, offNow), offTile({ duty: 'driving', left_ms: 6 * H, wheel: true }, true, offNow), offTile({ duty: 'off', left_ms: 10 * H }, null, null)],
+  [['#m-event_busy', 'away', true], ['#i-BPMN-link--fill', 'driving', true], [null, null, false]]);
+expect('time off in words: through its last day with its reason, and today on that day',
+  [/^Time off through \w{3}, \w{3} \d{1,2} · personal$/.test(DriverHead.offWords(offNow, today)), DriverHead.offWords({ start_date: dayIn(-3), end_date: dayIn(0) }, today)],
+  [true, 'Time off today']);
+expect('a driver\'s card opens with their time off while they are on it',
+  text(Tips.driverCard({ driver: { id: 'd3', name: 'Ana Ruiz' }, off: 'Time off today' }, { photo: () => Promise.resolve('') }), '.scheduler-tip__row'), 'Time off today');
 const card = Tips.driverCard({
   driver: { id: 'd1', name: 'Rigoberto Soto', short_name: 'Rigo', priority: 2, employment_type: 'part-time', phone: '9565550142', language: 'es', license_exp: dayIn(5), med_card_expiry: null },
   live: { duty: 'driving', left_ms: 2 * H, drive_ms: 2 * H, shift_ms: 5 * H, cycle_ms: 40 * H, wheel: true }, bus: '218',

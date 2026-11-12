@@ -22,8 +22,10 @@
      trip under way has what they are doing on it, mark or not, so a
      dispatcher knows whom not to call: driving, the trip bar's arrow in
      green, amber when low; on duty, a play triangle; off duty, a pause; in
-     the sleeper berth, a moon in the rest colour. A driver with no such
-     icon is on no trip.
+     the sleeper berth, a moon in the rest colour. A driver on no trip and
+     on time off today has the crossed calendar there, in the colour their
+     time off takes in the week, so nobody calls them. A driver with no such
+     icon is on no trip and not away.
    - Before the icons, the driving time Samsara says they have left, the
      least of the drive, shift and cycle clocks, as a 16px gauge, a ring
      filled of the ten hours a passenger carrier's driver may drive, as the
@@ -40,14 +42,15 @@
    that data.js fills from trip-tips.js's `driverCard`, as a press anywhere
    on a bus's tile opens its tip.
 
-   `draw(cell, driver, live, alerts, trip)` draws it, its parts once and
-   their words as they change: `driver` is the driver's row,
+   `draw(cell, driver, live, alerts, trip, off)` draws it, its parts once
+   and their words as they change: `driver` is the driver's row,
    `live` their entry in samsara-now's `drivers` or null, `alerts` their
-   list from to-do.js's `driverAlerts`, and `trip` data.js's `tripNow`,
+   list from to-do.js's `driverAlerts`, `trip` data.js's `tripNow`,
    null with no trip of theirs under way, between its yard-out and its
-   return, or `{ away }`. It draws again only when what it shows has
-   changed. `stateOf(live, trip)` and
-   `marksOf(driver, alerts, live, today)`
+   return, or `{ away }`, and `off` their `driver_time_off` row that covers
+   today, or null. It draws again only when what it shows has
+   changed. `stateOf(live, trip)`,
+   `marksOf(driver, alerts, live, today)` and `offWords(off, today)`
    are what it shows, for tools/check-bar.mjs.
    Needs leg-facts.js and road-bar.js loaded first.
    ========================================================================== */
@@ -165,6 +168,18 @@
     return marks.sort((a, b) => (a.tone === b.tone ? 0 : a.tone === 'error' ? -1 : 1));
   }
 
+  /* Time off under way, in words, for the tile's label and the card: until
+     when, and why where a reason was given, as "Time off through Thu, Nov
+     12 · Personal", or "Time off today" on its last day. */
+  const OFF_ICON = '#m-event_busy';
+  function offWords(off, today = new Date(new Date().setHours(0, 0, 0, 0))) {
+    const end = dayOf(off.end_date || off.start_date);
+    const until = !end || end <= today ? 'Time off today'
+      : `Time off through ${end.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`;
+    const why = off.reason ? window.SchedulerAway?.reasonText(off.reason) ?? off.reason : null;
+    return [until, why].filter(Boolean).join(' · ');
+  }
+
   /* THE TILE'S PARTS, made once, so a live answer changes them in place and
      a card open from the tile stays open: the name; the gauge in the
      button of the card's toggletip, with the structure from
@@ -195,7 +210,7 @@
     cell.replaceChildren(name, card, doing, mark);
   }
 
-  function draw(cell, driver, live, alerts = [], trip = null) {
+  function draw(cell, driver, live, alerts = [], trip = null, off = null) {
     const marks = marksOf(driver, alerts, live);
     /* A driver with an expired paper cannot drive, so is never marked free
        and has no gauge, the paper's red mark saying why, unless Samsara has
@@ -204,23 +219,29 @@
     const now = stateOf(live, trip);
     const state = expired && !now.mark ? { ...now, tone: 'error', bare: true, free: false } : now;
     const name = driver.short_name || driver.name || 'Driver';
-    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.tone, state.meter, state.bare, state.trip, state.free, state.mark?.kind, !!trip, marks.map(m => [m.kind, m.tone, m.words])]);
+    const away = off ? offWords(off) : null;
+    const key = JSON.stringify([name, driver.name, driver.priority, driver.employment_type, driver.language, state.tone, state.meter, state.bare, state.trip, state.free, state.mark?.kind, !!trip, away, marks.map(m => [m.kind, m.tone, m.words])]);
     if (cell.dataset.head === key) return;
     cell.dataset.head = key;
     if (!cell.querySelector(':scope > .scheduler-avail__who')) build(cell);
     const full = driver.name || name;
     const who = cell.querySelector('.scheduler-avail__who');
     who.textContent = name;
-    /* What they are doing on their trip, `data-trip`, in its own colour;
-       then the mark, the worse of the one what Samsara says now earns and
-       their worst, the first on a tie. */
+    /* What they are doing on their trip, `data-trip`, in its own colour,
+       or with no trip under way, that they are away; then the mark, the
+       worse of the one what Samsara says now earns and their worst, the
+       first on a tie. */
     const doing = cell.querySelector('.scheduler-avail__doing');
-    doing.hidden = !state.trip;
+    doing.hidden = !state.trip && !away;
     if (state.trip) {
       doing.dataset.trip = state.trip;
       doing.dataset.tone = state.tone;
       const duty = RoadBar.DUTY[state.trip];
       doing.replaceChildren(svgUse(duty.icon, '16', duty.box));
+    } else if (away) {
+      doing.dataset.trip = 'away';
+      delete doing.dataset.tone;
+      doing.replaceChildren(svgUse(OFF_ICON, '16', '0 0 32 32'));
     }
     const mark = cell.querySelector('.scheduler-avail__mark');
     const rank = m => (!m ? 0 : m.tone === 'error' ? 2 : 1);
@@ -232,7 +253,7 @@
     }
     cell.toggleAttribute('data-cannot', !!expired);
     const line = cell.querySelector('.scheduler-avail__line');
-    line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
+    line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, away, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
     const meter = line.querySelector('.scheduler-avail__meter');
     meter.hidden = state.free || state.bare;
     meter.dataset.tone = state.tone;
@@ -251,5 +272,5 @@
       driver.language ? ({ en: 'English', es: 'Spanish' })[driver.language] ?? driver.language : null].filter(Boolean).join(' · ');
   }
 
-  window.SchedulerDriverHead = { draw, stateOf, marksOf, WARN_DAYS };
+  window.SchedulerDriverHead = { draw, stateOf, marksOf, offWords, WARN_DAYS };
 })();

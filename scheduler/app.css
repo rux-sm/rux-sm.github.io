@@ -43,12 +43,13 @@
      inside the tile's 8px clear space and 8px inset, which leaves a name
      84px beside its icon and gauge, room for a two-word short name such as
      Juan Carlos, 79px; and with its week open seven of Carbon's 40px md days
-     beside them and 4px more at each end of the week, 448px in all, so a
+     beside them and 4px more at each end of the week, the tiles' column
+     8px narrower there with the tile on its edge, 440px in all, so a
      one-day mark 4px in from each end of its day, as a bar on the board is,
      is a 32px square, two marks on neighbouring days stand 8px apart, and a
-     mark stands 8px from the week's edges too. */
+     mark stands 8px from the week's edges and from its driver's tile too. */
   --scheduler-rail-w: var(--rux-spacing-13);
-  --scheduler-rail-week-w: calc(var(--scheduler-rail-w) + 7 * var(--rux-layout-size-height-md) + 2 * var(--scheduler-gap-clear));
+  --scheduler-rail-week-w: calc(var(--scheduler-rail-w) - var(--scheduler-side-clear) + 7 * var(--rux-layout-size-height-md) + 2 * var(--scheduler-gap-clear));
   /* The document viewer; opened larger it leaves its column for a window
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
@@ -4078,6 +4079,14 @@ a.scheduler-tip__go { text-decoration: none; }
      side of it; `--scheduler-rail-week-w`'s. */
   --scheduler-day-track: var(--rux-layout-size-height-md);
 }
+/* With its week open the tiles' column gives up the clear space on its far
+   side and each tile stands on its edge, so a tile is 8px from its first
+   day's mark as two marks are from each other. */
+.scheduler-aside[data-week] :is(.scheduler-week--avail, .scheduler-avail__days) {
+  --scheduler-head-w: calc(var(--scheduler-rail-w) - var(--scheduler-side-clear) - 2 * var(--scheduler-region-edge-width, 0px));
+}
+.scheduler-aside[data-week] .scheduler-avail__name { padding-inline-end: var(--scheduler-bar-pad-inline); }
+.scheduler-aside[data-week] .scheduler-avail__name::before { inset-inline-end: 0; }
 .scheduler-aside .scheduler-week--avail {
   /* Takes what the head leaves of the height app.js gives the aside: a short
      list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`

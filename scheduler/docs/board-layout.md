@@ -129,8 +129,10 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 
 ## The driver's week
 
-With its week out the rail is 448px: the 160px tiles, seven of Carbon's
-40px md days, and 4px more at each end of the week. A trip, time off or a
+With its week out the rail is 440px: the tiles' column, 8px narrower with
+each tile on its far edge so a tile stands 8px from its first day's bar as
+two bars do, seven of Carbon's 40px md days, and 4px more at each end of
+the week. A trip, time off or a
 selected trip's open slot is a bar as a trip is on the board: as tall as
 the driver tile and level with it, 4px clear of the row's top and foot, and 4px in
 from the ends of its days, so a one-day bar is always a 32px square, two

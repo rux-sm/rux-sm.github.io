@@ -1908,8 +1908,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    to the bar's padding at the cut end, where the other rows' words end,
    ending in an arrowhead there, so it reads as going on into the other
    week; the edge itself wears no shade. */
-/* Carbon's two solid triangles, the bar's, 8px wherever one is drawn. */
-.scheduler-bar {
+/* Carbon's two solid triangles, a bar's and a roster mark's, 8px wherever
+   one is drawn. */
+.scheduler-bar,
+.scheduler-avail__cell {
   --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 8px 8px no-repeat;
   --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 8px 8px no-repeat;
 }
@@ -4304,7 +4306,7 @@ a.scheduler-tip__go { text-decoration: none; }
    from the ends of its days, `--scheduler-gap-clear`, as a bar is on the
    board, so a one-day mark is always a 32px square and two marks on
    neighbouring days stand 8px apart; a mark that runs on into the next day
-   or past the week's edge runs to that edge. It takes the theme's mark
+   runs to that edge. It takes the theme's mark
    radius and an edge where the theme draws one. Its fill and
    edge are the two properties below, which a theme sets in theme.css. */
 .scheduler-avail__cell {
@@ -4402,6 +4404,35 @@ a.scheduler-tip__go { text-decoration: none; }
   border-inline-start-width: 0;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
+}
+/* THE WEEK'S FIRST AND LAST DAYS HOLD EVERY MARK ON ONE EDGE: a mark that
+   came in from the week before, or runs on past the last day, keeps the 8px
+   the others stand in from the week's edges, and says so with the triangle
+   that points the way it goes on, in the mark's own ink, as a live bar on
+   the board does. Its corners stay square there. A mark that carries its
+   rest's hours has no room for both in one day, and keeps the hours. */
+.scheduler-avail__name + .scheduler-avail__cell--from-prev::after { inset-inline-start: var(--scheduler-mark-start); }
+.scheduler-avail__cell--to-next:last-child::after { inset-inline-end: var(--scheduler-mark-end); }
+.scheduler-avail__cell--rest.scheduler-avail__cell--to-next:last-child { padding-inline-end: var(--scheduler-mark-end); }
+.scheduler-avail__name + .scheduler-avail__cell--from-prev:not(.scheduler-avail__cell--rest)::before,
+.scheduler-avail__cell--to-next:last-child:not(.scheduler-avail__cell--rest)::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset-block-start: calc(var(--scheduler-mark-top) + var(--scheduler-mark-h) / 2);
+  translate: 0 -50%;
+  inline-size: 8px;
+  block-size: 8px;
+  background: currentColor;
+  pointer-events: none;
+}
+.scheduler-avail__name + .scheduler-avail__cell--from-prev::before {
+  inset-inline-start: calc(var(--scheduler-mark-start) + var(--rux-spacing-03));
+  mask: var(--scheduler-arrow-back);
+}
+.scheduler-avail__cell--to-next:last-child::before {
+  inset-inline-end: calc(var(--scheduler-mark-end) + var(--rux-spacing-03));
+  mask: var(--scheduler-arrow-on);
 }
 .scheduler-avail__cell > span {
   overflow: hidden;

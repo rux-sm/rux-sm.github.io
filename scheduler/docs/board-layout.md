@@ -135,8 +135,10 @@ selected trip's open slot is a bar as a trip is on the board: as tall as
 the driver tile and level with it, 4px clear of the row's top and foot, and 4px in
 from the ends of its days, so a one-day bar is always a 32px square, two
 bars on neighbouring days stand 8px apart, as on the board, and a bar on
-the first or last day stands 8px from the week's edge. A bar that runs on into the next day,
-or past the week's edge, runs to that edge.
+the first or last day stands 8px from the week's edge. A bar that runs on into the next day
+runs to that edge. One that came in from the week before, or runs on past its
+last day, keeps the 8px at the week's edge and has a solid triangle there
+pointing the way it goes on, unless it carries its rest's hours.
 
 ## Each view
 

@@ -34,6 +34,11 @@ scroll by a scroll timeline. It holds the days near the view, three weeks
 either side, drawn again as the view nears where they end. The driver
 list's band stands above its list the same way.
 
+A scroll up or down settles on a row: where it stops, the nearest bus, or
+driver in the list, stands under the band as the first does, its card 8px
+from it. At a list's foot the last card stands 8px from the foot instead.
+Sideways the strip stops where the hand leaves it.
+
 ## The trip bar, on six lines
 
 128px tall, 10px above and below its lines and 8px at its sides. A bar

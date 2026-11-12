@@ -10,8 +10,9 @@ Every form a driver must fill in and sign has a signed copy on that driver's
 profile. The office sends a driver any form from the scheduler, the driver
 signs it with a finger from the link the office already texts them, and the
 signed PDF lands on their Documents tab without anyone printing, scanning or
-typing it. The office sees in one place who has signed what, who is waiting
-and what ends soon. The first forms are the Texas Education Agency's
+typing it. The office chooses which forms are on which driver's link, and
+sees for each form who has signed, who is waiting and what ends soon,
+however many forms there are. The first forms are the Texas Education Agency's
 Pre-employment or Pre-service Affidavit (TEC §22A.055) and the school
 background check form; the next are added by setting them up, not by new
 code.
@@ -23,9 +24,23 @@ code.
   a staff-only bucket `driver-forms`, whether it is signed once or every
   year, and its fields. A form is never edited in place once signed: a new
   version is a new row, and it asks every driver to sign again.
-- **Every active driver signs every form,** and a driver added later is asked
-  for each form on file. A yearly form ends a year from its signing, and the
-  Documents page's 30-day warning shows it before.
+- **A form is on a driver's link only while that driver is asked for it.**
+  A row of `driver_form_asks`, the form and the driver, asks one driver; a
+  form's `ask_everyone` asks every active driver, a driver added later
+  included. A new form and a new driver start with nothing asked. While a
+  form asks everyone, each driver's switch reads on and is not offered;
+  turning Ask every driver off leaves every driver asked, one row each, so
+  nothing leaves a link unseen.
+- **A form not asked is nowhere on the driver's link,** signed or not: My
+  documents does not list it, `share/sign.html` does not open it and the
+  `driver-form` Edge Function refuses it, all through `driver_forms_for`,
+  which hands back only the forms a driver is asked for. The signed copy
+  stays on the driver's file. Sending a form asks for it.
+- **The forms live before the switches keep a driver asked only where a
+  send or a signing exists,** one row for each such pair, and none asks
+  everyone.
+- **A yearly form ends a year from its signing,** and the Documents page's
+  30-day warning shows it before.
 - **The office can send any form to any driver at any time,** signed or not;
   the new signing becomes the current copy, and the one before is kept as an
   old copy, as the Documents page keeps every replaced paper.
@@ -87,11 +102,24 @@ code.
   and whether it is flagged. That record is what makes the signature hold
   under the Texas Uniform Electronic Transactions Act. The answers live only
   in the signed PDF.
-- **The office's view is a Forms tab on the Drivers page:** each driver
-  against each form, as Signed, Waiting or Ends soon, with Send on any of
-  them, which writes the text through `driver-text.js` as the week info
-  message is written. A flagged signing heads the Forms tab until Mark as
-  read, so it is read before the PDF goes to a school.
+- **The office's view is a Forms tab on the Drivers page, a list of forms,**
+  not a table of drivers against forms, which no screen holds past a few
+  forms. A row is a form: its title, Once or Yearly, how many drivers are
+  asked or Every driver asked, how many of those have signed, as a count
+  and a bar, and how many are waiting. A flagged signing heads the tab
+  until Mark as read, so it is read before the PDF goes to a school.
+- **A form opens on its own view, `drivers.html?form=<id>`:** Ask every
+  driver, Send to those waiting, and its drivers in four groups, Waiting on
+  the driver with the day it was sent or Not sent yet, Ends soon, Signed
+  with Open, and Not asked. Every driver's row has the switch that puts the
+  form on their link, saved as it is flipped. Send writes the text through
+  `driver-text.js` as the week info message is written.
+- **To sign is asked and not signed; Waiting is sent and not signed.** The
+  tab counts the first and tags the second, so one word never means both.
+- **A driver's profile lists the forms on their link,** on its Documents
+  tab: every current form with its switch, where it stands, and Send or
+  Open, so one driver is set up without leaving their page.
+- **Both views are lists, so a phone shows them as a desk does.**
 - **After signing, the driver's link says only that a form is signed and
   when.** The answers, date of birth and address stay staff only and never
   reach a share page or a customer; the connector's `find_documents` finds
@@ -107,6 +135,22 @@ code.
 
 ## Tasks
 
+- [ ] Write the database change and test it in PGlite: `driver_forms.ask_everyone`,
+      `driver_form_asks` with a row for every pair that has a send or a
+      signing, `driver_forms_for` handing back asked forms only, `asked` in
+      `get_driver_forms_overview`, `send_driver_forms` asking as it sends,
+      and staff-only functions that ask one driver and everyone. Show rux
+      the SQL and apply it on a yes.
+- [ ] Draw the Forms tab as the list of forms and a form's own view, in
+      `driver-forms.js`, in place of the table, and check both at a phone's
+      width.
+- [ ] List the forms on a driver's link on the profile's Documents tab,
+      with their switches, Send and Open.
+- [ ] Check on a driver's link in Chrome on :8641 that a form switched off
+      leaves My documents and will not open on `share/sign.html`, and one
+      switched on comes back.
+- [ ] Say the new shape in `scheduler/docs/screen-inventory.md` and the new
+      table, column and functions in `scheduler/docs/database-inventory.md`.
 - [ ] Check in Chrome on :8641 with a test driver what the first round left:
       the form on a Spanish link, a second signing replacing the first as the
       current copy, and Send's Copy the text; then delete the test driver,

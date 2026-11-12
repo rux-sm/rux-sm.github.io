@@ -419,12 +419,16 @@
       "besideGame": true,
       "places": [
         {
+          "path": "saves",
           "key": "ports.qt/savegamePath",
-          "kind": "Saves"
+          "kind": "Saves",
+          "stored": "saves/gb"
         },
         {
+          "path": "states",
           "key": "ports.qt/savestatePath",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/gb/states"
         }
       ],
       "files": [
@@ -452,6 +456,16 @@
         }
       ],
       "manages": [
+        {
+          "key": "ports.qt/savegamePath",
+          "value": "{home}/saves",
+          "why": "Saves sit in mGBA's own folder on the Mac, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "ports.qt/savestatePath",
+          "value": "{home}/states",
+          "why": "Save states sit beside the saves and are carried the same way."
+        },
         {
           "key": "ports.qt/updateAutoCheck",
           "value": "0",

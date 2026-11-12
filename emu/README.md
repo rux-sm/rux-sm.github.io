@@ -136,7 +136,7 @@ public.
 | `saves-rules.js` | which game a save belongs to, for the scan and the Saves page alike |
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `update.js` | Update, on the Status page |
-| `game-panel.js`, `this-mac.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
+| `game-panel.js`, `this-mac.js`, `carry.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; its emulator's saves carried between this Mac and Supabase around Play; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
 | `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `search.js` | Search, in every page's header |
 | `app.css` | the filters, rows, the side panel's facts and its part for this Mac, under `emu-` |

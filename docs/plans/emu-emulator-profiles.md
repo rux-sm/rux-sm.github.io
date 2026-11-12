@@ -176,11 +176,8 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Carry for mGBA alone, on the iMac with mGBA installed: each place in
-  `emulators.json` naming its folder in Supabase, fingerprints, the five
-  kept copies, the newest playing when both changed, the session around
-  Play, with the settings Emu manages written before it and this Mac's
-  settings backed up after it, and the menu bar icon.
+- [ ] Install Rux Emu Helper 11 on the iMac and play a Game Boy game
+  there, which brings mGBA's saves from Supabase into its own folder.
 - [ ] Carry for the other emulators, a backup first, the simple ones first
   and Dolphin's Wii storage, Cemu, Ryujinx and xemu last: the helper writing
   a managed setting into each one's kind of settings file, as it does an
@@ -188,7 +185,9 @@ In this order, so what can lose a save comes last and proves itself first:
   moved into Supabase, the GameCube save under `GC/USA/`, xemu's EEPROM
   beside its disk image, each emulator on the MacBook Pro back to its own
   folders, the Saves page listing Supabase, and a game's panel saying
-  whether its saves are in step.
+  whether its saves are in step, with one press to use the other copy
+  where two were found; then the drive's `saves/gb/` removed, which
+  Supabase and each Mac now hold.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

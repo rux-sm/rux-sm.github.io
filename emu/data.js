@@ -78,6 +78,20 @@
       if (!have.length) fail((await client.storage.from(COLLECTION).upload(sha1, await bytes(), { upsert: true, contentType: 'application/octet-stream' })).error);
       fail((await client.from('emu_files').insert({ path, sha1, size, saved_at: saved, mac })).error);
     },
+    // A save carried up: put as putFile puts it, then the copies of it past
+    // the newest five dropped, with the bytes nothing else has.
+    async keepCopy(file, bytes) {
+      await data.putFile(file, bytes);
+      const { data: rows, error } = await client.from('emu_files').select('carried_at, sha1').eq('path', file.path).order('carried_at', { ascending: false });
+      fail(error);
+      const old = rows.slice(5);
+      for (const r of old) fail((await client.from('emu_files').delete().eq('path', file.path).eq('carried_at', r.carried_at)).error);
+      for (const sha1 of new Set(old.map(r => r.sha1))) {
+        const { data: left, error: e } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
+        fail(e);
+        if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
+      }
+    },
     // A file taken out of Supabase with every copy kept of it, and its bytes
     // where no other file has the same.
     async dropFile(path) {

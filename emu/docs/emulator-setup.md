@@ -48,9 +48,11 @@ correct `settings` for it in `emu/emulators.json`.
 - **Mesen 2, NES and SNES.** Settings, Preferences, Folders: the save data
   folder and the save state folder to `<drive>/saves/nes/`, for both
   systems; Mesen names each save after the game's file.
-- **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** Settings, Paths:
-  Saves to `<drive>/saves/gb/`, for all three; mGBA writes `<game>.sav`.
-  The GBA BIOS is optional, in Settings, BIOS.
+- **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** Nothing is set
+  by hand: before each Play, Emu points its saves at `~/.config/mgba/saves/`
+  and its save states at `~/.config/mgba/states/`, and carries both to and
+  from Supabase; mGBA writes `<game>.sav`. The GBA BIOS is
+  optional, in Settings, BIOS.
 - **ares, N64.** Settings, Paths: Saves to `<drive>/saves/n64/`. Quit ares
   and set `NoFilePrompt: true` under `General` in
   `~/Library/Application Support/ares/settings.bml`, so a game that can use

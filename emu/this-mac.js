@@ -136,8 +136,10 @@
           play.disabled = true;
           said.textContent = 'Starting…';
           try {
+            const carried = await R.carry?.before(g.system, text => { said.textContent = text; });
             await H.play(g);
             said.textContent = 'Playing.';
+            if (carried) R.carry.after(g.system, text => { if (!closed()) said.textContent = text; });
             try { g.notes = { ...g.notes, system: g.system, title: g.title, played_at: await R.data.markPlayed(g) }; }
             catch (error) { console.error(error); said.textContent = 'Playing, but it could not be marked as played.'; }
           } catch (error) { said.textContent = error.message; }

@@ -21,6 +21,14 @@
 //   POST   /mac/setting    ?emulator=&rel=, the body written as that file
 //   POST   /mac/manage     { "emulator" }, the settings Emu manages written
 //                          into its settings file
+//   GET    /mac/carry      ?emulator=, each save that emulator keeps in the
+//                          folders Emu carries, with its SHA-1 now and at
+//                          its last carry, and whether the emulator runs
+//   GET    /mac/carried    ?path=<its path in Supabase>, one of those
+//   POST   /mac/carried    ?path=&saved=, the body written as that save, at
+//                          the moment it was saved, and noted as carried
+//   POST   /mac/carried/mark  ?path=&sha1=, that save noted as carried, when
+//                          it still has that SHA-1
 //   GET    /mac/saves      each save this Mac keeps itself, not on the drive
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
 //   GET    /newest         the newest version of each emulator its project
@@ -73,6 +81,14 @@
 // Mac's home again, and never while its emulator runs, which writes its
 // settings as it quits.
 //
+// A carried save sits in a folder inside its emulator's own, which
+// emulators.json names beside that folder's path in Supabase, and the
+// settings Emu manages point the emulator there. The helper keeps each one's
+// SHA-1 at its last carry in ~/Library/Application Support/Rux Emu
+// Helper/carried.json, so the site can tell which side changed, and never
+// writes one while its emulator runs. Its menu bar icon is filled while a
+// save differs from its last carry.
+//
 // An installer comes only from the collection's bucket in Supabase, is
 // checked against the size and SHA-1 the site sends, and puts in Applications
 // only an app emulators.json names for that emulator. The receipt it leaves,
@@ -87,7 +103,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "10"
+let version = "11"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -184,6 +200,8 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   p.arguments = launch.args.map { $0 == "{file}" ? target.path : $0 }
   p.standardOutput = FileHandle.nullDevice
   p.standardError = FileHandle.nullDevice
+  // Its saves are compared with their last carry once it quits.
+  p.terminationHandler = { _ in showWaiting() }
   do { try p.run() } catch { return (500, ["error": "\(launch.app) did not start."]) }
   // The emulator comes to the front once its window is up.
   DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -604,13 +622,114 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
   }
   var text = (try? String(contentsOfFile: file, encoding: .utf8)) ?? ""
   for m in manages {
-    guard let key = m["key"] as? String, let value = m["value"] as? String else { continue }
+    guard let key = m["key"] as? String, var value = m["value"] as? String else { continue }
+    // A folder inside the emulator's own, made so the emulator finds it there.
+    if value.hasPrefix("{home}/") {
+      value = home + value.dropFirst("{home}".count)
+      try? files.createDirectory(atPath: value, withIntermediateDirectories: true)
+    }
     let parts = key.components(separatedBy: "/")
     if parts.count == 2 { text = iniSet(text, parts[0], parts[1], value); set.append(key) } else { left.append(key) }
   }
   guard (try? text.write(toFile: file, atomically: true, encoding: .utf8)) != nil else { return (500, ["error": "The helper could not write \(app)'s settings file."]) }
   return (200, ["set": set, "left": left])
 }
+
+// MARK: Carrying saves
+
+// Each folder of an emulator that Emu carries: its path in Supabase, and where
+// it is inside the emulator's own folder, whatever its setting says now.
+func carriedPlaces(_ e: Saver) -> [(stored: String, dir: String)] {
+  guard let home = e.home else { return [] }
+  return (e.rule["places"] as? [[String: Any]] ?? []).compactMap { p in
+    guard let stored = p["stored"] as? String, let path = p["path"] as? String else { return nil }
+    return (stored, home + "/" + path)
+  }
+}
+
+// Each carried save's SHA-1 at its last carry, by its path in Supabase.
+let ledgerFile = home + "/Library/Application Support/Rux Emu Helper/carried.json"
+let ledgerLock = NSLock()
+func ledger() -> [String: String] {
+  ledgerLock.lock(); defer { ledgerLock.unlock() }
+  return files.contents(atPath: ledgerFile).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: String] } ?? [:]
+}
+func note(_ path: String, _ sha1: String) {
+  ledgerLock.lock()
+  var all = files.contents(atPath: ledgerFile).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: String] } ?? [:]
+  all[path] = sha1
+  try? files.createDirectory(atPath: (ledgerFile as NSString).deletingLastPathComponent, withIntermediateDirectories: true)
+  try? JSONSerialization.data(withJSONObject: all, options: [.sortedKeys]).write(to: URL(fileURLWithPath: ledgerFile), options: .atomic)
+  ledgerLock.unlock()
+  showWaiting()
+}
+
+func sha1Of(_ path: String) -> String? {
+  files.contents(atPath: path).map { Insecure.SHA1.hash(data: $0).map { String(format: "%02x", $0) }.joined() }
+}
+
+// Each save in an emulator's carried folders, under 50 MB.
+func carriedFiles(_ e: Saver) -> [(path: String, at: String, size: Int)] {
+  carriedPlaces(e).flatMap { place in
+    walk(place.dir).filter { $0.size < 50_000_000 }.map { (place.stored + $0.path.dropFirst(place.dir.count), $0.path, $0.size) }
+  }
+}
+
+func carry(_ name: String) -> (Int, [String: Any]) {
+  guard let e = saver(name) else { return (404, ["error": "\(name) is not an emulator Emu knows."]) }
+  let last = ledger()
+  let list: [[String: Any]] = carriedFiles(e).compactMap { f in
+    guard let sha1 = sha1Of(f.at) else { return nil }
+    let a = try? files.attributesOfItem(atPath: f.at)
+    return ["path": f.path, "size": f.size, "sha1": sha1, "carried": orNull(last[f.path]),
+            "saved": orNull((a?[.modificationDate] as? Date).map(iso.string))]
+  }
+  return (200, ["emulator": name, "mac": SCDynamicStoreCopyComputerName(nil, nil) as String? ?? ProcessInfo.processInfo.hostName,
+                "carries": !carriedPlaces(e).isEmpty, "running": running(appsOf(e.rule)), "files": list])
+}
+
+// Where a carried save is on this Mac, by its path in Supabase: inside the
+// folder with the longest path that holds it, and its emulator.
+func carriedAt(_ path: String) -> (e: Saver, at: String)? {
+  var best: (e: Saver, stored: String, dir: String)? = nil
+  for e in savers() {
+    for place in carriedPlaces(e) where path.hasPrefix(place.stored + "/") && place.stored.count > (best?.stored.count ?? -1) {
+      best = (e, place.stored, place.dir)
+    }
+  }
+  guard let best, plainName(String(path.dropFirst(best.stored.count + 1))) else { return nil }
+  return (best.e, best.dir + path.dropFirst(best.stored.count))
+}
+
+func writeCarried(_ path: String, _ saved: String?, _ body: Data) -> (Int, [String: Any]) {
+  guard let found = carriedAt(path) else { return (404, ["error": "That is not a save Emu carries."]) }
+  let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
+  guard !running(appsOf(found.e.rule)) else { return (409, ["error": "Quit \(app) first: a save cannot change under a running game."]) }
+  guard (try? files.createDirectory(atPath: (found.at as NSString).deletingLastPathComponent, withIntermediateDirectories: true)) != nil,
+        (try? body.write(to: URL(fileURLWithPath: found.at), options: .atomic)) != nil else {
+    return (500, ["error": "The helper could not write that save."])
+  }
+  if let when = saved.flatMap(iso.date) ?? saved.flatMap({ ISO8601DateFormatter().date(from: $0) }) {
+    try? files.setAttributes([.modificationDate: when], ofItemAtPath: found.at)
+  }
+  note(path, Insecure.SHA1.hash(data: body).map { String(format: "%02x", $0) }.joined())
+  return (200, ["written": path])
+}
+
+func markCarried(_ path: String, _ sha1: String) -> (Int, [String: Any]) {
+  guard let found = carriedAt(path), sha1Of(found.at) == sha1 else { return (409, ["error": "That save changed since it was read."]) }
+  note(path, sha1)
+  return (200, ["carried": path])
+}
+
+// Whether any carried save differs from its last carry.
+func savesWaiting() -> Bool {
+  let last = ledger()
+  return savers().contains { e in carriedFiles(e).contains { sha1Of($0.at) != last[$0.path] } }
+}
+
+// The menu bar icon filled while saves wait; set once the app is up.
+var showWaiting: () -> Void = {}
 
 // MARK: Installing an emulator
 
@@ -1243,6 +1362,11 @@ final class Server {
       off { settingBytes(q["emulator"] ?? "", q["rel"] ?? "").map(Reply.bytes) ?? .json(404, ["error": "That is not a settings file this Mac keeps."]) }
     case ("POST", "/mac/setting"): off { let (code, out) = writeSetting(q["emulator"] ?? "", q["rel"] ?? "", body); return .json(code, out) }
     case ("POST", "/mac/manage"): off { let (code, out) = manage(body); return .json(code, out) }
+    case ("GET", "/mac/carry"): off { let (code, out) = carry(q["emulator"] ?? ""); return .json(code, out) }
+    case ("GET", "/mac/carried"):
+      off { carriedAt(q["path"] ?? "").flatMap { bytes($0.at, at: nil, n: nil) }.map(Reply.bytes) ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
+    case ("POST", "/mac/carried"): off { let (code, out) = writeCarried(q["path"] ?? "", q["saved"], body); return .json(code, out) }
+    case ("POST", "/mac/carried/mark"): off { let (code, out) = markCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
     case ("GET", "/newest"): off { .json(200, newest()) }
     case ("GET", "/mac/save"):
       off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
@@ -1322,6 +1446,11 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
   var item: NSStatusItem!
   var server: Server?
   let state = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+  let waiting: NSMenuItem = {
+    let item = NSMenuItem(title: "Saves waiting: open Rux Emu to carry them", action: nil, keyEquivalent: "")
+    item.isHidden = true
+    return item
+  }()
 
   func applicationDidFinishLaunching(_ note: Notification) {
     item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -1330,16 +1459,28 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
     menu.delegate = self
     menu.addItem(NSMenuItem(title: "Rux Emu Helper", action: nil, keyEquivalent: ""))
     menu.addItem(state)
+    menu.addItem(waiting)
     menu.addItem(.separator())
     menu.addItem(NSMenuItem(title: "Open Rux Emu", action: #selector(openSite), keyEquivalent: ""))
     menu.addItem(NSMenuItem(title: "Quit Rux Emu Helper", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
     item.menu = menu
     do { server = try Server() } catch { state.title = "Could not listen for the site" }
+    showWaiting = { [weak self] in
+      DispatchQueue.global().async {
+        let waiting = savesWaiting()
+        DispatchQueue.main.async {
+          self?.waiting.isHidden = !waiting
+          self?.item.button?.image = NSImage(systemSymbolName: waiting ? "gamecontroller.fill" : "gamecontroller", accessibilityDescription: "Rux Emu Helper")
+        }
+      }
+    }
+    showWaiting()
     // Starts again at each log-in; macOS lists it in Login Items, where it can be turned off.
     try? SMAppService.mainApp.register()
   }
 
   func menuWillOpen(_ menu: NSMenu) {
+    showWaiting()
     if server == nil { return }
     if let root = collection() { state.title = "Games on \(driveOf(root))" }
     else { state.title = exists(library) && !libraryFiles().isEmpty ? "Games on this Mac" : "No games plugged in" }

@@ -279,7 +279,7 @@
     const manages = rule.manages ?? [];
     parts.push(part('Settings',
       facts([['Its settings file', config ? `${home}/${config}` : home ?? 'None']]),
-      ...(manages.length ? [rows(manages.map(m => [`${m.key} = ${m.value === '' ? 'empty' : m.value}`, m.why]))] : []),
+      ...(manages.length ? [rows(manages.map(m => [`${m.key} = ${m.value === '' ? 'empty' : m.value.replace('{home}', home ?? '')}`, m.why]))] : []),
       ...(installs ? backups(name, macs) : [])));
 
     const notes = el('ul', 'rux--list--unordered');

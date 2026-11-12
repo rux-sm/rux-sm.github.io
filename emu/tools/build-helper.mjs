@@ -83,11 +83,13 @@ try {
 
   const installer = path.join(root, `Install ${name}.command`);
   fs.writeFileSync(installer, `#!/bin/zsh
-# Copies ${name} from beside the games into Applications and starts it.
+# Copies ${name} from beside the games into Applications and starts it,
+# without the downloaded mark a network share puts on it, which would have
+# macOS run it from a sealed copy that cannot answer the site.
 cd "$(dirname "$0")"
 osascript -e 'quit app "${name}"' 2>/dev/null
 rm -rf "/Applications/${name}.app"
-ditto "${name}.app" "/Applications/${name}.app"
+ditto --noqtn "${name}.app" "/Applications/${name}.app"
 open "/Applications/${name}.app"
 echo "${name} is installed: its game controller is in the menu bar."
 read -k 1 "?Press any key to close."

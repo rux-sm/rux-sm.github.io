@@ -37,8 +37,9 @@
 // SHA-1 the site sends, and only then takes its name. The library is
 // `~/Emulation/roms/<system>/`, laid out as the collection's roms folder.
 //
-// The collection is the first `/Volumes/<drive>/emulation` holding a `roms`
-// folder, and every /drive path is inside it once links are followed. What
+// The collection is the first folder holding a `roms` folder that is either
+// a drive's `emulation` folder, as on the T7, or a drive itself, as the home
+// server's `games` share mounts, and every /drive path is inside it once links are followed. What
 // the helper knows of each emulator, how it opens a game and where it keeps
 // saves on a Mac, is the site's `emulators.json`, which build-helper.mjs puts
 // inside the app, so it reads a Mac with no drive plugged in. A game must
@@ -54,7 +55,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "5"
+let version = "6"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -66,9 +67,11 @@ struct Launch { let app: String; let args: [String] }
 func collection() -> URL? {
   let volumes = (try? FileManager.default.contentsOfDirectory(atPath: "/Volumes")) ?? []
   for name in volumes.sorted() {
-    let root = URL(fileURLWithPath: "/Volumes").appendingPathComponent(name).appendingPathComponent("emulation")
-    var dir: ObjCBool = false
-    if FileManager.default.fileExists(atPath: root.appendingPathComponent("roms").path, isDirectory: &dir), dir.boolValue { return root }
+    let drive = URL(fileURLWithPath: "/Volumes").appendingPathComponent(name)
+    for root in [drive.appendingPathComponent("emulation"), drive] {
+      var dir: ObjCBool = false
+      if FileManager.default.fileExists(atPath: root.appendingPathComponent("roms").path, isDirectory: &dir), dir.boolValue { return root }
+    }
   }
   return nil
 }

@@ -9,8 +9,8 @@ type: plan
 A small Mac app, Rux Emu Helper, installed with one double-click, that the
 Rux Emu site talks to: Play starts a game at once, Status and Update read
 the Mac and the collection live, and Set up this Mac installs and points
-every emulator, so a new Mac plays in one step, from the T7 now and from the
-home server later. The site's other plans are `docs/plans/emu-app.md`,
+every emulator, so a new Mac plays in one step, from the T7 or the home
+server. The site's other plans are `docs/plans/emu-app.md`,
 `docs/plans/emu-front-end.md` and `docs/plans/emu-server.md`.
 
 ## Decisions
@@ -29,8 +29,8 @@ home server later. The site's other plans are `docs/plans/emu-app.md`,
 - **It opens only a game file inside the collection's `roms/` folder, in
   that system's emulator,** with the same command ES-DE uses, so nothing the
   site sends can open anything else.
-- **The collection is wherever it is found:** the T7 now, the home server's
-  share later, and the helper tells the site which.
+- **The collection is wherever it is found:** the T7 plugged in or the home
+  server's share mounted, and the helper tells the site which.
 - **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each
   emulator from the installers Supabase holds, by links the site signs,
   takes the keys and firmware the same way, and writes the settings Emu
@@ -51,4 +51,3 @@ None open.
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
 - [ ] Add Set up this Mac, installing and pointing every emulator.
-- [ ] Read the collection from the home server's share once it is built.

@@ -17,10 +17,10 @@ The home server, so the drive is not carried between Macs:
 
 - **Until the server is built, the T7 stays the games' home,** carried
   between Macs as now.
-- **rux's old gaming PC becomes the games' home,** holding the games and the
-  dated backup; everything else is in Supabase, as
-  `docs/plans/emu-emulator-profiles.md` says. It only stores, and every game
-  is played on another machine.
+- **rux's old gaming PC becomes the games' home,** holding the games and a
+  nightly copy of what Supabase holds; everything but the games is in
+  Supabase, as `docs/plans/emu-emulator-profiles.md` says. It only stores,
+  and every game is played on another machine.
 - **The collection lives on one 4 TB WD Red Plus hard drive, not mirrored,**
   about 3.6 TB usable for a collection of 800 GB, using the drive rux
   already has; hard drives cost a third of SSDs per terabyte, and the
@@ -78,6 +78,28 @@ The home server, so the drive is not carried between Macs:
   save over the network loses it if the connection drops.
 - **The server scans itself every night and saves the scan to Supabase,**
   with a key kept only on the server, so Update is needed only for the T7.
+- **The server copies Supabase to itself after each night's scan:** every
+  file the `emu-collection` bucket holds and the rows that name them, into
+  a `backups` dataset of the `storage` pool, so every Mac's settings and
+  every account's saves are kept at home.
+- **The server pulls and no Mac pushes,** since the download server never
+  writes and a Mac away from home reaches no share; a Mac is backed up by
+  what it carried to Supabase, wherever it is.
+- **The copy is folders a person can read,** each file under its own name
+  by account, Mac and emulator, as its row says, since the bucket's bytes
+  are named only by their SHA-1 and a save must go back by hand with
+  Supabase gone. An account `docs/plans/emu-accounts.md` adds is a new
+  folder and changes nothing here.
+- **TrueNAS snapshots the dataset, and those are the dated copies,** every
+  night of the last 30 days and one a month before that, as the
+  `emu-backups` bucket keeps its zips, so the server writes no zip.
+- **The nightly job's key reads every account's rows and is kept only on
+  the server,** in a container the forwarded ports do not reach, apart from
+  the download server, since a backup that skipped an account would not be
+  one.
+- **No Mac keeps a backup folder.** `~/Documents/Emu backups/` and
+  `emu/tools/backup-saves.mjs` go, since the copies are Supabase, each Mac
+  that plays, the server and the T7.
 - **Download to this Mac, in a game's side panel,** writes the game into the
   Mac's own library folder, `~/Emulation/roms/<system>/` as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
@@ -112,16 +134,23 @@ The setup kit, so any Mac is set up in one step:
 
 ## Questions
 
-- Should every Mac backup folder become the server's, now the server holds
-  a copy and the T7 another?
+- Does Update still write the T7's dated zip, as
+  `docs/plans/emu-emulator-profiles.md` has it, once the T7's refresh brings
+  the server's `backups` with the games?
 
 ## Tasks
 
-- [ ] Refresh the T7 from the server, as its backup, with one command.
+- [ ] Refresh the T7 from the server, the games and `backups`, as its
+  backup, with one command.
 - [ ] Prove Rux Emu Helper 6 reads the collection from the `games` share with
   the T7 unplugged, once macOS has given it its permissions again.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
+- [ ] Copy Supabase into the server's `backups` dataset after the scan, by
+  account, Mac and emulator, with TrueNAS's snapshots of it, and put a save
+  and a Mac's settings back from that copy alone.
+- [ ] Remove each Mac's backup folder and `emu/tools/backup-saves.mjs`, and
+  have the Saves page and the README name the server's copy in their place.
 - [ ] Add Download to this Mac with its progress, Remove from this Mac in
   the helper and the page, the mark of what this Mac holds, the On this Mac
   view, and Play from the library.

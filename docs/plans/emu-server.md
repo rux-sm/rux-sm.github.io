@@ -104,10 +104,10 @@ The setup kit, so any Mac is set up in one step:
 
 - [ ] Fit the 4 TB WD Red Plus in a 3.5" bay on a SATA port, with the
   board's SATA cable and a power lead from the supply.
-- [ ] Copy off anything wanted from the PC's Windows, then install TrueNAS on
-  the 980 PRO, make a single-drive pool on the 4 TB and share the collection,
-  and copy it on from the T7 through a Mac, since TrueNAS cannot read the
-  T7's APFS.
+- [ ] Install TrueNAS on the 980 PRO over Windows, which holds nothing
+  kept, make a single-drive pool on the 4 TB and share the collection, and
+  copy it on from the T7 through a Mac, since TrueNAS cannot read the T7's
+  APFS.
 - [ ] Buy a second 4 TB WD Red Plus (WD40EFPX) and extend the pool onto it,
   making it a mirror.
 - [ ] Add Tailscale on the server and each Mac.

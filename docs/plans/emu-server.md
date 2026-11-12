@@ -85,8 +85,8 @@ The setup kit, so any Mac is set up in one step:
 
 ## Tasks
 
-- [ ] Reserve the server's address in the router, make a single-drive pool
-  on the 4 TB, share the collection, and copy it on.
+- [ ] Copy the collection onto the `games` share, leaving out
+  `to-delete`.
 - [ ] Copy the collection from the server to the T7.
 - [ ] Add Tailscale on the server and each Mac.
 - [ ] Run the scan on the server each night, saving to Supabase with a key

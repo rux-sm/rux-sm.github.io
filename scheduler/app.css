@@ -882,10 +882,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 /* No rule runs between the days or the drivers in the roster, as none does
    on the board: the tiles are the rows, the day band names the columns, and
-   the marks show where a day starts. With the week out, the names stand
-   behind their own rule, as the bus column's numbers do, from the day band
-   down; shut, the pane's edge is theirs and they draw none. */
-.scheduler-aside[data-week] :is(.scheduler-week--avail .scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
+   the marks show where a day starts. None stands beside the names either,
+   the week out or shut: the tiles are the column's edge, as the bus tiles
+   are the board's. */
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
    ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 88px, a 72px card

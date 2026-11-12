@@ -11101,13 +11101,13 @@
     if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
   });
 
-  /* A NAME'S MENU, from a right-click, the menu key or a finger's hold, in
-     the order a bus head's menu shares: Open driver opens the driver's
-     record in a new tab, so the board stays as it is, as a double-click on
-     the name does; Call and Text reach the driver as a trip's Contacts do,
-     shown only with a number; Send trips opens the Driver view in a new tab;
-     Pick out trips dims every trip but the driver's. Placed and opened as
-     the bar's menu is. */
+  /* A NAME'S MENU, from a right-click, the menu key or a finger's hold, the
+     most used first: Pick out trips dims every trip but the driver's; Send
+     trips opens the Driver view in a new tab; Add time off opens the time
+     off dialog; Call and Text reach the driver as a trip's Contacts do,
+     shown only with a number; Open driver opens the driver's record in a
+     new tab, so the board stays as it is, as a double-click on the name
+     does. Placed and opened as the bar's menu is. */
   const driverMenu = document.getElementById('scheduler-driver-menu');
   let driverMenuFor = null;
   let heldName = false;
@@ -11708,8 +11708,8 @@
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
-  /* A BUS HEAD'S MENU, from a right-click, the menu key or a finger's hold,
-     in the driver menu's order: Open bus opens the bus's Fleet record in a
+  /* A BUS HEAD'S MENU, from a right-click, the menu key or a finger's hold:
+     Open bus opens the bus's Fleet record in a
      new tab, as Open driver opens the driver's, and Show on map, for a bus
      Samsara answers for, opens the Live map on it, as the bar's menu does.
      A double-click on the head opens the record too, as one on a name or a

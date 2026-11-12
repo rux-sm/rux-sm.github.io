@@ -1093,13 +1093,22 @@
   </template>
 
   <!-- A driver's menu, opened by right-clicking or holding a name in Driver
-       availability. data.js places and opens it as the bar's menu, hides
-       Call and Text for a driver with no number, and names Pick out trips
-       Show every trip while that driver is picked. -->
+       availability, the most used first: their trips and time off, then
+       reaching them, then their record. data.js places and opens it as the
+       bar's menu, hides Call and Text for a driver with no number, and names
+       Pick out trips Show every trip while that driver is picked. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-driver-menu" role="menu" tabindex="-1" hidden>
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-driver-menu-open">
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></div>
-      <div class="rux--menu-item__label">Open driver</div>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-driver-menu-pick">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-visibility"/></svg></div>
+      <div class="rux--menu-item__label">Pick out trips</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-send">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
+      <div class="rux--menu-item__label">Send trips</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-away">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-event_busy"/></svg></div>
+      <div class="rux--menu-item__label">Add time off…</div>
     </li>
     <li class="rux--menu-item-divider" role="separator" id="scheduler-driver-menu-reach"></li>
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-call">
@@ -1112,22 +1121,13 @@
       <div class="rux--menu-item__label">Text</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-away">
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-event_busy"/></svg></div>
-      <div class="rux--menu-item__label">Add time off…</div>
-    </li>
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-send">
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
-      <div class="rux--menu-item__label">Send trips</div>
-    </li>
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-pick">
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-visibility"/></svg></div>
-      <div class="rux--menu-item__label">Pick out trips</div>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-open">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></div>
+      <div class="rux--menu-item__label">Open driver</div>
     </li>
   </ul>
 
-  <!-- A bus head's menu, in the driver menu's order: the record, where it
-       is, then its days out. -->
+  <!-- A bus head's menu: the record, where it is, then its days out. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-bus-menu" role="menu" tabindex="-1" hidden>
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bus-menu-open">
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>

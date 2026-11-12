@@ -330,15 +330,15 @@ ring inside its edge with keyboard focus. Its hover words are the driver's
 own on one line, as the bus tile's are the bus's: the full name, priority,
 Part-time and language. A double-click opens their record in a new tab, as
 one on a bus opens its Fleet record, and a press that moves carries the
-driver to a trip. Right-click or hold a tile for its menu, in the bus head
-menu's order: Open driver opens their record in a new tab; Call and Text,
-shown with a number, reach them as a trip's Contacts do; Add time off…
-opens the Drivers page's time off dialog and saves the range at once; Send
-trips opens the Driver view for that driver in a new tab; and Pick out
+driver to a trip. Right-click or hold a tile for its menu, the most used first: Pick out
 trips puts down the selected trip and its card, dims every bar but that
 driver's on the board and sets their name in semibold on their own bars,
-until Show every trip, a dimmed trip or Escape puts the board back;
-selecting one of their trips keeps them picked. A busy day selects its
+until Show every trip, a dimmed trip or Escape puts the board back, and
+selecting one of their trips keeps them picked; Send trips opens the Driver
+view for that driver in a new tab; Add time off… opens the Drivers page's
+time off dialog and saves the range at once; Call and Text, shown with a
+number, reach them as a trip's Contacts do; and Open driver opens their
+record in a new tab. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
 yard to the later one's departure: "15h", its words yellow on the same blue under 10 hours, except in Rux 100, whose solid marks write every rest in one colour,

@@ -192,6 +192,15 @@
         for (let i = 0; i < objects.length; i += 100) fail((await client.storage.from(BUCKET).remove(objects.slice(i, i + 100))).error);
       }
     },
+    // A link good for a minute to the newest copy of a file every Mac is given, saved under its own name.
+    async givenLink(path) {
+      const { data: rows, error } = await client.from('emu_files_now').select('sha1').eq('path', path).limit(1);
+      fail(error);
+      if (!rows.length) return null;
+      const { data: link, error: e } = await client.storage.from(COLLECTION).createSignedUrl(rows[0].sha1, 60, { download: path.split('/').pop() });
+      fail(e);
+      return link.signedUrl;
+    },
     async fileLink(object, name) {
       const { data: link, error } = await client.storage.from(BUCKET).createSignedUrl(object, 60, { download: name });
       fail(error);

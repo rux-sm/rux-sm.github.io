@@ -160,8 +160,11 @@
   // has out another version than Supabase keeps; a rolling build is left
   // out, being always a few commits on.
   const plainVersion = v => String(v).replace(/^v/, '').replace(/-g[0-9a-f]+$/, '');
+  // An installer is its app's when its file name starts with the app's name,
+  // so xemu's is not Rux-Emu-Helper's, whose name holds "xemu" inside it.
+  const installs = (file, name) => slug(file).startsWith(slug(name));
   const installerOf = (files, name) => (files ?? []).filter(f => f.path.startsWith('emulators/'))
-    .map(f => ({ name: f.path.slice('emulators/'.length), size: f.size })).find(i => slug(i.name).includes(slug(name))) ?? null;
+    .map(f => ({ name: f.path.slice('emulators/'.length), size: f.size })).find(i => installs(i.name, name)) ?? null;
   const keptVersion = installer => installer?.name.match(/-(\d[\w.]*(?:-\d+)?|[0-9a-f]{7})-mac/i)?.[1] ?? null;
   const newerOut = (emulators, drive, files) => Object.entries(drive?.newest ?? {}).map(([name, v]) => {
     const rule = emulators.macSaves[name] ?? (emulators.frontend.name === name ? emulators.frontend : null);
@@ -209,6 +212,6 @@
 
   window.Emu = Object.assign(window.Emu || {}, {
     SYSTEMS, systemName, PREFERRED, artOf, consoleOf, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
-    size, date, when, el, tag, option, slug, plainVersion, installerOf, keptVersion, newerOut, fold, folds, notice,
+    size, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

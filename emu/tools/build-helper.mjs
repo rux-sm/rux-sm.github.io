@@ -1,5 +1,6 @@
 // Builds Rux Emu Helper.app from emu/helper/main.swift and puts it beside the
-// games, with the double-click installer that copies it into Applications.
+// games, with the double-click installer that copies it into Applications,
+// and zipped in the emulators folder as Rux-Emu-Helper-<version>-macOS.zip.
 //
 //   node emu/tools/build-helper.mjs "/Volumes/<drive>/emulation"
 //
@@ -72,6 +73,13 @@ try {
   const dest = path.join(root, `${name}.app`);
   fs.rmSync(dest, { recursive: true, force: true });
   execFileSync('ditto', [app, dest]);
+
+  // The app zipped among the installers, so Update puts it in Supabase and
+  // the Status page offers it to a Mac away from the collection.
+  const installers = path.join(root, 'emulators');
+  fs.mkdirSync(installers, { recursive: true });
+  for (const old of fs.readdirSync(installers)) if (/^Rux-Emu-Helper-.*-macOS\.zip$/.test(old)) fs.rmSync(path.join(installers, old));
+  execFileSync('ditto', ['-c', '-k', '--norsrc', '--noextattr', '--noqtn', '--keepParent', app, path.join(installers, `Rux-Emu-Helper-${version}-macOS.zip`)]);
 
   const installer = path.join(root, `Install ${name}.command`);
   fs.writeFileSync(installer, `#!/bin/zsh

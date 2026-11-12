@@ -218,8 +218,8 @@
       // A newer installer takes the place of its emulator's older one.
       if (pending.given.length) {
         const emulators = await R.emulators();
-        const names = [...Object.keys(emulators.macSaves), emulators.frontend.name];
-        const of = path => names.find(n => R.slug(path).includes(R.slug(n)));
+        const names = [...Object.keys(emulators.macSaves), emulators.frontend.name, 'Rux Emu Helper'];
+        const of = path => names.find(n => R.installs(path.split('/').pop(), n));
         const drive = R.drive.driveOf({});
         for (const [i, f] of pending.given.entries()) {
           said(`Putting ${f.path.split('/').pop()} in Supabase, ${i + 1} of ${pending.given.length}…`);

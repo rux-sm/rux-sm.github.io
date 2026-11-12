@@ -3,7 +3,8 @@
    --------------------------------------------------------------------------
    What is done and what is left. The collection: each BIOS a system's
    emulator needs and each emulator's installer, which Supabase holds for
-   every Mac, whether its project has a newer one out, and from the drive's
+   every Mac, Rux Emu Helper's zip there to download on a Mac away from the
+   collection, whether its project has a newer one out, and from the drive's
    last scan, saves still in a folder from before each emulator had its own. Then this Mac,
    live from Rux Emu Helper, helper.js, when it is running here, and every
    other Mac as Update last saved it there, folded shut below it so the page
@@ -55,7 +56,18 @@
       const main = el('span', 'emu-row__main');
       if (r.href) { const a = el('a', 'rux--link', r.what); a.href = r.href; main.append(a); } else main.append(el('span', '', r.what));
       if (r.detail) main.append(el('span', 'emu-row__sub emu-files', r.detail));
-      content.append(main, state(r.state));
+      content.append(main);
+      if (r.button) {
+        const b = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', r.button.label);
+        b.type = 'button';
+        b.addEventListener('click', async () => {
+          b.disabled = true;
+          try { await r.button.run(); } catch (error) { console.error(error); R.notice(`${r.button.label} did not work. Try again.`); }
+          b.disabled = false;
+        });
+        content.append(b);
+      }
+      content.append(state(r.state));
       li.append(content);
       ul.append(li);
     }
@@ -67,7 +79,7 @@
   }
 
   // The collection: what Supabase holds for every Mac, and the drive from its last scan.
-  function driveRows(emulators, bios, drive, saves, used, held) {
+  function driveRows(emulators, bios, drive, saves, used, held, helperVersion) {
     const rows = [];
     const missing = [];
     for (const [system, emu] of Object.entries(emulators.systems)) {
@@ -81,6 +93,22 @@
     const noInstaller = names.filter(n => !kept(held, n));
     rows.push({ what: 'Installers kept in Supabase', state: noInstaller.length ? TODO : DONE,
       detail: noInstaller.length ? `None yet for ${noInstaller.join(', ')}: put it in the drive's emulation/emulators/, and Update` : `One for each of ${names.join(', ')}` });
+
+    // Rux Emu Helper, zipped among the installers, for a Mac away from the collection.
+    const zip = R.installerOf(held, 'Rux Emu Helper');
+    const keptHelper = zip?.name.match(/-(\d+)-macOS/)?.[1] ?? null;
+    const here = helperVersion;
+    const download = async () => {
+      const link = await R.data.givenLink(`emulators/${zip.name}`);
+      if (link) location.href = link;
+    };
+    rows.push(!zip
+      ? { what: 'Rux Emu Helper', state: TODO, detail: 'Not in Supabase yet: build it with emu/tools/build-helper.mjs, and Update' }
+      : here && Number(here) < Number(keptHelper)
+        ? { what: 'Rux Emu Helper', state: TODO, button: { label: 'Download', run: download },
+          detail: `This Mac runs version ${here}: download version ${keptHelper}, unzip it, drag it into Applications and open it` }
+        : { what: 'Rux Emu Helper', state: DONE, button: { label: 'Download', run: download },
+          detail: `Version ${keptHelper} in Supabase. On a new Mac: download, unzip, drag into Applications, open it, and allow it once in System Settings, Privacy & Security` });
 
     // Each installer against the newest its project has out, once Update has asked.
     if (drive.newest) {
@@ -186,8 +214,12 @@
     readThisMac();
   }
 
+  // The version of the helper answering on this Mac, or null.
+  let helperVersion = null;
+
   async function readThisMac() {
     if (!R.helper.onMac) return;
+    helperVersion = (await R.helper.status())?.version ?? null;
     live = await R.helper.mac();
     if (read) draw();
   }
@@ -202,7 +234,7 @@
     out.replaceChildren();
     if (drive) {
       out.append(section('The collection', `What Supabase holds for every Mac, and the drive from the scan of ${R.when(drive.scanned_at)}.`,
-        driveRows(emulators, bios, drive, saves, used, held)));
+        driveRows(emulators, bios, drive, saves, used, held, helperVersion)));
     } else {
       out.append(el('p', 'rux--type-body-01', 'No scan yet. Update scans the drive.'));
     }
@@ -251,7 +283,7 @@
       said.textContent = 'Starting…';
       for (let i = 0; i < 10 && !live; i += 1) { await new Promise(r => setTimeout(r, 1000)); live = await R.helper.mac(); }
       if (live) draw();
-      else { said.textContent = 'It did not start. Install it from the drive: Install Rux Emu Helper.command.'; b.disabled = false; }
+      else { said.textContent = 'It did not start. Install it with Install Rux Emu Helper.command beside the games, or Download it under The collection.'; b.disabled = false; }
     });
     box.append(said, b);
     return box;

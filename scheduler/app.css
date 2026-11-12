@@ -5616,11 +5616,16 @@ html[data-scheduler-takeover] {
 }
 .scheduler-send__trips { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; border: 0; min-inline-size: 0; }
 .scheduler-send__trips > legend { margin-block-end: var(--rux-spacing-03); }
-.scheduler-send__list { display: grid; gap: var(--rux-spacing-03); max-block-size: 28rem; overflow-y: auto; }
-.scheduler-send__month { margin: var(--rux-spacing-03) 0 0; color: var(--rux-text-secondary); }
-/* A trip and its switch on one row, the switch at the right. */
+/* The trips are tiles 2px apart, as the driver's page sets its own. */
+.scheduler-send__list { display: grid; gap: var(--rux-spacing-01); max-block-size: 28rem; overflow-y: auto; }
+.scheduler-send__month { margin: var(--rux-spacing-04) 0 var(--rux-spacing-02); color: var(--rux-text-secondary); }
+.scheduler-send__month:first-child { margin-block-start: 0; }
+/* A trip and its switch on one tile, the switch at the right; the trip's
+   tags sit under its words. */
 .scheduler-send__row { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
 .scheduler-send__leg { display: grid; min-inline-size: 0; }
+.scheduler-send__tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); margin-block-start: var(--rux-spacing-03); }
+.scheduler-send__tags .rux--tag { margin: 0; }
 .scheduler-send__row > .rux--toggle { flex: none; }
 .scheduler-send__meta,
 .scheduler-send__note { color: var(--rux-text-secondary); }

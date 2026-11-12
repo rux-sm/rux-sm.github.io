@@ -126,12 +126,22 @@
     return crews;
   }
   const statusOf = l => statuses.get(statusKey(l.trip.id, driver.id, l.legId, l.role)) || 'off';
-  const STATUS_WORDS = { confirmed: 'Accepted', declined: 'Declined', 'pending-response': 'Pending response' };
+  // The driver's answer as a tag: its words, and the colour that says whether to act.
+  const STATUS_TAGS = {
+    confirmed: ['Accepted', 'rux--tag--green'], declined: ['Declined', 'rux--tag--red'],
+    'pending-response': ['Pending response', 'rux--tag--blue'], off: ['Not sent', 'rux--tag--gray'],
+  };
+  const tag = (words, tone) => {
+    const t = el('div', `rux--tag ${tone} rux--layout--size-sm`);
+    t.appendChild(el('span', 'rux--tag__label', words));
+    return t;
+  };
 
   // -- the list -------------------------------------------------------------------------
   const onPageLegs = () => legs.filter(l => onPage.has(l.key));
-  /* A row a leg: the day, where, and the bus, role, answer and whether the
-     customer has confirmed, with the leg's switch at the right. The label is
+  /* A tile a leg: the day and where, the bus and role, then its tags, the
+     driver's answer and, in red, Not confirmed while the customer has not
+     confirmed the trip, with the leg's switch at the right. The label is
      read by a screen reader and hidden, as Carbon's hideLabel hides it; the
      switch says On or Off. */
   function drawList() {
@@ -144,11 +154,14 @@
       if (m !== month) { month = m; list.appendChild(el('p', 'rux--type-label-01 scheduler-send__month', m)); }
       const id = `scheduler-send-${l.key.replace(/[^a-z0-9]/gi, '-')}`;
       const where = `${messageDate(l.start, l.end)} · ${clean(l.trip.destination) || 'Trip'}`;
-      const row = el('div', 'scheduler-send__row');
+      const row = el('div', 'rux--tile scheduler-send__row');
       const text = el('div', 'scheduler-send__leg');
-      text.append(el('span', 'rux--type-body-compact-01', where),
-        el('span', 'rux--type-body-compact-01 scheduler-send__meta', [l.bus ? `Bus ${l.bus}` : 'Bus not set', roleLabel(l.role),
-          STATUS_WORDS[statusOf(l)] || 'Not sent', l.trip.confirmed === false ? 'Not confirmed' : null].filter(Boolean).join(' · ')));
+      const tags = el('div', 'scheduler-send__tags');
+      tags.appendChild(tag(...(STATUS_TAGS[statusOf(l)] || STATUS_TAGS.off)));
+      if (l.trip.confirmed === false) tags.appendChild(tag('Not confirmed', 'rux--tag--red'));
+      text.append(el('span', 'rux--type-heading-compact-01', where),
+        el('span', 'rux--type-body-compact-01 scheduler-send__meta', `${l.bus ? `Bus ${l.bus}` : 'Bus not set'} · ${roleLabel(l.role)}`),
+        tags);
       const on = onPage.has(l.key);
       const toggle = el('div', 'rux--toggle');
       const button = el('button', 'rux--toggle__button');

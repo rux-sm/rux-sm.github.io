@@ -1340,11 +1340,11 @@ a.rux--header__name,
 /*   The chosen tab is told apart by its line and its ink, not its weight:
      Geist's Tabs page sets every tab at 400, the chosen one in #ededed over
      the others' #a1a1a1, so choosing one never changes its width. Carbon
-     sets the chosen tab in its heading type, whose tracking this theme
-     tightens, so the tracking is the body's too. */
+     sets the chosen tab in its heading type, whose tracking these themes
+     set apart, so the tracking is the body's too, the other tabs' own. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* ANT'S TABS, measured on its Tabs page: each as wide as its label with no
    inset of its own and 32px from the next, 14px at 400 whether chosen or
@@ -2744,6 +2744,12 @@ a.rux--header__name,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--btn-set .rux--btn:not(:focus-visible) {
   box-shadow: none;
 }
+
+/* A SORTABLE HEADER KEEPS ITS HEADER'S TRACKING. Carbon sets a column
+   header in heading-compact-01, 14px tracked 0.16px, and its sort button
+   takes the header's font but, being a button, the browser's own tracking
+   of none, so a sortable column read tighter than a plain one beside it. */
+.rux--table-sort { letter-spacing: inherit; }
 
 /* A TABLE TOOLBAR IS 40px. Carbon draws it at 48 -- its default is large,
    and it redefines md inside the bar as 3rem, so the bar comes in 32 and 48

@@ -144,7 +144,7 @@ From the repository root, one level up:
 
     npm run check        # Design's shared check, the sprite, the print rule, the rules' sample trips, and every page's scripts parsed and loaded
     node scheduler/tools/check-strip.mjs   # the strip grown each way against a whole draw, then every view's rows on the 8px grid and the bus heads on whole pixels, in headless Chrome on invented trips; thirty seconds
-    node scheduler/tools/check-drawn.mjs   # what `components.html` draws against Carbon's scales: no type under 12px, each size's tracking, 4.5 to 1, gaps on the spacing scale and a mark's press of 24px by 18px, in headless Chrome; Gray 100, or `--themes=all`; ten seconds a theme
+    node scheduler/tools/check-drawn.mjs   # what `components.html` draws on its Full and Compact boards, and each list page, against Carbon's scales: no type under 12px, each size's tracking, 4.5 to 1, gaps on the spacing scale, a mark's press of 24px by 18px and a crew inside its row, in headless Chrome; Gray 100, or `--themes=all`; `--pages=full,trips` for some; a minute a theme
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root `README.md` describes; the pages link `/design/…` absolutely, so this folder is
 never served alone. No check can see whether a page looks right.

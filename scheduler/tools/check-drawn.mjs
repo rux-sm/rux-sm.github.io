@@ -1,8 +1,10 @@
 // Proves what the scheduler draws stands on Carbon's scales. Serves the
-// site on a free port, opens `components.html`, every state of the trip
-// bar, the bus tile, the crew and the tips drawn by the board's own code
-// from invented trips, in headless Chrome with the account stood in, and
-// reads what Chrome drew, in each theme asked for:
+// site on a free port and opens, in headless Chrome with the account stood
+// in, `components.html`, every state of the trip bar, the bus tile, the crew
+// and the tips drawn by the board's own code from invented trips, on its
+// Full board and its Compact one, and then each list page, which the
+// stand-in gives no rows, so its frame, toolbar and empty state. It reads
+// what Chrome drew on each, in each theme asked for:
 //   - no text under 12px, Carbon's smallest type;
 //   - every size with a tracking the theme gives a type role of that size,
 //     which in Carbon's themes is 0.32px at 12px, 0.16px at 14px and none
@@ -11,10 +13,11 @@
 //     being saved or dragged aside, which is dimmed on purpose for a moment;
 //   - every gap in a row or a grid of the scheduler's own on Carbon's
 //     spacing scale;
-//   - every mark in a bar taking a press on 24px by its row's 18px.
+//   - every mark in a bar taking a press on 24px by its row's 18px;
+//   - every bar's crew ending inside its row, so no seat's mark is cut.
 // `--themes=g100,white` names the themes, `--themes=all` every one; Gray 100
-// alone when none is named; `DRAWN_LINES=60` lists more of each fault than
-// eight. Needs Chrome on this Mac, or `CHROME` naming
+// alone when none is named; `--pages=full,trips` names the pages, every one
+// when none is named; `DRAWN_LINES=60` lists more of each fault than eight. Needs Chrome on this Mac, or `CHROME` naming
 // one; says so and passes when there is none.
 import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -28,6 +31,18 @@ const SERVER = join(ROOT, 'design', 'tools', 'serve.mjs');
 const ALL = ['white', 'g10', 'g90', 'g100', 'rux-100', 'rux-dark', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
 const asked = process.argv.find(a => a.startsWith('--themes='))?.slice(9);
 const THEMES = asked === 'all' ? ALL : asked ? asked.split(',') : ['g100'];
+
+/* What is read: the components page on each board, then the list pages. */
+const LISTS = ['trips', 'customers', 'contacts', 'locations', 'drivers', 'buses', 'fleet', 'maintenance', 'partners', 'documents', 'quickbooks', 'history', 'settings'];
+const PAGES = [
+  { name: 'full', path: 'components.html', ready: "document.querySelectorAll('.scheduler-bar').length > 100" },
+  { name: 'compact', path: 'components.html', ready: "document.querySelectorAll('.scheduler-bar').length > 100",
+    // The page's own Board switcher, pressed as a person presses it.
+    then: "document.querySelector('#scheduler-components-board [data-board=\"compact\"]').click()", after: "document.documentElement.dataset.schedulerBoard === 'compact'" },
+  ...LISTS.map(name => ({ name, path: `${name}.html`, ready: "document.readyState === 'complete'" })),
+];
+const named = process.argv.find(a => a.startsWith('--pages='))?.slice(8).split(',');
+const READ = named ? PAGES.filter(p => named.includes(p.name)) : PAGES;
 
 const ok = (name, words) => console.log(`   ok   ${name.padEnd(7)} ${words}`);
 const fail = (name, words) => { console.log(`  FAIL  ${name.padEnd(7)} ${words}`); process.exitCode = 1; };
@@ -83,10 +98,10 @@ const DRAWN = `(async theme => {
     return layers.reverse().reduce((under, top) => over(top, under), [255, 255, 255, 1]);
   };
   const strength = e => { let o = 1; for (let a = e; a; a = a.parentElement) o *= parseFloat(getComputedStyle(a).opacity); return o; };
-  const faults = { small: new Map(), tracking: new Map(), contrast: new Map(), gap: new Map(), press: new Map() };
+  const faults = { small: new Map(), tracking: new Map(), contrast: new Map(), gap: new Map(), press: new Map(), cut: new Map() };
   const note = (kind, what, e) => { const k = what + ' — ' + where(e); const v = faults[kind].get(k) ?? { what, where: where(e), n: 0 }; v.n++; faults[kind].set(k, v); };
   const root = document.querySelector('main') ?? document.body;
-  const counts = { text: 0, gaps: 0, marks: 0 };
+  const counts = { text: 0, gaps: 0, marks: 0, crews: 0 };
   /* The trackings the theme gives each size, read off a probe set in every
      type role, since a theme with its own typeface sets its own and may
      track a heading and a body of one size apart. */
@@ -142,10 +157,18 @@ const DRAWN = `(async theme => {
     counts.marks++;
     if (![[-11, 0], [11, 0], [0, -8], [0, 8]].every(([dx, dy]) => hit(dx, dy))) note('press', 'under 24px by 18px', e);
   }
+  /* A bar's crew ends where its row does: a member past the row's end is a
+     name that did not give way, and its mark is what the bar's edge cuts. */
+  for (const e of root.querySelectorAll('.scheduler-bar .scheduler-bar__crew')) {
+    if (!drawn(e) || !e.lastElementChild) continue;
+    counts.crews++;
+    const past = Math.round(e.lastElementChild.getBoundingClientRect().right - e.getBoundingClientRect().right);
+    if (past > 0) note('cut', past + 'px past its row', e);
+  }
   return { theme, counts, faults: Object.fromEntries(Object.entries(faults).map(([k, m]) => [k, [...m.values()].sort((a, b) => b.n - a.n)])) };
 })`;
 
-const SAID = { small: 'text under 12px', tracking: 'a size without its tracking', contrast: 'text under 4.5 to 1', gap: 'a gap off the scale', press: 'a mark with too small a press' };
+const SAID = { small: 'text under 12px', tracking: 'a size without its tracking', contrast: 'text under 4.5 to 1', gap: 'a gap off the scale', press: 'a mark with too small a press', cut: 'a crew running past its row' };
 
 async function main() {
   const chrome = CHROMES.find(p => existsSync(p));
@@ -170,24 +193,29 @@ async function main() {
     await page.send('Page.enable');
     await page.send('Fetch.enable', { patterns: [{ urlPattern: '*/funnel.js' }, { urlPattern: '*/account.js' }, { urlPattern: '*turnstile*' }] });
     await page.send('Page.addScriptToEvaluateOnNewDocument', { source: stub({}) });
-    const loaded = new Promise(r => page.on('Page.loadEventFired', r));
-    await page.send('Page.navigate', { url: `http://localhost:${port}/scheduler/components.html` });
-    await Promise.race([loaded, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded')), 20000))]);
+    let landed = () => {};
+    page.on('Page.loadEventFired', () => landed());
     const run = async expression => {
       const { result, exceptionDetails } = await page.send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, timeout: 90000 });
       if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
       return result.value;
     };
-    // The page has drawn its samples once its bars are there.
-    await waitFor(() => run("document.querySelectorAll('.scheduler-bar').length > 100"), 20000, 'the components');
-    await new Promise(r => setTimeout(r, 1500));
-    for (const theme of THEMES) {
-      const { counts, faults } = await run(`${DRAWN}(${JSON.stringify(theme)})`);
-      const bad = Object.entries(faults).filter(([, list]) => list.length);
-      if (!bad.length) { ok('drawn', `${theme}: ${counts.text} texts on their size, tracking and contrast, ${counts.gaps} rows and grids on the scale, ${counts.marks} marks pressed on 24px by 18px`); continue; }
-      for (const [kind, list] of bad) {
-        fail('drawn', `${theme}: ${SAID[kind]}, ${list.reduce((n, f) => n + f.n, 0)} in ${list.length} place${list.length > 1 ? 's' : ''}`);
-        for (const f of list.slice(0, Number(process.env.DRAWN_LINES) || 8)) console.log(`          ${String(f.n).padStart(4)}× ${f.what}  ${f.where}`);
+    for (const at of READ) {
+      const loaded = new Promise(r => { landed = r; });
+      await page.send('Page.navigate', { url: `http://localhost:${port}/scheduler/${at.path}` });
+      await Promise.race([loaded, new Promise((_, f) => setTimeout(() => f(new Error(`${at.path} never loaded`)), 20000))]);
+      // The page has drawn once what it is known by is there.
+      await waitFor(() => run(at.ready), 20000, at.name);
+      if (at.then) { await run(at.then); await waitFor(() => run(at.after), 10000, at.name); }
+      await new Promise(r => setTimeout(r, 1500));
+      for (const theme of THEMES) {
+        const { counts, faults } = await run(`${DRAWN}(${JSON.stringify(theme)})`);
+        const bad = Object.entries(faults).filter(([, list]) => list.length);
+        if (!bad.length) { ok('drawn', `${at.name}, ${theme}: ${counts.text} texts on their size, tracking and contrast, ${counts.gaps} rows and grids on the scale, ${counts.marks} marks pressed on 24px by 18px, ${counts.crews} crews inside their rows`); continue; }
+        for (const [kind, list] of bad) {
+          fail('drawn', `${at.name}, ${theme}: ${SAID[kind]}, ${list.reduce((n, f) => n + f.n, 0)} in ${list.length} place${list.length > 1 ? 's' : ''}`);
+          for (const f of list.slice(0, Number(process.env.DRAWN_LINES) || 8)) console.log(`          ${String(f.n).padStart(4)}× ${f.what}  ${f.where}`);
+        }
       }
     }
   } catch (e) {

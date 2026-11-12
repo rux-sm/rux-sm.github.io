@@ -238,7 +238,7 @@
         { name: 'Empty seats', note: 'Neutral outside fourteen days; inside the rolling fourteen-day departure window a person in the error colour, each seat counted in the alert badge, which turns red.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Due now', buses: [{ bus: 'b102', crew: [['d4', 'driver', 'confirmed']], roles: ['driver', 'co-driver', 'relief-end'] }] }))),
             row('103', bar(trip({ customer: 'Next month', start_date: day(30), end_date: day(31), buses: [{ bus: 'b103', roles: ['driver', 'co-driver'] }] })))] },
-        { name: 'A crew that does not fit', note: 'Names give way from the end, counted as +1, +2.', days: 3,
+        { name: 'A crew that does not fit', note: 'Every name gives way in an ellipsis, so each seat and its mark still show.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', start_date: day(0), end_date: day(0), back: '17:00', buses: [{ bus: 'b105',
             crew: [['d7', 'driver', 'confirmed'], ['d8', 'co-driver', 'pending-response'], ['d6', 'relief-end', 'confirmed']] }] }), { span: 1 }))] },
       ],

@@ -760,9 +760,6 @@ button.scheduler-row-head__num::after {
 }
 /* A low DEF is its name and percent under the fuel. */
 .scheduler-row-head__level[data-tank="D"] { align-self: center; white-space: nowrap; }
-/* With no signal the state and a normal fuel fade to their last reading; a
-   low tank keeps its strength, since the office still has to act on it. */
-.scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
 /* The whole head opens the tip, so the whole head answers the pointer, and
    stays marked while its tip is open: a head with a tile on its tile, as a
    trip bar is marked on itself, and a head with none, a phone's or a shut
@@ -1007,7 +1004,6 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* "No signal" is 53px on one line and the box holds 46px, so it stands on
    the state's two label lines, "No" over "signal". */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__no-signal { display: block; white-space: normal; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: 1; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { grid-row: 3 / span 3; flex-direction: column; align-items: flex-start; margin: 0; padding: 0; font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 /* THE FUEL, read from E to F: the two letters in label-01's grey at the
@@ -1763,8 +1759,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 /* The +1 beside a return past midnight and the −1 beside a departure the
    evening before, raised so the row keeps its height, and never under
-   Carbon's 12px, as the am and pm beside a time are not. */
-.scheduler-bar__next-day, .scheduler-bar__day-before { font-size: max(.75em, var(--rux-label-01-font-size)); line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+   Carbon's 12px, as the am and pm beside a time are not, in that size's own
+   tracking whatever the row's. */
+.scheduler-bar__next-day, .scheduler-bar__day-before { font-size: max(.75em, var(--rux-label-01-font-size)); letter-spacing: var(--rux-label-01-letter-spacing); line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
    and between them the track, 2px, centred on the figures with 8px
    either side, the trip's ink as far as its time has gone and a fifth of it
@@ -2633,7 +2630,7 @@ a.scheduler-tip__go { text-decoration: none; }
   letter-spacing: 0;
   text-align: center;
 }
-.scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
+.scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-on-warning); }
 .scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
@@ -2672,12 +2669,11 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
-   order. Every name keeps its width and the row cuts at its end, so a
-   second seat, filled or empty, is never folded away; a lone name too long
-   for the row ends in "…". */
+   order. Where the row is short every name gives way in "…", the longest
+   giving the most, so no seat is folded away and every seat's mark shows
+   whole. */
 /* Crew members stand the row's 8px apart. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
-.scheduler-bar__crew > .scheduler-crew:not(:only-child) { flex: none; }
 
 /* WHO ELSE IS ON THIS TRIP: a 16px face for each person at the end of the
    destination row, before the live dot and the alert count, the count's own
@@ -2931,6 +2927,9 @@ a.scheduler-tip__go { text-decoration: none; }
    it start on whole pixels. */
 @supports (inline-size: calc-size(fit-content, round(up, size, 1px))) {
   .scheduler-crew__name { inline-size: calc-size(fit-content, round(up, size, 1px)); }
+  /* Among several, a name gives way down to five letters' width and no
+     further, so a short name stays whole while the long ones shorten. */
+  .scheduler-bar__crew > .scheduler-crew:not(:only-child) > .scheduler-crew__name { min-inline-size: calc-size(max-content, min(size, 5ch)); }
 }
 /* THE REST METER, which the live card draws: the rest so far toward eight
    hours in the rest colour, dashed where the duty logs cannot say. */
@@ -5074,7 +5073,7 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-sheet__row--press:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 /* The trip on the road, its needs and its updates stand on the raised
    layer, a step under the facts, as the trip's card has them. */
-.scheduler-sheet__rest > .scheduler-card { display: block; margin-block-start: var(--rux-spacing-05); background: var(--rux-layer-02); }
+.scheduler-sheet__rest > .scheduler-card { display: block; margin-block-start: var(--rux-spacing-05); background: var(--card-surface); }
 .scheduler-sheet__rest > .scheduler-card.scheduler-card--live { display: flex; margin-block-start: var(--rux-spacing-05); background: none; }
 .scheduler-sheet__rest > .scheduler-card > * { min-inline-size: 0; }
 .scheduler-sheet__rest .scheduler-card__needs { border-block-start: 0; }
@@ -7283,7 +7282,8 @@ html[data-scheduler-takeover] {
 .scheduler-components__foot {
   position: absolute;
   inset-inline: var(--scheduler-row-clear);
-  inset-block-start: var(--scheduler-line-six);
+  /* Line 6's top, from the head's own: the bar's clear space and padding, and five lines. */
+  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 5 * var(--scheduler-row-h));
   display: flex;
   justify-content: center;
   pointer-events: none;

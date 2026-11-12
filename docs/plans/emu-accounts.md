@@ -29,6 +29,11 @@ console has. The saves this builds on are
   themselves. A member reads and writes only its own, and the owner's are
   closed to it as its are to the owner's pages.
 - **A new account starts with no saves,** as a new console profile does.
+- **The owner copies a save to another account,** with Copy to on the Saves
+  page, so a game started at home goes on elsewhere; no account but the
+  owner copies one.
+- **Notes on a game are shared and the owner's to write,** since they are
+  about the collection.
 - **`emu_saves`, `emu_macs` and `emu_files` carry the account a row belongs
   to,** and their rule is that account's alone; a row of a shared file, a
   BIOS or an installer, carries none and any member reads it.
@@ -51,11 +56,7 @@ console has. The saves this builds on are
 
 ## Questions
 
-1. **Copying a save between accounts.** Recommended: a Copy to on the Saves
-   page, the owner's alone, so a game started at home can go on elsewhere;
-   the other way is none, and accounts never meet.
-2. **Notes on a game.** Recommended: shared and the owner's to write, since
-   they are about the collection; the other way is each account's own.
+None open.
 
 ## Tasks
 
@@ -68,6 +69,7 @@ After the saves are carried for the owner, in this order:
 - [ ] Open the collection's tables and shared files to a member to read.
 - [ ] Have the page read and carry as the signed-in account, and hide what
   is the owner's alone from a member.
+- [ ] Add Copy to on the Saves page, for the owner.
 - [ ] Have the helper keep each account's carries apart, and swap the saves
   on a Mac when the account playing changes.
 - [ ] Prove it with a second account on the MacBook Pro: its own saves, the

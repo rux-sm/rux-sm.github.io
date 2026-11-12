@@ -21,7 +21,7 @@ and is what `scheduler/app.css` draws; what each part says is in
 | A mark's press | 24px across and its row's 18px, round the 16px glyph |
 | A bar | 8px clear of the next bar on every side, 4px from each edge of its day and its row |
 | A row | no line under it: the bars and tiles are the rows, 8px apart, and 8px from the day band and their surface's edge |
-| A surface | three, 16px apart with the page between: the fleet's rows, filled; the partners' and No bus's, the page's colour inside a 1px line with their tiles filled, so an empty day there is not a bus free. One with no row open takes no room |
+| A surface | three, 16px apart with the page between: the fleet's rows, the partners' and No bus's, each the week's own surface with no line round it. One with no row open takes no room |
 | A bus row | a lane for each stacked trip, the bar and 4px above and below it; on six lines 136px for one, 272px for two |
 | A driver row | 40px, Carbon's md: the 32px tile and 4px above and below it |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |

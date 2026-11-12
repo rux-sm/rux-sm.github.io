@@ -277,10 +277,8 @@
    takes the grid's columns as a subgrid, so its rows share them as before,
    and keeps the 4px above its first row and under its last that the grid
    kept, so a card stands 8px from its surface's edge. One with no row open
-   has no surface and no gap. The fleet's surface is filled, so an empty day
-   on it is a bus free that day; the partners' and No bus's are the page's
-   own colour inside a 1px line, their tiles alone filled, so an empty day
-   there reads as nothing, not as a bus to book. */
+   has no surface and no gap. All three are the week's own surface, with no
+   line round them: the gap alone sets them apart. */
 .scheduler-section {
   grid-column: 1 / -1;
   display: grid;
@@ -291,7 +289,6 @@
 .scheduler-section + .scheduler-section { margin-block-start: var(--rux-spacing-05); }
 .scheduler-section:not(:has(> .scheduler-row:not([data-shut], [hidden]))) { margin-block-start: 0; padding-block: 0; }
 .scheduler-week--scroll > .scheduler-grid--sections { padding-block: 0; }
-.scheduler-section:not(.scheduler-section--fleet) { background: none; box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01); }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty
    Unassigned row would still take a slot in the grid without this. */
 .scheduler-row[hidden] { display: none; }

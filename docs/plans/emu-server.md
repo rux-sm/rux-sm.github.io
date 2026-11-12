@@ -68,7 +68,9 @@ The home server, so the drive is not carried between Macs:
   passwords of its own.
 - **The proof is the signed-in account's own Supabase access token,** which
   the server checks against Supabase's public signing keys, since that
-  needs no extra Supabase function and puts no secret on the server.
+  needs no extra Supabase function and puts no secret on the server; with
+  the same token it asks `emu_is_member()` whether the account is on the
+  list `docs/plans/emu-accounts.md` keeps.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
 - **Saves are kept on each Mac and carried to and from Supabase,** as

@@ -185,12 +185,9 @@ In this order, so what can lose a save comes last and proves itself first:
 - [ ] Bring Ryujinx's keys and firmware, Mesen 2's firmware and the
   optional BIOS of mGBA and melonDS from Supabase as DuckStation's, PCSX2's
   and xemu's BIOS is brought, so a new Mac needs no drive for them.
-- [ ] Carry xemu's disk image only when a game was played, since opening
-  xemu alone changes it and every carry sends all 60 MB.
-- [ ] Have a game's panel say whether its saves are in step, with one
-  press to use the other copy where two were found; then remove from the
-  drive the save folders Supabase and each Mac now hold, which is every
-  folder under `saves`.
+- [ ] Remove from the drive the save folders Supabase and each Mac now
+  hold, which is every folder under `saves`, once the iMac plays from its
+  own.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

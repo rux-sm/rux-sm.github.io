@@ -8,7 +8,11 @@
    one side, a save is copied to the other; changed on both, the one saved
    last is put on both and the other stays among the copies Supabase keeps.
    Nothing is removed from either side, and nothing is written under a
-   running emulator.
+   running emulator. This browser remembers which copy was set aside, so a
+   game's panel can offer it: `standing` says how a game's saves stand on
+   this Mac, and `useOther` plays the copy set aside in place of the other.
+   `tools/carry.test.mjs` runs each case against a stand-in helper and
+   Supabase, in `npm run check`.
 
    `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:
@@ -28,6 +32,14 @@
   const sha1Of = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-1', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
   const foldersOf = rule => (rule?.places ?? []).map(p => p.stored).filter(Boolean);
   const nameOf = path => path.split('/').pop().replace(/\.[^.]+$/, '');
+
+  // The copy set aside for each save changed on both sides, by its path, as
+  // this browser remembers it: its fingerprint in Supabase.
+  const ASIDE = 'emu-carry-aside';
+  const aside = () => { try { return JSON.parse(localStorage.getItem(ASIDE)) ?? {}; } catch { return {}; } };
+  const setAside = (path, sha1) => {
+    try { localStorage.setItem(ASIDE, JSON.stringify({ ...aside(), [path]: sha1 })); } catch { /* the panel offers no other copy */ }
+  };
 
   async function carryNow(name) {
     const folders = foldersOf((await R.emulators()).macSaves[name]);
@@ -72,10 +84,12 @@
         // it is kept; where Supabase's was saved last, it becomes the newest
         // copy again and comes down.
         await up(f);
-        if (new Date(k.saved_at ?? 0) > new Date(f.saved ?? 0)) {
+        const theirs = new Date(k.saved_at ?? 0) > new Date(f.saved ?? 0);
+        if (theirs) {
           await R.data.keepCopy({ path, sha1: k.sha1, size: k.size, saved: k.saved_at, mac: k.mac }, () => { throw new Error('Supabase no longer holds that save.'); });
           await down(k);
         }
+        setAside(path, theirs ? f.sha1 : k.sha1);
         out.both.push(nameOf(path));
       }
     }
@@ -134,6 +148,45 @@
 
   const emulatorOf = async system => (await R.emulators()).systems[system]?.emulator;
 
+  // How a game's carried saves stand on this Mac: null where its emulator
+  // carries none or none is this game's; else whether each is the copy
+  // Supabase holds, and each save with another copy set aside.
+  async function standing(game) {
+    const emulators = await R.emulators();
+    const name = emulators.systems[game.system]?.emulator;
+    const folders = foldersOf(emulators.macSaves[name]);
+    if (!folders.length) return null;
+    const here = await H.carry(name);
+    if (!here?.carries) return null;
+    const kept = new Map();
+    for (const folder of folders) for (const f of await R.data.files(`${folder}/`)) kept.set(f.path, f.sha1);
+    const mine = new Map(here.files.map(f => [f.path, f.sha1]));
+    // A save's path is saves/<the folder of its emulator's first system>/<the rest>.
+    const its = path => {
+      const [, top, ...rest] = path.split('/');
+      return emulators.systems[top]
+        && R.saveRules.match(rest.join('/'), R.saveRules.systemsOf(top, emulators.systems), [game], emulators.systems).game === game;
+    };
+    const paths = [...new Set([...mine.keys(), ...kept.keys()])].filter(its);
+    if (!paths.length) return null;
+    const set = aside();
+    return { emulator: name, running: here.running, inStep: paths.every(p => mine.get(p) === kept.get(p)),
+      other: paths.filter(p => set[p] && set[p] !== kept.get(p)) };
+  }
+
+  // The copy set aside made the one that plays: it becomes Supabase's newest
+  // and comes down, and the one it replaces is set aside in its place.
+  async function useOther(name, path) {
+    const now = (await R.data.files(path)).find(f => f.path === path);
+    const other = await R.data.copyOf(path, aside()[path]);
+    if (!now || !other) throw new Error('Supabase no longer keeps the other copy.');
+    if ((await H.carry(name))?.running) throw new Error(`Quit ${name} first, so its save can change.`);
+    await run(name);
+    await R.data.keepCopy({ path, sha1: other.sha1, size: other.size, saved: other.saved_at, mac: other.mac }, () => { throw new Error('Supabase no longer keeps the other copy.'); });
+    setAside(path, now.sha1);
+    return run(name);
+  }
+
   // Before a game plays: whether its emulator's saves are carried. A carry
   // that fails says so and the game plays with this Mac's saves.
   async function before(system, say = () => {}) {
@@ -188,5 +241,5 @@
     }
   })();
 
-  R.carry = { run, give, before, after };
+  R.carry = { run, give, before, after, standing, useOther };
 })();

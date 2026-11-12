@@ -176,7 +176,31 @@
       said.textContent = words ?? facts.join(' ');
       // Play or Download leads where there is one; Remove is always last.
       const safe = keeps && (here || s.done) ? buttons.slice(0, -1)[0] : buttons[0];
-      show(buttons.length ? [row(...buttons), said] : [said], safe);
+      const saves = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      show(buttons.length ? [row(...buttons), said, saves] : [said, saves], safe);
+      if (emulator) drawSaves(saves);
+    }
+
+    // How the game's carried saves stand on this Mac, and the copy set aside
+    // where two were found, with one press to play that one.
+    async function drawSaves(box) {
+      let st;
+      try { st = await R.carry?.standing(g); } catch (error) { console.error(error); return; }
+      if (!st || closed() || !box.isConnected) return;
+      const line = el('p', 'rux--type-body-01', st.running ? `${st.emulator} is open: its saves are carried when it quits.`
+        : st.inStep ? 'Its saves on this Mac are the ones in Supabase.' : 'Its saves on this Mac differ from Supabase: they are carried when Play is pressed.');
+      line.setAttribute('role', 'status');
+      box.replaceChildren(line);
+      if (!st.other.length || st.running) return;
+      const swap = button('Use the other copy', 'rux--btn--tertiary', async () => {
+        swap.disabled = true;
+        line.textContent = 'Bringing the other copy…';
+        try {
+          for (const path of st.other) await R.carry.useOther(st.emulator, path);
+          drawSaves(box);
+        } catch (error) { line.textContent = error.message; swap.disabled = false; }
+      });
+      box.append(el('p', 'rux--type-body-01', 'Two copies of its save were found. The one saved last is here, and the other is kept.'), row(swap));
     }
 
     draw();

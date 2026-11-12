@@ -92,6 +92,12 @@
         if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
       }
     },
+    // One copy Supabase keeps of a file, by its fingerprint, or null.
+    async copyOf(path, sha1) {
+      const { data: rows, error } = await client.from('emu_files').select('*').eq('path', path).eq('sha1', sha1).limit(1);
+      fail(error);
+      return rows[0] ?? null;
+    },
     // A file taken out of Supabase with every copy kept of it, and its bytes
     // where no other file has the same.
     async dropFile(path) {

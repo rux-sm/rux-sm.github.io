@@ -271,6 +271,27 @@
 :is(.scheduler-week--scroll, .scheduler-week--avail) > .scheduler-grid { padding-block-start: var(--scheduler-row-clear); }
 .scheduler-grid > :is(.scheduler-corner, .scheduler-days) { margin-block-end: var(--scheduler-row-clear); }
 .scheduler-row { display: contents; }
+/* THREE SURFACES, 16PX APART: the fleet's rows, the partners' and No bus's
+   each stand on a surface of their own, with the page showing between them,
+   so the fleet's block is the office's own buses and nothing else. A section
+   takes the grid's columns as a subgrid, so its rows share them as before,
+   and keeps the 4px above its first row and under its last that the grid
+   kept, so a card stands 8px from its surface's edge. One with no row open
+   has no surface and no gap. The fleet's surface is filled, so an empty day
+   on it is a bus free that day; the partners' and No bus's are the page's
+   own colour inside a 1px line, their tiles alone filled, so an empty day
+   there reads as nothing, not as a bus to book. */
+.scheduler-section {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  padding-block: var(--scheduler-row-clear);
+  background: var(--rux-layer);
+}
+.scheduler-section + .scheduler-section { margin-block-start: var(--rux-spacing-05); }
+.scheduler-section:not(:has(> .scheduler-row:not([data-shut], [hidden]))) { margin-block-start: 0; padding-block: 0; }
+.scheduler-week--scroll > .scheduler-grid--sections { padding-block: 0; }
+.scheduler-section:not(.scheduler-section--fleet) { background: none; box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01); }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty
    Unassigned row would still take a slot in the grid without this. */
 .scheduler-row[hidden] { display: none; }
@@ -476,6 +497,9 @@
   background-position: calc(var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px) 0;
   background-repeat: no-repeat;
 }
+/* Where the rows stand on surfaces of their own, the pane draws neither a
+   surface nor the rule: each section's heads carry the rule to its own foot. */
+.scheduler-frame > .scheduler-week--scroll:has(> .scheduler-grid--sections) { background: none; }
 .scheduler-row-head__top {
   display: flex;
   align-items: center;
@@ -1272,6 +1296,10 @@ button.scheduler-row-head__num:focus { outline: none; }
   }
   .scheduler-page:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-row-head {
     transition: padding-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
+  }
+  /* A section's gap and its own 4px open and close with its first row. */
+  .scheduler-page:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-section {
+    transition: margin-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), padding-block 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
   }
   .scheduler-page:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-track > :is(.scheduler-bar:not(.scheduler-bar--leaving), .scheduler-yard) {
     transition: inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), transform 150ms cubic-bezier(0.4, 0.14, 0.3, 1), box-shadow 150ms cubic-bezier(0.4, 0.14, 0.3, 1);

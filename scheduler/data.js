@@ -1392,6 +1392,13 @@
     snaps.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < days; i++) snaps.appendChild(el('i'));
     gridEl.appendChild(snaps);
+    /* THREE SURFACES: the fleet's rows, the partners' and No bus's, each a
+       section of its own that app.css draws apart from the next, so a
+       partner's row or No bus never reads as one more of the office's
+       buses. A section with no row open takes no room. */
+    gridEl.classList.add('scheduler-grid--sections');
+    const sections = {};
+    for (const kind of ['fleet', 'partner', 'unassigned']) sections[kind] = gridEl.appendChild(el('div', `scheduler-section scheduler-section--${kind}`));
 
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
@@ -1475,7 +1482,7 @@
       stripRows.push({ track, head, bus: r.bus, unassigned: r.id === UNASSIGNED, items, least, windows });
 
       rowEl.append(head, track);
-      gridEl.appendChild(rowEl);
+      sections[r.id === UNASSIGNED ? 'unassigned' : r.partner ? 'partner' : 'fleet'].appendChild(rowEl);
     }
 
     // The editor keeps its trip across a render. Its opener becomes the new bar

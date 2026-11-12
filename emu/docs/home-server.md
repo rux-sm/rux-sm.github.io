@@ -11,18 +11,49 @@ access token. It reads the games and never writes them, and it resumes a
 broken download. `emu/tools/serve-games.test.mjs` proves each refusal and
 runs in `npm run check`.
 
+The internet reaches it at a DuckDNS name, through two ports the AT&T
+gateway forwards to the server: Caddy answers there, fetches and renews a
+Let's Encrypt certificate by itself, and passes each request to the
+download server. A third container tells DuckDNS the home's address every
+five minutes. TrueNAS's own pages are not forwarded.
+
 ## Run it on the server
 
 The server fetches the program from the published site each time it starts,
 so a push to `main` reaches it on its next restart.
 
-1. In TrueNAS, open **Apps**. The first time, choose the `storage` pool when
+1. On duckdns.org, signed in, add a sub domain and keep the page's token
+   private.
+2. In TrueNAS, open **Apps**. The first time, choose the `storage` pool when
    it asks where apps live.
-2. Choose **Discover Apps**, then the **⋮** menu, then **Install via YAML**.
-3. Name it `games`, paste the file below, and choose **Save**.
+3. Choose **Discover Apps**, then the **⋮** menu, then **Install via YAML**;
+   for the app already there, open it and choose **Edit**.
+4. Name it `games`, paste the file below with the sub domain in place of
+   `NAME` twice and the token in place of `TOKEN`, and choose **Save**.
 
 ```yaml
 services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    command: caddy reverse-proxy --from NAME.duckdns.org --to games:8080
+    ports:
+      - "8081:80"
+      - "8443:443"
+    volumes:
+      - caddy-data:/data
+    depends_on:
+      - games
+  ddns:
+    image: alpine:3
+    restart: unless-stopped
+    environment:
+      DOMAIN: NAME
+      TOKEN: TOKEN
+    command: >-
+      sh -c 'while true; do
+      wget -qO- "https://www.duckdns.org/update?domains=$$DOMAIN&token=$$TOKEN&ip=";
+      echo; sleep 300; done'
   games:
     image: node:24-alpine
     restart: unless-stopped
@@ -43,16 +74,26 @@ services:
       - ALL
     cap_add:
       - DAC_READ_SEARCH
+volumes:
+  caddy-data: {}
 ```
 
 The games are mounted read-only, the container's own files cannot be
 written, and it keeps only the right to read files whatever their
-permissions say, which the share's SMB permissions need.
+permissions say, which the share's SMB permissions need. Caddy keeps its
+certificate in `caddy-data`, so a restart does not ask Let's Encrypt again.
+
+5. In the gateway at `192.168.1.254`, open **Firewall**, then
+   **NAT/Gaming**, then **Custom Services**, and add two: `Emu HTTPS`,
+   ports 443 to 443, host port 8443, and `Emu HTTP`, ports 80 to 80, host
+   port 8081, both TCP. Back on NAT/Gaming, add each for the device
+   `192.168.1.234`.
 
 ## Check it
 
 From a Mac at home, `http://192.168.1.234:8090/` answers `ok`, and a game's
-address without a log-in answers `401`. A signed-in Emu page fetches a game
+address without a log-in answers `401`. From anywhere,
+`https://NAME.duckdns.org/` answers `ok` with a valid certificate. A signed-in Emu page fetches a game
 with its access token as `Authorization: Bearer`.
 
 The app's **Logs** in TrueNAS print one line a request: the status, the

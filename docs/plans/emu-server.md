@@ -47,11 +47,11 @@ The home server, so the drive is not carried between Macs:
   later, a PC.
 - **It runs with no screen, managed from a browser;** its i7-13700K's
   built-in graphics shows the installer once, so it needs no graphics card.
-- **The NAS is rux's own download cloud, reached through one forwarded
-  port on the AT&T gateway,** so any machine downloads with nothing
-  installed, no company in the middle and no size limit. Only the game
-  downloads are on that port; TrueNAS's own pages and its shares stay
-  inside the home.
+- **The NAS is rux's own download cloud, reached through ports 443 and 80
+  forwarded on the AT&T gateway,** 80 only for the certificate, so any
+  machine downloads with nothing installed, no company in the middle and no
+  size limit. Only the game downloads are on those ports; TrueNAS's own
+  pages and its shares stay inside the home.
 - **Not Cloudflare Tunnel,** since its free plan's terms cover a tunnel's
   public hostname serving "a disproportionate amount of large files".
 - **The home's upload sets the speed away from home,** measured at 350 Mb/s
@@ -59,8 +59,8 @@ The home server, so the drive is not carried between Macs:
 - **A dynamic DNS name follows the home's address, with a free Let's
   Encrypt certificate,** so a link keeps working when AT&T changes the
   address.
-- **The published site downloads through that name even at home,** since a
-  page on HTTPS may not fetch the server's plain `http://` address.
+- **Away from home the published site downloads through that name,** since
+  a page on HTTPS may not fetch the server's plain `http://` address.
 - **The download server reads the games and never writes them,** so the one
   part the internet reaches cannot change the collection.
 - **A broken download resumes where it stopped,** since a disc game is
@@ -114,14 +114,17 @@ The setup kit, so any Mac is set up in one step:
 
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
+- How does a Mac at home download? The gateway loops the public name back
+  to the server slowly, stalling 5 to 19 seconds or failing, while the
+  server's home address answers at once but only over plain `http://`,
+  which the published site may not fetch. Recommended: Rux Emu Helper
+  fetches from the home address when the Mac is at home.
 
 ## Tasks
 
 - [ ] Copy the collection onto the `games` share, leaving out
   `to-delete`.
 - [ ] Copy the collection from the server to the T7.
-- [ ] Forward one port on the AT&T gateway to the download server, with a
-  dynamic DNS name and a Let's Encrypt certificate.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Add Download to this Mac, resuming a broken download, Remove from this

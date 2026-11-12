@@ -7030,7 +7030,7 @@ html[data-scheduler-takeover] {
 /* The open leg: a block for the trip, then one for each bus, set apart by
    space alone. */
 .scheduler-departures__page { display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
-.scheduler-departures__top { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); }
+.scheduler-departures__top { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* Trip ready is a line that is pressed: its mark and words as a done line's
    are, then an arrow that turns over while the trip's lines show. */
 .scheduler-departures__fold {
@@ -7050,7 +7050,7 @@ html[data-scheduler-takeover] {
 .scheduler-departures__fold > .scheduler-departures__mark { color: var(--rux-support-success); }
 .scheduler-departures__arrow { flex: none; margin-inline-start: calc(-1 * var(--rux-spacing-02)); color: var(--rux-icon-secondary); transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .scheduler-departures__fold[aria-expanded="true"] > .scheduler-departures__arrow { transform: rotate(180deg); }
-.scheduler-departures__bus { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); font-size: var(--rux-heading-compact-02-font-size); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
+.scheduler-departures__bus { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); font-size: var(--rux-heading-compact-02-font-size); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); }
 .scheduler-departures__bus > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-departures__tag { flex: none; margin: 0; }
 .scheduler-departures__tag > svg { flex: none; margin-inline-end: var(--rux-spacing-02); }
@@ -7064,7 +7064,7 @@ html[data-scheduler-takeover] {
 /* A crew member's name row: the confirmation's mark, the name, the seat,
    then when they confirmed, kept whole at the row's end while the name and
    the seat give way in an ellipsis. */
-.scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); }
+.scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .scheduler-departures__who > :is(strong, .scheduler-departures__role) { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-departures__role { color: var(--rux-text-secondary); }
 .scheduler-departures__who > .scheduler-departures__when { flex: none; margin-inline-start: auto; }
@@ -7072,7 +7072,9 @@ html[data-scheduler-takeover] {
 /* A line is one line: its mark, its short name, then its word or action at
    its end. Where they run long each ends in an ellipsis rather than
    wrapping, the word at the end giving way first. */
-.scheduler-departures__line { display: flex; align-items: center; gap: var(--rux-spacing-01) var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); }
+/* Each line sets Carbon's whole type style, its line height with its size,
+   so an ellipsis's clipped box is tall enough for a descender. */
+.scheduler-departures__line { display: flex; align-items: center; gap: var(--rux-spacing-01) var(--rux-spacing-03); min-block-size: 2rem; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .scheduler-departures__line > :is(.rux--link, .scheduler-departures__when) { margin-inline-start: auto; }
 .scheduler-departures__line > .rux--link { flex: none; }
 /* A change to tell has Tell and Dismiss, side by side at the line's end. */
@@ -7094,7 +7096,7 @@ html[data-scheduler-takeover] {
 .scheduler-departures__line--asking { flex-wrap: wrap; row-gap: var(--rux-spacing-03); }
 .scheduler-departures__ask { display: flex; flex: 0 0 100%; align-items: center; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); padding-inline-start: var(--rux-spacing-06); color: var(--rux-text-secondary); }
 .scheduler-departures__ask > span { flex: 1 1 auto; }
-.scheduler-departures__when { flex: 1 1 0; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: end; color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); letter-spacing: var(--rux-label-01-letter-spacing); }
+.scheduler-departures__when { flex: 1 1 0; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: end; color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-departures__face { flex: none; }
 
 /* A row of links under a read-only list, as a customer's Documents tab has. */

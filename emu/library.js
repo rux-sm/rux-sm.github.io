@@ -78,9 +78,10 @@
     return img;
   }
 
-  // A cover: the game's art, else its name on the tile.
+  // A cover: the game's art, else its name on the tile. Its system gives it its box's shape.
   function cover(g, cls) {
     const box = el('div', cls);
+    box.dataset.system = g.system;
     const name = () => box.replaceChildren(el('span', 'emu-cover-title', nameOf(g)));
     const img = art(g, name);
     if (img) box.append(img);
@@ -93,6 +94,7 @@
     const b = el('button', 'emu-cover');
     b.type = 'button';
     b.dataset.game = keyOf(g);
+    b.dataset.system = g.system;
     b.title = g.title;
     b.append(cover(g, 'emu-cover-art'), el('span', 'emu-cover-name', nameOf(g)));
     b.addEventListener('click', () => openGame(g));
@@ -232,6 +234,7 @@
     let list = games.filter(g => g.system === system);
     if (showing === 'favourites') list = list.filter(g => g.notes?.favourite);
     if (showing === 'recent') list = list.filter(playedAt).sort(byPlayed);
+    $('emu-grid').dataset.system = system;
     $('emu-grid').replaceChildren(...list.map(coverItem));
     saySystem(system, list.length);
     $('emu-none').hidden = list.length > 0;

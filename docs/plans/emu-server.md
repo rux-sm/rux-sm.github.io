@@ -47,14 +47,25 @@ The home server, so the drive is not carried between Macs:
   later, a PC.
 - **It runs with no screen, managed from a browser;** its i7-13700K's
   built-in graphics shows the installer once, so it needs no graphics card.
-- **It has one public address, through a tunnel it opens outward,** so any
-  machine reaches it with nothing installed, and no port on the router is
-  opened. Only the game downloads are on that address; TrueNAS's own pages
-  and its shares stay inside the home.
-- **The log-in is the guard.** The site asks Supabase for a link to one
-  game, Supabase gives it only to one of rux's accounts, signed and good for
-  minutes, and the server sends a file only on such a link, so it keeps no
-  accounts or passwords of its own.
+- **The NAS is rux's own download cloud, reached through one forwarded
+  port on the AT&T gateway,** so any machine downloads with nothing
+  installed, no company in the middle and no size limit. Only the game
+  downloads are on that port; TrueNAS's own pages and its shares stay
+  inside the home.
+- **Not Cloudflare Tunnel,** since its free plan's terms cover a tunnel's
+  public hostname serving "a disproportionate amount of large files".
+- **The home's upload sets the speed away from home,** measured at 350 Mb/s
+  or more, about a minute and a half for a 4 GB game.
+- **A dynamic DNS name follows the home's address, with a free Let's
+  Encrypt certificate,** so a link keeps working when AT&T changes the
+  address.
+- **The download server reads the games and never writes them,** so the one
+  part the internet reaches cannot change the collection.
+- **A broken download resumes where it stopped,** since a disc game is
+  gigabytes over a hotel's Wi-Fi.
+- **The log-in is the guard.** The server sends a file only on a request
+  that proves one of rux's accounts is signed in, so it keeps no accounts or
+  passwords of its own.
 - **A Mac plays from its own copy of a game,** downloaded from the app, so a
   game never loads over the network and plays the same at home or away.
 - **Saves are kept on each Mac and carried to and from Supabase,** as
@@ -96,23 +107,23 @@ The setup kit, so any Mac is set up in one step:
 
 - Should every Mac backup folder become the server's, now the server holds
   a copy and the T7 another?
-- Which tunnel carries the downloads? Cloudflare Tunnel and Tailscale Funnel
-  are free and may limit files the size of a disc game; a forwarded port
-  with its own certificate has no limit and opens the router. Recommended:
-  measure one large download through Cloudflare Tunnel first.
+- How does the server know a request is rux's? A link Supabase signs with a
+  secret the server shares, or rux's own Supabase access token checked
+  against Supabase's public signing keys, which puts no secret on the
+  server. Recommended: the access token.
 
 ## Tasks
 
 - [ ] Copy the collection onto the `games` share, leaving out
   `to-delete`.
 - [ ] Copy the collection from the server to the T7.
-- [ ] Give the server its public address through the tunnel, the downloads
-  alone on it.
-- [ ] Sign a game's link in Supabase for one of rux's accounts, and have the
-  server refuse a request without one.
+- [ ] Forward one port on the AT&T gateway to the download server, with a
+  dynamic DNS name and a Let's Encrypt certificate.
+- [ ] Have the download server refuse a request that does not prove one of
+  rux's accounts.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Serve the games over HTTPS on signed links, and add Download to this Mac,
-  Remove from this Mac, the mark of what this Mac holds and the On this Mac
-  view.
+- [ ] Serve the games read-only over HTTPS, resuming a broken download, and
+  add Download to this Mac, Remove from this Mac, the mark of what this Mac
+  holds and the On this Mac view.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

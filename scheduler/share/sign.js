@@ -165,6 +165,9 @@
     const error = el('div', 'rux--form-requirement', f.type === 'date' ? w.badDate : f.digits ? w.badDigits(f.digits) : w.fillIn);
     field.appendChild(input);
     outer.append(field, error);
+    // An optional line says it may stay empty, so a driver with no middle
+    // name leaves it blank instead of writing None or N/A onto the form.
+    if (f.optional) outer.appendChild(el('div', 'rux--form__helper-text', w.leaveEmpty));
     item.append(labelWrap, outer);
     const mark = bad => { field.toggleAttribute('data-invalid', bad); input.classList.toggle('rux--text-input--invalid', bad); };
     input.addEventListener('input', e => {

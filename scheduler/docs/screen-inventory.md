@@ -175,7 +175,7 @@ Three homes, and one rule for choosing.
 - **View options go in the toolbar's overflow menu.** The week's first day, Monday, Sunday or
   Today, each week then starting on today's weekday, Compact, which in one press leaves a bar its destination, times and drivers, about half its height, ticked while the rows stand so and turning them all back on when pressed again, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Fill the window, off
   until turned on and kept by the browser, for a board that takes the whole window rather than the Scheduler's 1312px frame, which
-  seven days fill exactly. A day on the strip that is the board from md up is always 175px, a one-day bar 167px with two drivers side by side, so the open panels and a narrower window leave fewer days in view, the rest scrolled to, and Fill the window shows more, the label naming them up to two weeks; its arrows move a week and the Left and Right keys a day. Opening a panel
+  seven days fill exactly. A day on the strip that is the board from md up is always 200px, a one-day bar 192px with two drivers side by side, so the open panels and a narrower window leave fewer days in view, the rest scrolled to, and Fill the window shows more, the label naming them up to two weeks; its arrows move a week and the Left and Right keys a day. Opening a panel
   moves no edge of the page and no trip, and Fill the window is read from the browser before the first paint by `view.js`, then Confirmed trips in
   gray, off until turned on and kept by the browser, which draws a confirmed trip of the standard colour in the theme's gray trip colour rather than
   blue, so an unconfirmed trip's red and a chosen colour stand out, then Motion, full, calm or
@@ -204,7 +204,7 @@ Three homes, and one rule for choosing.
   closed for room takes that panel's place and slides in from the left there,
   nothing else moving; the trip editor stands right of it. While
   the board holds the open panels and the week's minimum, the bus column and
-  three of its 175px days, 630px, up to two of them show, so with the editor open one list
+  three of its 200px days, 688px, up to two of them show, so with the editor open one list
   stands left of the week. Opening one past either closes the
   oldest, then the next, without a word,
   except one with something typed in it, which asks first and stays on a no.

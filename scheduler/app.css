@@ -96,7 +96,7 @@
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
   /* One day's width, which every bar, out-of-service span and day rule is
      placed from. A percentage of the track by default, so the stylesheet
-     stands alone, as Maintenance's weeks are. The strip fixes it at 175px,
+     stands alone, as Maintenance's weeks are. The strip fixes it at 200px,
      and on a compact board app.js fits two days to the pane on whole
      pixels. */
   --scheduler-day-w: calc(100% / var(--scheduler-days));
@@ -224,15 +224,17 @@
      view, and that trip on a compact one. Under the band and at the foot
      a row's own 4px is added to the same way, by the grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 80PX, 41px on
+  /* A DAY ON THE STRIP IS 200PX AND THE BUS COLUMN THE TILE'S 80PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
-     change of width shows more of the strip or less and moves no trip. The
+     change of width shows more of the strip or less and moves no trip. 200px
+     is where nine trips in ten show every line but the update whole, and a
+     wider day shows few more. The
      tile's 80px is its card's 8px clear of the panel's side, the card's 8px
      inset either side and the 56px between, the least that holds a number,
      8px and its alert; its other side stands on the edge, so the card is
      8px from the first day's bars as two bars are. It has no rule beside
      it, as a compact board's has. */
-  --scheduler-strip-day: 175px;
+  --scheduler-strip-day: 200px;
   --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-05));
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);

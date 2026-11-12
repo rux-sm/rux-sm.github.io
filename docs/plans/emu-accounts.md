@@ -63,7 +63,8 @@ None open.
 After the saves are carried for the owner, in this order:
 
 - [ ] Add the list of accounts and `emu_is_member()`, and a place on the
-  page where the owner adds and removes one.
+  page where the owner adds and removes one, and set the download server's
+  `MEMBER_RPC` to `emu_is_member`.
 - [ ] Label `emu_saves`, `emu_macs` and `emu_files` with their account, the
   rows there now the owner's, and set each table's and bucket's rule.
 - [ ] Open the collection's tables and shared files to a member to read.

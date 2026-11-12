@@ -64,7 +64,7 @@ games is not needed yet.
 a fold Status links to: the version Supabase holds and each Mac's, each file it
 needs, every kind of file it writes with the setting that moves it, the
 settings to have, and what is worth knowing. `docs/emulator-setup.md` is how
-each is set up on a Mac.
+each is set up on a Mac, and `docs/home-server.md` how the home server sends a game.
 
 ## The scan
 

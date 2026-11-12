@@ -120,11 +120,10 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Copy the collection from the server to the T7.
 - [ ] Forward one port on the AT&T gateway to the download server, with a
   dynamic DNS name and a Let's Encrypt certificate.
-- [ ] Have the download server refuse a request that does not prove one of
-  rux's accounts.
+- [ ] Run `emu/tools/serve-games.mjs` on the server as a TrueNAS app, as
+  `emu/docs/home-server.md` says.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Serve the games read-only over HTTPS, resuming a broken download, and
-  add Download to this Mac, Remove from this Mac, the mark of what this Mac
-  holds and the On this Mac view.
+- [ ] Add Download to this Mac, resuming a broken download, Remove from this
+  Mac, the mark of what this Mac holds and the On this Mac view.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

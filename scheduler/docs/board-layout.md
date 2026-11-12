@@ -49,7 +49,9 @@ rows stop by the browser's own snap.
 that spans days is a one-day bar's width in its colour under its words, its
 head, on its first day or a live bar's today, and its palette's next darker
 step either side, its tail, so the head lines up with the one-day bars
-above and below it.
+above and below it. A live bar whose head is past its first day leads its
+destination with a solid triangle pointing back, and the bus tiles cover the
+8px beside them, so its head starts on the edge a bar starting that day does.
 
 | Line | Holds |
 | :--- | :--- |

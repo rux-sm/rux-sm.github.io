@@ -218,8 +218,9 @@
      clear space again, is added beside the bus column and, by app.js, at
      its right. Beside the
      column it is the column's own width, which the head cells leave
-     unpainted, so the day before shows its last 4px there: empty, or a
-     trip running on into the days in view. Under the band and at the foot
+     unpainted, so the day before shows its last 4px there: empty on the
+     Mac's board, whose tiles cover a trip running on into the days in
+     view, and that trip on a compact one. Under the band and at the foot
      a row's own 4px is added to the same way, by the grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
   /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 88PX, 41px on
@@ -901,7 +902,15 @@ button.scheduler-row-head__num:focus { outline: none; }
 /* The tile, with no rule beside it: the tiles are the column's edge, and the
    board comes to rest on a day, so no trip stands cut by it. */
 .scheduler-page:not([data-board="compact"]) :is(.scheduler-week--scroll, .scheduler-band) { --scheduler-head-min: var(--scheduler-tile-head); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head { border-inline-end: 0; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head {
+  border-inline-end: 0;
+  /* EVERY BAR IN THE FIRST DAY STARTS ON ONE EDGE: the head's surface runs on
+     over the edge beside it and the first day's clear space, so a trip that
+     started on a day out of view stops where one that starts today does. Its
+     triangle says it came from there; see "A trip in a later day". A shadow,
+     since the head's own width is the column's and sets where the days start. */
+  box-shadow: calc(var(--scheduler-edge) + var(--scheduler-gap-clear)) 0 0 var(--rux-layer);
+}
 /* THE HEAD'S ROWS start on the bar's first line, so the number stands level
    with the destination, and on six lines end on the card's 8px inset; each
    view has its own, below. Every part names the one column, inside the
@@ -1900,6 +1909,26 @@ button.scheduler-row-head__num:focus { outline: none; }
    to the bar's padding at the cut end, where the other rows' words end,
    ending in an arrowhead there, so it reads as going on into the other
    week; the edge itself wears no shade. */
+/* Carbon's two solid triangles, the bar's, 8px wherever one is drawn. */
+.scheduler-bar {
+  --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 8px 8px no-repeat;
+  --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 8px 8px no-repeat;
+}
+/* A TRIP IN A LATER DAY: a live bar whose rows stand on today, its first day
+   behind them, leads its destination with the triangle that points back, as
+   a track cut at the week's edge does, in the bar's own ink. It stays as the
+   board scrolls, since it says where the trip is in its days and not what is
+   in view. road-bar.js sets the class. */
+.scheduler-bar--from-earlier > .scheduler-bar__dest::before {
+  content: '';
+  flex: none;
+  align-self: center;
+  inline-size: 8px;
+  block-size: 8px;
+  margin-inline-end: calc(var(--rux-spacing-02) - var(--rux-spacing-03));
+  background: currentColor;
+  mask: var(--scheduler-arrow-back);
+}
 /* There the track ends in Carbon's solid triangle, `triangle--right--solid`
    or `triangle--left--solid`, drawn at 8px, in proportion with the 12px
    times: an 8px box filled as the track is, masked to its line, 2px or lifted 4px, and the
@@ -1909,8 +1938,6 @@ button.scheduler-row-head__num:focus { outline: none; }
    goes on rather than how far. It points the way the trip goes on, back to
    the week before at a bar that came in from it. */
 .scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
-  --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 8px 8px no-repeat;
-  --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 8px 8px no-repeat;
   block-size: 8px;
   border-radius: 0;
 }

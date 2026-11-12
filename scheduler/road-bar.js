@@ -242,6 +242,8 @@
     // The day the rows stand on, counted from the bar's first: today while out.
     if (bus && live.day > 0) bar.style.setProperty('--scheduler-today', live.day);
     else bar.style.removeProperty('--scheduler-today');
+    // Its first day is behind the rows, which app.css marks on the destination.
+    bar.classList.toggle('scheduler-bar--from-earlier', !!bus && live.day > 0);
     if ((bar.dataset.road ?? '') === key) return;
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);

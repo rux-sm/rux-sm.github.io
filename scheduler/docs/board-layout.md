@@ -64,10 +64,10 @@ destination with a solid triangle pointing back, and the bus tiles cover the
 
 ## The bus tile, on six lines
 
-The column is 88px, with no rule beside it. In it each bus is a tile as a trip is
+The column is 80px, with no rule beside it. In it each bus is a tile as a trip is
 a bar: a card of the second layer the bar's size and place, 72px wide, as
-tall as the bar and level with it, 8px clear of the next bus's tile and
-the column's sides, as a bar is of the next bar,
+tall as the bar and level with it, 8px clear of the next bus's tile, the
+panel's side and the first day's bars, as a bar is of the next bar,
 with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
 rows, sized below, from the bar's first line to the card's 8px inset at its

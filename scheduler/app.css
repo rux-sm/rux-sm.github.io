@@ -223,14 +223,16 @@
      view, and that trip on a compact one. Under the band and at the foot
      a row's own 4px is added to the same way, by the grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
-  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 88PX, 41px on
+  /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 80PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
      change of width shows more of the strip or less and moves no trip. The
-     tile's 88px is its card's 8px clear either side, the card's 8px inset
-     either side and the 56px between, the least that holds a number, 8px
-     and its alert. It has no rule beside it, as a compact board's has. */
+     tile's 80px is its card's 8px clear of the panel's side, the card's 8px
+     inset either side and the 56px between, the least that holds a number,
+     8px and its alert; its other side stands on the edge, so the card is
+     8px from the first day's bars as two bars are. It has no rule beside
+     it, as a compact board's has. */
   --scheduler-strip-day: 175px;
-  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-06));
+  --scheduler-tile-head: calc(var(--rux-spacing-10) + var(--rux-spacing-05));
   --scheduler-day-w: var(--scheduler-strip-day);
   --scheduler-day-track: var(--scheduler-day-w);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge));
@@ -887,8 +889,9 @@ button.scheduler-row-head__num:focus { outline: none; }
    are the board's. */
 
 /* ── The bus tile ───────────────────────────────────────────────────────────
-   ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 88px, a 72px card
-   8px clear of its sides, as a trip is a bar, its parts in rows at the
+   ON THE MAC'S BOARD THE BUS COLUMN HOLDS THE BUS'S TILE, 80px, a 72px card
+   8px clear of the panel's side and on the column's edge, so it stands 8px
+   from the first day's bars as a bar does from the next, its parts in rows at the
    start 8px inside it, 12px apart: the number on the bar's first line with
    its alert at the line's end; the speed or state; the fuel, a gauge read
    from E to F; and the kit, low DEF or last contact at the foot. Shorter
@@ -928,14 +931,15 @@ button.scheduler-row-head__num:focus { outline: none; }
     var(--scheduler-mark-glyph);
   align-content: start;
   justify-items: start;
-  padding-inline: calc(var(--scheduler-side-clear) + var(--scheduler-bar-pad-inline));
+  padding-inline: calc(var(--scheduler-side-clear) + var(--scheduler-bar-pad-inline)) var(--scheduler-bar-pad-inline);
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges) { display: contents; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head > *,
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__body) > * { grid-column: 1; }
 /* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
    size and place, as tall as the bar and level with it, 8px from the next
-   bus's tile and from the column's sides, as a bar is from the next bar,
+   bus's tile, the panel's side and the first day's bars, as a bar is from
+   the next bar,
    and the bar's corners, so the bus and its trips read as one kind of
    thing across the row. A partner's row and No bus have the same card.
    A shut row draws none. */
@@ -944,7 +948,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   position: absolute;
   z-index: -1;
   inset-block-start: var(--scheduler-row-clear);
-  inset-inline: var(--scheduler-side-clear);
+  inset-inline: var(--scheduler-side-clear) 0;
   block-size: var(--scheduler-bar-h);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
@@ -7417,7 +7421,7 @@ html[data-scheduler-takeover] {
 .scheduler-components__bus .scheduler-components__board.scheduler-week--scroll .scheduler-row-head__equip { display: none; }
 .scheduler-components__foot {
   position: absolute;
-  inset-inline: var(--scheduler-side-clear);
+  inset-inline: var(--scheduler-side-clear) 0;
   /* Line 6's top, from the head's own: the bar's clear space and padding, and five lines. */
   inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 5 * var(--scheduler-row-h));
   display: flex;

@@ -29,6 +29,10 @@
 //                          the moment it was saved, and noted as carried
 //   POST   /mac/carried/mark  ?path=&sha1=, that save noted as carried, when
 //                          it still has that SHA-1
+//   GET    /mac/given      ?emulator=, each BIOS, key or firmware file that
+//                          emulator holds in the folders Supabase fills
+//   PUT    /mac/given      ?emulator=&path=<its path in Supabase>, the body
+//                          written as that file
 //   GET    /mac/saves      each save this Mac keeps itself, not on the drive
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
 //   GET    /newest         the newest version of each emulator its project
@@ -89,6 +93,11 @@
 // writes one while its emulator runs. Its menu bar icon is filled while a
 // save differs from its last carry.
 //
+// A given file is a BIOS, key or firmware file Supabase holds for every Mac.
+// It sits in a folder inside its emulator's own, which emulators.json names
+// beside that folder's path in Supabase, and the settings Emu manages point
+// the emulator there, so it starts with no drive plugged in.
+//
 // An installer comes only from the collection's bucket in Supabase, is
 // checked against the size and SHA-1 the site sends, and puts in Applications
 // only an app emulators.json names for that emulator. The receipt it leaves,
@@ -103,7 +112,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "14"
+let version = "15"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -834,6 +843,37 @@ func savesWaiting() -> Bool {
 // The menu bar icon filled while saves wait; set once the app is up.
 var showWaiting: () -> Void = {}
 
+// MARK: Given files
+
+// Each folder of an emulator that Supabase fills: its path there, and where
+// it is inside the emulator's own folder.
+func givenPlaces(_ e: Saver) -> [(from: String, dir: String)] {
+  guard let home = e.home else { return [] }
+  return (e.rule["files"] as? [[String: Any]] ?? []).compactMap { f in
+    guard f["class"] as? String == "provided", let from = f["given"] as? String, let path = f["path"] as? String else { return nil }
+    return (from, home + "/" + path)
+  }
+}
+
+func given(_ name: String) -> (Int, [String: Any]) {
+  guard let e = saver(name) else { return (404, ["error": "\(name) is not an emulator Emu knows."]) }
+  let places = givenPlaces(e)
+  let list: [[String: Any]] = places.flatMap { place in
+    walk(place.dir).compactMap { f -> [String: Any]? in
+      guard let sha1 = sha1Of(f.path) else { return nil }
+      return ["path": place.from + f.path.dropFirst(place.dir.count), "size": f.size, "sha1": sha1]
+    }
+  }
+  return (200, ["emulator": name, "folders": places.map { $0.from }, "running": running(appsOf(e.rule)), "files": list])
+}
+
+// Where a given file goes on this Mac, by its emulator and its path in Supabase.
+func givenAt(_ name: String, _ path: String) -> (e: Saver, at: String)? {
+  guard let e = saver(name), let place = givenPlaces(e).first(where: { path.hasPrefix($0.from + "/") }) else { return nil }
+  let rel = String(path.dropFirst(place.from.count + 1))
+  return plainName(rel) ? (e, place.dir + "/" + rel) : nil
+}
+
 // MARK: Installing an emulator
 
 let receipts = home + "/Library/Application Support/Rux Emu Helper/receipts"
@@ -1466,6 +1506,7 @@ final class Server {
     case ("POST", "/mac/setting"): off { let (code, out) = writeSetting(q["emulator"] ?? "", q["rel"] ?? "", body); return .json(code, out) }
     case ("POST", "/mac/manage"): off { let (code, out) = manage(body); return .json(code, out) }
     case ("GET", "/mac/carry"): off { let (code, out) = carry(q["emulator"] ?? ""); return .json(code, out) }
+    case ("GET", "/mac/given"): off { let (code, out) = given(q["emulator"] ?? ""); return .json(code, out) }
     case ("GET", "/mac/carried"):
       off { carriedAt(q["path"] ?? "").flatMap { bytes($0.at, at: nil, n: nil) }.map(Reply.bytes) ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
     case ("POST", "/mac/carried/mark"): off { let (code, out) = markCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
@@ -1509,6 +1550,11 @@ final class Server {
       }
       target = found.at
       written = { carriedWritten(path, found.at, req.query["saved"]) }
+    case "/mac/given":
+      guard let found = givenAt(req.query["emulator"] ?? "", path) else { return send(c, .json(404, ["error": "That is not a file Emu gives that emulator."]), origin: origin) }
+      let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
+      guard !running(appsOf(found.e.rule)) else { return send(c, .json(409, ["error": "Quit \(app) first."]), origin: origin) }
+      target = found.at
     default: break
     }
     guard let target else { return send(c, .json(404, ["error": "That is not in the collection."]), origin: origin) }

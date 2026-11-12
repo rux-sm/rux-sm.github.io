@@ -10,8 +10,10 @@
    Nothing is removed from either side, and nothing is written under a
    running emulator.
 
-   `before` is what Play does first: the saves brought, then the settings Emu
-   manages written, so the emulator opens them. `after` waits for the emulator
+   `give` brings the BIOS, key and firmware files Supabase holds for an
+   emulator that this Mac lacks, one way. `before` is what Play does first:
+   those files and the saves brought, then the settings Emu manages written,
+   so the emulator opens them. `after` waits for the emulator
    to quit, carries what it wrote and backs up this Mac's settings where they
    changed. Opening a page carries whatever waited from a game played with the
    site closed.
@@ -80,13 +82,37 @@
     return out;
   }
 
-  // One carry of an emulator at a time: a second waits for the first.
+  // Each BIOS, key or firmware file Supabase holds for an emulator that this
+  // Mac lacks, brought into the emulator's own folder: how many came. One
+  // the Mac has is left as it is, since an emulator writes its console's
+  // settings into some of them.
+  async function giveNow(name) {
+    const here = await H.given(name);
+    if (!here?.folders.length || here.running) return 0;
+    const mine = new Set(here.files.map(f => f.path));
+    let came = 0;
+    for (const folder of here.folders) {
+      for (const f of await R.data.files(`${folder}/`)) {
+        if (mine.has(f.path)) continue;
+        const bytes = await R.data.fileBytes(f.sha1);
+        if (await sha1Of(bytes) !== f.sha1) throw new Error(`${nameOf(f.path)} did not arrive whole. Try again.`);
+        await H.putGiven(name, f.path, bytes);
+        came += 1;
+      }
+    }
+    return came;
+  }
+
+  // One step for an emulator at a time: a second waits for the first, so
+  // two never write the same file.
   const queue = new Map();
-  const run = name => {
-    const next = (queue.get(name) ?? Promise.resolve()).catch(() => {}).then(() => carryNow(name));
+  const queued = (name, work) => {
+    const next = (queue.get(name) ?? Promise.resolve()).catch(() => {}).then(() => work(name));
     queue.set(name, next);
     return next;
   };
+  const run = name => queued(name, carryNow);
+  const give = name => queued(name, giveNow);
 
   const told = c => c.both.length
     ? `Two copies of ${c.both.join(', ')} were found: the one saved last plays, and the other is kept.`
@@ -115,7 +141,7 @@
     if (!name || !foldersOf((await R.emulators()).macSaves[name]).length) return false;
     say('Bringing its saves…');
     let c;
-    try { c = await run(name); } catch (error) { console.error(error); say('Its saves could not be brought, so this Mac\'s play.'); c = { running: false }; }
+    try { await give(name); c = await run(name); } catch (error) { console.error(error); say('Its saves could not be brought, so this Mac\'s play.'); c = { running: false }; }
     if (!c) return false;
     if (c.running) throw new Error(`Quit ${name} first, so its saves can be brought.`);
     await H.manage(name);
@@ -158,9 +184,9 @@
     if (!H.onMac || !await H.status()) return;
     for (const [name, rule] of Object.entries((await R.emulators()).macSaves)) {
       if (!foldersOf(rule).length) continue;
-      try { await run(name); } catch (error) { console.error(error); }
+      try { await give(name); await run(name); } catch (error) { console.error(error); }
     }
   })();
 
-  R.carry = { run, before, after };
+  R.carry = { run, give, before, after };
 })();

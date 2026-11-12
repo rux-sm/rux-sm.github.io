@@ -88,6 +88,10 @@
   const putCarried = (path, saved, bytes) => call(`/mac/carried?path=${encodeURIComponent(path)}&saved=${encodeURIComponent(saved ?? '')}`, { method: 'PUT', body: bytes }, true);
   const markCarried = (path, sha1) => call(`/mac/carried/mark?path=${encodeURIComponent(path)}&sha1=${sha1}`, { method: 'POST' }, true);
 
+  // The BIOS, key and firmware files an emulator holds in the folders Supabase fills, or null from a helper too old to take them.
+  const given = async emulator => { const r = await call(`/mac/given?${at(emulator)}`); return r ? r.json() : null; };
+  const putGiven = (emulator, path, bytes) => call(`/mac/given?${at(emulator)}&path=${encodeURIComponent(path)}`, { method: 'PUT', body: bytes }, true);
+
   const macSaves = async () => (await call('/mac/saves', {}, true)).json();
   const macSave = async stored => new Uint8Array(await (await call(`/mac/save?stored=${encodeURIComponent(stored)}`, {}, true)).arrayBuffer());
 
@@ -172,7 +176,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, newest, install, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, newest, install, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

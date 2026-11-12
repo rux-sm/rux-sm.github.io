@@ -767,7 +767,8 @@
           "kind": "BIOS",
           "class": "provided",
           "path": "bios",
-          "key": "BIOS/SearchDirectory"
+          "key": "BIOS/SearchDirectory",
+          "given": "bios/psx"
         },
         {
           "kind": "Settings and controls",
@@ -817,6 +818,11 @@
         }
       ],
       "manages": [
+        {
+          "key": "BIOS/SearchDirectory",
+          "value": "{home}/bios",
+          "why": "Its BIOS sits in its own folder on the Mac, brought from Supabase, so it starts with no drive plugged in."
+        },
         {
           "key": "MemoryCards/Directory",
           "value": "{home}/memcards",
@@ -881,7 +887,8 @@
           "kind": "BIOS",
           "class": "provided",
           "path": "bios",
-          "key": "Folders/Bios"
+          "key": "Folders/Bios",
+          "given": "bios/ps2"
         },
         {
           "kind": "Settings and controls",
@@ -937,6 +944,11 @@
         }
       ],
       "manages": [
+        {
+          "key": "Folders/Bios",
+          "value": "{home}/bios",
+          "why": "Its BIOS sits in its own folder on the Mac, brought from Supabase, so it starts with no drive plugged in."
+        },
         {
           "key": "Folders/MemoryCards",
           "value": "{home}/memcards",
@@ -1261,7 +1273,9 @@
         {
           "kind": "BIOS and boot ROM",
           "class": "provided",
-          "key": "sys.files.flashrom_path, sys.files.bootrom_path"
+          "path": "bios",
+          "key": "sys.files.flashrom_path, sys.files.bootrom_path",
+          "given": "bios/xbox"
         },
         {
           "kind": "Settings and controls",
@@ -1280,6 +1294,16 @@
         }
       ],
       "manages": [
+        {
+          "key": "sys.files.bootrom_path",
+          "value": "{home}/bios/mcpx_1.0.bin",
+          "why": "Its boot ROM sits in its own folder on the Mac, brought from Supabase, so it starts with no drive plugged in."
+        },
+        {
+          "key": "sys.files.flashrom_path",
+          "value": "{home}/bios/complex_4627.bin",
+          "why": "Its BIOS sits beside the boot ROM."
+        },
         {
           "key": "sys.files.hdd_path",
           "value": "{home}/disk/xbox_hdd.qcow2",

@@ -56,12 +56,12 @@ correct `settings` for it in `emu/emulators.json`.
   DSi-only game needs the DSi files.
 - **Azahar, 3DS.** Azahar keeps each save under the game's title ID, which
   is how the scan matches it.
-- **DuckStation, PS1.** Settings, BIOS: the folder `<drive>/bios/psx/`.
-  Emu sets card 1 to a separate card per game, so each game's card carries
-  its serial.
+- **DuckStation, PS1.** Emu brings its BIOS from Supabase into its own
+  `bios` folder, and sets card 1 to a separate card per game, so each
+  game's card carries its serial.
 - **PCSX2, PS2.** Its Mac build is for Intel, so the Mac needs Rosetta.
-  Settings, BIOS: the folder `<drive>/bios/ps2/`. Settings, Memory Cards: a
-  new Folder card as card 1, so each game's save is its own folder named by
+  Emu brings its BIOS from Supabase into its own `bios` folder. Settings,
+  Memory Cards: a new Folder card as card 1, so each game's save is its own folder named by
   its serial.
 - **Dolphin, GameCube and Wii.** Config, GameCube: slot A to GCI Folder.
   Dolphin names a GameCube save by the disc's ID and keeps a Wii one under
@@ -78,10 +78,10 @@ correct `settings` for it in `emu/emulators.json`.
   `ExtraData0` holds the game's title ID, which is how the scan matches it;
   Emu carries the saves with the index that numbers them, and the firmware
   stays on the Mac.
-- **xemu, Xbox.** Settings, System: the MCPX boot ROM and the flash ROM from
-  `<drive>/bios/xbox/`. Emu keeps the hard disk image, where games save,
-  and the EEPROM in xemu's own `disk` folder, and turns its welcome screen
-  off, since xemu loads none of them while it is on.
+- **xemu, Xbox.** Emu brings the MCPX boot ROM and the flash ROM from
+  Supabase into xemu's own `bios` folder, keeps the hard disk image, where
+  games save, and the EEPROM in its `disk` folder, and turns its welcome
+  screen off, since xemu loads none of them while it is on.
 
 ## Moving the RetroArch saves
 

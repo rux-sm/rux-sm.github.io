@@ -19,7 +19,8 @@ and is what `scheduler/app.css` draws; what each part says is in
 | An icon | 16px, 4px from its words on every row |
 | A row's parts | 8px apart: a time and its track, two drivers, a name and the mark that ends its line |
 | A mark's press | 24px across and its row's 18px, round the 16px glyph |
-| A bar | 8px clear of the row's lines and of the next bar |
+| A bar | 8px clear of its row's top and foot and of the next bar |
+| A row | no line under it: the bars and tiles are the rows, 16px apart |
 | A bus row | a lane for each stacked trip; on six lines 144px for one, 288px for two |
 | A driver row | 48px, Carbon's lg table row, its default; three stand beside a six-line bus row |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
@@ -45,8 +46,8 @@ above and below it.
 
 The column is 88px and its 1px rule. In it each bus is a tile as a trip is
 a bar: a card of the second layer the bar's size and place, 72px wide, as
-tall as the bar and 8px clear of the row's lines and the column's sides, as
-a bar is of the row's lines and the column's rule, with the bar's corners.
+tall as the bar and 8px clear of the row's top and foot and the column's
+sides, as a bar is of them and the column's rule, with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
 rows, sized below, from the bar's first line to the card's 8px inset at its
 foot, measured from the top, so a row of stacked trips keeps it on the
@@ -90,11 +91,11 @@ A view of one row shows the name alone.
 
 The rail is 160px, Carbon's spacing 13, and in it each driver is a tile as
 a bus is: a card of the second layer with the bar's corners, 144px wide, 8px clear of the
-rail's sides and the row's lines as the bus tile is. Its row is Carbon's
+rail's sides and the row's top and foot as the bus tile is. Its row is Carbon's
 lg table row, 48px, and the card Carbon's sm, 32px, from 8px to 40px of
 the row. It holds one 18px line, 7px inside it above and below and 8px in
-from its sides, 128px wide, and two cards stand 16px apart across the row's
-line, as two buses' bars do. The Apple themes, whose Layer 02 is their
+from its sides, 128px wide, and two cards stand 16px apart, as two buses'
+bars do. The Apple themes, whose Layer 02 is their
 Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |
@@ -109,7 +110,7 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 With its week out the rail is 448px: the 160px tiles, seven of Carbon's
 40px md days, and 4px more at each end of the week. A trip, time off or a
 selected trip's open slot is a bar as a trip is on the board: as tall as
-the driver tile and level with it, 8px clear of the row's lines, and 4px in
+the driver tile and level with it, 8px clear of the row's top and foot, and 4px in
 from the ends of its days, so a one-day bar is always a 32px square, two
 bars on neighbouring days stand 8px apart, as on the board, and a bar on
 the first or last day stands 8px from the week's edge. A bar that runs on into the next day,

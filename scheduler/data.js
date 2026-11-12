@@ -1313,18 +1313,6 @@
     num.replaceChildren(...new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).formatToParts(d)
       .map((part) => (part.type === 'day' ? part.value : el('span', 'scheduler-day__month', part.value))));
   }
-  /* Marks the last row on screen, whose rule the stylesheet decides, as the
-     pane's own border closes a grid that reaches it. Only where it moves: the
-     class reaches every element in the row, so touching it costs the row. */
-  function markLastRow(into) {
-    const shownRows = [...into.querySelectorAll('.scheduler-row')].filter(r => !r.hidden && !r.hasAttribute('data-shut'));
-    const last = shownRows[shownRows.length - 1] ?? null;
-    const was = into.querySelector('.scheduler-row--last');
-    if (was === last) return;
-    was?.classList.remove('scheduler-row--last');
-    last?.classList.add('scheduler-row--last');
-  }
-
   /* Draws the strip's rows, from `weekStart` to `weekEnd`, its day band and
      every bus, and leaves the trips to be drawn as they come near the view. */
   function render(data) {
@@ -1442,8 +1430,6 @@
       rowEl.append(head, track);
       gridEl.appendChild(rowEl);
     }
-
-    markLastRow(gridEl);
 
     // The editor keeps its trip across a render. Its opener becomes the new bar
     // for that trip when this week has one, so focus can go back to it.
@@ -1848,7 +1834,6 @@
                    contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
     if (selectedRef && !selected.isConnected) findBar(selectedRef)?.setAttribute('aria-current', 'true');
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
-    markLastRow(gridEl);
     markHeads();
     markUnread(days);
     drawNear(days);
@@ -1982,7 +1967,6 @@
   function fitLanesInView({ days = viewDays() } = {}) {
     if (!stripStart || barsInHand || !days) return;
     const [first, last] = days;
-    let folding = false;
     for (const row of stripRows) {
       const now = row.track.style.getPropertyValue('--scheduler-lanes');
       let lanes = row.least;
@@ -1993,13 +1977,11 @@
       }
       const rowEl = row.track.parentElement;
       if (rowEl.hasAttribute('data-shut') !== !lanes) {
-        folding = true;
         rowEl.toggleAttribute('data-shut', !lanes);
         // A row opening keeps its parts clipped until it has opened, so nothing in it paints over the row below.
         if (lanes) { rowEl.dataset.opening = ''; setTimeout(() => delete rowEl.dataset.opening, ROW_MOTION_MS + 40); }
       }
     }
-    if (folding) markLastRow(gridEl);
   }
   // How long a row takes to open or close, as app.css draws it.
   const ROW_MOTION_MS = 220;
@@ -2210,7 +2192,6 @@
         unassignedRow.removeAttribute('data-shut');
         unassignedRow.querySelector(':scope > .scheduler-track').style.setProperty('--scheduler-lanes', 1);
         unassignedRow.dataset.opened = 'true';
-        markLastRow(gridEl);
       }
       // A partner's row takes no drop: a partner is given a bus on the Buses tab.
       tracks = [...gridEl.querySelectorAll('.scheduler-track:not([data-partner])')];

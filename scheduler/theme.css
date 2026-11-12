@@ -991,7 +991,6 @@
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 [data-theme="rux-dark"] .scheduler-aside .scheduler-avail__day { border-block-start: 0; }
-[data-theme="rux-dark"] .scheduler-aside .scheduler-avail__row:last-child > * { border-block-end: 0; }
 /* The Apple themes' regions are a fill on the page, so each is told apart by
    that fill. Their day band is the region's own surface over a rule, as
    geist-dark's is. On apple-light a soft lift takes the place of the dark
@@ -1135,11 +1134,6 @@
   --scheduler-meter-radius: 100vmax;
   /* The roster's priority tiles take the 8px Design gives these themes' tiles. */
   --scheduler-tile-radius: 8px;
-  /* A rounded region closes a list that reaches its edge, so there the last
-     row of the board and of the roster draws no rule: a straight line laid
-     across a 12px corner is cut short at both ends. A list that stops short
-     keeps its rule, by `.scheduler-week--short` in app.css. */
-  --scheduler-last-rule: 0;
 }
 /* rux-dark squares this app's pills too: a bar's kind label, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
@@ -1436,7 +1430,6 @@
   --scheduler-band-rule-w: 1px;
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge-width: 1px;
-  --scheduler-last-rule: 0;
 }
 /* Its panels are the board's sheet too, the to-do list, the trip editor
    and the document panel, each inside the same line, and what is raised in

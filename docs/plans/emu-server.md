@@ -73,6 +73,13 @@ The home server, so the drive is not carried between Macs:
   only the app's own site.
 - **The Collection marks what this Mac holds,** from the library folder it
   reads, so a game to download and one ready to play are told apart.
+- **On this Mac is a view of the Collection,** listing only the games this
+  Mac holds, each with its size and Remove, over how much they take and how
+  much the Mac has free, so a Mac short of room swaps one game for another.
+- **Removing a game takes its files alone.** Its saves and settings are in
+  the emulator's own folder and in Supabase, as
+  `docs/plans/emu-emulator-profiles.md` says, so a game downloaded again
+  plays on from where it stopped.
 
 The setup kit, so any Mac is set up in one step:
 
@@ -106,5 +113,6 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Serve the games over HTTPS on signed links, and add Download to this Mac,
-  Remove from this Mac and the mark of what this Mac holds.
+  Remove from this Mac, the mark of what this Mac holds and the On this Mac
+  view.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

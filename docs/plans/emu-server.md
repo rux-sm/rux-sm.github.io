@@ -79,7 +79,7 @@ The home server, so the drive is not carried between Macs:
 - **The server scans itself every night and saves the scan to Supabase,**
   with a key kept only on the server, so Update is needed only for the T7.
 - **Download to this Mac, in a game's side panel,** writes the game into the
-  Mac's own library folder, under its system's folder as on the server,
+  Mac's own library folder, `~/Emulation/roms/<system>/` as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
   Remove from this Mac frees the space. Play opens a game from there.
 - **Rux Emu Helper does every download,** given the page's access token:
@@ -122,8 +122,7 @@ The setup kit, so any Mac is set up in one step:
 - [ ] Copy the collection from the server to the T7.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Have Rux Emu Helper download a game from the home address or the
-  public name, resuming a broken download, and add Download to this Mac,
-  Remove from this Mac, the mark of what this Mac holds and the On this Mac
-  view.
+- [ ] Add Download to this Mac with its progress, Remove from this Mac in
+  the helper and the page, the mark of what this Mac holds, the On this Mac
+  view, and Play from the library.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

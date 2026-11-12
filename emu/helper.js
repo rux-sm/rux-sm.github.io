@@ -11,7 +11,11 @@
    or one where `must` is set, an error saying why. A game's file is the one
    its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
    Wii U game's own file, else its only file. `start` opens the helper
-   through the rux-emu:// link it registers.
+   through the rux-emu:// link it registers. `download` asks the helper to
+   fetch a game's files from the home server into this Mac's library with
+   the signed-in account's token, `downloads` is how far each has come, and
+   `library` each game file this Mac holds; each is null from a helper too
+   old to download.
    ========================================================================== */
 (() => {
   'use strict';
@@ -68,9 +72,28 @@
     return out;
   }
 
+  // A game's files as the helper fetches them: each name within its system's
+  // folder, its size and SHA-1 from the scan; a Switch game's update and
+  // add-ons with it.
+  const filesOf = game => [...(game.files ?? []), ...(game.extras ?? []).map(e => e.file ?? {})]
+    .filter(f => f.name?.startsWith(`${game.system}/`))
+    .map(f => ({ name: f.name.slice(game.system.length + 1), size: f.size, sha1: f.sha1 ?? null }));
+
+  async function download(game) {
+    const { data: { session } } = await window.Rux.account.client.auth.getSession();
+    if (!session) throw new Error('Sign in to download.');
+    const r = await call('/download', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: game.system, files: filesOf(game), token: session.access_token }),
+    });
+    return r ? r.json() : null;
+  }
+  const downloads = async () => { const r = await call('/downloads'); return r ? r.json() : null; };
+  const library = async () => { const r = await call('/library'); return r ? r.json() : null; };
+
   // A Mac at a desk, where the helper can be: an iPad also says Mac, but has touch.
   const onMac = /Mac/.test(navigator.platform) && navigator.maxTouchPoints < 2;
   const start = () => { location.href = 'rux-emu://open'; };
 
-  window.Emu = Object.assign(window.Emu || {}, { helper: { call, status, mac, newest, macSaves, macSave, play, fileOf, onMac, start } });
+  window.Emu = Object.assign(window.Emu || {}, { helper: { call, status, mac, newest, macSaves, macSave, play, fileOf, filesOf, download, downloads, library, onMac, start } });
 })();

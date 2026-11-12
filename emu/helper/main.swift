@@ -20,6 +20,22 @@
 //   GET    /drive/fingerprint  ?path=, a file's CRC32, MD5 and SHA-1, in hex
 //   PUT    /drive/file     ?path=, the body written there, folders made
 //   DELETE /drive/file     ?path=, that one file removed
+//   POST   /download       { "system", "files": [{ "name", "size", "sha1" }],
+//                          "token" }, a game's files fetched from the home
+//                          server into this Mac's library, one after another
+//   GET    /downloads      each download asked for since the helper started,
+//                          with how far it has come
+//   GET    /library        each game file this Mac's library holds
+//
+// A download comes from the home server's address inside the home when it
+// answers, since the router loops the public name back slowly, and from the
+// public name otherwise; both are `server.json`, which build-helper.mjs puts
+// inside the app from beside the games, so neither is in the public
+// repository. It carries the signed-in account's access token, which the
+// helper keeps only until that download ends. A file arrives beside its place
+// as a hidden part, resumes from where it stopped, is checked against the
+// SHA-1 the site sends, and only then takes its name. The library is
+// `~/Emulation/roms/<system>/`, laid out as the collection's roms folder.
 //
 // The collection is the first `/Volumes/<drive>/emulation` holding a `roms`
 // folder, and every /drive path is inside it once links are followed. What
@@ -38,7 +54,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "4"
+let version = "5"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -495,6 +511,206 @@ func fingerprint(_ p: String) -> [String: Any]? {
   return ["crc32": String(format: "%08x", crc), "md5": hex(md5.finalize()), "sha1": hex(sha1.finalize())]
 }
 
+// MARK: Downloads from the home server
+
+let library = home + "/Emulation/roms"
+
+// The home server's two addresses, from server.json inside the app.
+let servers: (home: String?, public: String?) = {
+  guard let url = Bundle.main.url(forResource: "server", withExtension: "json"),
+        let data = try? Data(contentsOf: url),
+        let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] else { return (nil, nil) }
+  return (json["home"], json["public"])
+}()
+
+// A system's folder name and a file's path within it: plain names only, so
+// nothing the site sends can write outside the library.
+func plainSystem(_ s: String) -> Bool { s.range(of: "^[a-z0-9]+$", options: .regularExpression) != nil }
+func plainName(_ n: String) -> Bool {
+  let parts = n.split(separator: "/", omittingEmptySubsequences: false)
+  return !parts.isEmpty && parts.allSatisfy { !$0.isEmpty && $0 != "." && $0 != ".." && !$0.contains("\0") && !$0.hasPrefix(".") }
+}
+
+struct Wanted { let system: String; let name: String; let size: Int64; let sha1: String?; let token: String }
+
+final class Downloads: NSObject, URLSessionDataDelegate {
+  static let shared = Downloads()
+  private let lock = NSLock()
+  private var jobs: [String: [String: Any]] = [:]
+  private var order: [String] = []
+  private var waiting: [Wanted] = []
+  private var running = false
+  private lazy var session: URLSession = {
+    let config = URLSessionConfiguration.default
+    config.timeoutIntervalForRequest = 60
+    config.requestCachePolicy = .reloadIgnoringLocalCacheData
+    config.urlCache = nil
+    return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+  }()
+  // The file arriving now.
+  private var now: (want: Wanted, key: String, part: String, dest: String, handle: FileHandle?, got: Int64, total: Int64)?
+
+  private func set(_ key: String, _ fields: [String: Any]) {
+    lock.lock(); defer { lock.unlock() }
+    jobs[key, default: [:]].merge(fields) { _, new in new }
+  }
+
+  func list() -> [[String: Any]] {
+    lock.lock(); defer { lock.unlock() }
+    return order.compactMap { jobs[$0] }
+  }
+
+  // Queues each file not already in the library at its size.
+  func add(_ wants: [Wanted]) -> Int {
+    lock.lock()
+    var added = 0
+    for w in wants {
+      let key = "\(w.system)/\(w.name)"
+      let dest = "\(library)/\(key)"
+      if let a = try? files.attributesOfItem(atPath: dest), (a[.size] as? NSNumber)?.int64Value == w.size { continue }
+      if let state = jobs[key]?["state"] as? String, state == "waiting" || state == "downloading" { continue }
+      if !order.contains(key) { order.append(key) }
+      jobs[key] = ["system": w.system, "name": w.name, "state": "waiting", "done": 0, "total": w.size]
+      waiting.append(w)
+      added += 1
+    }
+    let start = !running && !waiting.isEmpty
+    if start { running = true }
+    lock.unlock()
+    if start { DispatchQueue.global(qos: .utility).async { self.next() } }
+    return added
+  }
+
+  // The home address when it answers within a second and a half, else the public name.
+  private func base() -> (url: String, from: String)? {
+    if let h = servers.home, let url = URL(string: h + "/") {
+      var req = URLRequest(url: url, timeoutInterval: 1.5)
+      req.cachePolicy = .reloadIgnoringLocalCacheData
+      let done = DispatchSemaphore(value: 0)
+      var ok = false
+      URLSession.shared.dataTask(with: req) { _, r, _ in ok = (r as? HTTPURLResponse)?.statusCode == 200; done.signal() }.resume()
+      done.wait()
+      if ok { return (h, "home") }
+    }
+    return servers.public.map { ($0, "public") }
+  }
+
+  private func next() {
+    lock.lock()
+    guard !waiting.isEmpty else { running = false; lock.unlock(); return }
+    let w = waiting.removeFirst()
+    lock.unlock()
+    let key = "\(w.system)/\(w.name)"
+    let dest = "\(library)/\(key)"
+    let dir = (dest as NSString).deletingLastPathComponent
+    let part = dir + "/." + (dest as NSString).lastPathComponent + ".part"
+    guard let (url, from) = base() else { return fail(key, "The helper has no address for the home server.") }
+    try? files.createDirectory(atPath: dir, withIntermediateDirectories: true)
+    // A part only resumes with the server's tag for the file it began from.
+    let tag = try? String(contentsOfFile: part + ".etag", encoding: .utf8)
+    var have = (try? files.attributesOfItem(atPath: part))?[.size] as? NSNumber
+    if tag == nil { try? files.removeItem(atPath: part); have = nil }
+    let path = ([w.system] + w.name.split(separator: "/").map(String.init))
+      .map { $0.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed.subtracting(CharacterSet(charactersIn: "/?#"))) ?? $0 }
+      .joined(separator: "/")
+    guard let target = URL(string: "\(url)/roms/\(path)") else { return fail(key, "That file has no address.") }
+    var req = URLRequest(url: target)
+    req.setValue("Bearer \(w.token)", forHTTPHeaderField: "Authorization")
+    if let have, have.int64Value > 0, let tag {
+      req.setValue("bytes=\(have.int64Value)-", forHTTPHeaderField: "Range")
+      req.setValue(tag, forHTTPHeaderField: "If-Range")
+    }
+    now = (w, key, part, dest, nil, have?.int64Value ?? 0, w.size)
+    set(key, ["state": "downloading", "from": from, "done": have?.int64Value ?? 0])
+    session.dataTask(with: req).resume()
+  }
+
+  private func fail(_ key: String, _ why: String) {
+    set(key, ["state": "failed", "error": why])
+    now = nil
+    next()
+  }
+
+  func urlSession(_ s: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
+                  completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    guard var n = now, let r = response as? HTTPURLResponse else { return completionHandler(.cancel) }
+    switch r.statusCode {
+    case 200, 206:
+      if r.statusCode == 200 { n.got = 0; files.createFile(atPath: n.part, contents: nil) }
+      if !files.fileExists(atPath: n.part) { files.createFile(atPath: n.part, contents: nil) }
+      if let tag = r.value(forHTTPHeaderField: "ETag") { try? tag.write(toFile: n.part + ".etag", atomically: true, encoding: .utf8) }
+      n.handle = FileHandle(forWritingAtPath: n.part)
+      _ = try? n.handle?.seek(toOffset: UInt64(n.got))
+      try? n.handle?.truncate(atOffset: UInt64(n.got))
+      now = n
+      set(n.key, ["done": n.got])
+      completionHandler(.allow)
+    case 401: set(n.key, ["error": "Sign in again, then download it again."]); completionHandler(.cancel)
+    case 403: set(n.key, ["error": "This account may not download."]); completionHandler(.cancel)
+    case 404: set(n.key, ["error": "The home server does not have that file."]); completionHandler(.cancel)
+    default: set(n.key, ["error": "The home server answered \(r.statusCode)."]); completionHandler(.cancel)
+    }
+  }
+
+  func urlSession(_ s: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    guard var n = now, let h = n.handle else { return }
+    h.write(data)
+    n.got += Int64(data.count)
+    now = n
+    set(n.key, ["done": n.got])
+  }
+
+  func urlSession(_ s: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    guard let n = now else { return }
+    try? n.handle?.close()
+    lock.lock(); let refused = jobs[n.key]?["error"] as? String; lock.unlock()
+    if let refused { return fail(n.key, refused) }
+    // Cut short: the part stays, so asking again resumes it.
+    if let error { return fail(n.key, "The download stopped: \(error.localizedDescription) Ask again to resume it.") }
+    guard n.got == n.total else {
+      try? files.removeItem(atPath: n.part); try? files.removeItem(atPath: n.part + ".etag")
+      return fail(n.key, "The file arrived at \(n.got) bytes, not \(n.total).")
+    }
+    set(n.key, ["state": "checking"])
+    if let want = n.want.sha1?.lowercased(), (fingerprint(n.part)?["sha1"] as? String) != want {
+      try? files.removeItem(atPath: n.part); try? files.removeItem(atPath: n.part + ".etag")
+      return fail(n.key, "The file arrived but its SHA-1 does not match the collection's.")
+    }
+    try? files.removeItem(atPath: n.dest)
+    guard (try? files.moveItem(atPath: n.part, toPath: n.dest)) != nil else { return fail(n.key, "The helper could not put the file in place.") }
+    try? files.removeItem(atPath: n.part + ".etag")
+    set(n.key, ["state": "done", "done": n.total])
+    now = nil
+    next()
+  }
+}
+
+func download(_ body: Data) -> (Int, [String: Any]) {
+  guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+        let system = req["system"] as? String, plainSystem(system),
+        let token = req["token"] as? String, !token.isEmpty,
+        let list = req["files"] as? [[String: Any]], !list.isEmpty else { return (400, ["error": "Send a system, its files and a token."]) }
+  var wants: [Wanted] = []
+  for f in list {
+    guard let name = f["name"] as? String, plainName(name), let size = (f["size"] as? NSNumber)?.int64Value else {
+      return (400, ["error": "Each file needs a plain name and its size."])
+    }
+    wants.append(Wanted(system: system, name: name, size: size, sha1: f["sha1"] as? String, token: token))
+  }
+  if servers.home == nil && servers.public == nil { return (409, ["error": "This helper was built without the home server's addresses."]) }
+  return (200, ["queued": Downloads.shared.add(wants)])
+}
+
+// Each game file the library holds, its system and its name within it.
+func libraryFiles() -> [[String: Any]] {
+  guard exists(library) else { return [] }
+  return walk(library).compactMap { f in
+    let rel = String(f.path.dropFirst(library.count + 1))
+    guard let slash = rel.firstIndex(of: "/") else { return nil }
+    return ["system": String(rel[..<slash]), "name": String(rel[rel.index(after: slash)...]), "size": f.size]
+  }
+}
+
 // MARK: The local server
 
 struct Request {
@@ -564,6 +780,9 @@ final class Server {
     switch (req.method, req.path) {
     case ("GET", "/status"): send(c, .json(200, status()), origin: origin)
     case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
+    case ("POST", "/download"): let (code, out) = download(body); send(c, .json(code, out), origin: origin)
+    case ("GET", "/downloads"): send(c, .list(200, Downloads.shared.list()), origin: origin)
+    case ("GET", "/library"): off { .list(200, libraryFiles()) }
     case ("GET", "/mac"): off { .json(200, macReport()) }
     case ("GET", "/mac/saves"): off { .list(200, macSaves()) }
     case ("GET", "/newest"): off { .json(200, newest()) }

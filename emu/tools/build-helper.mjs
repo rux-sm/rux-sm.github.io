@@ -6,7 +6,9 @@
 // It needs Xcode's Swift, so it runs on a Mac that builds the site; the Mac
 // that installs the helper needs nothing. The app runs on Apple silicon and
 // Intel, is signed for this Mac only (macOS asks once to open it), and is
-// replaced whole each time. The site's emulators.json goes inside it, and its
+// replaced whole each time. The site's emulators.json goes inside it, and the
+// emulation folder's server.json, `{ "home": "http://<address>:8090",
+// "public": "https://<name>" }`, the home server's two addresses; its
 // version is the one main.swift says.
 
 import fs from 'node:fs';
@@ -32,6 +34,10 @@ try {
   fs.mkdirSync(macos, { recursive: true });
   fs.mkdirSync(path.join(app, 'Contents', 'Resources'));
   fs.copyFileSync(path.join(here, '..', 'emulators.json'), path.join(app, 'Contents', 'Resources', 'emulators.json'));
+  // The home server's addresses, kept beside the games and out of this public repository.
+  const server = path.join(root, 'server.json');
+  if (fs.existsSync(server)) fs.copyFileSync(server, path.join(app, 'Contents', 'Resources', 'server.json'));
+  else console.warn('No server.json beside the games: this helper cannot download from the home server.');
   const parts = ['arm64', 'x86_64'].map((arch) => {
     const out = path.join(tmp, `helper-${arch}`);
     execFileSync('swiftc', ['-O', '-target', `${arch}-apple-macos13.0`, source, '-o', out], { stdio: 'inherit' });
@@ -50,6 +56,7 @@ try {
   <key>CFBundleVersion</key><string>${version}</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
+  <key>NSLocalNetworkUsageDescription</key><string>Rux Emu Helper downloads games from your home server.</string>
   <key>CFBundleURLTypes</key><array><dict>
     <key>CFBundleURLName</key><string>Rux Emu Helper</string>
     <key>CFBundleURLSchemes</key><array><string>rux-emu</string></array>

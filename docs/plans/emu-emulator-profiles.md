@@ -179,9 +179,6 @@ In this order, so what can lose a save comes last and proves itself first:
 - [ ] Install Rux Emu Helper 16 on the iMac, make its Ryujinx folder a
   real one in place of its link to the drive, and play a game there in
   each emulator, which brings its saves from Supabase into its own folder.
-- [ ] Install Rosetta on the MacBook Pro, where PCSX2 does not open
-  without it, and play a PlayStation 2 game there to prove its memory
-  cards carry.
 - [ ] Bring Ryujinx's keys and firmware, Mesen 2's firmware and the
   optional BIOS of mGBA and melonDS from Supabase as DuckStation's, PCSX2's
   and xemu's BIOS is brought, so a new Mac needs no drive for them.

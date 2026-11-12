@@ -39,37 +39,33 @@ as each one's first command:
 
 ## Each emulator
 
-Where an emulator's settings name a folder for saves, it is
+Mesen 2, mGBA, ares, melonDS, DuckStation and PCSX2 need no save folder
+set by hand: before each Play, Emu points each at a folder inside its own
+on the Mac and carries its saves to and from Supabase. For the others,
+where an emulator's settings name a folder for saves, it is
 `<drive>/saves/<system>/`. An emulator that plays several systems keeps one
 folder, named for the first of them, and the scan reads it for all of them.
 When the settings folder below is not where an emulator keeps its settings,
 correct `settings` for it in `emu/emulators.json`.
 
-- **Mesen 2, NES and SNES.** Settings, Preferences, Folders: the save data
-  folder and the save state folder to `<drive>/saves/nes/`, for both
-  systems; Mesen names each save after the game's file.
-- **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** Nothing is set
-  by hand: before each Play, Emu points its saves at `~/.config/mgba/saves/`
-  and its save states at `~/.config/mgba/states/`, and carries both to and
-  from Supabase; mGBA writes `<game>.sav`. The GBA BIOS is
-  optional, in Settings, BIOS.
-- **ares, N64.** Settings, Paths: Saves to `<drive>/saves/n64/`. Quit ares
-  and set `NoFilePrompt: true` under `General` in
+- **Mesen 2, NES and SNES.** Mesen names each save after the game's file.
+- **mGBA, Game Boy, Game Boy Color and Game Boy Advance.** mGBA writes
+  `<game>.sav`. The GBA BIOS is optional, in Settings, BIOS.
+- **ares, N64.** Quit ares and set `NoFilePrompt: true` under `General` in
   `~/Library/Application Support/ares/settings.bml`, so a game that can use
   the Transfer Pak opens without asking for a Game Boy game.
-- **melonDS, DS.** Config, Path settings: Save files to
-  `<drive>/saves/nds/`. The BIOS and firmware are optional for DS games; a
+- **melonDS, DS.** The BIOS and firmware are optional for DS games; a
   DSi-only game needs the DSi files.
 - **Azahar, 3DS.** Emulation, Configure, Storage: both the NAND and the SD
   card folder under `<drive>/saves/n3ds/`, as `nand` and `sdmc`. Azahar
   keeps each save under the game's title ID, which is how the scan matches it.
 - **DuckStation, PS1.** Settings, BIOS: the folder `<drive>/bios/psx/`.
-  Settings, Memory Cards: card 1 to Separate Card Per Game (Serial), and the
-  memory card folder to `<drive>/saves/psx/`, so each game's card carries its
-  serial.
-- **PCSX2, PS2.** Settings, BIOS: the folder `<drive>/bios/ps2/`. Settings,
-  Memory Cards: the folder `<drive>/saves/ps2/`, and a new Folder card as
-  card 1, so each game's save is its own folder named by its serial.
+  Emu sets card 1 to a separate card per game, so each game's card carries
+  its serial.
+- **PCSX2, PS2.** Its Mac build is for Intel, so the Mac needs Rosetta.
+  Settings, BIOS: the folder `<drive>/bios/ps2/`. Settings, Memory Cards: a
+  new Folder card as card 1, so each game's save is its own folder named by
+  its serial.
 - **Dolphin, GameCube and Wii.** Config, GameCube: slot A to GCI Folder, its
   folder `<drive>/saves/gc/GC`. Config, Paths: the Wii NAND root to
   `<drive>/saves/gc/Wii`. Dolphin names a GameCube save by the disc's ID and

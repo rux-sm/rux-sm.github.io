@@ -113,7 +113,7 @@
     if (here.files.length) await keep(name, mac, mac);
     for (const [rel, bytes] of files) await R.helper.putSetting(name, rel, bytes);
     const { left } = await R.helper.manage(name);
-    return left.length ? ` The helper does not write ${name}'s kind of settings file yet, so set these by hand: ${left.join(', ')}.` : '';
+    return left.length ? ` The helper could not place these in ${name}'s settings file, so set them by hand: ${left.join(', ')}.` : '';
   }
 
   // An emulator's settings in Supabase, in its profile: when each Mac last

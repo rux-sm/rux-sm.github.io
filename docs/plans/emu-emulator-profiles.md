@@ -176,18 +176,21 @@ None open.
 
 In this order, so what can lose a save comes last and proves itself first:
 
-- [ ] Install Rux Emu Helper 11 on the iMac and play a Game Boy game
-  there, which brings mGBA's saves from Supabase into its own folder.
-- [ ] Carry for the other emulators, a backup first, the simple ones first
-  and Dolphin's Wii storage, Cemu, Ryujinx and xemu last: the helper writing
-  a managed setting into each one's kind of settings file, as it does an
-  INI's, the drive's saves
-  moved into Supabase, the GameCube save under `GC/USA/`, xemu's EEPROM
-  beside its disk image, each emulator on the MacBook Pro back to its own
-  folders, the Saves page listing Supabase, and a game's panel saying
-  whether its saves are in step, with one press to use the other copy
-  where two were found; then the drive's `saves/gb/` removed, which
-  Supabase and each Mac now hold.
+- [ ] Install Rux Emu Helper 12 on the iMac and play a game there in
+  Mesen 2, mGBA, ares, melonDS and DuckStation, which brings each one's
+  saves from Supabase into its own folder.
+- [ ] Install Rosetta on the MacBook Pro, where PCSX2 does not open
+  without it, and play a PlayStation 2 game there to prove its memory
+  cards carry.
+- [ ] Carry for Azahar and Dolphin, then Cemu, Ryujinx and xemu: the
+  helper writing a managed setting into Cemu's XML, the drive's saves
+  copied into Supabase, the GameCube save under `GC/USA/`, xemu's EEPROM
+  beside its disk image, and each emulator on the MacBook Pro back to its
+  own folders.
+- [ ] Have the Saves page list Supabase, and a game's panel say whether
+  its saves are in step, with one press to use the other copy where two
+  were found; then remove from the drive the save folders Supabase and
+  each Mac now hold: `gb`, `nes`, `n64`, `nds`, `psx` and `ps2`.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

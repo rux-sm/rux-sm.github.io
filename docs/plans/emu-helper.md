@@ -51,3 +51,5 @@ None open.
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
 - [ ] Add Set up this Mac, installing and pointing every emulator.
+- [ ] Sign the helper with one lasting identity, since macOS asks again
+  for the drive after every build signed for that build alone.

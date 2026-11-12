@@ -103,7 +103,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "11"
+let version = "12"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -578,8 +578,10 @@ func writeSetting(_ name: String, _ rel: String, _ body: Data) -> (Int, [String:
   return (200, ["written": rel])
 }
 
-// A value set in an INI text, in its section, which is made where it is missing.
+// A value set in an INI text, in its section, which is made where it is
+// missing, written `key = value` where the file writes its lines so.
 func iniSet(_ text: String, _ section: String, _ key: String, _ value: String) -> String {
+  let entry = text.contains(" = ") ? "\(key) = \(value)" : "\(key)=\(value)"
   var lines = text.components(separatedBy: "\n")
   var inSection = false, end: Int? = nil
   for (i, line) in lines.enumerated() {
@@ -593,20 +595,74 @@ func iniSet(_ text: String, _ section: String, _ key: String, _ value: String) -
     guard inSection else { continue }
     if !t.isEmpty { end = i }
     if let eq = line.firstIndex(of: "="), line[..<eq].trimmingCharacters(in: .whitespaces) == key {
-      lines[i] = "\(key)=\(value)"
+      lines[i] = entry
       return lines.joined(separator: "\n")
     }
   }
-  if let end { lines.insert("\(key)=\(value)", at: end + 1) }
+  if let end { lines.insert(entry, at: end + 1) }
   else {
     if lines.last == "" { lines.removeLast() }
-    lines += (lines.isEmpty ? [] : [""]) + ["[\(section)]", "\(key)=\(value)", ""]
+    lines += (lines.isEmpty ? [] : [""]) + ["[\(section)]", entry, ""]
   }
   return lines.joined(separator: "\n")
 }
 
+// A pattern's one match in a text replaced by what `with` makes of its
+// captures, or nil where it matches no time or more than once.
+func replacedOnce(_ text: String, _ pattern: String, _ with: ([String]) -> String) -> String? {
+  guard let re = try? NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines]) else { return nil }
+  let all = re.matches(in: text, range: NSRange(text.startIndex..., in: text))
+  guard all.count == 1, let whole = Range(all[0].range, in: text) else { return nil }
+  let groups = (0..<all[0].numberOfRanges).map { Range(all[0].range(at: $0), in: text).map { String(text[$0]) } ?? "" }
+  return text.replacingCharacters(in: whole, with: with(groups))
+}
+
+// A text as a quoted string, as JSON and TOML both write one.
+func quoted(_ v: String) -> String {
+  (try? JSONSerialization.data(withJSONObject: v, options: [.fragmentsAllowed, .withoutEscapingSlashes])).flatMap { String(data: $0, encoding: .utf8) } ?? "\"\""
+}
+
+// A settings text with one setting given a value, by the key setting() reads
+// it by, or nil where the helper cannot place it: an INI section and key; a
+// JSON key that the file holds once, its value a text, a number or a yes or
+// no; a TOML key the file holds once; a BML name under its heading. A value
+// stays the kind it was, so a text stays quoted.
+func withSetting(_ text: String, _ format: String, _ key: String, _ value: String) -> String? {
+  let name = { (k: String) in NSRegularExpression.escapedPattern(for: k) }
+  switch format {
+  case "ini":
+    let parts = key.components(separatedBy: "/")
+    return parts.count == 2 ? iniSet(text, parts[0], parts[1], value) : nil
+  case "json":
+    guard let last = key.components(separatedBy: ".").last else { return nil }
+    return replacedOnce(text, "(\"\(name(last))\"\\s*:\\s*)(\"(?:[^\"\\\\]|\\\\.)*\"|true|false|null|-?[0-9][0-9.eE+-]*)") { g in
+      g[1] + (g[2].hasPrefix("\"") ? quoted(value) : value)
+    }
+  case "toml":
+    return replacedOnce(text, "^(\\s*\(name(key))\\s*=\\s*)(.*)$") { g in
+      g[1] + (g[2].hasPrefix("\"") || g[2].hasPrefix("'") ? quoted(value) : value)
+    }
+  case "bml":
+    let parts = key.components(separatedBy: "/")
+    guard parts.count == 2 else { return nil }
+    var lines = text.components(separatedBy: "\n")
+    var under = false
+    for (i, line) in lines.enumerated() {
+      if !line.hasPrefix(" ") { under = line.trimmingCharacters(in: .whitespaces) == parts[0]; continue }
+      guard under, line.hasPrefix("  "), !line.hasPrefix("   ") else { continue }
+      let t = line.dropFirst(2)
+      if t == parts[1] || t.hasPrefix(parts[1] + ":") {
+        lines[i] = value.isEmpty ? "  \(parts[1])" : "  \(parts[1]): \(value)"
+        return lines.joined(separator: "\n")
+      }
+    }
+    return nil
+  default: return nil
+  }
+}
+
 // The settings Emu manages for an emulator written into its settings file:
-// each key set, and each left for a kind of file the helper does not write yet.
+// each key set, and each left where the helper could not place it.
 func manage(_ body: Data) -> (Int, [String: Any]) {
   guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any], let name = req["emulator"] as? String,
         let e = saver(name) else { return (404, ["error": "That is not an emulator Emu knows."]) }
@@ -617,10 +673,14 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
   guard !running(appsOf(e.rule)) else { return (409, ["error": "Quit \(app) first: it writes its settings as it quits."]) }
   let config = e.rule["config"] as? [String: Any]
   var set: [String] = [], left: [String] = []
-  guard let file = (config?["file"] as? String).map({ home + "/" + $0 }), config?["format"] as? String == "ini" else {
+  guard let file = (config?["file"] as? String).map({ home + "/" + $0 }), let format = config?["format"] as? String else {
     return (200, ["set": set, "left": manages.compactMap { $0["key"] as? String }])
   }
-  var text = (try? String(contentsOfFile: file, encoding: .utf8)) ?? ""
+  // A file that opens with a byte order mark, as Mesen 2's does, keeps it.
+  let mark = Data([0xEF, 0xBB, 0xBF])
+  let raw = files.contents(atPath: file) ?? Data()
+  let marked = raw.starts(with: mark)
+  var text = String(data: marked ? raw.dropFirst(mark.count) : raw, encoding: .utf8) ?? ""
   for m in manages {
     guard let key = m["key"] as? String, var value = m["value"] as? String else { continue }
     // A folder inside the emulator's own, made so the emulator finds it there.
@@ -628,10 +688,11 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
       value = home + value.dropFirst("{home}".count)
       try? files.createDirectory(atPath: value, withIntermediateDirectories: true)
     }
-    let parts = key.components(separatedBy: "/")
-    if parts.count == 2 { text = iniSet(text, parts[0], parts[1], value); set.append(key) } else { left.append(key) }
+    if let next = withSetting(text, format, key, value) { text = next; set.append(key) } else { left.append(key) }
   }
-  guard (try? text.write(toFile: file, atomically: true, encoding: .utf8)) != nil else { return (500, ["error": "The helper could not write \(app)'s settings file."]) }
+  guard (try? ((marked ? mark : Data()) + Data(text.utf8)).write(to: URL(fileURLWithPath: file), options: .atomic)) != nil else {
+    return (500, ["error": "The helper could not write \(app)'s settings file."])
+  }
   return (200, ["set": set, "left": left])
 }
 

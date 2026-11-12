@@ -341,12 +341,14 @@
         {
           "path": "Saves",
           "key": "Preferences.SaveDataFolder",
-          "kind": "Saves"
+          "kind": "Saves",
+          "stored": "saves/nes"
         },
         {
           "path": "SaveStates",
           "key": "Preferences.SaveStateFolder",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/nes/states"
         }
       ],
       "reportsVersion": false,
@@ -389,6 +391,26 @@
         }
       ],
       "manages": [
+        {
+          "key": "Preferences.OverrideSaveDataFolder",
+          "value": "false",
+          "why": "Saves sit in its own folder on the Mac, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "Preferences.SaveDataFolder",
+          "value": "",
+          "why": "With no folder named, Mesen 2 saves in its own."
+        },
+        {
+          "key": "Preferences.OverrideSaveStateFolder",
+          "value": "false",
+          "why": "Save states sit in its own folder too, and are carried the same way."
+        },
+        {
+          "key": "Preferences.SaveStateFolder",
+          "value": "",
+          "why": "With no folder named, its save states stay in its own."
+        },
         {
           "key": "Preferences.AutomaticallyCheckForUpdates",
           "value": "false",
@@ -496,7 +518,8 @@
         {
           "path": "Saves",
           "key": "Paths/Saves",
-          "kind": "Saves and save states"
+          "kind": "Saves and save states",
+          "stored": "saves/n64"
         }
       ],
       "files": [
@@ -519,6 +542,11 @@
         }
       ],
       "manages": [
+        {
+          "key": "Paths/Saves",
+          "value": "{home}/Saves/",
+          "why": "Saves sit in its own folder on the Mac, where Emu carries them to and from Supabase."
+        },
         {
           "key": "General/AutoSaveMemory",
           "value": "true",
@@ -547,12 +575,16 @@
       "besideGame": true,
       "places": [
         {
+          "path": "saves",
           "key": "SaveFilePath",
-          "kind": "Saves"
+          "kind": "Saves",
+          "stored": "saves/nds"
         },
         {
+          "path": "states",
           "key": "SavestatePath",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/nds/states"
         }
       ],
       "files": [
@@ -578,7 +610,18 @@
           "key": "DS.BIOS9Path, DS.BIOS7Path, DS.FirmwarePath"
         }
       ],
-      "manages": [],
+      "manages": [
+        {
+          "key": "SaveFilePath",
+          "value": "{home}/saves",
+          "why": "Saves sit in its own folder on the Mac, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "SavestatePath",
+          "value": "{home}/states",
+          "why": "Save states sit in its own folder too, and are carried the same way."
+        }
+      ],
       "notes": [
         "Saves, save states and cheats sit beside the game unless each has a folder set.",
         "It writes a save two seconds after the game does.",
@@ -691,12 +734,14 @@
         {
           "path": "memcards",
           "key": "MemoryCards/Directory",
-          "kind": "Memory cards"
+          "kind": "Memory cards",
+          "stored": "saves/psx"
         },
         {
           "path": "savestates",
           "key": "Folders/SaveStates",
-          "kind": "Save states"
+          "kind": "Save states",
+          "stored": "saves/psx/states"
         }
       ],
       "files": [
@@ -755,6 +800,16 @@
       ],
       "manages": [
         {
+          "key": "MemoryCards/Directory",
+          "value": "{home}/memcards",
+          "why": "Memory cards sit in its own folder on the Mac, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "Folders/SaveStates",
+          "value": "{home}/savestates",
+          "why": "Save states sit in its own folder too, and are carried the same way."
+        },
+        {
           "key": "MemoryCards/Card1Type",
           "value": "PerGame",
           "why": "One card per game, named by the disc's serial, so every Mac names a card alike."
@@ -793,12 +848,14 @@
         {
           "path": "memcards",
           "key": "Folders/MemoryCards",
-          "kind": "Memory cards"
+          "kind": "Memory cards",
+          "stored": "saves/ps2"
         },
         {
           "path": "sstates",
-          "key": "Folders/Savestates",
-          "kind": "Save states"
+          "key": "Folders/SaveStates",
+          "kind": "Save states",
+          "stored": "saves/ps2/states"
         }
       ],
       "files": [
@@ -862,6 +919,16 @@
         }
       ],
       "manages": [
+        {
+          "key": "Folders/MemoryCards",
+          "value": "{home}/memcards",
+          "why": "Memory cards sit in its own folder on the Mac, where Emu carries them to and from Supabase."
+        },
+        {
+          "key": "Folders/SaveStates",
+          "value": "{home}/sstates",
+          "why": "Save states sit in its own folder too, and are carried the same way."
+        },
         {
           "key": "AutoUpdater/CheckAtStartup",
           "value": "false",

@@ -90,6 +90,54 @@
         if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
       }
     },
+    // Each emulator's settings as Supabase keeps them, under
+    // `settings/<Mac>/<emulator>/` and `settings/preferred/<emulator>/`: by
+    // `<Mac or preferred>/<emulator>`, every copy newest first, a copy being
+    // the files carried at one moment and the Mac they came from.
+    async settings() {
+      const rows = await all(() => client.from('emu_files').select('*').like('path', 'settings/%')
+        .order('carried_at', { ascending: false }).order('path'));
+      const kept = new Map();
+      for (const r of rows) {
+        const [, owner, emulator, ...rel] = r.path.split('/');
+        const copies = kept.get(`${owner}/${emulator}`) ?? kept.set(`${owner}/${emulator}`, []).get(`${owner}/${emulator}`);
+        const copy = copies.find(c => c.at === r.carried_at) ?? copies[copies.push({ at: r.carried_at, mac: r.mac, files: [] }) - 1];
+        copy.files.push({ rel: rel.join('/'), sha1: r.sha1, size: r.size, saved: r.saved_at });
+      }
+      return kept;
+    },
+    // One copy of an emulator's settings kept: each file's bytes put where
+    // Supabase has none the same, every file a row at the same moment, then
+    // the copies past the newest five dropped, with the bytes nothing else has.
+    async keepSettings(owner, emulator, files, bytesOf, mac) {
+      const folder = `settings/${owner.replaceAll('/', '_')}/${emulator}`;
+      const held = async sha1 => {
+        const { data: rows, error } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
+        fail(error);
+        return rows.length > 0;
+      };
+      for (const f of files) {
+        if (await held(f.sha1)) continue;
+        fail((await client.storage.from(COLLECTION).upload(f.sha1, new Blob([await bytesOf(f)]), { upsert: true, contentType: 'application/octet-stream' })).error);
+      }
+      const at = new Date().toISOString();
+      await inBatches(files.map(f => ({ path: `${folder}/${f.rel}`, carried_at: at, sha1: f.sha1, size: f.size, saved_at: f.saved ?? null, mac })),
+        rows => client.from('emu_files').insert(rows));
+      const mine = (await all(() => client.from('emu_files').select('path, carried_at, sha1').like('path', `${folder}/%`)))
+        .filter(r => r.path.startsWith(`${folder}/`));
+      const past = new Set([...new Set(mine.map(r => r.carried_at))].sort((a, b) => new Date(b) - new Date(a)).slice(5));
+      const old = mine.filter(r => past.has(r.carried_at));
+      for (const r of old) fail((await client.from('emu_files').delete().eq('path', r.path).eq('carried_at', r.carried_at)).error);
+      for (const sha1 of new Set(old.map(r => r.sha1))) {
+        if (!await held(sha1)) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
+      }
+    },
+    // A file's bytes out of the collection, by their fingerprint.
+    async fileBytes(sha1) {
+      const { data: blob, error } = await client.storage.from(COLLECTION).download(sha1);
+      fail(error);
+      return new Uint8Array(await blob.arrayBuffer());
+    },
     // How each Mac stood when its saves were last gathered.
     macs: () => all(() => client.from('emu_macs').select('*').order('name')),
     async drive() {

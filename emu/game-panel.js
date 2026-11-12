@@ -2,8 +2,9 @@
    game-panel.js — one game in the side panel
    --------------------------------------------------------------------------
    The game opened from the Library or the Collection, in Carbon's side panel
-   that each page carries as #emu-panel: everything the scan read about it,
-   its saves, and rux's marks and note, which are saved from here.
+   that each page carries as #emu-panel: what this Mac can do with it,
+   this-mac.js, then everything the scan read about it, its saves, and rux's
+   marks and note, which are saved from here.
    ========================================================================== */
 (() => {
   'use strict';
@@ -12,13 +13,14 @@
   const $ = id => document.getElementById(id);
   const { el, tag } = R;
 
-  // What the game is, its problems, its saves, rux's notes, then each file.
-  // `top` is put first, as the Library puts the game's art and Play there.
-  function open(g, { saves = [], onSaved = () => {}, top = [] } = {}) {
+  // Play, Download and Remove on this Mac, what the game is, its problems,
+  // its saves, rux's notes, then each file. `top` is put first, as the
+  // Library puts the game's art there, and `mac` is this-mac.js's options.
+  function open(g, { saves = [], onSaved = () => {}, top = [], mac = {} } = {}) {
     $('emu-panel-label').textContent = R.systemName(g.system);
     $('emu-panel-title').textContent = g.title;
     const body = $('emu-panel-body');
-    body.replaceChildren(...top);
+    body.replaceChildren(...top, R.thisMac.area(g, mac));
     const facts = (pairs) => {
       const dl = el('dl', 'emu-facts');
       for (const [k, v, cls] of pairs) {

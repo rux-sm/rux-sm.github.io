@@ -164,7 +164,7 @@
   // so xemu's is not Rux-Emu-Helper's, whose name holds "xemu" inside it.
   const installs = (file, name) => slug(file).startsWith(slug(name));
   const installerOf = (files, name) => (files ?? []).filter(f => f.path.startsWith('emulators/'))
-    .map(f => ({ name: f.path.slice('emulators/'.length), size: f.size })).find(i => installs(i.name, name)) ?? null;
+    .map(f => ({ name: f.path.slice('emulators/'.length), size: f.size, sha1: f.sha1 })).find(i => installs(i.name, name)) ?? null;
   const keptVersion = installer => installer?.name.match(/-(\d[\w.]*(?:-\d+)?|[0-9a-f]{7})-mac/i)?.[1] ?? null;
   const newerOut = (emulators, drive, files) => Object.entries(drive?.newest ?? {}).map(([name, v]) => {
     const rule = emulators.macSaves[name] ?? (emulators.frontend.name === name ? emulators.frontend : null);

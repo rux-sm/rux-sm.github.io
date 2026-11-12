@@ -38,6 +38,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* A step's buttons side by side, wrapping on a phone. */
 .emu-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); }
 
+/* What this Mac can do with a game, in its panel: where it leads the panel,
+   it stands clear of the header's rule; where nothing is said, it takes no room. */
+.emu-mac:first-child { padding-block-start: var(--rux-spacing-05); }
+.emu-mac:empty { display: none; }
+
 /* Tags that wrap, and an emulator's facts side by side. A profile brought into view clears the header. */
 .emu-profile { scroll-margin-block-start: 3rem; }
 .emu-tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }

@@ -103,7 +103,9 @@ The home server, so the drive is not carried between Macs:
 - **Download to this Mac, in a game's side panel,** writes the game into the
   Mac's own library folder, `~/Emulation/roms/<system>/` as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
-  Remove from this Mac frees the space. Play opens a game from there.
+  Cancel stops one arriving, and Remove from this Mac frees the space. Play
+  opens a game from there, else from a drive plugged in, and never from the
+  server's share.
 - **Rux Emu Helper does every download,** given the page's access token:
   from the server's home address when it answers, since the gateway loops
   the public name back slowly, stalling 5 to 19 seconds or failing, and
@@ -142,8 +144,10 @@ The setup kit, so any Mac is set up in one step:
 
 - [ ] Refresh the T7 from the server, the games and `backups`, as its
   backup, with one command.
-- [ ] Prove Rux Emu Helper 6 reads the collection from the `games` share with
-  the T7 unplugged, once macOS has given it its permissions again.
+- [ ] Build Rux Emu Helper 7 onto the `games` share, as it is on the T7, and
+  Update; then prove on a Mac with an emulator that it reads the collection
+  from the share with the T7 unplugged and plays a downloaded game from the
+  library, once macOS has given it its permissions again.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
 - [ ] Copy Supabase into the server's `backups` dataset after the scan, by
@@ -151,7 +155,4 @@ The setup kit, so any Mac is set up in one step:
   and a Mac's settings back from that copy alone.
 - [ ] Remove each Mac's backup folder and `emu/tools/backup-saves.mjs`, and
   have the Saves page and the README name the server's copy in their place.
-- [ ] Add Download to this Mac with its progress, Remove from this Mac in
-  the helper and the page, the mark of what this Mac holds, the On this Mac
-  view, and Play from the library.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

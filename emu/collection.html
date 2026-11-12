@@ -22,9 +22,9 @@
 </head>
 <body>
 <!-- Collection: every game on the drive, searched and filtered, from
-     collection.js; a game opens in the side panel with everything the scan
-     read. The shell is templates/app-shell.html, the table
-     templates/table-page.html's. -->
+     collection.js, or only those this Mac holds; a game opens in the side
+     panel with everything the scan read. The shell is
+     templates/app-shell.html, the table templates/table-page.html's. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -162,6 +162,16 @@
         </div>
 
         <div class="rux--stack-vertical rux--stack-scale-3" id="emu-list" hidden>
+          <!-- All the games or only those on this Mac, where its helper keeps a library.
+               The wrapper hides it, since Carbon's switcher sets its own display. -->
+          <div id="emu-where-wrap" hidden><div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Show" id="emu-where">
+            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="all">
+              <span class="rux--content-switcher__label">All games</span>
+            </button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="mac">
+              <span class="rux--content-switcher__label">On this Mac</span>
+            </button>
+          </div></div>
           <div class="emu-filters">
             <div class="rux--form-item">
               <div class="rux--select rux--select--inline rux--layout--size-md">
@@ -198,6 +208,7 @@
                     <th scope="col"><div class="rux--table-header-label">Format</div></th>
                     <th scope="col" class="emu-size"><div class="rux--table-header-label">Size</div></th>
                     <th scope="col"><div class="rux--table-header-label">Status</div></th>
+                    <th scope="col" id="emu-col-mac" hidden><div class="rux--table-header-label">This Mac</div></th>
                   </tr></thead>
                   <tbody id="emu-rows"></tbody>
                 </table>
@@ -261,6 +272,7 @@
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/menu.js"></script>
 <script src="/design/js/form-controls.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
 <script src="/design/js/modal.js"></script>
@@ -272,6 +284,8 @@
 <script src="data.js"></script>
 <script src="search.js"></script>
 <script src="game-panel.js"></script>
+<script src="helper.js"></script>
+<script src="this-mac.js"></script>
 <script src="collection.js"></script>
 </body>
 </html>

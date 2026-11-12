@@ -26,9 +26,9 @@ server. The site's other plans are `docs/plans/emu-app.md`,
 - **The site talks to it on `127.0.0.1` only,** never the network, and it
   answers only requests from the Rux Emu site; Chrome asks once whether the
   site may reach this Mac, and Allow keeps it.
-- **It opens only a game file inside the collection's `roms/` folder, in
-  that system's emulator,** with the same command ES-DE uses, so nothing the
-  site sends can open anything else.
+- **It opens only a game file inside a `roms/` folder, this Mac's library's
+  or a plugged-in drive's, in that system's emulator,** with the same command
+  ES-DE uses, so nothing the site sends can open anything else.
 - **The collection is wherever it is found:** the T7 plugged in or the home
   server's share mounted, and the helper tells the site which.
 - **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each

@@ -73,7 +73,9 @@ One rule for every emulator:
   xemu's welcome screen off. Every other setting is the Mac's own.
 - **Each Mac's settings are backed up after a session that changed them,**
   into `settings/<mac>/<emulator>/` with the last five copies kept, and the
-  profile puts any of them back on that Mac.
+  profile backs them up when asked and puts any copy back on that Mac, what
+  is there backed up first. A settings file over a megabyte stays on the
+  Mac.
 - **One set of settings per emulator can be kept as preferred,** from the
   profile, into `settings/preferred/<emulator>/`; a new Mac starts from it,
   and any Mac takes it only when asked, with the settings Emu manages
@@ -81,7 +83,8 @@ One rule for every emulator:
 - **A settings file is stored with the Mac's home folder written as `~`,**
   so a set kept on one Mac opens on another, and a file or line that holds a
   log-in, as PCSX2's `secrets.ini` and Dolphin's achievements token do, is
-  left out.
+  left out: a file `emulators.json` gives another class, and a line whose
+  key names a token, password or secret.
 - **Nothing on a Mac names the drive:** a game opens from wherever the
   collection is found, and everything else comes from Supabase.
 - **The drive keeps a dated zip of the saves, settings, BIOS and keys,**
@@ -174,16 +177,17 @@ None open.
 In this order, so what can lose a save comes last and proves itself first:
 
 - [ ] Install the helper on the MacBook Pro from the drive and Update
-  there, which settles which folder mGBA writes its settings in.
-- [ ] Make the helper install from Supabase with a receipt.
-- [ ] Back up each Mac's settings through the page, put a backup back, and
-  keep and take the preferred set.
+  there, which settles which folder mGBA writes its settings in there; on
+  the iMac, installed new by the helper, it is `~/.config/mgba/`.
 - [ ] Carry for mGBA alone, on the iMac with mGBA installed: each place in
   `emulators.json` naming its folder in Supabase, fingerprints, the five
   kept copies, the newest playing when both changed, the session around
-  Play, and the menu bar icon.
+  Play, with the settings Emu manages written before it and this Mac's
+  settings backed up after it, and the menu bar icon.
 - [ ] Carry for the other emulators, a backup first, the simple ones first
-  and Dolphin's Wii storage, Cemu, Ryujinx and xemu last: the drive's saves
+  and Dolphin's Wii storage, Cemu, Ryujinx and xemu last: the helper writing
+  a managed setting into each one's kind of settings file, as it does an
+  INI's, the drive's saves
   moved into Supabase, the GameCube save under `GC/USA/`, xemu's EEPROM
   beside its disk image, each emulator on the MacBook Pro back to its own
   folders, the Saves page listing Supabase, and a game's panel saying

@@ -5,18 +5,16 @@
    box art, then a tile for each system with games, showing its console,
    app.js's consoleOf, and what stands in its way: an emulator this Mac has
    not installed, or a BIOS Supabase lacks. Above them a line says what this
-   Mac can play now, with the next step beside it: the helper to start, the
-   drive to plug in, or what is left on Status. A system's tile opens its games as a grid, at #<system>, with all
+   Mac holds and can play now, with the next step beside it: the helper to
+   start, what is on this Mac, or what is left on Status. A system's tile opens its games as a grid, at #<system>, with all
    of them, the favourites or the recently played; the breadcrumb, Back or B
    returns home. ?game=<system>/<title>, from Search or Problems, opens
    that game's panel over its system. Covers show a game's name without its list's region and language
    tags, which the panel keeps.
 
-   A game opens in the side panel, game-panel.js, with its cover and Play
-   above what the scan read. Play asks Rux Emu Helper on this Mac, helper.js,
-   and shows only on a Mac; when the helper is not running there, the panel
-   offers to start it. A game played is marked with when, for Recently
-   played. A controller, gamepad.js, or the arrow keys move to the nearest
+   A game opens in the side panel, game-panel.js, with its cover above
+   Play, Download to this Mac and what the scan read; this-mac.js is that
+   part. A controller, gamepad.js, or the arrow keys move to the nearest
    tile or cover in that direction; A opens and plays, B closes the panel or
    goes back to home, as each controller labels them.
    ========================================================================== */
@@ -32,6 +30,8 @@
   let games = [];
   let saves = [];
   let helper = null;
+  // How a game stands on this Mac, from the helper's library and downloads.
+  let stands = () => ({ state: 'away' });
   let emulators = null;
   let bios = [];
   // A system's games: all of them, its favourites or its recently played.
@@ -43,8 +43,17 @@
   const playedAt = g => g.notes?.played_at ?? null;
   const byPlayed = (a, b) => new Date(playedAt(b)) - new Date(playedAt(a));
   const countOf = n => `${n} ${n === 1 ? 'game' : 'games'}`;
-  // Whether this Mac can play a system now, or null where no helper with the drive answers.
-  const ready = system => (helper?.collection ? helper.systems.includes(system) : null);
+  // What the helper says of this Mac, read again.
+  async function readMac() {
+    const mac = await R.thisMac.read();
+    helper = mac.helper;
+    stands = R.helper.standings(mac.library, mac.downloads);
+  }
+  // A drive with the games plugged into this Mac; a helper that names no
+  // library plays from whatever collection it found.
+  const drive = () => Boolean(helper?.collection) && !(helper.library && helper.collection.network);
+  // Whether this Mac has a system's emulator, or null where no helper that can say answers.
+  const ready = system => (helper && (helper.collection || helper.library) ? helper.systems.includes(system) : null);
   // Each file a system's emulator needs that Supabase lacks.
   const lacks = system => R.needsOf(system, emulators.systems[system], bios).filter(n => !n.ok && !n.optional);
   // What stands in a system's way, as tags.
@@ -156,13 +165,6 @@
   }
   const link = (text, href) => { const a = el('a', 'rux--link', text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
 
-  // Starts the helper, and waits up to ten seconds for it to answer.
-  async function startHelper() {
-    R.helper.start();
-    for (let i = 0; i < 10 && !helper; i += 1) { await new Promise(r => setTimeout(r, 1000)); helper = await R.helper.status(); }
-    return Boolean(helper);
-  }
-
   // The line above the page and the step beside it: what is here, what this
   // Mac can play now, and what would let it play the rest.
   function say(text, ...steps) {
@@ -180,12 +182,18 @@
       start.addEventListener('click', async () => {
         start.disabled = true;
         $('emu-sum').textContent = `${count}. Starting Rux Emu Helper…`;
-        if (await startHelper()) render();
+        if (await R.helper.wake()) { await readMac(); render(); }
         else { $('emu-sum').textContent = `${count}. It did not start. Install it from the drive: Install Rux Emu Helper.command.`; start.disabled = false; }
       });
       return say(`${count}. Rux Emu Helper is not running on this Mac, so nothing plays yet.`, start);
     }
-    if (!helper.collection) return say(`${count}. Plug in the drive to play.`);
+    // Without a drive, this Mac plays what it holds.
+    if (!drive()) {
+      if (!helper.library) return say(`${count}. Plug in the drive to play.`);
+      const held = games.filter(g => stands(g).state === 'held').length;
+      if (!held) return say(`${count}. None is on this Mac yet: download one from its panel.`);
+      return say(`${count}, ${held} on this Mac.`, step('On this Mac', 'collection.html#on-this-mac'));
+    }
     const systems = Object.keys(R.SYSTEMS).filter(s => games.some(g => g.system === s));
     const n = systems.filter(ready).length;
     if (n === systems.length) return say(`${count}, and every console is ready on this Mac.`);
@@ -243,55 +251,12 @@
     }
   }
 
-  // What Play can do here: play, or say why not and what to do.
-  function playArea(g) {
-    const area = el('div', 'rux--stack-vertical rux--stack-scale-3');
-    const said = el('p', 'rux--type-body-01');
-    said.setAttribute('role', 'status');
-    const button = (text, onClick, cls = 'rux--btn rux--btn--primary') => {
-      const b = el('button', cls, text);
-      b.type = 'button';
-      b.addEventListener('click', onClick);
-      return b;
-    };
-    if (!R.helper.onMac) return area;
-    if (!helper) {
-      said.textContent = 'Rux Emu Helper is not running on this Mac.';
-      area.append(said, button('Start Rux Emu Helper', async () => {
-        said.textContent = 'Starting…';
-        if (await startHelper()) openGame(g); else said.textContent = 'It did not start. Install it from the drive: Install Rux Emu Helper.command.';
-      }, 'rux--btn rux--btn--secondary'));
-    } else if (!helper.collection) {
-      said.textContent = 'Plug in the drive to play.';
-      area.append(said);
-    } else if (!helper.systems.includes(g.system)) {
-      said.textContent = `This Mac has no emulator installed for ${R.systemName(g.system)}.`;
-      area.append(said);
-    } else {
-      const play = button('Play', async () => {
-        play.disabled = true;
-        said.textContent = 'Starting…';
-        try {
-          await R.helper.play(g);
-          said.textContent = 'Playing.';
-          try { g.notes = { ...g.notes, system: g.system, title: g.title, played_at: await R.data.markPlayed(g) }; }
-          catch (error) { console.error(error); said.textContent = 'Playing, but it could not be marked as played.'; }
-        } catch (error) { said.textContent = error.message; }
-        play.disabled = false;
-      });
-      area.append(play, said);
-    }
-    return area;
-  }
-
   // The cover a game was opened from, to come back to when its panel closes.
   let opener = null;
   const openGame = g => {
     opener = keyOf(g);
-    const play = playArea(g);
-    R.gamePanel.open(g, { saves, onSaved: render, top: [cover(g, 'emu-panel-art'), play] });
-    // Play, or Start, takes the focus where there is one; else the panel's close keeps it.
-    play.querySelector('.rux--btn')?.focus({ focusVisible: true });
+    // Play, Download or Start takes the focus where there is one; else the panel's close keeps it.
+    R.gamePanel.open(g, { saves, onSaved: render, top: [cover(g, 'emu-panel-art')], mac: { focus: true, onChanged: readMac } });
   };
   const panelOpen = () => !$('emu-panel').hidden;
   function closeGame() {
@@ -392,8 +357,8 @@
   async function load() {
     let rows, notes;
     try {
-      [rows, notes, saves, helper, emulators, bios] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
-        R.helper.status(), R.emulators(), R.data.bios()]);
+      [rows, notes, saves, , emulators, bios] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
+        readMac(), R.emulators(), R.data.bios()]);
     } catch (error) {
       console.error(error);
       R.notice('Emu could not read the collection. Try again.');
@@ -415,13 +380,14 @@
     }
   }
 
-  // The helper may be started or quit, the drive plugged in or an emulator
-  // installed, while the page is away: the page is drawn again when what the
-  // helper says has changed, unless a game is open.
+  // The helper may be started or quit, the drive plugged in, an emulator
+  // installed or a download ended, while the page is away: the page is drawn
+  // again when what the helper says has changed, unless a game is open.
+  const told = () => JSON.stringify([helper, games.filter(g => stands(g).state === 'held').length]);
   window.addEventListener('focus', async () => {
-    const before = JSON.stringify(helper);
-    helper = await R.helper.status();
-    if (emulators && JSON.stringify(helper) !== before && !panelOpen()) render();
+    const before = told();
+    await readMac();
+    if (emulators && told() !== before && !panelOpen()) render();
   });
   load();
 })();

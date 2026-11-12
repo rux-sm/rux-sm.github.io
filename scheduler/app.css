@@ -136,19 +136,20 @@
      trip, so nothing about the trip caps this the way the old tab's width
      capped it at the sm height. */
   --scheduler-slot-w: var(--rux-layout-size-height-md, 2.5rem);
-  /* Two bars side by side or stacked on one bus stand 8px apart, Carbon's
-     spacing 03: a bar keeps `--scheduler-gap-clear`, 4px, clear of its days'
-     edges, and `--scheduler-lane-gap` parts its lanes. A bus's row keeps
-     `--scheduler-row-clear`, 8px, above its first lane and below its last,
-     the row's 1px line inside the last of those, so two buses' bars stand
-     16px apart across it. On the Mac's board stacked lanes stand as far
-     apart, below, so each lane is one bus row's height. No rule runs between
-     the days, so `--scheduler-gap`, what a bar's end gives up at a day's
-     edge, is that clear space alone. */
+  /* EVERY TWO BARS STAND 8PX APART, Carbon's spacing 03, side by side,
+     stacked on one bus or on two buses: a bar keeps 4px clear of each edge
+     of its cell, `--scheduler-gap-clear` of its days' and
+     `--scheduler-row-clear` of its lane's, so `--scheduler-lane-gap`, two
+     of those, parts two lanes and two rows alike, and a lane is one bus
+     row's height. A tile stands `--scheduler-side-clear`, 8px, from its
+     column's sides. No rule runs between the days or the rows, so
+     `--scheduler-gap`, what a bar's end gives up at a day's edge, is that
+     clear space alone. */
   --scheduler-gap-clear: var(--rux-spacing-02);
   --scheduler-gap: var(--scheduler-gap-clear);
-  --scheduler-lane-gap: var(--rux-spacing-03);
-  --scheduler-row-clear: var(--rux-spacing-03);
+  --scheduler-row-clear: var(--rux-spacing-02);
+  --scheduler-lane-gap: calc(2 * var(--scheduler-row-clear));
+  --scheduler-side-clear: var(--rux-spacing-03);
   position: relative;
   overflow: auto;
   /* The grid is its own scroll pane, so the day header sticks to its top and the
@@ -169,14 +170,10 @@
     --scheduler-label-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px);
   }
   /* The Mac's board on Carbon's 8px grid: a bar is a whole number of 16px,
-     Carbon's spacing 05, so a row of one lane, the bar and its 8px clear
-     space, is too, 144px for six lines. */
+     Carbon's spacing 05, so a row of one lane, the bar and the 4px clear
+     above and below it, stands on that grid, 136px for six lines. */
   .scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-bar-h: round(up, calc(var(--scheduler-bar-lines-h) + 3 * var(--rux-spacing-02)), var(--rux-spacing-05)); }
 }
-/* A lane on the Mac's board is a bus row's height: its lanes stand 16px
-   apart, as two buses' bars do, so a bus with two trips
-   stacked is two of its own rows. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week { --scheduler-lane-gap: calc(2 * var(--scheduler-row-clear)); }
 /* The board is the Scheduler's frame, overrides.css's 82rem, which seven of
    the strip's days fill, so a panel opening beside the week leaves fewer of
    them in view and no edge of the page moves. Fill the window, in the view
@@ -202,7 +199,8 @@
      column it is the column's own width, which the head cells leave
      unpainted, so the day before shows its last 4px there: empty, or a
      trip running on into the days in view. Under the band and at the foot
-     a row's own 8px clear space is that edge already. */
+     a row's own 4px is added to the same way, by the band's margin and the
+     grid's padding. */
   --scheduler-edge: var(--scheduler-gap-clear);
   /* A DAY ON THE STRIP IS 175PX AND THE BUS COLUMN THE TILE'S 89PX, 41px on
      a compact board, whatever the window or the panels beside the week, so a
@@ -222,10 +220,9 @@
   --scheduler-week-min: calc(var(--scheduler-tile-head) + 2 * var(--scheduler-edge) + 3 * var(--scheduler-strip-day));
 }
 @property --scheduler-week-min { syntax: '<length>'; inherits: false; initial-value: 0px; }
-/* A revealed bar stands its row's clear space below the band, where the row
-   itself begins for the first lane. */
+/* A revealed bar stands 8px below the band, as the first row's does. */
 .scheduler-week--scroll .scheduler-track > .scheduler-bar:not([data-folded]) {
-  scroll-margin-block-start: var(--scheduler-row-clear);
+  scroll-margin-block-start: calc(2 * var(--scheduler-row-clear));
 }
 .scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head) { margin-inline-end: var(--scheduler-edge); }
 /* The band runs on across the edge its corner leaves unpainted, its rules
@@ -261,6 +258,13 @@
      columns would let the bus column scroll away once the week overflows. */
   min-inline-size: min-content;
 }
+/* 4px more at the foot, and under each day band by its margin, so the first
+   and last rows' cards stand 8px from the band and the foot, as two cards
+   stand apart. */
+.scheduler-grid { padding-block-end: var(--scheduler-row-clear); }
+.scheduler-corner,
+.scheduler-days,
+.scheduler-avail__days > .scheduler-avail__day { margin-block-end: var(--scheduler-row-clear); }
 .scheduler-row { display: contents; }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty
    Unassigned row would still take a slot in the grid without this. */
@@ -787,11 +791,10 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-track {
   position: relative;
   grid-column: span var(--scheduler-days);
-  /* The lanes' height, written so that no lanes, a bus no longer active with
-     no trip on screen, is no height at all: the clear space and gap above
-     and below the lanes count only while there is a lane. */
-  min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (2 * var(--scheduler-row-clear) - var(--scheduler-lane-gap))
-    + var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  /* The lanes' height, each its bar and the clear space above and below
+     it, so no lanes, a bus no longer active with no trip on screen, is no
+     height at all. */
+  min-block-size: calc(var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   /* A finger holding an empty cell opens the cell menu, so the browser's own
      hold gestures, the callout and text selection, are off. Safari reads only
      the prefixed selection property. */
@@ -838,15 +841,15 @@ button.scheduler-row-head__num:focus { outline: none; }
     var(--scheduler-mark-glyph);
   align-content: start;
   justify-items: start;
-  padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
+  padding-inline: calc(var(--scheduler-side-clear) + var(--scheduler-bar-pad-inline));
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges) { display: contents; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head > *,
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__gauges, .scheduler-row-head__body) > * { grid-column: 1; }
 /* THE BUS IS A TILE AS A TRIP IS A BAR: a card of the second layer the bar's
-   size and place, as tall as the bar, 8px clear of the row's top and foot
-   and of the column's sides as a bar is of them and the column's rule,
-   and the bar's corners, so the bus and its trips read as one kind of
+   size and place, as tall as the bar and level with it, 8px from the next
+   bus's tile and from the column's sides, as a bar is from the next bar
+   and the column's rule, and the bar's corners, so the bus and its trips read as one kind of
    thing across the row. A partner's row and No bus have the same card.
    A shut row draws none. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row:not([data-shut]) > .scheduler-row-head:is([data-bus-id], [data-partner], [data-unassigned])::before {
@@ -854,7 +857,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   position: absolute;
   z-index: -1;
   inset-block-start: var(--scheduler-row-clear);
-  inset-inline: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-side-clear);
   block-size: var(--scheduler-bar-h);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
@@ -3940,13 +3943,13 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-aside:not([data-week]) :is(.scheduler-avail__cell, .scheduler-avail__days > .scheduler-avail__day:not(.scheduler-avail__day--head)) { display: none; }
 
-/* The rail's rows are Carbon's lg table row, 48px, its default, since a
-   driver's tile is one line. A driver's tile is Carbon's sm, 32px, 8px
-   clear of the row's top and foot as a bar is, its 18px line centred in
-   it, 7px above and below. No line runs between two rows. */
+/* A driver's tile is Carbon's sm, 32px, its 18px line centred in it, 7px
+   above and below, and its row the tile and the 4px clear above and below
+   it that a bar has, 40px, Carbon's md, so two tiles stand 8px apart as
+   two bars do. No line runs between two rows. */
 .scheduler-week--avail {
-  --scheduler-avail-h: var(--rux-layout-size-height-lg);
   --scheduler-tile-card-h: var(--rux-layout-size-height-sm);
+  --scheduler-avail-h: calc(var(--scheduler-tile-card-h) + 2 * var(--scheduler-row-clear));
   max-block-size: 15rem;
 }
 /* In the aside the name column takes what the days leave. `minmax(0, 1fr)`,
@@ -4034,15 +4037,15 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__name {
   align-items: flex-start;
   padding-block: calc(var(--scheduler-row-clear) + (var(--scheduler-tile-card-h) - var(--scheduler-row-h)) / 2) 0;
-  padding-inline: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-inline));
+  padding-inline: calc(var(--scheduler-side-clear) + var(--scheduler-bar-pad-inline));
   font-size: var(--rux-body-compact-01-font-size);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 /* THE DRIVER IS A TILE AS A BUS IS AND A TRIP IS A BAR: a card of the
-   second layer with the bar's corners, 8px clear of the row's top and foot
-   and the rail's sides as the bus tile is of its column's, so a driver, a
-   bus and a trip read as the same kind of thing. Two cards stand 16px
-   apart, as two buses' bars do. Hover, selected and focus mark
+   second layer with the bar's corners, 8px clear of the rail's sides as
+   the bus tile is of its column's, so a driver, a bus and a trip read as
+   the same kind of thing. Two cards stand 8px apart, as two bars do.
+   Hover, selected and focus mark
    the card, as they mark a bus tile. */
 .scheduler-avail__name::before {
   content: "";
@@ -4050,7 +4053,7 @@ a.scheduler-tip__go { text-decoration: none; }
   z-index: -1;
   inset-block-start: var(--scheduler-row-clear);
   block-size: var(--scheduler-tile-card-h);
-  inset-inline: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-side-clear);
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-tile-state, var(--scheduler-tile-fill));
 }
@@ -4188,7 +4191,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The two marks. Free is the one being looked for, so it is empty; busy and
    off are Carbon's tag tints, the palette the trip bar uses. A mark is a bar
    as a trip's is on the board: a pseudo-element as tall as the driver tile
-   beside it and level with it, 8px clear of the row's top and foot, and 4px in
+   beside it and level with it, 4px clear of the row's top and foot, and 4px in
    from the ends of its days, `--scheduler-gap-clear`, as a bar is on the
    board, so a one-day mark is always a 32px square and two marks on
    neighbouring days stand 8px apart; a mark that runs on into the next day
@@ -4205,8 +4208,8 @@ a.scheduler-tip__go { text-decoration: none; }
   --scheduler-mark-end: var(--scheduler-gap-clear);
 }
 /* The week's first and last days hold their marks 8px from its edges. */
-.scheduler-avail__name + .scheduler-avail__cell { --scheduler-mark-start: var(--scheduler-row-clear); }
-.scheduler-avail__cell:last-child { --scheduler-mark-end: var(--scheduler-row-clear); }
+.scheduler-avail__name + .scheduler-avail__cell { --scheduler-mark-start: var(--scheduler-side-clear); }
+.scheduler-avail__cell:last-child { --scheduler-mark-end: var(--scheduler-side-clear); }
 /* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
    days: a booking's box in the success tint with the success edge, and one
    check at the middle of the slot in the success ink, so it reads as room
@@ -7229,7 +7232,7 @@ html[data-scheduler-takeover] {
 .scheduler-components__bus .scheduler-components__board.scheduler-week--scroll .scheduler-row-head__equip { display: none; }
 .scheduler-components__foot {
   position: absolute;
-  inset-inline: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-side-clear);
   /* Line 6's top, from the head's own: the bar's clear space and padding, and five lines. */
   inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 5 * var(--scheduler-row-h));
   display: flex;

@@ -8,10 +8,10 @@
 // days, lane, classes and words, and the out-of-service marks and stripes.
 // Says too where a bar is drawn twice. Then turns the bar's rows off one by
 // one, six lines to one, as the view menu does, and in each says whether
-// every bar is a whole number of 16px and every open bus row, its line
-// inside it, of 8px, Carbon's grid, whether every box a bus's head or a bar
-// in view paints stands on whole pixels, and at six lines whether every
-// driver rail row is 48px, Carbon's lg row, its tile 32px and 8px clear.
+// every bar is a whole number of 16px and every open bus row of 8px,
+// Carbon's grid, whether every box a bus's head or a bar in view paints
+// stands on whole pixels, and at six lines whether every driver rail row
+// is 40px, Carbon's md row, its tile 32px and 4px clear.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
 import { spawn } from 'node:child_process';
@@ -232,7 +232,7 @@ const VIEWS = `(async () => {
       if (h % 8) v.rows.push({ bus, h: +h.toFixed(2) });
       measure(head, bus, v);
     }
-    /* The rail beside six lines: every row 48px, its tile 32px from 8px. */
+    /* The rail beside six lines: every row 40px, its tile 32px from 4px. */
     if (lines === 6) {
       let rail = 0;
       for (const n of document.querySelectorAll('.scheduler-avail__name')) {
@@ -240,8 +240,8 @@ const VIEWS = `(async () => {
         if (!b.height) continue;
         rail++;
         const tile = getComputedStyle(n, '::before');
-        if (b.height !== 48) v.rows.push({ bus: 'a driver', h: b.height });
-        if (tile.top !== '8px' || tile.height !== '32px') v.rows.push({ bus: 'a driver tile', h: tile.height + ' from ' + tile.top });
+        if (b.height !== 40) v.rows.push({ bus: 'a driver', h: b.height });
+        if (tile.top !== '4px' || tile.height !== '32px') v.rows.push({ bus: 'a driver tile', h: tile.height + ' from ' + tile.top });
       }
       v.rail = rail;
     }
@@ -332,7 +332,7 @@ async function main() {
     for (const v of views) {
       const bad = [...v.bars.map(h => `a bar ${h}px tall`), ...v.rows.map(r => `${r.bus}'s row ${r.h}px tall`), ...v.boxes.map(x => `${x.bus}: ${x.part} at ${x.box}`)];
       if (bad.length) { fail('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${bad.length} off the grid or off whole pixels`); for (const w of bad.slice(0, 6)) console.log(`          ${w}`); }
-      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels${v.rail ? `, ${v.rail} driver rows of 48px with 32px tiles` : ''}`);
+      else ok('tile', `${v.lines} line${v.lines > 1 ? 's' : ''}: ${v.heads} rows of ${v.height}px and their bars on the grid, ${v.painted} painted boxes in the heads and the ${v.inView} bars in view on whole pixels${v.rail ? `, ${v.rail} driver rows of 40px with 32px tiles` : ''}`);
     }
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }

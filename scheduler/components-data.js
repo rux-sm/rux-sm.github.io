@@ -518,7 +518,7 @@
           rows: [tile('b121', null, bar(trip({ customer: 'Mesa Robotics Club', destination: 'Houston, TX', buses: [crewed('b121')] })))] },
         { name: 'A partner\'s bus and No bus', note: 'Each has the bus tile\'s card: a partner\'s name over its mark, and No bus over how many buses still want one.', days: 3, tiles: true,
           rows: [partnerRowOf('p1', bar(covered, { slot: 1 })), row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
-        { name: 'Stacked trips', note: 'Two trips on one day make a 288px row, 16px between the bars, and the tile keeps to the first trip\'s lines.', days: 3, tiles: true,
+        { name: 'Stacked trips', note: 'Two trips on one day make a 272px row, 8px between the bars, and the tile keeps to the first trip\'s lines.', days: 3, tiles: true,
           rows: [tile('b105', tileLive({}), bar(trip({ customer: 'Riverbend Seniors', destination: 'San Antonio, TX', buses: [crewed('b105')] }), { span: 2 }),
             bar(trip({ customer: 'Lakeview High School', destination: 'Corpus Christi, TX', buses: [crewed('b105')] }), { start: 1, span: 2 }))] },
       ],

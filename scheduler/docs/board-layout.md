@@ -19,10 +19,10 @@ and is what `scheduler/app.css` draws; what each part says is in
 | An icon | 16px, 4px from its words on every row |
 | A row's parts | 8px apart: a time and its track, two drivers, a name and the mark that ends its line |
 | A mark's press | 24px across and its row's 18px, round the 16px glyph |
-| A bar | 8px clear of its row's top and foot and of the next bar |
-| A row | no line under it: the bars and tiles are the rows, 16px apart |
-| A bus row | a lane for each stacked trip; on six lines 144px for one, 288px for two |
-| A driver row | 48px, Carbon's lg table row, its default; three stand beside a six-line bus row |
+| A bar | 8px clear of the next bar on every side, 4px from each edge of its day and its row |
+| A row | no line under it: the bars and tiles are the rows, 8px apart, and 8px from the day band and the foot |
+| A bus row | a lane for each stacked trip, the bar and 4px above and below it; on six lines 136px for one, 272px for two |
+| A driver row | 40px, Carbon's md: the 32px tile and 4px above and below it |
 | Insets | 8px inside a card on the board: a bar, a bus tile or a driver tile |
 
 ## The trip bar, on six lines
@@ -46,8 +46,9 @@ above and below it.
 
 The column is 88px and its 1px rule. In it each bus is a tile as a trip is
 a bar: a card of the second layer the bar's size and place, 72px wide, as
-tall as the bar and 8px clear of the row's top and foot and the column's
-sides, as a bar is of them and the column's rule, with the bar's corners.
+tall as the bar and level with it, 8px clear of the next bus's tile and
+the column's sides, as a bar is of the next bar and the column's rule,
+with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
 rows, sized below, from the bar's first line to the card's 8px inset at its
 foot, measured from the top, so a row of stacked trips keeps it on the
@@ -91,11 +92,10 @@ A view of one row shows the name alone.
 
 The rail is 160px, Carbon's spacing 13, and in it each driver is a tile as
 a bus is: a card of the second layer with the bar's corners, 144px wide, 8px clear of the
-rail's sides and the row's top and foot as the bus tile is. Its row is Carbon's
-lg table row, 48px, and the card Carbon's sm, 32px, from 8px to 40px of
-the row. It holds one 18px line, 7px inside it above and below and 8px in
-from its sides, 128px wide, and two cards stand 16px apart, as two buses'
-bars do. The Apple themes, whose Layer 02 is their
+rail's sides as the bus tile is. Its row is Carbon's md, 40px, and the
+card Carbon's sm, 32px, from 4px to 36px of the row. It holds one 18px
+line, 7px inside it above and below and 8px in from its sides, 128px
+wide, and two cards stand 8px apart, as two bars do. The Apple themes, whose Layer 02 is their
 Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |
@@ -110,7 +110,7 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 With its week out the rail is 448px: the 160px tiles, seven of Carbon's
 40px md days, and 4px more at each end of the week. A trip, time off or a
 selected trip's open slot is a bar as a trip is on the board: as tall as
-the driver tile and level with it, 8px clear of the row's top and foot, and 4px in
+the driver tile and level with it, 4px clear of the row's top and foot, and 4px in
 from the ends of its days, so a one-day bar is always a 32px square, two
 bars on neighbouring days stand 8px apart, as on the board, and a bar on
 the first or last day stands 8px from the week's edge. A bar that runs on into the next day,
@@ -119,22 +119,22 @@ or past the week's edge, runs to that edge.
 ## Each view
 
 A view with fewer bar lines keeps the card the bar's size and drops the
-tile's parts from the foot up. The driver rows stay 48px in every view.
+tile's parts from the foot up. The driver rows stay 40px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 144px | Number, state, fuel and the foot, 12px apart |
-| 5 | 112px, 11px | 128px | Number, state and fuel, 12px apart |
-| 4 | 96px, 12px | 112px | Number, state and fuel, 8px apart |
-| 3 | 80px, 13px | 96px | Number and state |
-| 2 | 48px, 6px | 64px | Number, the state at 14px; an inspection's date alone |
-| 1 | 32px, 7px | 48px | The number and its alert |
+| 6 | 128px, 10px | 136px | Number, state, fuel and the foot, 12px apart |
+| 5 | 112px, 11px | 120px | Number, state and fuel, 12px apart |
+| 4 | 96px, 12px | 104px | Number, state and fuel, 8px apart |
+| 3 | 80px, 13px | 88px | Number and state |
+| 2 | 48px, 6px | 56px | Number, the state at 14px; an inspection's date alone |
+| 1 | 32px, 7px | 40px | The number and its alert |
 
 ## The phone's board
 
 A phone's board is the compact view whatever the View menu holds: three
 lines, the destination, the times and the drivers. Its bar is those lines
-and 6px above and below them, 66px, in a row of 82px, and is not rounded to
+and 6px above and below them, 66px, in a row of 74px, and is not rounded to
 16px as the Mac's is. The bus column is the narrow one, 41px: the number on
 line 1, level with the destination, and under it, from line 2, the state
 and fuel centred in what the row leaves, across every lane of a row of

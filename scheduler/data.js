@@ -10915,9 +10915,11 @@
   /* How far the board scrolls across to show a bar whole, clear of the
      sticky bus column, or its start when it is wider than the board; on the
      strip the fewest whole days that do, so a strip on a day's edge stays on
-     one. It measures against the week as wide as it will be once the panels
-     beside it have opened, which app.css's push reaches over 240ms. */
-  function acrossBy(bar) {
+     one. Asked for `start`, it is how far to the bar's first day in the first
+     column, where a trip gone to from a list always lands. It measures against the week as wide as it will
+     be once the panels beside it have opened, which app.css's push reaches
+     over 240ms. */
+  function acrossBy(bar, inline = 'nearest') {
     const pane = schEl.getBoundingClientRect();
     const head = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const box = bar.getBoundingClientRect();
@@ -10928,6 +10930,12 @@
     let by = box.left < first ? box.left - first
       : box.right > last ? Math.min(box.right - last, box.left - first) : 0;
     const w = stripStart ? dayWidth() : 0;
+    if (w && inline === 'start') {
+      // The day the bar starts in, counted from the first column; a pixel in, so a bar on a day's edge is that day's.
+      const at = Math.round(schEl.scrollLeft / w) + Math.floor((box.left - first + TIP_GAP + 1) / w);
+      const length = daysBetween(stripStart, stripEnd) + 1;
+      return Math.max(0, Math.min(length - inView(), at)) * w - schEl.scrollLeft;
+    }
     if (w && by < 0) by = Math.floor(by / w) * w;
     else if (w && by > 0) by = Math.min(Math.ceil(by / w), Math.floor((box.left - first) / w)) * w;
     return by;
@@ -20118,8 +20126,10 @@
      that names a leg takes that leg's bar, so a pickup's line in Departures
      never opens the drop-off; one that names none takes
      the trip's first bar on the week.
-     A bar already drawn is taken where it is, and the week stays put. Any
-     other moves the week to the trip's, drawn from what is held where the
+     A bar whole in view is taken where it is, and the week stays put. Any
+     other is put with its first day in the first column, halfway down the
+     board: one drawn off to a side by a scroll across, and one not drawn by
+     moving the board to the trip's first day, drawn from what is held where the
      last read covers it, so the trip opens without waiting on the network;
      only a week no read covers, or a trip the held read draws no bar of,
      waits for the read. A leg with no bus has no bar, and another read
@@ -20130,8 +20140,11 @@
     const bars = () => [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
     const legBar = () => (leg ? bars().find(b => barOnLeg(b, leg)) : bars()[0]);
     let bar = legBar();
+    // Whole in view as the board stands, before any week is moved to.
+    const inPlace = !!bar && !acrossBy(bar);
     if (!bar) {
-      cursor = cursorFor(parseISO(day));
+      // The trip's own first day, not its week's, so the board goes straight to where the bar lands.
+      cursor = parseISO(day);
       const held = holds(cursor);
       const read = show();
       // A week held is drawn at once, unless a bar in hand holds the drawing back.
@@ -20147,8 +20160,8 @@
       toast('info', 'That week is showing', 'The trip has no bar; it may have no bus yet.');
       return;
     }
-    // A strip keeps the trip's week at its left edge, so only a bar running past it scrolls across.
-    schEl.scrollTo({ left: schEl.scrollLeft + acrossBy(bar), top: schEl.scrollTop + downBy(bar, 'center'), behavior: 'instant' });
+    // A bar whole in view stays where it is; any other is put in the first column, halfway down.
+    schEl.scrollTo({ left: schEl.scrollLeft + (inPlace ? 0 : acrossBy(bar, 'start')), top: schEl.scrollTop + downBy(bar, 'center'), behavior: 'instant' });
     const ref = barRef(bar);
     selectBar(bar);
     if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));

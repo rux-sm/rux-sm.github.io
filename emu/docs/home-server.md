@@ -107,3 +107,54 @@ path, the account's id and the time taken. They never print a token.
 | `PORT` | the port inside the container, 8080 by default |
 | `ORIGINS` | the sites it answers, comma-separated; the published site and both local previews by default |
 | `MEMBER_RPC` | the Supabase function that says an account may download, `is_owner` until `emu_is_member()` exists |
+
+## The copy of Supabase
+
+`emu/tools/copy-supabase.mjs` keeps the server's own copy of everything
+Supabase holds for Emu, so a save or a Mac's settings goes back by hand with
+Supabase gone. It writes the newest copy of each file under its own name,
+and every row of each Emu table as JSON, into the `backups` dataset. A fourth
+container runs it once a day; no forwarded port reaches it.
+`emu/tools/copy-supabase.test.mjs` runs each case in `npm run check`.
+
+1. In TrueNAS, open **Datasets**, choose `storage`, then **Add Dataset**, and
+   name it `backups`.
+2. Open **Data Protection**, then **Periodic Snapshot Tasks**, then **Add**:
+   the dataset `storage/backups`, daily, kept for 30 days. Add a second,
+   monthly, kept for a year. The snapshots are the dated copies.
+3. In the Supabase dashboard, open **Project Settings**, then **API Keys**,
+   and make a new secret key named for the home server. It reads every
+   account's rows, so it goes only into TrueNAS, never into a file here.
+4. In TrueNAS, open **Apps**, the `games` app, then **Edit**. Add this
+   service beside the others, with the key in place of `KEY`, and **Save**.
+
+```yaml
+  backup:
+    image: node:24-alpine
+    restart: unless-stopped
+    command: >-
+      sh -c 'while true; do
+      wget -qO /tmp/copy-supabase.mjs https://rux-sm.github.io/emu/tools/copy-supabase.mjs
+      && node /tmp/copy-supabase.mjs; sleep 86400; done'
+    environment:
+      BACKUPS: /backups
+      SUPABASE_KEY: KEY
+    volumes:
+      - /mnt/storage/backups:/backups
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+```
+
+The app's **Logs** print one line a run: how many files it copied, how many
+were the same, how many it removed and how many failed. A first run copies
+about 1.5 GB.
+
+### Putting a save back from the copy
+
+A carried save is at `owner/saves/<system>/` under its game's own name, and a
+Mac's settings at `owner/settings/<Mac>/<emulator>/`. Copy the file into the
+emulator's own folder on the Mac, as the Emulators page names it, with the
+emulator closed. The notes on each game are in the `emu_notes` file of the
+copy's `tables` folder.

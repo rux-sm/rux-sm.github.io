@@ -146,9 +146,9 @@ The setup kit, so any Mac is set up in one step:
   backup, with one command.
 - [ ] Run the scan on the server each night, saving to Supabase with a key
   kept there.
-- [ ] Copy Supabase into the server's `backups` dataset after the scan, by
-  account, Mac and emulator, with TrueNAS's snapshots of it, and put a save
-  and a Mac's settings back from that copy alone.
+- [ ] Run `emu/tools/copy-supabase.mjs` on the server, as
+  `emu/docs/home-server.md` says, with its `backups` dataset, snapshots and
+  secret key, and put a save and a Mac's settings back from that copy alone.
 - [ ] Remove each Mac's backup folder and `emu/tools/backup-saves.mjs`, and
   have the Saves page and the README name the server's copy in their place.
 - [ ] Write `emu/tools/build-kit.mjs` and the download addresses.

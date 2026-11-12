@@ -30,6 +30,8 @@
   const SITE = 'https://rux-sm.github.io';
   const DRIVER_LINK = `${SITE}/scheduler/share/driver.html?s=`;
   const DOCUMENT_LINK = `${SITE}/scheduler/share/document.html?id=`;
+  // A customer's tracking link, one a trip, which the driver details carry.
+  const TRACK_LINK = `${SITE}/scheduler/share/track.html?t=`;
 
   const clean = v => String(v ?? '').trim();
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -219,7 +221,7 @@
   };
 
   window.SchedulerDriverText = {
-    SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor, forms,
+    SITE, DRIVER_LINK, DOCUMENT_LINK, TRACK_LINK, WORDS, wordsFor, forms,
     messageDate, messageRange, timeText, town, roleLabel, isRelief, legLines, reminder, change,
   };
 })();

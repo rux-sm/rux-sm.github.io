@@ -30,9 +30,10 @@ the schema to match the page.
   `staff_all` rule for a staff session; `profiles` lets staff read and each
   person update their own row, but never its `user_id`;
   `quote_rates` and `quote_mileage_rates` are staff only too.
-- **Six tables have no rule at all**, so they are reachable only through
+- **Eight tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_history`, `record_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
+  `trip_tracking_links`, `trip_tracking_shares`,
   `trip_driver_statuses`, and Pixels' `pixels_door_log`.
 - **The publishable key can run twelve functions, the ones the link pages
   call:** the driver page's `get_driver_schedule_share`,
@@ -111,6 +112,8 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `quote_requests` | the `quote-request` Edge Function (§6), which adds them; a task's Start trip, which reads one; the trip editor's Save, which links one to its trip | The company website's quote requests: `number`, from 1001, the one the customer is shown; `lang` (en, es); `first_name`, `last_name`, `phone`, `email`, `organization`; `purchase_order` (yes, no, unsure); `trip_type` (round, oneway); `pickup`, `destination`; `leave_on`, `leave_at`, `return_on`, `return_at`, a return only on a round trip and never before the trip leaves; `passengers`, 1 to 1000; `wheelchair_lift`; `details`; `sender`, a keyed hash of the address it came from, for the hourly limit; `trip_id` to `trips`, set null. Staff read it and update only `trip_id`; no signed-in person adds or deletes one. |
 | `trip_prep` | the Departures panel, and the Contact list, which marks it after Driver info on a yes and takes it back, and the bar menu, which marks the QuickBooks estimate | one row a trip, `trip_id` to `trips`, cascade; `driver_info_sent` with `driver_info_sent_at` and `_by`, and `qb_estimate`, the trip's estimate made in QuickBooks, which the bar menu marks, with `qb_estimate_at` and `_by`, each pair set by `trip_prep_stamp`, and `trip_driver_info_off` turns off when a vehicle is given another bus or a seat is filled, emptied or given another driver. Kept off `trips` so marking it does not move `updated_at` under an open editor. Staff only, broadcast on realtime. |
 | `maintenance_schedule_shares` | this app's maintenance pages | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
+| `trip_tracking_links` | the Contact list's Driver info, the bar menu's Copy tracking link, `share/track.html` | a trip's link for its customer, one row a trip: `trip_id` to `trips`, cascade, and `token`, 32 characters. No rule and no grant: `trip_tracking_link`, staff only, makes the row on the first ask and answers its token after, and `samsara-share` (§11) finds the trip by it. |
+| `trip_tracking_shares` | `samsara-share` (§11) | the Samsara live link made for one bus on one leg: `trip_id` to `trips`, `leg_id` to `trip_legs` and `bus_id` to `buses`, each cascade, unique by leg and bus, with `samsara_id`, `url` and `expires_at`. No rule and no grant; only the function reads and writes it. |
 | `settings` | Settings view | key-value, `value` jsonb. `yard-location-v1` (`{ name, address, lat, lng }`), `requirements-v1` (a list of `{ id, label, type, active, sortOrder, icon }`, `type` vehicle for a bus's need or driver for the trip's), `billing-workflow-v1` (`{ workflow, confirmWhen }`: each of `contractSigned`, `poReceived` and `invoiced` with its `label` and `active`, and the billing statuses that confirm a trip), which the Settings page's Office tab edits, locations, and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here, with the Settings page's `rate-calendar-v1` (`{ months }`, a month's number to the id of the mileage rate it starts from), `route-times-v1`, `fuel-card-v1` (`{ miles, days }`), `dead-miles-v1` (`{ miles }`, null for no offer) and `late-return-v1` (`{ hour, night_hour }`: `hour`, 0 to 12, the hour of the morning before which a bus back at the yard came back the night before, and `night_hour`, 1 to 12, the hour of the evening at or after which a bus that leaves the yard the evening before a leg left for the leg's first day, 12 counting none so; 4 and 11 with no row). |
 | `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Ruxbot is the one row with no `user_id`, the profile an agent's to-do rows are made by, whose id `ruxbot_profile_id()` returns. Not `platform.profiles`. |
 | `chat_messages` | the team chat, `team-chat.js` | one row a message: `body` up to 2,000 characters, `urgent`, `mentions` the staff it names as profile ids, `links` a list of `{ kind, id, label, date }` (trip, customer, contact, driver, bus, location or missive), `edited_at`. A trigger sets `author_id` to the person logged in and the times; only the sender edits, and the sender or an owner deletes the row. Staff read. |
@@ -141,6 +144,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one. `get_maintenance_schedule` returns each bus's days out in its two weeks as `outOfService`, dates only, never the reason, every active bus and an inactive one only with days out or a trip in them, and of each trip only what the page draws, its legs with their routes and each stop's and vehicle's route among it, never its customer or requirements; a trip is in the two weeks by when its legs end, or with no end start. `get_maintenance_schedule_changes` returns the trip entries that touch the two weeks: added and removed trips, bus changes with only the bus, never a driver, cancellations of a trip that had a bus with only how many, reinstated and re-dated trips that have a bus with the days they had, and each bus's days out added, moved or removed, read from `record_history`, dates only, never the reason |
 | Driver forms | `get_driver_forms` and `get_driver_form`, which take the link's token: each current form the driver is asked for, waiting or signed, and one such waiting form's fields with the profile's name, date of birth, address, phone and licence, handed out only while it waits; `get_driver_forms_overview`, staff only, every active driver against every current form with `asked`, whether it is on their link; `ask_every_driver`, staff only, which turns a form's `ask_everyone` on, or off, first giving every active driver a row of `driver_form_asks` so none loses the form; `send_driver_forms`, staff only, which records a send, asks for the form and keeps the driver's link live at least 30 days, making one with no trips where they have none; `read_driver_form_flag`, staff only. `driver_forms_state`, closed to the page, is every current form for a driver with `asked`, by a row of `driver_form_asks` or the form's `ask_everyone`, and `driver_forms_for`, which the link, the signing page and the Edge Function read, is the asked ones alone. A form waits for a driver until signed in its version, again once sent after the last signing, and again from 30 days before a yearly copy ends. The `driver-form` Edge Function (§10) files a signing |
 | Document links | the `trip-document-link` Edge Function (§5), for the document link page; `get_trip_document` is staff only and nothing calls it |
+| Tracking links | `trip_tracking_link`, staff only, for a trip's token; the `samsara-share` Edge Function (§11), for the customer's page |
 | Website requests | the `quote-request` Edge Function (§6), for the company website's quote form; `quote_request_add`, which only the service role runs, is its one write |
 | Samsara miles | the `samsara-miles` Edge Function (§7), for the Billing tab's Get from Samsara; it writes nothing |
 | Samsara now | the `samsara-now` Edge Function (§8), for the board's line while a bus is out and the Live map; it writes nothing |
@@ -197,6 +201,7 @@ as in `screen-inventory.md`.
 | `record_history` (RPC) | History page | the database, on every change to a driver, a bus, a customer, a contact, a location or a partner |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor; the Forms tab's Send keeps a link live |
+| `trip_tracking_links` (RPC), `trip_tracking_shares` | `share/track.html`, through `samsara-share` | the Contact list and the bar menu make a trip's link; `samsara-share` keeps and forgets a bus's Samsara link |
 | `driver_forms`, `driver_form_asks`, `driver_form_sends`, `driver_form_signings` + bucket `driver-forms` | Drivers page Forms tab, a form's view, a driver's Documents tab, `share/driver.html`, `share/sign.html` | a form is set up by SQL; a driver's switch and Ask every driver; Send and Mark as read; a signing by the `driver-form` Edge Function |
 | `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's and Locations page's `yard-location-v1`, `geoapify-key-v1` and `route-times-v1` | Settings |
 
@@ -357,12 +362,18 @@ log-in preview. `scheduler/tools/check-driver-form.mjs` runs it against an inven
 
 ## 11. Samsara share
 
-`samsara-share`, source in `scheduler/samsara-share/`, makes the link a trip bar's Copy tracking
-link copies: Samsara's live sharing link of one bus's vehicle, named for the bus, ending at the
-time the page asks and at most a week on. It reads the bus on the caller's session, so a caller
-who is not staff gets no link and Samsara is never asked. It finds the vehicle with the read-only
-`SAMSARA_API_TOKEN` and makes the link with `SAMSARA_SHARE_TOKEN`, a key with Samsara's Write Live
-Sharing Links permission alone; without both it answers `no-key`, and a refused link
-`no-permission`. It writes nothing here, is deployed
-with Verify JWT off, as §5 is, and answers the site and the log-in preview.
-`scheduler/tools/check-samsara-share.mjs` runs it against an invented fleet.
+`samsara-share`, source in `scheduler/samsara-share/`, answers the customer's tracking page,
+`share/track.html`, which sends its trip's token with no log-in. It finds the trip in
+`trip_tracking_links` and reads it with the service role. Before a leg's yard-out it answers when
+the map starts, between two legs the same for the next, and after the last, or on a cancelled trip,
+that it has ended; a leg's yard-out and yard-back are read as `samsara-miles` reads them, in
+`miles.ts`, that function's handler as `scheduler/tools/build-samsara-share.mjs` copies it. While a
+leg is out, to an hour after its yard-back, it answers each of the company's buses on it with
+Samsara's live sharing link of the bus's vehicle, named for the bus and ending when the leg's
+showing does, a week on at most. A link is made on the first visit and kept in
+`trip_tracking_shares`, so a later visit gets the same one; a kept link whose bus is no longer on
+the leg, or whose trip is cancelled, is ended in Samsara and forgotten. It finds a vehicle with the
+read-only `SAMSARA_API_TOKEN` and makes and ends links with `SAMSARA_SHARE_TOKEN`, a key with
+Samsara's Write Live Sharing Links permission alone; without both it answers `no-key`, and a refused
+link `no-permission`. It is deployed with Verify JWT off, as §5 is, and answers the site and its two
+previews. `scheduler/tools/check-samsara-share.mjs` runs it against an invented trip.

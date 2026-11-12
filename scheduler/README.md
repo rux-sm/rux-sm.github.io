@@ -116,7 +116,7 @@ follows the theme the person keeps and the sheet on it carries the light one,
 so the ink drawn there is the ink that prints. After a sent quote: `docs/booking.md`.
 
 The pages in `share/` are for people without a log-in, who arrive by a link: `share/document.html`
-opens a trip document, `share/maintenance.html` shows the maintenance crew two weeks of buses, their
+opens a trip document, `share/track.html` shows a customer their bus on Samsara's map while its leg is out, `share/maintenance.html` shows the maintenance crew two weeks of buses, their
 days out and the recent changes, a bar opening its leg's times and whether its bus has left, is on
 the road or is back, and `share/driver.html` shows a driver, in English or Spanish, a home with My
 trips, the legs dispatch sent them, and My documents, the forms to sign. A leg opens its own screen:

@@ -1270,6 +1270,14 @@
       <div class="rux--menu-item__label">Call or text</div>
       <div class="rux--menu-item__shortcut scheduler-bar-menu__due" id="scheduler-bar-menu-contacts-due" hidden><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-notifications-fill"/></svg><span class="rux--visually-hidden"></span></div>
     </li>
+    <!-- Copies the trip's tracking link for its customer, the one the driver
+         details carry, to text on the day. Hidden by data.js on a bar with no
+         bus of the company's. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-track" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg></div>
+      <div class="rux--menu-item__label">Copy tracking link</div>
+    </li>
     <!-- Assign driver: every active driver data.js ranks for this bus's leg,
          the busy ones greyed, and More drivers, which opens the trip's Buses
          tab. On a bus whose Driver seat is filled, data.js moves it into that

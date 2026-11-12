@@ -35,4 +35,6 @@ run(process.execPath, ['tools/build-app-icons.mjs'], ROOT);
 run(process.execPath, ['scheduler/tools/build-connector-rules.mjs'], ROOT);
 // The board's road files and samsara-now's handler, for maintenance-status.
 run(process.execPath, ['scheduler/tools/build-maintenance-road.mjs'], ROOT);
+// samsara-miles's handler, for samsara-share's leg windows.
+run(process.execPath, ['scheduler/tools/build-samsara-share.mjs'], ROOT);
 console.log('\n  built. `npm run check` says whether it is right.');

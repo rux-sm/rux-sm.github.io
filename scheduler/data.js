@@ -14571,6 +14571,20 @@
       return;
     }
 
+    // The trip's tracking link, to text its customer on the day.
+    if (item.id === 'scheduler-bar-menu-track') {
+      const trip = panelIndex.trips.get(bar.dataset.tripId);
+      const link = trip ? await trackLinkOf(trip) : '';
+      if (!link) { toast('error', 'The tracking link was not made.', 'Check the connection and try again.'); return; }
+      try {
+        await navigator.clipboard.writeText(link);
+        toast('success', 'Tracking link copied', 'The map opens when the bus leaves the yard.');
+      } catch {
+        toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
+      }
+      return;
+    }
+
     // The trip, and its email thread when it has one, as links in the team chat's box.
     if (item.id === 'scheduler-bar-menu-chat') {
       const trip = panelIndex.trips.get(bar.dataset.tripId);
@@ -14709,6 +14723,8 @@
     document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId || !bar.dataset.road;
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
+    // A customer follows only a bus of the company's.
+    document.getElementById('scheduler-bar-menu-track').hidden = !bar.dataset.busId || !client;
     document.getElementById('scheduler-bar-menu-thread').hidden = !barThreadUrl(bar);
     document.getElementById('scheduler-bar-menu-thread-add').hidden = !!barThreadUrl(bar) || !client;
     document.getElementById('scheduler-bar-menu-chat').hidden = !window.SchedulerTeamChat;
@@ -17826,12 +17842,16 @@
      It says the drivers are confirmed only while no bus is waiting on one,
      and speaks of the driver, singular, when it names one person. It is
      addressed to the booking contact, and only its subject names the
-     destination, which is sometimes a group's name, not a place. */
+     destination, which is sometimes a group's name, not a place. After the
+     buses it carries the trip's tracking link where it is given one; `own`
+     says whether the trip has a bus of the company's to follow, since a
+     partner's coach is not in Samsara. */
   const monthDay = s => parseISO(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const longDay = s => parseISO(s).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  function driverLetter(trip) {
+  function driverLetter(trip, track = '') {
     const named = new Set();
     let waiting = false;
+    let own = false;
     // Each route of each leg, with its own buses and spot time.
     const legs = rangesOf(trip).map(l => {
       const buses = l.vehicles
@@ -17847,6 +17867,7 @@
             return [head, driver ? `${driver.name}${driver.phone ? `, ${showPhone(driver.phone)}` : ''}` : 'Driver to be confirmed'].join('\r\n');
           }
           const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
+          if (a.bus_id != null) own = true;
           const crew = crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
             .filter(c => c.who && c.status.value === 'confirmed');
           crew.forEach(c => named.add(c.driverId));
@@ -17885,11 +17906,17 @@
       to?.name ? `Hi ${to.name.trim().split(/\s+/)[0]},` : 'Hello,',
       waiting ? `Here are the driver details for ${when}:` : `Your ${one ? 'driver' : 'drivers'} for ${when}, ${one ? 'is' : 'are'} confirmed:`,
       ...parts,
+      track && own ? `Follow your bus on the day of the trip:\r\n${track}` : null,
       'If anything changes with your plans, please reply to this email or give us a call.',
       'Thank you,',
-    ].join('\r\n\r\n');
-    return { to, subject: `Driver details for ${trip.destination || trip.customer || 'your trip'} on ${monthDay(first)}`, body };
+    ].filter(Boolean).join('\r\n\r\n');
+    return { to, own, subject: `Driver details for ${trip.destination || trip.customer || 'your trip'} on ${monthDay(first)}`, body };
   }
+  /* A trip's tracking link for its customer, share/track.html with the
+     trip's token, which `trip_tracking_link` makes on the first ask and
+     answers after; empty where it could not be had. */
+  const trackLinkOf = trip => (client ? client.rpc('trip_tracking_link', { p_trip_id: trip.id }) : Promise.resolve({}))
+    .then(({ data, error }) => (!error && data?.token ? window.SchedulerDriverText.TRACK_LINK + encodeURIComponent(data.token) : ''), () => '');
   // Closing hands focus back to the Contacts slot, as Design's modal does.
   function closeContacts() {
     if (!contactsOpen) return;
@@ -18192,15 +18219,25 @@
     const thread = barThreadUrl(bar);
     if (letter) {
       const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
+      /* The details carry the trip's tracking link, asked for as the window
+         opens so the letter is ready on the press, where the trip has a bus
+         of the company's. A link that could not be made is said, and the
+         details go without it. */
+      const track = letter.own ? trackLinkOf(trip) : Promise.resolve('');
+      const body = async () => {
+        const link = await track;
+        if (letter.own && !link) toast('warning', 'The tracking link was not made.', 'The driver details are without it.');
+        return driverLetter(trip, link).body;
+      };
       if (letter.to?.email) {
-        toLetter.push({ label: 'Email driver details', run: goTo(
-          `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
-          async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent, 'Driver details emailed')(); }) });
+        toLetter.push({ label: 'Email driver details', run: async () => goTo(
+          `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(await body())}`,
+          async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent, 'Driver details emailed')(); })() });
       }
       /* Driver info copies the details and opens the trip's email thread,
          where it has one, in the window every thread reuses. */
       const info = { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
-        if (!(await copyText(letter.body))) return;
+        if (!(await copyText(await body()))) return;
         closeContacts();
         if (thread) window.open(thread, 'missive', 'noopener');
         await askInfoSent(sent[1], `The driver details are copied. Paste them${thread ? ' in the thread' : ''} and send them, then answer.`);

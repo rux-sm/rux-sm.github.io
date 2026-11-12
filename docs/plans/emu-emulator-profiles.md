@@ -182,9 +182,11 @@ In this order, so what can lose a save comes last and proves itself first:
   each emulator, which brings its saves from Supabase into its own folder.
 - [ ] Play a Switch game on a Mac whose Ryujinx has no firmware, which
   brings the installed firmware from Supabase.
+- [ ] Leave a save file of no bytes out of the carry, which mGBA makes
+  for a game that keeps no save.
 - [ ] Remove from the drive the save folders Supabase and each Mac now
-  hold, which is every folder under `saves`, once the iMac plays from its
-  own.
+  hold, which is every folder under `saves`, and from the server's share
+  the same, once the iMac plays from its own.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.

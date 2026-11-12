@@ -116,13 +116,15 @@
         R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves(), R.helper.newest(), R.data.files()]);
       // What every Mac is given, and the drive is the way in for: each BIOS,
       // key, firmware and installer it holds that Supabase lacks or holds
-      // another copy of, told by its size and when it was last changed.
+      // another copy of, told by its size and the second it was last changed,
+      // since the home server's share keeps a file's time no finer.
+      const second = ms => Math.floor(ms / 1000);
       const heldAt = new Map(held.map(f => [f.path, f]));
       const given = [];
       for (const path of [...scan.bios.map(b => `bios/${b.name}`), ...scan.installers.map(i => `emulators/${i.name}`)]) {
         const st = await drive.stat(path);
         const have = heldAt.get(path);
-        if (!st || (have && Number(have.size) === st.size && Date.parse(have.saved_at) === Math.round(st.mtimeMs))) continue;
+        if (!st || (have && Number(have.size) === st.size && second(Date.parse(have.saved_at)) === second(st.mtimeMs))) continue;
         given.push({ path, size: st.size, saved: new Date(Math.round(st.mtimeMs)).toISOString() });
       }
       // Each emulator's newest version out: what the feeds said now, over what they last said for any that did not answer.

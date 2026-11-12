@@ -10,7 +10,7 @@ The scheduler reads more of what Samsara already knows, so the office sees
 trouble on the board without opening Samsara: a driver on a trip who is
 not logged in, in the wrong bus, over hours or on the wrong hours rules;
 and each pre-trip inspection, safe or not. A customer can follow their
-bus on a link the office sends. What `samsara-now` reads today is in
+bus on a link in the Driver info message. What `samsara-now` reads today is in
 `scheduler/docs/database-inventory.md` §8, and the driver tile it feeds in
 `scheduler/docs/screen-inventory.md`.
 
@@ -42,12 +42,34 @@ bus on a link the office sends. What `samsara-now` reads today is in
   hours before it, and a bus with an unsafe one has a red mark until a
   mechanic resolves it in Samsara. No defect is copied into the Fleet
   profile.
-- **A customer can follow their bus on a Samsara live link.** The bar's
-  menu has Copy tracking link for a leg's bus on its days, which asks a new
-  Edge Function, `samsara-share`, for Samsara's live map link of that one
-  vehicle, expiring an hour after the leg's return, and copies it for the
-  office to text the trip's contact. The stops stay the scheduler's and are
-  not copied into Samsara as a route.
+- **A customer follows their bus on the scheduler's own link, one a trip.**
+  Samsara's link shows a bus from the moment it is made and cannot change
+  its bus, so the customer is sent `share/track.html` with the trip's token
+  instead, which can go out days ahead and follows a bus swap.
+- **The link is in the Driver info message.** `driverLetter` gains one line
+  after the buses, "Follow your bus on the day of the trip:" and the link,
+  in the copied details and the email alike, asked for as the Contact list
+  opens, as a driver's link is. A trip whose buses are all a partner's has no
+  line, since a partner's coach is not in Samsara.
+- **The page shows a bus only during its leg,** from the leg's yard-out, so
+  the customer sees the drive to the pickup and nothing earlier, to an hour
+  after its yard-back. Before the leg it says when
+  the map starts, after it that the trip has ended, and between a drop-off
+  and its pickup when the next starts. During it, each of our buses on the
+  leg has its number and Open map, and one bus alone goes straight to the
+  map. It shows no driver, customer or stop.
+- **The token is the trip's, kept in a new `trip_tracking_links`,** reached
+  only through an RPC staff call, which makes it once and answers it after;
+  a cancelled trip's link says the trip has ended.
+- **`samsara-share` answers the page, not the board.** It takes the token
+  with no log-in, reads the trip's legs and buses itself, and during a leg
+  makes Samsara's live link of each bus's vehicle, expiring an hour after
+  the leg's yard-back. It keeps each link in a new `trip_tracking_shares`
+  beside the bus and leg it was made for, so a second visit gets the same
+  link and a swapped bus gets a new one while the old is ended in Samsara.
+- **The bar's Copy tracking link copies the same link,** for a text on the
+  day, as the Live map's card link does. The stops stay the scheduler's and
+  are not copied into Samsara as a route.
 - **Safety events stay in Samsara.** Hard braking, speeding and phone use
   are the office's to review there, not the board's.
 - **Each database change is its own step,** SQL shown to rux and applied on
@@ -63,5 +85,14 @@ None open.
       Sharing Links alone, under Driver Workflow, and put its full
       `samsara_api_` value in the `SAMSARA_SHARE_TOKEN` secret, which holds a
       value Samsara calls invalid, so `samsara-share` answers no-permission.
-- [ ] Add Copy tracking link to the bar's menu and to the Live map's card
-  links, calling `samsara-share`.
+- [ ] Add `trip_tracking_links` and `trip_tracking_shares` with the RPC that
+      makes a trip's token, SQL shown to rux and applied on his yes.
+- [ ] Turn `samsara-share` to answer a token: the leg's window, a link for
+      each bus kept and reused, the old one ended on a swap, with
+      `check-samsara-share.mjs` covering before, during, after and a swap.
+- [ ] Build `share/track.html` from a Design template, with its states for
+      before, during, between legs, ended and a link that is not known.
+- [ ] Add the link's line to `driverLetter`, and Copy tracking link to the
+      bar's menu and the Live map's card links, both copying the trip's link.
+- [ ] Say the link in `scheduler/docs/database-inventory.md` §2 and §11 and
+      in `scheduler/docs/screen-inventory.md`.

@@ -1387,8 +1387,7 @@
     // The days round the week asked for, before the strip is placed on it, so a day is there to measure.
     const at = Math.max(0, daysBetween(weekStart, cursor));
     drawBand([at, at + WEEK], true);
-    /* A mark at each day's edge, inside what scrolls, for a compact board
-       under a mouse to stop on, since the days' own cells stand outside it. */
+    // A mark at each day's edge, inside what scrolls, for the strip to settle on, since the days' own cells stand outside it.
     const snaps = el('div', 'scheduler-snaps');
     snaps.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < days; i++) snaps.appendChild(el('i'));
@@ -20202,7 +20201,7 @@
   /* ── Scrolling the strip ──
      The browser scrolls the strip both ways, a trackpad's gesture with its
      own momentum and an arrow's or a pick's by its own smooth scroll, and
-     it stops where the hand leaves it, as app.css says. A scroll sideways holds the board still, through
+     it settles on a day's edge, as app.css says. A scroll sideways holds the board still, through
      `weekMotion`: no read draws and no live change redraws
      until the browser says it has stopped, `scrollend`. While it runs the
      trips near the view are drawn and the label follows the week in view;

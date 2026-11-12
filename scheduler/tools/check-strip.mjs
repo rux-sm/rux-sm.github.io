@@ -310,7 +310,7 @@ async function main() {
     await Promise.race([again, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded again')), 20000))]);
     await run(helpers);
     const there = await run('window.__strip.ready()');
-    // The week of the day it stood on, then the wheel the rest of the way, to the pixel, as the strip stops wherever a swipe leaves it.
+    // The week of the day it stood on, then the wheel the rest of the way, to the pixel, should the strip have stood off a day's edge, where the board settles it.
     await run(`window.__strip.pick(${Math.floor(first.at)})`);
     const off = await run(`window.__strip.short(${first.left})`);
     if (Math.abs(off) >= 1) await swipe(there, Math.sign(off) * 25, Math.floor(Math.abs(off) / 25), Math.sign(off) * (Math.abs(off) % 25));

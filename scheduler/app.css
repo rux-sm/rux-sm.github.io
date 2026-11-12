@@ -189,25 +189,42 @@
 :root[data-scheduler-fill] { --frame-wide: 100vw; }
 /* THE STRIP is a row of days far wider than the pane, which the browser
    scrolls both ways, a trackpad's gesture and data.js's smooth scroll alike.
-   Sideways it stops where the hand leaves it, with no snap, so nothing moves
-   once a swipe ends. An arrow, Today or a picked day scrolls it to a day's
-   edge, clear of the sticky bus column. Carbon has no curve for a scroll,
-   so it is the browser's own, as design/docs/motion.md says. The padding
-   and a bar's margin keep a bar data.js reveals clear of the bus column and
-   the day band. */
+   An arrow, Today or a picked day scrolls it to a day's edge, clear of the
+   sticky bus column. Carbon has no curve for a scroll, so it is the
+   browser's own, as design/docs/motion.md says. The padding and a bar's
+   margin keep a bar data.js reveals clear of the bus column and the day
+   band. */
 .scheduler-week--scroll { scroll-padding-inline-start: var(--scheduler-head-w); }
-/* UP AND DOWN, A SCROLL SETTLES ON A ROW: where it stops, the nearest row
-   stands under the band as the first row does, its card 8px from it, on the
-   board and in the roster. It is the browser's own scroll snap, on each bus's
-   track and each driver's tile, whose margin is the 4px a row keeps above its
-   card and the grid adds again under the band. `scroll-snap-align` names the
-   block axis first. */
-:is(.scheduler-week--scroll, .scheduler-week--avail) { scroll-snap-type: y mandatory; }
+/* A SCROLL SETTLES ON A ROW AND ON A DAY, each way on its own. Up and down,
+   where it stops, the nearest row stands under the band as the first row
+   does, its card 8px from it, on the board and in the roster. Sideways the
+   nearest day stands at the bus column's edge, so no trip's first day is cut
+   by it, and a flick still crosses as many days as it is thrown. It is the
+   browser's own scroll snap: on each bus's track and each driver's tile,
+   whose margin is the 4px a row keeps above its card and the grid adds again
+   under the band, and on a mark at each day's edge. `scroll-snap-align`
+   names the block axis first. */
+.scheduler-week--avail { scroll-snap-type: y mandatory; }
+.scheduler-week--scroll { scroll-snap-type: both mandatory; }
 .scheduler-week--scroll .scheduler-track,
 .scheduler-week--avail .scheduler-avail__name {
   scroll-snap-align: start none;
   scroll-margin-block-start: var(--scheduler-row-clear);
 }
+/* THE DAYS' MARKS, one at each day's edge, inside what scrolls, since the
+   days' own cells stand outside it in the band. They are as tall as the
+   grid, behind its rows, because the browser stops only on a mark that is in
+   view up and down, and the rows scroll; they draw nothing and take no
+   press. */
+.scheduler-snaps {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--scheduler-head-w);
+  display: grid;
+  grid-template-columns: repeat(var(--scheduler-days), var(--scheduler-day-track));
+  pointer-events: none;
+}
+.scheduler-snaps > i { scroll-snap-align: none start; }
 .scheduler-week--scroll,
 .scheduler-band {
   /* THE DAYS IN VIEW STAND 8PX CLEAR OF ALL FOUR EDGES, the gap between two
@@ -329,9 +346,6 @@
 @supports not ((animation-timeline: --scheduler-strip) and (timeline-scope: --scheduler-strip)) {
   .scheduler-band > .scheduler-days { animation: none; translate: calc(-1 * var(--scheduler-strip-at, 0px)) 0; }
 }
-/* A mark at each day's edge, inside what scrolls, where a compact board
-   under a mouse stops; it draws nothing and takes no press. */
-.scheduler-snaps { display: none; }
 .scheduler-days {
   grid-column: 2 / -1;
   display: grid;
@@ -4636,28 +4650,16 @@ a.scheduler-tip__go { text-decoration: none; }
    and down only, so a scroll up and down never slides it sideways however
    the thumb drifts, and a swipe sideways is data.js's, which moves it a day
    and settles it on the day's edge; a bar takes the same, as it would
-   otherwise let a finger pan both ways. Under a mouse or a trackpad, the
-   strip stops at the next day's edge however hard the flick, as a phone's
-   own pages do. `scroll-snap-align` names the block axis first. */
+   otherwise let a finger pan both ways, and the browser's own settling on a
+   day is off, since the script places the strip under the finger as it
+   moves. Under a mouse or a trackpad, the strip stops at the next day's edge
+   however hard the flick, as a phone's own pages do. */
 @media (pointer: coarse) {
   .scheduler-page[data-board="compact"] :is(.scheduler-week--scroll, .scheduler-week--scroll .scheduler-bar) { touch-action: pan-y; }
+  .scheduler-page[data-board="compact"] .scheduler-week--scroll { scroll-snap-type: y mandatory; }
 }
 @media not (pointer: coarse) {
-  .scheduler-page[data-board="compact"] .scheduler-week--scroll { scroll-snap-type: both mandatory; }
-  /* As tall as the grid, behind its rows, because the browser stops only on
-     a mark that is in view up and down, and the rows scroll. */
-  .scheduler-page[data-board="compact"] .scheduler-snaps {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: var(--scheduler-head-w);
-    display: grid;
-    grid-template-columns: repeat(var(--scheduler-days), var(--scheduler-day-track));
-    pointer-events: none;
-  }
-  .scheduler-page[data-board="compact"] .scheduler-snaps > i {
-    scroll-snap-align: none start;
-    scroll-snap-stop: always;
-  }
+  .scheduler-page[data-board="compact"] .scheduler-snaps > i { scroll-snap-stop: always; }
 }
 
 /* A TRIP BAR HERE IS THREE LINES, data.js's `rowShown`: the destination with

@@ -37,7 +37,9 @@ list's band stands above its list the same way.
 A scroll up or down settles on a row: where it stops, the nearest bus, or
 driver in the list, stands under the band as the first does, its card 8px
 from it. At a list's foot the last card stands 8px from the foot instead.
-Sideways the strip stops where the hand leaves it.
+Sideways the strip settles on a day, the nearest standing at the bus
+column's edge, and a flick crosses as many days as it is thrown; a phone's
+swipe moves it one day.
 
 ## The trip bar, on six lines
 

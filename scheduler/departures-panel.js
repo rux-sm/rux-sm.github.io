@@ -29,9 +29,11 @@
    done, all of them on the board: that driver's form, or the itinerary the
    customer sent, in the document panel beside the week, the trip's Contact
    list, or its Billing tab. A step is marked where it is done. One done some
-   other way, as the driver details read out to a customer with no email are,
-   is marked by hand here: the mark of a step still to do is a button, which
-   asks in the line and writes on a yes.
+   other way, as the driver details read out to a customer with no email are
+   or a hotel booked by phone is, is marked by hand here: a step's mark is a
+   button, which asks in the line and writes on a yes, and the mark of a step
+   done asks the other way, so one marked by mistake is put back. A screen
+   with no pointer to hover has the words Mark done beside the mark.
 
    The list opens on the days' trips as the button's count last read them
    and reads them again behind, and reads them again when the day changes
@@ -326,19 +328,22 @@
     const label = el('span', 'scheduler-departures__what', line.label);
     label.prepend(el('span', 'rux--visually-hidden', `${SAID[line.state]}: `));
     const of = `${line.label}${member?.name ? `, ${member.name}` : ''}`;
-    /* A step still to do, where its seat or its trip can keep it, has a
-       button for its mark, showing the tick it would get under the pointer.
-       Pressed, the line asks under its words. */
-    const id = line.state === 'todo' && line.mark && (!member || member.seat?.id) ? `${keyOf(page)}|${member?.key ?? ''}|${line.key}` : null;
+    /* A step its seat, its trip or its leg can keep has a button for its
+       mark, showing under the pointer the mark a press would give it: the
+       tick on a step still to do, the empty circle on one done. Pressed, the
+       line asks under its words. */
+    const done = line.state === 'done';
+    const id = line.state !== 'warn' && line.mark && (!member || member.seat?.id) ? `${keyOf(page)}|${member?.key ?? ''}|${line.key}` : null;
+    const turn = done ? 'Mark as not done' : 'Mark as done';
     if (id) {
       steps.set(id, { line, page, member });
       const tick = el('button', 'scheduler-departures__tick');
       tick.type = 'button';
       tick.dataset.step = id;
       tick.dataset.hold = `tick:${id}`;
-      tick.title = 'Mark as done';
-      tick.setAttribute('aria-label', `Mark as done: ${of}`);
-      const hint = svgUse('#m-check_circle', 16);
+      tick.title = turn;
+      tick.setAttribute('aria-label', `${turn}: ${of}`);
+      const hint = svgUse(done ? MARKS.todo : '#m-check_circle', 16);
       hint.classList.add('scheduler-departures__hint');
       tick.append(mark, hint);
       row.append(tick, label);
@@ -354,6 +359,15 @@
         d.href = act.dismiss;
         d.setAttribute('aria-label', `Dismiss: ${of}`);
         row.appendChild(d);
+      }
+      // The mark's press in words, shown where no pointer can hover over the mark.
+      if (id) {
+        const say = el('button', 'rux--link scheduler-departures__say', 'Mark done');
+        say.type = 'button';
+        say.dataset.step = id;
+        say.setAttribute('aria-hidden', 'true');
+        say.tabIndex = -1;
+        row.appendChild(say);
       }
     } else {
       /* The line's word at its end, with the day where it was done, as
@@ -391,7 +405,7 @@
       yes.type = 'button';
       yes.dataset.answer = 'yes';
       yes.dataset.hold = `yes:${id}`;
-      ask.append(el('span', null, 'Mark as done?'), no, yes);
+      ask.append(el('span', null, `${turn}?`), no, yes);
       row.appendChild(ask);
     }
     return row;
@@ -709,28 +723,44 @@
     setTimeout(() => item.querySelector('.rux--accordion__heading')?.scrollIntoView({ block: 'nearest' }), 150);
   });
   list.addEventListener('rux:accordion-closed', e => { if (e.target.dataset?.key === openKey) openKey = null; });
-  /* A step marked done by hand. Its mark asks in the line; Yes writes what
-     the place the step is done writes, on the driver's seat or on the trip's
-     prep row, and the database keeps when and whose it was. No, and Escape,
-     write nothing. The line takes its tick, the time and this person's face
-     at once, and what is left goes down by one, as a read would draw them;
-     the trip is then read again for the rest, and a refused write takes the
-     line back. */
+  /* A step marked by hand, done or back to not done. Its mark asks in the
+     line; Yes writes what the place the step is done writes, on the driver's
+     seat or on the trip's prep row, and the database keeps when and whose it
+     was. No, and Escape, write nothing. The line takes its tick, the time
+     and this person's face at once, or loses them, and what is left goes
+     down or up by one, as a read would draw them; the trip is then read
+     again for the rest, and a refused write takes the line back. A leg's
+     hotel is the board's to mark, which keeps the trip's history of it, so
+     the board is asked and the change comes back on the channel. */
   // A line marked done in hand, as a read would draw it, and what is left one less.
   const markLine = (page, line, bus, me) => {
     Object.assign(line, { state: 'done', at: new Date().toISOString(), by: me?.id ?? null });
     page.left -= 1;
     if (bus) bus.left -= 1; else page.tripLeft -= 1;
   };
-  async function markDone(id) {
+  // A line put back to not done in hand, and what is left one more.
+  const unmarkLine = (page, line, bus) => {
+    Object.assign(line, { state: 'todo', value: null, at: null, by: null });
+    page.left += 1;
+    if (bus) bus.left += 1; else page.tripLeft += 1;
+  };
+  async function markStep(id) {
     const step = steps.get(id);
     if (!step) return;
     const { line, page, member } = step;
     const key = keyOf(page);
+    const done = line.state !== 'done';
+    if (line.key === 'hotel') {
+      asking = null;
+      drawLeg(key);
+      focusHeld(`leg:${key}`);
+      document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href: new URL(tripHref(page, `&hotel=${done ? 'booked' : 'open'}`), location.href).href }, cancelable: true }));
+      return;
+    }
     const me = await account.person().catch(() => null);
     const bus = member ? page.buses.find(b => b.crew.includes(member)) : null;
-    const was = { line: { state: line.state, at: line.at, by: line.by }, left: page.left, tripLeft: page.tripLeft, busLeft: bus?.left };
-    markLine(page, line, bus, me);
+    const was = { line: { state: line.state, value: line.value, at: line.at, by: line.by }, left: page.left, tripLeft: page.tripLeft, busLeft: bus?.left };
+    if (done) markLine(page, line, bus, me); else unmarkLine(page, line, bus);
     asking = null;
     // A refusal said before goes as the next step is marked.
     if (refusal) { refusal = ''; draw(); } else drawLeg(key);
@@ -740,15 +770,15 @@
     let refused = null;
     try {
       ({ error: refused } = member
-        ? await client.from('trip_drivers').update({ [line.mark]: true }).eq('id', member.seat.id)
-        : await client.from('trip_prep').upsert({ trip_id: page.trip.id, [line.mark]: true }, { onConflict: 'trip_id' }));
+        ? await client.from('trip_drivers').update({ [line.mark]: done }).eq('id', member.seat.id)
+        : await client.from('trip_prep').upsert({ trip_id: page.trip.id, [line.mark]: done }, { onConflict: 'trip_id' }));
     } catch (e) { refused = e; }
     if (refused) {
       Object.assign(line, was.line);
       Object.assign(page, { left: was.left, tripLeft: was.tripLeft });
       if (bus) bus.left = was.busLeft;
       if (own.includes(echo)) own.splice(own.indexOf(echo), 1);
-      refusal = `${line.label} was not marked. ${refused.message || refused}`;
+      refusal = `${line.label} was not ${done ? 'marked' : 'put back'}. ${refused.message || refused}`;
       if (prepping()) said(countOf(pages));
       draw();
       return;
@@ -805,7 +835,7 @@
   });
   const unask = () => { const id = asking; asking = null; drawLeg(stepLeg(id)); focusHeld(`tick:${id}`); };
   list.addEventListener('click', e => {
-    const tick = e.target.closest('.scheduler-departures__tick');
+    const tick = e.target.closest('[data-step]');
     if (tick) {
       const was = asking;
       asking = tick.dataset.step;
@@ -817,7 +847,7 @@
     if (!answer || !asking) return;
     if (answer.dataset.answer !== 'yes') { unask(); return; }
     for (const b of answer.parentElement.querySelectorAll('button')) b.disabled = true;
-    markDone(asking);
+    markStep(asking);
   });
   list.addEventListener('keydown', e => { if (e.key === 'Escape' && asking) { e.stopPropagation(); unask(); } });
   // Trip ready shows and hides the trip's lines under it.

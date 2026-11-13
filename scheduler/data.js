@@ -20216,6 +20216,11 @@
     if (asked.get('open') === 'contacts') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar, undefined, asked.get('press')); });
+    } else if (asked.has('hotel')) {
+      // Departures marks a leg's hotel `booked` or `open`; a bar that already says so is left.
+      const booked = asked.get('hotel') === 'booked';
+      goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
+        .then(() => { const bar = selectedBar(); if (bar && !!bar.dataset.hotelBooked !== booked) markHotel(bar); });
     } else if (asked.get('file') === 'itinerary') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => openLegItinerary({ trip: asked.get('trip'), leg,

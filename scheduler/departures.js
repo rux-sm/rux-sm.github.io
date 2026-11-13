@@ -13,10 +13,11 @@
    Itinerary and Missing, so a line is one line; `at` and `by` are when a step was done and whose
    profile did it, where the database kept them; `action` is where a `todo`
    is done, `forms:<form>` for that form in the board's document panel or
-   `contacts` for the trip's Contact list; `mark` is the column a `todo`
-   step is kept in, for the panel to turn on where the step was done some
-   other way, on the seat for a crew member's line and on the trip's
-   `trip_prep` row for the trip's.
+   `contacts` for the trip's Contact list; `mark` is the column a step
+   is kept in, done or to do, for the panel to turn on where the step was
+   done some other way and off where it was marked by mistake: on the seat
+   for a crew member's line, on the trip's `trip_prep` row for the trip's,
+   and on the leg's own row for its hotel, which the board marks.
 
    The trip's lines are the whole trip's: confirmed, the itinerary received,
    No times where the leg's stops have none, the trip contact, what the
@@ -56,7 +57,7 @@
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   // A step a seat or the trip's prep row keeps: done with its stamp, or to do at `action` and kept in `column`.
   const step = (key, label, row, column, action, done = null) => (row?.[column]
-    ? line(key, 'done', label, { value: done, at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null })
+    ? line(key, 'done', label, { value: done, at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null, mark: column })
     : line(key, 'todo', label, { action, mark: column }));
 
   // What confirmed a trip, in a word, a PO by its number; null where the trip says only that it is.
@@ -128,9 +129,11 @@
     const hotel = trip.trip_reqs?.hotel === true;
     if (hotel) {
       const marks = Week.legByKey(trip, leg);
+      // A leg with a row of its own keeps the mark there; an older trip's is on its Billing tab alone.
+      const mark = marks?.legId ? 'hotel_booked' : null;
       lines.push(marks?.hotelBooked
-        ? line('hotel', 'done', 'Hotel', { value: marks.hotelNumber || 'Booked' })
-        : line('hotel', 'todo', 'Hotel', { action: 'billing' }));
+        ? line('hotel', 'done', 'Hotel', { value: marks.hotelNumber || 'Booked', mark })
+        : line('hotel', 'todo', 'Hotel', { action: 'billing', mark }));
     }
 
     lines.push(step('driver-info', 'Driver info', one(trip.trip_prep), 'driver_info_sent', 'contacts', 'Sent'));

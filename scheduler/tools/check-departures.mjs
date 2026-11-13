@@ -87,10 +87,10 @@ expect('nothing done: problems warn, and the office\'s own steps say where they 
   [['warn Confirmation [Not yet]', 'warn Itinerary [Missing]', 'warn Contact [Missing]', 'todo Driver info -> contacts'],
     ['warn Trip not sent', 'todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts'], 8]);
 
-expect('a step still to do names the column it is kept in, and the hotel, booked on the trip, names none',
+expect('a step still to do names the column it is kept in, and the hotel its leg\'s',
   [raw.lines.at(-1).mark, raw.buses[0].crew[0].lines.map(l => l.mark),
     page({ ...trip, trip_reqs: { hotel: true } }, 'outbound', read).lines.find(l => l.key === 'hotel').mark],
-  ['driver_info_sent', [null, 'itinerary_printed', 'envelope_printed', 'trip_reminder_sent'], null]);
+  ['driver_info_sent', [null, 'itinerary_printed', 'envelope_printed', 'trip_reminder_sent'], 'hotel_booked']);
 
 expect('a confirmed trip that still owes says so, with the figure',
   said(page({ ...trip, date_paid: null, deposit_amount: 200 }, 'outbound', read).lines).filter(l => /Balance|PO, deposit or payment/.test(l)),

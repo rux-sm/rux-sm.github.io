@@ -7089,15 +7089,20 @@ html[data-scheduler-takeover] {
 .scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-icon-secondary); }
 :is(.scheduler-departures__line--warn, .scheduler-departures__who--warn) .scheduler-departures__mark { color: var(--rux-support-warning); }
 .scheduler-departures__what { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* The mark of a step still to do is a button that marks it done by hand: at
-   rest the mark, and under the pointer or the focus the tick it would get.
+/* A step's mark is a button that marks it by hand, done or back to not
+   done: at rest the mark, and under the pointer or the focus the mark a
+   press would give it. It is pressed across 32px, the line's height.
    Pressed, the line asks under its words, in line with them. */
-.scheduler-departures__tick { display: inline-flex; flex: none; margin: -0.25rem; padding: 0.25rem; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
+.scheduler-departures__tick { display: inline-flex; flex: none; margin: -0.5rem; padding: 0.5rem; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
 .scheduler-departures__tick:hover { background-color: var(--rux-layer-hover); }
 .scheduler-departures__tick:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 .scheduler-departures__hint { display: none; color: var(--rux-icon-primary); }
 .scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__mark { display: none; }
 .scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__hint { display: block; }
+/* Mark done in words, a link beside the line's own, where no pointer can
+   hover over the mark to learn it is pressed. */
+.scheduler-departures__say { display: none; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+@media (hover: none) { .scheduler-departures__say { display: inline; } }
 .scheduler-departures__line--asking { flex-wrap: wrap; row-gap: var(--rux-spacing-03); }
 .scheduler-departures__ask { display: flex; flex: 0 0 100%; align-items: center; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); padding-inline-start: var(--rux-spacing-06); color: var(--rux-text-secondary); }
 .scheduler-departures__ask > span { flex: 1 1 auto; }

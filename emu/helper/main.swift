@@ -121,7 +121,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "30"
+let version = "31"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1816,7 +1816,13 @@ func quitEmulatorInFront() {
   if rule?["quit"] as? String == "force", let game = rule?["gameProcess"] as? String {
     guard let proc = NSWorkspace.shared.runningApplications.first(where: { $0.executableURL?.lastPathComponent == game }) else { return }
     proc.terminate()
-    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { if !proc.isTerminated { proc.forceTerminate() } }
+    // macOS will not force-quit a process that is no app of its own, as
+    // gopher64-cli is not, so it is sent the kill signal itself.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+      guard !proc.isTerminated else { return }
+      comboLog.log("ending \(game, privacy: .public)")
+      kill(proc.processIdentifier, SIGKILL)
+    }
     return
   }
   target.terminate()

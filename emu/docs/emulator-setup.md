@@ -134,7 +134,8 @@ appears in the menu bar, and it starts at each log-in. Each Mac allows it
 once: macOS asks to open it, Chrome asks whether the site may reach this
 Mac, and macOS asks once whether it may read the drive and the share. It is
 signed with the Rux Emu Helper certificate, so a newer build keeps every
-permission given. `emu/tools/build-helper.mjs` builds it only on a Mac whose
+permission given. When Supabase holds a newer one, Update on the Status page
+puts it in place and starts it. `emu/tools/build-helper.mjs` builds it only on a Mac whose
 keychain holds that certificate; to build on another, export it from
 Keychain Access as a `.p12` file and import it there.
 

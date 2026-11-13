@@ -102,11 +102,17 @@
       const link = await R.data.givenLink(`emulators/${zip.name}`);
       if (link) location.href = link;
     };
+    // A helper that can update itself does; an older one is downloaded by hand.
+    const update = async () => {
+      const now = await R.helper.update(zip, keptHelper);
+      if (now === null) return download();
+      location.reload();
+    };
     rows.push(!zip
       ? { what: 'Rux Emu Helper', state: TODO, detail: 'Not in Supabase yet: build it with emu/tools/build-helper.mjs, and Update' }
       : here && Number(here) < Number(keptHelper)
-        ? { what: 'Rux Emu Helper', state: TODO, button: { label: 'Download', run: download },
-          detail: `This Mac runs version ${here}: download version ${keptHelper}, unzip it, drag it into Applications and open it` }
+        ? { what: 'Rux Emu Helper', state: TODO, button: { label: 'Update', run: update },
+          detail: `This Mac runs version ${here}: Update puts version ${keptHelper} in its place` }
         : { what: 'Rux Emu Helper', state: DONE, button: { label: 'Download', run: download },
           detail: `Version ${keptHelper} in Supabase. On a new Mac: download, unzip, drag into Applications, open it, and allow it once in System Settings, Privacy & Security` });
 

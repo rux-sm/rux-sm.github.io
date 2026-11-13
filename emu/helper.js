@@ -74,6 +74,25 @@
     return r ? r.json() : null;
   }
 
+  // The newest helper Supabase holds put in this one's place, which then
+  // starts it: the version now answering, or null from a helper too old to
+  // update itself.
+  async function update(file, version) {
+    const url = await window.Emu.data.givenLink(`emulators/${file.name}`);
+    if (!url) throw new Error('Supabase no longer holds that helper.');
+    const r = await call('/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, name: file.name, size: Number(file.size), sha1: file.sha1, version }),
+    });
+    if (!r) return null;
+    for (let i = 0; i < 20; i += 1) {
+      await new Promise(res => setTimeout(res, 1000));
+      const s = await status();
+      if (s?.version === version) return s.version;
+    }
+    throw new Error('The new helper did not start. Open Rux Emu Helper from Applications.');
+  }
+
   const at = (emulator, rel) => `emulator=${encodeURIComponent(emulator)}${rel == null ? '' : `&rel=${encodeURIComponent(rel)}`}`;
   const settings = async emulator => { const r = await call(`/mac/settings?${at(emulator)}`); return r ? r.json() : null; };
   const setting = async (emulator, rel) => new Uint8Array(await (await call(`/mac/setting?${at(emulator, rel)}`, {}, true)).arrayBuffer());
@@ -176,7 +195,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, newest, install, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, newest, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

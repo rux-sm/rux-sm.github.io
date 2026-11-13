@@ -47,10 +47,11 @@ server. The site's other plans are `docs/plans/emu-app.md`,
   Supabase holds: it installs each, then starts each from the preferred
   settings and brings its BIOS, keys and firmware, as a first Play does, so
   the first game played opens with its saves. ES-DE is not installed.
-- **The helper updates itself on a press,** offered on every page while
+- **The helper updates itself on a press,** on the Status page while
   Supabase holds a newer one: it fetches its own zip by a link the site
-  signs, checks it, puts it in Applications and starts it, since a new build
-  otherwise means copying it from the server by hand on each Mac.
+  signs, checks it, takes it only if signed as itself, puts it in its place
+  and starts it, since a new build otherwise means copying it by hand on
+  each Mac.
 - **It is signed with one lasting identity, a free certificate made in
   Keychain Access,** so macOS keeps each permission it gave across builds
   instead of asking again for the drive or the share after every one; every
@@ -67,6 +68,4 @@ None open.
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Have the helper update itself on a press, from the newest zip
-  Supabase holds.
 - [ ] Add Set up this Mac to the Status page.

@@ -11,6 +11,10 @@
 //                          this Mac's library, else from a drive plugged in
 //   GET    /mac            how this Mac stands, read now: each app and its
 //                          version, and each place an emulator saves to
+//   POST   /update         { "url", "name", "size", "sha1", "version" }, a
+//                          newer helper fetched from Supabase by the link
+//                          the site signed, put in this one's place and
+//                          started, once it proves signed as this one is
 //   POST   /install        { "emulator", "url", "name", "size", "sha1",
 //                          "version" }, that emulator's installer fetched
 //                          from Supabase by the link the site signed, and its
@@ -110,11 +114,12 @@
 import AppKit
 import CryptoKit
 import Network
+import Security
 import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "22"
+let version = "24"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -906,6 +911,75 @@ func givenAt(_ name: String, _ path: String) -> (e: Saver, at: String)? {
   return plainName(rel) ? (e, place.dir + "/" + rel) : nil
 }
 
+// MARK: Updating itself
+
+// Whether the app at a path is signed as this one is: it meets the
+// requirement macOS knows this helper by, its name and its certificate, so
+// nothing but a build of this helper takes its place.
+func signedLikeMe(_ path: String) -> Bool {
+  var me: SecCode?
+  var mine: SecStaticCode?
+  var req: SecRequirement?
+  var other: SecStaticCode?
+  guard SecCodeCopySelf([], &me) == errSecSuccess, let me,
+        SecCodeCopyStaticCode(me, [], &mine) == errSecSuccess, let mine,
+        SecCodeCopyDesignatedRequirement(mine, [], &req) == errSecSuccess, let req,
+        SecStaticCodeCreateWithPath(URL(fileURLWithPath: path) as CFURL, [], &other) == errSecSuccess, let other else { return false }
+  return SecStaticCodeCheckValidity(other, SecCSFlags(rawValue: kSecCSCheckAllArchitectures), req) == errSecSuccess
+}
+
+// A newer helper from Supabase put in this one's place: fetched by the
+// site's signed link, checked against the size and SHA-1 the site sends,
+// unzipped, and refused unless it is a newer version signed as this one is.
+// Once in place, it is started and this one quits.
+func update(_ body: Data) -> (Int, [String: Any]) {
+  guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+        let link = req["url"] as? String, let name = req["name"] as? String,
+        let size = (req["size"] as? NSNumber)?.intValue, let sha1 = req["sha1"] as? String,
+        let wanted = req["version"] as? String else {
+    return (400, ["error": "Send the helper's link, name, size and SHA-1, and its version."])
+  }
+  guard link.hasPrefix(collectionLinks), let url = URL(string: link) else { return (400, ["error": "A helper comes only from the collection in Supabase."]) }
+  guard plainName(name), !name.contains("/") else { return (400, ["error": "The helper's zip needs a plain name."]) }
+  guard (Int(wanted) ?? 0) > (Int(version) ?? 0) else { return (409, ["error": "This Mac already runs version \(version)."]) }
+  let tmp = NSTemporaryDirectory() + "rux-emu-update-" + UUID().uuidString
+  guard (try? files.createDirectory(atPath: tmp + "/out", withIntermediateDirectories: true)) != nil else { return (500, ["error": "The helper could not make room to unpack itself."]) }
+  defer { try? files.removeItem(atPath: tmp) }
+  let file = tmp + "/" + name
+  guard fetched(url, to: file) else { return (502, ["error": "The new helper did not arrive from Supabase. Try again."]) }
+  guard ((try? files.attributesOfItem(atPath: file))?[.size] as? NSNumber)?.intValue == size,
+        (fingerprint(file)?["sha1"] as? String) == sha1.lowercased() else {
+    return (502, ["error": "The new helper arrived but is not the file Supabase lists."])
+  }
+  guard run("/usr/bin/ditto", ["-x", "-k", file, tmp + "/out"]), let found = appUnder(tmp + "/out", ["Rux Emu Helper.app"]) else {
+    return (500, ["error": "The zip holds no Rux Emu Helper."])
+  }
+  guard NSDictionary(contentsOfFile: found.path + "/Contents/Info.plist")?["CFBundleVersion"] as? String == wanted else {
+    return (409, ["error": "The zip holds another version than Supabase names."])
+  }
+  guard signedLikeMe(found.path) else { return (403, ["error": "The new helper is not signed as this one is, so it was not put in its place."]) }
+  let dest = Bundle.main.bundlePath
+  let staged = (dest as NSString).deletingLastPathComponent + "/.Rux Emu Helper.app.installing"
+  try? files.removeItem(atPath: staged)
+  guard run("/usr/bin/ditto", ["--noqtn", found.path, staged]) else {
+    try? files.removeItem(atPath: staged)
+    return (500, ["error": "The helper could not write beside itself."])
+  }
+  try? files.removeItem(atPath: dest)
+  guard (try? files.moveItem(atPath: staged, toPath: dest)) != nil else {
+    return (500, ["error": "The helper could not put the new one in its place. Install it from the Status page's Download."])
+  }
+  // The new one starts a moment after this answer goes, and this one quits.
+  DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+    let p = Process()
+    p.executableURL = URL(fileURLWithPath: "/bin/sh")
+    p.arguments = ["-c", "sleep 1; /usr/bin/open -n \"$0\"", dest]
+    try? p.run()
+    NSApp.terminate(nil)
+  }
+  return (200, ["updated": wanted, "was": version])
+}
+
 // MARK: Installing an emulator
 
 let receipts = home + "/Library/Application Support/Rux Emu Helper/receipts"
@@ -1553,6 +1627,7 @@ final class Server {
     case ("DELETE", "/library/file"): let (code, out) = removeFromLibrary(q["path"] ?? ""); send(c, .json(code, out), origin: origin)
     case ("GET", "/mac"): off { .json(200, macReport()) }
     case ("POST", "/install"): off { let (code, out) = install(body); return .json(code, out) }
+    case ("POST", "/update"): off { let (code, out) = update(body); return .json(code, out) }
     case ("GET", "/mac/saves"): off { .list(200, macSaves()) }
     case ("GET", "/mac/settings"): off { let (code, out) = settingsOf(q["emulator"] ?? ""); return .json(code, out) }
     case ("GET", "/mac/setting"):

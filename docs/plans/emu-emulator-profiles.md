@@ -180,7 +180,6 @@ with nothing:
 
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
-- [ ] Rewrite `emu/docs/emulator-setup.md`.
 - [ ] Set the iMac up from nothing but the site: Rux Emu Helper from
   Supabase with Full Disk Access, which Gopher64's sandboxed folder needs,
   its Ryujinx folder a real one in place of its link to the drive, and a

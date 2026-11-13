@@ -23,8 +23,8 @@
      dispatcher knows whom not to call: driving, the trip bar's arrow in
      green, amber when low; on duty, a play triangle; off duty, a pause; in
      the sleeper berth, a moon in the rest colour. A driver on no trip and
-     on time off today has the crossed calendar there, in the colour their
-     time off takes in the week, so nobody calls them. A driver with no such
+     on time off today has the crossed calendar there, in the status red, so
+     nobody calls them. A driver with no such
      icon is on no trip and not away.
    - Along the tile's foot, the driving time Samsara says they have left,
      the least of the drive, shift and cycle clocks, as a 2px line filled of

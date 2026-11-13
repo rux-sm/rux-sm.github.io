@@ -4227,8 +4227,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__doing[data-trip="driving"] { color: var(--scheduler-mark-success); }
 .scheduler-avail__doing[data-trip="driving"][data-tone="warning"] { color: var(--scheduler-head-low); }
 .scheduler-avail__doing[data-trip="sleeper"] { color: var(--scheduler-rest-fill); }
-/* Away on time off today, in the ink their time off takes in the week. */
-.scheduler-avail__doing[data-trip="away"] { color: var(--rux-tag-color-red); }
+/* Away on time off today, in the status red, so nobody calls them. */
+.scheduler-avail__doing[data-trip="away"] { color: var(--scheduler-mark-error); }
 
 .scheduler-avail__days > .scheduler-avail__day--head {
   font-size: var(--rux-heading-compact-01-font-size);

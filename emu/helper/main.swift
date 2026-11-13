@@ -115,12 +115,13 @@ import AppKit
 import CryptoKit
 import GameController
 import Network
+import OSLog
 import Security
 import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "29"
+let version = "30"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1767,6 +1768,10 @@ final class Server {
 // first ask by stopping its game, which closes its saves, and then stops
 // answering, so an emulator still open four seconds later is asked again,
 // and one still open twelve seconds after that is made to quit.
+// What the quit combo saw and did, in the system log, read with
+// `log show --predicate 'subsystem == "io.github.rux-sm.emu-helper"'`.
+let comboLog = Logger(subsystem: "io.github.rux-sm.emu-helper", category: "quit-combo")
+
 final class QuitCombo {
   static let shared = QuitCombo()
   private var watched = Set<ObjectIdentifier>()
@@ -1783,8 +1788,11 @@ final class QuitCombo {
   private func watch(_ c: GCController) {
     GCController.shouldMonitorBackgroundEvents = true
     guard let pad = c.extendedGamepad, watched.insert(ObjectIdentifier(c)).inserted else { return }
+    comboLog.log("watching \(c.vendorName ?? "a controller", privacy: .public), \(pad.buttonOptions == nil ? "with no − button" : "with a − button", privacy: .public)")
     pad.buttonOptions?.pressedChangedHandler = { _, _, pressed in
-      guard pressed, pad.buttonMenu.isPressed else { return }
+      guard pressed else { return }
+      comboLog.log("− pressed, + \(pad.buttonMenu.isPressed ? "held" : "not held", privacy: .public)")
+      guard pad.buttonMenu.isPressed else { return }
       DispatchQueue.main.async { quitEmulatorInFront() }
     }
   }
@@ -1795,7 +1803,11 @@ func quitEmulatorInFront() {
   let isEmulator = { (a: NSRunningApplication) in names.contains(a.bundleURL?.lastPathComponent ?? "") }
   let running = NSWorkspace.shared.runningApplications.filter(isEmulator)
   let front = NSWorkspace.shared.frontmostApplication.flatMap { isEmulator($0) ? $0 : nil }
-  guard let target = front ?? (running.count == 1 ? running.first : nil) else { return }
+  guard let target = front ?? (running.count == 1 ? running.first : nil) else {
+    comboLog.log("no emulator to quit; in front: \(NSWorkspace.shared.frontmostApplication?.executableURL?.lastPathComponent ?? "nothing", privacy: .public)")
+    return
+  }
+  comboLog.log("quitting \(target.executableURL?.lastPathComponent ?? "?", privacy: .public)")
   // An emulator whose rule says `quit: force` ignores a quit request and
   // writes a save a second after the game does, as Gopher64 does, so the
   // process running its game is ended two seconds after being asked.

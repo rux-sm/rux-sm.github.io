@@ -70,8 +70,8 @@ tall as the bar and level with it, 8px clear of the next bus's tile, the
 panel's side and the first day's bars, as a bar is of the next bar,
 with the bar's corners.
 Its parts stand at the start, 8px in from the card's sides, 56px wide, in
-rows, sized below, from the bar's first line to the card's 8px inset at its
-foot, measured from the top, so a row of stacked trips keeps it on the
+rows, sized below, from the bar's first line to its last, measured from
+the top, so a row of stacked trips keeps it on the
 first trip's lines. Hover, an open tip and keyboard focus mark the card
 alone, as a bar's mark the bar, in Layer 02's hover and selected, or the
 Apple themes' accent hover and active; the column around it keeps its
@@ -81,20 +81,19 @@ surface.
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
 | State | The speed in heading-compact-02 and Idle and Off in heading-compact-01, each on 18px, with mph or elapsed time under it in label-01. A lost signal has its own label, No signal on the state's two label lines, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 34px, 9px under the number |
-| Fuel | A gauge of four blocks across the row, 2px apart, filled from the left, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 16px, 8px under the state |
-| Foot | Low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal; the lift and sleeper are in the bus's tip | 16px, 9px under the fuel, on the card's inset |
+| Under the state | Low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal; the lift and sleeper are in the bus's tip | 16px, 9px under the state |
+| Fuel | Carbon's gas station at 16px, then 4px on a gauge of four 7px blocks, 2px apart, filled from the left, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical, the pump with them. No percent; the phone's column and a screen reader keep it | 18px, the bar's line 6, 4px under the row above |
 
-A bus with a tracker has a box round its state and fuel, its sides on the
-card's 8px inset in line with the number, 4px clear of the number and the
-foot and 4px from its words all round, so those two rows stand 46px wide.
-It says whether the engine runs. Off or with no signal it is not drawn,
-and the state and fuel stand on the card on the number's edge, the fuel
-still 46px wide. While the engine runs, idle or
-moving, it is the column's own surface, a step below the card as a bar's
-tail is below the bar, with no border, and its words are the green, amber
-past the speeding limit or idling too long. The fuel keeps its own grey,
-orange and red. Views shorter than six lines have no box and keep the
-state on one row.
+A bus with a tracker has a box round its state, its sides on the card's
+8px inset in line with the number, 4px clear of the number and the row
+under it and 4px from its words all round. It says whether the engine
+runs, so the fuel stands outside it. Off or with no signal it is not
+drawn, and the state stands on the card on the number's edge. While the
+engine runs, idle or moving, it is the column's own surface, a step below
+the card as a bar's tail is below the bar, with no border, and its words
+are the green, amber past the speeding limit or idling too long. Views
+shorter than six lines have no box, keep the state on one row and the fuel
+on the row under it.
 
 56px is the least that holds a number, 8px and its alert.
 
@@ -150,7 +149,7 @@ tile's parts from the foot up. The driver rows stay 40px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 136px | Number, state, fuel and the foot, 12px apart |
+| 6 | 128px, 10px | 136px | Number, state, the row under it, and fuel on the last line |
 | 5 | 112px, 11px | 120px | Number, state and fuel, 12px apart |
 | 4 | 96px, 12px | 104px | Number, state and fuel, 8px apart |
 | 3 | 80px, 13px | 88px | Number and state |

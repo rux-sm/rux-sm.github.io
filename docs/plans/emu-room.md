@@ -19,8 +19,8 @@ fun to use while staying plain. It replaces the front page that
   Library,** which keeps working until the room takes its place; nothing
   links to the room until then. It draws Your Mac and Rux's Collection from
   the real games and this Mac; a game or a console is dragged between them,
-  a plug sets an emulator up or takes it off, and a game opens its side
-  panel when pressed.
+  a plug sets an emulator up, putting an unplugged console back takes it
+  off, and a game opens its side panel when pressed.
 - **Until a Mac's room is kept, the console of each game it holds stands in
   the room,** plugged in where this Mac has its emulator and unplugged where
   it has not, so a Mac with every emulator installed still starts with a
@@ -45,22 +45,44 @@ fun to use while staying plain. It replaces the front page that
   picked up. There is no All, because one console at a time is neater.
 - **There is no Recently played,** because a Mac holds only a handful of
   games, and those are on its shelf or in Favourites.
-- **Your Mac is one scene.** One TV and the consoles stand on a board on the
-  left, with a power strip under it; this Mac's games stand on the same board
-  on the right, with Favourites on a wall shelf above them and how much room
-  is free in the heading. An empty room says "Drag a console up here."
-- **The plug is the whole socket under its console.** Plugged in it sits in
-  the strip; unplugged it hangs loose, its socket blinks and it says "Plug
-  in".
+- **Your Mac is a media wall, about 430px tall,** so the room and Rux's
+  Collection, with covers about 110×150, both fit an 850px window. In the
+  middle the TV stands on a stand of cubbies, one per home console in the
+  room and one ghost cubby to drop the next on, never fewer than three, so
+  the stand is only as big as what it holds. Handhelds stand in a dock on the
+  stand's top beside the TV, since they light their own screen. A bookcase on
+  the right holds Favourites face out on its top shelf and this Mac's other
+  games as spines below, A to Z; the pegboard is on the left. The floor is
+  only ground, and how much room is free is in the heading. An empty room is
+  three cubbies under the TV, the ghost one saying "Drag a console up here."
+- **An empty cubby or dock spot names the console it waits for,** faintly,
+  so where a console goes shows before it is brought.
+- **The plug is a socket under its console, in its cubby,** with a target of
+  at least 24px. Plugged in it is pushed in with a light beside it;
+  unplugged its cable hangs loose, its socket blinks and it says "Plug in".
+- **A console's face shows only what its next step needs:** the power
+  button while its game runs, and the card light once it is unplugged. When
+  that light turns green the console lifts a little out of its cubby, ready
+  to carry back.
 - **A console comes in unplugged, and plugging it in installs its
-  emulator.** Unplugging it takes the emulator off this Mac, once no other
-  plugged-in console uses it, and an unplugged console goes back to its spot
-  with no question; a plugged-in one says "Unplug me first."
-- **Plugging in is the helper's install, unplugging is `R.carry.remove`,**
+  emulator.**
+- **An emulator comes off this Mac by putting its console away, one step at
+  a time, with no question,** so no single press removes anything. The game
+  comes out of the console, which stops it. The plug comes out, which only
+  stands the console unplugged, its emulator still on this Mac. Its card
+  light turns green once every card of its games is in storage, which the
+  page carries there itself. Dragging it back to its place in Rux's
+  Collection is the last step, and takes the emulator off once no other
+  console in the room uses it. Each step refuses until the one before is
+  done, with "Take the game out first.", "Unplug me first." or "Still
+  keeping your saves.", and plugging back in before the last step changes
+  nothing.
+- **Plugging in is the helper's install, putting back is `R.carry.remove`,**
   which carries the saves and keeps the settings in Supabase before the
   emulator goes to the Trash; the light blinks while the install's request is
-  waiting, since it reports no progress. Plugging back in restores this Mac's
-  kept settings, so a console comes back as it was.
+  waiting, since it reports no progress. Bringing the console back and
+  plugging it in restores this Mac's kept settings, so it comes back as it
+  was.
 - **Whether an emulator is installed is read live from the helper,** never
   stored. Only which consoles stand in this Mac's room, and which of those
   are unplugged, is kept, since an unplugged Game Boy can stand beside a
@@ -81,29 +103,66 @@ fun to use while staying plain. It replaces the front page that
   Undo, and its files go a few seconds later, so Undo downloads nothing;
   its saves stay, and there is no separate return area. Picking it up turns the collection to its console, so its own
   cover is there to light up.
+- **A place means the same for everything:** in Rux's Collection a thing is
+  kept on the server or in Supabase and not on this Mac, in the room it is
+  on this Mac, and in or plugged into a console it is the one the next Play
+  uses.
+- **A memory card is one game's save,** drawn tucked into its game's cover
+  and in its console's slot while the game is in. A game can have several,
+  each with a name; only one is in at a time, since an emulator finds a save
+  by a fixed name. A game's other cards hang on the pegboard, so the room
+  stays plain, unless the game is a favourite.
+- **The room has one pegboard, on the wall left of the stand, which holds
+  what can be swapped on whatever is picked:** a picked game's cards, and a
+  picked console's own, such as a PS2's whole cards. It is headed with what
+  is picked and what hangs there, such as "Moon Tower, spare memory cards",
+  and is not there when nothing is picked or nothing can be swapped. A thing
+  is dragged from it onto its game or console to swap it in, and the one
+  swapped out hangs back on the pegboard. Picking something else rehangs it.
+- **No controller is drawn until button mappings exist.** Then a controller
+  is a mapping, the coloured ones alternates a game can be given, and they
+  hang on the pegboard like cards; putting a console away never waits on
+  one, since a mapping holds nothing to lose.
+- **The pegboard calls a save what its console does:** a memory card, a
+  cartridge's save or save data, a word each system has in
+  `emu/emulators.json`.
+- **Pulling a game's card out starts a new save:** Play with no card in
+  finds no save, the emulator makes one, and at quit it is a new card.
+  Dropping another card onto the game swaps it in.
+- **A card is a copy Supabase already keeps,** the ones `carry.js` sets
+  aside, given a name; swapping is the helper moving the save's files while
+  the emulator is closed, and no card is ever deleted by a move. Where one
+  real card holds many games' saves, as on the PS2 and the GameCube, the
+  card is that whole card and belongs to its console.
 - **The TV shows a home console's game while it runs,** and a handheld
   lights its own screen.
 - **A word follows what is held and says what letting go will do:**
   Download, Play, Download and play, Add to Favourites, Take off this Mac,
-  Bring in, Put back, or in red why not, such as "Doesn't fit the Game Boy"
-  and "Plug it in first". The place it will land lights up. The word and the
+  Bring in, Put back, which names the emulator that will go, such as "Put
+  back, and take mGBA off this Mac", or in red why not, such as "Doesn't fit
+  the Game Boy" and "Plug it in first". The place it will land lights up. The word and the
   move come from one function, so they never disagree.
 - **One line beside Your Mac's name says what a move did,** such as
   "Playing." or why the helper refused, with Undo where it can be taken back.
 - **A game on this Mac whose console is not plugged in is dimmed,** with
   Carbon's small tag naming the console it needs.
-- **A room of more than eight consoles is crowded:** the consoles take the
-  scene's whole width, closer and with smaller names, and the games stand on
-  a board of their own beneath, the favourites beside this Mac's.
+- **A room of more than five cubbies is crowded:** the stand grows a second
+  tier and the TV gets smaller, which holds all nine home consoles, and the
+  dock takes handhelds on both sides of the TV. Past 35 games the bookcase
+  shows how many more, such as "+7", and scrolls.
 - **Favourites is a shelf you drag games onto,** from Rux's Collection or
   the room, and off again back to Rux's Collection; it is `emu_notes`'
   favourite mark. A favourite this Mac lacks is dimmed.
+- **Favourites are what stays out.** A favourite's other cards stand
+  beside its cover on the shelf and not on the pegboard, so the games played
+  most swap a card in one drag. A card has no favourite mark of its own; it
+  is out because its game is.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
   where it goes shows before it is dropped.
 - **A game goes in as it would on the real console:** a cartridge drops into
   its slot, a disc slides onto a tray that opens and shuts, then the screen
   lights. A download fills its cover from the bottom as it comes.
-- **Each plugged-in console has a power button,** lit while it plays;
+- **A console's power button is there while it plays,** lit;
   pressing it stops the game. The helper quits an emulator only from the
   controller's + and − today, so the page needs a quit request from it.
 - **The wrong console says no and does nothing:** it shakes its head, buzzes
@@ -119,13 +178,19 @@ fun to use while staying plain. It replaces the front page that
   it, and its heading has Bring to Your Mac or Put back; the plug is a
   button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
-- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one plain
-  flat drawing per system on the foot of one 3:2 box, which `room.js` puts
-  into its page, since a drawing in another file draws nothing in Safari.
-  Every fill is an
+- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one drawing
+  per system on the foot of one 3:2 box, which `room.js` puts into its page,
+  since a drawing in another file draws nothing in Safari. Every fill is an
   `--emu-console-*` property that `app.css` sets from Design's tokens, so a
   console follows the theme, and a handheld's screen is its own property, to
-  light while it plays. The home consoles stand beside the one TV.
+  light while it plays.
+- **The room is drawn as pixel art at one whole scale,** three CSS pixels to
+  an art pixel on a laptop and two below about 1200px wide, never scaled in
+  between, so its edges stay sharp. Each material has three shades mixed
+  from one token, and colour is kept for state: green ready, amber busy or
+  saves not safe yet, red no, blue where a drop lands. The day theme is a
+  pale wall and warm wood; in the evening the room is dark and its lights
+  light it, a playing TV glowing on the wall in its game's colour.
 - **Covers keep one height and their own art's width,** as now.
 - **Without the helper, such as on the phone, Your Mac is not shown,** and
   Rux's Collection is the library to browse.
@@ -133,14 +198,37 @@ fun to use while staying plain. It replaces the front page that
   `emu-`, every colour a `--rux-*` token; motion follows Carbon's, and the
   head shake, which Carbon has no answer for, says so beside it.
 - **The prototype is a private page with invented games,**
-  claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, and is not part of the site.
+  claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, and is not part of the site;
+  the media wall is sketched beside the two layouts not taken, empty and
+  full, at claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv.
 
 ## Questions
 
-- Should Unplug ask before it takes an emulator off this Mac? One press does
-  it now; its saves and settings are kept, but its caches do not come back.
+- Do a game's save states ride with its card, or stay with the game
+  whichever card is in?
+- Pressing a game opens its side panel today. Does pressing it also pick
+  it for the pegboard, or does the pegboard follow only the game in a
+  console?
 
 ## Tasks
+
+- [ ] Lay the room out as the media wall: the stand that grows a cubby per
+      console with its ghost cubby and second tier, the handheld dock, the
+      bookcase of spines under Favourites and the named empty places, at
+      about 430px with the collection's covers at about 110×150.
+- [ ] Name the copies of a save Supabase keeps, as cards, and have the
+      helper swap which one is on this Mac while its emulator is closed.
+- [ ] Draw the pegboard and a game's cards, on its cover, in its console's
+      slot and on the pegboard, with pulling one out, dropping one in and
+      the console's card light.
+- [ ] Draw the room in pixel art: a console 36×24 art pixels, a handheld
+      16×24, the TV 80×56, a cover face out 16×22, a spine 8×22, a card
+      8×10, a plug or power button 8×8, and the furniture as 16×16 tiles
+      that grow.
+
+- [ ] Move the emulator's removal from unplugging to putting the console
+      back, the held word naming the emulator that goes, and have the plug
+      refuse while the console's game runs, once the helper says which does.
 
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
       button, and have it say which game runs, to light the TV or a

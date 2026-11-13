@@ -24,9 +24,6 @@
   const $ = id => document.getElementById(id);
   if (!R?.data) return;
 
-  const DRIVE = 'drive';
-  const key = g => `${g.system}/${g.title}`;
-  const saveKey = s => `${s.system}/${s.name}/${s.kind}`;
   const said = text => { $('emu-update-status').textContent = text; };
   const gb = n => `${(n / 1e9).toFixed(1)} GB`;
 
@@ -39,21 +36,6 @@
   const fileKey = f => `${f.from}/${f.rel ?? f.name}|${Number(f.size)}|${f.saved}`;
 
   const sha1Of = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-1', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
-
-  // A game from the scan as its row: the scan's own names, in the table's.
-  const rowOf = (g, scanned) => ({
-    system: g.system, title: g.title, region: g.region, languages: g.languages, revision: g.revision,
-    formats: g.formats, size: g.size, has_save: Boolean(g.hasSave), folder: Boolean(g.folder),
-    title_id: g.titleId ?? null, version: g.version ?? null, product_code: g.productCode ?? null,
-    // A folder's thousand small files are counted, not each kept.
-    files: g.folder ? g.files.map(({ name, size }) => ({ name, size })) : g.files,
-    extras: g.extras ?? [], match: g.match ?? null, originals: g.originals ?? [], scanned_at: scanned,
-  });
-  // A save as its row, without its note, so writing it leaves rux's note.
-  const saveRowOf = (s, scanned) => ({
-    system: s.system, name: s.name, kind: s.kind, location: DRIVE, game: s.game, files: s.files, size: s.size,
-    created_at: s.created, saved_at: s.saved, scanned_at: scanned,
-  });
 
   let pending = null;
   let running = false;
@@ -142,14 +124,8 @@
         }
       }
 
-      const before = new Map(saved.map(g => [key(g), g]));
-      const now = new Set(games.map(key));
-      const added = games.filter(g => !before.has(key(g)));
-      const changed = games.filter(g => before.has(key(g)) && Number(before.get(key(g)).size) !== g.size);
-      const gone = saved.filter(g => !now.has(key(g)));
-      const savesNow = new Set(scan.saves.map(saveKey));
-      const savesGone = savedSaves.filter(s => s.location === DRIVE && !savesNow.has(saveKey(s)));
-      const savesNew = scan.saves.filter(s => !savedSaves.some(x => x.location === DRIVE && saveKey(x) === saveKey(s)));
+      const change = R.scanSave.changes(scan, saved, savedSaves);
+      const { added, changed, gone, savesGone, savesNew } = change;
       // Nothing to save: the same games, saves and backup, and this Mac as it was.
       if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac && sameNewest && !given.length
         && (scan.backup?.sha1 ?? null) === (savedDrive?.backup?.sha1 ?? null)) {
@@ -157,17 +133,7 @@
         return;
       }
       pending = {
-        scan: {
-          games: games.map(g => rowOf(g, scan.scanned)),
-          gone,
-          saves: scan.saves.map(s => saveRowOf(s, scan.scanned)),
-          savesGone,
-          drive: {
-            to_delete: scan.toDelete, unsorted_saves: scan.unsortedSaves, backups: scan.backups,
-            backup: scan.backup, newest, scanned_at: scan.scanned,
-          },
-          renames: scan.renames,
-        },
+        scan: R.scanSave.rowsOf(scan, change, { backup: scan.backup, newest }),
         zip,
         mac,
         given,

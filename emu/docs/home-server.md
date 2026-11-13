@@ -108,6 +108,60 @@ path, the account's id and the time taken. They never print a token.
 | `ORIGINS` | the sites it answers, comma-separated; the published site and both local previews by default |
 | `MEMBER_RPC` | the Supabase function that says an account may download, `is_owner` until `emu_is_member()` exists |
 
+## The nightly scan
+
+A container scans the collection at 4 a.m. each night, and once when it
+starts, with `emu/tools/scan-roms.mjs --save`: the same scan as Update, saved
+to Supabase the same way, so a game put on the server is in the Library the
+next morning. It reads the games read-only and keeps its fingerprints in its
+own `scan-cache` volume, starting from the ones beside the games, so only a
+new or changed file is read whole. It leaves the drive's backup and the
+newest versions out as Update last saved them, so Update still puts new BIOS,
+keys and installers in Supabase.
+
+1. In the Supabase dashboard, open **Project Settings**, then **API Keys**,
+   and make a new secret key named for the home server, if it has none. It
+   reads and writes every account's rows, so it goes only into TrueNAS,
+   never into a file here.
+2. In TrueNAS, open **Apps**, the `games` app, then **Edit**. Add this
+   service beside the others, with the key in place of `KEY`, and add
+   `scan-cache: {}` under `volumes:` at the end beside `caddy-data`. Then
+   **Save**.
+
+```yaml
+  scan:
+    image: node:24-alpine
+    restart: unless-stopped
+    command: >-
+      sh -c 'mkdir -p /tmp/emu/tools && cd /tmp/emu && while true; do
+      wget -qO tools/scan-roms.mjs https://rux-sm.github.io/emu/tools/scan-roms.mjs
+      && wget -qO scan.js https://rux-sm.github.io/emu/scan.js
+      && wget -qO saves-rules.js https://rux-sm.github.io/emu/saves-rules.js
+      && wget -qO scan-save.js https://rux-sm.github.io/emu/scan-save.js
+      && wget -qO emulators.json https://rux-sm.github.io/emu/emulators.json
+      && node tools/scan-roms.mjs /games --save;
+      sleep $$(node -e "const n=new Date(),t=new Date(n);t.setHours(4,0,0,0);if(t<=n)t.setDate(t.getDate()+1);console.log(Math.round((t-n)/1000))");
+      done'
+    environment:
+      CACHE: /cache
+      SUPABASE_KEY: KEY
+      TZ: America/Chicago
+    volumes:
+      - /mnt/storage/games:/games:ro
+      - scan-cache:/cache
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_READ_SEARCH
+```
+
+The app's **Logs** print one line a night: how many games and drive saves
+it found and what changed, such as `2 added, 1 gone`, or `nothing changed`.
+A night whose scan fails prints why and tries again the next night.
+
 ## The copy of Supabase
 
 `emu/tools/copy-supabase.mjs` keeps the server's own copy of everything

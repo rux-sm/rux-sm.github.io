@@ -68,6 +68,7 @@ step('pixels inks', process.execPath, ['pixels/tools/build-inks.mjs', '--check']
 step('emu downloads', process.execPath, ['emu/tools/serve-games.test.mjs']);
 step('emu saves carry', process.execPath, ['emu/tools/carry.test.mjs']);
 step('emu server copy', process.execPath, ['emu/tools/copy-supabase.test.mjs']);
+step('emu scan save', process.execPath, ['emu/tools/scan-save.test.mjs']);
 
 // THE PARSE RULE. Every tracked script, and every script written into a page,
 // parses the way it is loaded; the flag lets Node parse a module unrun.

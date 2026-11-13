@@ -13,6 +13,18 @@
 // belongs in this repository, which is public. `--headers-only` skips the
 // fingerprints, for a quick look.
 //
+// `--save` is the home server's nightly scan: it writes nothing beside the
+// games, which it mounts read-only, and saves the scan to Supabase as Update
+// does, with scan-save.js, keeping the backup and newest versions the drive's
+// row holds, since the server packs no zip and asks no feed. It keeps its
+// fingerprints in CACHE, starting from the ones beside the games, and says
+// what changed in one line.
+//
+//   CACHE=/cache SUPABASE_KEY=<secret key> node scan-roms.mjs /games --save
+//
+// CACHE         the folder its fingerprints are kept in
+// SUPABASE_KEY  a secret key of the project, kept only on the server
+//
 // A CHD the organize tool did not make is looked inside here with chdman,
 // which extracts it once to a temporary folder, so the lists can match the
 // tracks it holds; the page cannot, and leaves it for this.
@@ -25,9 +37,17 @@ import os from 'node:os';
 import { execFileSync, spawnSync } from 'node:child_process';
 import scanner from '../scan.js';
 import saveRules from '../saves-rules.js';
+import scanSave from '../scan-save.js';
 
 const root = process.argv[2];
 const headersOnly = process.argv.includes('--headers-only');
+const saving = process.argv.includes('--save');
+// The project's address, as /account.js has it.
+const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
+if (saving && (!process.env.SUPABASE_KEY || !process.env.CACHE)) {
+  console.error('--save needs CACHE and SUPABASE_KEY');
+  process.exit(1);
+}
 if (!root || !fs.existsSync(path.join(root, 'roms'))) {
   console.error('usage: scan-roms.mjs <emulation folder holding roms/>');
   process.exit(1);
@@ -35,8 +55,10 @@ if (!root || !fs.existsSync(path.join(root, 'roms'))) {
 const scansDir = path.join(root, 'scans');
 const backupsDir = path.join(root, 'backups');
 const emulators = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8')).systems;
-const cachePath = path.join(scansDir, 'fingerprints.json');
-const cache = fs.existsSync(cachePath) ? JSON.parse(fs.readFileSync(cachePath, 'utf8')) : {};
+const cacheDir = saving ? process.env.CACHE : scansDir;
+const cachePath = path.join(cacheDir, 'fingerprints.json');
+const seed = [cachePath, path.join(scansDir, 'fingerprints.json')].find((f) => fs.existsSync(f));
+const cache = seed ? JSON.parse(fs.readFileSync(seed, 'utf8')) : {};
 
 const abs = (rel) => path.join(root, rel);
 const sha1Of = async (file) => {
@@ -110,9 +132,20 @@ const { scan, packed, newBytes, gamesWithoutLists } = await scanner.scan(drive, 
 console.error(`${(newBytes / 1e9).toFixed(1)} GB new to fingerprint${headersOnly ? ' (skipped)' : ''}`);
 if (gamesWithoutLists) console.error('no lists in <emulation>/lists/, so no game is matched');
 
-fs.mkdirSync(scansDir, { recursive: true });
+fs.mkdirSync(cacheDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));
 const date = new Date().toISOString().slice(0, 10);
+
+if (saving) {
+  const db = scanSave.restDb({ url: SUPABASE_URL, key: process.env.SUPABASE_KEY });
+  const [games, saves, [row]] = await Promise.all([
+    db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'backup,newest')]);
+  const change = scanSave.changes(scan, games, saves);
+  const counts = Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`);
+  await scanSave.save(db, scanSave.rowsOf(scan, change, { backup: row?.backup, newest: row?.newest }));
+  console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the drive; ${counts.join(', ') || 'nothing changed'}`);
+  process.exit(0);
+}
 
 // The backup zip, which the Status page uploads to Supabase. macOS's own zip packs it.
 const list = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((n) => !n.startsWith('.')).sort() : []);

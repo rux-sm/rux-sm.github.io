@@ -182,41 +182,8 @@
         .eq('system', save.system).eq('name', save.name).eq('kind', save.kind).eq('location', save.location)).error);
     },
 
-    // A scan saved. A rename the organize tool made moves the game's notes
-    // and its saves' notes first, so the scan's rows land on them. Then every
-    // game and save in the scan is written, leaving each note as it is, the
-    // ones no longer on the drive are deleted, and the drive's row is
-    // replaced. Rows go 100 at a time.
-    async saveScan({ games, gone, saves, savesGone, drive, renames }) {
-      const notes = await all(() => client.from('emu_notes').select('system, title'));
-      const has = new Set(notes.map(n => `${n.system}/${n.title}`));
-      for (const r of renames) {
-        if (!has.has(`${r.system}/${r.from}`) || has.has(`${r.system}/${r.to}`)) continue;
-        fail((await client.from('emu_notes').update({ title: r.to }).eq('system', r.system).eq('title', r.from)).error);
-        has.add(`${r.system}/${r.to}`);
-      }
-      const keys = await data.saveKeys();
-      const saveKeys = new Set(keys.map(k => `${k.system}/${k.name}/${k.kind}/${k.location}`));
-      const locations = [...new Set(keys.map(k => k.location))];
-      for (const r of renames) {
-        for (const kind of ['save', 'state', 'card']) {
-          for (const location of locations) {
-            if (!saveKeys.has(`${r.system}/${r.from}/${kind}/${location}`) || saveKeys.has(`${r.system}/${r.to}/${kind}/${location}`)) continue;
-            fail((await client.from('emu_saves').update({ name: r.to, game: r.to })
-              .eq('system', r.system).eq('name', r.from).eq('kind', kind).eq('location', location)).error);
-            saveKeys.add(`${r.system}/${r.to}/${kind}/${location}`);
-          }
-        }
-      }
-      await inBatches(games, rows => client.from('emu_games').upsert(rows, { onConflict: 'system,title' }));
-      for (const g of gone) fail((await client.from('emu_games').delete().eq('system', g.system).eq('title', g.title)).error);
-      await inBatches(saves, rows => client.from('emu_saves').upsert(rows, { onConflict: 'system,name,kind,location' }));
-      for (const s of savesGone) {
-        fail((await client.from('emu_saves').delete()
-          .eq('system', s.system).eq('name', s.name).eq('kind', s.kind).eq('location', s.location)).error);
-      }
-      fail((await client.from('emu_drive').upsert({ id: 1, ...drive }, { onConflict: 'id' })).error);
-    },
+    // A scan saved, as scan-save.js saves one.
+    saveScan: rows => window.Emu.scanSave.save(window.Emu.scanSave.clientDb(client), rows),
 
     // The backups in Supabase, newest first.
     async backups() {

@@ -316,13 +316,13 @@ a moon in the rest colour in the sleeper berth. No such icon means no trip.
 Under the name stands the driving time Samsara says they have left, the
 least of the drive, shift and cycle clocks, as a 2px line along the tile's
 foot, filled from the start of the ten hours as a trip bar's track is, in
-grey, amber under two hours; the time in words is the card's. A driver on no
-trip with all ten hours is free, and has no line. Where the red or amber mark
+green, amber under two hours; the time in words is the card's. Only a driver
+on a trip has it, once Samsara gives a clock, so nothing shows while it
+loads. Where the red or amber mark
 says it there is no gauge: on a trip, not logged in or in another bus;
 over or out of hours; and, unless Samsara has a mark of its own, an
-expired paper, whose words are the card's. A driver with no clock, or not
-logged in off a trip, has the gauge dashed and empty. Their duty and rest
-are the card's.
+expired paper, whose words are the card's. Their duty and rest are the
+card's.
 
 A press anywhere on a tile opens the driver's Driver card, as a press
 anywhere on a bus's tile opens its tip: the whole tile lights under the

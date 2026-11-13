@@ -4176,15 +4176,14 @@ a.scheduler-tip__go { text-decoration: none; }
   inset: 0;
 }
 /* THE HOURS LINE: the driving time left of the ten hours, a 2px line along
-   the card's foot, filled from the start as the trip bar's track is, in
-   the secondary icon grey, amber under two hours, on the second layer's
-   subtle border, and Carbon's selected one on a selected card, where the
-   plain one is the card's own grey; with no clock, dashed and empty, ten
-   dashes, one an hour. It is a box the card's size and place whose
+   the card's foot of a driver on a trip, filled from the start as the trip
+   bar's track is, in the success green, amber under two hours, on the
+   second layer's subtle border, and Carbon's selected one on a selected
+   card, where the plain one is the card's own grey. It is a box the card's size and place whose
    background is the line, so the card's corners clip it, and presses go
    through it to the card. */
 .scheduler-avail__meter {
-  --scheduler-meter-ink: var(--rux-icon-secondary);
+  --scheduler-meter-ink: var(--scheduler-mark-success);
   --scheduler-meter-track: var(--rux-border-subtle-02);
   --scheduler-meter-h: var(--rux-spacing-01);
   position: absolute;
@@ -4198,7 +4197,6 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-avail__meter[hidden] { display: none; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
-.scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--scheduler-meter-track) 0 calc(10% - var(--rux-spacing-01)), transparent 0 10%) bottom / 100% var(--scheduler-meter-h) no-repeat; }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
 /* What a driver is doing on their trip, then their worst mark, a status
    solid in its colour, ending the line, each 4px after the one before. Each stands in its own column down the rail, counted from the

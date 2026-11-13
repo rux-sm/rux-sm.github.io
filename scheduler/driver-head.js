@@ -29,13 +29,12 @@
    - Along the tile's foot, the driving time Samsara says they have left,
      the least of the drive, shift and cycle clocks, as a 2px line filled of
      the ten hours a passenger carrier's driver may drive, as a trip bar's
-     track is filled; amber when low, under RoadBar's LOW. A driver on no
-     trip with all ten hours is free and has none, so the drivers who matter
-     stand out. Where a gauge cannot say it there is none, and the red or
-     amber mark says it: on a trip, not logged in or in another bus; over
-     or out of hours; else an expired paper, since that driver cannot drive.
-     A driver Samsara keeps no clock for, or whose app is not connected off
-     a trip, has the gauge dashed and empty, as a bus with no signal does.
+     track is filled, in green, amber when low, under RoadBar's LOW. Only a
+     driver on a trip has it, and only once Samsara gives a clock, so the
+     drivers who matter stand out and nothing shows while it loads. Where
+     the line cannot say it there is none, and the red or amber mark says
+     it: on a trip, not logged in or in another bus; over or out of hours;
+     else an expired paper, since that driver cannot drive.
      The time in words, their duty and rest are the button's label and the
      card's.
    A press anywhere on the tile opens the driver's card, a Carbon toggletip
@@ -94,8 +93,8 @@
 
   /* What Samsara says now: `{ tone, words, meter, bare, trip, free, mark }`,
      its tone, quiet, normal, warning or error; the words for the tile's
-     label; its gauge's share of the ten hours from 0 to 1, or null for the
-     dashed empty gauge of no clock; `bare` when its mark says it and there
+     label; its line's share of the ten hours from 0 to 1, or null with no
+     clock; `bare` when its mark says it and there
      is no gauge; what the driver is doing on a trip under way, `driving`,
      `on`, `off` or `sleeper`, or null; whether they are free, on no trip
      with all ten hours, with no gauge; and the mark it earns, or null. `trip` is data.js's `tripNow`, null on no
@@ -255,7 +254,8 @@
     const line = cell.querySelector('.scheduler-avail__line');
     line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, away, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
     const meter = line.querySelector('.scheduler-avail__meter');
-    meter.hidden = state.free || state.bare;
+    // The hours line is a trip's: drawn only for a driver on one, with a clock to fill it.
+    meter.hidden = !trip || state.bare || state.meter == null;
     meter.dataset.tone = state.tone;
     if (state.meter != null) {
       meter.dataset.kind = 'drive';

@@ -795,6 +795,9 @@ expect('two icons: on a trip, what the driver is doing, the arrow driving, the p
   [[null, '#i-BPMN-link--fill', 'driving', false], [null, '#i-pause--filled', 'off', false],
     [null, '#i-asleep--filled', 'sleeper', false], ['#i-warning--filled', '#i-play--filled--alt', 'on', true],
     ['#i-warning--alt--filled', '#i-pause--filled', 'off', false], [null, null, null, true]]);
+expect('the hours line is a trip\'s: none off a trip, and none before Samsara gives a clock, so nothing shows while it loads',
+  [tripTile({ duty: 'off', left_ms: 5 * H }, false)[3], tripTile(null, true)[3], tripTile({ duty: 'off', left_ms: null }, true)[3]],
+  [true, true, true]);
 expect('the hours line is filled with the time left, and amber under two hours',
   [tripTile({ duty: 'off', left_ms: 1.5 * H }, true), (m => [m.dataset.tone, m.style.getPropertyValue('--scheduler-share')])(tripCell.querySelector('.scheduler-avail__meter'))],
   [[null, '#i-pause--filled', 'off', false], ['warning', '15%']]);

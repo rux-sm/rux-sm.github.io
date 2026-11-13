@@ -18,6 +18,11 @@
    Emulators page.
    Update, above them, is update.js, and they are drawn again after it saves;
    this Mac is read again each time the page comes back into view.
+   Set up this Mac, above this Mac's emulators while one is missing, older
+   than the installer Supabase holds or never opened here, installs each from
+   Supabase and makes it ready as a first Play does, with carry.js: its
+   settings from the preferred set, its BIOS, keys and firmware, its saves and
+   the settings Emu manages.
    ========================================================================== */
 (() => {
   'use strict';
@@ -261,7 +266,11 @@
         ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'
         : `As Update last saved it there, ${R.when(mac.gathered_at)}.`,
       rows);
-    if (here) out.append(macSection(here, rowsOf(here)));
+    if (here) {
+      const todo = setUpWork(here, emulators, used, held);
+      if (todo.length) out.append(setUp(todo));
+      out.append(macSection(here, rowsOf(here)));
+    }
     if (R.helper.onMac && !live) out.append(startHelper());
     const others = macs.filter(m => m.name !== here?.name).sort((a, b) => a.name.localeCompare(b.name))
       .map(mac => ({ mac, rows: rowsOf(mac) }));
@@ -283,6 +292,63 @@
     item.addEventListener('rux:accordion-opened', () => { othersOpen = true; });
     item.addEventListener('rux:accordion-closed', () => { othersOpen = false; });
     return R.folds([item]);
+  }
+
+  // What Set up this Mac does here: each emulator whose systems have games,
+  // to install where this Mac lacks it, holds another version or one it
+  // cannot name, and to make ready where it was never opened here.
+  function setUpWork(mac, emulators, used, held) {
+    const todo = [];
+    for (const [name, rule] of Object.entries(emulators.macSaves)) {
+      if (!used(name)) continue;
+      const e = mac.emulators?.find(x => x.emulator === name);
+      const installer = R.installerOf(held, name);
+      const version = R.keptVersion(installer);
+      const known = e?.app && (e.app.receipt || rule.reportsVersion !== false) ? e.app.version ?? null : null;
+      const install = Boolean(installer && version && (!e?.app || !known || R.plainVersion(known) !== version));
+      if (install || !e?.data) todo.push({ name, installer, version, install });
+    }
+    return todo;
+  }
+
+  // Set up this Mac: one press for every emulator `setUpWork` names, one after
+  // another, an emulator that fails said at the end and the rest done.
+  function setUp(todo) {
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-3');
+    const installs = todo.filter(t => t.install).map(t => t.name);
+    const readies = todo.filter(t => !t.install).map(t => t.name);
+    const said = el('p', 'rux--type-body-01', [
+      installs.length ? `Installs ${installs.join(', ')} from Supabase.` : '',
+      readies.length ? `Makes ${readies.join(', ')} ready.` : '',
+      'Each then opens its first game with its saves, BIOS and settings.',
+    ].filter(Boolean).join(' '));
+    said.setAttribute('role', 'status');
+    const b = el('button', 'rux--btn rux--btn--primary', 'Set up this Mac');
+    b.type = 'button';
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      const failed = [];
+      for (const [i, t] of todo.entries()) {
+        const step = `${t.name}, ${i + 1} of ${todo.length}`;
+        try {
+          if (t.install) {
+            said.textContent = `Installing ${step}…`;
+            if (!await R.helper.install(t.name, t.installer, t.version)) throw new Error('Rux Emu Helper on this Mac is too old: update it first.');
+          }
+          said.textContent = `Making ${step} ready…`;
+          await R.carry.start(t.name);
+          await R.carry.give(t.name);
+          await R.carry.run(t.name);
+          await R.helper.manage(t.name);
+        } catch (error) { console.error(error); failed.push(`${t.name}: ${error.message}`); }
+      }
+      said.textContent = failed.length ? `Not set up:\n${failed.join('\n')}` : 'This Mac is set up.';
+      live = await R.helper.mac();
+      if (live && !failed.length) draw();
+      b.disabled = false;
+    });
+    box.append(R.el('h2', 'rux--type-heading-03', 'Set up this Mac'), said, b);
+    return box;
   }
 
   // On a Mac whose helper is not answering, a way to start it and see this Mac live.

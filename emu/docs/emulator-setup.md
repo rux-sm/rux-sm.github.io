@@ -139,6 +139,19 @@ puts it in place and starts it. `emu/tools/build-helper.mjs` builds it only on a
 keychain holds that certificate; to build on another, export it from
 Keychain Access as a `.p12` file and import it there.
 
+## Setting up a new Mac
+
+1. Sign in at rux-sm.github.io/emu, open Status, download Rux Emu Helper,
+   open it and allow it as above.
+2. On Status, press **Set up this Mac**. It installs each emulator whose
+   systems have games from Supabase, then starts each from the preferred
+   settings with its BIOS, keys, firmware and saves, so the first game
+   played opens as on any other Mac.
+3. Download a game from the Collection and press Play.
+
+Set up this Mac shows while an emulator is missing, older than the
+installer Supabase holds, or never opened on the Mac.
+
 ## Checking a Mac
 
 With the helper running, the Status page shows this Mac live: what is

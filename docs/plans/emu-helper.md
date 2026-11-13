@@ -68,4 +68,3 @@ None open.
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Add Set up this Mac to the Status page.

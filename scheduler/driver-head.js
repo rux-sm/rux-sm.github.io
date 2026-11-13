@@ -26,12 +26,12 @@
      on time off today has the crossed calendar there, in the colour their
      time off takes in the week, so nobody calls them. A driver with no such
      icon is on no trip and not away.
-   - Before the icons, the driving time Samsara says they have left, the
-     least of the drive, shift and cycle clocks, as a 16px gauge, a ring
-     filled of the ten hours a passenger carrier's driver may drive, as the
-     bus tile's fuel is, drawn only while low, under RoadBar's LOW, in
-     amber, so a driver short of hours stands out; with hours enough the
-     card says how many. A driver on no trip with all ten hours is free. Where a gauge cannot say it there is none, and the red or
+   - Along the tile's foot, the driving time Samsara says they have left,
+     the least of the drive, shift and cycle clocks, as a 2px line filled of
+     the ten hours a passenger carrier's driver may drive, as a trip bar's
+     track is filled; amber when low, under RoadBar's LOW. A driver on no
+     trip with all ten hours is free and has none, so the drivers who matter
+     stand out. Where a gauge cannot say it there is none, and the red or
      amber mark says it: on a trip, not logged in or in another bus; over
      or out of hours; else an expired paper, since that driver cannot drive.
      A driver Samsara keeps no clock for, or whose app is not connected off
@@ -255,8 +255,7 @@
     const line = cell.querySelector('.scheduler-avail__line');
     line.setAttribute('aria-label', [`${full}'s card`, trip ? 'On a trip' : null, away, state.words, ...marks.map(m => m.words)].filter(Boolean).join('. '));
     const meter = line.querySelector('.scheduler-avail__meter');
-    // The gauge is drawn only when it warns: low, or no clock to read.
-    meter.hidden = state.free || state.bare || state.tone === 'normal';
+    meter.hidden = state.free || state.bare;
     meter.dataset.tone = state.tone;
     if (state.meter != null) {
       meter.dataset.kind = 'drive';

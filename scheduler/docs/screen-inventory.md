@@ -313,11 +313,11 @@ under way, from its yard-out to its return, has what they are doing on it, mark 
 arrow in green while driving, amber under two hours; a grey play triangle on duty,
 a yard move with it; a grey pause off duty, personal conveyance with it;
 a moon in the rest colour in the sleeper berth. No such icon means no trip.
-Before the icons stands the driving time Samsara says they have left, the
-least of the drive, shift and cycle clocks, as a 16px gauge, a 2px ring
-filled clockwise from the top of the ten hours, drawn only under two hours
-left, in amber; the time in words is the card's. With hours enough, or on no
-trip with all ten hours, free, a driver has no gauge. Where the red or amber mark
+Under the name stands the driving time Samsara says they have left, the
+least of the drive, shift and cycle clocks, as a 2px line along the tile's
+foot, filled from the start of the ten hours as a trip bar's track is, in
+grey, amber under two hours; the time in words is the card's. A driver on no
+trip with all ten hours is free, and has no line. Where the red or amber mark
 says it there is no gauge: on a trip, not logged in or in another bus;
 over or out of hours; and, unless Samsara has a mark of its own, an
 expired paper, whose words are the card's. A driver with no clock, or not

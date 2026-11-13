@@ -4175,31 +4175,33 @@ a.scheduler-tip__go { text-decoration: none; }
   position: absolute;
   inset: 0;
 }
-/* THE HOURS GAUGE: the driving time left of the ten hours, a 2px ring the
-   icon's 16px, filled clockwise from the top in the success green, amber
-   under two hours, on the second layer's subtle border, as the bus tile's
-   fuel is, and Carbon's selected one on a selected card, where the plain
-   one is the card's own grey; with no clock, dashed and empty, ten dashes,
-   one an hour. The ring is a mask over the fill, so the card's hover and
-   selected show through its middle; its inner edge fades over half a pixel
-   so it draws round, and the radius trims the fill's corners outside it. */
+/* THE HOURS LINE: the driving time left of the ten hours, a 2px line along
+   the card's foot, filled from the start as the trip bar's track is, in
+   the secondary icon grey, amber under two hours, on the second layer's
+   subtle border, and Carbon's selected one on a selected card, where the
+   plain one is the card's own grey; with no clock, dashed and empty, ten
+   dashes, one an hour. It is a box the card's size and place whose
+   background is the line, so the card's corners clip it, and presses go
+   through it to the card. */
 .scheduler-avail__meter {
-  --scheduler-meter-ink: var(--scheduler-mark-success);
+  --scheduler-meter-ink: var(--rux-icon-secondary);
   --scheduler-meter-track: var(--rux-border-subtle-02);
-  inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-mark-glyph);
-  margin-inline-start: var(--rux-spacing-02);
-  border-radius: 50%;
-  background: conic-gradient(var(--scheduler-meter-ink) var(--scheduler-share, 0%), var(--scheduler-meter-track) 0);
-  mask: radial-gradient(closest-side, transparent calc(100% - var(--rux-spacing-01) - 0.5px), #000 calc(100% - var(--rux-spacing-01)));
+  --scheduler-meter-h: var(--rux-spacing-01);
+  position: absolute;
+  inset-block-start: var(--scheduler-row-clear);
+  inset-inline: var(--scheduler-side-clear);
+  block-size: var(--scheduler-tile-card-h);
+  border-radius: var(--scheduler-bar-radius, 0);
+  pointer-events: none;
+  background: linear-gradient(to right, var(--scheduler-meter-ink) 0 var(--scheduler-share, 0%), var(--scheduler-meter-track) 0)
+    bottom / 100% var(--scheduler-meter-h) no-repeat;
 }
 .scheduler-avail__meter[hidden] { display: none; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
-.scheduler-avail__meter:not([data-kind]) { background: repeating-conic-gradient(var(--scheduler-meter-track) 0 18deg, transparent 0 36deg); }
+.scheduler-avail__meter:not([data-kind]) { background: repeating-linear-gradient(to right, var(--scheduler-meter-track) 0 calc(10% - var(--rux-spacing-01)), transparent 0 10%) bottom / 100% var(--scheduler-meter-h) no-repeat; }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
-/* After the gauge, what a driver is doing on their trip, then their worst
-   mark, a status solid in its colour, ending the line, each 4px after the
-   one before. Each stands in its own column down the rail, counted from the
+/* What a driver is doing on their trip, then their worst mark, a status
+   solid in its colour, ending the line, each 4px after the one before. Each stands in its own column down the rail, counted from the
    tile's end, as a bar's alert ends its row: one not drawn keeps its place
    while any before it is drawn, and gives it up otherwise, so THE NAME
    RUNS TO THE FIRST ICON DRAWN and a tile with none holds its name whole. */
@@ -4216,9 +4218,9 @@ a.scheduler-tip__go { text-decoration: none; }
 /* The first icon drawn, whichever it is, stands 8px after the name, as a
    bar's marks stand from its words: its own 4px and 4px the name keeps
    while the tile has an icon at all. */
-.scheduler-avail__name:has(.scheduler-avail__meter:not([hidden]), > .scheduler-avail__doing:not([hidden]), > .scheduler-avail__mark:not([hidden])) > .scheduler-avail__who { margin-inline-end: var(--rux-spacing-02); }
-.scheduler-avail__name:has(.scheduler-avail__meter[hidden]) > .scheduler-avail__doing[hidden],
-.scheduler-avail__name:has(.scheduler-avail__meter[hidden]):has(> .scheduler-avail__doing[hidden]) > .scheduler-avail__mark[hidden] { display: none; }
+.scheduler-avail__name:has(> .scheduler-avail__doing:not([hidden]), > .scheduler-avail__mark:not([hidden])) > .scheduler-avail__who { margin-inline-end: var(--rux-spacing-02); }
+.scheduler-avail__name > .scheduler-avail__doing[hidden],
+.scheduler-avail__name:has(> .scheduler-avail__doing[hidden]) > .scheduler-avail__mark[hidden] { display: none; }
 .scheduler-avail__mark { color: var(--scheduler-head-low); }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* What they are doing: driving in the trip bar's green, amber under two

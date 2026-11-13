@@ -5618,12 +5618,12 @@ html[data-scheduler-takeover] {
 .scheduler-maintenance-title .rux--btn[hidden] { display: none; }
 
 /* ── A driver's schedule link (share/driver.html) and its staff view ────────
-   (drivers.html's Send trips tab). A few screens, each a stack: rows that open something
+   (drivers.html's Trips tab). A few screens, each a stack: rows that open something
    are Carbon's clickable tiles, an icon or a day at the left, the words, a
    tag and a chevron at the right, set 2px apart so the page between them
    rules them. Phone first; the staff view holds the screens to a phone's
    width, so staff read them at the size drivers do. */
-/* The Send trips tab of a driver's record: the office's work, then the
+/* The Trips tab of a driver's record: the office's work, then the
    driver's page, which is as wide as a phone. */
 .scheduler-send {
   display: grid;
@@ -5656,7 +5656,7 @@ html[data-scheduler-takeover] {
    a screen's height, so the message stays in reach. */
 .scheduler-send__list { max-block-size: 28rem; overflow: auto; }
 .scheduler-send__date { font-weight: 600; }
-.scheduler-send__tags { display: flex; gap: var(--rux-spacing-02); }
+.scheduler-send__tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
 .scheduler-send__tags .rux--tag { margin: 0; }
 .scheduler-send__note { color: var(--rux-text-secondary); }
 .scheduler-send__note:empty { display: none; }

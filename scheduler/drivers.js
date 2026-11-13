@@ -13,8 +13,8 @@
    is none.
 
    A driver is never deleted here, only set Inactive, so past trips keep the
-   driver's name. Its Send trips tab, driver-send.js's, makes, changes and
-   turns off the driver's schedule link. Its Documents tab lists the driver's
+   driver's name. Its Trips tab, driver-send.js's, lists the driver's upcoming
+   trips and makes, changes and turns off the driver's schedule link. Its Documents tab lists the driver's
    current documents, which the Documents page uploads and edits, under the
    forms on their link, which driver-forms.js draws once this page says
    which driver it read. drivers.html?form=<form id> is a form's own view,
@@ -88,6 +88,12 @@
 
   // Says which driver the page holds, for driver-forms.js's list of their forms.
   const sayDriver = () => document.dispatchEvent(new CustomEvent('scheduler:driver-loaded', { detail: loaded }));
+  /* What the page as it stands would leave a trip without, before Save: the
+     time off on it, and the driver when Inactive is picked. The Trips tab
+     marks each trip either covers. */
+  const sayAway = () => document.dispatchEvent(new CustomEvent('scheduler:driver-away', { detail: {
+    off, inactive: document.querySelector('input[name="scheduler-d-status"]:checked')?.value === 'inactive',
+  } }));
 
   // Each status icon written out whole, so the class sweep can read it.
   const INDICATOR = {
@@ -432,7 +438,7 @@
     $('scheduler-driver-photo-remove').hidden = !loaded?.photo_path;
     $('scheduler-driver-photo-help').hidden = !!loaded;
     $('scheduler-driver-photo-add').disabled = !loaded;
-    // A driver not yet saved has no schedule, so no Schedule tab.
+    // A driver not yet saved has no trips or documents, so no tabs.
     $('scheduler-driver-tabs').hidden = !loaded;
   }
 
@@ -480,8 +486,8 @@
   // ── time off ──
 
   function drawOff() {
-    // The upcoming trips say which the time off on the page now covers.
-    drawTrips();
+    // The Trips tab says which trips the time off on the page now covers.
+    sayAway();
     const list = $('scheduler-driver-off');
     list.replaceChildren();
     if (!off.length) {
@@ -650,80 +656,8 @@
     }
   }
 
-  // ── upcoming trips, read only ──
-  // A stored role, such as `relief-driver`, as words in sentence case.
-  const sentence = s => { const t = s.replace(/[-_]/g, ' '); return t[0].toUpperCase() + t.slice(1); };
-  // A day range and a list of windows, as the time off on the page keeps them.
-  const overlaps = (windows, from, to) => (windows || []).some(w => w.start_date <= (to || from) && w.end_date >= from);
-
-  /* The driver's upcoming legs, each the leg its vehicle's route is on, read
-     through trip-shape.js once a load and drawn again as the time off or the
-     status on the page change, so a leg they would cover is marked before
-     Save. On a trip of more than one leg the first is Outbound and every one
-     after it Return. */
-  const SHAPE = window.SchedulerTripShape;
-  let legs = null;
-  let tripsFailed = false;
-  async function readTrips() {
-    const { data, error } = await client.from('trip_drivers')
-      .select('role,trip_assignments(route_id,buses(number,type),trips(id,trip_ref,destination,customer,cancelled_at,'
-        + 'trip_legs(id,leg,start_date,end_date,created_at,trip_routes(id,position))))')
-      .eq('driver_id', loaded.id);
-    tripsFailed = !!error;
-    const now = iso(today());
-    legs = error ? [] : (data || []).map(r => {
-      const a = r.trip_assignments;
-      const t = a?.trips;
-      if (!t || t.cancelled_at) return null;
-      const leg = SHAPE.legOfRoute(t, a.route_id);
-      const from = leg?.start || '', to = leg?.end || from;
-      if (!ISO.test(from) || to < now) return null;
-      const way = SHAPE.legsOf(t).length > 1 ? (leg.number === 1 ? 'Outbound' : 'Return') : null;
-      return { t, from, to, way, bus: a.buses, role: r.role };
-    }).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
-  }
-
   // Setting the driver Inactive marks every upcoming trip before Save.
-  for (const radio of document.querySelectorAll('input[name="scheduler-d-status"]')) radio.addEventListener('change', () => drawTrips());
-
-  function drawTrips() {
-    if (!legs) return;
-    const section = $('scheduler-driver-trips-section');
-    const list = $('scheduler-driver-trips');
-    section.hidden = false;
-    list.replaceChildren();
-    const error = tripsFailed;
-    const inactive = document.querySelector('input[name="scheduler-d-status"]:checked')?.value === 'inactive';
-    if (error || !legs.length) {
-      const li = el('li', 'rux--contained-list-item');
-      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note',
-        error ? "The trips didn't load." : 'No upcoming trips.'));
-      list.appendChild(li);
-      return;
-    }
-    for (const l of legs) {
-      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
-      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
-      a.href = `./?trip=${encodeURIComponent(l.t.id)}&date=${l.from}`;
-      // Carbon lays a clickable item's content out itself, so the two lines
-      // stack in a box of their own.
-      const lines = el('span', 'scheduler-pair-item');
-      lines.appendChild(el('span', 'scheduler-pair-item__main', `${rangeText(l.from, l.to)} · ${l.t.destination || 'No destination'}`));
-      const detail = [
-        l.t.customer,
-        l.way,
-        l.bus?.number != null ? window.SchedulerVehicles.label(l.bus) : 'No bus',
-        l.role && l.role !== 'driver' ? sentence(l.role) : null,
-        // What the page would leave the trip without, as clashes.js says it on the board.
-        overlaps(off, l.from, l.to) ? 'Time off then' : null,
-        inactive ? 'Set Inactive' : null,
-      ].filter(Boolean).join(' · ');
-      lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
-      a.appendChild(lines);
-      li.appendChild(a);
-      list.appendChild(li);
-    }
-  }
+  for (const radio of document.querySelectorAll('input[name="scheduler-d-status"]')) radio.addEventListener('change', sayAway);
 
   // ── documents, read only ──
   let papers = [];   // the driver's current documents, each with its kind's name
@@ -837,10 +771,9 @@
     drawApart();
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
-    legs = null;
-    if (loaded) { readTrips().then(drawTrips); loadPapers(loaded.id); sayDriver(); }
+    if (loaded) { loadPapers(loaded.id); sayDriver(); }
     // A paper uploaded from here comes back to the Documents tab, and the
-    // board's Send trips opens on that tab.
+    // board's Send trips opens the Trips tab.
     const hashTab = { '#documents': 'scheduler-driver-tab-documents', '#send': 'scheduler-driver-tab-send' }[location.hash];
     if (loaded && hashTab) {
       const tab = $(hashTab);
@@ -942,7 +875,6 @@
     drawOff();
     drawApart();
     baseline = snapshot();
-    readTrips().then(drawTrips);
     loadPapers(loaded.id);
     sayDriver();
   }

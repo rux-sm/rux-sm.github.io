@@ -402,7 +402,7 @@
        drivers.html?id=<driver id> edits a driver and drivers.html?new makes
        one. Centred in eight of the sixteen columns at lg: one long form in
        sections on its Details tab, so every unsaved change is on one tab;
-       the Schedule tab holds what is only read, and has nothing to save. -->
+       the Trips and Documents tabs save each switch as it is flipped. -->
   <div class="rux--css-grid rux--css-grid--full-width" id="scheduler-driver" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -422,7 +422,7 @@
 
         <!-- The tab strip and its panels are one stack child, as detail-page.html
              has them, so the stack's gap falls above the strip and not between
-             it and its panel. A new driver has no Schedule, so no strip. -->
+             it and its panel. A new driver has no trips, so no strip. -->
         <div>
         <div class="rux--tabs" id="scheduler-driver-tabs" hidden>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
@@ -430,11 +430,8 @@
             <button id="scheduler-driver-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-driver-panel-details" tabindex="0">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Details</span></div>
             </button>
-            <button id="scheduler-driver-tab-schedule" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-driver-panel-schedule" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Schedule</span></div>
-            </button>
             <button id="scheduler-driver-tab-send" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-driver-panel-send" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Send trips</span></div>
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Trips</span></div>
             </button>
             <button id="scheduler-driver-tab-documents" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-driver-panel-documents" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Documents</span></div>
@@ -760,24 +757,13 @@
         </form>
         </div>
 
-        <!-- Read only, so no Save: trips are assigned on the board, and the
-             Send trips tab says which of them the driver's page shows. -->
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-schedule" aria-labelledby="scheduler-driver-tab-schedule" tabindex="0" hidden>
-          <div class="rux--stack-vertical rux--stack-scale-7">
-            <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-driver-trips-h" id="scheduler-driver-trips-section" hidden>
-              <h2 class="rux--type-heading-compact-02" id="scheduler-driver-trips-h">Upcoming trips</h2>
-              <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
-                <ul role="list" id="scheduler-driver-trips"></ul>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <!-- Sending the driver their trips: their link, a switch for each
-             trip their page shows, the message to copy, and their page as
-             they see it. driver-send.js fills it when the tab opens,
-             and share/driver.js draws the page. Nothing here waits for Save:
-             a switch saves as it is flipped. -->
+        <!-- The driver's current and upcoming trips, and sending them: their
+             link, a row for each trip with the switch that puts it on their
+             page, the message to copy, and their page as they see it.
+             driver-send.js fills it when the tab opens, and share/driver.js
+             draws the page. Trips are assigned on the board, which each row
+             opens. Nothing here waits for Save: a switch saves as it is
+             flipped. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-send" aria-labelledby="scheduler-driver-tab-send" tabindex="0" hidden>
           <div class="rux--stack-vertical rux--stack-scale-6">
             <!-- One notice for the tab: a link that will not load or is no
@@ -795,55 +781,56 @@
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm rux--inline-notification__action-button" id="scheduler-share-retry" hidden>Try again</button>
               </div>
             </div>
-            <!-- The driver's link in Carbon's single-line code snippet with
-                 the copy button, a link that opens their page as they see
-                 it, and an overflow menu for replacing or revoking it. -->
-            <div class="scheduler-maintenance-link" id="scheduler-leg-link" hidden>
-              <div class="scheduler-maintenance-link__bar">
-                <div class="rux--snippet rux--snippet--single">
-                  <div class="rux--snippet-container"><pre><code id="scheduler-leg-link-url"></code></pre></div>
-                  <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
-                    <div class="rux--tooltip-trigger__wrapper">
-                      <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy-from="scheduler-leg-link-url" aria-label="Copy the driver's link">
-                        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg>
-                      </button>
-                    </div>
-                    <span class="rux--popover">
-                      <span class="rux--popover-content rux--tooltip-content">Copy</span>
-                      <span class="rux--popover-caret"></span>
-                    </span>
-                  </span>
-                </div>
-                <a class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="scheduler-leg-link-open" target="_blank" rel="noopener">Open their page<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></a>
-                <!-- The list is the trigger's sibling, as design/js/menu.js
-                     expects, inside a wrapper that is its containing block. -->
-                <div class="scheduler-maintenance-menu">
-                  <button type="button" class="rux--overflow-menu" id="scheduler-send-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-label="Driver's link actions">
-                    <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
-                  </button>
-                  <ul class="rux--overflow-menu-options rux--overflow-menu--flip" data-floating-menu-direction="bottom" role="menu" aria-label="Driver's link actions">
-                    <li class="rux--overflow-menu-options__option" role="none">
-                      <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="0" id="scheduler-send-replace">
-                        <div class="rux--overflow-menu-options__option-content">Replace link</div>
-                      </button>
-                    </li>
-                    <li class="rux--overflow-menu--divider rux--overflow-menu-options__option rux--overflow-menu-options__option--danger" role="none">
-                      <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1" id="scheduler-send-revoke">
-                        <div class="rux--overflow-menu-options__option-content">Revoke link</div>
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
             <div class="scheduler-send">
-              <!-- Sending: a switch for each of the driver's trips, saved as it
+              <!-- A row for each of the driver's trips, its switch saved as it
                    is flipped, then the message to copy to them. driver-send.js
                    draws the rows and writes the message; the driver's page
                    redraws after each save. -->
               <div class="scheduler-send__work" id="scheduler-send" hidden>
+                <!-- The driver's link in Carbon's single-line code snippet with
+                     the copy button, a link that opens their page as they see
+                     it, and an overflow menu for replacing or revoking it. It heads the
+                     work's column, so the driver's page starts level with it. -->
+                <div class="scheduler-maintenance-link" id="scheduler-leg-link" hidden>
+                  <div class="scheduler-maintenance-link__bar">
+                    <div class="rux--snippet rux--snippet--single">
+                      <div class="rux--snippet-container"><pre><code id="scheduler-leg-link-url"></code></pre></div>
+                      <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+                        <div class="rux--tooltip-trigger__wrapper">
+                          <button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy-from="scheduler-leg-link-url" aria-label="Copy the driver's link">
+                            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg>
+                          </button>
+                        </div>
+                        <span class="rux--popover">
+                          <span class="rux--popover-content rux--tooltip-content">Copy</span>
+                          <span class="rux--popover-caret"></span>
+                        </span>
+                      </span>
+                    </div>
+                    <a class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="scheduler-leg-link-open" target="_blank" rel="noopener">Open their page<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></a>
+                    <!-- The list is the trigger's sibling, as design/js/menu.js
+                         expects, inside a wrapper that is its containing block. -->
+                    <div class="scheduler-maintenance-menu">
+                      <button type="button" class="rux--overflow-menu" id="scheduler-send-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-label="Driver's link actions">
+                        <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
+                      </button>
+                      <ul class="rux--overflow-menu-options rux--overflow-menu--flip" data-floating-menu-direction="bottom" role="menu" aria-label="Driver's link actions">
+                        <li class="rux--overflow-menu-options__option" role="none">
+                          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="0" id="scheduler-send-replace">
+                            <div class="rux--overflow-menu-options__option-content">Replace link</div>
+                          </button>
+                        </li>
+                        <li class="rux--overflow-menu--divider rux--overflow-menu-options__option rux--overflow-menu-options__option--danger" role="none">
+                          <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="-1" id="scheduler-send-revoke">
+                            <div class="rux--overflow-menu-options__option-content">Revoke link</div>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
                 <section class="scheduler-send__part" aria-labelledby="scheduler-send-trips-h">
-                  <h2 class="rux--type-heading-compact-02" id="scheduler-send-trips-h">Trips on their page</h2>
+                  <h2 class="rux--type-heading-compact-02" id="scheduler-send-trips-h">Upcoming trips</h2>
                   <p class="rux--type-body-compact-01 scheduler-send__note" id="scheduler-send-state" role="status"></p>
                   <div class="rux--data-table-content scheduler-send__list" id="scheduler-send-table">
                     <table class="rux--data-table rux--data-table--md" aria-labelledby="scheduler-send-trips-h">

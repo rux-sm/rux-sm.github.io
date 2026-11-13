@@ -1785,7 +1785,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
    tip under it through itself and they read as one set wherever they stand. */
 use:is([href="#i-warning--alt--filled"], [href="#i-warning--filled"], [href="#i-checkmark--filled"], [href="#i-error--filled"], [href="#i-unknown--filled"]) { --rux-icon-inner: var(--scheduler-on-warning); }
 
-/* A driver's Send trips table stands in a record's column, so its cells keep
+/* A driver's Trips table stands in a record's column, so its cells keep
    to one line and sit 8px from each other, with Carbon's 16px left at the
    table's two edges; six columns then fit the column without scrolling. */
 .scheduler-send__list .rux--data-table :is(th, td) { white-space: nowrap; padding-inline: var(--rux-spacing-03); }

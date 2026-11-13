@@ -46,7 +46,7 @@
    nothing again.
 
    Two pages load this. The public page takes the token from its address.
-   The staff page, the Send trips tab of a driver's record on drivers.html,
+   The staff page, the Trips tab of a driver's record on drivers.html,
    marks its body data-driver="staff" and draws the same screens through
    `SchedulerDriverPage` below, with Accept and Decline disabled, because
    staff answer from the trip; driver-send.js makes the driver's link.

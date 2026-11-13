@@ -1,8 +1,9 @@
 /* ==========================================================================
-   driver-send.js — SENDING A DRIVER THEIR TRIPS (drivers.html?id=, Send trips)
+   driver-send.js — A DRIVER'S TRIPS, AND SENDING THEM (drivers.html?id=, Trips)
    --------------------------------------------------------------------------
-   The Send trips tab of a driver's record. Staff switch each of the
-   driver's current and upcoming trip legs on or off their page. A switch
+   The Trips tab of a driver's record. It lists the driver's current and
+   upcoming trip legs, each opening its trip on the board, and staff switch
+   each on or off the driver's page. A switch
    saves as it is flipped, so the driver's link always shows what the
    toggles say, and a trip still being worked out stays off it until it is
    switched on; a new trip starts off. The driver's own page, drawn beside
@@ -12,7 +13,10 @@
    drivers.js says which driver the record holds, when it loads and after
    each save, and the tab reads that driver's trips and link when it is next
    open; drivers.html?id=<id>#send
-   opens the record on this tab, as the board's Send trips does.
+   opens the record on this tab, as the board's Send trips does. It also
+   says the time off on the record and whether Inactive is picked, as they
+   stand before Save, and each trip either would leave without the driver
+   is tagged.
 
    The link functions: create_driver_schedule_share makes a link, or brings
    back the driver's last one so the address stays the same, the first time
@@ -71,6 +75,7 @@
   let onPage = new Set();   // leg keys switched on
   let link = null;          // the driver's active link, or null
   let statuses = new Map(); // tripId:driverId:legId:role -> status
+  let away = { off: [], inactive: false };   // the record's time off and Inactive, before Save
 
   const statusKey = (tripId, driverId, legId, role) => [tripId, driverId, legId, role || 'driver'].join(':');
 
@@ -145,9 +150,10 @@
   // -- the list -------------------------------------------------------------------------
   const onPageLegs = () => legs.filter(l => onPage.has(l.key));
   /* A table row a leg: its switch first, where a phone's width still shows
-     it, then its day, where, the bus, the role and its tags, the driver's
-     answer and, in red, Not confirmed while the customer has not confirmed
-     the trip. The
+     it, then its day, where, which opens the trip on the board, the bus, the
+     role and its tags: the driver's answer and, in red, Not confirmed while
+     the customer has not confirmed the trip, Time off then while time off
+     on the record covers it, and Set Inactive while the record says so. The
      switch is Carbon's small one, whose check says On; its label is read by
      a screen reader and hidden, as Carbon's hideLabel hides it. */
   const CHECK = '<svg class="rux--toggle__check" width="6px" height="5px" viewBox="0 0 6 5"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>';
@@ -181,12 +187,18 @@
       toggle.addEventListener('rux:toggle', e => switched(l, e.detail.on));
       cell(toggle);
       cell(date).className = 'scheduler-send__date';
-      cell(where);
+      const trip = el('a', 'rux--link', where);
+      trip.href = `./?trip=${encodeURIComponent(l.trip.id)}&date=${iso(l.start)}`;
+      cell(trip);
       cell(l.bus || 'Not set');
       cell(roleLabel(l.role));
       const tags = el('div', 'scheduler-send__tags');
       tags.appendChild(tag(...(STATUS_TAGS[statusOf(l)] || STATUS_TAGS.off)));
       if (l.trip.confirmed === false) tags.appendChild(tag('Not confirmed', 'rux--tag--red'));
+      // What the record would leave the trip without, as clashes.js says it on the board.
+      const from = iso(l.start), to = iso(l.end);
+      if ((away.off || []).some(w => w.start_date <= to && w.end_date >= from)) tags.appendChild(tag('Time off then', 'rux--tag--red'));
+      if (away.inactive) tags.appendChild(tag('Set Inactive', 'rux--tag--red'));
       cell(tags);
       list.appendChild(row);
     }
@@ -417,6 +429,10 @@
     show();
   });
   tab.closest('[role="tablist"]').addEventListener('rux:tab-selected', show);
+  document.addEventListener('scheduler:driver-away', e => {
+    away = e.detail;
+    if (!$('scheduler-send').hidden) drawList();
+  });
   $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
   $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
   // The link's overflow menu. design/js/menu.js closes the menu on a click

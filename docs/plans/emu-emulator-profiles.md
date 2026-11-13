@@ -186,9 +186,10 @@ with nothing:
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.
 - [ ] Set the iMac up from nothing but the site: Rux Emu Helper from
-  Supabase, its Ryujinx folder a real one in place of its link to the
-  drive, and a game played in each emulator, which brings its saves, BIOS
-  and firmware from Supabase into its own folders.
+  Supabase with Full Disk Access, which Gopher64's sandboxed folder needs,
+  its Ryujinx folder a real one in place of its link to the drive, and a
+  game played in each emulator, which brings its saves, BIOS and firmware
+  from Supabase into its own folders, Gopher64's made by its first Play.
 - [ ] Remove from the drive the save folders Supabase and each Mac now
   hold, which is every folder under `saves`, and from the server's share
   the same, once the iMac plays from its own.

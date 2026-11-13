@@ -51,23 +51,27 @@ server. The site's other plans are `docs/plans/emu-app.md`,
   Supabase holds a newer one: it fetches its own zip by a link the site
   signs, checks it, puts it in Applications and starts it, since a new build
   otherwise means copying it from the server by hand on each Mac.
-- **It is signed with one lasting identity,** so macOS keeps each
-  permission it gave across builds instead of asking again for the drive or
-  the share after every one.
+- **It is signed with one lasting identity, a free certificate made in
+  Keychain Access,** so macOS keeps each permission it gave across builds
+  instead of asking again for the drive or the share after every one; every
+  Mac then behaves alike, allowing the helper once by hand and never again.
+  A paid Developer ID is not used.
+- **The certificate lives in the keychain of each Mac that builds the
+  helper,** exported once from the first and imported on another, since a
+  build signed by a second certificate is a different app to macOS.
 
 ## Questions
 
-- Which identity signs the helper? A Developer ID from the Apple Developer
-  Program, $99 a year, also lets a new Mac open the helper with no step in
-  Privacy & Security; a certificate made free in Keychain Access stops the
-  asking again on the Mac that holds it, and every other Mac still allows
-  the helper once by hand.
+None open.
 
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Sign the helper with the identity rux chooses, in
-  `emu/tools/build-helper.mjs`.
+- [ ] rux makes the certificate in Keychain Access: Certificate Assistant,
+  Create a Certificate, named Rux Emu Helper, Self Signed Root, Code
+  Signing.
+- [ ] Sign the helper with it in `emu/tools/build-helper.mjs`, and prove on
+  the MacBook Pro that a second build keeps the share's permission.
 - [ ] Have the helper update itself on a press, from the newest zip
   Supabase holds.
 - [ ] Add Set up this Mac to the Status page.

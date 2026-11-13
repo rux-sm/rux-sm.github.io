@@ -176,6 +176,13 @@
       const version = e.app.version ?? 'Installed';
       // An emulator whose saves Emu carries keeps them in its own folder.
       const carried = (emulators.macSaves?.[e.emulator]?.places ?? []).map((p, i) => p.stored ? e.places?.[i] : null).filter(Boolean);
+      // A folder inside another app's sandbox, as Gopher64's is, which macOS
+      // refuses the helper until it has Full Disk Access.
+      if (carried.length && e.readable === false) {
+        rows.push({ what, href, state: TODO, button: { label: 'Open Full Disk Access', run: () => { location.href = 'x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles'; } },
+          detail: `${version} · macOS keeps its folder from Rux Emu Helper: in Full Disk Access, press +, add Rux Emu Helper from Applications and turn it on` });
+        continue;
+      }
       if (carried.length) {
         const where = carried.map(p => `${files(p.files ?? 0)} in ${p.dir}`).join('\n');
         rows.push(e.data && carried.every(p => p.dir?.startsWith(`${e.data}/`))

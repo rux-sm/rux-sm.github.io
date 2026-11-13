@@ -40,6 +40,16 @@
 
   // Each rule answers which of a system's games a save's path belongs to.
   const RULES = {
+    // Gopher64 names a save by the game's header title and the SHA-256 of
+    // its file, as `ZELDA MAJORAS MASK-<sha256>.fla`, its title kept to
+    // letters, digits, spaces, hyphens and underscores; a save from before,
+    // as ares named one, by the game's file name.
+    n64header: (rel, games) => {
+      const named = rel.split('/').pop().match(/^(.*)-[0-9A-Fa-f]{64}\.[A-Za-z0-9]+$/);
+      if (!named) return RULES.name(rel, games);
+      const clean = t => String(t ?? '').replace(/[^a-zA-Z0-9_ -]/g, '').trim();
+      return games.find(g => (g.files ?? []).some(f => f.header?.internalTitle && clean(f.header.internalTitle) === named[1]));
+    },
     // The game's file name, as the save's name less its extensions or as a folder it sits in.
     name: (rel, games) => {
       const parts = rel.split('/');
@@ -63,7 +73,7 @@
   };
   // A save with no game is said only where a save's name always names its
   // game; a title-ID system's folder also holds the system's own data.
-  const SAYS_ORPHANS = new Set(['name', 'serial']);
+  const SAYS_ORPHANS = new Set(['name', 'serial', 'n64header']);
 
   // A save's file, found under a folder that serves `systems`, as its game
   // on the first of them whose rule names one, or none.

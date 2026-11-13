@@ -53,9 +53,17 @@ correct `settings` for it in `emu/emulators.json`.
   `<game>.sav`. The GBA BIOS is optional: put `gba_bios.bin` in
   `<drive>/bios/gba/`, and once Update puts it in Supabase, Emu brings it
   into mGBA's own `bios` folder and points mGBA at it.
-- **ares, N64.** Quit ares and set `NoFilePrompt: true` under `General` in
-  `~/Library/Application Support/ares/settings.bml`, so a game that can use
-  the Transfer Pak opens without asking for a Game Boy game.
+- **Gopher64, N64.** It runs in Apple's sandbox, so Play opens a game with
+  it as the Finder does, and its folder is inside its container,
+  `~/Library/Containers/io.github.gopher64.gopher64/Data/Library/Application Support/gopher64`.
+  macOS refuses Rux Emu Helper that folder until it has Full Disk Access:
+  System Settings, Privacy & Security, Full Disk Access, **+**, Rux Emu
+  Helper from Applications, turned on. Set its resolution, fullscreen and
+  controller profile in its own Settings and Controller pages; Emu carries
+  them as the Mac's settings. It names a save by the game's header title
+  and the SHA-256 of its file, as `ZELDA MAJORAS MASK-<sha256>.fla`, and
+  holds it in the same byte order ares did, so an ares save moves across by
+  its name alone: `.flash` to `.fla`, `.ram` to `.sra`, `.eeprom` to `.eep`.
 - **melonDS, DS.** The BIOS and firmware are optional for DS games; a
   DSi-only game needs the DSi files. `bios7.bin`, `bios9.bin` and
   `firmware.bin` in `<drive>/bios/nds/` go to Supabase with Update, and Emu
@@ -106,14 +114,13 @@ RetroArch's saves are in `<drive>/saves/Retroarch Saves/` and
    Crystal's `.rtc`, its clock, is not needed by mGBA.
 2. **N64.** RetroArch's `.srm` holds four kinds of save memory one after
    another: EEPROM at 0 for 2 KB, four Controller Paks at 0x800 for 32 KB
-   each, SRAM at 0x20800 for 32 KB, and flash at 0x28800 for 128 KB. ares
-   keeps each kind as its own file named after the game, `<game>.eeprom`,
-   `.ram`, `.flash` and `.pak`, in `<drive>/saves/n64/Nintendo 64/`, at the
-   size its game list gives, such as
-   512 bytes of EEPROM for most games. The EEPROM part is copied as it is;
-   the SRAM and flash parts hold each four bytes reversed, and ares reads them
-   in the cartridge's order, so each group of four is turned back. A Controller
-   Pak that only holds the blank format is left behind.
+   each, SRAM at 0x20800 for 32 KB, and flash at 0x28800 for 128 KB. Gopher64
+   keeps each kind as its own file, `.eep`, `.sra`, `.fla` and `.mpk`, named
+   as its entry above says, at the size its game list gives, such as 512
+   bytes of EEPROM for most games. The EEPROM part is copied as it is; the
+   SRAM and flash parts hold each four bytes reversed, and Gopher64 reads them
+   in the cartridge's order, so each group of four is turned back. A
+   Controller Pak that only holds the blank format is left behind.
 3. **3DS.** Move `<drive>/saves/Azahar Save/Nintendo 3DS` to `<drive>/saves/n3ds/sdmc/Nintendo 3DS`
    before pointing Azahar at it.
 4. **Save states** belong to the emulator that made them and are left

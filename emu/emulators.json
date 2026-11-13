@@ -84,18 +84,13 @@
       "needs": []
     },
     "n64": {
-      "emulator": "ares",
-      "why": "Accurate, and native on macOS.",
-      "saves": "name",
-      "settings": "~/Library/Application Support/ares",
+      "emulator": "Gopher64",
+      "why": "Renders up to 8× with an overclock that removes slowdown, notarized and native on Apple Silicon.",
+      "saves": "n64header",
+      "settings": "~/Library/Containers/io.github.gopher64.gopher64/Data/Library/Application Support/gopher64",
       "launch": {
-        "app": "ares.app",
-        "args": [
-          "--fullscreen",
-          "--system",
-          "Nintendo 64",
-          "{file}"
-        ]
+        "app": "Gopher64.app",
+        "open": true
       },
       "needs": []
     },
@@ -520,68 +515,52 @@
         "github": "mgba-emu/mgba"
       }
     },
-    "ares": {
+    "Gopher64": {
       "apps": [
-        "ares.app"
+        "Gopher64.app"
       ],
       "homes": [
-        "~/Library/Application Support/ares"
+        "~/Library/Containers/io.github.gopher64.gopher64/Data/Library/Application Support/gopher64"
       ],
       "config": {
-        "file": "settings.bml",
-        "format": "bml"
+        "file": "config.json",
+        "format": "json"
       },
-      "besideGame": true,
+      "gameProcess": "gopher64-cli",
+      "quit": "force",
       "places": [
         {
-          "path": "Saves",
-          "key": "Paths/Saves",
-          "kind": "Saves and save states",
-          "stored": "saves/n64"
+          "path": "saves",
+          "kind": "Saves",
+          "stored": "saves/n64/gopher64"
+        },
+        {
+          "path": "states",
+          "kind": "Save states",
+          "stored": "saves/n64/gopher64/states"
         }
       ],
       "files": [
         {
-          "kind": "Screenshots",
-          "class": "collected",
-          "besideGame": true,
-          "key": "Paths/Screenshots"
-        },
-        {
-          "kind": "Settings and controls",
+          "kind": "Settings and controller profiles",
           "class": "own",
-          "path": "settings.bml"
+          "path": "config.json"
         },
         {
-          "kind": "Debugging logs",
-          "class": "local",
-          "besideGame": true,
-          "key": "Paths/Debugging"
+          "kind": "Cheats",
+          "class": "own",
+          "path": "cheats.json"
         }
       ],
-      "manages": [
-        {
-          "key": "Video/AdaptiveSizing",
-          "value": "false",
-          "why": "Resizing its window to each game's picture takes it out of fullscreen."
-        },
-        {
-          "key": "Paths/Saves",
-          "value": "{home}/Saves/",
-          "why": "Saves sit in its own folder on the Mac, where Emu carries them to and from Supabase."
-        },
-        {
-          "key": "General/AutoSaveMemory",
-          "value": "true",
-          "why": "A save is written every 30 seconds, not only when the game closes."
-        }
-      ],
+      "manages": [],
       "notes": [
-        "It adds the system's name to its saves folder, as Nintendo 64/, and a folder setting must end in a slash.",
-        "Saves and save states sit beside the game unless a folder is set."
+        "It runs in Apple's sandbox, so a game is opened with it as the Finder does, and its folder is inside its container.",
+        "Its window writes its settings whenever it starts a game, so Emu manages none of them.",
+        "It runs each game in a second process, gopher64-cli, which ignores a quit request; it writes a save a second after the game does.",
+        "It names a save by the game's header title and the SHA-256 of its file."
       ],
       "feed": {
-        "github": "ares-emulator/ares"
+        "github": "gopher64/gopher64"
       }
     },
     "melonDS": {
@@ -1405,6 +1384,24 @@
     }
   },
   "retired": {
+    "ares": {
+      "apps": [
+        "ares.app"
+      ],
+      "homes": [
+        "~/Library/Application Support/ares"
+      ],
+      "config": {
+        "file": "settings.bml",
+        "format": "bml"
+      },
+      "places": [
+        {
+          "path": "Saves",
+          "key": "Paths/Saves"
+        }
+      ]
+    },
     "RetroArch": {
       "apps": [
         "RetroArch.app"

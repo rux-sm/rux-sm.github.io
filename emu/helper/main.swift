@@ -120,7 +120,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "27"
+let version = "29"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -129,7 +129,10 @@ let collectionLinks = "https://udnmqhayzhrbltxzzhjw.supabase.co/storage/v1/objec
 
 // MARK: The collection
 
-struct Launch { let app: String; let args: [String] }
+// How a system's emulator starts a game: its app and arguments, or, for an
+// emulator in Apple's sandbox, by opening the game with the app as the
+// Finder does, since the sandbox refuses a game handed to it as an argument.
+struct Launch { let app: String; let args: [String]; let open: Bool }
 
 func collection() -> URL? {
   let volumes = (try? FileManager.default.contentsOfDirectory(atPath: "/Volumes")) ?? []
@@ -155,8 +158,8 @@ let launches: [String: Launch] = {
   var out: [String: Launch] = [:]
   for (system, value) in rules["systems"] as? [String: Any] ?? [:] {
     guard let s = value as? [String: Any], let l = s["launch"] as? [String: Any],
-          let app = l["app"] as? String, let args = l["args"] as? [String] else { continue }
-    out[system] = Launch(app: app, args: args)
+          let app = l["app"] as? String else { continue }
+    out[system] = Launch(app: app, args: l["args"] as? [String] ?? [], open: l["open"] as? Bool ?? false)
   }
   return out
 }()
@@ -211,6 +214,13 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   guard let target = held else {
     if shared { return (409, ["error": "Download it to this Mac to play: a game does not play over the network."]) }
     return (404, ["error": found == nil ? "That game is not on this Mac. Download it, or plug in the drive." : "That game is not in the collection."])
+  }
+  if launch.open {
+    let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+    let config = NSWorkspace.OpenConfiguration()
+    config.activates = true
+    NSWorkspace.shared.open([target], withApplicationAt: app, configuration: config) { _, _ in }
+    return (200, ["playing": target.lastPathComponent, "with": launch.app, "from": from])
   }
   let p = Process()
   p.executableURL = exe
@@ -429,7 +439,9 @@ func macReport() -> [String: Any] {
       places.append(["dir": orNull(shown.map(tilde)), "from": place.from, "found": found, "files": held.count])
     }
     emulators.append(["emulator": e.name, "systems": e.plays, "app": orNull(appOf(appsOf(e.rule), emulator: e.name)),
-                      "data": orNull(e.home.map(tilde)), "places": places, "files": count, "size": size])
+                      "data": orNull(e.home.map(tilde)), "places": places, "files": count, "size": size,
+                      // A folder in another app's sandbox that macOS refuses this helper, as Gopher64's is without Full Disk Access.
+                      "readable": e.home.map { (try? files.contentsOfDirectory(atPath: $0)) != nil } ?? true])
   }
 
   for (emulator, value) in rules["retired"] as? [String: Any] ?? [:] {
@@ -775,6 +787,16 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
 
 // MARK: Carrying saves
 
+// Whether an emulator is playing a game: the process that runs its game,
+// where emulators.json names one, since Gopher64 runs each game apart from
+// its window, which stays open after; else any of its apps.
+func playing(_ rule: [String: Any]) -> Bool {
+  if let game = rule["gameProcess"] as? String {
+    return NSWorkspace.shared.runningApplications.contains { $0.executableURL?.lastPathComponent == game }
+  }
+  return running(appsOf(rule))
+}
+
 // Each folder of an emulator that Emu carries: its path in Supabase, where
 // it is inside the emulator's own folder, whatever its setting says now, and
 // which of its files are saves, where it holds other things too.
@@ -832,7 +854,7 @@ func carry(_ name: String) -> (Int, [String: Any]) {
             "saved": orNull((a?[.modificationDate] as? Date).map(iso.string))]
   }
   return (200, ["emulator": name, "mac": SCDynamicStoreCopyComputerName(nil, nil) as String? ?? ProcessInfo.processInfo.hostName,
-                "carries": !carriedPlaces(e).isEmpty, "running": running(appsOf(e.rule)), "files": list])
+                "carries": !carriedPlaces(e).isEmpty, "running": playing(e.rule), "files": list])
 }
 
 // Where a carried save is on this Mac, by its path in Supabase: inside the
@@ -900,7 +922,7 @@ func given(_ name: String) -> (Int, [String: Any]) {
       return ["path": place.stored + f.path.dropFirst(place.dir.count), "size": f.size, "sha1": sha1]
     }
   }
-  return (200, ["emulator": name, "folders": Array(Set(places.map { $0.stored })).sorted(), "running": running(appsOf(e.rule)), "files": list])
+  return (200, ["emulator": name, "folders": Array(Set(places.map { $0.stored })).sorted(), "running": playing(e.rule), "files": list])
 }
 
 // Where a given file goes on this Mac, by its emulator and its path in Supabase.
@@ -1675,7 +1697,7 @@ final class Server {
     case "/mac/carried":
       guard let found = carriedAt(path) else { return send(c, .json(404, ["error": "That is not a save Emu carries."]), origin: origin) }
       let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
-      guard !running(appsOf(found.e.rule)) else {
+      guard !playing(found.e.rule) else {
         return send(c, .json(409, ["error": "Quit \(app) first: a save cannot change under a running game."]), origin: origin)
       }
       target = found.at
@@ -1683,7 +1705,7 @@ final class Server {
     case "/mac/given":
       guard let found = givenAt(req.query["emulator"] ?? "", path) else { return send(c, .json(404, ["error": "That is not a file Emu gives that emulator."]), origin: origin) }
       let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
-      guard !running(appsOf(found.e.rule)) else { return send(c, .json(409, ["error": "Quit \(app) first."]), origin: origin) }
+      guard !playing(found.e.rule) else { return send(c, .json(409, ["error": "Quit \(app) first."]), origin: origin) }
       target = found.at
     default: break
     }
@@ -1774,6 +1796,17 @@ func quitEmulatorInFront() {
   let running = NSWorkspace.shared.runningApplications.filter(isEmulator)
   let front = NSWorkspace.shared.frontmostApplication.flatMap { isEmulator($0) ? $0 : nil }
   guard let target = front ?? (running.count == 1 ? running.first : nil) else { return }
+  // An emulator whose rule says `quit: force` ignores a quit request and
+  // writes a save a second after the game does, as Gopher64 does, so the
+  // process running its game is ended two seconds after being asked.
+  let rule = (rules["macSaves"] as? [String: Any] ?? [:]).values.compactMap { $0 as? [String: Any] }
+    .first { appsOf($0).contains(target.bundleURL?.lastPathComponent ?? "") }
+  if rule?["quit"] as? String == "force", let game = rule?["gameProcess"] as? String {
+    guard let proc = NSWorkspace.shared.runningApplications.first(where: { $0.executableURL?.lastPathComponent == game }) else { return }
+    proc.terminate()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { if !proc.isTerminated { proc.forceTerminate() } }
+    return
+  }
   target.terminate()
   DispatchQueue.main.asyncAfter(deadline: .now() + 4) { if !target.isTerminated { target.terminate() } }
   DispatchQueue.main.asyncAfter(deadline: .now() + 16) { if !target.isTerminated { target.forceTerminate() } }

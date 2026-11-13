@@ -25,17 +25,21 @@ other emulator's. The rest of Emu's emulators are
   so.
 - **Its folder is inside its sandbox,**
   `~/Library/Containers/io.github.gopher64.gopher64/Data/Library/Application Support/gopher64`,
-  holding `config.json`, `saves` and `states`. macOS asks once on each Mac
-  whether the helper may read another app's data, and the helper's lasting
-  signature keeps that answer.
-- **The settings Emu manages are rux's:** 4× resolution, fullscreen, V-sync,
-  integer scaling and the CPU overclock, written into `config.json`. The
-  controller profile is the Mac's own, kept with its settings.
-- **Its saves carry as a folder of their own in Supabase, `saves/n64-gopher64`,**
-  since Gopher64 names each by the game's header name and the SHA-256 of
-  its file, as `ZELDA MAJORAS MASK-<sha256>.fla`, where ares names them by
-  file name; the scan adds an N64 game's SHA-256 so the Saves page matches
-  them to their games.
+  holding `config.json`, `saves` and `states`. macOS refuses the helper that
+  folder without asking, so each Mac gives Rux Emu Helper Full Disk Access
+  once, and its lasting signature keeps it.
+- **Emu manages none of its settings,** since its window writes its own
+  settings over `config.json` whenever it starts a game; rux's settings and
+  controller profile carry as the preferred set, which a new Mac starts
+  from.
+- **Its game counts as playing, not its window,** since it runs each game
+  in a second process, `gopher64-cli`, and its window stays open after.
+- **The controller combo ends its game two seconds after asking,** since it
+  ignores a quit request and writes a save one second after the game does.
+- **Its saves carry in Supabase's `saves/n64/gopher64`,** since Gopher64
+  names each by the game's header title and the SHA-256 of its file, as
+  `ZELDA MAJORAS MASK-<sha256>.fla`; the Saves page matches them by the
+  header title the scan already reads, and an ares save by its file name.
 - **ares's saves carry on, converted to Gopher64's names,** Majora's Mask
   and Ocarina of Time among them; Gopher64's own copies of those two are
   put in Supabase first, so they stay among the copies kept. Super Smash
@@ -49,19 +53,10 @@ None open.
 
 ## Tasks
 
-- [ ] Put Gopher64's installer in Supabase through the share's
-  `emulators` folder and Update.
-- [ ] Have the helper open a game with its emulator where its launch says
-  so, and prove Play starts Majora's Mask in Gopher64.
-- [ ] Make the controller combo quit Gopher64, which runs each game in a
-  second process that ignored a quit request in a test, and prove the
-  save is written.
-- [ ] Describe Gopher64 in `emulators.json`: its folder, its managed
-  settings, its carried `saves` and `states`, and `n64` played by it.
-- [ ] Add the SHA-256 of each N64 game to the scan and match Gopher64's
-  saves by it.
-- [ ] Put Gopher64's own Majora's Mask and Ocarina of Time saves in
-  Supabase, then convert ares's saves to Gopher64's names, and prove a
-  converted save loads in Gopher64.
-- [ ] Retire ares from `emulators.json` and the MacBook Pro.
-- [ ] Rewrite the N64 lines of `emu/docs/emulator-setup.md`.
+- [ ] Prove a converted save loads: Majora's Mask's file screen in Gopher64
+  shows the ares progress, and + and − end the game with the save kept.
+- [ ] Move ares and its folder on the MacBook Pro to the Trash once a
+  converted save has loaded.
+- [ ] Set the iMac up with Gopher64 from nothing, as
+  `docs/plans/emu-emulator-profiles.md` has it, which proves its folder
+  made by a first Play.

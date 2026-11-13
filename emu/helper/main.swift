@@ -113,7 +113,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "17"
+let version = "18"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -950,10 +950,17 @@ func fetched(_ url: URL, to path: String) -> Bool {
   return ok
 }
 
-// The first app of these names under a folder, three folders deep at most.
-func appUnder(_ dir: String, _ names: [String], depth: Int = 3) -> String? {
+// The first app of these names under a folder, three folders deep at most:
+// where it is, and the name it is installed under. A download may name its
+// app with its version after a hyphen, as PCSX2-v2.8.2.app, which is
+// installed as PCSX2.app.
+func appUnder(_ dir: String, _ names: [String], depth: Int = 3) -> (path: String, name: String)? {
   let entries = ((try? files.contentsOfDirectory(atPath: dir)) ?? []).sorted()
-  if let hit = entries.first(where: { names.contains($0) && isFolder(dir + "/" + $0) }) { return dir + "/" + hit }
+  let apps = entries.filter { $0.hasSuffix(".app") && isFolder(dir + "/" + $0) }
+  if let hit = apps.first(where: { names.contains($0) }) { return (dir + "/" + hit, hit) }
+  for e in apps {
+    if let name = names.first(where: { e.hasPrefix(($0 as NSString).deletingPathExtension + "-") }) { return (dir + "/" + e, name) }
+  }
   guard depth > 0 else { return nil }
   for e in entries where !e.hasSuffix(".app") && isFolder(dir + "/" + e) {
     if let hit = appUnder(dir + "/" + e, names, depth: depth - 1) { return hit }
@@ -1003,7 +1010,7 @@ func install(_ body: Data) -> (Int, [String: Any]) {
   }
   guard let found = appUnder(out, apps) else { return (500, ["error": "The installer holds no \(apps.joined(separator: " or "))."]) }
 
-  let app = (found as NSString).lastPathComponent
+  let app = found.name
   let dest = "/Applications/" + app
   if NSWorkspace.shared.runningApplications.contains(where: { $0.bundleURL?.resolvingSymlinksInPath().path == dest }) {
     return (409, ["error": "Quit \((app as NSString).deletingPathExtension) first, then install it again."])
@@ -1011,7 +1018,7 @@ func install(_ body: Data) -> (Int, [String: Any]) {
   // Copied beside its place first, so the app there goes only once the new one is whole.
   let staged = "/Applications/." + app + ".installing"
   try? files.removeItem(atPath: staged)
-  guard run("/usr/bin/ditto", [found, staged]) else {
+  guard run("/usr/bin/ditto", [found.path, staged]) else {
     try? files.removeItem(atPath: staged)
     return (500, ["error": "The helper could not write to Applications."])
   }

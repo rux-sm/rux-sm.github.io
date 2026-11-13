@@ -178,8 +178,6 @@ None open.
 In this order, the iMac near the end, as the test of a Mac that starts
 with nothing:
 
-- [ ] Install on the MacBook Pro the Azahar, PCSX2 and Dolphin that
-  Supabase holds, since the Emulators page says its three differ.
 - [ ] Leave a save file of no bytes out of the carry, which mGBA makes
   for a game that keeps no save.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of

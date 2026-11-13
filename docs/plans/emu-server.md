@@ -142,7 +142,7 @@ The setup kit, so any Mac is set up in one step:
 
 ## Tasks
 
-- [ ] Refresh the T7 from the server, the games and `backups`, as its
+- [ ] Refresh the T7 from the server, the games, `backups` and `cloud`, as its
   backup, with one command.
 - [ ] Have the nightly scan also put new BIOS, keys and installers in
   Supabase and ask each emulator's newest version, so Update is needed only

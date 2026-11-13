@@ -36,16 +36,16 @@ other emulator's. The rest of Emu's emulators are
   its file, as `ZELDA MAJORAS MASK-<sha256>.fla`, where ares names them by
   file name; the scan adds an N64 game's SHA-256 so the Saves page matches
   them to their games.
-- **ares's saves are converted to Gopher64's names once,** for each game
-  rux has not already played in Gopher64, and ares's folder in Supabase is
-  kept until the conversion is proven.
+- **ares's saves carry on, converted to Gopher64's names,** Majora's Mask
+  and Ocarina of Time among them; Gopher64's own copies of those two are
+  put in Supabase first, so they stay among the copies kept. Super Smash
+  Bros. has a save in Gopher64 alone, which carries on as it is.
+- **ares is retired once Gopher64 is proven:** moved to the retired apps in
+  `emulators.json`, removed from the Macs, and its folder in Supabase kept.
 
 ## Questions
 
-- Majora's Mask, Ocarina of Time and Super Smash Bros. now have saves in
-  both ares and Gopher64. Which copy of each carries on?
-- Does ares stay installed as a second choice for a game Gopher64 plays
-  badly, or is it retired from `emulators.json` and the Macs?
+None open.
 
 ## Tasks
 
@@ -60,6 +60,8 @@ other emulator's. The rest of Emu's emulators are
   settings, its carried `saves` and `states`, and `n64` played by it.
 - [ ] Add the SHA-256 of each N64 game to the scan and match Gopher64's
   saves by it.
-- [ ] Convert ares's saves to Gopher64's names as rux answered, and prove a
+- [ ] Put Gopher64's own Majora's Mask and Ocarina of Time saves in
+  Supabase, then convert ares's saves to Gopher64's names, and prove a
   converted save loads in Gopher64.
+- [ ] Retire ares from `emulators.json` and the MacBook Pro.
 - [ ] Rewrite the N64 lines of `emu/docs/emulator-setup.md`.

@@ -17,7 +17,8 @@
    `tools/carry.test.mjs` runs each case against a stand-in helper and
    Supabase, in `npm run check`.
 
-   `give` brings the BIOS, key and firmware files Supabase holds for an
+   `start` sets up an emulator never opened on this Mac from the settings
+   kept for it. `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:
    those files and the saves brought, then the settings Emu manages written,
    so the emulator opens them. `after` waits for the emulator
@@ -159,8 +160,27 @@
     queue.set(name, next);
     return next;
   };
+  // A Mac that never opened an emulator starts it from the settings kept as
+  // preferred, else the newest copy any Mac kept, which makes its folder, so
+  // its first Play brings its saves and BIOS like any other: whether it did.
+  async function startNow(name) {
+    const here = await H.settings(name);
+    if (!here || here.home || here.running) return false;
+    const copies = [...(await R.data.settings()).entries()].filter(([owner]) => owner.endsWith(`/${name}`));
+    const copy = copies.find(([owner]) => owner === `preferred/${name}`)?.[1][0]
+      ?? copies.flatMap(([, list]) => list).sort((a, b) => new Date(b.at) - new Date(a.at))[0];
+    if (!copy) return false;
+    for (const f of copy.files) {
+      const bytes = await R.data.fileBytes(f.sha1);
+      if (await sha1Of(bytes) !== f.sha1) throw new Error(`${f.rel} did not arrive whole. Try again.`);
+      await H.putSetting(name, f.rel, bytes);
+    }
+    return true;
+  }
+
   const run = name => queued(name, carryNow);
   const give = name => queued(name, giveNow);
+  const start = name => queued(name, startNow);
 
   // A whole save's folder names no game, as Azahar's `data` does, so it is said as its saves.
   const told = c => c.both.length
@@ -229,7 +249,7 @@
     if (!name || !foldersOf((await R.emulators()).macSaves[name]).length) return false;
     say('Bringing its saves…');
     let c;
-    try { await give(name); c = await run(name); } catch (error) { console.error(error); say('Its saves could not be brought, so this Mac\'s play.'); c = { running: false }; }
+    try { await start(name); await give(name); c = await run(name); } catch (error) { console.error(error); say('Its saves could not be brought, so this Mac\'s play.'); c = { running: false }; }
     if (!c) return false;
     if (c.running) throw new Error(`Quit ${name} first, so its saves can be brought.`);
     await H.manage(name);
@@ -276,5 +296,5 @@
     }
   })();
 
-  R.carry = { run, give, before, after, standing, useOther };
+  R.carry = { run, give, start, before, after, standing, useOther };
 })();

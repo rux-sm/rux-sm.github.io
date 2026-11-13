@@ -42,15 +42,32 @@ server. The site's other plans are `docs/plans/emu-app.md`,
   version that matches the site.
 - **It replaces the test shortcut, Rux Emu Open,** since the site starts
   games through it.
+- **Set up this Mac is one press on the Status page,** shown while any
+  emulator whose systems have games is missing or older than the installer
+  Supabase holds: it installs each, then starts each from the preferred
+  settings and brings its BIOS, keys and firmware, as a first Play does, so
+  the first game played opens with its saves. ES-DE is not installed.
+- **The helper updates itself on a press,** offered on every page while
+  Supabase holds a newer one: it fetches its own zip by a link the site
+  signs, checks it, puts it in Applications and starts it, since a new build
+  otherwise means copying it from the server by hand on each Mac.
+- **It is signed with one lasting identity,** so macOS keeps each
+  permission it gave across builds instead of asking again for the drive or
+  the share after every one.
 
 ## Questions
 
-None open.
+- Which identity signs the helper? A Developer ID from the Apple Developer
+  Program, $99 a year, also lets a new Mac open the helper with no step in
+  Privacy & Security; a certificate made free in Keychain Access stops the
+  asking again on the Mac that holds it, and every other Mac still allows
+  the helper once by hand.
 
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] Add Set up this Mac, installing and pointing every emulator.
-- [ ] Sign the helper with one lasting identity, since macOS asks again
-  for the drive after every build signed for that build alone; this Mac's
-  keychain holds no signing certificate, so rux makes one first.
+- [ ] Sign the helper with the identity rux chooses, in
+  `emu/tools/build-helper.mjs`.
+- [ ] Have the helper update itself on a press, from the newest zip
+  Supabase holds.
+- [ ] Add Set up this Mac to the Status page.

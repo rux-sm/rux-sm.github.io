@@ -16,7 +16,8 @@ let fails = 0;
 const check = (name, ok) => { if (!ok) fails++; console.log(ok ? '   ok   ' : '  FAIL  ', name); };
 
 const GB = { emulator: 'mGBA', systems: { gb: { emulator: 'mGBA', saves: 'name' } }, macSaves: { mGBA: { places: [{ stored: 'saves/gb' }, { stored: 'saves/gb/states' }] } } };
-async function world({ local = {}, ledger = {}, remote = [], running = false, rules = GB }) {
+async function world({ local = {}, ledger = {}, remote = [], running = false, rules = GB, home = '~/.config/mgba', kept = new Map(), keptBytes = {} }) {
+  const written = [];
   // local: path -> {text, saved}; remote rows oldest first: {path, text, saved}
   const mac = new Map(Object.entries(local).map(([p, v]) => [p, { bytes: enc(v.text), saved: v.saved }]));
   const led = new Map(Object.entries(ledger).map(([p, t]) => [p, sha(enc(t))]));
@@ -29,13 +30,14 @@ async function world({ local = {}, ledger = {}, remote = [], running = false, ru
     carried: async p => mac.get(p).bytes,
     putCarried: async (p, saved, bytes) => { if (running) throw new Error('running'); mac.set(p, { bytes, saved }); led.set(p, sha(bytes)); },
     markCarried: async (p, s) => { if (sha(mac.get(p).bytes) !== s) throw new Error('changed'); led.set(p, s); },
-    manage: async () => ({}), settings: async () => ({ files: [] }),
+    manage: async () => ({}), settings: async () => ({ home, running, files: [] }),
+    putSetting: async (name, rel, bytes) => { written.push([name, rel, new TextDecoder().decode(bytes)]); home = '~/.config/mgba'; },
   };
   const data = {
     files: async folder => now().filter(r => r.path.startsWith(folder)),
-    fileBytes: async s => blobs.get(s),
+    fileBytes: async s => blobs.get(s) ?? (keptBytes[s] != null ? enc(keptBytes[s]) : undefined),
     keepCopy: async (f, bytes) => { if (!blobs.has(f.sha1)) blobs.set(f.sha1, new Uint8Array(await (await bytes()).arrayBuffer())); rows.push({ path: f.path, sha1: f.sha1, size: f.size, saved_at: f.saved, mac: f.mac, carried_at: ++tick }); },
-    settings: async () => new Map(), keepSettings: async () => {},
+    settings: async () => kept, keepSettings: async () => {},
     copyOf: async (path, sha1) => rows.find(r => r.path === path && r.sha1 === sha1) ?? null,
   };
   const store = new Map();
@@ -44,7 +46,7 @@ async function world({ local = {}, ledger = {}, remote = [], running = false, ru
   new Function('window', 'crypto', 'Blob', 'console', 'localStorage', src)(window, globalThis.crypto, Blob, console, localStorage);
   const out = await window.Emu.carry.run(rules.emulator);
   const text = b => new TextDecoder().decode(b);
-  return { out, carry: window.Emu.carry, local: p => mac.has(p) ? text(mac.get(p).bytes) : null, remote: p => { const r = now().find(r => r.path === p); return r ? text(blobs.get(r.sha1)) : null; },
+  return { out, written, carry: window.Emu.carry, local: p => mac.has(p) ? text(mac.get(p).bytes) : null, remote: p => { const r = now().find(r => r.path === p); return r ? text(blobs.get(r.sha1)) : null; },
     copies: p => rows.filter(r => r.path === p).map(r => text(blobs.get(r.sha1))), ledger: p => led.get(p), sha: t => sha(enc(t)) };
 }
 const P = 'saves/gb/Game.sav';
@@ -69,6 +71,23 @@ w = await world({ local: { [P]: { text: 'L', saved: 'x' } }, remote: [{ path: P,
 check('nothing moves under a running emulator', w.local(P) === 'L' && w.remote(P) === 'R' && w.out.running === true);
 w = await world({ remote: [{ path: 'saves/gb/states/Game.ss1', text: 'S', saved: 'x' }, { path: 'saves/gbx/Other.sav', text: 'O', saved: 'x' }] });
 check('a state comes down once, and another folder is left alone', w.local('saves/gb/states/Game.ss1') === 'S' && w.local('saves/gbx/Other.sav') === null && w.out.down === 1);
+const copyOf = (at, text) => ({ at, mac: 'a Mac', files: [{ rel: 'config.ini', sha1: sha(enc(text)), size: text.length }] });
+const keptSets = sets => new Map(sets.map(([owner, list]) => [`${owner}/mGBA`, list]));
+const bytesOf = (...texts) => Object.fromEntries(texts.map(t => [sha(enc(t)), t]));
+w = await world({ home: null, kept: keptSets([['preferred', [copyOf('2026-01-01', 'preferred set')]], ['a Mac', [copyOf('2026-02-01', 'newer Mac set')]]]), keptBytes: bytesOf('preferred set', 'newer Mac set') });
+let took = await w.carry.start('mGBA');
+check('an emulator never opened here starts from the preferred settings', took === true && w.written.length === 1 && w.written[0][2] === 'preferred set');
+w = await world({ home: null, kept: keptSets([['old Mac', [copyOf('2026-01-01', 'old')]], ['new Mac', [copyOf('2026-03-01', 'newest')]]]), keptBytes: bytesOf('old', 'newest') });
+took = await w.carry.start('mGBA');
+check('with no preferred set, it starts from the newest copy any Mac kept', took === true && w.written[0]?.[2] === 'newest');
+w = await world({ kept: keptSets([['preferred', [copyOf('2026-01-01', 'preferred set')]]]), keptBytes: bytesOf('preferred set') });
+took = await w.carry.start('mGBA');
+check('an emulator this Mac already opened keeps its own settings', took === false && w.written.length === 0);
+w = await world({ home: null });
+took = await w.carry.start('mGBA');
+check('with no settings kept anywhere, nothing is written', took === false && w.written.length === 0);
+w = await world({ home: null, kept: keptSets([['preferred', [copyOf('2026-01-01', 'what Supabase lists')]]]), keptBytes: { [sha(enc('what Supabase lists'))]: 'other bytes' } });
+check('settings that do not match their fingerprint are not written', await w.carry.start('mGBA').then(() => false, () => true) && w.written.length === 0);
 const game = { system: 'gb', title: 'Game', files: [{ name: 'gb/Game.gb' }] };
 w = await world({ local: { [P]: { text: 'L', saved: '2026-01-02T00:00:00Z' } }, ledger: { [P]: 'A' }, remote: [{ path: P, text: 'R', saved: '2026-01-03T00:00:00Z' }] });
 let st = await w.carry.standing(game);

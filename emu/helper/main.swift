@@ -84,7 +84,8 @@
 // names a token, password or secret; one over a megabyte is left where it is.
 // A file is written only at a place those entries name, with `~` made this
 // Mac's home again, and never while its emulator runs, which writes its
-// settings as it quits.
+// settings as it quits. Writing one for an emulator never opened on this Mac
+// makes its folder first.
 //
 // A carried save sits in a folder inside its emulator's own, which
 // emulators.json names beside that folder's path in Supabase, and the
@@ -113,7 +114,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "19"
+let version = "20"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -586,9 +587,15 @@ func settingBytes(_ name: String, _ rel: String) -> Data? {
 
 // One settings file written at a place the emulator's entries name.
 func writeSetting(_ name: String, _ rel: String, _ body: Data) -> (Int, [String: Any]) {
-  guard let e = saver(name) else { return (404, ["error": "\(name) is not an emulator Emu knows."]) }
+  guard var e = saver(name) else { return (404, ["error": "\(name) is not an emulator Emu knows."]) }
   let app = (appsOf(e.rule).first as NSString?)?.deletingPathExtension ?? name
-  guard e.home != nil else { return (409, ["error": "Open \(app) once on this Mac first, so it makes its settings folder."]) }
+  // An emulator never opened on this Mac has no folder yet: the first it may
+  // use is made, so the settings kept for it start it as on any other Mac.
+  if e.home == nil, let first = (e.rule["homes"] as? [String])?.first {
+    try? files.createDirectory(atPath: expand(first), withIntermediateDirectories: true)
+    guard let made = saver(name), made.home != nil else { return (500, ["error": "The helper could not make \(app)'s folder."]) }
+    e = made
+  }
   guard !running(appsOf(e.rule)) else { return (409, ["error": "Quit \(app) first: it writes its settings as it quits."]) }
   guard plainName(rel) else { return (400, ["error": "A settings file needs a plain name."]) }
   let others = notOwn(e)

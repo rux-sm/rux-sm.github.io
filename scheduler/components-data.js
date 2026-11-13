@@ -211,7 +211,7 @@
               trip_payments: [{ amount: 610, date: day(-9) }], buses: [{ bus: 'b104', backAt: [day(-1), '17:40'], crew: [['d6', 'driver', 'confirmed']] }] }))),
             row('105', bar(trip({ customer: 'Coastal Youth Choir', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
               trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, invoice_number: '4108', buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
-        { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
+        { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; a dimmed dash for a time missing.', days: 3, rows: times },
         { name: 'Update ages', note: "Age is neutral text before the newest update; the entire row opens Updates, including when none exist.", days: 3, rows: aged },
         { name: 'A bus a partner covers', note: 'A partner\'s coach and driver in place of a bus of ours, in its partner\'s row, headed with the partner\'s name, between the fleet and No bus: the partner where the drivers go, its mark its answer. One not confirmed inside fourteen days of departure is an error, as an empty seat is, and so is a partner whose insurance runs out before the trip ends.', days: 3,
           rows: [row('101', bar(covered)), partnerRowOf('p1', bar(covered, { slot: 1 })), partnerRowOf('p2', bar(covered, { slot: 2 }))] },

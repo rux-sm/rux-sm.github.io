@@ -1665,7 +1665,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    so of a bar's six lines the destination and the times read first; a bar
    with no times, and a live bar's words, stay regular. */
 .scheduler-bar__time, .scheduler-road__times { font-weight: var(--rux-heading-compact-01-font-weight); }
-.scheduler-bar__time:has(.scheduler-bar__none), .scheduler-road__say { font-weight: var(--rux-label-01-font-weight); }
+.scheduler-road__say { font-weight: var(--rux-label-01-font-weight); }
 .scheduler-bar__ampm,
 .scheduler-figures__ampm { font-size: max(.85em, var(--rux-label-01-font-size)); opacity: var(--scheduler-quiet, .85); }
 /* An empty figure's dash is a value, not a field's placeholder, so it takes

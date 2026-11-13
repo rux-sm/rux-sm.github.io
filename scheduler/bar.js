@@ -706,30 +706,30 @@
 
     // Departure and return on one line, "2:10p–12:30a", the short form on
     // every bar so bars of one width read alike and the narrowest day column
-    // holds it. A leg with neither says so, so an empty row never reads as a
-    // rendering fault. The spot time is not drawn, because two times already
-    // fill the row; the editor shows it.
+    // holds it. Every row has the same shape: a time missing is Carbon's
+    // empty value, a dimmed dash, in its place. The spot time is not drawn,
+    // because two times already fill the row; the editor shows it.
     const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
-    // "No times" is dimmed, quieter than a time, as app.css draws it.
-    const none = !dep && !back;
+    const blank = () => el('span', 'scheduler-bar__none', '\u2014');
     /* A leg that runs off the week leaves out the time on that side, and its
        track runs out to the bar's cut edge, so it reads as going on into
        the other week; the row's tooltip names both times with their days. */
     const backDay = addDays(parseDay(leg.to), daysBack(leg));
     const departDay = addDays(parseDay(leg.from), -daysOut(leg));
     const crosses = place.fromPrev || place.toNext;
-    const depart = dep ? [clockEl(dep)] : [];
-    const ret = back ? [clockEl(back)] : [];
-    /* With both, a track between them, as a live bar's times have, filled
-       in the trip's ink as far as the time between them has gone: full once
-       it is back, empty before it leaves. The dash and any time left out stay
-       inside it, unseen, so the row still reads and copies whole. */
-    const when = el('span', none ? 'scheduler-bar__none' : null);
+    const depart = [dep ? clockEl(dep) : blank()];
+    const ret = [back ? clockEl(back) : blank()];
+    /* A track between them, as a live bar's times have, filled in the trip's
+       ink as far as the time between them has gone: full once it is back,
+       empty before it leaves, and empty while either time is missing. The
+       dash and any time left out stay inside it, unseen, so the row still
+       reads and copies whole. */
+    const when = el('span', 'scheduler-bar__span');
     /* The times and the track between them are the trip's, so a press there
        selects it; the route mark leading the row, in the column the chat and crew
        marks stand in below, is the button that opens the leg's route tip. */
     const timeWords = () => el('span', 'scheduler-bar__when');
-    let route = null;
+    const route = routeMark();
     const backAt = timeWords();
     backAt.append(...ret);
     /* A departure the evening before the leg's first day, after the night
@@ -739,15 +739,15 @@
       mark.title = 'Leaves the evening before';
       depart.push(mark);
     }
-    if (dep && back) {
-      when.className = 'scheduler-bar__span';
-      const unseen = [place.fromPrev ? `${weekday(departDay)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
-      route = routeMark();
+    {
+      const timed = dep && back;
+      const said = (t, day) => (t ? `${weekday(day)} ${t}` : '\u2014');
+      const unseen = [place.fromPrev ? said(dep, departDay) : '', '\u2009\u2013\u2009', place.toNext ? said(back, backDay) : ''].join('');
       const track = el('span', 'scheduler-bar__track', unseen);
-      [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
-      track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
+      if (timed) [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
+      track.style.setProperty('--scheduler-done', `${timed ? tripDone(leg) : 0}%`);
       // A leg that runs off the week has its track masked to the line, which would hide them.
-      if (trip.route_done_at && !crosses) {
+      if (timed && trip.route_done_at && !crosses) {
         track.append(...stopDots(trip, leg, ...legSpan(leg), Number(place.span)));
         markStops(track, tripDone(leg));
       }
@@ -758,16 +758,12 @@
       }
       when.append(track);
       if (!place.toNext) when.append(backAt);
-      if (crosses) when.title = `${weekday(departDay)} ${dep} \u2013 ${weekday(backDay)} ${back}`;
+      if (crosses) when.title = `${said(dep, departDay)} \u2013 ${said(back, backDay)}`;
     }
-    // A lone time in the other week names its day, having no track to say so.
-    else if (dep) when.append('Dep ', ...(place.fromPrev ? [`${weekday(departDay)} `] : []), ...depart);
-    else if (back) when.append('Ret ', ...(place.toNext ? [`${weekday(backDay)} `] : []), backAt);
-    else when.append('No times');
     if (daysBack(leg) && back && !place.toNext) {
       const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
-      (dep ? backAt : when).appendChild(mark);
+      backAt.appendChild(mark);
     }
     addRow(bar, 'scheduler-bar__time', route, when);
 

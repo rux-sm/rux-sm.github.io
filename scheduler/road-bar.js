@@ -400,11 +400,15 @@
     const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
     const parts = [];
     const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
-    if (bar.dataset.depart && bar.dataset.back) parts.push(routeMark());
-    if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
-    if (bar.dataset.depart && bar.dataset.back) {
+    /* Every row has the planned bar's shape: a time missing is a dimmed
+       dash, and the track stays empty without both. */
+    const blank = () => el('span', 'scheduler-road__when scheduler-bar__none', '\u2014');
+    parts.push(routeMark());
+    parts.push(bar.dataset.depart ? clock(bar.dataset.depart) : blank());
+    {
+      const timed = bar.dataset.depart && bar.dataset.back;
       const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
-      const back = plannedBack(bar);
+      const back = timed ? plannedBack(bar) : 0;
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
       const track = el('span', 'scheduler-road__track');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
@@ -433,7 +437,7 @@
       if (over > 0) when.title = `Due back ${bar.dataset.back}, ${over} min past it`;
       when.append(...[nextDay(bar, null)].filter(Boolean));
       parts.push(when);
-    }
+    } else parts.push(blank());
     row.replaceChildren(...parts);
   }
 

@@ -181,7 +181,7 @@ expect('only a trip that is back is marked back, which app.css draws outlined in
 const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
-  ['No times', ['Ben'], null]);
+  ['\u2014\u2009\u2013\u2009\u2014', ['Ben'], null]);
 expect('a bar\'s track is empty before the trip leaves, filled as its time goes, and full once it is back, the next day\'s return counted',
   [['2026-10-29T07:00'], ['2026-10-29T09:52:30'], ['2026-10-29T13:00'], ['2026-10-30T01:00']].map(([at]) => Bar.tripDone({ from: '2026-10-29', to: '2026-10-29', depart: '07:45:00', back: '12:00:00', backDays: 0 }, Date.parse(at)))
     .concat(Bar.tripDone({ from: '2026-10-29', to: '2026-10-29', depart: '22:00:00', back: '02:00:00', backDays: 1 }, Date.parse('2026-10-30T00:00')))
@@ -227,7 +227,7 @@ expect('a trip back keeps the regular update row and carries no driver status ic
   drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__run > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
   [[true, false, 0], [true, false, 0], [true, false, 0], [true, false, 0]]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
-  ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
+  ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', '7:30a\u2009\u2013\u2009\u2014', '\u2014\u2009\u2013\u20096:00p', '\u2014\u2009\u2013\u2009\u2014']);
 expect('update age stays neutral regardless of open work',
   drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__update').classes().find(c => c.startsWith('scheduler-bar__update--')) ?? null),
   [null, null, null, null]);

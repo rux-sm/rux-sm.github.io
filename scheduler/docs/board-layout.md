@@ -123,7 +123,7 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 | Part | Holds |
 | :--- | :--- |
 | Name | As far as the first icon drawn: the whole 128px on a tile with none, and 64px beside all three. An icon not drawn keeps its place while one before it is drawn, so each stands in one column down the rail, counted from the tile's end, and the first one drawn stands 8px after the name, as a bar's marks stand from its words |
-| Gauge | 16px, a 2px ring, filled clockwise of the ten hours |
+| Gauge | 16px, a 2px ring, filled clockwise of the ten hours, drawn only while the hours are low, in amber, or there is no clock, dashed |
 | Doing | 16px, what they are doing on a trip, 4px after the gauge's place |
 | Mark | 16px, at the line's end, 4px after the doing icon |
 

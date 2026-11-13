@@ -788,13 +788,16 @@ const tripTile = (live, onTrip, driver = { id: 'd2', name: 'Ana Ruiz' }) => {
   const icon = cls => { const n = tripCell.querySelector(cls); return n.hidden ? null : n.querySelector('use')?.getAttribute('href'); };
   return [icon('.scheduler-avail__mark'), icon('.scheduler-avail__doing'), tripCell.querySelector('.scheduler-avail__doing').hidden ? null : tripCell.querySelector('.scheduler-avail__doing').dataset.trip, tripCell.querySelector('.scheduler-avail__meter').hidden];
 };
-expect('two icons: on a trip, what the driver is doing, the arrow driving, the pause off duty, the moon in the berth, kept beside a mark; the red mark out of hours, with no gauge; a paper\'s mark; none and no gauge for a free driver',
+expect('two icons: on a trip, what the driver is doing, the arrow driving, the pause off duty, the moon in the berth, kept beside a mark, and no gauge while hours are enough; the red mark out of hours, with no gauge; a paper\'s mark; none and no gauge for a free driver',
   [tripTile({ duty: 'driving', left_ms: 6 * H, wheel: true }, true), tripTile({ duty: 'off', left_ms: 5 * H }, true),
     tripTile({ duty: 'sleeper', left_ms: 8 * H }, true), tripTile({ duty: 'on', left_ms: 0 }, true),
     tripTile({ duty: 'off', left_ms: 5 * H }, true, { id: 'd2', name: 'Ana Ruiz', license_exp: dayIn(5) }), tripTile({ duty: 'off', left_ms: 10 * H }, false)],
-  [[null, '#i-BPMN-link--fill', 'driving', false], [null, '#i-pause--filled', 'off', false],
-    [null, '#i-asleep--filled', 'sleeper', false], ['#i-warning--filled', '#i-play--filled--alt', 'on', true],
-    ['#i-warning--alt--filled', '#i-pause--filled', 'off', false], [null, null, null, true]]);
+  [[null, '#i-BPMN-link--fill', 'driving', true], [null, '#i-pause--filled', 'off', true],
+    [null, '#i-asleep--filled', 'sleeper', true], ['#i-warning--filled', '#i-play--filled--alt', 'on', true],
+    ['#i-warning--alt--filled', '#i-pause--filled', 'off', true], [null, null, null, true]]);
+expect('the gauge is drawn only while hours are low, in amber',
+  [tripTile({ duty: 'off', left_ms: 1.5 * H }, true), tripCell.querySelector('.scheduler-avail__meter').dataset.tone],
+  [[null, '#i-pause--filled', 'off', false], 'warning']);
 expect('an expired paper: the red mark and no gauge, free or not, the tile marked cannot, Samsara\'s own mark standing for now',
   [tripTile({ duty: 'off', left_ms: 10 * H }, false, { id: 'd2', name: 'Ana Ruiz', med_card_expiry: dayIn(-3) }),
     tripCell.hasAttribute('data-cannot'),

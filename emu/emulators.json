@@ -561,6 +561,11 @@
       ],
       "manages": [
         {
+          "key": "Video/AdaptiveSizing",
+          "value": "false",
+          "why": "Resizing its window to each game's picture takes it out of fullscreen."
+        },
+        {
           "key": "Paths/Saves",
           "value": "{home}/Saves/",
           "why": "Saves sit in its own folder on the Mac, where Emu carries them to and from Supabase."

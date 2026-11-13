@@ -46,10 +46,10 @@
    nothing again.
 
    Two pages load this. The public page takes the token from its address.
-   The staff page, driver-view.html, marks its body data-driver="staff" and
-   draws the same screens through `SchedulerDriverPage` below, with Accept
-   and Decline disabled, because staff answer from the trip; driver-view.js
-   picks the driver and makes their link.
+   The staff page, the Send trips tab of a driver's record on drivers.html,
+   marks its body data-driver="staff" and draws the same screens through
+   `SchedulerDriverPage` below, with Accept and Decline disabled, because
+   staff answer from the trip; driver-send.js makes the driver's link.
    ========================================================================== */
 (() => {
   'use strict';
@@ -750,8 +750,8 @@
     }
   }
 
-  /* The staff page, driver-view.html, draws a driver's page through this:
-     driver-view.js picks the driver and their link, and hands over the token.
+  /* The staff page draws a driver's page through this: driver-send.js
+     reads the driver's link and hands over the token.
      A new driver starts at their home. */
   window.SchedulerDriverPage = {
     show: t => {

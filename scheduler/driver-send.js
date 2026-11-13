@@ -1,12 +1,18 @@
 /* ==========================================================================
-   driver-view.js — SENDING A DRIVER THEIR TRIPS (driver-view.html)
+   driver-send.js — SENDING A DRIVER THEIR TRIPS (drivers.html?id=, Send trips)
    --------------------------------------------------------------------------
-   Staff pick a driver and switch each of their current and upcoming trip
-   legs on or off their page. A switch saves as it is flipped, so the
-   driver's link always shows what the toggles say, and a trip still being
-   worked out stays off it until it is switched on; a new trip starts off.
-   The driver's own page, drawn below by share/driver.js, redraws after each
-   save, so staff read what the driver will read.
+   The Send trips tab of a driver's record. Staff switch each of the
+   driver's current and upcoming trip legs on or off their page. A switch
+   saves as it is flipped, so the driver's link always shows what the
+   toggles say, and a trip still being worked out stays off it until it is
+   switched on; a new trip starts off. The driver's own page, drawn beside
+   the list by share/driver.js, redraws after each save, so staff read what
+   the driver will read.
+
+   drivers.js says which driver the record holds, when it loads and after
+   each save, and the tab reads that driver's trips and link when it is next
+   open; drivers.html?id=<id>#send
+   opens the record on this tab, as the board's Send trips does.
 
    The link functions: create_driver_schedule_share makes a link, or brings
    back the driver's last one so the address stays the same, the first time
@@ -15,7 +21,7 @@
    revoke_driver_schedule_share stops it, and replace_driver_schedule_share
    gives it a new address, which stops the old one. A link's dates run from
    the first leg on it to the last. Copy only copies, because a copied text
-   is not a sent one. Mark as sent, offered while the driver has not
+   is not a sent one. Mark as sent, enabled while the driver has not
    answered a trip on their page, sets each such leg to Pending response
    through sync_trip_driver_statuses, which takes the trip's whole crew,
    read again for the mark, and changes only the rows marked dirty.
@@ -42,7 +48,6 @@
   const dateOf = v => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(clean(v)); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
-  const short = (d, opts) => d.toLocaleDateString('en-US', opts);
   const nameOf = d => clean(d?.short_name || d?.name) || 'Driver';
   const activeSeats = a => {
     const roles = Array.isArray(a.active_roles) ? new Set(a.active_roles.map(e => String(e).split(':', 1)[0])) : null;
@@ -139,29 +144,23 @@
 
   // -- the list -------------------------------------------------------------------------
   const onPageLegs = () => legs.filter(l => onPage.has(l.key));
-  /* A tile a leg: the day and where, the bus and role, then its tags, the
-     driver's answer and, in red, Not confirmed while the customer has not
-     confirmed the trip, with the leg's switch at the right. The label is
-     read by a screen reader and hidden, as Carbon's hideLabel hides it; the
-     switch says On or Off. */
+  /* A table row a leg: its switch first, where a phone's width still shows
+     it, then its day, where, the bus, the role and its tags, the driver's
+     answer and, in red, Not confirmed while the customer has not confirmed
+     the trip. The
+     switch is Carbon's small one, whose check says On; its label is read by
+     a screen reader and hidden, as Carbon's hideLabel hides it. */
+  const CHECK = '<svg class="rux--toggle__check" width="6px" height="5px" viewBox="0 0 6 5"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>';
   function drawList() {
     const list = $('scheduler-send-list');
     list.replaceChildren();
-    if (!legs.length) { list.appendChild(el('p', 'rux--type-body-compact-01 scheduler-send__note', 'No current or upcoming trips.')); return; }
-    let month = '';
+    $('scheduler-send-table').hidden = !legs.length;
     for (const l of legs) {
-      const m = short(l.start, { month: 'long', year: 'numeric' });
-      if (m !== month) { month = m; list.appendChild(el('p', 'rux--type-label-01 scheduler-send__month', m)); }
       const id = `scheduler-send-${l.key.replace(/[^a-z0-9]/gi, '-')}`;
-      const where = `${messageDate(l.start, l.end)} · ${clean(l.trip.destination) || 'Trip'}`;
-      const row = el('div', 'rux--tile scheduler-send__row');
-      const text = el('div', 'scheduler-send__leg');
-      const tags = el('div', 'scheduler-send__tags');
-      tags.appendChild(tag(...(STATUS_TAGS[statusOf(l)] || STATUS_TAGS.off)));
-      if (l.trip.confirmed === false) tags.appendChild(tag('Not confirmed', 'rux--tag--red'));
-      text.append(el('span', 'rux--type-heading-compact-01', where),
-        el('span', 'rux--type-body-compact-01 scheduler-send__meta', `${l.bus ? `Bus ${l.bus}` : 'Bus not set'} · ${roleLabel(l.role)}`),
-        tags);
+      const date = messageDate(l.start, l.end);
+      const where = clean(l.trip.destination) || 'Trip';
+      const row = el('tr');
+      const cell = (...kids) => { const td = el('td'); td.append(...kids); row.appendChild(td); return td; };
       const on = onPage.has(l.key);
       const toggle = el('div', 'rux--toggle');
       const button = el('button', 'rux--toggle__button');
@@ -172,15 +171,23 @@
       const label = el('label', 'rux--toggle__label');
       label.htmlFor = id;
       label.id = `${id}-l`;
-      const look = el('div', 'rux--toggle__appearance');
-      const text2 = el('span', 'rux--toggle__text', on ? 'On' : 'Off');
-      text2.setAttribute('aria-hidden', 'true');
-      look.append(el('div', on ? 'rux--toggle__switch rux--toggle__switch--checked' : 'rux--toggle__switch'), text2);
-      label.append(el('span', 'rux--toggle__label-text rux--visually-hidden', `On ${nameOf(driver)}'s page: ${where}`), look);
+      const look = el('div', 'rux--toggle__appearance rux--toggle__appearance--sm');
+      const knob = el('div', on ? 'rux--toggle__switch rux--toggle__switch--checked' : 'rux--toggle__switch');
+      knob.innerHTML = CHECK;
+      look.appendChild(knob);
+      label.append(el('span', 'rux--toggle__label-text rux--visually-hidden', `On ${nameOf(driver)}'s page: ${date} · ${where}`), look);
       toggle.append(button, label);
       // Design's form-controls.js flips the switch and says so; the save follows it.
       toggle.addEventListener('rux:toggle', e => switched(l, e.detail.on));
-      row.append(text, toggle);
+      cell(toggle);
+      cell(date).className = 'scheduler-send__date';
+      cell(where);
+      cell(l.bus || 'Not set');
+      cell(roleLabel(l.role));
+      const tags = el('div', 'scheduler-send__tags');
+      tags.appendChild(tag(...(STATUS_TAGS[statusOf(l)] || STATUS_TAGS.off)));
+      if (l.trip.confirmed === false) tags.appendChild(tag('Not confirmed', 'rux--tag--red'));
+      cell(tags);
       list.appendChild(row);
     }
   }
@@ -208,15 +215,13 @@
   const sendable = () => onPage.size > 0 && !!link;
   // The legs on the page a mark would change: not answered, and not marked already.
   const unanswered = () => onPageLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
-  // Mark as sent shows while the message can go and a mark would change a
+  // Mark as sent works while the message can go and a mark would change a
   // trip, however the text was copied.
-  const offerMark = () => { $('scheduler-send-mark').hidden = !sendable() || !unanswered().length; };
+  const offerMark = () => { $('scheduler-send-mark').disabled = !sendable() || !unanswered().length; };
   function refresh() {
     const count = onPage.size;
-    $('scheduler-send-revoke').hidden = !link;
-    $('scheduler-send-replace').hidden = !link;
-    $('scheduler-send-state').textContent = count
-      ? `${count} ${count === 1 ? 'trip is' : 'trips are'} on ${nameOf(driver)}'s page.`
+    $('scheduler-send-state').textContent = !legs.length ? 'No current or upcoming trips.'
+      : count ? `${count} ${count === 1 ? 'trip is' : 'trips are'} on ${nameOf(driver)}'s page.`
       : link ? `${nameOf(driver)}'s page shows no trips. Switch on the ones they should see.`
         : 'No link yet. Switch on a trip to make one.';
     $('scheduler-send-text').value = message();
@@ -226,6 +231,8 @@
     $('scheduler-send-copied').textContent = '';
     offerMark();
     $('scheduler-leg-link').hidden = !link;
+    $('scheduler-send-preview').hidden = !link;
+    $('scheduler-send-preview-h').textContent = `${nameOf(driver)}'s page`;
     if (link) {
       $('scheduler-leg-link-url').textContent = PUBLIC + encodeURIComponent(link.token);
       $('scheduler-leg-link-open').href = PUBLIC + encodeURIComponent(link.token);
@@ -305,7 +312,7 @@
     }
     try { statuses = await readStatuses(); } catch {
       note.textContent = "Copied. The driver's answers could not be read, so no trip can be marked here; set them from the trip.";
-      $('scheduler-send-mark').hidden = true;
+      $('scheduler-send-mark').disabled = true;
       return;
     }
     drawList();
@@ -361,58 +368,63 @@
     drawList();
   }
 
-  // -- picking a driver -------------------------------------------------------------------
-  async function pick(id, drivers) {
+  // -- the driver's record ----------------------------------------------------------------
+  /* Reads the record's driver: their link and their legs. The legs on the
+     link start on; a new leg, or every leg with no link, starts off. A
+     record that has moved on to another driver while this one was read
+     draws nothing. */
+  async function read() {
+    const id = driver.id;
     page.clear();
     problem('');
     $('scheduler-send-copied').textContent = '';
     $('scheduler-send').hidden = true;
     $('scheduler-leg-link').hidden = true;
-    driver = drivers.find(d => d.id === id) || null;
-    // The picker itself says Pick a driver, so nothing else does.
-    if (!driver) return;
-    history.replaceState(null, '', `driver-view.html?driver=${encodeURIComponent(id)}`);
+    $('scheduler-send-preview').hidden = true;
     const [share] = await Promise.all([client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: id }), loadLegs()]);
-    if (share.error) { page.say('error', "The driver's link didn't load", 'Try again.', () => pick(id, drivers)); return; }
+    if (driver?.id !== id) return;
+    if (share.error) { page.say('error', "The driver's link didn't load", 'Try again.', open); return; }
     const s = share.data;
     const live = s?.token && (!s.expiresAt || new Date(s.expiresAt) > new Date());
     link = live ? s : null;
-    // The legs on the link start on; a new leg, or every leg with no link, starts off.
     const onLink = new Set((link?.assignmentRefs || []).map(refKey));
     onPage = new Set(legs.filter(l => onLink.has(l.key)).map(l => l.key));
     drawList();
     refresh();
     $('scheduler-send').hidden = false;
-    // With no link, the list's own line says so above its Create link.
+    // With no link, the list's own line says so.
     if (link) await page.show(link.token);
   }
-
-  async function start() {
-    const account = window.Rux.account;
-    let staff = null;
-    try { staff = await account.staffProfile(); } catch { /* said below */ }
-    if (!staff) { page.say('error', "This account isn't set up as staff yet", 'Ask the owner to set it up.'); return; }
-    const picker = $('scheduler-leg-driver');
-    const { data, error } = await client.from('drivers').select('id,name,short_name,language,status').order('name');
-    if (error) { page.say('error', "The drivers didn't load", 'Reload the page to try again.'); return; }
-    const wanted = new URLSearchParams(location.search).get('driver') || '';
-    // The active drivers, and the one the address names, whose link may still need turning off.
-    const drivers = (data || []).filter(d => (d.status || 'active') === 'active' || d.id === wanted);
-    for (const d of drivers) picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));
-    picker.addEventListener('change', () => pick(picker.value, drivers).catch(() => page.say('error', 'Something went wrong', 'Pick the driver again.')));
-    $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
-    $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
-    $('scheduler-send-revoke').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-revoke-modal'), e.currentTarget));
-    $('scheduler-send-replace').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-replace-modal'), e.currentTarget));
-    $('scheduler-send-replace-confirm').addEventListener('click', () => replace().catch(() => problem("The link wasn't replaced, so the old address still works. Try again.")));
-    $('scheduler-send-revoke-confirm').addEventListener('click', () => revoke().catch(() => problem("The link wasn't revoked, so it still works. Try again.")));
-    if (wanted && drivers.some(d => d.id === wanted)) picker.value = wanted;
-    await pick(picker.value, drivers);
-  }
+  const open = () => read().catch(() => page.say('error', 'Something went wrong', 'Try again.', open));
 
   if (!client || !page) {
     page?.say('info', 'This preview has no connection', 'Open http://localhost:8641/, the cloud preview, to send a driver their trips.');
     return;
   }
-  start().catch(() => page.say('error', 'Something went wrong', 'Reload the page to try again.'));
+  const tab = $('scheduler-driver-tab-send');
+  let stale = true;   // the record's driver has not been read since it was last said
+  const show = () => {
+    if (!driver || !stale || tab.getAttribute('aria-selected') !== 'true') return;
+    stale = false;
+    open();
+  };
+  /* drivers.js says which driver the record holds, when it loads and after
+     each save. A save can change the name and the language the message is
+     written in, or set the driver Inactive, so the tab reads again. */
+  document.addEventListener('scheduler:driver-loaded', e => {
+    driver = e.detail?.id ? e.detail : null;
+    stale = true;
+    show();
+  });
+  tab.closest('[role="tablist"]').addEventListener('rux:tab-selected', show);
+  $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
+  $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
+  // The link's overflow menu. design/js/menu.js closes the menu on a click
+  // and puts focus back on its trigger, so a dialog opens after that and
+  // keeps the focus it takes; closing it returns focus to the trigger.
+  const ask = modal => () => setTimeout(() => window.Rux?.modal?.open($(modal), $('scheduler-send-menu-trigger')), 0);
+  $('scheduler-send-revoke').addEventListener('click', ask('scheduler-send-revoke-modal'));
+  $('scheduler-send-replace').addEventListener('click', ask('scheduler-send-replace-modal'));
+  $('scheduler-send-replace-confirm').addEventListener('click', () => replace().catch(() => problem("The link wasn't replaced, so the old address still works. Try again.")));
+  $('scheduler-send-revoke-confirm').addEventListener('click', () => revoke().catch(() => problem("The link wasn't revoked, so it still works. Try again.")));
 })();

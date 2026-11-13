@@ -1052,7 +1052,7 @@
       call.setAttribute('aria-label', `Call ${name}, ${showPhone(driver.phone)}`);
       foot.appendChild(call);
     }
-    for (const [words, href] of [['Send trips', `driver-view.html?driver=${encodeURIComponent(driver.id)}`], ['Open driver', `drivers.html?id=${encodeURIComponent(driver.id)}`]]) {
+    for (const [words, href] of [['Send trips', `drivers.html?id=${encodeURIComponent(driver.id)}#send`], ['Open driver', `drivers.html?id=${encodeURIComponent(driver.id)}`]]) {
       const a = footLink(words, href);
       a.target = '_blank';
       a.rel = 'noopener';

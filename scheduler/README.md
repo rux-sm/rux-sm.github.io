@@ -35,7 +35,7 @@ everywhere as its type and number. `buses.html` forwards to it.
 paper or upload and flagged within 30 days, and edits one at `drivers.html?id=`:
 details, photo, time off, the drivers they are kept apart from, which the board
 warns of on one trip, and a Documents tab. A driver is set Inactive, never
-deleted, and the schedule link is made on `driver-view.html`. A trip in a
+deleted, and the schedule link is made on the record's Send trips tab. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
 `contacts.html` lists every contact, the people who book, travel or work for
@@ -124,7 +124,7 @@ where and when, who to call, its stops, the itinerary file and the envelope, `sh
 Accept and Decline at its foot; a cancelled leg stays until its day passes, and the page reads the
 trips again on return and before Accept. Staff see the same schedule inside the app at `maintenance.html`,
 from the side nav, where a bar's details also open its trip, and they copy the public link to send and replace it when it has gone further
-than it should, and a driver's page at `driver-view.html`, from See their page on the Drivers page,
+than it should, and a driver's page on the Send trips tab of the driver's record, `drivers.html?id=<id>#send`,
 where a switch for each trip, saved as it is flipped, says what their page shows, and they copy the message and replace or revoke the link.
 
 Staff can also work the schedule from the Claude app, which asks the

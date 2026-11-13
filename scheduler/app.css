@@ -5618,54 +5618,66 @@ html[data-scheduler-takeover] {
 .scheduler-maintenance-title .rux--btn[hidden] { display: none; }
 
 /* ── A driver's schedule link (share/driver.html) and its staff view ────────
-   (driver-view.html). A few screens, each a stack: rows that open something
+   (drivers.html's Send trips tab). A few screens, each a stack: rows that open something
    are Carbon's clickable tiles, an icon or a day at the left, the words, a
    tag and a chevron at the right, set 2px apart so the page between them
    rules them. Phone first; the staff view holds the screens to a phone's
    width, so staff read them at the size drivers do. */
-/* Driver view's sending section: the trips to tick beside the message to
-   copy, stacked on a narrow screen. The list scrolls inside itself past a
-   screen's height, so the message stays in reach. */
+/* The Send trips tab of a driver's record: the office's work, then the
+   driver's page, which is as wide as a phone. */
 .scheduler-send {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--rux-spacing-07);
   align-items: start;
 }
-.scheduler-send__trips { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; border: 0; min-inline-size: 0; }
-.scheduler-send__trips > legend { margin-block-end: var(--rux-spacing-03); }
-/* The trips are tiles 2px apart, as the driver's page sets its own. */
-.scheduler-send__list { display: grid; gap: var(--rux-spacing-01); max-block-size: 28rem; overflow-y: auto; }
-.scheduler-send__month { margin: var(--rux-spacing-04) 0 var(--rux-spacing-02); color: var(--rux-text-secondary); }
-.scheduler-send__month:first-child { margin-block-start: 0; }
-/* A trip and its switch on one tile, the switch at the right; the trip's
-   tags sit under its words. */
-.scheduler-send__row { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
-.scheduler-send__leg { display: grid; min-inline-size: 0; }
-.scheduler-send__tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); margin-block-start: var(--rux-spacing-03); }
+.scheduler-send__work,
+.scheduler-send__part,
+.scheduler-send__preview { display: grid; gap: var(--rux-spacing-04); min-inline-size: 0; }
+.scheduler-send__work { gap: var(--rux-spacing-07); }
+.scheduler-send__work[hidden],
+.scheduler-send__preview[hidden],
+.scheduler-send__list[hidden] { display: none; }
+.scheduler-send :is(h2, p) { margin: 0; }
+/* A record's column is half the page's width, too narrow for the phone
+   beside the work. Where the window leaves the phone's width free at the
+   column's right, the section reaches into that margin and stands the phone
+   there, in view while the work beside it scrolls and no taller than the
+   window leaves it. */
+@media (min-width: 106rem) {
+  .scheduler-send {
+    grid-template-columns: minmax(0, 1fr) 24.375rem;
+    margin-inline-end: calc(-24.375rem - var(--rux-spacing-07));
+  }
+  .scheduler-send__preview { position: sticky; inset-block-start: calc(3rem + var(--rux-spacing-05)); }
+  .scheduler-send__preview > .scheduler-leg-staff { max-block-size: calc(100dvh - 8rem); }
+}
+/* The trips' table scrolls inside itself, sideways on a phone and down past
+   a screen's height, so the message stays in reach. */
+.scheduler-send__list { max-block-size: 28rem; overflow: auto; }
+.scheduler-send__date { font-weight: 600; }
+.scheduler-send__tags { display: flex; gap: var(--rux-spacing-02); }
 .scheduler-send__tags .rux--tag { margin: 0; }
-.scheduler-send__row > .rux--toggle { flex: none; }
-.scheduler-send__meta,
 .scheduler-send__note { color: var(--rux-text-secondary); }
-.scheduler-send__note { margin: 0; }
 .scheduler-send__note:empty { display: none; }
 .scheduler-send__buttons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
-.scheduler-send__buttons [hidden] { display: none; }
 .scheduler-send__error { margin: 0; color: var(--rux-text-error); }
-.scheduler-send__message { display: grid; gap: var(--rux-spacing-04); min-inline-size: 0; }
 
-/* The Drivers page's Copy link and See their page, side by side. */
-.scheduler-driver-link-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 /* The staff view's copy of the driver's page is a Gray 100 zone, which sets
    the tokens and paints nothing, so it paints its own page and a phone's
-   gutter. */
+   gutter, inside a phone's outline and proportions, which Carbon has no
+   part for, so staff see at a glance that this is the driver's screen. It
+   scrolls inside itself, as a phone does. */
 .scheduler-leg-staff {
-  max-inline-size: 25rem;
+  inline-size: min(100%, 24.375rem);
+  aspect-ratio: 9 / 19.5;
+  overflow-y: auto;
   padding: var(--rux-spacing-05);
+  border: 1px solid var(--rux-border-strong-01);
+  border-radius: 1.5rem;
   background: var(--rux-background);
   color: var(--rux-text-primary);
 }
-.scheduler-leg-picker { flex: 0 1 20rem; min-inline-size: 12rem; }
 .scheduler-driver-screen :is(h1, h2, p, address) { margin: 0; overflow-wrap: anywhere; }
 .scheduler-driver-screen address { font-style: normal; }
 /* A screen's heading takes focus when the screen changes, for a screen

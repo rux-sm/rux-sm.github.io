@@ -11691,7 +11691,7 @@
     window.Rux?.menu?.close?.(driverMenu);
     driverMenu.hidden = true;
     const ref = encodeURIComponent(driver.id);
-    if (item.id === 'scheduler-driver-menu-send') follow(`driver-view.html?driver=${ref}`, true);
+    if (item.id === 'scheduler-driver-menu-send') follow(`drivers.html?id=${ref}#send`, true);
     else if (item.id === 'scheduler-driver-menu-open') follow(`drivers.html?id=${ref}`, true);
     else if (item.id === 'scheduler-driver-menu-call') follow(`tel:${dial(driver.phone)}`);
     else if (item.id === 'scheduler-driver-menu-text') {

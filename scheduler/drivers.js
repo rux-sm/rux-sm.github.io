@@ -13,8 +13,8 @@
    is none.
 
    A driver is never deleted here, only set Inactive, so past trips keep the
-   driver's name. The schedule link is shown, not made: driver-view.html makes,
-   changes and turns off driver links. Its Documents tab lists the driver's
+   driver's name. Its Send trips tab, driver-send.js's, makes, changes and
+   turns off the driver's schedule link. Its Documents tab lists the driver's
    current documents, which the Documents page uploads and edits, under the
    forms on their link, which driver-forms.js draws once this page says
    which driver it read. drivers.html?form=<form id> is a form's own view,
@@ -37,8 +37,6 @@
   // The record view and a form's show the list's column only for its notice.
   if (editing || formView) $('scheduler-drivers-h').hidden = true;
 
-  // The driver's page a link opens, as Driver view sends it.
-  const { DRIVER_LINK } = window.SchedulerDriverText;
   const PHOTO_BUCKET = 'driver-photos';
   // An expiry this close shows as a warning, as it does on the Documents page.
   const { WARN_DAYS } = window.SchedulerDocumentStatus;
@@ -652,38 +650,7 @@
     }
   }
 
-  // ── schedule link and trips, read only ──
-  async function drawLink() {
-    const section = $('scheduler-driver-link-section');
-    const note = $('scheduler-driver-link-text');
-    const copy = $('scheduler-driver-link-button');
-    section.hidden = false;
-    copy.hidden = true;
-    $('scheduler-driver-view').href = `driver-view.html?driver=${encodeURIComponent(loaded.id)}`;
-    note.textContent = 'Loading…';
-    const { data, error } = await client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: loaded.id });
-    if (error) { note.textContent = "The link didn't load."; return; }
-    if (!data?.token) { note.textContent = 'No link yet. Make one on their page.'; return; }
-    const covers = data.rangeStart ? `Covers ${rangeText(data.rangeStart, data.rangeEnd)}. ` : '';
-    const ends = String(data.expiresAt || '').slice(0, 10);
-    if (ends && daysUntil(ends) < 0) {
-      note.textContent = `${covers}It stopped working on ${longDate(ends)}. Make a new one on their page.`;
-      return;
-    }
-    note.textContent = `${covers}${ends ? `It works until ${longDate(ends)}.` : ''}`;
-    copy.hidden = false;
-    $('scheduler-driver-link-button').dataset.url = DRIVER_LINK + encodeURIComponent(data.token);
-  }
-  $('scheduler-driver-link-button')?.addEventListener('click', async e => {
-    const btn = e.currentTarget;
-    try {
-      await navigator.clipboard.writeText(btn.dataset.url);
-      result('success', 'Link copied.');
-    } catch {
-      result('error', "The link couldn't be copied.");
-    }
-  });
-
+  // ── upcoming trips, read only ──
   // A stored role, such as `relief-driver`, as words in sentence case.
   const sentence = s => { const t = s.replace(/[-_]/g, ' '); return t[0].toUpperCase() + t.slice(1); };
   // A day range and a list of windows, as the time off on the page keeps them.
@@ -871,10 +838,12 @@
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
     legs = null;
-    if (loaded) { drawLink(); readTrips().then(drawTrips); loadPapers(loaded.id); sayDriver(); }
-    // A paper uploaded from here comes back to the Documents tab.
-    if (loaded && location.hash === '#documents') {
-      const tab = $('scheduler-driver-tab-documents');
+    if (loaded) { readTrips().then(drawTrips); loadPapers(loaded.id); sayDriver(); }
+    // A paper uploaded from here comes back to the Documents tab, and the
+    // board's Send trips opens on that tab.
+    const hashTab = { '#documents': 'scheduler-driver-tab-documents', '#send': 'scheduler-driver-tab-send' }[location.hash];
+    if (loaded && hashTab) {
+      const tab = $(hashTab);
       window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
       history.replaceState(null, '', location.pathname + location.search);
     }
@@ -973,7 +942,6 @@
     drawOff();
     drawApart();
     baseline = snapshot();
-    drawLink();
     readTrips().then(drawTrips);
     loadPapers(loaded.id);
     sayDriver();

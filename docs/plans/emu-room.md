@@ -27,9 +27,9 @@ fun to use while staying plain. It replaces the front page that
   handful.
 - **Your Mac is a band across the top that stays in view while the page
   scrolls,** and Rux's Collection fills the full width below it, so a drag
-  is a short move up. The menu folds to a strip of icons on this page, and a
-  line beside Your Mac says whether the helper runs and the server answers,
-  opening Status.
+  is a short move up. The menu is Carbon's rail on this page, a strip of
+  icons, which Design's frame clears, and a line beside Your Mac says whether
+  the helper runs and the server answers, opening Status.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
 - **Rux's Collection is one row of consoles over the picked console's
@@ -90,8 +90,11 @@ fun to use while staying plain. It replaces the front page that
   move come from one function, so they never disagree.
 - **One line beside Your Mac's name says what a move did,** such as
   "Playing." or why the helper refused, with Undo where it can be taken back.
-- **A game on this Mac whose console is not plugged in is dimmed,** with a
-  small tag naming the console it needs.
+- **A game on this Mac whose console is not plugged in is dimmed,** with
+  Carbon's small tag naming the console it needs.
+- **A room of more than eight consoles is crowded:** the consoles take the
+  scene's whole width, closer and with smaller names, and the games stand on
+  a board of their own beneath, the favourites beside this Mac's.
 - **Favourites is a shelf you drag games onto,** from Rux's Collection or
   the room, and off again back to Rux's Collection; it is `emu_notes`'
   favourite mark. A favourite this Mac lacks is dimmed.
@@ -109,7 +112,7 @@ fun to use while staying plain. It replaces the front page that
 - **Every move makes a small sound,** made in the browser with no sound
   files: a click to pick up, a thunk and rising tone to plug in, a chime
   when a download finishes, a start-up jingle to play, a buzz for no. A
-  switch in the header turns them off.
+  button in the header turns them off, remembered in the browser.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
   moves as buttons; pressing a console, in the room or the collection, picks
@@ -134,21 +137,15 @@ fun to use while staying plain. It replaces the front page that
 
 ## Questions
 
-None open.
+- Should Unplug ask before it takes an emulator off this Mac? One press does
+  it now; its saves and settings are kept, but its caches do not come back.
 
 ## Tasks
 
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
       button, and have it say which game runs, to light the TV or a
       handheld's screen.
-- [ ] Fold the menu to a strip of icons on `room.html`.
-- [ ] Lay out a room of more than eight consoles, where each is now too
-      narrow for its name.
-- [ ] Tag a game whose console is not plugged in with that console; it is
-      only dimmed.
 - [ ] Pick up and put down a game or console with a controller's A.
-- [ ] Add the wrong-console reaction, the game going into its console, and
-      the sounds.
 - [ ] Lay it out on the phone without Your Mac, and see the drawings in
       Safari.
 - [ ] Make the room `index.html`, update `emu/README.md` and drop the

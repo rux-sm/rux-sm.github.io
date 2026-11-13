@@ -32,7 +32,13 @@
    console it does not fit says so in red and nothing happens. One line by
    Your Mac's name says what a move did. A game taken off this Mac leaves
    the shelf at once and its files go a few seconds later, so Undo is only
-   putting it back. docs/plans/emu-room.md is what the room is still to do.
+   putting it back.
+
+   The wrong console shakes its head and says a line. A game played goes in
+   first as it would on the real console: a cartridge drops into its slot, a
+   disc slides onto a tray. Each move makes a small sound, made here with no
+   sound files, which the header's button turns off, remembered in this
+   browser. docs/plans/emu-room.md is what the room is still to do.
    ========================================================================== */
 (() => {
   'use strict';
@@ -100,6 +106,55 @@
     return svg;
   };
   const useOf = (svg, id) => { const use = document.createElementNS(SVG, 'use'); use.setAttribute('href', `#${id}`); svg.append(use); return svg; };
+  // SOUND, made in the browser: a click to pick up, a thud to put down, a
+  // thunk and a rising tone to plug in, a chime when something is done, a
+  // jingle to play and a buzz for no. The header's button turns it off.
+  const KEPT = 'emu-sound';
+  let loud = true;
+  try { loud = localStorage.getItem(KEPT) !== 'off'; } catch { /* a browser that keeps nothing starts with sound */ }
+  let audio = null;
+  function tone(freq, dur, type = 'sine', vol = 0.12, slide = 0) {
+    if (!loud || !helper) return;
+    try {
+      audio ??= new (window.AudioContext || window.webkitAudioContext)();
+      const o = audio.createOscillator();
+      const gain = audio.createGain();
+      const t = audio.currentTime;
+      o.type = type;
+      o.frequency.setValueAtTime(freq, t);
+      if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(gain).connect(audio.destination);
+      o.start(t);
+      o.stop(t + dur);
+    } catch { /* a browser with no sound makes none */ }
+  }
+  const later = (ms, f) => setTimeout(f, ms);
+  const sfx = {
+    pick: () => tone(660, 0.05, 'triangle', 0.06),
+    drop: () => tone(330, 0.08, 'triangle', 0.08),
+    plug: () => { tone(90, 0.12, 'square', 0.1); later(140, () => tone(520, 0.15, 'sine', 0.08, 880)); },
+    unplug: () => tone(400, 0.2, 'sine', 0.08, 120),
+    insert: () => { tone(180, 0.04, 'square', 0.1); later(50, () => tone(240, 0.05, 'square', 0.08)); },
+    start: () => [523, 659, 784].forEach((f, i) => later(i * 90, () => tone(f, 0.14, 'triangle', 0.07))),
+    no: () => tone(110, 0.28, 'sawtooth', 0.07, 80),
+    done: () => [784, 1047].forEach((f, i) => later(i * 80, () => tone(f, 0.12, 'sine', 0.06))),
+  };
+  function showSound() {
+    const b = $('emu-sound');
+    b.hidden = !helper;
+    b.setAttribute('aria-pressed', String(loud));
+    b.title = loud ? 'Sound is on' : 'Sound is off';
+    b.querySelector('use').setAttribute('href', loud ? '#m-volume_up' : '#m-volume_off');
+  }
+  $('emu-sound').addEventListener('click', () => {
+    loud = !loud;
+    try { localStorage.setItem(KEPT, loud ? 'on' : 'off'); } catch { /* it lasts until the page closes */ }
+    showSound();
+    sfx.pick();
+  });
+
   // The consoles' sprite, put into the page once, because a drawing in
   // another file draws nothing in Safari.
   let sprite = null;
@@ -181,6 +236,8 @@
     stand = consolesNow();
     $('emu-stand').replaceChildren(...[...stand].map(([system, state]) => unit(system, state)));
     $('emu-stand').classList.toggle('emu-stand--empty', !stand.size);
+    document.querySelector('.emu-scene').classList.toggle('emu-scene--crowded', stand.size > 8);
+    showSound();
     $('emu-onmac').replaceChildren(...mine.map(([g, s]) => {
       const li = coverItem(g, true);
       const b = li.firstChild;
@@ -191,6 +248,9 @@
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
         b.title = stand.has(g.system) ? `${g.title}. Plug in the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
+        const needs = R.tag([R.systemName(g.system), 'rux--tag--gray'], true);
+        needs.classList.add('emu-cover__needs');
+        b.append(needs);
       }
       return li;
     }));
@@ -272,7 +332,9 @@
   const panelOpen = () => !$('emu-panel').hidden;
   async function look() {
     const before = told();
+    const coming = games.filter(g => stands(g).state === 'arriving');
     await readMac();
+    if (coming.some(g => stands(g).state === 'held')) sfx.done();
     // Nothing is drawn again under a held game or an open panel.
     if (told() !== before && !panelOpen() && !drag?.on) render();
     // A game wanted for play starts once it is here, and is let go if it stopped.
@@ -305,13 +367,64 @@
       catch (error) { say(error.message); return; }
     }
     if (thenPlay) wanted.add(key);
+    sfx.drop();
     await look();
     render();
   }
+  // The slot a game goes into, as a part of its console's drawing from the
+  // top, and the consoles that take a disc.
+  const SLOT = { nes: 0.5, snes: 0.47, n64: 0.47, gc: 0.31, wii: 0.3, wiiu: 0.88, switch: 0.47, gb: 0.03, gbc: 0.12, gba: 0.37, nds: 0.56, n3ds: 0.56, psx: 0.53, ps2: 0.78, xbox: 0.66 };
+  const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
+  const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // A timer beside each animation, so the game still starts where one is not run.
+  const after = (anim, ms) => Promise.race([anim.finished, new Promise(r => setTimeout(r, ms + 80))]).catch(() => {});
+  // The game goes into its console in the room, with its own picture on it.
+  async function insert(g) {
+    const body = $('emu-stand').querySelector(`[data-system="${g.system}"] .emu-unit__console`);
+    if (!body || calm()) { sfx.insert(); return; }
+    const disc = DISC.has(g.system);
+    const media = el('div', disc ? 'emu-media emu-media--disc' : 'emu-media emu-media--cart');
+    const art = document.querySelector(`.emu-cover[data-game="${CSS.escape(keyOf(g))}"] img`);
+    if (art) media.append(art.cloneNode());
+    body.style.setProperty('--emu-slot', SLOT[g.system] ?? 0.4);
+    body.append(media);
+    const easing = 'cubic-bezier(0.2, 0, 0.38, 0.9)';
+    if (disc) {
+      const tray = el('div', 'emu-tray');
+      body.append(tray);
+      tray.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 160, easing });
+      await after(media.animate([{ transform: 'translate(2.75rem, -.5rem) rotate(0)', opacity: 0 }, { transform: 'translate(0, 0) rotate(240deg)', opacity: 1, offset: 0.6 },
+        { transform: 'translate(0, .375rem) rotate(300deg) scale(.6)', opacity: 0 }], { duration: 520, easing }), 520);
+      media.remove();
+      after(tray.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 160, easing }), 160).then(() => tray.remove());
+    } else {
+      await after(media.animate([{ transform: 'translateY(-2.5rem)', opacity: 0 }, { transform: 'translateY(-.5rem)', opacity: 1, offset: 0.5 },
+        { transform: 'translateY(.875rem) scaleY(.2)', opacity: 0 }], { duration: 440, easing }), 440);
+      media.remove();
+    }
+    sfx.insert();
+  }
   async function play(g) {
+    if (stand.get(g.system) === 'on') await insert(g);
     say('Starting…');
-    try { await R.thisMac.play(g, say); }
+    try { await R.thisMac.play(g, say); sfx.start(); }
     catch (error) { say(error.message); }
+  }
+  // The console that will not have it shakes its head, buzzes and says why.
+  const NO = [name => `Nope. That's a ${name} game.`, name => `Doesn't fit. Try the ${name}.`, name => `*blows on it* Still a ${name} game.`, name => `Wrong slot! It wants a ${name}.`];
+  const wrong = system => NO[Math.floor(Math.random() * NO.length)](R.systemName(system));
+  function refuse(system, text) {
+    const u = $('emu-stand').querySelector(`[data-system="${system}"]`);
+    sfx.no();
+    if (!u) { say(text); return; }
+    u.classList.remove('emu-unit--shakes');
+    void u.offsetWidth;
+    u.classList.add('emu-unit--shakes');
+    u.querySelector('.emu-bubble')?.remove();
+    const bubble = el('div', 'emu-bubble', text);
+    bubble.setAttribute('role', 'status');
+    u.append(bubble);
+    setTimeout(() => { bubble.remove(); u.classList.remove('emu-unit--shakes'); }, 1800);
   }
   // Its cover leaves the shelf now and its files go when Undo's time has
   // passed, or as the page closes, so Undo downloads nothing.
@@ -327,6 +440,7 @@
       if (!panelOpen() && !drag?.on) render();
     };
     leaving.set(key, { timer: setTimeout(go, UNDO), go });
+    sfx.drop();
     render();
     say(`${nameOf(g)} is off this Mac. Its saves stay.`, () => { clearTimeout(leaving.get(key)?.timer); leaving.delete(key); render(); }, UNDO);
   }
@@ -335,6 +449,7 @@
     try { await R.data.saveNotes({ system: g.system, title: g.title, favourite: on }); }
     catch (error) { console.error(error); say('The favourite could not be saved. Try again.'); return; }
     g.notes = { ...g.notes, system: g.system, title: g.title, favourite: on };
+    sfx.drop();
     render();
   }
 
@@ -351,11 +466,13 @@
   async function bring(system) {
     if (stand.has(system)) return;
     const ready = plays(system);
+    sfx.drop();
     await keep({ ...wishes(), [system]: ready });
     if (ready) say(`${emulatorOf(system)} is already set up. The ${R.systemName(system)} is ready.`);
   }
   function putBack(system) {
-    if (stand.get(system) !== 'off') { say('Unplug it first.'); return; }
+    if (stand.get(system) !== 'off') { refuse(system, 'Unplug me first.'); return; }
+    sfx.drop();
     const next = wishes();
     delete next[system];
     keep(next);
@@ -364,6 +481,7 @@
   // Supabase, then made ready with the settings this Mac kept, as Status does.
   async function plugIn(system) {
     const emulator = emulatorOf(system);
+    sfx.plug();
     if (!plays(system)) {
       settingUp.add(system);
       render();
@@ -373,6 +491,7 @@
         await R.carry.setUp(emulator, installer, R.keptVersion(installer),
           part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, null, 600000));
         const also = Object.keys(R.SYSTEMS).filter(sys => sys !== system && emulatorOf(sys) === emulator && !stand.has(sys) && gamesOf(sys).length);
+        sfx.done();
         say(also.length ? `${emulator} is set up. It also plays ${also.map(R.systemName).join(' and ')}.` : `${emulator} is set up.`);
       } catch (error) { console.error(error); say(error.message); }
       settingUp.delete(system);
@@ -385,6 +504,7 @@
   async function unplug(system) {
     const emulator = emulatorOf(system);
     const next = { ...wishes(), [system]: false };
+    sfx.unplug();
     await keep(next);
     if (!plays(system) || Object.keys(next).some(sys => next[sys] && emulatorOf(sys) === emulator)) return;
     say(`Keeping ${emulator}'s saves and settings in Supabase…`, null, 600000);
@@ -399,7 +519,8 @@
   // happen. One answer, so the word never disagrees with the drop. `home`
   // lights the game's own cover in Rux's Collection too.
   const yes = (word, light, run, home = false) => ({ word, light, run, home });
-  const no = (word, light, home = false) => ({ word, light, no: true, home });
+  // A move refused: `says` is the console and its line, said when the game is let go.
+  const no = (word, light, says = null, home = false) => ({ word, light, no: true, says, home });
   function intent(g, from, under) {
     if (!under) return null;
     const s = standing(g);
@@ -407,13 +528,13 @@
       ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? $('emu-stand').querySelector(`[data-system="${g.system}"]`) : null);
     if (unit) {
       const system = unit.dataset.system;
-      if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit);
-      if (stand.get(system) === 'setting') return no('Still setting up', unit);
-      if (stand.get(system) !== 'on') return no('Plug it in first', unit);
-      if (s.state === 'arriving') return no('Still downloading', unit);
+      if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
+      if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
+      if (stand.get(system) !== 'on') return no('Plug it in first', unit, [system, 'Plug me in first.']);
+      if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
       if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
       if (keeps) return yes('Download and play', unit, () => download(g, true));
-      return no('Plug in the drive to play', unit);
+      return no('Plug in the drive to play', unit, [system, 'Plug in the drive to play.']);
     }
     if (under.closest('.emu-wall')) return g.notes?.favourite ? null : yes('Add to Favourites', $('emu-ledge'), () => favourite(g, true));
     if (under.closest('.emu-scene')) {
@@ -436,7 +557,7 @@
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
       return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
-        : no(st === 'setting' ? 'Still setting up' : 'Unplug it first', $('emu-collection'), true);
+        : no(st === 'setting' ? 'Still setting up' : 'Unplug it first', $('emu-collection'), [system, st === 'setting' ? 'Hang on, still setting up.' : 'Unplug me first.'], true);
     }
     return null;
   }
@@ -473,6 +594,7 @@
     if (!drag.on) {
       if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
       drag.on = true;
+      sfx.pick();
       const r = drag.src.getBoundingClientRect();
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
       const ghost = el('div', 'emu-ghost');
@@ -517,7 +639,12 @@
     dragged = true;
     setTimeout(() => { dragged = false; });
     const it = intentOf(d, document.elementFromPoint(e.clientX, e.clientY));
-    const done = () => { d.ghost.remove(); d.src.classList.remove('emu-held'); if (it && !it.no) it.run(); };
+    const done = () => {
+      d.ghost.remove();
+      d.src.classList.remove('emu-held');
+      if (it && !it.no) it.run();
+      else if (it?.says) refuse(...it.says);
+    };
     // A move that happens fades where it was dropped; any other flies back
     // to where it came from. Both are Carbon's productive motion.
     if (it && !it.no) { d.ghost.classList.add('emu-ghost--gone'); setTimeout(done, 110); return; }

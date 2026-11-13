@@ -51,6 +51,8 @@
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 <symbol id="m-save" viewBox="0 -960 960 960"><path d="M840-683v563H120v-720h563l157 157Zm-60 27L656-780H180v600h600v-476ZM553.5-275.26q30.5-30.27 30.5-73.5 0-43.24-30.26-73.74-30.27-30.5-73.5-30.5-43.24 0-73.74 30.26-30.5 30.27-30.5 73.5 0 43.24 30.26 73.74 30.27 30.5 73.5 30.5 43.24 0 73.74-30.26ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"/></symbol>
 <symbol id="m-settings" viewBox="0 -960 960 960"><path d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm48-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></symbol>
+<symbol id="m-volume_off" viewBox="0 -960 960 960"><path d="M813-56 681-188q-28 20-60.5 34.5T553-131v-62q23-7 44.5-15.5T638-231L473-397v237L273-360H113v-240h156L49-820l43-43 764 763-43 44Zm-36-232-43-43q20-34 29.5-71.92Q773-440.85 773-481q0-103.32-60-184.66T553-769v-62q124 28 202 125.5T833-481q0 51-14 100t-42 93ZM643-422l-90-90v-130q47 22 73.5 66t26.5 96q0 15-2.5 29.5T643-422ZM473-592 369-696l104-104v208Zm-60 286v-150l-84-84H173v120h126l114 114Zm-42-192Z"/></symbol>
+<symbol id="m-volume_up" viewBox="0 -960 960 960"><path d="M560-131v-62q97-28 158.5-107.5T780-481q0-101-61-181T560-769v-62q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm420 48v-337q55 17 87.5 64T660-480q0 57-33 104t-87 64ZM420-648 307-540H180v120h127l113 109v-337Zm-94 168Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
 
@@ -60,6 +62,8 @@
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
+    <!-- The room's sounds, on or off, from room.js; shown where Your Mac is. -->
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="emu-sound" aria-pressed="true" aria-label="Sound" title="Sound is on" hidden><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="emu-search-open" data-rux-open="emu-search-modal" aria-label="Search games" title="Search games (⌘K)"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
   </div>
@@ -104,40 +108,42 @@
 
   <!-- The scrim, shown only below 66rem and wider than a phone, where the nav overlays the page. -->
   <div class="rux--side-nav__overlay"></div>
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Emu">
+  <!-- The menu is Carbon's rail on this page, a strip of icons, so the room has the
+       width: `--ux` puts it under the header, as on every page, and `--rail` after it makes it 3rem. -->
+  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--rail" aria-label="Emu">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--large rux--side-nav__item--active">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page">
+        <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page" title="Library">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></div>
           <span class="rux--side-nav__link-text">Library</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="collection.html">
+        <a class="rux--side-nav__link" href="collection.html" title="Collection">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-list"/></svg></div>
           <span class="rux--side-nav__link-text">Collection</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="problems.html">
+        <a class="rux--side-nav__link" href="problems.html" title="Problems">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-warning"/></svg></div>
           <span class="rux--side-nav__link-text">Problems</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="status.html">
+        <a class="rux--side-nav__link" href="status.html" title="Status">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg></div>
           <span class="rux--side-nav__link-text">Status</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="saves.html">
+        <a class="rux--side-nav__link" href="saves.html" title="Saves">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></div>
           <span class="rux--side-nav__link-text">Saves</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="emulators.html">
+        <a class="rux--side-nav__link" href="emulators.html" title="Emulators">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-settings"/></svg></div>
           <span class="rux--side-nav__link-text">Emulators</span>
         </a>
@@ -146,7 +152,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content emu-main">
+<main id="main-content" class="rux--content emu-main emu-main--rail">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">

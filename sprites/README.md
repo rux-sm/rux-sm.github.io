@@ -19,10 +19,16 @@ tools above it and the colours beside it.
   high and up to 36 wide, and icons at 16 and 32, or any size up to 256.
   Resize keeps the drawing anchored to its bottom left.
 - **Palettes:** Sprites' own 70 colours, in `palette.json`, with any colour
-  beside them; or Emu consoles, which is only the twenty colours in
-  `emu/brand/consoles/palette.json`.
+  beside them; Sprites P3, the same 70 made more vivid for a Display P3
+  screen and worked out from `palette.json` as the page loads; or Emu
+  consoles, which is only the twenty colours in
+  `emu/brand/consoles/palette.json`. Switching carries each colour to the
+  one of the same name, so a drawing moves between Sprites and Sprites P3
+  and back unchanged.
 - **Saving:** a path in the checkout and a format: PNG at 1×, 2×, 4× or
-  8×, or SVG. Emu consoles saves only the 1× PNG that
+  8×, or SVG. A Sprites P3 PNG carries a Display P3 profile, which Open
+  reads to open it in Sprites P3 again; its SVG paints each colour in P3
+  over an sRGB fill. Emu consoles saves only the 1× PNG that
   `emu/tools/build-consoles.mjs` turns into `emu/brand/consoles.svg`, so
   `emu/docs/drawing-consoles.md` is how a console is drawn.
 
@@ -43,7 +49,7 @@ file and says the path it belongs at.
 | :--- | :--- |
 | `index.html` | the page, from Design's header-only shell |
 | `app.js` | the editor: the canvas, the tools, undo, the colours, Size and Save |
-| `data.js` | the palettes and presets, and the draft kept in this browser |
+| `data.js` | the palettes and presets, the colour spaces, and the draft kept in this browser |
 | `files.js` | opening a PNG, the PNG and SVG writers, and the checkout's folder |
 | `palette.json` | Sprites' 70 colours, in ramps |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |

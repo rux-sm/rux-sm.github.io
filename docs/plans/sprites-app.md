@@ -20,6 +20,11 @@ deciding whether Pixels' inks join it.
   brown and a slate-to-sage ramp give the muted colours stone, metal and
   shade need; no two colours are closer than 0.036 in OKLab. A ramp that falls short on a real
   drawing is changed in `sprites/palette.json`, its one home.
+- **Sprites' 70 colours are the standard, and Sprites P3 is their vivid
+  twin.** sRGB is what most screens, apps and the Emu converter show, so
+  `sprites/palette.json` stays the one home and Sprites P3 is worked out
+  from it in `sprites/data.js`; it is judged on a P3 screen alongside the
+  70.
 - **Sprites keeps its own drawing code.** Whether the Pixelator's board
   moves onto it is decided once both can be compared.
 - **Sprites stands in the switcher like every app,** and the page lock opens
@@ -34,4 +39,4 @@ deciding whether Pixels' inks join it.
 ## Tasks
 
 - [ ] Draw a console, an icon and a small character in Sprites' 70 colours,
-      and change any ramp that falls short.
+      and in Sprites P3, and change any ramp that falls short.

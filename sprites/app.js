@@ -22,13 +22,17 @@
    a side at most is small.
 
    COLOUR comes from the palette, which data.js loads. Sprites' own palette
-   leaves the colour field open beside it, and the last eight colours taken
-   from outside the palette stand as swatches; Emu consoles allows only its
-   twenty, and switching to it refuses while a pixel is another colour.
+   and Sprites P3 leave the colour field open beside them, and the last
+   eight colours taken from outside the palette stand as swatches; Emu
+   consoles allows only its twenty. Switching palettes carries each pixel
+   to the colour of the same label, or into the new palette's colour space
+   when it allows any colour, and refuses while a pixel has nowhere to go.
+   The canvas is a Display P3 one, so a P3 colour shows as itself on a
+   screen that can show it.
 
    SAVING. The Save window takes a path in the checkout and a format, and
-   files.js writes it. Emu consoles saves only the 1× PNG, at a console's
-   size. The draft, data.js's, is kept on every step, and leaving with
+   files.js writes it in the palette's colour space. Emu consoles saves only
+   the 1× PNG, at a console's size. The draft, data.js's, is kept on every step, and leaving with
    changes not saved asks first.
    ========================================================================== */
 (() => {
@@ -37,7 +41,7 @@
   const S = window.Sprites;
   const $ = id => document.getElementById(id);
   const canvas = $('sprites-canvas'), stage = $('sprites-stage');
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { colorSpace: 'display-p3' });
   const tools = $('sprites-tools'), mirrorKey = $('sprites-mirror');
   const undoKey = $('sprites-undo'), redoKey = $('sprites-redo');
   const LIMIT = 256, STEPS = 100, RECENT = 8;
@@ -105,7 +109,7 @@
             ctx.fillRect(x * p, y * p + half, half, p - half);
           } else if ((x + y) % 2) ctx.fillRect(x * p, y * p, p, p);
         } else {
-          ctx.fillStyle = S.hexOf(v);
+          ctx.fillStyle = pal ? pal.css(v) : S.hexOf(v);
           ctx.fillRect(x * p, y * p, p, p);
         }
       }
@@ -156,7 +160,7 @@
   }
 
   // ---- steps ----
-  const snapshot = () => ({ w: drawing.w, h: drawing.h, px: drawing.px.slice(), path });
+  const snapshot = () => ({ w: drawing.w, h: drawing.h, px: drawing.px.slice(), path, palette: pal?.id });
   let pending = null;
   const begin = () => { pending = snapshot(); };
   function commit(changed = true) {
@@ -176,6 +180,8 @@
     const s = from.pop();
     drawing = { w: s.w, h: s.h, px: s.px };
     path = s.path;
+    // A step taken in another palette brings it back, already loaded.
+    if (s.palette && s.palette !== pal.id) setPal(palettes.get(s.palette));
     dirty = true;
     if (fitted) fit();
     keep();
@@ -299,15 +305,15 @@
   $('sprites-zoom-out').addEventListener('click', () => setZoom(zoom - 1));
 
   // ---- colour ----
-  function swatch(hex, label) {
+  function swatch(n, label) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'sprites-swatch';
-    b.style.setProperty('--sprites-swatch', hex);
-    b.dataset.colour = String(S.numOf(hex));
+    b.style.setProperty('--sprites-swatch', pal.css(n));
+    b.dataset.colour = String(n);
     b.setAttribute('aria-pressed', 'false');
-    b.setAttribute('aria-label', `${label}, ${hex}`);
-    b.title = `${label}, ${hex}`;
+    b.setAttribute('aria-label', `${label}, ${pal.text(n)}`);
+    b.title = `${label}, ${pal.text(n)}`;
     return b;
   }
   function drawSwatches() {
@@ -317,7 +323,7 @@
       row.className = 'sprites-ramp';
       row.setAttribute('role', 'group');
       row.setAttribute('aria-label', r.name);
-      row.append(...r.colours.map(c => swatch(c.hex, c.label)));
+      row.append(...r.colours.map(c => swatch(c.n, c.label)));
       return row;
     }));
     $('sprites-free').hidden = !pal.free;
@@ -325,14 +331,14 @@
     markColour();
   }
   function drawRecent() {
-    $('sprites-recent').replaceChildren(...recent.map(v => swatch(S.hexOf(v), 'Recent')));
+    $('sprites-recent').replaceChildren(...recent.map(v => swatch(v, 'Recent')));
   }
   function markColour() {
     document.querySelectorAll('.sprites-swatch[data-colour]').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.colour) === colour)));
     const current = $('sprites-current');
-    current.style.setProperty('--sprites-swatch', S.hexOf(colour));
-    const named = pal?.ramps.flatMap(r => r.colours).find(c => S.numOf(c.hex) === colour);
-    $('sprites-current-name').textContent = named ? `${named.label}, ${named.hex}` : S.hexOf(colour);
+    current.style.setProperty('--sprites-swatch', pal.css(colour));
+    const named = pal.named(colour);
+    $('sprites-current-name').textContent = named ? `${named.label}, ${pal.text(colour)}` : pal.text(colour);
   }
   function setColour(v, fromField = false) {
     colour = v;
@@ -340,7 +346,7 @@
       recent = [v, ...recent.filter(r => r !== v)].slice(0, RECENT);
       drawRecent();
     }
-    if (!fromField) $('sprites-colour-field').value = S.hexOf(v);
+    if (!fromField) showField();
     if (tool === 'eraser' || tool === 'picker') setTool('pencil');
     markColour();
     keep();
@@ -349,22 +355,65 @@
     const b = e.target.closest('.sprites-swatch[data-colour]');
     if (b) setColour(Number(b.dataset.colour));
   });
-  $('sprites-colour-field').addEventListener('change', e => setColour(S.numOf(e.target.value), true));
+  // The colour field speaks sRGB, so a P3 colour shows in it clipped, and
+  // one picked there is carried into the palette's space.
+  const showField = () => { $('sprites-colour-field').value = S.hexOf(S.convert(colour, pal.space, 'srgb')); };
+  $('sprites-colour-field').addEventListener('change', e => setColour(S.convert(S.numOf(e.target.value), 'srgb', pal.space), true));
 
-  async function usePalette(id, quiet = false) {
-    const next = await S.palette(id);
-    const stray = drawing.px.filter(v => !next.has(v)).length;
-    if (stray) {
-      $('sprites-palette').value = pal.id;
-      note('error', `${stray} ${stray === 1 ? 'pixel is a colour' : 'pixels are colours'} outside ${next.name}.`, 'Repaint them, or start a new drawing, before switching.');
-      return false;
+  // Every palette used so far, so undo can step back into one at once.
+  const palettes = new Map();
+  // A colour of one palette as another's: the colour of the same label,
+  // else the same colour in the new space where any colour is allowed;
+  // null where it has nowhere to go.
+  const carry = (from, to) => v => {
+    if (v === -1) return -1;
+    const named = from.named(v);
+    const twin = named ? to.labelled(named.label) : null;
+    if (twin !== null) return twin;
+    const same = S.convert(v, from.space, to.space);
+    return to.free || to.has(same) ? same : null;
+  };
+
+  // The palette in use, and its swatches; the colours in hand follow it.
+  function setPal(next, from = pal) {
+    palettes.set(next.id, next);
+    if (from && from !== next) {
+      const move = carry(from, next);
+      colour = move(colour) ?? -1;
+      recent = recent.map(move).filter(v => v !== null && v !== -1 && !next.has(v));
     }
     pal = next;
     $('sprites-palette').value = pal.id;
-    if (!pal.has(colour) || colour === -1) colour = S.numOf(pal.ramps[0].colours[0].hex);
+    if (colour === -1 || !(pal.free || pal.has(colour))) colour = pal.ramps[0].colours[0].n;
+    showField();
     drawSwatches();
-    if (!quiet) keep();
-    return true;
+  }
+
+  async function usePalette(id) {
+    const next = await S.palette(id);
+    if (next === pal) return;
+    const move = carry(pal, next);
+    const px = Array.from(drawing.px, move);
+    const stray = px.filter(v => v === null).length;
+    if (stray) {
+      $('sprites-palette').value = pal.id;
+      note('error', `${stray} ${stray === 1 ? 'pixel is a colour' : 'pixels are colours'} outside ${next.name}.`, 'Repaint them, or start a new drawing, before switching.');
+      return;
+    }
+    begin();
+    drawing = { ...drawing, px: Int32Array.from(px) };
+    setPal(next);
+    commit(drawing.px.some((v, i) => v !== pending.px[i]));
+    keep();
+    note('', '');
+    gamutNote();
+  }
+
+  // A P3 palette on a screen that cannot show P3 says what it is drawing.
+  function gamutNote() {
+    if (pal.space === 'display-p3' && !window.matchMedia('(color-gamut: p3)').matches) {
+      note('info', 'This screen shows only sRGB.', `${pal.name}'s most vivid colours look duller here than on a P3 screen, and some steps look alike.`);
+    }
   }
   $('sprites-palette').addEventListener('change', e => usePalette(e.target.value));
 
@@ -417,23 +466,27 @@
       const got = await S.files.open();
       if (!got) return;
       const read = await S.files.read(got.file);
-      // A console drawing opens in its palette; anything else that the
-      // palette in use cannot draw opens in Sprites' own.
+      // A P3 file opens in Sprites P3. A console drawing opens in its
+      // palette; any other sRGB file stays in the palette in use when that
+      // can draw it, and otherwise opens in Sprites' own.
       const emu = await S.palette('emu-consoles');
-      const fitsEmu = read.px.every(v => emu.has(v));
-      const want = got.path?.startsWith(emu.folder) && fitsEmu ? 'emu-consoles'
-        : read.px.every(v => pal.has(v)) ? pal.id : 'sprites';
+      const want = read.space === 'display-p3' ? (pal.space === 'display-p3' ? pal.id : 'sprites-p3')
+        : got.path?.startsWith(emu.folder) && read.px.every(v => emu.has(v)) ? 'emu-consoles'
+          : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
       begin();
       drawing = { w: read.w, h: read.h, px: read.px };
       path = got.path;
-      await usePalette(want, true);
+      setPal(await S.palette(want));
       fit();
       commit(true);
       dirty = false;
       keep();
       show();
-      note('success', `Opened ${got.path ?? got.file.name}.`,
-        read.soft ? `${read.soft} half-clear ${read.soft === 1 ? 'pixel was' : 'pixels were'} made opaque or clear.` : '');
+      const changes = [
+        read.soft ? `${read.soft} half-clear ${read.soft === 1 ? 'pixel was' : 'pixels were'} made opaque or clear.` : '',
+        read.converted ? 'Its colour profile is neither sRGB nor Display P3, so its colours were carried into sRGB.' : '',
+      ].filter(Boolean).join(' ');
+      note('success', `Opened ${got.path ?? got.file.name}.`, changes);
     } catch (err) {
       if (err.name !== 'AbortError') note('error', 'Could not open it.', err.message);
     }
@@ -460,7 +513,7 @@
     const name = path ? path.split('/').at(-1) : 'drawing.png';
     pathField.value = (folder + name).replace(/\.(png|svg)$/, `.${extFor(formatField.value)}`);
     $('sprites-save-help').textContent = S.files.canWrite
-      ? (pal.free ? 'Written straight into the checkout.' : `Written straight into the checkout. ${pal.rule}`)
+      ? ['Written straight into the checkout.', pal.rule, pal.space === 'display-p3' ? 'A PNG carries a Display P3 profile; an SVG gives each colour an sRGB one too, for an app that cannot show P3.' : ''].filter(Boolean).join(' ')
       : 'This browser cannot write into the checkout, so it downloads the file; move it to this path.';
     pathError('');
     window.Rux?.modal?.open('sprites-save-modal', $('sprites-save'));
@@ -480,7 +533,7 @@
     if (!target.endsWith(`.${extFor(format)}`)) { pathError(`An ${extFor(format).toUpperCase()} ends in .${extFor(format)}.`); return; }
     if (pal.fits && !pal.fits(drawing.w, drawing.h)) { pathError(`This is ${drawing.w} × ${drawing.h}. ${pal.rule}`); return; }
     try {
-      const blob = format === 'svg' ? S.files.svg(drawing) : await S.files.png(drawing, Number(format.slice(3)));
+      const blob = format === 'svg' ? S.files.svg(drawing, pal.space) : await S.files.png(drawing, Number(format.slice(3)), pal.space);
       if (S.files.canWrite) await S.files.write(target, blob);
       else S.files.download(target, blob);
       // The path is the drawing's only when the file holds it as drawn.
@@ -529,13 +582,13 @@
       colour = Number.isInteger(d.colour) ? d.colour : colour;
       recent = Array.isArray(d.recent) ? d.recent.filter(Number.isInteger).slice(0, RECENT) : [];
     }
-    pal = await S.palette('sprites');
     try {
-      if (!(await usePalette(d?.palette ?? 'sprites', true))) await usePalette('sprites', true);
+      // The draft's numbers are in its own palette's space, so it opens there.
+      setPal(await S.palette(d?.palette ?? 'sprites'), null);
+      gamutNote();
     } catch (err) {
       note('error', 'Could not load the palette.', err.message);
     }
-    $('sprites-colour-field').value = S.hexOf(colour === -1 ? 0 : colour);
     readLook();
     fit();
     show();

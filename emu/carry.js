@@ -18,7 +18,10 @@
    Supabase, in `npm run check`.
 
    `start` sets up an emulator never opened on this Mac from the settings
-   kept for it. `give` brings the BIOS, key and firmware files Supabase holds for an
+   kept for it: this Mac's own where it kept some before its emulator was
+   removed, else the preferred ones. `remove` keeps an emulator's saves and
+   settings in Supabase, then has the helper move it and its folders to the
+   Trash, so installing it again sets it up as it was. `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:
    those files and the saves brought, then the settings Emu manages written,
    so the emulator opens them. `after` waits for the emulator
@@ -160,14 +163,17 @@
     queue.set(name, next);
     return next;
   };
-  // A Mac that never opened an emulator starts it from the settings kept as
+  // A Mac without an emulator's folder starts it from the settings it kept
+  // itself, as one whose emulator was removed has, else those kept as
   // preferred, else the newest copy any Mac kept, which makes its folder, so
   // its first Play brings its saves and BIOS like any other: whether it did.
   async function startNow(name) {
     const here = await H.settings(name);
     if (!here || here.home || here.running) return false;
+    const mac = (await H.carry(name))?.mac;
     const copies = [...(await R.data.settings()).entries()].filter(([owner]) => owner.endsWith(`/${name}`));
-    const copy = copies.find(([owner]) => owner === `preferred/${name}`)?.[1][0]
+    const copy = (mac && copies.find(([owner]) => owner === `${mac.replaceAll('/', '_')}/${name}`)?.[1][0])
+      ?? copies.find(([owner]) => owner === `preferred/${name}`)?.[1][0]
       ?? copies.flatMap(([, list]) => list).sort((a, b) => new Date(b.at) - new Date(a.at))[0];
     if (!copy) return false;
     for (const f of copy.files) {
@@ -178,7 +184,26 @@
     return true;
   }
 
+  // An emulator off this Mac: its saves carried, its settings kept, both read
+  // again to be sure Supabase holds them as they are, then the helper moves
+  // the app and its folders to the Trash.
+  async function removeNow(name) {
+    const c = await carryNow(name);
+    const mac = c?.mac ?? (await H.carry(name))?.mac;
+    if (c?.running) throw new Error(`Quit ${name} first, so its saves can be kept.`);
+    if (!mac) throw new Error('Rux Emu Helper did not say which Mac this is.');
+    await backUp(name, mac);
+    const again = await carryNow(name);
+    if (again && (again.running || again.up || again.down || again.both.length)) throw new Error(`${name}'s saves changed as they were kept. Try again.`);
+    const here = await H.settings(name);
+    const newest = (await R.data.settings()).get(`${mac.replaceAll('/', '_')}/${name}`)?.[0]?.files ?? [];
+    const print = list => list.map(f => `${f.rel}|${f.sha1}`).sort().join('\n');
+    if (here?.files.length && print(here.files) !== print(newest)) throw new Error(`${name}'s settings changed as they were kept. Try again.`);
+    return H.uninstall(name);
+  }
+
   const run = name => queued(name, carryNow);
+  const remove = name => queued(name, removeNow);
   const give = name => queued(name, giveNow);
   const start = name => queued(name, startNow);
 
@@ -296,5 +321,5 @@
     }
   })();
 
-  R.carry = { run, give, start, before, after, standing, useOther };
+  R.carry = { run, give, start, remove, before, after, standing, useOther };
 })();

@@ -11,7 +11,8 @@
    it is stored, `setting` one's bytes, `putSetting` one written, and
    `manage` the settings Emu manages written over them, `settings` null from
    a helper too old; `macSaves` each save this Mac keeps itself and
-   `macSave` one's bytes; `newest` each emulator's newest version out, or
+   `macSave` one's bytes; `removal` what removing an emulator would move to
+   the Trash, or null from a helper too old to, and `uninstall` that done; `newest` each emulator's newest version out, or
    null from a helper that cannot ask; and `play` opens one game. `call` is any of its
    calls, drive.js's too: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
@@ -111,6 +112,12 @@
   const given = async emulator => { const r = await call(`/mac/given?${at(emulator)}`); return r ? r.json() : null; };
   const putGiven = (emulator, path, bytes) => call(`/mac/given?${at(emulator)}&path=${encodeURIComponent(path)}`, { method: 'PUT', body: bytes }, true);
 
+  // What removing an emulator would move to the Trash, and that done.
+  const removal = async emulator => { const r = await call(`/mac/remove?${at(emulator)}`); return r ? r.json() : null; };
+  const uninstall = async emulator => (await call('/mac/remove', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emulator }),
+  }, true)).json();
+
   const macSaves = async () => (await call('/mac/saves', {}, true)).json();
   const macSave = async stored => new Uint8Array(await (await call(`/mac/save?stored=${encodeURIComponent(stored)}`, {}, true)).arrayBuffer());
 
@@ -195,7 +202,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, newest, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, newest, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

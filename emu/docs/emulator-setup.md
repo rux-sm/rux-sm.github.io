@@ -160,6 +160,15 @@ Keychain Access as a `.p12` file and import it there.
 Set up this Mac shows while an emulator is missing, older than the
 installer Supabase holds, or never opened on the Mac.
 
+## Removing an emulator from a Mac
+
+On the Emulators page, open the emulator and press **Remove from this
+Mac**. It says first what goes and how much of it Supabase keeps no copy
+of, such as caches. Remove keeps its saves and this Mac's settings in
+Supabase, checks they are there, then moves the app and every folder it
+keeps to the Trash. Installing it again and playing brings this Mac's
+settings, its BIOS and its saves back as they were.
+
 ## Checking a Mac
 
 With the helper running, the Status page shows this Mac live: what is

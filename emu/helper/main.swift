@@ -19,6 +19,11 @@
 //                          "version" }, that emulator's installer fetched
 //                          from Supabase by the link the site signed, and its
 //                          app put in Applications with a receipt
+//   GET    /mac/remove     ?emulator=, what Remove would move to the Trash:
+//                          the app and each folder it keeps, how many files
+//                          they hold, and how many of them Supabase does not
+//   POST   /mac/remove     { "emulator" }, the app and its folders moved to
+//                          the Trash, once its saves and settings are kept
 //   GET    /mac/settings   ?emulator=, each settings file that emulator
 //                          keeps on this Mac, with its SHA-1 as it is stored
 //   GET    /mac/setting    ?emulator=&rel=, one of those, as it is stored
@@ -121,7 +126,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "31"
+let version = "32"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1157,6 +1162,72 @@ func install(_ body: Data) -> (Int, [String: Any]) {
   return (200, ["installed": app, "version": version, "receipt": written])
 }
 
+// MARK: Removing an emulator
+
+// Everything an emulator leaves on this Mac: its app in either Applications
+// folder, each folder emulators.json names for it, the folder in Application
+// Support named for its app, and the places macOS gives an app by its bundle
+// ID. A folder inside another one listed goes with it.
+func leftBy(_ rule: [String: Any]) -> [String] {
+  let library = home + "/Library/"
+  let apps = ["/Applications", home + "/Applications"].flatMap { dir in appsOf(rule).map { dir + "/" + $0 } }.filter(exists)
+  let ids = apps.compactMap { NSDictionary(contentsOfFile: $0 + "/Contents/Info.plist")?["CFBundleIdentifier"] as? String }
+  let names = appsOf(rule).map { ($0 as NSString).deletingPathExtension }
+  var all = apps + (rule["homes"] as? [String] ?? []).map(expand)
+  all += names.flatMap { n in ["Application Support/\(n)", "Caches/\(n)", "Logs/\(n)"].map { library + $0 } }
+  all += ids.flatMap { id in ["Containers/\(id)", "Application Scripts/\(id)", "Caches/\(id)", "HTTPStorages/\(id)",
+                              "HTTPStorages/\(id).binarycookies", "WebKit/\(id)", "Saved Application State/\(id).savedState",
+                              "Logs/\(id)", "Preferences/\(id).plist"].map { library + $0 } }
+  // Read without following a link, so a link is moved and never what it leads to.
+  let there = Array(Set(all)).filter { (try? files.attributesOfItem(atPath: $0)) != nil }
+  return there.filter { p in !there.contains { p != $0 && p.hasPrefix($0 + "/") } }.sorted()
+}
+
+// What Remove would move to the Trash, and how many of those files Supabase
+// keeps no copy of: a file outside the app, whose installer Supabase holds,
+// that is neither a carried save, a kept setting nor a BIOS, key or
+// firmware file Supabase gives, such as a cache or a log.
+func removal(_ name: String) -> (Int, [String: Any]) {
+  guard let e = saver(name) else { return (404, ["error": "\(name) is not an emulator Emu knows."]) }
+  let gone = leftBy(e.rule)
+  let kept = Set(carriedFiles(e).map { $0.at } + ownFiles(e).files.map { $0.path }
+    + givenPlaces(e).flatMap { place in walk(place.dir).filter { place.holds(String($0.path.dropFirst(place.dir.count + 1))) }.map { $0.path } })
+  var count = 0, size = 0, restCount = 0, restSize = 0
+  var restIn: [String: (files: Int, size: Int)] = [:]
+  for p in gone {
+    let found = isFolder(p) ? walk(p) : [(path: p, size: ((try? files.attributesOfItem(atPath: p))?[.size] as? NSNumber)?.intValue ?? 0)]
+    for f in found {
+      count += 1; size += f.size
+      guard !kept.contains(f.path), !p.hasSuffix(".app") else { continue }
+      restCount += 1; restSize += f.size
+      // Said by the folder it sits in, so a cache of many files reads as one.
+      let dir = tilde((f.path as NSString).deletingLastPathComponent)
+      restIn[dir, default: (0, 0)].files += 1
+      restIn[dir, default: (0, 0)].size += f.size
+    }
+  }
+  let largest = restIn.sorted { $0.value.size > $1.value.size }.prefix(5).map { ["dir": $0.key, "files": $0.value.files, "size": $0.value.size] as [String: Any] }
+  return (200, ["emulator": name, "running": playing(e.rule) || running(appsOf(e.rule)), "gone": gone.map(tilde),
+                "files": count, "size": size, "rest": restCount, "restSize": restSize, "restIn": largest])
+}
+
+// An emulator's app and every folder it keeps moved to the Trash, where
+// they stay until it is emptied, and its receipt removed. The site keeps its
+// saves and settings in Supabase first, so installing it again brings them back.
+func removeEmulator(_ body: Data) -> (Int, [String: Any]) {
+  guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any], let name = req["emulator"] as? String,
+        let e = saver(name) else { return (404, ["error": "Send an emulator Emu knows."]) }
+  let app = (appsOf(e.rule).first as NSString?)?.deletingPathExtension ?? name
+  guard !playing(e.rule), !running(appsOf(e.rule)) else { return (409, ["error": "Quit \(app) first."]) }
+  var moved: [String] = [], refused: [String] = []
+  for p in leftBy(e.rule) {
+    if (try? files.trashItem(at: URL(fileURLWithPath: p), resultingItemURL: nil)) != nil { moved.append(tilde(p)) } else { refused.append(tilde(p)) }
+  }
+  try? files.removeItem(atPath: receiptFile(name))
+  guard refused.isEmpty else { return (500, ["error": "macOS kept \(refused.joined(separator: ", ")) from the Trash.", "moved": moved]) }
+  return (200, ["moved": moved])
+}
+
 // MARK: The newest versions
 
 // A feed's answer as JSON, or nil when it does not answer.
@@ -1651,6 +1722,8 @@ final class Server {
     case ("DELETE", "/library/file"): let (code, out) = removeFromLibrary(q["path"] ?? ""); send(c, .json(code, out), origin: origin)
     case ("GET", "/mac"): off { .json(200, macReport()) }
     case ("POST", "/install"): off { let (code, out) = install(body); return .json(code, out) }
+    case ("GET", "/mac/remove"): off { let (code, out) = removal(q["emulator"] ?? ""); return .json(code, out) }
+    case ("POST", "/mac/remove"): off { let (code, out) = removeEmulator(body); return .json(code, out) }
     case ("POST", "/update"): off { let (code, out) = update(body); return .json(code, out) }
     case ("GET", "/mac/saves"): off { .list(200, macSaves()) }
     case ("GET", "/mac/settings"): off { let (code, out) = settingsOf(q["emulator"] ?? ""); return .json(code, out) }

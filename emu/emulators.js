@@ -5,7 +5,8 @@
    parts in the same order: the systems it plays; the version Supabase
    holds, the newest its project has out as Update last asked, and each
    Mac's, with Install where this Mac lacks that version, which Rux Emu
-   Helper does from Supabase; each file it needs and whether Supabase holds it; every kind of file it writes, where that sits on a Mac, the
+   Helper does from Supabase, and Remove where this Mac has it, which keeps
+   its saves and settings in Supabase and moves it to the Trash; each file it needs and whether Supabase holds it; every kind of file it writes, where that sits on a Mac, the
    setting that moves it and what becomes of it; the settings to have, with
    each Mac's backups of its settings in Supabase and the preferred set; and
    what is worth knowing. On this Mac, through the helper, its settings are
@@ -203,6 +204,47 @@
     return [row, said];
   }
 
+  // Remove, under an emulator's versions: what would go said first, with
+  // Remove and Cancel; Remove keeps its saves and settings in Supabase, then
+  // the helper moves the app and its folders to the Trash.
+  function removeRow(name) {
+    const row = el('div', 'emu-actions');
+    const said = el('p', 'rux--type-body-01');
+    said.setAttribute('role', 'status');
+    const button = (label, kind) => { const b = el('button', `rux--btn ${kind} rux--btn--sm rux--layout--size-sm`, label); b.type = 'button'; return b; };
+    const ask = button('Remove from this Mac', 'rux--btn--danger--ghost');
+    const yes = button('Remove', 'rux--btn--danger');
+    const no = button('Cancel', 'rux--btn--ghost');
+    const asking = on => { ask.hidden = on; yes.hidden = !on; no.hidden = !on; };
+    asking(false);
+    ask.addEventListener('click', async () => {
+      ask.disabled = true;
+      try {
+        const r = await R.helper.removal(name);
+        if (!r) throw new Error('Rux Emu Helper on this Mac is too old to remove an emulator: Status has the newest.');
+        if (r.running) throw new Error(`Quit ${name} first.`);
+        const rest = r.rest
+          ? ` ${r.rest} of those files, ${R.size(r.restSize)}, are not in Supabase, such as caches and logs, and will not come back.`
+          : '';
+        said.textContent = `Its saves and settings go to Supabase first. Then ${name} and its folders go to the Trash: ${r.files} files, ${R.size(r.size)}.${rest}`;
+        asking(true);
+      } catch (error) { said.textContent = error.message; }
+      ask.disabled = false;
+    });
+    no.addEventListener('click', () => { said.textContent = ''; asking(false); });
+    yes.addEventListener('click', async () => {
+      yes.disabled = no.disabled = true;
+      said.textContent = `Keeping ${name}'s saves and settings in Supabase…`;
+      try {
+        await R.carry.remove(name);
+        history.replaceState(null, '', `#${R.slug(name)}`);
+        await load();
+      } catch (error) { said.textContent = error.message; yes.disabled = no.disabled = false; }
+    });
+    row.append(ask, yes, no);
+    return [row, said];
+  }
+
   // One emulator's profile. `on(mac)` is this app as a Mac reported it, and
   // `needs` its files by system. `installs` is false for the library, which
   // the helper neither installs nor backs up.
@@ -247,6 +289,7 @@
     if (installs && mine && installer && kept && (!mine.app || !mine.known || behind(mine))) {
       version.push(...installerRow(name, installer, kept, !mine.app ? `Install ${kept} on this Mac` : `Install ${kept} in its place`));
     }
+    if (installs && mine?.app && R.carry) version.push(...removeRow(name));
     parts.push(part('Version', ...version));
 
     const need = el('div', 'emu-tags');

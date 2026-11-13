@@ -135,7 +135,8 @@ once: macOS asks to open it, Chrome asks whether the site may reach this
 Mac, and macOS asks once whether it may read the drive and the share. It is
 signed with the Rux Emu Helper certificate, so a newer build keeps every
 permission given. When Supabase holds a newer one, Update on the Status page
-puts it in place and starts it. `emu/tools/build-helper.mjs` builds it only on a Mac whose
+puts it in place and starts it. Holding + and pressing − on a controller
+quits the emulator in front, the same in every one, as ⌘Q would. `emu/tools/build-helper.mjs` builds it only on a Mac whose
 keychain holds that certificate; to build on another, export it from
 Keychain Access as a `.p12` file and import it there.
 

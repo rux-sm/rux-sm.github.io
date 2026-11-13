@@ -857,6 +857,11 @@
       ],
       "manages": [
         {
+          "key": "Main/ConfirmPowerOff",
+          "value": "false",
+          "why": "It quits without asking first, so the controller's quit combo closes it at once."
+        },
+        {
           "key": "BIOS/SearchDirectory",
           "value": "{home}/bios",
           "why": "Its BIOS sits in its own folder on the Mac, brought from Supabase, so it starts with no drive plugged in."
@@ -983,6 +988,11 @@
         }
       ],
       "manages": [
+        {
+          "key": "UI/ConfirmShutdown",
+          "value": "false",
+          "why": "It quits without asking first, so the controller's quit combo closes it at once."
+        },
         {
           "key": "Folders/Bios",
           "value": "{home}/bios",
@@ -1282,6 +1292,11 @@
         }
       ],
       "manages": [
+        {
+          "key": "show_confirm_exit",
+          "value": "false",
+          "why": "It quits without asking first, so the controller's quit combo closes it at once."
+        },
         {
           "key": "update_checker_type",
           "value": "Off",

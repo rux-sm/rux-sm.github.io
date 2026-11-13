@@ -113,13 +113,14 @@
 
 import AppKit
 import CryptoKit
+import GameController
 import Network
 import Security
 import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "24"
+let version = "26"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1733,6 +1734,51 @@ final class Server {
   }
 }
 
+// MARK: The quit combo
+
+// Holding + and pressing − on a controller quits the emulator in front, the
+// same way in every emulator: it is asked to quit, as ⌘Q asks it, so it
+// closes its game and writes its saves, and the site then carries them. An
+// emulator Emu knows that is in front is the one; with none in front, the
+// only one running. Each emulator quits without asking, as the settings Emu
+// manages say, since no controller answers a dialog. Ryujinx answers the
+// first ask by stopping its game, which closes its saves, and then stops
+// answering, so an emulator still open four seconds later is asked again,
+// and one still open twelve seconds after that is made to quit.
+final class QuitCombo {
+  static let shared = QuitCombo()
+  private var watched = Set<ObjectIdentifier>()
+
+  func start() {
+    NotificationCenter.default.addObserver(forName: .GCControllerDidConnect, object: nil, queue: .main) { [weak self] note in
+      if let c = note.object as? GCController { self?.watch(c) }
+    }
+    GCController.controllers().forEach(watch)
+  }
+
+  // Background input is asked for once a controller is connected, since
+  // asking before the first one crashes on some macOS versions.
+  private func watch(_ c: GCController) {
+    GCController.shouldMonitorBackgroundEvents = true
+    guard let pad = c.extendedGamepad, watched.insert(ObjectIdentifier(c)).inserted else { return }
+    pad.buttonOptions?.pressedChangedHandler = { _, _, pressed in
+      guard pressed, pad.buttonMenu.isPressed else { return }
+      DispatchQueue.main.async { quitEmulatorInFront() }
+    }
+  }
+}
+
+func quitEmulatorInFront() {
+  let names = Set((rules["macSaves"] as? [String: Any] ?? [:]).values.compactMap { $0 as? [String: Any] }.flatMap(appsOf))
+  let isEmulator = { (a: NSRunningApplication) in names.contains(a.bundleURL?.lastPathComponent ?? "") }
+  let running = NSWorkspace.shared.runningApplications.filter(isEmulator)
+  let front = NSWorkspace.shared.frontmostApplication.flatMap { isEmulator($0) ? $0 : nil }
+  guard let target = front ?? (running.count == 1 ? running.first : nil) else { return }
+  target.terminate()
+  DispatchQueue.main.asyncAfter(deadline: .now() + 4) { if !target.isTerminated { target.terminate() } }
+  DispatchQueue.main.asyncAfter(deadline: .now() + 16) { if !target.isTerminated { target.forceTerminate() } }
+}
+
 // MARK: The menu bar
 
 final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
@@ -1753,6 +1799,7 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
     menu.addItem(NSMenuItem(title: "Rux Emu Helper", action: nil, keyEquivalent: ""))
     menu.addItem(state)
     menu.addItem(waiting)
+    menu.addItem(NSMenuItem(title: "Hold + and press − on a controller to quit a game", action: nil, keyEquivalent: ""))
     menu.addItem(.separator())
     menu.addItem(NSMenuItem(title: "Open Rux Emu", action: #selector(openSite), keyEquivalent: ""))
     menu.addItem(NSMenuItem(title: "Quit Rux Emu Helper", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
@@ -1768,6 +1815,7 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
       }
     }
     showWaiting()
+    QuitCombo.shared.start()
     // Starts again at each log-in; macOS lists it in Login Items, where it can be turned off.
     try? SMAppService.mainApp.register()
   }

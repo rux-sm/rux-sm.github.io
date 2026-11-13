@@ -1,0 +1,16 @@
+{
+  "name": "Sprites",
+  "ramps": [
+    {"name": "grey", "colours": ["#0d0e1b", "#272839", "#444559", "#64657b", "#8a849b", "#b5a5b9", "#dfc8d5", "#fef2f3"]},
+    {"name": "red", "colours": ["#5b0018", "#88011f", "#b7041e", "#e81013", "#fe5b43", "#ff977f"]},
+    {"name": "orange", "colours": ["#883500", "#a84c02", "#c96400", "#e97e04", "#fe9f3d", "#fec991"]},
+    {"name": "yellow", "colours": ["#5f4201", "#806303", "#a08703", "#c2ad0c", "#e6d23e", "#fff8bb"]},
+    {"name": "green", "colours": ["#013823", "#045f30", "#058b1e", "#4ab30f", "#8bd759", "#caf9a1"]},
+    {"name": "teal", "colours": ["#013537", "#035b5a", "#03847c", "#08af9f", "#56d8c3", "#abfbe7"]},
+    {"name": "blue", "colours": ["#002358", "#02448d", "#0169c3", "#0892f6", "#6ebdff", "#c0e3fe"]},
+    {"name": "purple", "colours": ["#2c085a", "#511796", "#7935cb", "#a05df3", "#c292fe", "#e0c8fe"]},
+    {"name": "pink", "colours": ["#590b44", "#8d0964", "#bf2280", "#e94c9c", "#ff86ba", "#fec5d9"]},
+    {"name": "skin", "colours": ["#9d6356", "#ca816a", "#efa589", "#fed3c1"]},
+    {"name": "brown", "colours": ["#331604", "#553211", "#74522e", "#8f7556"]}
+  ]
+}

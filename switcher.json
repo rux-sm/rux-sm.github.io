@@ -43,6 +43,12 @@
       "icon": "/emu/brand/icon.svg"
     },
     {
+      "name": "Sprites",
+      "path": "/sprites/",
+      "description": "Draw icons and sprites",
+      "icon": "/sprites/brand/icon.svg"
+    },
+    {
       "name": "Design",
       "path": "/design/",
       "description": "The system these are built on",

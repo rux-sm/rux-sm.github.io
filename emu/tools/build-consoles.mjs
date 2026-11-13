@@ -8,12 +8,14 @@
    palette below, whose every colour stands for one --emu-console-*
    property, so the drawing takes the room's theme. This tool turns each
    drawing into its symbol in brand/consoles.svg, a rect for each run of one
-   colour, and leaves every console not yet drawn as it was.
+   colour, and leaves every console not yet drawn as it was. Sprites, at
+   /sprites/, draws in the palette and saves the PNG this reads.
 
        node emu/tools/build-consoles.mjs              every drawing into consoles.svg
        node emu/tools/build-consoles.mjs --template   the palette and blank canvases
 
-   --template writes brand/consoles/palette.gpl, which Aseprite, LibreSprite,
+   The palette is brand/consoles/palette.json. --template writes
+   brand/consoles/palette.gpl, which Aseprite, LibreSprite,
    Pixelorama and GIMP load as a palette, palette.png, a strip of the same
    colours for an editor that takes a palette from a picture, and home.png
    and handheld.png, blank canvases at the two sizes. emu/docs/drawing-consoles.md
@@ -28,31 +30,12 @@ const EMU = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = join(EMU, 'brand', 'consoles');
 const SPRITE = join(EMU, 'brand', 'consoles.svg');
 
-// The palette: each property, the colour it is drawn in, and what it is for.
-// app.css sets every property from Design's tokens; a -hi or -lo shade is
-// its base mixed lighter or darker, so each material has three shades.
-const PALETTE = [
-  ['body-hi', 'd6d6d6', 'the plastic, lit edge'],
-  ['body', 'a8a8a8', 'the plastic'],
-  ['body-lo', '6f6f6f', 'the plastic, shadow'],
-  ['shade-hi', '9a9aa8', 'the second plastic, lit edge'],
-  ['shade', '6c6c7a', 'the second plastic'],
-  ['shade-lo', '444450', 'the second plastic, shadow'],
-  ['detail', 'c8bfa8', 'labels, vents and stickers'],
-  ['ink', '1e1e1e', 'slots, gaps and the darkest lines'],
-  ['screen', '3d5c43', 'a handheld\'s screen, lit while it plays'],
-  ['screen-hi', '6f9a74', 'the screen\'s glare'],
-  ['red', 'da1e28', 'red parts'],
-  ['red-lo', '8a1018', 'red parts, shadow'],
-  ['purple', '8a3ffc', 'purple parts'],
-  ['purple-lo', '5a24a8', 'purple parts, shadow'],
-  ['teal', '009d9a', 'teal parts'],
-  ['teal-lo', '005d5d', 'teal parts, shadow'],
-  ['blue', '0f62fe', 'blue parts'],
-  ['blue-lo', '0a3e9e', 'blue parts, shadow'],
-  ['green', '24a148', 'green parts'],
-  ['green-lo', '14632c', 'green parts, shadow'],
-];
+// The palette, whose one home is brand/consoles/palette.json, which Sprites
+// also draws with: each property, the colour it is drawn in, and what it is
+// for. app.css sets every property from Design's tokens; a -hi or -lo shade
+// is its base mixed lighter or darker, so each material has three shades.
+const PALETTE = JSON.parse(readFileSync(join(DIR, 'palette.json'), 'utf8')).colours
+  .map(({ property, hex }) => [property, hex.slice(1)]);
 const BY_RGB = new Map(PALETTE.map(([prop, rgb]) => [rgb, prop]));
 // The handhelds, which may be narrower than a home console's 36.
 const HANDHELD = new Set(['gb', 'gbc', 'gba', 'nds', 'n3ds']);

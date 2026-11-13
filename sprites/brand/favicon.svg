@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Sprites">
+<title>Sprites</title>
+<!-- Sprites' mark, a pencil from its point at the bottom left to its eraser
+     at the top right, one run of squares per row on the 16 grid the other
+     apps' marks use. -->
+<style>
+svg{fill:#161616}
+@media (prefers-color-scheme:dark){svg{fill:#f4f4f4}}
+</style>
+<path d="M10 1L15 1L15 2L10 2ZM10 2L15 2L15 3L10 3ZM8 3L10 3L10 4L8 4ZM11 3L15 3L15 4L11 4ZM7 4L11 4L11 5L7 5ZM12 4L15 4L15 5L12 5ZM6 5L12 5L12 6L6 6ZM13 5L15 5L15 6L13 6ZM5 6L13 6L13 7L5 7ZM4 7L13 7L13 8L4 8ZM3 8L12 8L12 9L3 9ZM3 9L5 9L5 10L3 10ZM6 9L11 9L11 10L6 10ZM3 10L6 10L6 11L3 11ZM7 10L10 10L10 11L7 11ZM2 11L9 11L9 12L2 12ZM2 12L8 12L8 13L2 13ZM2 13L5 13L5 14L2 14ZM1 14L2 14L2 15L1 15Z"/>
+</svg>

@@ -1,0 +1,63 @@
+/* app.css -- Sprites' own components, under the sprites- prefix. Interface
+   colours are --rux-* tokens; a swatch's own colour is the drawing's, set
+   from its palette as --sprites-swatch. Design's components are used as they
+   are and never restyled. */
+
+.sprites-page { display: grid; gap: 1rem; padding-block: 1rem; }
+
+/* THE BAR: the tool switcher, then groups of 36px buttons 8px apart, with
+   Size, Open and Save at its end. It wraps on a phone. */
+.sprites-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; }
+.sprites-bar__group { display: flex; align-items: center; gap: .5rem; }
+.sprites-bar__end { margin-inline-start: auto; }
+.sprites-zoom { min-inline-size: 2.5rem; text-align: center; font-variant-numeric: tabular-nums; color: var(--rux-text-secondary); }
+
+/* THE WORK: the stage and the colours beside it on a wide screen, under it
+   on a narrow one. */
+.sprites-work { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 66rem) { .sprites-work { grid-template-columns: minmax(0, 1fr) 19rem; } }
+
+/* THE STAGE holds the canvas at a whole zoom, centred, and scrolls when the
+   zoom is larger than it; app.js fits the zoom to its size. */
+.sprites-stage {
+  display: grid; place-items: center; overflow: auto; padding: 1rem;
+  block-size: min(70vh, 48rem); min-block-size: 16rem;
+  background: var(--rux-layer-01);
+}
+/* The canvas's own colours, which app.js reads to draw: the checks of a
+   clear pixel, the grid, the mirror's axis and the pixel under the pointer. */
+.sprites-canvas {
+  --sprites-check-a: var(--rux-layer-02);
+  --sprites-check-b: var(--rux-layer-03);
+  --sprites-grid: var(--rux-border-strong-01);
+  --sprites-axis: var(--rux-focus);
+  --sprites-hover: var(--rux-border-inverse);
+  display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated;
+}
+
+/* THE COLOURS. */
+.sprites-side { display: grid; gap: 1.5rem; align-content: start; }
+.sprites-current { display: flex; align-items: center; gap: .75rem; }
+.sprites-ramps { display: grid; gap: 2px; }
+.sprites-ramp { display: flex; flex-wrap: wrap; gap: 2px; }
+.sprites-swatch {
+  position: relative; inline-size: 1.75rem; block-size: 1.75rem; flex: none;
+  padding: 0; border: 0; cursor: pointer;
+  background: var(--sprites-swatch, transparent);
+}
+.sprites-swatch:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 1; }
+/* The chosen colour, ringed in the focus colour with the page's own colour
+   between, so the ring shows on a swatch of any colour. */
+.sprites-swatch[aria-pressed="true"] { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 1; }
+.sprites-swatch--current { inline-size: 2.5rem; block-size: 2.5rem; cursor: default; border: 1px solid var(--rux-border-strong-01); }
+.sprites-free { display: grid; gap: .5rem; }
+.sprites-free[hidden] { display: none; }
+.sprites-free__row { display: flex; align-items: center; gap: .75rem; }
+.sprites-free__field {
+  inline-size: 2.5rem; block-size: 2.5rem; flex: none; padding: 2px; cursor: pointer;
+  border: 1px solid var(--rux-border-strong-01); background: var(--rux-field-01);
+}
+.sprites-path { overflow-wrap: anywhere; }
+
+/* SIZE: width and height side by side. */
+.sprites-size-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }

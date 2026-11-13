@@ -1,0 +1,25 @@
+{
+  "name": "Emu consoles",
+  "colours": [
+    {"property": "body-hi", "hex": "#d6d6d6", "purpose": "the plastic, lit edge"},
+    {"property": "body", "hex": "#a8a8a8", "purpose": "the plastic"},
+    {"property": "body-lo", "hex": "#6f6f6f", "purpose": "the plastic, shadow"},
+    {"property": "shade-hi", "hex": "#9a9aa8", "purpose": "the second plastic, lit edge"},
+    {"property": "shade", "hex": "#6c6c7a", "purpose": "the second plastic"},
+    {"property": "shade-lo", "hex": "#444450", "purpose": "the second plastic, shadow"},
+    {"property": "detail", "hex": "#c8bfa8", "purpose": "labels, vents and stickers"},
+    {"property": "ink", "hex": "#1e1e1e", "purpose": "slots, gaps and the darkest lines"},
+    {"property": "screen", "hex": "#3d5c43", "purpose": "a handheld's screen, lit while it plays"},
+    {"property": "screen-hi", "hex": "#6f9a74", "purpose": "the screen's glare"},
+    {"property": "red", "hex": "#da1e28", "purpose": "red parts"},
+    {"property": "red-lo", "hex": "#8a1018", "purpose": "red parts, shadow"},
+    {"property": "purple", "hex": "#8a3ffc", "purpose": "purple parts"},
+    {"property": "purple-lo", "hex": "#5a24a8", "purpose": "purple parts, shadow"},
+    {"property": "teal", "hex": "#009d9a", "purpose": "teal parts"},
+    {"property": "teal-lo", "hex": "#005d5d", "purpose": "teal parts, shadow"},
+    {"property": "blue", "hex": "#0f62fe", "purpose": "blue parts"},
+    {"property": "blue-lo", "hex": "#0a3e9e", "purpose": "blue parts, shadow"},
+    {"property": "green", "hex": "#24a148", "purpose": "green parts"},
+    {"property": "green-lo", "hex": "#14632c", "purpose": "green parts, shadow"}
+  ]
+}

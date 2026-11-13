@@ -13,6 +13,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
 | `coins/` | `/coins/` | the household's money: income, spending, accounts, debts and bills |
 | `emu/` | `/emu/` | the game collection on the drive, its emulators, saves and backups |
+| `sprites/` | `/sprites/` | a pixel-art editor that saves icons and sprites straight into this checkout |
 | `tools/` | — | the commands below |
 | `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, `docs/app-icons.md`, how an app icon is drawn, and `docs/plans/`, changes being decided or built |
 

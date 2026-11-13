@@ -90,7 +90,7 @@ can read or change. Its Rules tab says how a quote is priced and lists where
 it copies the spreadsheet's quirks, each worked out at the saved rates.
 
 `print.html` is the forms this app fills in and prints. On its own it lists
-them, in the order the office prints them, Quote, Route, Envelope and Hours of service, the driver itinerary listed as Route because an itinerary is the customer's file; with a form named in the query it reads that form's subject and draws it,
+them, in the order the office prints them, Quote, Card authorization, Route, Envelope and Hours of service, the driver itinerary listed as Route because an itinerary is the customer's file; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
 a multi-stop layout, on the 6 by 9 envelope itself, its pickup named over its street address; the hours-of-service record
 is one per seat too, in the top half of Letter, dated back 7 days from the leg, each day the driver was on duty for the company filled from their Samsara log, `driver_duty_days`, and the time they were released on the last of those days.
@@ -101,7 +101,7 @@ hours from `route-figures.js`, the Route tab's own sum, which `tools/check-route
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
 the office sends, with its estimate number and the trip's quote lines, or its price as one bus rental
 where it has none, lines of words typed under them, figures that are the trip's and are not typed on the sheet, and a Total that is the sum of the lines the sheet prints;
-and the Terms and Conditions Agreement Form behind it. A rental's wording is `quote-text.js`, which the
+and the Terms and Conditions Agreement Form behind it. The credit card authorization is one Letter sheet per trip, in Carbon's form language: the trip in the quote's words, and an amount that is the balance due, typed over for a deposit, with the card fee on it from `billing.js`, which the agreement's payment policy names too; the cardholder's lines can be typed, the card number, expiry and code never are, and a box at the foot takes the CardPointe authorization code. A rental's wording is `quote-text.js`, which the
 trip editor's Copy for QuickBooks reads too, each leg from its own stops, so the description
 pasted into an estimate and the one printed on the quote read the same. The week schedule is the billing report of a week on
 Legal landscape, five buses a sheet and a row for each partner covering one that week, opened from the board's menu as Print

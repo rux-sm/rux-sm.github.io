@@ -24,6 +24,7 @@
   // Every kind of file and its code. `doc` takes the typed name after it.
   const CODES = {
     quote: 'qte',
+    'card-authorization': 'cca',
     itinerary: 'itn',
     'driver-itinerary': 'dit',
     envelope: 'env',

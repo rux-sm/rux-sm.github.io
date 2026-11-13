@@ -88,6 +88,21 @@
              remaining: Math.max(0, price - paid), datePaid: trip.date_paid || dates.pop() || null };
   }
 
+  /* THE CARD FEE, the processing fee a payment by credit card carries, which
+     the Terms and Conditions agreement names and the card authorization adds
+     to the amount charged. A change to it is a commit, as the terms are. */
+  const CARD_FEE = 0.04;
+  const cents = n => Math.round(n * 100) / 100;
+  // An amount charged to a card: the amount, the fee on it to the cent, and
+  // the two together, which is what is keyed into the card terminal.
+  const cardCharge = amount => {
+    const base = cents(Number(amount) || 0);
+    const fee = cents(base * CARD_FEE);
+    return { amount: base, fee, total: cents(base + fee) };
+  };
+  // The fee as the forms say it, "4%".
+  const cardFeeWords = `${cents(CARD_FEE * 100)}%`;
+
   /* A placeholder is not a trip yet: the office paints it amber before it is
      quoted. One that is confirmed, or has a quote marked sent, is past that,
      and its colour is only a colour: every reminder applies to it. */
@@ -97,6 +112,7 @@
   window.SchedulerBilling = {
     setWorkflow: setBillingWorkflow, stepOn, status: billingStatus, confirmRungOf, confirmsTrip,
     contractSignedOf, poReceivedOf, invoicedOf, of: billingOf, placeholder,
+    CARD_FEE, cardCharge, cardFeeWords,
     get confirmWhen() { return [...billingWorkflow.confirmWhen]; },
   };
 })();

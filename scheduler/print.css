@@ -1741,6 +1741,279 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-customer-quote__add { display: none; }
 }
 
+/* ── The card authorization ──────────────────────────────────────────────
+   The page a customer signs to have their card charged, in Carbon's own form
+   language rather than an office sheet's: a field is a label over a rule, a
+   section is a numbered heading over a hairline, and the amount stands in a
+   box of its own in Carbon's large type. Nothing on it fills, as nothing on
+   the driver's forms does; every division is a rule or a border. Its sizes
+   are points, as the quote's are, because it is measured as paper. */
+
+.scheduler-card-authorization {
+  font-size: 9pt;
+  line-height: 1.34;
+  letter-spacing: 0;
+}
+
+.scheduler-card-authorization :where(p, h2, h3, dl, dt, dd) {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* The logo on the leading edge and the company's lines on the trailing one,
+   over a hairline, as Carbon's header sits over its page. */
+.scheduler-card-authorization__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-block-end: var(--rux-spacing-04);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+.scheduler-card-authorization__logo {
+  block-size: 0.45in;
+  inline-size: auto;
+}
+
+.scheduler-card-authorization__company {
+  text-align: end;
+  font-size: 8pt;
+  line-height: 1.45;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-card-authorization__company-name {
+  color: var(--rux-text-primary);
+  font-weight: 600;
+}
+
+.scheduler-card-authorization__title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-block: var(--rux-spacing-05) var(--rux-spacing-02);
+}
+
+/* Carbon's productive heading-05 weight, light at a large size. */
+.scheduler-card-authorization .scheduler-card-authorization__title {
+  font-size: 21pt;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.scheduler-card-authorization__ref {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 var(--rux-spacing-03);
+  font-size: 8pt;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-card-authorization__ref dt { text-align: end; }
+
+.scheduler-card-authorization__ref dd {
+  color: var(--rux-text-primary);
+  font-weight: 600;
+  min-inline-size: 0.8in;
+}
+
+.scheduler-card-authorization__intro {
+  max-inline-size: 6.2in;
+  margin-block-end: var(--rux-spacing-05);
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-card-authorization__section {
+  margin-block-end: var(--rux-spacing-05);
+  break-inside: avoid;
+}
+
+.scheduler-card-authorization .scheduler-card-authorization__heading {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  align-items: baseline;
+  padding-block-end: var(--rux-spacing-02);
+  margin-block-end: var(--rux-spacing-03);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  font-size: 10.5pt;
+  font-weight: 600;
+}
+
+.scheduler-card-authorization__number { color: var(--rux-interactive); }
+
+/* Twelve columns, as Carbon's grid has; print.js says how many a field spans. */
+.scheduler-card-authorization__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--rux-spacing-03) var(--rux-spacing-04);
+}
+
+.scheduler-card-authorization__label {
+  margin-block-end: 2px;
+  font-size: 8pt;
+  color: var(--rux-text-secondary);
+}
+
+/* THE ANSWER SITS ON A RULE, which is all Carbon's input keeps on paper once
+   its grey field is gone: deep enough to write on, a line to write along. */
+.scheduler-card-authorization__value {
+  min-block-size: 0.3in;
+  padding: 4px var(--rux-spacing-03) 3px;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  white-space: pre-line;
+}
+
+/* The trip and the amount beside it, the amount as wide as two inches. */
+.scheduler-card-authorization__charge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.1in;
+  gap: var(--rux-spacing-04);
+}
+
+.scheduler-card-authorization__checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-02) var(--rux-spacing-05);
+  padding: 5px var(--rux-spacing-03) 4px;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+}
+
+.scheduler-card-authorization__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  cursor: pointer;
+}
+
+/* Carbon's checkbox, a square ruled in the text colour; ticked, it carries
+   a check drawn in borders, which prints as lines. */
+.scheduler-card-authorization__box {
+  position: relative;
+  inline-size: 9pt;
+  block-size: 9pt;
+  border: 1px solid var(--rux-text-primary);
+}
+
+.scheduler-card-authorization__check[aria-checked="true"] .scheduler-card-authorization__box::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 3px;
+  inset-block-start: 0;
+  inline-size: 3px;
+  block-size: 7px;
+  border: solid var(--rux-text-primary);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.scheduler-card-authorization__check:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: 1px;
+}
+
+/* THE AMOUNT IN A BOX OF ITS OWN, ruled heavier than the fields, the figure
+   in Carbon's large light type over the sum that makes it. */
+.scheduler-card-authorization__amount {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--rux-spacing-04);
+  border: 2px solid var(--rux-text-primary);
+}
+
+.scheduler-card-authorization .scheduler-card-authorization__big {
+  margin-block: var(--rux-spacing-02) var(--rux-spacing-04);
+  min-block-size: 1.2em;
+  font-size: 21pt;
+  font-weight: 300;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.scheduler-card-authorization__sums {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 8pt;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-card-authorization__sums td { padding: 1px 0; }
+
+.scheduler-card-authorization__sum {
+  text-align: end;
+  color: var(--rux-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.scheduler-card-authorization__total td {
+  padding-block-start: 3px;
+  border-block-start: 1px solid var(--rux-border-strong-01);
+  color: var(--rux-text-primary);
+  font-weight: 600;
+}
+
+/* SIXTEEN BOXES FOR THE CARD NUMBER, in fours, one digit to a box. */
+.scheduler-card-authorization__digits {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  padding: 4px 0 3px;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+}
+
+.scheduler-card-authorization__digit-group { display: flex; gap: 2px; }
+
+.scheduler-card-authorization__digit {
+  inline-size: 13pt;
+  block-size: 15pt;
+  border: 1px solid var(--rux-border-subtle-01);
+}
+
+/* The statement the cardholder signs, set off by Carbon's blue edge. */
+.scheduler-card-authorization__statement {
+  padding: var(--rux-spacing-03) var(--rux-spacing-04);
+  margin-block-end: var(--rux-spacing-04);
+  border-inline-start: 3px solid var(--rux-interactive);
+}
+
+/* The signature takes a deeper line and the ink's own colour. */
+.scheduler-card-authorization__sign .scheduler-card-authorization__value {
+  min-block-size: 0.38in;
+  border-block-end-color: var(--rux-text-primary);
+}
+
+/* THE OFFICE'S BOX IS DASHED, the line a customer reads as not theirs. */
+.scheduler-card-authorization__office {
+  padding: var(--rux-spacing-03) var(--rux-spacing-04) var(--rux-spacing-04);
+  border: 1px dashed var(--rux-border-strong-01);
+  break-inside: avoid;
+}
+
+.scheduler-card-authorization .scheduler-card-authorization__office-title {
+  margin-block-end: var(--rux-spacing-02);
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 0.32px;
+  text-transform: uppercase;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-card-authorization__office .scheduler-card-authorization__value { min-block-size: 0.26in; }
+
+.scheduler-card-authorization__foot {
+  margin-block-start: var(--rux-spacing-03);
+  font-size: 8pt;
+  color: var(--rux-text-helper);
+}
+
+@media screen {
+  /* A field already sits on a rule, which the page's dotted one would only
+     double; it says it can be typed by taking the focus ring. */
+  .scheduler-card-authorization__value[data-typed] { border-block-end-style: solid; }
+}
+
 /* ── WHAT CAN BE TYPED ────────────────────────────────────────────────────
    Fields on a form can be typed into before it is printed. The dotted rule
    says which, and it is a screen rule: on paper there is only what was

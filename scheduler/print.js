@@ -146,6 +146,8 @@
   const COMPANY = {
     address: '2801 Zinnia Avenue, McAllen, TX 78504',
     phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
+    // Where the card authorization goes back, which is never by email.
+    fax: '(956) 994-9491',
     // The quote's letterhead carries it, and its signature line asks for the
     // signed copy back at it. The driver's forms have no use for it.
     email: 'e-escamilla@sbcglobal.net',
@@ -1501,12 +1503,14 @@
      as the quote's terms do, because that is the rule the office keeps. A
      paragraph is [heading, text]: a heading is underlined and bold and runs
      into its text, a paragraph with none is the text alone, and `warn` sets
-     the one the form prints in red. */
+     the one the form prints in red. The payment policy's is worked out as
+     the sheet is drawn, because the card fee it names is billing.js's, which
+     the driver's share page, loading this file too, does not load. */
   const AGREEMENT_POLICIES = [
     { heading: 'Pricing Policy:', text: 'Quotes are based on the itinerary provided at the time. Prices are subject to change if itinerary is updated. Any changes to the itinerary resulting in additional mileage or affecting driver hours will result in price changes. A Fuel surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date. The amount will be calculated based on the gallons of fuel used on the trip and the fuel price difference.' },
     { heading: 'Trip Booking and Cancellation Policy:', text: 'Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and 20% deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.' },
     { text: 'Cancellations one month prior to departure will incur a 20% cancellation fee. Cancellations 48 hours prior to departure will incur a 50% cancellation fee. Cancellations within 24 hours of departure, on the day of or during the trip will incur a 100% cancellation fee. All cancellations must be sent by email.' },
-    { heading: 'Payment Policy:', text: 'Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. A credit card payment carries a 4% processing fee. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.' },
+    { heading: 'Payment Policy:', text: () => `Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. A credit card payment carries a ${window.SchedulerBilling.cardFeeWords} processing fee. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.` },
     { heading: 'Driver Lodging Policy:', text: 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).' },
     { heading: 'NOTE:', warn: true, text: 'As per FMCSA regulations, our drivers can drive up to 10 hours and stay on duty for a total of 15hrs, which includes both driving and non-driving duties. Once either the 15 hours on duty or 10 hour driving limits are reached, the driver must have 8 consecutive hours of rest. For your safety, please do not interrupt the driver’s rest period via constant phone calls, etc. The driver cannot move the bus during the rest period.' },
     { heading: 'Passenger Behavior Policy:', text: 'Passengers must always stay seated in the bus when in motion. Minors cannot board the bus without a supervising adult present. Passengers should avoid making excessive noise in the bus or distractions for the drivers. Microphone usage should be limited to trip coordinators or supervising adults. Foul language or inappropriate topics may result in microphone privileges being taken away.' },
@@ -1918,7 +1922,7 @@
         p.appendChild(el('strong', 'scheduler-customer-quote__policy-heading', heading));
         p.appendChild(document.createTextNode(' '));
       }
-      p.appendChild(document.createTextNode(text));
+      p.appendChild(document.createTextNode(typeof text === 'function' ? text() : text));
       policies.appendChild(p);
     }
     card.appendChild(policies);
@@ -1938,6 +1942,221 @@
     const trip = subject.trip || {};
     const blank = !trip.id;
     return [quoteSheet(trip, blank), agreementSheet(trip, blank)];
+  }
+
+  /* ── THE CARD AUTHORIZATION ───────────────────────────────────────────────
+     The page a customer signs to let the office charge their card through
+     CardPointe: the trip and the charge filled from the trip, then the
+     cardholder, the card and the signature for the customer's pen, and a box
+     the office fills once the charge is through. One Letter sheet.
+
+     THE CARD IS NEVER TYPED HERE. The cardholder's name, address and
+     contact can be typed in before it is sent, from a call; the card number,
+     its expiry and its code are written on paper by the cardholder alone,
+     so no card number passes through this page or the browser's memory. */
+
+  const CCA = 'scheduler-card-authorization';
+  const CCA_FIELDS = [`.${CCA}__typed`];
+
+  /* A FIELD IS A LABEL OVER A RULE, Carbon's text input as paper takes it:
+     the label in the helper size, the answer on the line, `span` the columns
+     of twelve it covers. A field the customer's pen fills is not typed. */
+  function ccaField(label, value, span, typed = true) {
+    const field = el('div', `${CCA}__field`);
+    field.style.gridColumn = `span ${span}`;
+    field.appendChild(el('p', `${CCA}__label`, label));
+    field.appendChild(el('p', `${CCA}__value${typed ? ` ${CCA}__typed` : ''}`, value || ''));
+    return field;
+  }
+
+  // A section's heading, numbered in the interactive blue the way Carbon
+  // numbers the steps of a form.
+  function ccaSection(n, title, ...parts) {
+    const section = el('section', `${CCA}__section`);
+    const head = el('h3', `${CCA}__heading`);
+    head.append(el('span', `${CCA}__number`, n), document.createTextNode(title));
+    section.append(head, ...parts);
+    return section;
+  }
+
+  const ccaGrid = (...fields) => {
+    const grid = el('div', `${CCA}__grid`);
+    grid.append(...fields);
+    return grid;
+  };
+
+  /* A BOX TO TICK, which a click ticks on screen before the sheet is sent and
+     which prints as drawn; a blank one is ticked by hand. */
+  function ccaChecks(label, names, ticked) {
+    const field = el('div', `${CCA}__field`);
+    field.style.gridColumn = 'span 12';
+    field.appendChild(el('p', `${CCA}__label`, label));
+    const row = el('div', `${CCA}__checks`);
+    for (const name of names) {
+      const box = el('span', `${CCA}__check`);
+      box.setAttribute('role', 'checkbox');
+      box.tabIndex = 0;
+      const tick = on => box.setAttribute('aria-checked', String(on));
+      tick(name === ticked);
+      box.addEventListener('click', () => tick(box.getAttribute('aria-checked') !== 'true'));
+      box.addEventListener('keydown', event => {
+        if (event.key !== ' ' && event.key !== 'Enter') return;
+        event.preventDefault();
+        box.click();
+      });
+      box.append(el('span', `${CCA}__box`), document.createTextNode(name));
+      row.appendChild(box);
+    }
+    field.appendChild(row);
+    return field;
+  }
+
+  /* THE CHARGE, worked out by billing.js: what the trip is quoted, what is
+     paid, and what is charged now with the card fee on it. What is charged
+     now starts as the balance due and is typed over for a deposit; the fee
+     and the total follow it, by the same `cardCharge` every time. */
+  function ccaAmount(trip, blank) {
+    const BILLING = window.SchedulerBilling;
+    const money$ = n => (Number.isFinite(n) ? usd(n) : '');
+    const owed = blank ? null : BILLING.of(trip);
+    // A trip paid up has nothing to charge, and its figures stay empty to be typed.
+    const now = owed && owed.remaining > 0 ? BILLING.cardCharge(owed.remaining) : null;
+
+    const box = el('div', `${CCA}__amount`);
+    box.appendChild(el('p', `${CCA}__label`, 'Amount to charge (USD)'));
+    const big = el('p', `${CCA}__big`, now ? money$(now.total) : '');
+    box.appendChild(big);
+
+    const table = el('table', `${CCA}__sums`);
+    const line = (label, value, cls) => {
+      const tr = el('tr', cls ? `${CCA}__${cls}` : null);
+      const cell = el('td', `${CCA}__sum`, value);
+      tr.append(el('td', null, label), cell);
+      table.appendChild(tr);
+      return cell;
+    };
+    line('Quote total', owed && owed.price > 0 ? money$(owed.price) : '');
+    if (owed?.paid > 0) line('Paid', money$(-owed.paid));
+    const charged = line('Charged now', now ? money$(now.amount) : '');
+    charged.classList.add(`${CCA}__typed`);
+    charged.dataset.name = 'Charged now';
+    const fee = line(`Card fee (${BILLING.cardFeeWords})`, now ? money$(now.fee) : '');
+    const total = line('Total', now ? money$(now.total) : '', 'total');
+    charged.addEventListener('input', () => {
+      const n = typedNumber(charged.textContent);
+      const typed = Number.isFinite(n) && n > 0 ? BILLING.cardCharge(n) : null;
+      fee.textContent = typed ? money$(typed.fee) : '';
+      total.textContent = big.textContent = typed ? money$(typed.total) : '';
+    });
+    charged.addEventListener('focusout', () => {
+      const n = typedNumber(charged.textContent);
+      if (Number.isFinite(n) && n > 0) charged.textContent = money$(BILLING.cardCharge(n).amount);
+    });
+    box.appendChild(table);
+    return { box, ticked: now ? (owed.paid > 0 ? 'Balance due' : 'Payment in full') : null };
+  }
+
+  // The trip in the quote's own words, one line a rental, so the customer
+  // signs for the journey their quote named.
+  function ccaTrip(trip) {
+    const words = trip.trip_type === 'dropoff_pickup'
+      ? legsOf(trip).map(leg => legDescription(trip, leg))
+      : [quoteDescription(trip)];
+    return words.map(w => String(w || '').replace(/\s*\n\s*/g, ' ').trim()).join('\n');
+  }
+
+  function cardAuthorization(subject) {
+    const trip = subject.trip || {};
+    const blank = !trip.id;
+    const card = el('article', `scheduler-form ${CCA}`);
+
+    const head = el('header', `${CCA}__head`);
+    const logo = el('img', `${CCA}__logo`);
+    logo.src = '/scheduler/brand/logo.svg';
+    logo.alt = 'Escamilla Tour Buses';
+    const company = el('div', `${CCA}__company`);
+    company.appendChild(el('p', `${CCA}__company-name`, 'Escamilla Tour Buses, LLC'));
+    for (const text of QUOTE_LETTERHEAD) company.appendChild(el('p', null, text));
+    head.append(logo, company);
+    card.appendChild(head);
+
+    const titled = el('div', `${CCA}__title-row`);
+    titled.appendChild(el('h2', `${CCA}__title`, 'Credit card authorization'));
+    const ref = el('dl', `${CCA}__ref`);
+    for (const [label, value] of [['Estimate no.', blank ? '' : trip.trip_ref || ''], ['Date', today()]]) {
+      ref.append(el('dt', null, label), el('dd', `${CCA}__typed`, value));
+    }
+    titled.appendChild(ref);
+    card.appendChild(titled);
+    card.appendChild(el('p', `${CCA}__intro`,
+      'Fill in every section, sign, and return this form by fax or in person; please do not email card numbers. '
+      + 'We charge the card through CardPointe and destroy this form once the charge is processed.'));
+
+    const billTo = blank ? [''] : billToLines(trip);
+    const { box, ticked } = ccaAmount(trip, blank);
+    const charge = el('div', `${CCA}__charge`);
+    charge.append(ccaGrid(
+      ccaField('Customer', billTo[0], 5),
+      ccaField('Address', billTo.slice(1).join(', '), 7),
+      ccaField('Contact', blank ? '' : trip.booking_contact_name, 3),
+      ccaField('Phone', blank ? '' : showPhone(trip.booking_contact_phone), 3),
+      ccaField('Email', blank ? '' : trip.booking_contact_email, 6),
+      ccaField('Trip', blank ? '' : ccaTrip(trip), 12),
+      ccaChecks('This payment is', ['Deposit', 'Balance due', 'Payment in full', 'Other'], ticked),
+    ), box);
+    card.appendChild(ccaSection('01', 'Trip and charge', charge));
+
+    card.appendChild(ccaSection('02', 'Cardholder', ccaGrid(
+      ccaField('Name on card', '', 5),
+      ccaField('Email (for the receipt)', '', 4),
+      ccaField('Phone', '', 3),
+      ccaField('Billing address', '', 6),
+      ccaField('City', '', 3),
+      ccaField('State', '', 1),
+      ccaField('ZIP code', '', 2),
+    )));
+
+    // Sixteen boxes in fours, for the pen; an American Express leaves one.
+    const number = ccaField('Card number', '', 8, false);
+    const digits = el('div', `${CCA}__digits`);
+    for (let g = 0; g < 4; g += 1) {
+      const group = el('span', `${CCA}__digit-group`);
+      for (let d = 0; d < 4; d += 1) group.appendChild(el('span', `${CCA}__digit`));
+      digits.appendChild(group);
+    }
+    number.lastChild.replaceWith(digits);
+    card.appendChild(ccaSection('03', 'Card', ccaGrid(
+      number,
+      ccaField('Expires MM / YY', '', 2, false),
+      ccaField('Security code', '', 2, false),
+    )));
+
+    const sign = ccaGrid(
+      ccaField('Cardholder signature', '', 6, false),
+      ccaField('Printed name', '', 4, false),
+      ccaField('Date', '', 2, false),
+    );
+    sign.classList.add(`${CCA}__sign`);
+    card.appendChild(ccaSection('04', 'Authorization',
+      el('p', `${CCA}__statement`,
+        'I, the cardholder named above, authorize Escamilla Tour Buses, LLC to charge the card above for the amount shown, '
+        + `which includes a ${window.SchedulerBilling.cardFeeWords} credit card fee, for the charter trip described on this form. `
+        + 'I confirm I am authorized to use this card, and I agree not to dispute this charge with my card issuer '
+        + 'as long as the service is provided as agreed.'),
+      sign));
+
+    const office = el('div', `${CCA}__office`);
+    office.appendChild(el('h3', `${CCA}__office-title`, 'Office use only'));
+    office.appendChild(ccaGrid(
+      ccaField('Processed by', '', 3, false),
+      ccaField('Date', '', 2, false),
+      ccaField('Amount charged', '', 2, false),
+      ccaField('CardPointe auth code', '', 3, false),
+      ccaField('Form destroyed on', '', 2, false),
+    ));
+    card.appendChild(office);
+    card.appendChild(el('p', `${CCA}__foot`, `Fax ${COMPANY.fax} · ${COMPANY.address}`));
+    return card;
   }
 
   /* THE FILE A SAVED QUOTE IS NAMED, which is the title Chrome's Save as PDF
@@ -2531,6 +2750,7 @@
       `${wordOf(subject.trip, subject.leg)}${routeName(subject.trip, subject.leg) ? `-route-${(legRow(subject.trip, subject.leg)?.routes.findIndex(r => r.id === subject.leg) ?? 0) + 1}` : ''}`
       + `${layout === 'detailed' ? '-detailed' : ''}`) : null);
   const quoteFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.quote) : null);
+  const cardFileName = subject => (subject.trip ? forTrip(subject.trip, CODES['card-authorization']) : null);
   const weekFileName = subject => (subject.week ? forDay(subject.week, CODES['week-schedule']) : null);
 
   /* ── The registry ─────────────────────────────────────────────────────── */
@@ -2705,6 +2925,33 @@
       typed: { always: true, fields: QUOTE_FIELDS },
       fileName: quoteFileName,
       render: quote,
+    },
+    {
+      id: 'card-authorization',
+      name: 'Credit card authorization',
+      group: 'Customers',
+      short: 'Card authorization',
+      icon: '#m-credit_card',
+      // One for the whole trip, as the quote is: it charges the trip's price.
+      binds: 'trip',
+      blank: true,
+      // The bill-to and the contact, the quote lines' words, and the money
+      // billing.js reads to say what is owed.
+      columns: [
+        'quoted_price', 'bus_count', 'return_bus_count', 'pickup_address', 'booking_contact_email',
+        'trip_assignments(leg,needs)', 'trip_reqs',
+        'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
+        'confirmed', 'contract_status', 'deposit_amount', 'balance_paid', 'date_paid',
+        'po_ref', 'po_received', 'po_amount',
+        'trip_payments(amount,date)', 'trip_pos(amount)',
+      ],
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in', exact: true },
+      copies: subject => [subject],
+      // What the office fills before it is sent can be typed, filled or
+      // blank; the card and the signature are the customer's pen.
+      typed: { always: true, fields: CCA_FIELDS },
+      fileName: cardFileName,
+      render: cardAuthorization,
     },
     {
       id: 'week-schedule',

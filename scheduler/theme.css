@@ -113,23 +113,6 @@
   --scheduler-head-critical: var(--scheduler-mark-error);
   --scheduler-head-moving: var(--scheduler-mark-success);
 }
-/* The full tile's state box while the engine runs: a tint of the green, or
-   of the warning past SPEEDING or IDLE_MS, under a border in the full colour.
-   Rux 100 takes Geist's own tinted pairs instead, the 100 fill and the 400
-   edge its green and amber bars use, since a mix is a colour Geist lacks. */
-:root,
-[data-theme] {
-  --scheduler-head-box-on: color-mix(in srgb, var(--scheduler-head-moving) 16%, transparent);
-  --scheduler-head-box-on-edge: var(--scheduler-head-moving);
-  --scheduler-head-box-low: color-mix(in srgb, var(--scheduler-head-low) 16%, transparent);
-  --scheduler-head-box-low-edge: var(--scheduler-head-low);
-}
-[data-theme="rux-100"] {
-  --scheduler-head-box-on: var(--geist-green-100);
-  --scheduler-head-box-on-edge: var(--geist-green-400);
-  --scheduler-head-box-low: var(--geist-amber-100);
-  --scheduler-head-box-low-edge: var(--geist-amber-400);
-}
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
    Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
    the gauges and the words alike. */

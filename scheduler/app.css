@@ -79,7 +79,6 @@
      calendar button's width above it, so the column's rule stands under the
      rule beside that button, and its 1px rule. */
   --scheduler-head-min: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px);
-  --scheduler-kit-clear: calc((var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px - var(--scheduler-kit-w)) / 2);
   /* The narrowest a day column gets; past it the grid scrolls rather than
      squeezing. A one-day bar holds two drivers side by side, each in a 70px
      space, a 16px status icon, 4px and a 50px name, which every driver's name
@@ -466,14 +465,10 @@
 .scheduler-row-head__insp { grid-row: 2; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__insp { grid-row: 2 / span 3; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__insp { grid-row: 2 / span 2; }
-/* The gauges take every row under the number, less the equipment's 16px
-   and its clear space at the foot where it stands, so they centre between
-   the two. */
+/* The gauges take every row under the number and centre in them. */
 .scheduler-row-head__gauges { grid-row: 2 / -1; display: flex; flex-direction: column; justify-content: center; min-block-size: 0; }
-.scheduler-week:is([data-bar-rows="6"], [data-bar-rows="5"], [data-bar-rows="4"]) .scheduler-row-head__gauges { padding-block-end: calc(16px + var(--scheduler-kit-clear)); }
-.scheduler-week[data-bar-rows="3"] .scheduler-row-head__equip,
-.scheduler-week[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__level, .scheduler-row-head__equip),
-.scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip),
+.scheduler-week[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__level,
+.scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp),
 .scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__level[data-tank="D"] { display: none; }
 /* The state on one row: its reading beside its unit. Idle's and Off's time
    beside the word is wider than the column, so on one row it is the tip's,
@@ -718,34 +713,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: var(--rux-heading-compact-01-font-weight); }
-/* The bus's kit on its own row: two of Carbon's 16px icons 2px apart, its
-   sleeper and its lift, each in one place down the column, in Carbon's
-   secondary icon ink, as the bus's type is, since they inform and ask
-   nothing, where the bus has it and an empty place where it lacks it. Its seats
-   are in the number's tip and title, where presses go through to. */
-/* The kit stands in the head's foot, centred, as far above the row's rule as
-   it is from the head's sides, so its two outer tiles sit evenly in the
-   corners: 3px at the column's 41px floor, and half of the even number of
-   pixels the days leave the column on each side and below. Placed on the head's own box,
-   not a grid row, so a taller row keeps it in the corner. */
-.scheduler-row-head__equip {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: var(--scheduler-kit-clear);
-  margin-inline: auto;
-  inline-size: max-content;
-  display: grid;
-  grid-template-columns: repeat(2, 16px);
-  column-gap: 2px;
-  pointer-events: none;
-}
-.scheduler-row-head__tile {
-  display: grid;
-  place-items: center;
-  block-size: 16px;
-  color: var(--rux-icon-secondary);
-}
-.scheduler-row-head__equip svg { display: block; }
 /* THE STATE, quiet as the rest of the head: its reading in label-01's size
    in semibold, over its unit in label-01 where the view has six lines, in
    the primary ink. A moving bus's speed alone takes green, so the buses on the road stand
@@ -1067,26 +1034,27 @@ button.scheduler-row-head__num:focus { outline: none; }
    the card's 8px inset, in line with the number, 4px clear of the number and
    the foot and 4px from its words all round, the unit or elapsed time under
    its reading. It says whether the engine runs: off or with no signal it is
-   the column's own surface, a step below the card as a bar's tail is below
-   the bar, with no border; while the engine runs, idle or moving, it is the
-   green over a tint of it, and amber in the warning tone, past SPEEDING or
-   idling past IDLE_MS. A running box carries the colour, so its words are
-   the primary text, which holds 4.5 to 1 on the tint in every theme where
-   the green and the secondary grey do not. Shorter views have no room and
-   keep the state on one row. */
+   not drawn, the words on the card; while the engine runs, idle or moving,
+   it is the column's own surface, a step below the card as a bar's tail is
+   below the bar, and its words are the green, or the warning tone past
+   SPEEDING or idling past IDLE_MS. The fuel keeps its own colours. Shorter
+   views have no room and keep the state on one row. */
 .scheduler-row-head__box { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__box {
   display: block;
   grid-row: 3 / 6;
   justify-self: stretch;
   margin-block: calc(-1 * var(--scheduler-box-clear));
-  border: 1px solid transparent;
-  background: var(--rux-layer);
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { border-color: var(--scheduler-head-box-on-edge); background: var(--scheduler-head-box-on); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]):has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-box-low-edge); background: var(--scheduler-head-box-low); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under) { color: var(--rux-text-primary); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { background: var(--rux-layer); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under) { color: var(--scheduler-head-moving); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial--warning, .scheduler-row-head__dial--warning .scheduler-row-head__under) { color: var(--scheduler-head-low); }
+/* The state and fuel stand on the number's left edge with no box, and 4px
+   inside the box's edge with one; the fuel keeps the box's 46px either way,
+   so its blocks stay on whole pixels. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) .scheduler-row-head__dial { margin-inline: 0; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) .scheduler-row-head__level[data-tank="F"] { margin-inline: 0 calc(2 * var(--scheduler-box-clear)); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__dial { align-self: start; align-items: flex-start; block-size: auto; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__speed { flex-direction: column; align-items: flex-start; gap: 0; max-inline-size: 100%; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__under, .scheduler-row-head__fuel-unit, .scheduler-row-head__no-signal, .scheduler-row-head__seen) {
@@ -1100,7 +1068,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head[data-signal-lost] .scheduler-row-head__speed { display: none; }
 /* "No signal" is 53px on one line and the box holds 46px, so it stands on
    the state's two label lines, "No" over "signal". */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__no-signal { display: block; white-space: normal; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__no-signal { display: block; white-space: normal; text-align: start; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { grid-row: 3 / span 3; flex-direction: column; align-items: flex-start; margin: 0; padding: 0; font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
 /* THE FUEL: the gauge's four blocks, filled from the left, the full width
@@ -1122,15 +1090,12 @@ button.scheduler-row-head__num:focus { outline: none; }
   flex: 1 1 auto;
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
-/* THE KIT, on the card's foot against its 8px inset: the lift and the
-   sleeper, a low DEF reading, or the age of a lost signal. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__equip { position: static; grid-row: 7; display: flex; align-items: center; gap: var(--rux-spacing-02); margin: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__tile:empty { display: none; }
+/* THE FOOT, on the card's foot against its 8px inset: a low DEF reading,
+   or the age of a lost signal. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { grid-row: 7; display: flex; align-items: center; margin: 0; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"][data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__seen { grid-row: 7; display: block; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; color: var(--rux-text-secondary); white-space: nowrap; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head:has(:is(.scheduler-row-head__level[data-tank="D"], .scheduler-row-head__seen)) .scheduler-row-head__equip { display: none; }
 /* A SHORTER VIEW DROPS FROM THE FOOT UP: five lines omit the foot, four
    close the gaps to 8px, three omit fuel, two put the state on line 2,
    the inspection its date alone, and one is the number and its alert. */
@@ -1139,7 +1104,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-state-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__equip, .scheduler-row-head__level[data-tank="D"]) { display: none; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head .scheduler-row-head__level[data-tank="D"] { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__level { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; block-size: var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__insp-word { display: none; }
@@ -7427,7 +7392,6 @@ html[data-scheduler-takeover] {
 .scheduler-components__drawn { display: flex; align-items: flex-start; gap: var(--rux-spacing-06); }
 .scheduler-components__drawn > .scheduler-components__board { flex: none; inline-size: auto; }
 .scheduler-components__views { --scheduler-live-bus: 32px; display: grid; grid-template-columns: repeat(4, 32px); gap: var(--rux-spacing-04); padding-block-start: var(--rux-spacing-03); }
-.scheduler-components__bus .scheduler-components__board.scheduler-week--scroll .scheduler-row-head__equip { display: none; }
 .scheduler-components__foot {
   position: absolute;
   inset-inline: var(--scheduler-side-clear) 0;

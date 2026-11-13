@@ -1462,8 +1462,6 @@
       const windows = windowsOf(r);
       if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
 
-      if (r.bus) head.appendChild(BusHead.equipEl(r.bus));
-
       const track = el('div', 'scheduler-track');
       if (r.bus) track.dataset.busId = r.bus.id;
       else if (r.partner) track.dataset.partner = String(r.partner.id);

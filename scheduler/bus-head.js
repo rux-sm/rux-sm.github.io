@@ -309,8 +309,7 @@
         body.appendChild(line);
       }
     }
-    // Above the equipment at the foot, which data.js draws once.
-    if (body.childElementCount) head.insertBefore(body, head.querySelector(':scope > .scheduler-row-head__equip'));
+    if (body.childElementCount) head.appendChild(body);
 
     if (opts.tip) {
       const lines = tipLines(bus, live);
@@ -347,23 +346,6 @@
     return alert;
   }
 
-  /* The bus's kit on the head's last row: its sleeper and its lift, each in
-     its own place down the column, and an empty place where the bus lacks
-     one, so the lifts stand in one line. The number's tip and title name
-     them, and its seats, for the reader. */
-  function equipEl(bus) {
-    const equip = el('div', 'scheduler-row-head__equip');
-    for (const [on, href, label] of [[bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
-      const t = el('span', 'scheduler-row-head__tile');
-      if (on) {
-        t.setAttribute('role', 'img');
-        t.setAttribute('aria-label', label);
-        t.appendChild(svgUse(href, '16', '0 0 32 32'));
-      }
-      equip.appendChild(t);
-    }
-    return equip;
-  }
 
   // The mark a line leads with: the warning triangle or the error circle, as the tile's alert is.
   const TONE_ICON = { warning: '#i-warning--alt--filled', error: '#i-warning--filled' };
@@ -397,5 +379,5 @@
   // The same lines as words alone.
   const tipOf = (bus, live) => tipLines(bus, live).map(line => line.words);
 
-  window.SchedulerBusHead = { draw, alertEl, equipEl, tipOf, stateOf, papersOf, unsafeOf, overdueOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, alertEl, tipOf, stateOf, papersOf, unsafeOf, overdueOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

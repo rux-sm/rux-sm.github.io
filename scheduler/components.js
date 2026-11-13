@@ -196,7 +196,6 @@
     head.dataset.busId = bus.id;
     head.title = [bus.number, `${bus.capacity} pax`, bus.type].join(' · ');
     BusHead.draw(head, bus, live);
-    head.appendChild(BusHead.equipEl(bus));
   }
 
   function boardOf(sample, data) {

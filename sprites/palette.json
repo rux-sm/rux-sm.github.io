@@ -11,6 +11,7 @@
     {"name": "purple", "colours": ["#2c085a", "#511796", "#7935cb", "#a05df3", "#c292fe", "#e0c8fe"]},
     {"name": "pink", "colours": ["#590b44", "#8d0964", "#bf2280", "#e94c9c", "#ff86ba", "#fec5d9"]},
     {"name": "skin", "colours": ["#9d6356", "#ca816a", "#efa589", "#fed3c1"]},
-    {"name": "brown", "colours": ["#331604", "#553211", "#74522e", "#8f7556"]}
+    {"name": "brown", "colours": ["#331604", "#553211", "#74522e", "#8f7556"]},
+    {"name": "slate", "colours": ["#2b404e", "#3b5e6a", "#517d84", "#6f9c98", "#97bbaa", "#c4d8c2"]}
   ]
 }

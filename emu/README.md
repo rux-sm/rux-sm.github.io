@@ -63,7 +63,8 @@ emulator whose systems have no games is not needed yet.
 to: the version Supabase holds and each Mac's, with Install where this Mac lacks it; each file
 it needs; every kind of file it writes with the setting that moves it; the settings to have,
 with backups to put back and a preferred set; and what is worth knowing. `docs/emulator-setup.md`
-is how each is set up on a Mac, and `docs/home-server.md` how the home server sends a game.
+is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
+`docs/drawing-consoles.md` how a console is drawn in pixels for the room.
 
 ## The scan
 
@@ -98,7 +99,6 @@ originals to a to-delete folder on the drive instead of deleting them. Scan
 again after it. chdman comes from Homebrew's `rom-tools`.
 
     node emu/tools/backup-saves.mjs "/Volumes/<drive>/emulation"
-
     node emu/tools/build-helper.mjs "/Volumes/<drive>/emulation"
 
 `tools/build-helper.mjs` builds Rux Emu Helper from `helper/main.swift` and puts it on the

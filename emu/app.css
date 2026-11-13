@@ -112,6 +112,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   --emu-console-red: var(--rux-support-error); --emu-console-purple: var(--rux-tag-border-purple);
   --emu-console-teal: var(--rux-tag-border-teal); --emu-console-blue: var(--rux-tag-border-blue);
   --emu-console-green: var(--rux-tag-border-green); --emu-console-screen: var(--rux-layer-01);
+  /* A pixel drawing's lit edges and shadows, each its base mixed lighter or
+     darker, so every material has three shades from one token;
+     tools/build-consoles.mjs's palette names them. */
+  --emu-console-body-hi: color-mix(in srgb, var(--emu-console-body), white 35%); --emu-console-body-lo: color-mix(in srgb, var(--emu-console-body), black 30%);
+  --emu-console-shade-hi: color-mix(in srgb, var(--emu-console-shade), white 35%); --emu-console-shade-lo: color-mix(in srgb, var(--emu-console-shade), black 30%);
+  --emu-console-screen-hi: color-mix(in srgb, var(--emu-console-screen), white 30%);
+  --emu-console-red-lo: color-mix(in srgb, var(--emu-console-red), black 35%); --emu-console-purple-lo: color-mix(in srgb, var(--emu-console-purple), black 35%);
+  --emu-console-teal-lo: color-mix(in srgb, var(--emu-console-teal), black 35%); --emu-console-blue-lo: color-mix(in srgb, var(--emu-console-blue), black 35%);
+  --emu-console-green-lo: color-mix(in srgb, var(--emu-console-green), black 35%);
 }
 /* Rux's Collection: one row of consoles that scrolls sideways, each as wide as
    the row lets it be between 4.5 and 6.5rem, the picked one marked as

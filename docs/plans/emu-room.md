@@ -225,10 +225,10 @@ fun to use while staying plain. It replaces the front page that
 - [ ] Draw the pegboard and a game's cards, on its cover, in its console's
       slot and on the pegboard, with pulling one out, dropping one in and
       the console's card light.
-- [ ] Draw the room in pixel art: a console 36×24 art pixels, a handheld
-      16×24, the TV 80×56, a cover face out 16×22, a spine 8×22, a card
-      8×10, a plug or power button 8×8, and the furniture as 16×16 tiles
-      that grow.
+- [ ] Draw each console in pixels, as `emu/docs/drawing-consoles.md` says.
+- [ ] Draw the rest of the room in pixel art: the TV 80×54 art pixels, a
+      card 8×10, a plug or power button 8×8, and the furniture as 16×16
+      tiles that grow.
 
 - [ ] Move the emulator's removal from unplugging to putting the console
       back, the held word naming the emulator that goes, and have the plug

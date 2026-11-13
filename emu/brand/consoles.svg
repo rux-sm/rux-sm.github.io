@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg">
-<!-- Emu's consoles, one symbol per system, each standing on the foot of a 96 by 64 box.
+<!-- Emu's consoles, one symbol per system, each standing on the foot of a 96 by 64 box, or a
+     pixel drawing 24 high that tools/build-consoles.mjs writes from brand/consoles/.
      room.js puts this file into its page, so each is drawn from there. Every fill is one of
      the emu-console properties, which app.css sets from Design's tokens, so a console
      follows the theme; a console's own screen is emu-console-screen. -->

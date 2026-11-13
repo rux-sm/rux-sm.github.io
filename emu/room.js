@@ -167,20 +167,23 @@
       svg.style.display = 'none';
       document.body.append(document.importNode(svg, true));
     }));
-  // A console's drawing, which app.css colours. A handheld's box is cut to
-  // its own width, from x, so it stands in the dock as tall as a home
-  // console; each width keeps the drawing a whole number of art pixels wide,
-  // 24 art pixels to the box's 64 high.
+  // A console's drawing, which app.css colours. A pixel drawing from
+  // tools/build-consoles.mjs is its own size, 24 art pixels high; a flat one
+  // stands on the foot of a 96 by 64 box, and a handheld's is cut to its own
+  // width, from x, each width a whole number of art pixels at 24 to the 64.
   const HANDBOX = { gb: [24, 48], gbc: [24, 48], gba: [4, 88], nds: [20, 56], n3ds: [12, 72] };
   const consoleOf = system => useOf(svgOf('emu-console', '0 0 96 64'), `emu-console-${system}`);
   function handOf(system) {
-    const [x, w] = HANDBOX[system] ?? [0, 96];
-    const svg = svgOf('emu-console emu-console--hand', `${x} 0 ${w} 64`);
-    svg.style.setProperty('--emu-art-w', w * 24 / 64);
+    const own = document.getElementById(`emu-console-${system}`)?.viewBox.baseVal;
+    const flat = !own || own.height === 64;
+    const [x, w] = flat ? HANDBOX[system] ?? [0, 96] : [0, own.width];
+    const h = flat ? 64 : own.height;
+    const svg = svgOf('emu-console emu-console--hand', `${x} 0 ${w} ${h}`);
+    svg.style.setProperty('--emu-art-w', w * 24 / h);
     useOf(svg, `emu-console-${system}`);
-    // The symbol drawn its whole size, so the cut box shows only its middle.
-    svg.lastChild.setAttribute('width', 96);
-    svg.lastChild.setAttribute('height', 64);
+    // The symbol drawn its whole size, so a cut box shows only its middle.
+    svg.lastChild.setAttribute('width', flat ? 96 : w);
+    svg.lastChild.setAttribute('height', h);
     return svg;
   }
   // The consoles standing in the room, in its cubbies or its dock.

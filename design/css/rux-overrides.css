@@ -961,6 +961,16 @@ a.rux--header__name,
 @media (min-width: 66rem) {
   :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 17rem 1rem; }
   :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content > .rux--css-grid { --rux-grid-margin: 0; }
+  /* The rail is the same nav 3rem wide, so the content pads itself 3rem
+     past it and its text stands the same 2rem from it. */
+  :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--rail:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--rail:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 4rem 1rem; }
+}
+/* THE RAIL STANDS ONLY WHERE THE NAV STANDS OPEN, from 66rem. Carbon keeps
+   its rail 3rem at every width, over a narrow page's content; below 66rem
+   this one is away like the nav it is, and the header's menu button opens
+   it whole. */
+@media (max-width: 65.98rem) {
+  .rux--side-nav--ux.rux--side-nav--rail:not(.rux--side-nav--expanded) { inline-size: 0; }
 }
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255

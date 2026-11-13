@@ -106,6 +106,13 @@ Three widths, easily confused: bare `.rux--side-nav` is 3rem,
 `--side-nav--rail` is the rail, `--side-nav--ux` is the 16rem nav the templates
 use. Picking the wrong one silently breaks 3.2's padding, which assumes 16rem.
 
+A page that wants the rail writes both, `--ux` then `--rail`: `--ux` holds it
+under the header and `--rail` makes it 3rem. `js/ui-shell.js` then declares
+`data-nav="rail"`, the frame pads the content 3rem past it, and a page with no
+frame pads itself 5rem from 66rem. Below 66rem the rail is away like the nav,
+and the menu button opens it. Each link carries a `title`, since its words are
+out of sight.
+
 ### 3.3a Two shells, and one class picks which one you have
 
 `__menu-toggle__hidden` is written by **your markup**. `rux.css` never adds it;

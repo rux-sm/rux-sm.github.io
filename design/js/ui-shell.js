@@ -328,10 +328,12 @@
      css/rux-overrides.css, which frames a page whose nav stands open beside
      the content. Read from `body` with `:has()` it cost every change on the
      page a full style pass, 30ms on the scheduler's board. The shell is the
-     markup's declaration, so it is read once, here. */
-  const openNav = [...document.querySelectorAll('.rux--side-nav--ux')].some(nav => !nav.classList.contains(FLOATS)
+     markup's declaration, so it is read once, here. A nav that is also
+     `--rail`, Carbon's 3rem strip of icons, declares `data-nav="rail"`, so
+     the frame clears 3rem and draws no line through the header. */
+  const openNav = [...document.querySelectorAll('.rux--side-nav--ux')].find(nav => !nav.classList.contains(FLOATS)
     && (nav.parentElement === document.body || (nav.parentElement?.classList.contains('rux--header') && nav.parentElement.parentElement === document.body)));
-  if (openNav) document.documentElement.setAttribute('data-nav', 'open');
+  if (openNav) document.documentElement.setAttribute('data-nav', openNav.classList.contains('rux--side-nav--rail') ? 'rail' : 'open');
   for (const nav of document.querySelectorAll('.rux--side-nav')) {
     const burger = nav.closest('.rux--header')?.querySelector('.rux--header__menu-toggle');
     if (nav.classList.contains(EXPANDED)) setNav(nav, true, burger, true);

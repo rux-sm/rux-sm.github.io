@@ -55,8 +55,10 @@ expanded, fixed. One thing is a choice and five are not:
   once someone is logged in. Notifications and help are not beside it: an
   icon-only button with no handler is an affordance that lies. Add one in a
   product when it does something, in Carbon's prescribed order.
-- Side nav: only the expanded, fixed variant is captured. No rail, no
-  collapsed-by-default; ask before offering one.
+- Side nav: the expanded, fixed variant is captured, and no
+  collapsed-by-default; ask before offering one. The rail, `--ux` with
+  `--rail`, is that nav 3rem wide from 66rem, for a page that needs the
+  width; `composing-pages.md` 3.3 says how the frame clears it.
 - The account panel: every app has the same one, written once in
   `tools/lib/shell.mjs` and spliced into each template by
   `tools/inline-account.mjs`. It holds who is logged in, Profile, the theme

@@ -1,10 +1,12 @@
 /* ==========================================================================
    room.js — the Library as a room, on room.html
    --------------------------------------------------------------------------
-   Your Mac is one scene, shown where Rux Emu Helper answers. The games this
-   Mac holds stand on a board, one still arriving under a veil that lifts as
-   it comes, and the favourites on a shelf above, one this Mac lacks dimmed.
-   A TV and this Mac's consoles stand on the same board over a power strip.
+   Your Mac is a media wall, shown where Rux Emu Helper answers. The TV
+   stands on a stand of cubbies, one per home console and a ghost cubby to
+   bring the next to, never fewer than three, in two tiers past five; the
+   handhelds stand in a dock on the stand beside the TV. A bookcase holds
+   the favourites face out, one this Mac lacks dimmed, over this Mac's other
+   games as spines, one still arriving under a veil that lifts as it comes.
    Which consoles stand there, and which of them are plugged in, is this
    Mac's room, kept on its row in Supabase; until one is moved, the console
    of each game this Mac holds stands there. A console is plugged in only
@@ -165,8 +167,25 @@
       svg.style.display = 'none';
       document.body.append(document.importNode(svg, true));
     }));
-  // A console's drawing, which app.css colours.
+  // A console's drawing, which app.css colours. A handheld's box is cut to
+  // its own width, from x, so it stands in the dock as tall as a home
+  // console; each width keeps the drawing a whole number of art pixels wide,
+  // 24 art pixels to the box's 64 high.
+  const HANDBOX = { gb: [24, 48], gbc: [24, 48], gba: [4, 88], nds: [20, 56], n3ds: [12, 72] };
   const consoleOf = system => useOf(svgOf('emu-console', '0 0 96 64'), `emu-console-${system}`);
+  function handOf(system) {
+    const [x, w] = HANDBOX[system] ?? [0, 96];
+    const svg = svgOf('emu-console emu-console--hand', `${x} 0 ${w} 64`);
+    svg.style.setProperty('--emu-art-w', w * 24 / 64);
+    useOf(svg, `emu-console-${system}`);
+    // The symbol drawn its whole size, so the cut box shows only its middle.
+    svg.lastChild.setAttribute('width', 96);
+    svg.lastChild.setAttribute('height', 64);
+    return svg;
+  }
+  // The consoles standing in the room, in its cubbies or its dock.
+  const units = () => $('emu-room').querySelectorAll('.emu-unit');
+  const unitOf = system => $('emu-room').querySelector(`.emu-unit[data-system="${system}"]`);
 
   // A game's cover as the button that opens it. `small` leaves its name off,
   // for the room, where its art names it.
@@ -186,38 +205,50 @@
   }
 
   // YOUR MAC -----------------------------------------------------------------
-  // A console over its socket. Its drawing is a button that picks it and is
-  // dragged; its plug is a button too. Plugged in, the plug sits in the strip
-  // and its light is on; unplugged, the plug hangs loose beside the socket;
-  // while its emulator is set up, the light blinks.
+  // A console over its socket, in its cubby or, a handheld, in the dock. Its
+  // drawing is a button that picks it and is dragged; its plug is a button
+  // too. Plugged in, the plug is pushed into the socket and its light is on;
+  // unplugged, the plug hangs loose, the socket blinks and it says "Plug in";
+  // while its emulator is set up, the light blinks. A handheld shows only its
+  // light, its name on the plug's and the drawing's labels.
   const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting' };
   function unit(system, state) {
     const called = R.systemName(system);
-    const li = el('li', UNIT[state]);
+    const hand = HANDHELD.has(system);
+    const li = el('li', `${UNIT[state]} ${hand ? 'emu-unit--hand' : 'emu-cubby'}`);
     li.dataset.system = system;
     const body = el('button', 'emu-unit__console');
     body.type = 'button';
     body.dataset.console = system;
     body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'plugged in' : state === 'setting' ? 'being set up' : 'unplugged'}`);
-    body.append(consoleOf(system));
+    body.append(hand ? handOf(system) : consoleOf(system));
     body.addEventListener('click', () => choose(system));
     const plug = el('button', 'emu-plug');
     plug.type = 'button';
     plug.disabled = state === 'setting';
     plug.title = state === 'on' ? `Unplug the ${called}` : `Plug in the ${called}`;
     plug.setAttribute('aria-label', plug.title);
-    const drawing = svgOf('emu-plug__drawing', '0 0 44 42');
-    drawing.innerHTML = '<rect class="emu-plug__socket" x="15" y="4" width="14" height="6" rx="1"/>'
-      + `<path class="emu-plug__cord" d="${state === 'on' ? 'M22 27 C 22 38, 39 38, 39 14' : 'M19 35 C 24 43, 39 30, 39 14'}"/>`
-      + '<g class="emu-plug__body"><rect class="emu-plug__prong" x="17" y="8" width="2.5" height="7"/><rect class="emu-plug__prong" x="24.5" y="8" width="2.5" height="7"/><rect x="14" y="14" width="16" height="13" rx="2"/></g>';
+    const drawing = svgOf('emu-plug__drawing', '0 0 16 16');
+    drawing.innerHTML = '<rect class="emu-plug__socket" x="2" y="12" width="12" height="4" rx="1"/>'
+      + `<path class="emu-plug__cord" d="${state === 'on' ? 'M8 0 V6' : 'M8 0 C 8 4, 4 3, 4 8'}"/>`
+      + '<g class="emu-plug__body"><rect class="emu-plug__prong" x="5" y="12" width="1.5" height="3"/><rect class="emu-plug__prong" x="9.5" y="12" width="1.5" height="3"/><rect x="4" y="6" width="8" height="6" rx="1"/></g>';
     plug.append(drawing);
     plug.addEventListener('click', () => (state === 'on' ? unplug : plugIn)(system));
     const name = el('span', 'emu-unit__name');
-    name.append(el('i', 'emu-led'), el('span', null, state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
+    name.title = state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called;
+    name.append(el('i', 'emu-led'), el('span', null, state === 'setting' ? `Setting up ${emulatorOf(system)}…` : state === 'off' ? 'Plug in' : called));
     const under = el('span', 'emu-unit__under');
     under.append(plug, name);
-    if (state === 'off') under.append(el('span', 'emu-unit__tip', 'Plug in'));
     li.append(body, under);
+    return li;
+  }
+  // The cubby the next console is brought to, outlined; in an empty room it
+  // says so.
+  function ghostCubby(empty) {
+    const li = el('li', 'emu-cubby emu-cubby--ghost');
+    li.id = 'emu-ghost-cubby';
+    li.title = 'Drag a console here from Rux\'s Collection';
+    if (empty) li.append(el('span', null, 'Drag a console up here'));
     return li;
   }
 
@@ -234,9 +265,23 @@
     }));
     const mine = mineNow();
     stand = consolesNow();
-    $('emu-stand').replaceChildren(...[...stand].map(([system, state]) => unit(system, state)));
-    $('emu-stand').classList.toggle('emu-stand--empty', !stand.size);
-    document.querySelector('.emu-scene').classList.toggle('emu-scene--crowded', stand.size > 8);
+    const homes = [...stand].filter(([system]) => !HANDHELD.has(system));
+    const hands = [...stand].filter(([system]) => HANDHELD.has(system));
+    // A cubby per home console, the ghost one while any home console with
+    // games is still in the collection, at least three, in two tiers past five.
+    const more = Object.keys(R.SYSTEMS).some(system => !HANDHELD.has(system) && !stand.has(system) && gamesOf(system).length);
+    const cells = homes.map(([system, state]) => unit(system, state));
+    if (more) cells.push(ghostCubby(!stand.size));
+    while (cells.length < 3) cells.push(el('li', 'emu-cubby'));
+    if (!stand.size) cells.unshift(cells.pop());
+    const tiers = cells.length > 5 ? 2 : 1;
+    $('emu-stand').style.setProperty('--emu-per', Math.ceil(cells.length / tiers));
+    $('emu-stand').replaceChildren(...cells);
+    // Up to three handhelds stand right of the TV; more share both sides.
+    const left = hands.length > 3 ? hands.slice(0, Math.floor(hands.length / 2)) : [];
+    $('emu-dock-l').replaceChildren(...left.map(([system, state]) => unit(system, state)));
+    $('emu-dock-r').replaceChildren(...hands.slice(left.length).map(([system, state]) => unit(system, state)));
+    document.querySelector('.emu-scene').classList.toggle('emu-scene--crowded', tiers === 2);
     showSound();
     $('emu-onmac').replaceChildren(...mine.map(([g, s]) => {
       const li = coverItem(g, true);
@@ -248,9 +293,6 @@
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
         b.title = stand.has(g.system) ? `${g.title}. Plug in the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
-        const needs = R.tag([R.systemName(g.system), 'rux--tag--gray'], true);
-        needs.classList.add('emu-cover__needs');
-        b.append(needs);
       }
       return li;
     }));
@@ -380,7 +422,7 @@
   const after = (anim, ms) => Promise.race([anim.finished, new Promise(r => setTimeout(r, ms + 80))]).catch(() => {});
   // The game goes into its console in the room, with its own picture on it.
   async function insert(g) {
-    const body = $('emu-stand').querySelector(`[data-system="${g.system}"] .emu-unit__console`);
+    const body = unitOf(g.system)?.querySelector('.emu-unit__console');
     if (!body || calm()) { sfx.insert(); return; }
     const disc = DISC.has(g.system);
     const media = el('div', disc ? 'emu-media emu-media--disc' : 'emu-media emu-media--cart');
@@ -414,7 +456,7 @@
   const NO = [name => `Nope. That's a ${name} game.`, name => `Doesn't fit. Try the ${name}.`, name => `*blows on it* Still a ${name} game.`, name => `Wrong slot! It wants a ${name}.`];
   const wrong = system => NO[Math.floor(Math.random() * NO.length)](R.systemName(system));
   function refuse(system, text) {
-    const u = $('emu-stand').querySelector(`[data-system="${system}"]`);
+    const u = unitOf(system);
     sfx.no();
     if (!u) { say(text); return; }
     u.classList.remove('emu-unit--shakes');
@@ -525,7 +567,7 @@
     if (!under) return null;
     const s = standing(g);
     const unit = under.closest('.emu-unit')
-      ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? $('emu-stand').querySelector(`[data-system="${g.system}"]`) : null);
+      ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? unitOf(g.system) : null);
     if (unit) {
       const system = unit.dataset.system;
       if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
@@ -536,7 +578,7 @@
       if (keeps) return yes('Download and play', unit, () => download(g, true));
       return no('Plug in the drive to play', unit, [system, 'Plug in the drive to play.']);
     }
-    if (under.closest('.emu-wall')) return g.notes?.favourite ? null : yes('Add to Favourites', $('emu-ledge'), () => favourite(g, true));
+    if (under.closest('.emu-favs')) return g.notes?.favourite ? null : yes('Add to Favourites', $('emu-ledge'), () => favourite(g, true));
     if (under.closest('.emu-scene')) {
       return keeps && (s.state === 'away' || s.state === 'failed') ? yes('Download', under.closest('.emu-scene'), () => download(g)) : null;
     }
@@ -552,7 +594,7 @@
   function consoleIntent(system, from, under) {
     if (!under) return null;
     if (from === 'collection' && under.closest('.emu-room')) {
-      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', document.querySelector('.emu-scene'), () => bring(system));
+      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', $('emu-ghost-cubby') ?? document.querySelector('.emu-scene'), () => bring(system));
     }
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
@@ -576,7 +618,7 @@
   function drop() {
     word.hidden = true;
     unlight();
-    for (const u of $('emu-stand').children) u.classList.remove('emu-unit--fit', 'emu-unit--dim');
+    for (const u of units()) u.classList.remove('emu-unit--fit', 'emu-unit--dim');
   }
   // A cover's picture is not dragged away as a file.
   document.addEventListener('dragstart', e => { if (e.target.closest?.('.emu-cover')) e.preventDefault(); });
@@ -584,7 +626,7 @@
     const src = e.target.closest?.('.emu-cover[data-game], [data-console]');
     if (!src || e.button > 0 || !helper) return;
     const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
-    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-stand') ? 'room' : 'collection' }; return; }
+    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : 'collection' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
     if (g && from) drag = { ...at, g, from };
@@ -605,7 +647,7 @@
       drag.ghost = ghost;
       drag.src.classList.add('emu-held');
       // A game's console lights and the rest dim, so where it goes shows.
-      if (drag.g) for (const u of $('emu-stand').children) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
+      if (drag.g) for (const u of units()) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
       // Coming back from the room, the collection turns to its console and
       // its row to the game, so its own cover is there to light.
       if (drag.g && drag.from !== 'collection') {

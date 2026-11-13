@@ -144,12 +144,13 @@ fun to use while staying plain. It replaces the front page that
   move come from one function, so they never disagree.
 - **One line beside Your Mac's name says what a move did,** such as
   "Playing." or why the helper refused, with Undo where it can be taken back.
-- **A game on this Mac whose console is not plugged in is dimmed,** with
-  Carbon's small tag naming the console it needs.
+- **A game on this Mac whose console is not plugged in is dimmed,** its
+  spine's label naming the console it needs, since a spine has no room for a
+  tag.
 - **A room of more than five cubbies is crowded:** the stand grows a second
-  tier and the TV gets smaller, which holds all nine home consoles, and the
-  dock takes handhelds on both sides of the TV. Past 35 games the bookcase
-  shows how many more, such as "+7", and scrolls.
+  tier and the TV gets smaller, which holds all ten home consoles, and the
+  dock takes handhelds on both sides of the TV. Past three shelves of spines
+  the bookcase scrolls, its heading counting them all.
 - **Favourites is a shelf you drag games onto,** from Rux's Collection or
   the room, and off again back to Rux's Collection; it is `emu_notes`'
   favourite mark. A favourite this Mac lacks is dimmed.
@@ -191,6 +192,12 @@ fun to use while staying plain. It replaces the front page that
   saves not safe yet, red no, blue where a drop lands. The day theme is a
   pale wall and warm wood; in the evening the room is dark and its lights
   light it, a playing TV glowing on the wall in its game's colour.
+- **Carbon lays out everything around the room, and the art pixel
+  everything inside it.** The frame, the headings, the status line, Rux's
+  Collection, type, tokens, motion curves and target sizes follow Carbon,
+  and the room's outer box takes Carbon's spacing; inside that box sizes,
+  gaps and moves are whole art pixels, since Carbon's 8px steps do not
+  divide by three and a sprite between pixels blurs.
 - **Covers keep one height and their own art's width,** as now.
 - **Without the helper, such as on the phone, Your Mac is not shown,** and
   Rux's Collection is the library to browse.
@@ -212,10 +219,7 @@ fun to use while staying plain. It replaces the front page that
 
 ## Tasks
 
-- [ ] Lay the room out as the media wall: the stand that grows a cubby per
-      console with its ghost cubby and second tier, the handheld dock, the
-      bookcase of spines under Favourites and the named empty places, at
-      about 430px with the collection's covers at about 110×150.
+- [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Name the copies of a save Supabase keeps, as cards, and have the
       helper swap which one is on this Mac while its emulator is closed.
 - [ ] Draw the pegboard and a game's cards, on its cover, in its console's

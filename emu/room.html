@@ -169,9 +169,10 @@
           <p>No scan yet. <a class="rux--link" href="status.html">Update</a> scans the drive.</p>
         </div>
 
-        <!-- Your Mac, from room.js, shown where Rux Emu Helper answers: one scene that
-             stays in view. A TV and this Mac's consoles stand on a board over a power
-             strip; its games stand on the same board, the favourites on a shelf above. -->
+        <!-- Your Mac, from room.js, shown where Rux Emu Helper answers: a media wall
+             that stays in view. The TV stands on a stand of cubbies, one per home
+             console, with the handhelds in a dock beside it; the bookcase holds the
+             favourites face out over this Mac's other games as spines. -->
         <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
           <div class="emu-room__head">
             <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
@@ -183,17 +184,21 @@
           </div>
           <div class="emu-scene">
             <div class="emu-stage">
-              <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
+              <div class="emu-top">
+                <ul class="emu-dock" role="list" id="emu-dock-l" aria-label="Handhelds on this Mac"></ul>
+                <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
+                <ul class="emu-dock" role="list" id="emu-dock-r" aria-label="Handhelds on this Mac"></ul>
+              </div>
               <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
             </div>
-            <div class="emu-side">
-              <div class="emu-wall">
-                <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
+            <div class="emu-case">
+              <div class="emu-favs">
                 <p class="emu-cap" id="emu-ledge-h">Favourites</p>
+                <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
               </div>
-              <div>
+              <div class="emu-mine">
+                <p class="emu-cap" id="emu-onmac-h"></p>
                 <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
-                <p class="emu-cap emu-cap--under" id="emu-onmac-h"></p>
               </div>
             </div>
           </div>

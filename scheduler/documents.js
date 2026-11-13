@@ -596,17 +596,19 @@
       option.value = k.id;
       return option;
     }));
-    // The active drivers, and whoever the document already names.
+    // The active drivers, and whoever the document or the link that opened it names.
+    const named = loaded ? loaded.driver_id : params.get('driver');
     const offered = [...drivers.values()]
-      .filter(d => (d.status || 'active') === 'active' || d.id === loaded?.driver_id);
+      .filter(d => (d.status || 'active') === 'active' || d.id === named);
     driverField.replaceChildren(...[{ id: '', name: 'Pick a driver' }, ...offered].map(d => {
       const option = el('option', 'rux--select-option', d.name);
       option.value = d.id;
       return option;
     }));
-    // The active partners, and whichever the document already names; none is a document of no partner's.
+    // The active partners, and whichever the document or its link names; none is a document of no partner's.
+    const company = loaded ? loaded.partner_id : params.get('partner');
     const companies = [...partners.values()]
-      .filter(p => p.status === 'active' || p.id === loaded?.partner_id);
+      .filter(p => p.status === 'active' || p.id === company);
     partnerField.replaceChildren(...[{ id: '', name: 'None' }, ...companies].map(p => {
       const option = el('option', 'rux--select-option', p.name);
       option.value = p.id;

@@ -15,6 +15,9 @@ fun to use while staying plain. It replaces the front page that
 
 ## Decisions
 
+- **The room is built as its own page, `emu/room.html`, beside the
+  Library,** which keeps working until the room takes its place; nothing
+  links to the room until then. It holds Rux's Collection's row of consoles.
 - **Your Mac is a band across the top that stays in view while the page
   scrolls,** and Rux's Collection fills the full width below it, so a drag
   is a short move up. The menu folds to a strip of icons on this page, and a
@@ -103,9 +106,11 @@ fun to use while staying plain. It replaces the front page that
   its moves, and one in the collection has Bring to Your Mac in its heading;
   the plug is a button, Enter does on a keyboard, and on a controller A picks
   up and A puts down.
-- **The consoles are a new set, drawn for the room,** each a plain flat
-  drawing; the home consoles stand beside the one TV, and a handheld's own
-  screen glows.
+- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one plain
+  flat drawing per system on the foot of one 3:2 box. Every fill is an
+  `--emu-console-*` property that `app.css` sets from Design's tokens, so a
+  console follows the theme, and a handheld's screen is its own property, to
+  light while it plays. The home consoles stand beside the one TV.
 - **Covers keep one height and their own art's width,** as now.
 - **Without the helper, such as on the phone, Your Mac is not shown,** and
   Rux's Collection is the library to browse.
@@ -117,21 +122,20 @@ fun to use while staying plain. It replaces the front page that
 
 ## Questions
 
-- Later, should a controller plug into a console the same way, to set up
-  its buttons?
+None open.
 
 ## Tasks
 
 - [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
       button.
-- [ ] Draw the new console set.
-- [ ] Draw Rux's Collection and Your Mac from the real games, consoles and this Mac.
+- [ ] Draw the picked console's games under its name in `room.html`, then
+      Your Mac from this Mac's consoles and games.
 - [ ] Build the drag with pointer events, the menu, the plug, and the
       controller's pick up and put down.
 - [ ] Wire the moves to Download, Install, `R.carry.remove`, Play, Remove a
       game and the favourite mark, loading `carry.js` and `saves-rules.js`.
 - [ ] Add the wrong-console reaction and the sounds.
 - [ ] Lay it out on the phone without Your Mac.
-- [ ] Update `emu/README.md` and drop the front-page lines from
-      `docs/plans/emu-front-end.md`.
+- [ ] Make the room `index.html`, update `emu/README.md` and drop the
+      front-page lines from `docs/plans/emu-front-end.md`.

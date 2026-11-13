@@ -63,6 +63,14 @@ fun to use while staying plain. It replaces the front page that
   area.
 - **Favourites is a shelf you drag games onto,** from Rux's Games or the
   room, and off again back to Rux's Games; it is `emu_notes`' favourite mark.
+- **Picking up a game lights the consoles it fits and dims the rest,** so
+  where it goes shows before it is dropped.
+- **A game goes in as it would on the real console:** a cartridge drops into
+  its slot, a disc slides onto a tray that opens and shuts, then the screen
+  lights. A download fills its cover from the bottom as it comes.
+- **Each plugged-in console has a power button,** lit while it plays;
+  pressing it stops the game. The helper quits an emulator only from the
+  controller's + and − today, so the page needs a quit request from it.
 - **The wrong console says no and does nothing:** it shakes its head, buzzes
   and says a short line, such as "Doesn't fit. Try the SNES.", and the game
   goes back. An unplugged console says "Plug me in first."
@@ -89,14 +97,12 @@ fun to use while staying plain. It replaces the front page that
 
 - Later, should a controller plug into a console the same way, to set up
   its buttons?
-- Which interactions make the room most sensible and fun: a game lighting
-  up the consoles it fits as it is picked up, a power button on each console
-  to stop a game, a cartridge sliding in or a disc tray opening, a download
-  filling its cover from the bottom?
 
 ## Tasks
 
 - [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
+- [ ] Give Rux Emu Helper a quit request the page can send, for the power
+      button; the helper is the NAS session's file.
 - [ ] Draw the new console set.
 - [ ] Draw Rux's Collection and Your Mac from the real games, consoles and this Mac.
 - [ ] Build the drag with pointer events, the menu, the plug, and the

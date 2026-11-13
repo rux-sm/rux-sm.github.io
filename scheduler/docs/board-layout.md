@@ -122,10 +122,10 @@ Layer 01, fill the bus and driver tiles with the layer's accent.
 
 | Part | Holds |
 | :--- | :--- |
-| Name | As far as the first icon drawn: the whole 128px on a tile with none, and 84px beside both. An icon not drawn keeps its place while one before it is drawn, so each stands in one column down the rail, counted from the tile's end, and the first one drawn stands 8px after the name, as a bar's marks stand from its words |
+| Name | As far as the first icon drawn: the whole 128px on a tile with none, and 84px beside both. An icon not drawn takes no room, so the last drawn ends the line as a bar's alert ends its row, and the first one drawn stands 8px after the name, as a bar's marks stand from its words |
 | Hours | On a trip, a 2px line along the card's foot, clipped to its corners, filled from the start of the ten hours in green, amber under two; none until Samsara gives a clock |
-| Doing | 16px, what they are doing on a trip, 4px before the mark's place |
-| Mark | 16px, at the line's end, 4px after the doing icon |
+| Doing | 16px, what they are doing on a trip, at the line's end or 4px before the mark |
+| Mark | 16px, at the line's end, 4px after the doing icon where there is one |
 
 ## The driver's week
 

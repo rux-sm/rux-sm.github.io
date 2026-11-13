@@ -4199,10 +4199,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__meter[data-tone="warning"] { --scheduler-meter-ink: var(--scheduler-head-low); }
 .scheduler-avail__name:is([data-picked], :has(.rux--popover--open)) .scheduler-avail__meter { --scheduler-meter-track: var(--rux-border-subtle-selected-02); }
 /* What a driver is doing on their trip, then their worst mark, a status
-   solid in its colour, ending the line, each 4px after the one before. Each stands in its own column down the rail, counted from the
-   tile's end, as a bar's alert ends its row: one not drawn keeps its place
-   while any before it is drawn, and gives it up otherwise, so THE NAME
-   RUNS TO THE FIRST ICON DRAWN and a tile with none holds its name whole. */
+   solid in its colour, each 4px after the one before, the last drawn
+   ending the line as a bar's alert ends its row. One not drawn takes no
+   room, so THE NAME RUNS TO THE FIRST ICON DRAWN and a tile with none holds
+   its name whole. */
 .scheduler-avail__doing,
 .scheduler-avail__mark {
   display: inline-flex;
@@ -4212,13 +4212,11 @@ a.scheduler-tip__go { text-decoration: none; }
   margin-inline-start: var(--rux-spacing-02);
   block-size: var(--scheduler-row-h);
 }
-:is(.scheduler-avail__doing, .scheduler-avail__mark)[hidden] { visibility: hidden; }
+:is(.scheduler-avail__doing, .scheduler-avail__mark)[hidden] { display: none; }
 /* The first icon drawn, whichever it is, stands 8px after the name, as a
    bar's marks stand from its words: its own 4px and 4px the name keeps
    while the tile has an icon at all. */
 .scheduler-avail__name:has(> .scheduler-avail__doing:not([hidden]), > .scheduler-avail__mark:not([hidden])) > .scheduler-avail__who { margin-inline-end: var(--rux-spacing-02); }
-.scheduler-avail__name > .scheduler-avail__doing[hidden],
-.scheduler-avail__name:has(> .scheduler-avail__doing[hidden]) > .scheduler-avail__mark[hidden] { display: none; }
 .scheduler-avail__mark { color: var(--scheduler-head-low); }
 .scheduler-avail__mark[data-tone="error"] { color: var(--scheduler-head-critical); }
 /* What they are doing: driving in the trip bar's green, amber under two

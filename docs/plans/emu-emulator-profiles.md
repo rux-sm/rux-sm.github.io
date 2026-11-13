@@ -175,18 +175,20 @@ None open.
 
 ## Tasks
 
-In this order, so what can lose a save comes last and proves itself first:
+In this order, the iMac near the end, as the test of a Mac that starts
+with nothing:
 
-- [ ] Install Rux Emu Helper 17 on the iMac, make its Ryujinx folder a
-  real one in place of its link to the drive, and play a game there in
-  each emulator, which brings its saves from Supabase into its own folder.
-- [ ] Play a Switch game on a Mac whose Ryujinx has no firmware, which
-  brings the installed firmware from Supabase.
+- [ ] Install on the MacBook Pro the Azahar, PCSX2 and Dolphin that
+  Supabase holds, since the Emulators page says its three differ.
 - [ ] Leave a save file of no bytes out of the carry, which mGBA makes
   for a game that keeps no save.
-- [ ] Remove from the drive the save folders Supabase and each Mac now
-  hold, which is every folder under `saves`, and from the server's share
-  the same, once the iMac plays from its own.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Rewrite `emu/docs/emulator-setup.md`.
+- [ ] Set the iMac up from nothing but the site: Rux Emu Helper from
+  Supabase, its Ryujinx folder a real one in place of its link to the
+  drive, and a game played in each emulator, which brings its saves, BIOS
+  and firmware from Supabase into its own folders.
+- [ ] Remove from the drive the save folders Supabase and each Mac now
+  hold, which is every folder under `saves`, and from the server's share
+  the same, once the iMac plays from its own.

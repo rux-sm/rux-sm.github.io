@@ -80,13 +80,13 @@ surface.
 | Row | Holds | Height |
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
-| State | The speed in heading-compact-02 and Idle and Off in heading-compact-01, each on 18px, with mph or elapsed time under it in label-01. A lost signal has its own label, No signal on the state's two label lines, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 34px, 9px under the number |
-| Under the state | Low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal; the lift and sleeper are in the bus's tip | 16px, 9px under the state |
-| Fuel | Carbon's gas station at 16px, then 4px on a gauge of four 7px blocks, 2px apart, filled from the left, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical, the pump with them. No percent; the phone's column and a screen reader keep it | 18px, the bar's line 6, 4px under the row above |
+| State | The speed in heading-compact-02 and Idle and Off in heading-compact-01, each on 18px, with mph or elapsed time under it in label-01. A lost signal has its own label, No signal over how long ago it was seen, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 34px, centred between the number and the fuel, 19px from each |
+| Fuel | Carbon's gas station at 16px, then 4px on a gauge of four 7px blocks, 2px apart, filled from the left, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical, the pump with them. No percent; the phone's column and a screen reader keep it | 18px, the bar's line 6 |
 
 A bus with a tracker has a box round its state, its sides on the card's
-8px inset in line with the number, 4px clear of the number and the row
-under it and 4px from its words all round. It says whether the engine
+8px inset in line with the number and 4px from its words all round, so 14px
+clear of the number and the fuel. Low DEF is the bus's mark, and the lift
+and sleeper are in its tip. It says whether the engine
 runs, so the fuel stands outside it. Off or with no signal it is not
 drawn, and the state stands on the card on the number's edge. While the
 engine runs, idle or moving, it is the column's own surface, a step below
@@ -149,7 +149,7 @@ tile's parts from the foot up. The driver rows stay 40px in every view.
 
 | Lines | Bar, its padding | Bus row | Bus tile |
 | :--- | :--- | :--- | :--- |
-| 6 | 128px, 10px | 136px | Number, state, the row under it, and fuel on the last line |
+| 6 | 128px, 10px | 136px | Number, the state centred, and fuel on the last line |
 | 5 | 112px, 11px | 120px | Number, state and fuel, 12px apart |
 | 4 | 96px, 12px | 104px | Number, state and fuel, 8px apart |
 | 3 | 80px, 13px | 88px | Number and state |

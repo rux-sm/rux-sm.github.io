@@ -500,15 +500,15 @@
     const tileLive = o => ({ engine: 'off', engine_at: new Date(now - 6 * HOUR).toISOString(), fuel: 80, def: 60, fault: null, faults: [], ...o });
     const busTile = {
       id: 'bus-tile', title: 'The bus tile',
-      intro: 'A bus tile aligns with its trip bar. The number and alert share the first line, the fuel is a gauge from E to F under the state, and the foot shows equipment, low DEF or the age of a lost signal.',
+      intro: 'A bus tile aligns with its trip bar. The number and alert share the first line, the state stands centred under it, boxed while the engine runs, and the fuel stands on the last line behind its pump.',
       samples: [
-        { name: 'Moving', note: 'The speed, then the fuel in quarters from E to F, then the lift and sleeper, each 12px apart.', days: 3, tiles: true,
+        { name: 'Moving', note: 'The speed in green in its box, and the fuel in quarters on line 6.', days: 3, tiles: true,
           rows: [tile('b101', tileLive({ engine: 'on', engine_at: new Date(now - 2 * HOUR).toISOString(), mph: 57, fuel: 78 }),
             bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [crewed('b101')] })))] },
-        { name: 'A low DEF', note: 'Idling past 30 minutes in amber, a low tank in orange, and DEF on line 6 in the kit\'s place, the readings kept to lines 2 to 5.', days: 3, tiles: true,
+        { name: 'A low DEF', note: 'Idling past 30 minutes in amber, a low tank in orange, and a low DEF the bus\'s amber mark, its percent in the tip.', days: 3, tiles: true,
           rows: [tile('b106', tileLive({ engine: 'idle', engine_at: new Date(now - 34 * MIN).toISOString(), fuel: 22, def: 9 }),
             bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b106')] })))] },
-        { name: 'No signal', note: 'The last reported fuel stays on its gauge, the age sits at the foot, and the inspection alert stays red.', days: 3, tiles: true,
+        { name: 'No signal', note: 'The last reported fuel stays on its gauge, the age stands under No signal, and the inspection alert stays red.', days: 3, tiles: true,
           rows: [tile('b103', { engine: null, seen: new Date(now - 25 * MIN).toISOString(), fuel: 64,
             inspections: [{ status: 'unsafe', kind: 'post', at: new Date(now - HOUR).toISOString() }] },
             bar(trip({ customer: 'Harbor Tours', destination: 'Galveston, TX', buses: [crewed('b103')] })))] },

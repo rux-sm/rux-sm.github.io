@@ -469,7 +469,6 @@
 .scheduler-row-head__gauges { grid-row: 2 / -1; display: flex; flex-direction: column; justify-content: center; min-block-size: 0; }
 .scheduler-week[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__level,
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp),
-.scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__level[data-tank="D"] { display: none; }
 /* The state on one row: its reading beside its unit. Idle's and Off's time
    beside the word is wider than the column, so on one row it is the tip's,
    and the inspection is its date alone. */
@@ -763,10 +762,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__level[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); }
 .scheduler-row-head__level[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); }
-.scheduler-row-head__level[data-tank="D"][data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
-.scheduler-row-head__reading { display: flex; align-items: center; gap: var(--rux-spacing-01); color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
-.scheduler-row-head__reading { justify-content: space-between; }
-.scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: var(--rux-heading-compact-01-font-weight); }
 /* THE FUEL, the state's base, one gauge on every board: 4px under the
    state four blocks the kit row's width, 2px apart, lit to the nearest
    quarter of the tank and one while any is left, as bus-head.js counts
@@ -798,8 +793,6 @@ button.scheduler-row-head__num::after {
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 calc(var(--scheduler-tank-lit, 0) / 4 * 100%), var(--scheduler-head-track) 0);
   mask: repeating-linear-gradient(to right, #000 0 calc((100% - 3 * var(--rux-spacing-01)) / 4), transparent 0 calc((100% - 3 * var(--rux-spacing-01)) / 4 + var(--rux-spacing-01)));
 }
-/* A low DEF is its name and percent under the fuel. */
-.scheduler-row-head__level[data-tank="D"] { align-self: center; white-space: nowrap; }
 /* The whole head opens the tip, so the whole head answers the pointer, and
    stays marked while its tip is open: a head with a tile on its tile, as a
    trip bar is marked on itself, and a head with none, a phone's or a shut
@@ -883,7 +876,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    `scheduler/docs/board-layout.md` has the measures; its type and seats
    are the tip's. A phone's board keeps the narrow column above, so the
    parts only the tile shows are drawn here alone. */
-.scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def) { display: none; }
 .scheduler-row-head :is(.scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
 /* The tile, with no rule beside it: the tiles are the column's edge, and the
    board comes to rest on a day, so no trip stands cut by it. */
@@ -908,13 +901,13 @@ button.scheduler-row-head__num:focus { outline: none; }
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   --scheduler-box-clear: calc(var(--rux-spacing-02) + 1px);
-  /* Six lines' 108px: the number on the bar's first line, the state 4px
-     clear of the box's edge each side, the row under it, and the fuel on the
-     bar's last line, so the card's foot is the bar's 10px. */
+  /* Six lines' 108px: the number on the bar's first line, the fuel on its
+     last, and the state centred between them, with its box, so the card's
+     foot is the bar's 10px. */
+  --scheduler-state-clear: calc((4 * var(--scheduler-row-h) - var(--scheduler-row-h) - var(--scheduler-label-h)) / 2);
   grid-template-rows:
-    var(--scheduler-row-h) calc(var(--scheduler-box-clear) + var(--rux-spacing-02))
-    calc(var(--scheduler-row-h) + var(--scheduler-label-h)) calc(var(--scheduler-box-clear) + var(--rux-spacing-02))
-    var(--rux-spacing-05) var(--rux-spacing-02)
+    var(--scheduler-row-h) var(--scheduler-state-clear)
+    calc(var(--scheduler-row-h) + var(--scheduler-label-h)) var(--scheduler-state-clear)
     var(--scheduler-row-h);
   align-content: start;
   justify-items: start;
@@ -1008,7 +1001,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: inline-flex; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
 /* The speed is heading-compact-02 and Idle and Off heading-compact-01, on
    the row's height so the tile's rows stay put: a word with its minutes is
@@ -1078,7 +1071,6 @@ button.scheduler-row-head__num:focus { outline: none; }
    bar's last line. Grey, orange when low and red when critical, the pump
    with it. The percent is the phone's column's and a screen reader's. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="F"] { grid-row: 5; justify-self: stretch; align-self: center; margin: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__level[data-tank="F"] { grid-row: 7; }
 :where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-layer-03); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel {
   display: flex;
@@ -1097,12 +1089,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   inline-size: calc(4 * 7px + 3 * var(--rux-spacing-01));
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel[data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
-/* UNDER THE STATE, in the row the fuel leaves: a low DEF reading, or the
-   age of a lost signal. */
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] { grid-row: 5; display: flex; align-items: center; margin: 0; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="D"][data-level="critical"] { --scheduler-tank-ink: var(--rux-text-error); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__seen { grid-row: 5; display: block; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; color: var(--rux-text-secondary); white-space: nowrap; }
+/* A lost signal's age, under No signal as Off has its time, where the
+   view has the line. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__seen { display: block; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; color: var(--rux-text-secondary); white-space: nowrap; }
 /* A SHORTER VIEW DROPS FROM THE FOOT UP: five lines omit the foot, four
    close the gaps to 8px, three omit fuel, two put the state on line 2,
    the inspection its date alone, and one is the number and its alert. */
@@ -1111,7 +1100,6 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="3"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--rux-spacing-03) var(--scheduler-state-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h) var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="1"] .scheduler-row-head { grid-template-rows: var(--scheduler-row-h); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:not([data-bar-rows="6"]) .scheduler-row-head .scheduler-row-head__level[data-tank="D"] { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll:is([data-bar-rows="3"], [data-bar-rows="2"], [data-bar-rows="1"]) .scheduler-row-head__level { display: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; block-size: var(--scheduler-row-h); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="2"] .scheduler-row-head .scheduler-row-head__insp-word { display: none; }

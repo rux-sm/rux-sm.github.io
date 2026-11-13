@@ -8,13 +8,10 @@
    - For a bus Samsara answers for, in whatever week is shown, its state:
      the speed and mph, green while moving, or Idle, Off or a dash and how
      long, amber past SPEEDING or IDLE_MS. The fuel is one gauge of four
-     blocks, over its percent on the phone's column and between E and F on
-     the full tile. Fuel
-     is grey until low, orange, or
-     critical, red. DEF is drawn only while it is low, since a normal DEF
-     needs nothing of the office. The full tile labels lost signal and
-     shows the age at its foot when there is room, and on six lines boxes
-     the state and the fuel, green while the engine runs and dark while off.
+     blocks, over its percent on the phone's column and behind a pump on
+     the full tile. Fuel is grey until low, orange, or critical, red. The
+     full tile labels lost signal with the age under it when there is room,
+     and on six lines boxes the state while the engine runs.
      Where the bus is, when it was last seen and its inspection are the
      number's toggletip's.
    - For a bus Samsara does not answer for: its inspection expiry, in the
@@ -26,8 +23,9 @@
      one has expired, as a driver's head marks their licence and medical
      card; the engine's lamp, amber or red, whose codes lead their line
      in the tip; an inspection in Samsara that marked the bus unsafe,
-     red, until a mechanic resolves it there; and maintenance Samsara counts
-     overdue, amber. The words of each are the number's toggletip's. The
+     red, until a mechanic resolves it there; maintenance Samsara counts
+     overdue, amber; and DEF while it is low, amber, or critical, red, since
+     a normal DEF needs nothing of the office. The words of each are the number's toggletip's. The
      kit holds them worst first; the Mac's tile shows the worst one's tone
      as its alert, and a phone's narrow column shows the papers' mark with
      the out-of-service mark.
@@ -138,7 +136,12 @@
     const under = figure ? 'mph' : state.under;
     if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
     box.appendChild(speed);
-    if (state.engine === 'none') box.appendChild(el('span', 'scheduler-row-head__no-signal', 'No signal'));
+    if (state.engine === 'none') {
+      // The label and, under it as Off has its time, how long since the bus was seen.
+      const lost = el('span', 'scheduler-row-head__no-signal', 'No signal');
+      if (state.under) lost.appendChild(el('span', 'scheduler-row-head__seen', `${state.under} ago`));
+      box.appendChild(lost);
+    }
     return box;
   }
 
@@ -159,24 +162,17 @@
     return box;
   }
 
-  // One tank. Fuel: its percent and meter. DEF, drawn only while low: its name and
-  // percent as a tag.
-  function level(pct, tank, stale = false) {
-    const lv = levelOf(pct, tank);
+  // The fuel's tank: its readout, and its words for a screen reader.
+  function fuelLevel(pct, stale = false) {
+    const lv = levelOf(pct, FUEL);
     const g = el('span', 'scheduler-row-head__level');
     if (lv) g.dataset.level = lv;
-    g.dataset.tank = tank.letter;
-    const name = tank === FUEL && stale ? 'Last reported fuel' : tank.word;
+    g.dataset.tank = FUEL.letter;
+    const name = stale ? 'Last reported fuel' : FUEL.word;
     const words = pct == null ? `${name} not read yet` : `${name} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
-    if (tank === FUEL) {
-      g.appendChild(fuelReadout(pct));
-      return g;
-    }
-    const reading = el('span', 'scheduler-row-head__reading');
-    reading.append(el('span', null, tank.word), el('span', 'scheduler-row-head__level-pct', pct == null ? '\u2013' : `${pct}%`));
-    g.appendChild(reading);
+    g.appendChild(fuelReadout(pct));
     return g;
   }
 
@@ -223,7 +219,8 @@
     const top = head.querySelector(':scope > .scheduler-row-head__top');
     if (!top) return;
     let kit = top.querySelector(':scope > .scheduler-row-head__kit');
-    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due)').forEach(m => m.remove());
+    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def)').forEach(m => m.remove());
+    const def = live?.def != null ? levelOf(live.def, DEF) : null;
     const marks = [];
     if (papers.length) {
       const error = papers.some(p => p.tone === 'error');
@@ -233,6 +230,8 @@
     if (lamp) marks.push(['scheduler-row-head__lamp', lamp.tone, '#m-car_repair-fill', [lamp.word, ...(live?.faults ?? [])].join('. ')]);
     if (unsafe) marks.push(['scheduler-row-head__unsafe', unsafe.tone, '#i-warning--filled', unsafe.word]);
     if (overdue) marks.push(['scheduler-row-head__due', overdue.tone, '#i-warning--alt--filled', overdue.word]);
+    if (def === 'low' || def === 'critical') marks.push(['scheduler-row-head__def', def === 'critical' ? 'error' : 'warning',
+      def === 'critical' ? '#i-warning--filled' : '#i-warning--alt--filled', `DEF ${live.def}%, ${def}`]);
     if (!marks.length) {
       if (kit && !kit.childElementCount) kit.remove();
       return;
@@ -286,18 +285,12 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      /* The box the full tile draws around the state and the fuel, first so
-         it lies under them; app.css's, and nothing elsewhere. */
+      /* The box the full tile draws around the state, first so it lies
+         under it; app.css's, and nothing elsewhere. */
       const box = el('span', 'scheduler-row-head__box');
       box.setAttribute('aria-hidden', 'true');
       gauges.append(box, dial(shown, state));
-      if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL, state.engine === 'none'));
-      if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
-      else if (state.engine === 'none' && state.under) {
-        const seen = el('span', 'scheduler-row-head__seen', `${state.under} ago`);
-        seen.setAttribute('aria-hidden', 'true');
-        gauges.appendChild(seen);
-      }
+      if (shown.fuel != null || shown.waiting) gauges.appendChild(fuelLevel(shown.fuel, state.engine === 'none'));
       body.appendChild(gauges);
     } else {
       const insp = inspection(bus);

@@ -6953,11 +6953,30 @@ html[data-scheduler-takeover] {
   letter-spacing: var(--rux-body-01-letter-spacing);
   overflow-wrap: anywhere;
 }
+/* A leg's first line leads with its spot day and time in the primary
+   colour, since Departures is read down its times, and ends in what it has
+   left, its tag against the arrow. */
+.scheduler-departures__spot { color: var(--rux-text-primary); }
+.scheduler-departures__leg--ready .scheduler-departures__spot { color: var(--rux-text-secondary); }
+.scheduler-departures__tag.scheduler-departures__left { margin-inline-start: auto; }
+/* A leg's third line, who it is for: its customer and the booking contact,
+   quiet at the first line's size, 4px under its place and cut short as the
+   place is. */
+.scheduler-departures__for {
+  margin-block-start: var(--rux-spacing-02);
+  overflow: hidden;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* A ready leg reads quiet, as a done task does, so the legs still to prep
    stand out; its tag keeps its green, which is what says it is ready. */
 .scheduler-departures__leg--ready :is(.scheduler-to-do__who, .scheduler-to-do__what) { color: var(--rux-text-secondary); }
 /* Open, the row's words say all they hold, wrapping at the row's width. */
-.scheduler-to-do .rux--accordion__item--active > .rux--accordion__heading .scheduler-to-do__what { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
+.scheduler-to-do .rux--accordion__item--active > .rux--accordion__heading :is(.scheduler-to-do__what, .scheduler-departures__for) { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
 /* The open row: who it is about, its trip and its detail, 8px apart, as
    one group, then its buttons 16px under them, Carbon's two steps. Its
    detail is Design's list, a fact to an item, in the primary colour, since
@@ -7067,7 +7086,7 @@ html[data-scheduler-takeover] {
 .scheduler-departures__line > .rux--link + .rux--link { margin-inline-start: 0; }
 .scheduler-departures__mark { flex: none; }
 :is(.scheduler-departures__line--done, .scheduler-departures__who--done) .scheduler-departures__mark { color: var(--rux-support-success); }
-.scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-support-error); }
+.scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-icon-secondary); }
 :is(.scheduler-departures__line--warn, .scheduler-departures__who--warn) .scheduler-departures__mark { color: var(--rux-support-warning); }
 .scheduler-departures__what { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The mark of a step still to do is a button that marks it done by hand: at

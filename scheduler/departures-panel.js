@@ -9,8 +9,9 @@
    Monday. Each leg is a row of the list that opens: an item of Design's
    accordion. Closed, as every leg is when the list opens until one is
    pressed, it is three
-   lines, as a task is on Tasks: its customer and its spot time; its place;
-   then how many lines it has left or Ready in a tag, and the trip's number.
+   lines: its spot time and the trip's number, with how many lines it has
+   left or Ready in a tag at the line's end; its place; then its customer
+   and the booking contact.
    Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
@@ -280,7 +281,8 @@
   panel.appendChild(body);
 
   // -- drawing --------------------------------------------------------------
-  const MARKS = { done: '#m-check_circle-fill', todo: '#m-close', warn: '#m-warning-fill' };
+  // A step still to do is an empty circle, the done one's tick not yet in it; the warning alone says a problem.
+  const MARKS = { done: '#m-check_circle-fill', todo: '#m-radio_button_unchecked', warn: '#m-warning-fill' };
   const SAID = { done: 'Done', todo: 'To do', warn: 'Needs attention' };
   const keyOf = page => `${page.trip.id}:${page.leg}`;
   // The link names the page's leg, so the board opens that leg's bar and no other.
@@ -503,12 +505,15 @@
   }
 
   /* A leg, as a row of the list around an item of Design's accordion, whose
-     script opens and shuts it. The heading is the closed leg, two lines
-     and Design's arrow, laid out as a task's are: what is left in its tag,
-     its spot day and time, Tomorrow 9:00a, with Spot said for a reader, and
-     the trip's number, with Trip said; then its place. Open, its customer,
-     and on a split trip which leg, comes first. A ready leg reads quiet, so
-     the legs still to prep stand out. */
+     script opens and shuts it. The heading is the closed leg, three lines
+     and Design's arrow. The first leads with its spot day and time,
+     Tomorrow 9:00a, with Spot said for a reader, since the list is read
+     down its times, or the day and No spot time where its stops have none,
+     then the trip's number, with Trip said, and what is left in its tag at
+     the line's end; then its place; then who it is for, its customer and
+     the booking contact. Open, a split
+     trip says which leg first. A ready leg reads quiet, so the legs still
+     to prep stand out. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
@@ -520,21 +525,25 @@
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
     const context = el('div', 'scheduler-to-do__context');
-    context.appendChild(leftTag(page.left));
     const at = leavesAt(page);
+    const when = el('span', 'scheduler-to-do__when scheduler-departures__spot');
     if (at) {
       const [h, m] = at.time.split(':').map(Number);
-      const when = el('span', 'scheduler-to-do__when');
       when.append(el('span', 'rux--visually-hidden', 'Spot '), `${dayWord(at.day)} ${clock(h, m)}`);
-      context.appendChild(when);
-    }
+    } else when.textContent = [page.day ? dayWord(page.day) : null, 'No spot time'].filter(Boolean).join(DOT);
+    context.appendChild(when);
     if (page.trip.trip_ref) {
       const number = el('span', 'scheduler-to-do__number');
       number.append(el('span', 'rux--visually-hidden', 'Trip '), `#${page.trip.trip_ref}`);
       context.appendChild(number);
     }
+    const left = leftTag(page.left);
+    left.classList.add('scheduler-departures__left');
+    context.appendChild(left);
     const what = el('div', 'scheduler-to-do__what', placeName(page.trip.destination));
-    title.append(context, what);
+    const booker = page.trip.contacts?.name || page.trip.booking_contact_name;
+    const whom = el('div', 'scheduler-departures__for', [page.trip.customer || 'No customer', booker].filter(Boolean).join(DOT));
+    title.append(context, what, whom);
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
     heading.append(arrow, title);
@@ -543,8 +552,8 @@
     const content = el('div', 'rux--accordion__content scheduler-departures__page');
     content.id = `scheduler-departures-leg-${key.replace(':', '-')}`;
     heading.setAttribute('aria-controls', content.id);
-    const who = el('div', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT));
-    content.append(who, tripBlock(page), ...page.buses.map(b => busBlock(page, b)));
+    if (page.legName) content.appendChild(el('div', 'scheduler-to-do__who', page.legName));
+    content.append(tripBlock(page), ...page.buses.map(b => busBlock(page, b)));
     if (page.missing) content.appendChild(missingBlock(page));
     wrapper.appendChild(content);
     li.append(heading, wrapper);

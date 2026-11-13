@@ -275,17 +275,16 @@
     return formatOf(undefined, { month: 'short', day: 'numeric' }).format(new Date(at));
   };
   const ageMark = at => el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
-  /* WHAT IS A PROBLEM ON THE BOARD: a bus that does not fit, more passengers
-     than seats, a seat with no driver inside fourteen days of departure, a
-     driver who said no or must be told of a change, and a
-     confirmed trip with nothing paid, no PO, deposit or payment, which is
-     `unpaid`. The rest of the paperwork the office works through on every
-     trip -- a confirmation, itinerary or balance waited on, the trip
-     contact, a hotel or an HOS form -- is the card's to list and the Tasks
-     list's to ask for, and marks nothing here, or every bar would carry a
-     warning. */
+  /* WHAT IS A PROBLEM ON THE BOARD: what can make the trip go wrong -- a bus
+     that does not fit, more passengers than seats, a seat with no driver
+     inside fourteen days of departure, a driver who said no, must be told of
+     a change or is short on hours, and a partner not confirmed. The
+     paperwork the office works through on every trip -- the trip contact, a
+     confirmation, itinerary, PO, deposit, payment or balance waited on, a
+     hotel or an HOS form -- is the card's to list and the Tasks list's to
+     ask for, and marks nothing here, or most bars would carry a warning. */
   const PROBLEM_SPOTS = new Set(['seats', 'driver']);
-  const isProblem = a => a.row === 'scheduler-card__error' || PROBLEM_SPOTS.has(a.spot) || a.unpaid;
+  const isProblem = a => a.row === 'scheduler-card__error' || PROBLEM_SPOTS.has(a.spot);
   /* A confirmed trip with a price and nothing in hand: no PO, no deposit and
      no payment, as billing.js reads it. A placeholder and a cancelled trip
      are owed nothing. */
@@ -296,9 +295,6 @@
   };
   // The waits that are money: the PO, deposit or payment before the trip leaves, the balance after.
   const MONEY = new Set(['po', 'balance']);
-  /* BUT A TRIP'S CONTACT AND ITINERARY ARE A PROBLEM, whatever day it
-     leaves and confirmed or not: still missing, they put up the warning sign
-     too. A placeholder, not quoted yet, wears no problem at all. */
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at
      the end, is left off, since nearly every trip is in Texas and the two
      letters cut the place's own name short. Another state stays. What was
@@ -489,6 +485,10 @@
       if (!asks && !money) continue;
       list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w], unpaid: money });
     }
+    // The itinerary is a need until it is on the trip, whether or not a follow-up asks for it.
+    const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
+    if (!list.some(a => a.spot === 'itinerary') && !trip.itinerary_not_needed && !window.SchedulerTripShape.itineraryFor(trip, firstLeg))
+      list.push({ row: 'scheduler-card__asks', go: 'itinerary', spot: 'itinerary', words: WAIT_WORDS.itinerary });
     if (!dayOfContact(trip, facts?.leg) && !trip.contact_not_needed) {
       list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
     }
@@ -501,15 +501,8 @@
     return list;
   }
 
-  function problemsOf(trip, facts, leg) {
-    if (window.SchedulerCloseOut.isBack(trip)) return [];
-    const list = alertsOf(trip, facts).filter(isProblem);
-    if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed)
-      list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
-    const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
-    if (!trip.itinerary_not_needed && !window.SchedulerTripShape.itineraryFor(trip, firstLeg))
-      list.push({ row: 'scheduler-card__asks', go: 'itinerary', spot: 'itinerary', words: WAIT_WORDS.itinerary });
-    return list;
+  function problemsOf(trip, facts) {
+    return alertsOf(trip, facts).filter(isProblem);
   }
 
   // A rolling fourteen-day departure window, independent of the week displayed.
@@ -603,7 +596,7 @@
     const facts = { leg: leg.key, needs, misfits, apart, overSeated, emptySeats, partnerUnconfirmed, driverAlerts, tells };
 
     // One structured list feeds the badge and the card's Alerts group.
-    facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
+    facts.problems = placeholder ? [] : problemsOf(trip, facts);
     /* A later bus wears only its own problems, a bus that does not fit, a
        driver to tell or a partner to confirm; the trip's are on its first
        bus, and every bus's card lists them all. */

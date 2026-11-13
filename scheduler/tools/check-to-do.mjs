@@ -91,8 +91,8 @@ expect('a leg leaving in three days is not leaving soon, but its missing contact
   said(rows([{ ...good, start_date: day(3), end_date: day(3) }], { factsOf: () => ({ ...full, seatsOpen: 1 }), contactOf: () => false })),
   ['missing:a:l1 Trip contact missing']);
 
-expect('a missing contact is asked for from seven days out, not eight',
-  [7, 8].map(n => said(rows([{ ...good, start_date: day(n), end_date: day(n) }], { factsOf: () => full, contactOf: () => false }))),
+expect('a missing contact is asked for from 30 days out, not 31',
+  [30, 31].map(n => said(rows([{ ...good, start_date: day(n), end_date: day(n) }], { factsOf: () => full, contactOf: () => false }))),
   [['missing:a:l1 Trip contact missing'], []]);
 
 const clash = ['Bus 897: On trip Austin', 'Rigo: Time off'];

@@ -20,7 +20,7 @@
      Declined      a leg leaving within 30 days a driver said no to
      Tell          a leg leaving within 30 days that changed for a driver
                    since they accepted, as driver-job.js reads it
-     Missing       a leg leaving within a week whose trip has no trip contact
+     Missing       a leg leaving within 30 days whose trip has no trip contact
                    or no itinerary, as checklist.js decides, an itinerary a
                    follow-up already asks for left to the follow-up
 
@@ -58,8 +58,9 @@
   const SOON_DAYS = 2;
   const SHORT_DAYS = 30;
   const TIMES_DAYS = 7;
-  // A trip contact or itinerary still missing asks this many days ahead.
-  const MISSING_DAYS = 7;
+  // A trip contact or itinerary still missing asks this many days ahead, as
+  // early as a clash, since the bars leave them to this list.
+  const MISSING_DAYS = 30;
   const MISSING_ITEMS = ['contact', 'itinerary'];
   // The checklist groups a leaving-soon row reads; the rest is the Departures list's.
   const SOON_GROUPS = ['Customer', 'Buses'];
@@ -177,7 +178,7 @@
 
       for (const leg of Checklist.legsOf(trip)) {
         if (!within(legDay(trip, leg), SOON_DAYS)) continue;
-        // The missing rule asks for the contact and itinerary over the whole week before.
+        // The missing rule asks for the contact and itinerary over the 30 days before.
         const said = new Set([...MISSING_ITEMS,
           ...(waits.includes('confirmation') ? ['confirmed'] : []),
           ...(waits.includes('itinerary') ? ['itinerary'] : []),

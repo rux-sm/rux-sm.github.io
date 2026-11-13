@@ -266,11 +266,11 @@ expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDrive
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
   'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both', 'Nothing paid'];
-// A missing trip contact warns whatever day the sample leaves.
-expect('a problem wears the alert badge in its colour, a missing trip contact too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
-  null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
+// Paperwork, the trip contact and the money among it, is the card's and the Tasks list's, never the badge's.
+expect('a problem wears the alert badge in its colour, and paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
+  null, null, 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: New pickup: Lakeview High School (was Riverside Middle School)', null, 'red Coach needed', 'red Sleeper needed',
-  'red Sleeper needed · Trip contact missing', 'amber PO, deposit or payment pending']);
+  'red Sleeper needed', null]);
 expect('a later bus of a leg wears only its own problems: a misfit or a driver, not the trip\'s',
   alerts.map(n => mark(drawn('alerts', n, true)[0])), [
   null, null, null, 'amber Rosa declined', 'amber Tell Ben: New pickup: Lakeview High School (was Riverside Middle School)', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
@@ -303,23 +303,24 @@ expect('alert buttons expose their purpose and expansion state',
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => {
     const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
     return [badge.tagName, badge.getAttribute('aria-label').startsWith('Alerts:'), badge.getAttribute('aria-expanded')];
-  }), Array.from({ length: 8 }, () => ['BUTTON', true, 'false']));
+  }), Array.from({ length: 6 }, () => ['BUTTON', true, 'false']));
 // Four months off, with an update written today: the follow-up does not ask, and the money still does.
 const far = new Date(Date.now() + 120 * 864e5).toISOString().slice(0, 10);
 const unpaidTrip = (more = {}) => ({ id: 'np', confirmed: true, quoted_price: 4885, contract_status: 'Signed', start_date: far, end_date: far,
   trip_updates: [{ id: 'nu', created_at: new Date().toISOString(), kind: 'update', body: 'Quote signed' }],
   trip_contacts: [{ position: 1, name: 'Coach Ortiz', leg_id: null }], itinerary_not_needed: true, trip_assignments: [], trip_stops: [], ...more });
 const money = t => Bar.alertsOf(t, {}).filter(a => a.unpaid).map(a => a.words);
-expect('a confirmed trip with nothing paid is a problem however far off it leaves, until a PO, deposit or payment is in',
+expect('a confirmed trip with nothing paid is a need on its card however far off it leaves, until a PO, deposit or payment is in',
   [money(unpaidTrip()), money(unpaidTrip({ deposit_amount: 500, trip_payments: [{ amount: 500, date: far }] })),
     money(unpaidTrip({ po_received: true, po_amount: 4885 })), money(unpaidTrip({ confirmed: false })), money(unpaidTrip({ quoted_price: 0 }))],
   [['PO, deposit or payment pending'], [], [], [], []]);
 // Four months off, with no trip contact and no itinerary.
 const bare = (more = {}) => unpaidTrip({ trip_contacts: [], itinerary_not_needed: false, po_received: true, po_amount: 4885, ...more });
-const missing = t => Bar.problemsOf(t, {}, Week.legsOf(t)[0]).map(a => a.words).filter(w => /contact|tinerary/.test(w));
-expect('a trip\'s missing contact and itinerary are problems however far off it leaves, confirmed or not, until marked not needed',
-  [missing(bare()).length, missing(bare({ confirmed: false })).length, missing(bare({ contact_not_needed: true, itinerary_not_needed: true }))],
-  [2, 2, []]);
+const missing = t => Bar.alertsOf(t, {}).map(a => a.words).filter(w => /contact|tinerary/.test(w));
+expect('a trip\'s missing contact and itinerary are needs on its card however far off it leaves, confirmed or not, until marked not needed, and never problems',
+  [missing(bare()).length, missing(bare({ confirmed: false })).length, missing(bare({ contact_not_needed: true, itinerary_not_needed: true })),
+    Bar.problemsOf(bare(), {}).length],
+  [2, 2, [], 0]);
 expect('same section toggles closed, another switches, and closed cards open',
   [Bar.opensSection(true, 'needs', 'needs'), Bar.opensSection(true, 'needs', 'updates'), Bar.opensSection(false, 'updates', 'updates')],
   [false, true, true]);
@@ -398,6 +399,9 @@ expect('a trip with nothing to put right says so, and Alerts holds no update or 
 const paperTrip = data.sections.find(s => s.id === 'alerts').samples.find(s => s.name === 'A hotel to book').rows[0].bars[0].trip;
 const [paperBar] = drawn('alerts', 'A hotel to book');
 expect('paperwork does not turn into a counted alert in the tip', tipHead(Tips.card(paperTrip, paperBar, 'needs', tipBoard({ tip: {} }))), ['Other needs', '1']);
+expect('Updates is led by the trip\'s other needs, so a bar with no alert still shows its paperwork',
+  (t => [...t.querySelectorAll('.scheduler-tip__head .scheduler-tip__name')].map(n => n.childNodes[0].textContent).slice(0, 2).concat(t.querySelectorAll('.scheduler-tip__need').length))(Tips.card(paperTrip, paperBar, 'updates', tipBoard({ tip: {} }))),
+  ['Other needs', 'Updates', 1]);
 const updatesTip = tipDrawn('Updates');
 const footOf = tip => { const f = tip.children.at(-1); return [f.classList.contains('rux--toggletip-actions'), f.children.map(c => [c.tagName, c.textContent, c.dataset.cardAction ?? c.dataset.editAct])]; };
 expect('Updates heads with its count, each update its words over who wrote it and how long ago with a pencil at its end, and Carbon\'s footer with Add update',

@@ -754,7 +754,9 @@
      icon and its words, the words a Carbon link to where it is put right; a
      reminder of a trip leaving soon says when at its end. Close-out, opened
      from a trip that is back, is the post-trip entry and then each thing
-     close-out still asks, a link as an alert's words are. An update
+     close-out still asks, a link as an alert's words are. Updates is led by
+     the trip's other needs, the paperwork the bar marks nothing for, so a
+     press anywhere on a bar shows what the trip still needs. An update
      is its words over who wrote it and how long ago, with a pencil at its
      end that opens it in its place to change or delete. The footer acts:
      Show all and Add update, which opens a box in its place, where Save or
@@ -836,6 +838,16 @@
     const all = updatesOf(trip);
     const { opened, editing, quick } = board.editor(trip);
     tip.classList.add('scheduler-tip--updates');
+    const facts = bar ? board.facts(bar) : null;
+    const needs = alertsOf(trip, facts).filter(a => !(facts?.problems ?? []).some(p => p.words === a.words && p.go === a.go));
+    if (needs.length) {
+      tip.appendChild(head('Other needs', needs.length));
+      for (const a of needs) {
+        const row = el('div', 'scheduler-tip__alert scheduler-tip__need');
+        row.append(svgUse('#i-circle-dash', '16', '0 0 32 32'), goLink(a.words, a.go, a.spot));
+        tip.appendChild(row);
+      }
+    }
     tip.appendChild(head('Updates', all.length));
     if (!all.length) tip.appendChild(el('p', 'scheduler-tip__none', 'No updates yet.'));
     const by = u => [u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'), ageShort(u.created_at),

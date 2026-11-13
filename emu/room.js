@@ -4,18 +4,27 @@
    Your Mac is one scene, shown where Rux Emu Helper answers. The games this
    Mac holds stand on a board, one still arriving under a veil that lifts as
    it comes, and the favourites on a shelf above, one this Mac lacks dimmed.
-   A TV and the console of each game this Mac holds stand on the same board
-   over a power strip: plugged in where this Mac has its emulator, and
-   unplugged and dimmed, with its game, where it has not. A line says the helper runs and where the games come from,
+   A TV and this Mac's consoles stand on the same board over a power strip.
+   Which consoles stand there, and which of them are plugged in, is this
+   Mac's room, kept on its row in Supabase; until one is moved, the console
+   of each game this Mac holds stands there. A console is plugged in only
+   where this Mac has its emulator too. Its plug is a button: plugging in
+   sets its emulator up on this Mac, and unplugging takes the emulator off,
+   its saves and settings kept, once no other plugged-in console uses it. A line says the helper runs and where the games come from,
    and opens Status; beside it is how much room is free.
 
    Rux's Collection is a row of consoles, one for each system with games,
-   each its drawing from brand/consoles.svg over its name and count. Pressing
-   a console picks it, and its games show beneath as covers in one row, A to
+   each its drawing from brand/consoles.svg over its name and count; one in
+   the room is outlined and faint, the place it goes back to, and one whose
+   emulator this Mac has shows a green light. Pressing a console, there or in
+   the room, picks it: its name, count and how it stands show beneath, with
+   Bring to Your Mac or Put back, over its games as covers in one row, A to
    Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
    game-panel.js.
 
-   A game is dragged with the pointer, where the helper answers. A word
+   A game or a console is dragged with the pointer, where the helper
+   answers: a console onto Your Mac comes in, and an unplugged one dragged
+   back onto Rux's Collection goes back. A word
    follows it and says what letting go will do, and the place it would land
    lights: onto Your Mac downloads it, onto its console or the TV plays it,
    downloading it first if it must, onto the Favourites shelf marks it, and
@@ -45,6 +54,14 @@
   let free = null;
   // The console whose games show.
   let pick = null;
+  // This Mac's name on its row in Supabase, and its room as kept there: each
+  // console standing in it, true while plugged in; null until one is moved.
+  let macName = null;
+  let room = null;
+  // Consoles whose emulator is being set up now.
+  const settingUp = new Set();
+  // The consoles standing in the room as drawn, each 'on', 'off' or 'setting'.
+  let stand = new Map();
 
   const keyOf = g => `${g.system}/${g.title}`;
   const countOf = n => `${n} ${n === 1 ? 'game' : 'games'}`;
@@ -61,6 +78,18 @@
   const wanted = new Set();
   // How a game stands on this Mac; one leaving it is away already.
   const standing = g => (leaving.has(keyOf(g)) ? { state: 'away', total: 0, done: 0 } : stands(g));
+  const emulatorOf = system => emulators?.systems?.[system]?.emulator ?? null;
+  // The games this Mac holds or is being sent, each with how it stands.
+  const mineNow = () => games.map(g => [g, standing(g)]).filter(([, st]) => st.state === 'held' || st.state === 'arriving');
+  // The room as it would be kept: its own, else the console of each game this Mac holds, plugged in.
+  const wishes = () => ({ ...(room ?? Object.fromEntries(mineNow().map(([g]) => [g.system, true]))) });
+  // Each console in the room, in the collection's order. One is on where it
+  // was left plugged in and this Mac has its emulator.
+  const consolesNow = () => {
+    const wish = wishes();
+    return new Map(Object.keys(R.SYSTEMS).filter(sys => sys in wish)
+      .map(sys => [sys, settingUp.has(sys) ? 'setting' : wish[sys] && plays(sys) ? 'on' : 'off']));
+  };
 
   const SVG = 'http://www.w3.org/2000/svg';
   const svgOf = (cls, box) => {
@@ -102,22 +131,38 @@
   }
 
   // YOUR MAC -----------------------------------------------------------------
-  // A console over its socket. Plugged in, its plug sits in the strip and its
-  // light is on; unplugged, the plug hangs loose beside the socket.
-  function unit(system) {
-    const on = plays(system);
-    const li = el('li', on ? 'emu-unit' : 'emu-unit emu-unit--off');
+  // A console over its socket. Its drawing is a button that picks it and is
+  // dragged; its plug is a button too. Plugged in, the plug sits in the strip
+  // and its light is on; unplugged, the plug hangs loose beside the socket;
+  // while its emulator is set up, the light blinks.
+  const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting' };
+  function unit(system, state) {
+    const called = R.systemName(system);
+    const li = el('li', UNIT[state]);
     li.dataset.system = system;
-    li.title = on ? `${R.systemName(system)}, plugged in` : `${R.systemName(system)}, unplugged: its emulator is not on this Mac`;
-    const plug = svgOf('emu-plug', '0 0 44 42');
-    plug.innerHTML = '<rect class="emu-plug__socket" x="15" y="4" width="14" height="6" rx="1"/>'
-      + `<path class="emu-plug__cord" d="${on ? 'M22 27 C 22 38, 39 38, 39 14' : 'M19 35 C 24 43, 39 30, 39 14'}"/>`
+    const body = el('button', 'emu-unit__console');
+    body.type = 'button';
+    body.dataset.console = system;
+    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'plugged in' : state === 'setting' ? 'being set up' : 'unplugged'}`);
+    body.append(consoleOf(system));
+    body.addEventListener('click', () => choose(system));
+    const plug = el('button', 'emu-plug');
+    plug.type = 'button';
+    plug.disabled = state === 'setting';
+    plug.title = state === 'on' ? `Unplug the ${called}` : `Plug in the ${called}`;
+    plug.setAttribute('aria-label', plug.title);
+    const drawing = svgOf('emu-plug__drawing', '0 0 44 42');
+    drawing.innerHTML = '<rect class="emu-plug__socket" x="15" y="4" width="14" height="6" rx="1"/>'
+      + `<path class="emu-plug__cord" d="${state === 'on' ? 'M22 27 C 22 38, 39 38, 39 14' : 'M19 35 C 24 43, 39 30, 39 14'}"/>`
       + '<g class="emu-plug__body"><rect class="emu-plug__prong" x="17" y="8" width="2.5" height="7"/><rect class="emu-plug__prong" x="24.5" y="8" width="2.5" height="7"/><rect x="14" y="14" width="16" height="13" rx="2"/></g>';
+    plug.append(drawing);
+    plug.addEventListener('click', () => (state === 'on' ? unplug : plugIn)(system));
     const name = el('span', 'emu-unit__name');
-    name.append(el('i', 'emu-led'), document.createTextNode(R.systemName(system)));
+    name.append(el('i', 'emu-led'), el('span', null, state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
     const under = el('span', 'emu-unit__under');
     under.append(plug, name);
-    li.append(consoleOf(system), under);
+    if (state === 'off') under.append(el('span', 'emu-unit__tip', 'Plug in'));
+    li.append(body, under);
     return li;
   }
 
@@ -132,10 +177,10 @@
       if (standing(g).state !== 'held') { li.firstChild.classList.add('emu-cover--away'); li.firstChild.title = `${g.title}, not on this Mac`; }
       return li;
     }));
-    const mine = games.map(g => [g, standing(g)]).filter(([, s]) => s.state === 'held' || s.state === 'arriving');
-    const here = Object.keys(R.SYSTEMS).filter(s => mine.some(([g]) => g.system === s));
-    $('emu-stand').replaceChildren(...here.map(unit));
-    $('emu-stand').classList.toggle('emu-stand--empty', !here.length);
+    const mine = mineNow();
+    stand = consolesNow();
+    $('emu-stand').replaceChildren(...[...stand].map(([system, state]) => unit(system, state)));
+    $('emu-stand').classList.toggle('emu-stand--empty', !stand.size);
     $('emu-onmac').replaceChildren(...mine.map(([g, s]) => {
       const li = coverItem(g, true);
       const b = li.firstChild;
@@ -143,9 +188,9 @@
         const veil = el('span', 'emu-cover__veil');
         veil.style.blockSize = `${Math.round(100 - (s.total ? s.done / s.total : 0) * 100)}%`;
         b.append(veil);
-      } else if (!plays(g.system)) {
+      } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
-        b.title = `${g.title}. Needs the ${R.systemName(g.system)}.`;
+        b.title = stand.has(g.system) ? `${g.title}. Plug in the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
       }
       return li;
     }));
@@ -153,15 +198,23 @@
   }
 
   // RUX'S COLLECTION ---------------------------------------------------------
-  // The picked console is pressed and named, with its count and how it
-  // stands on this Mac, over its games.
+  // The picked console is pressed and named, with its count, how it stands
+  // on this Mac and the move it can make without being dragged, over its games.
   function showPick() {
     for (const b of $('emu-cabinet').children) b.setAttribute('aria-pressed', String(b.dataset.system === pick));
     const list = pick ? gamesOf(pick) : [];
     $('emu-picked').textContent = pick ? R.systemName(pick) : '';
-    const emulator = pick && emulators?.systems?.[pick]?.emulator;
-    const state = !pick ? '' : plays(pick) ? 'Ready on this Mac' : emulator ? `Plays in ${emulator}` : '';
+    const emulator = pick && emulatorOf(pick);
+    const st = stand.get(pick);
+    const state = !pick || !emulator ? '' : !helper ? `Plays in ${emulator}`
+      : st === 'on' ? 'In your room, ready to play' : st === 'setting' ? `Setting up ${emulator}`
+      : st === 'off' ? 'In your room, unplugged' : plays(pick) ? `${emulator} is already set up` : `Plays in ${emulator}`;
     $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
+    const move = $('emu-picked-move');
+    const [label, run] = !pick || !helper ? [] : !st ? ['Bring to Your Mac', () => bring(pick)] : st === 'off' ? ['Put back', () => putBack(pick)] : [];
+    move.hidden = !label;
+    move.textContent = label ?? '';
+    move.onclick = run ?? null;
     $('emu-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
       if (standing(g).state === 'held') {
@@ -178,14 +231,27 @@
     const systems = Object.keys(R.SYSTEMS).filter(s => gamesOf(s).length);
     if (!systems.includes(pick)) pick = systems[0] ?? null;
     $('emu-cabinet').replaceChildren(...systems.map(system => {
-      const b = el('button', 'emu-cabinet__console');
+      // One in the room leaves its place outlined; any other can be dragged up.
+      const away = stand.has(system);
+      const b = el('button', away ? 'emu-cabinet__console emu-cabinet__console--away' : 'emu-cabinet__console');
       b.type = 'button';
       b.dataset.system = system;
-      b.append(consoleOf(system), el('span', 'emu-cabinet__name', R.systemName(system)),
-        el('span', 'emu-cabinet__count', countOf(gamesOf(system).length)));
-      b.addEventListener('click', () => { pick = system; showPick(); });
+      if (!away) b.dataset.console = system;
+      const name = el('span', 'emu-cabinet__name', R.systemName(system));
+      if (!away && plays(system)) {
+        b.append(el('i', 'emu-led'));
+        b.title = `${emulatorOf(system)} is set up on this Mac`;
+      }
+      b.append(consoleOf(system), name, el('span', 'emu-cabinet__count', away ? 'In your room' : countOf(gamesOf(system).length)));
+      b.addEventListener('click', () => choose(system));
       return b;
     }));
+    showPick();
+  }
+  // A console pressed, in the room or the collection, is the one whose games show.
+  function choose(system) {
+    if (!gamesOf(system).length) return;
+    pick = system;
     showPick();
   }
   const render = () => { renderRoom(); renderCollection(); };
@@ -272,21 +338,78 @@
     render();
   }
 
+  // A CONSOLE'S MOVES. The room is kept whole each time one moves; a Mac
+  // Status has not saved yet has no row to keep it on, and is told so.
+  async function keep(next) {
+    room = next;
+    render();
+    if (!macName) return;
+    try { if (!await R.data.saveRoom(macName, next)) say('This room is kept once Status has saved this Mac.'); }
+    catch (error) { console.error(error); say('The room could not be kept. Try again.'); }
+  }
+  // Into the room: plugged in already where this Mac has its emulator.
+  async function bring(system) {
+    if (stand.has(system)) return;
+    const ready = plays(system);
+    await keep({ ...wishes(), [system]: ready });
+    if (ready) say(`${emulatorOf(system)} is already set up. The ${R.systemName(system)} is ready.`);
+  }
+  function putBack(system) {
+    if (stand.get(system) !== 'off') { say('Unplug it first.'); return; }
+    const next = wishes();
+    delete next[system];
+    keep(next);
+  }
+  // Plugging in sets its emulator up where this Mac lacks it: installed from
+  // Supabase, then made ready with the settings this Mac kept, as Status does.
+  async function plugIn(system) {
+    const emulator = emulatorOf(system);
+    if (!plays(system)) {
+      settingUp.add(system);
+      render();
+      try {
+        const installer = R.installerOf(await R.data.files(), emulator);
+        if (!installer) throw new Error(`Supabase holds no installer for ${emulator}.`);
+        await R.carry.setUp(emulator, installer, R.keptVersion(installer),
+          part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, null, 600000));
+        const also = Object.keys(R.SYSTEMS).filter(sys => sys !== system && emulatorOf(sys) === emulator && !stand.has(sys) && gamesOf(sys).length);
+        say(also.length ? `${emulator} is set up. It also plays ${also.map(R.systemName).join(' and ')}.` : `${emulator} is set up.`);
+      } catch (error) { console.error(error); say(error.message); }
+      settingUp.delete(system);
+      await readMac();
+    }
+    await keep({ ...wishes(), [system]: plays(system) });
+  }
+  // Unplugging takes its emulator off this Mac once no other plugged-in
+  // console here uses it: its saves and settings kept in Supabase first.
+  async function unplug(system) {
+    const emulator = emulatorOf(system);
+    const next = { ...wishes(), [system]: false };
+    await keep(next);
+    if (!plays(system) || Object.keys(next).some(sys => next[sys] && emulatorOf(sys) === emulator)) return;
+    say(`Keeping ${emulator}'s saves and settings in Supabase…`, null, 600000);
+    try { await R.carry.remove(emulator); say(`${emulator} is off this Mac. Your saves stay.`); }
+    catch (error) { console.error(error); say(error.message); }
+    await readMac();
+    render();
+  }
+
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
   // place that lights, and the move itself, or null where nothing would
   // happen. One answer, so the word never disagrees with the drop. `home`
   // lights the game's own cover in Rux's Collection too.
+  const yes = (word, light, run, home = false) => ({ word, light, run, home });
+  const no = (word, light, home = false) => ({ word, light, no: true, home });
   function intent(g, from, under) {
     if (!under) return null;
-    const yes = (word, light, run, home = false) => ({ word, light, run, home });
-    const no = (word, light) => ({ word, light, no: true });
     const s = standing(g);
     const unit = under.closest('.emu-unit')
       ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? $('emu-stand').querySelector(`[data-system="${g.system}"]`) : null);
     if (unit) {
       const system = unit.dataset.system;
       if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit);
-      if (!plays(system)) return no('Its emulator is not on this Mac', unit);
+      if (stand.get(system) === 'setting') return no('Still setting up', unit);
+      if (stand.get(system) !== 'on') return no('Plug it in first', unit);
       if (s.state === 'arriving') return no('Still downloading', unit);
       if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
       if (keeps) return yes('Download and play', unit, () => download(g, true));
@@ -303,15 +426,31 @@
     return null;
   }
 
+  // The same for a console: into the room from the collection, and back to
+  // its place once it is unplugged.
+  function consoleIntent(system, from, under) {
+    if (!under) return null;
+    if (from === 'collection' && under.closest('.emu-room')) {
+      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', document.querySelector('.emu-scene'), () => bring(system));
+    }
+    if (from === 'room' && under.closest('#emu-collection')) {
+      const st = stand.get(system);
+      return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
+        : no(st === 'setting' ? 'Still setting up' : 'Unplug it first', $('emu-collection'), true);
+    }
+    return null;
+  }
+  const intentOf = (d, under) => (d.g ? intent(d.g, d.from, under) : consoleIntent(d.system, d.from, under));
+
   // THE DRAG, with the pointer, where the helper answers. A press that does
-  // not move is the cover's own click, which opens its game.
+  // not move is the cover's or the console's own click.
   let drag = null;
   const word = el('div', 'emu-word');
   word.hidden = true;
   document.body.append(word);
   const FROM = [['#emu-onmac', 'shelf'], ['#emu-ledge', 'ledge'], ['#emu-games', 'collection']];
   const unlight = () => {
-    for (const cls of ['emu-lit', 'emu-no', 'emu-cover--home']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
+    for (const cls of ['emu-lit', 'emu-no', 'emu-cover--home', 'emu-cabinet__console--home']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
   };
   function drop() {
     word.hidden = true;
@@ -321,11 +460,13 @@
   // A cover's picture is not dragged away as a file.
   document.addEventListener('dragstart', e => { if (e.target.closest?.('.emu-cover')) e.preventDefault(); });
   document.addEventListener('pointerdown', e => {
-    const src = e.target.closest?.('.emu-cover[data-game]');
+    const src = e.target.closest?.('.emu-cover[data-game], [data-console]');
     if (!src || e.button > 0 || !helper) return;
+    const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
+    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-stand') ? 'room' : 'collection' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
-    if (g && from) drag = { src, g, from, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
+    if (g && from) drag = { ...at, g, from };
   });
   document.addEventListener('pointermove', e => {
     if (!drag || e.pointerId !== drag.id) return;
@@ -340,12 +481,12 @@
       ghost.append(copy);
       document.body.append(ghost);
       drag.ghost = ghost;
-      drag.src.classList.add('emu-cover--held');
-      // The consoles it fits light and the rest dim, so where it goes shows.
-      for (const u of $('emu-stand').children) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
+      drag.src.classList.add('emu-held');
+      // A game's console lights and the rest dim, so where it goes shows.
+      if (drag.g) for (const u of $('emu-stand').children) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
       // Coming back from the room, the collection turns to its console and
       // its row to the game, so its own cover is there to light.
-      if (drag.from !== 'collection') {
+      if (drag.g && drag.from !== 'collection') {
         if (pick !== drag.g.system) { pick = drag.g.system; showPick(); }
         const row = $('emu-games');
         const own = row.querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`);
@@ -353,7 +494,7 @@
       }
     }
     drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) rotate(-3deg)`;
-    const it = intent(drag.g, drag.from, document.elementFromPoint(e.clientX, e.clientY));
+    const it = intentOf(drag, document.elementFromPoint(e.clientX, e.clientY));
     unlight();
     word.hidden = !it;
     if (!it) return;
@@ -361,7 +502,8 @@
     word.classList.toggle('emu-word--no', Boolean(it.no));
     word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
     it.light.classList.add(it.no ? 'emu-no' : 'emu-lit');
-    if (it.home) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
+    if (it.home && drag.g) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
+    if (it.home && !drag.g) $('emu-cabinet').querySelector(`[data-system="${drag.system}"]`)?.classList.add('emu-cabinet__console--home');
   });
   // A drag that ended on its own cover would press it; that one click is swallowed.
   let dragged = false;
@@ -374,8 +516,8 @@
     drop();
     dragged = true;
     setTimeout(() => { dragged = false; });
-    const it = intent(d.g, d.from, document.elementFromPoint(e.clientX, e.clientY));
-    const done = () => { d.ghost.remove(); d.src.classList.remove('emu-cover--held'); if (it && !it.no) it.run(); };
+    const it = intentOf(d, document.elementFromPoint(e.clientX, e.clientY));
+    const done = () => { d.ghost.remove(); d.src.classList.remove('emu-held'); if (it && !it.no) it.run(); };
     // A move that happens fades where it was dropped; any other flies back
     // to where it came from. Both are Carbon's productive motion.
     if (it && !it.no) { d.ghost.classList.add('emu-ghost--gone'); setTimeout(done, 110); return; }
@@ -387,7 +529,7 @@
     if (!drag) return;
     drop();
     drag.ghost?.remove();
-    drag.src.classList.remove('emu-cover--held');
+    drag.src.classList.remove('emu-held');
     drag = null;
   });
 
@@ -408,10 +550,12 @@
   $('emu-panel-close').addEventListener('click', e => { e.stopImmediatePropagation(); closeGame(); }, true);
 
   async function load() {
-    let rows, notes, mac;
+    let rows, notes, mac, live;
     try {
-      [rows, notes, saves, mac, emulators] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
-        R.thisMac.read(), R.emulators(), consoles()]);
+      [rows, notes, saves, mac, emulators, live] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
+        R.thisMac.read(), R.emulators(), R.helper.onMac ? R.helper.mac() : null, consoles()]);
+      macName = live?.mac ?? null;
+      room = macName ? await R.data.room(macName) : null;
     } catch (error) {
       console.error(error);
       R.notice('Emu could not read the collection. Try again.');

@@ -144,6 +144,19 @@
     },
     // How each Mac stood when its saves were last gathered.
     macs: () => all(() => client.from('emu_macs').select('*').order('name')),
+    // The consoles standing in a Mac's room on the Library, each true while
+    // plugged in: null where none was ever moved, or the Mac has no row.
+    async room(mac) {
+      const { data: row, error } = await client.from('emu_macs').select('room').eq('name', mac).maybeSingle();
+      fail(error);
+      return row?.room ?? null;
+    },
+    // A Mac's room kept on its row, which it has once Status saved the Mac: whether it was kept.
+    async saveRoom(mac, room) {
+      const { data: rows, error } = await client.from('emu_macs').update({ room }).eq('name', mac).select('name');
+      fail(error);
+      return rows.length > 0;
+    },
     async drive() {
       const { data: row, error } = await client.from('emu_drive').select('*').maybeSingle();
       fail(error);

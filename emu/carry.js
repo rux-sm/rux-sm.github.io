@@ -19,7 +19,10 @@
 
    `start` sets up an emulator never opened on this Mac from the settings
    kept for it: this Mac's own where it kept some before its emulator was
-   removed, else the preferred ones. `remove` keeps an emulator's saves and
+   removed, else the preferred ones. `setUp` is an emulator made ready on this
+   Mac, as Status and the room do it: installed where an installer is given,
+   then started, given its files, its saves carried and its managed settings
+   written. `remove` keeps an emulator's saves and
    settings in Supabase, then has the helper move it and its folders to the
    Trash, so installing it again sets it up as it was. `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:
@@ -203,6 +206,20 @@
     return H.uninstall(name);
   }
 
+  // An emulator made ready on this Mac. `step` is told 'install' and then
+  // 'ready' as each part begins.
+  async function setUp(name, installer = null, version = null, step = () => {}) {
+    if (installer) {
+      step('install');
+      if (!await H.install(name, installer, version)) throw new Error('Rux Emu Helper on this Mac is too old: update it first.');
+    }
+    step('ready');
+    await start(name);
+    await give(name);
+    await run(name);
+    await H.manage(name);
+  }
+
   const run = name => queued(name, carryNow);
   const remove = name => queued(name, removeNow);
   const give = name => queued(name, giveNow);
@@ -322,5 +339,5 @@
     }
   })();
 
-  R.carry = { run, give, start, remove, before, after, standing, useOther };
+  R.carry = { run, give, start, setUp, remove, before, after, standing, useOther };
 })();

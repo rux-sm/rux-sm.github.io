@@ -151,9 +151,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-stand::before { content: ""; position: absolute; inset-inline: calc(-1 * var(--rux-spacing-03)); inset-block-end: calc(var(--emu-under) - 14px); block-size: 14px; background: var(--rux-layer-03); }
 .emu-stand--empty::before { display: none; }
 .emu-unit { flex: 0 1 7.5rem; min-inline-size: 3rem; display: grid; justify-items: center; }
-.emu-unit .emu-console { inline-size: 100%; block-size: auto; margin-block-end: var(--emu-board); }
+.emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; inline-size: 100%; margin-block-end: var(--emu-board); cursor: grab; }
+.emu-unit__console:focus-visible, .emu-plug:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.emu-unit .emu-console { inline-size: 100%; block-size: auto; }
 .emu-unit__under { position: relative; inline-size: 100%; block-size: var(--emu-under); display: grid; justify-items: center; align-content: start; padding-block-start: 42px; }
-.emu-plug { position: absolute; inset-block-start: 0; inset-inline-start: calc(50% - 22px); inline-size: 44px; block-size: 42px; }
+/* The plug: the whole socket is the button. */
+.emu-plug { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; position: absolute; inset-block-start: 0; inset-inline-start: calc(50% - 22px); inline-size: 44px; block-size: 42px; }
+.emu-plug__drawing { display: block; inline-size: 44px; block-size: 42px; overflow: visible; }
+.emu-plug:hover .emu-plug__body { fill: var(--rux-icon-primary); }
+.emu-unit__tip { position: absolute; inset-block-start: 20px; inset-inline-start: calc(50% + 24px); font-size: .6875rem; line-height: 1rem; color: var(--rux-text-secondary); white-space: nowrap; pointer-events: none; }
 .emu-plug__socket { fill: var(--rux-background); }
 .emu-plug__cord { fill: none; stroke: var(--rux-border-strong-01); stroke-width: 2; stroke-linecap: round; }
 .emu-plug__body { fill: var(--rux-icon-secondary); transform-box: fill-box; transform-origin: center; }
@@ -162,8 +168,19 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit--off .emu-plug__prong { opacity: 1; }
 .emu-unit--off .emu-console { opacity: .45; }
 .emu-unit--off .emu-led { background: var(--rux-border-strong-01); }
+.emu-unit--off .emu-plug__socket { stroke: var(--rux-support-warning); stroke-width: 1.5; }
+/* While its emulator is set up the light blinks, the only sign the helper
+   gives of an install. Carbon has no motion for waiting on a light. */
+.emu-unit--setting .emu-led { background: var(--rux-support-warning); animation: emu-blink 800ms steps(2) infinite; }
+@keyframes emu-blink { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .emu-unit--setting .emu-led { animation: none; } }
 .emu-unit__name { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; color: var(--rux-text-secondary); }
-.emu-led { display: inline-block; inline-size: .375rem; block-size: .375rem; border-radius: 50%; background: var(--rux-support-success); margin-inline-end: var(--rux-spacing-02); vertical-align: middle; }
+/* A light sits beside the first line of its name, which wraps by itself. */
+.emu-unit__name { display: flex; justify-content: center; gap: var(--rux-spacing-02); }
+/* In Rux's Collection the light keeps one corner of every console, whatever its name's length. */
+.emu-cabinet__console { position: relative; }
+.emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
+.emu-led { flex: none; inline-size: .375rem; block-size: .375rem; margin-block-start: .3125rem; border-radius: 50%; background: var(--rux-support-success); }
 
 /* The games: the favourites on a wall shelf, this Mac's on the board, each a
    cover without its name, in a row that scrolls sideways. */
@@ -186,11 +203,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-ghost .emu-cover-name { display: none; }
 .emu-ghost--gone { opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-ghost--back { transition: transform 240ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-cover--held { opacity: .25; }
+.emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
 .emu-scene.emu-lit, .emu-ledge.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-#emu-collection.emu-lit { outline: 2px solid var(--rux-border-interactive); outline-offset: var(--rux-spacing-03); }
+#emu-collection.emu-lit, #emu-collection.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: var(--rux-spacing-03); }
+#emu-collection.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
 .emu-unit { transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -200,3 +218,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover--home .emu-cover-art { opacity: 1; outline: 2px dashed var(--rux-border-interactive); outline-offset: 2px; }
 /* What a move just did, by Your Mac's name. */
 .emu-room__said { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: .875rem; line-height: 1.125rem; color: var(--rux-text-secondary); }
+
+/* A console's place in Rux's Collection while it stands in the room: outlined
+   and faint, and lit as the place it goes back to while it is held. A green
+   light marks one whose emulator this Mac has. The picked console's move
+   sits beside its name. */
+.emu-cabinet__console[data-console] { cursor: grab; }
+.emu-cabinet__console--away, .emu-cabinet__console--away:hover { background: none; outline: 2px dashed var(--rux-border-subtle-01); outline-offset: -2px; }
+.emu-cabinet__console--away .emu-console { opacity: .25; }
+.emu-cabinet__console--home, .emu-cabinet__console--home:hover { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; background: var(--rux-layer-selected-01); }
+.emu-picked { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }

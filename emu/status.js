@@ -338,15 +338,8 @@
       for (const [i, t] of todo.entries()) {
         const step = `${t.name}, ${i + 1} of ${todo.length}`;
         try {
-          if (t.install) {
-            said.textContent = `Installing ${step}…`;
-            if (!await R.helper.install(t.name, t.installer, t.version)) throw new Error('Rux Emu Helper on this Mac is too old: update it first.');
-          }
-          said.textContent = `Making ${step} ready…`;
-          await R.carry.start(t.name);
-          await R.carry.give(t.name);
-          await R.carry.run(t.name);
-          await R.helper.manage(t.name);
+          await R.carry.setUp(t.name, t.install ? t.installer : null, t.version,
+            part => { said.textContent = part === 'install' ? `Installing ${step}…` : `Making ${step} ready…`; });
         } catch (error) { console.error(error); failed.push(`${t.name}: ${error.message}`); }
       }
       said.textContent = failed.length ? `Not set up:\n${failed.join('\n')}` : 'This Mac is set up.';

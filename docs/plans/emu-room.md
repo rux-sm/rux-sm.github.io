@@ -18,8 +18,9 @@ fun to use while staying plain. It replaces the front page that
 - **The room is built as its own page, `emu/room.html`, beside the
   Library,** which keeps working until the room takes its place; nothing
   links to the room until then. It draws Your Mac and Rux's Collection from
-  the real games and this Mac; a game is dragged between them and opens its
-  side panel when pressed. A console is not dragged yet.
+  the real games and this Mac; a game or a console is dragged between them,
+  a plug sets an emulator up or takes it off, and a game opens its side
+  panel when pressed.
 - **Until a Mac's room is kept, the console of each game it holds stands in
   the room,** plugged in where this Mac has its emulator and unplugged where
   it has not, so a Mac with every emulator installed still starts with a
@@ -35,7 +36,8 @@ fun to use while staying plain. It replaces the front page that
   games.** Each console is a tile with its drawing, name and count; pressing
   it shows its games and dragging it brings it up. While a console is in the
   room its tile stands outlined and faint, as the place it goes back to, and
-  still shows its games when pressed.
+  still shows its games when pressed. One whose emulator this Mac has shows
+  a green light.
 - **The picked console's games have a heading:** its name, its count, where
   it stands, such as "In your room, unplugged", and Bring to Your Mac while
   it is not in the room. The games are covers in one row that scrolls
@@ -63,14 +65,14 @@ fun to use while staying plain. It replaces the front page that
   stored. Only which consoles stand in this Mac's room, and which of those
   are unplugged, is kept, since an unplugged Game Boy can stand beside a
   plugged-in Game Boy Color while mGBA stays installed. It is kept in
-  Supabase, as a new `room` column on the Mac's `emu_macs` row, which that
-  row's other writes leave alone; the column is a database change shown to
-  rux and applied on a yes.
+  Supabase, in the `room` column of the Mac's `emu_macs` row, as each
+  console's name and whether it is plugged in, which that row's other writes
+  leave alone. A Mac has that row once Status has saved it; until then the
+  page says its room is not kept.
 - **An emulator that plays several consoles readies them all.** Plugging in
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance show
-  Ready in Rux's Collection, and each arrives plugged in when dragged into
-  the room;
-  until then their games cannot be played.
+  a green light in Rux's Collection, and each arrives plugged in when dragged
+  into the room; until then their games cannot be played from the room.
 - **A game moves the same way:** onto Your Mac downloads it, `this-mac.js`'s
   Download; onto its console plays it, the helper's Play; straight from
   Rux's Collection onto its console downloads and then plays. A home
@@ -110,10 +112,10 @@ fun to use while staying plain. It replaces the front page that
   switch in the header turns them off.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
-  moves as buttons; pressing a console in the room opens a small menu with
-  its moves, and one in the collection has Bring to Your Mac in its heading;
-  the plug is a button, Enter does on a keyboard, and on a controller A picks
-  up and A puts down.
+  moves as buttons; pressing a console, in the room or the collection, picks
+  it, and its heading has Bring to Your Mac or Put back; the plug is a
+  button, Enter does on a keyboard, and on a controller A picks up and A
+  puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one plain
   flat drawing per system on the foot of one 3:2 box, which `room.js` puts
   into its page, since a drawing in another file draws nothing in Safari.
@@ -136,7 +138,6 @@ None open.
 
 ## Tasks
 
-- [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
       button, and have it say which game runs, to light the TV or a
       handheld's screen.
@@ -145,10 +146,6 @@ None open.
       narrow for its name.
 - [ ] Tag a game whose console is not plugged in with that console; it is
       only dimmed.
-- [ ] Drag a console between Rux's Collection and the room, with its menu
-      and its plug as a button: plugging in is the helper's install and
-      unplugging `R.carry.remove`, which says "Plug it in first" where the
-      word now says its emulator is not on this Mac.
 - [ ] Pick up and put down a game or console with a controller's A.
 - [ ] Add the wrong-console reaction, the game going into its console, and
       the sounds.

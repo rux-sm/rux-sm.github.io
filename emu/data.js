@@ -70,14 +70,8 @@
     files: (folder = '') => all(() => client.from('emu_files_now').select('*').not('sha1', 'is', null).like('path', `${folder}%`).order('path')),
     // The BIOS, keys and firmware among them, each by its name under bios/.
     bios: async () => (await data.files('bios/')).map(f => ({ name: f.path.slice('bios/'.length), size: f.size, sha1: f.sha1 })),
-    // A file put in Supabase: its bytes under their fingerprint, read by
-    // `bytes` only when no file there has the same, then a row for this copy.
-    async putFile({ path, sha1, size, saved, mac }, bytes) {
-      const { data: have, error } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
-      fail(error);
-      if (!have.length) fail((await client.storage.from(COLLECTION).upload(sha1, await bytes(), { upsert: true, contentType: 'application/octet-stream' })).error);
-      fail((await client.from('emu_files').insert({ path, sha1, size, saved_at: saved, mac })).error);
-    },
+    // A file put in Supabase, as scan-save.js puts one.
+    putFile: (file, bytes) => window.Emu.scanSave.putFile(data.db(), file, bytes),
     // A save carried up: put as putFile puts it, then the copies of it past
     // the newest five dropped, with the bytes nothing else has.
     async keepCopy(file, bytes) {
@@ -98,18 +92,8 @@
       fail(error);
       return rows[0] ?? null;
     },
-    // A file taken out of Supabase with every copy kept of it, and its bytes
-    // where no other file has the same.
-    async dropFile(path) {
-      const { data: rows, error } = await client.from('emu_files').select('sha1').eq('path', path);
-      fail(error);
-      fail((await client.from('emu_files').delete().eq('path', path)).error);
-      for (const sha1 of new Set(rows.map(r => r.sha1).filter(Boolean))) {
-        const { data: left, error: e } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
-        fail(e);
-        if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
-      }
-    },
+    // A file taken out of Supabase, as scan-save.js takes one out.
+    dropFile: path => window.Emu.scanSave.dropFile(data.db(), path),
     // Each emulator's settings as Supabase keeps them, under
     // `settings/<Mac>/<emulator>/` and `settings/preferred/<emulator>/`: by
     // `<Mac or preferred>/<emulator>`, every copy newest first, a copy being
@@ -182,8 +166,10 @@
         .eq('system', save.system).eq('name', save.name).eq('kind', save.kind).eq('location', save.location)).error);
     },
 
+    // The signed-in account's reads and writes, as scan-save.js makes them.
+    db: () => window.Emu.scanSave.clientDb(client),
     // A scan saved, as scan-save.js saves one.
-    saveScan: rows => window.Emu.scanSave.save(window.Emu.scanSave.clientDb(client), rows),
+    saveScan: rows => window.Emu.scanSave.save(data.db(), rows),
 
     // The backups in Supabase, newest first.
     async backups() {

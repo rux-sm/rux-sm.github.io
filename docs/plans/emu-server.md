@@ -144,9 +144,6 @@ The setup kit, so any Mac is set up in one step:
 
 - [ ] Refresh the T7 from the server, the games, `backups` and `cloud`, as its
   backup, with one command.
-- [ ] Have the nightly scan also put new BIOS, keys and installers in
-  Supabase and ask each emulator's newest version, so Update is needed only
-  for the T7.
 - [ ] Run `emu/tools/copy-supabase.mjs` on the server, as
   `emu/docs/home-server.md` says, with its `backups` dataset, snapshots and
   secret key, and put a save and a Mac's settings back from that copy alone.

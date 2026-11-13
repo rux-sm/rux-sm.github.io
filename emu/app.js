@@ -164,7 +164,7 @@
   const plainVersion = v => String(v).replace(/^v/, '').replace(/-g[0-9a-f]+$/, '');
   // An installer is its app's when its file name starts with the app's name,
   // so xemu's is not Rux-Emu-Helper's, whose name holds "xemu" inside it.
-  const installs = (file, name) => slug(file).startsWith(slug(name));
+  const { installs } = window.Emu.scanSave;
   const installerOf = (files, name) => (files ?? []).filter(f => f.path.startsWith('emulators/'))
     .map(f => ({ name: f.path.slice('emulators/'.length), size: f.size, sha1: f.sha1 })).find(i => installs(i.name, name)) ?? null;
   const keptVersion = installer => installer?.name.match(/-(\d[\w.]*(?:-\d+)?|[0-9a-f]{7})-mac/i)?.[1] ?? null;

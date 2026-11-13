@@ -12,8 +12,8 @@
    `manage` the settings Emu manages written over them, `settings` null from
    a helper too old; `macSaves` each save this Mac keeps itself and
    `macSave` one's bytes; `removal` what removing an emulator would move to
-   the Trash, or null from a helper too old to, and `uninstall` that done; `newest` each emulator's newest version out, or
-   null from a helper that cannot ask; and `play` opens one game. `call` is any of its
+   the Trash, or null from a helper too old to, and `uninstall` that done;
+   and `play` opens one game. `call` is any of its
    calls, drive.js's too: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
    its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
@@ -51,14 +51,6 @@
   async function mac() {
     try {
       const r = await fetch(`${BASE}/mac`, { signal: AbortSignal.timeout(15000) });
-      return r.ok ? await r.json() : null;
-    } catch { return null; }
-  }
-
-  // Each feed has 15 seconds to answer the helper.
-  async function newest() {
-    try {
-      const r = await fetch(`${BASE}/newest`, { signal: AbortSignal.timeout(40000) });
       return r.ok ? await r.json() : null;
     } catch { return null; }
   }
@@ -202,7 +194,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, newest, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

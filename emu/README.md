@@ -107,7 +107,7 @@ bar helper answers only the Rux Emu site, on `127.0.0.1:47647`, with the calls
 `helper/main.swift` lists: Play, from this Mac's library or a drive plugged in and never
 the server's share; this Mac as it stands with the saves it keeps itself; an emulator
 installed from Supabase with a receipt of its version, and its settings read and written;
-the drive for Update's scan; each emulator's newest version out; and the library,
+the drive for Update's scan; and the library,
 `~/Emulation/roms/`, a game downloaded into it from the home server or removed. The app
 carries its own `emulators.json`, so build it again after a change.
 

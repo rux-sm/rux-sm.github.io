@@ -45,8 +45,6 @@
 //   GET    /mac/saves      each save this Mac keeps itself, neither on the
 //                          drive nor carried to Supabase
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
-//   GET    /newest         the newest version of each emulator its project
-//                          has out, asked of the feed emulators.json names
 //   GET    /drive/list     ?path=, a folder of the collection, for the scan
 //   GET    /drive/stat     ?path=, a file's size and last-changed time
 //   GET    /drive/file     ?path=&at=&n=, a file's bytes, or n of them from at
@@ -126,7 +124,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "33"
+let version = "34"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1238,75 +1236,6 @@ func removeEmulator(_ body: Data) -> (Int, [String: Any]) {
   return (200, ["moved": moved])
 }
 
-// MARK: The newest versions
-
-// A feed's answer as JSON, or nil when it does not answer.
-func asked(_ address: String) -> Any? {
-  guard let url = URL(string: address) else { return nil }
-  var req = URLRequest(url: url, timeoutInterval: 15)
-  req.setValue("rux-emu-helper", forHTTPHeaderField: "User-Agent")
-  req.setValue("application/json", forHTTPHeaderField: "Accept")
-  let done = DispatchSemaphore(value: 0)
-  var out: Any?
-  URLSession.shared.dataTask(with: req) { data, response, _ in
-    if (response as? HTTPURLResponse)?.statusCode == 200, let data { out = try? JSONSerialization.jsonObject(with: data) }
-    done.signal()
-  }.resume()
-  done.wait()
-  return out
-}
-
-// The newest version a feed names. A `github` project's is its latest
-// release's tag; with `tags`, the greatest tag that pattern matches, for a
-// project that tags without releasing; with `count`, the first tag and the
-// commits from it to the second, as a rolling build numbers itself. Any
-// other feed is a `url` and the `path` to the version in its JSON.
-func newestOf(_ feed: [String: Any]) -> String? {
-  if let repo = feed["github"] as? String {
-    let api = "https://api.github.com/repos/\(repo)"
-    if let count = feed["count"] as? [String], count.count == 2 {
-      guard let n = (asked("\(api)/compare/\(count[0])...\(count[1])") as? [String: Any])?["ahead_by"] as? Int else { return nil }
-      return "\(count[0])-\(n)"
-    }
-    if let pattern = feed["tags"] as? String {
-      let names = (asked("\(api)/tags?per_page=100") as? [[String: Any]] ?? []).compactMap { $0["name"] as? String }
-      return names.filter { $0.range(of: pattern, options: .regularExpression) != nil }.max()
-    }
-    return (asked("\(api)/releases/latest") as? [String: Any])?["tag_name"] as? String
-  }
-  guard let url = feed["url"] as? String, let path = feed["path"] as? String else { return nil }
-  var v = asked(url)
-  for k in path.components(separatedBy: ".") {
-    if let i = Int(k) { v = (v as? [Any]).flatMap { $0.indices.contains(i) ? $0[i] : nil } } else { v = (v as? [String: Any])?[k] }
-  }
-  return v as? String
-}
-
-// Each emulator's newest version by its name, every feed asked at once. A
-// whole answer is kept an hour, since GitHub answers 60 unsigned questions
-// an hour and Status asks each time it opens.
-var newestKept: (at: Date, found: [String: Any])?
-let newestLock = NSLock()
-func newest() -> [String: Any] {
-  newestLock.lock()
-  defer { newestLock.unlock() }
-  if let kept = newestKept, Date().timeIntervalSince(kept.at) < 3600 { return kept.found }
-  var feeds: [(name: String, feed: [String: Any])] = (rules["macSaves"] as? [String: Any] ?? [:]).compactMap { name, value in
-    ((value as? [String: Any])?["feed"] as? [String: Any]).map { (name, $0) }
-  }
-  if let f = rules["frontend"] as? [String: Any], let name = f["name"] as? String, let feed = f["feed"] as? [String: Any] { feeds.append((name, feed)) }
-  var found: [String: Any] = [:]
-  let each = NSLock()
-  DispatchQueue.concurrentPerform(iterations: feeds.count) { i in
-    guard let v = newestOf(feeds[i].feed) else { return }
-    each.lock()
-    found[feeds[i].name] = v
-    each.unlock()
-  }
-  if found.count == feeds.count { newestKept = (Date(), found) }
-  return found
-}
-
 // MARK: The drive, for the site's scan
 
 // A path inside the collection, links followed, or nil for one outside it.
@@ -1752,7 +1681,6 @@ final class Server {
     case ("GET", "/mac/carried"):
       off { carriedAt(q["path"] ?? "").flatMap { bytes($0.at, at: nil, n: nil) }.map(Reply.bytes) ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
     case ("POST", "/mac/carried/mark"): off { let (code, out) = markCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
-    case ("GET", "/newest"): off { .json(200, newest()) }
     case ("GET", "/mac/save"):
       off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
         ?? .json(404, ["error": "That is not a save this Mac keeps."]) }

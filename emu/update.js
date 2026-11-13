@@ -3,12 +3,13 @@
    --------------------------------------------------------------------------
    Scans the drive with scan.js, read and written through Rux Emu Helper,
    drive.js, so it runs on a Mac with the helper running and the drive
-   plugged in, and reads how this Mac stands, each save it keeps itself and
-   each emulator's newest version out from the helper too. It says what changed since the last save, or that
-   nothing is, and saves on a yes: every game and save, the drive's row with
-   the newest versions, each BIOS, key, firmware and
-   installer the drive holds that Supabase lacks, the backup zip to Supabase, and this Mac's report with any
-   save it keeps itself, each uploaded file by file.
+   plugged in, and reads how this Mac stands and each save it keeps itself
+   from the helper too. It says what changed since the last save, or that
+   nothing is, and saves on a yes, through scan-save.js: every game and save,
+   the drive's row, keeping the newest versions out that the home server's
+   nightly scan asks, each BIOS, key, firmware and installer the drive holds
+   that Supabase lacks, the backup zip to Supabase, and this Mac's report
+   with any save it keeps itself, each uploaded file by file.
 
    It writes back to the drive what the Mac scan writes: the fingerprints,
    so the next scan hashes only what changed, the scan file the organize
@@ -94,26 +95,10 @@
       // This Mac, when how it stands or a save it keeps itself differs from the last saved.
       said('Reading this Mac…');
       const games = scan.games;
-      const [saved, savedSaves, savedMacs, savedDrive, report, macFiles, asked, held] = await Promise.all([
-        R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves(), R.helper.newest(), R.data.files()]);
-      // What every Mac is given, and the drive is the way in for: each BIOS,
-      // key, firmware and installer it holds that Supabase lacks or holds
-      // another copy of, told by its size and the second it was last changed,
-      // since the home server's share keeps a file's time no finer.
-      const second = ms => Math.floor(ms / 1000);
-      const heldAt = new Map(held.map(f => [f.path, f]));
-      const given = [];
-      for (const path of [...scan.bios.map(b => `bios/${b.name}`), ...scan.installers.map(i => `emulators/${i.name}`)]) {
-        const st = await drive.stat(path);
-        const have = heldAt.get(path);
-        if (!st || (have && Number(have.size) === st.size && second(Date.parse(have.saved_at)) === second(st.mtimeMs))) continue;
-        given.push({ path, size: st.size, saved: new Date(Math.round(st.mtimeMs)).toISOString() });
-      }
-      // Each emulator's newest version out: what the feeds said now, over what they last said for any that did not answer.
-      const newest = { ...savedDrive?.newest, ...asked };
-      // A rolling build has a new number every few days, which alone is nothing to save.
-      const steady = n => canon(Object.fromEntries(Object.entries(n).filter(([name]) => !emulators.macSaves[name]?.feed?.rolling)));
-      const sameNewest = JSON.stringify(steady(newest)) === JSON.stringify(steady(savedDrive?.newest ?? {}));
+      const [saved, savedSaves, savedMacs, savedDrive, report, macFiles, held] = await Promise.all([
+        R.data.gameKeys(), R.data.saves(), R.data.macs(), R.data.drive(), R.helper.mac(), R.helper.macSaves(), R.data.files()]);
+      // What every Mac is given, and the drive is the way in for.
+      const given = await R.scanSave.givenChanged(scan, path => drive.stat(path), held);
       let mac = null;
       if (report) {
         const before = savedMacs.find(x => x.name === report.mac);
@@ -127,19 +112,18 @@
       const change = R.scanSave.changes(scan, saved, savedSaves);
       const { added, changed, gone, savesGone, savesNew } = change;
       // Nothing to save: the same games, saves and backup, and this Mac as it was.
-      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac && sameNewest && !given.length
+      if (!added.length && !changed.length && !gone.length && !savesGone.length && !savesNew.length && !mac && !given.length
         && (scan.backup?.sha1 ?? null) === (savedDrive?.backup?.sha1 ?? null)) {
         said(`Nothing new since the last save. Scanned ${R.when(scan.scanned)}.`);
         return;
       }
       pending = {
-        scan: R.scanSave.rowsOf(scan, change, { backup: scan.backup, newest }),
+        scan: R.scanSave.rowsOf(scan, change, { backup: scan.backup, newest: savedDrive?.newest }),
         zip,
         mac,
         given,
         from: report?.mac ?? null,
       };
-      const newer = R.newerOut(emulators, pending.scan.drive, held);
       const counts = [
         `${games.length} games`,
         added.length ? `${added.length} new` : '',
@@ -149,7 +133,6 @@
       $('emu-check-text').textContent = [
         `${counts}. ${scan.saves.length} saves.`,
         mac ? `${mac.mac} has changed${mac.files.length ? `, with ${mac.files.length} saves it keeps itself` : ''}.` : '',
-        sameNewest ? '' : `The newest versions out have changed${newer.length ? `: ${newer.map(n => `${n.name} ${n.newest}`).join(', ')}` : ''}.`,
         given.length ? `${given.length} ${given.length === 1 ? 'file' : 'files'} every Mac is given ${given.length === 1 ? 'goes' : 'go'} to Supabase, ${R.size(given.reduce((a, f) => a + f.size, 0))}.` : '',
         zip ? `Saving also uploads the backup, ${(zip.size / 1e6).toFixed(1)} MB.` : '',
       ].filter(Boolean).join(' ');
@@ -183,20 +166,16 @@
         await R.data.saveMacSaves(pending.mac, uploads, R.saveRules.group(files, games, emulators.systems));
       }
       // Each file every Mac is given, read from the drive through the helper.
-      // A newer installer takes the place of its emulator's older one.
       if (pending.given.length) {
         const emulators = await R.emulators();
-        const names = [...Object.keys(emulators.macSaves), emulators.frontend.name, 'Rux Emu Helper'];
-        const of = path => names.find(n => R.installs(path.split('/').pop(), n));
         const drive = R.drive.driveOf({});
-        for (const [i, f] of pending.given.entries()) {
-          said(`Putting ${f.path.split('/').pop()} in Supabase, ${i + 1} of ${pending.given.length}…`);
-          const { sha1 } = await drive.fingerprint(f.path);
-          await R.data.putFile({ ...f, sha1, mac: pending.from },
-            async () => (await R.helper.call(`/drive/file?path=${encodeURIComponent(f.path)}`, {}, true)).blob());
-          if (!f.path.startsWith('emulators/') || !of(f.path)) continue;
-          for (const old of await R.data.files('emulators/')) if (old.path !== f.path && of(old.path) === of(f.path)) await R.data.dropFile(old.path);
-        }
+        await R.scanSave.putGiven(R.data.db(), pending.given, {
+          sha1Of: async path => (await drive.fingerprint(path)).sha1,
+          bytesOf: async path => (await R.helper.call(`/drive/file?path=${encodeURIComponent(path)}`, {}, true)).blob(),
+          mac: pending.from,
+          names: [...Object.keys(emulators.macSaves), emulators.frontend.name, 'Rux Emu Helper'],
+          told: (f, i) => said(`Putting ${f.path.split('/').pop()} in Supabase, ${i + 1} of ${pending.given.length}…`),
+        });
       }
       said(`Saved ${R.when(new Date().toISOString())}.`);
       $('emu-check').hidden = true;

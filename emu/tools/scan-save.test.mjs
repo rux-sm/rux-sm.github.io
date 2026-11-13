@@ -19,9 +19,15 @@ const KEY = 'a-secret-key';
 // The stand-in: rows by table, every request it was asked kept, answering as PostgREST does.
 function world(tables) {
   const asked = [];
+  const objects = new Map();
   const fetch = async (to, init = {}) => {
     const u = new URL(to);
     const table = u.pathname.split('/').pop();
+    if (u.pathname.startsWith('/storage/v1/object/emu-collection/')) {
+      asked.push({ method: init.method, table: 'bucket', query: table });
+      if (init.method === 'DELETE') objects.delete(table); else objects.set(table, init.body);
+      return { ok: true, status: 200, text: async () => '' };
+    }
     asked.push({ method: init.method ?? 'GET', table, query: u.search, body: init.body ? JSON.parse(init.body) : null, prefer: init.headers?.prefer });
     if (init.headers?.apikey !== KEY || init.headers?.authorization !== `Bearer ${KEY}`) return { ok: false, status: 401, text: async () => '' };
     const rows = tables[table] ?? [];
@@ -29,10 +35,11 @@ function world(tables) {
     const hits = r => match.every(([k, v]) => String(r[k]) === v);
     if (!init.method) {
       const from = Number(u.searchParams.get('offset'));
-      return { ok: true, status: 200, json: async () => rows.slice(from, from + Number(u.searchParams.get('limit'))) };
+      return { ok: true, status: 200, json: async () => rows.filter(hits).slice(from, from + Number(u.searchParams.get('limit'))) };
     }
     if (init.method === 'PATCH') for (const r of rows.filter(hits)) Object.assign(r, JSON.parse(init.body));
     if (init.method === 'DELETE') tables[table] = rows.filter(r => !hits(r));
+    if (init.method === 'POST' && !u.searchParams.get('on_conflict')) { tables[table] = [...rows, JSON.parse(init.body)]; return { ok: true, status: 201, text: async () => '' }; }
     if (init.method === 'POST') {
       const keys = u.searchParams.get('on_conflict').split(',');
       for (const row of JSON.parse(init.body)) {
@@ -43,7 +50,7 @@ function world(tables) {
     }
     return { ok: true, status: 201, text: async () => '' };
   };
-  return { fetch, asked, tables };
+  return { fetch, asked, tables, objects };
 }
 
 const game = (title, size, extra = {}) => ({ system: 'gb', title, size, files: [{ name: `gb/${title}.gb`, size }], ...extra });
@@ -109,6 +116,47 @@ const scan = {
   const db = scanSave.restDb({ url, key: KEY, fetch: w.fetch });
   await db.remove('emu_games', { system: 'gb', title: 'A, B (USA) & C' });
   check('a title with commas, brackets and an ampersand is deleted', w.tables.emu_games.length === 0, w.asked.at(-1).query);
+}
+
+// The files every Mac is given: which differ, and putting them in Supabase.
+{
+  const held = [
+    { path: 'bios/psx/same.bin', size: 10, saved_at: '2026-11-01T00:00:00.400Z', sha1: 'a'.repeat(40) },
+    { path: 'bios/psx/grown.bin', size: 10, saved_at: '2026-11-01T00:00:00Z', sha1: 'b'.repeat(40) },
+    { path: 'emulators/Dolphin-2512-macOS.dmg', size: 5, saved_at: '2026-10-01T00:00:00Z', sha1: 'c'.repeat(40) },
+  ];
+  const disk = {
+    'bios/psx/same.bin': { size: 10, mtimeMs: Date.parse('2026-11-01T00:00:00.900Z') },
+    'bios/psx/grown.bin': { size: 12, mtimeMs: Date.parse('2026-11-01T00:00:00Z') },
+    'bios/psx/new.bin': { size: 3, mtimeMs: Date.parse('2026-11-02T00:00:00Z') },
+    'emulators/Dolphin-2609b-macOS.dmg': { size: 6, mtimeMs: Date.parse('2026-11-03T00:00:00Z') },
+  };
+  const found = { bios: ['psx/same.bin', 'psx/grown.bin', 'psx/new.bin', 'psx/gone.bin'].map(name => ({ name })),
+    installers: [{ name: 'Dolphin-2609b-macOS.dmg' }] };
+  const given = await scanSave.givenChanged(found, async p => disk[p] ?? null, held);
+  check('a file the same to the second is left', !given.some(f => f.path === 'bios/psx/same.bin'), given.map(f => f.path));
+  check('a file of another size and a new one go', ['bios/psx/grown.bin', 'bios/psx/new.bin'].every(p => given.some(f => f.path === p)), given.map(f => f.path));
+  check('a file no longer on the drive is not asked for', !given.some(f => f.path === 'bios/psx/gone.bin'), given.map(f => f.path));
+
+  const w = world({
+    emu_files: held.map(({ path, sha1, size }) => ({ path, sha1, size })),
+    emu_files_now: held.map(({ path, sha1 }) => ({ path, sha1 })),
+  });
+  w.objects.set('c'.repeat(40), 'old installer');
+  const sha = { 'bios/psx/grown.bin': 'b'.repeat(40), 'bios/psx/new.bin': 'd'.repeat(40), 'emulators/Dolphin-2609b-macOS.dmg': 'e'.repeat(40) };
+  const read = [];
+  const ordered = given.sort((a, b) => a.path.localeCompare(b.path));
+  // The stand-in's emu_files_now follows emu_files, as the view does.
+  const fetchNow = w.fetch;
+  w.fetch = async (to, init) => { w.tables.emu_files_now = w.tables.emu_files.map(({ path, sha1 }) => ({ path, sha1 })); return fetchNow(to, init); };
+  await scanSave.putGiven(scanSave.restDb({ url, key: KEY, fetch: w.fetch }), ordered, {
+    sha1Of: async p => sha[p], bytesOf: async p => { read.push(p); return `bytes of ${p}`; }, mac: 'home server', names: ['Dolphin'],
+  });
+  check('bytes Supabase already has are not read again', !read.includes('bios/psx/grown.bin'), read);
+  check('new bytes are read and put in the bucket', read.includes('bios/psx/new.bin') && w.objects.has('d'.repeat(40)), read);
+  check('each file gets a row naming the server', ['bios/psx/new.bin', 'emulators/Dolphin-2609b-macOS.dmg'].every(p => w.tables.emu_files.some(f => f.path === p && f.mac === 'home server')), w.tables.emu_files);
+  check('a newer installer takes its emulator\'s older one\'s place', !w.tables.emu_files.some(f => f.path === 'emulators/Dolphin-2512-macOS.dmg'), w.tables.emu_files.map(f => f.path));
+  check('the older installer\'s bytes go with it', !w.objects.has('c'.repeat(40)));
 }
 
 // A refusal is an error, never a quiet success.

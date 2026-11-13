@@ -113,11 +113,12 @@ path, the account's id and the time taken. They never print a token.
 A container scans the collection at 4 a.m. each night, and once when it
 starts, with `emu/tools/scan-roms.mjs --save`: the same scan as Update, saved
 to Supabase the same way, so a game put on the server is in the Library the
-next morning. It reads the games read-only and keeps its fingerprints in its
-own `scan-cache` volume, starting from the ones beside the games, so only a
-new or changed file is read whole. It leaves the drive's backup and the
-newest versions out as Update last saved them, so Update still puts new BIOS,
-keys and installers in Supabase.
+next morning. It also puts each BIOS, key, firmware and installer put on the
+server into Supabase, a newer installer in place of its emulator's older
+one, and asks each emulator's project for its newest version out. It reads
+the games read-only and keeps its fingerprints in its own `scan-cache`
+volume, starting from the ones beside the games, so only a new or changed
+file is read whole. It leaves the drive's backup zip as Update last saved it.
 
 1. In the Supabase dashboard, open **Project Settings**, then **API Keys**,
    and make a new secret key named for the home server, if it has none. It
@@ -159,7 +160,8 @@ keys and installers in Supabase.
 ```
 
 The app's **Logs** print one line a night: how many games and drive saves
-it found and what changed, such as `2 added, 1 gone`, or `nothing changed`.
+it found and what changed, such as `2 added, 1 gone`, or `nothing changed`,
+and any project that gave no newest version.
 A night whose scan fails prints why and tries again the next night.
 
 ## The copy of Supabase

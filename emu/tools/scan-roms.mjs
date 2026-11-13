@@ -15,10 +15,12 @@
 //
 // `--save` is the home server's nightly scan: it writes nothing beside the
 // games, which it mounts read-only, and saves the scan to Supabase as Update
-// does, with scan-save.js, keeping the backup and newest versions the drive's
-// row holds, since the server packs no zip and asks no feed. It keeps its
-// fingerprints in CACHE, starting from the ones beside the games, and says
-// what changed in one line.
+// does, with scan-save.js: the games and saves, each BIOS, key, firmware and
+// installer Supabase lacks, and each emulator's newest version out, asked of
+// its project, keeping the last answer of any that does not answer. It keeps
+// the backup the drive's row holds, since the server packs no zip. It keeps
+// its fingerprints in CACHE, starting from the ones beside the games, and
+// says what changed in one line.
 //
 //   CACHE=/cache SUPABASE_KEY=<secret key> node scan-roms.mjs /games --save
 //
@@ -54,7 +56,8 @@ if (!root || !fs.existsSync(path.join(root, 'roms'))) {
 }
 const scansDir = path.join(root, 'scans');
 const backupsDir = path.join(root, 'backups');
-const emulators = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8')).systems;
+const rules = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8'));
+const emulators = rules.systems;
 const cacheDir = saving ? process.env.CACHE : scansDir;
 const cachePath = path.join(cacheDir, 'fingerprints.json');
 const seed = [cachePath, path.join(scansDir, 'fingerprints.json')].find((f) => fs.existsSync(f));
@@ -136,14 +139,65 @@ fs.mkdirSync(cacheDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));
 const date = new Date().toISOString().slice(0, 10);
 
+// A feed's answer as JSON, or null when it does not answer in 15 seconds.
+const asked = async (address) => {
+  try {
+    const res = await fetch(address, { headers: { 'user-agent': 'rux-emu-scan', accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+    return res.ok ? await res.json() : null;
+  } catch { return null; }
+};
+// The newest version a feed names. A `github` project's is its latest
+// release's tag; with `tags`, the greatest tag that pattern matches, for a
+// project that tags without releasing; with `count`, the first tag and the
+// commits from it to the second, as a rolling build numbers itself. Any
+// other feed is a `url` and the `path` to the version in its JSON.
+const newestOf = async (feed) => {
+  if (feed.github) {
+    const api = `https://api.github.com/repos/${feed.github}`;
+    if (feed.count?.length === 2) {
+      const n = (await asked(`${api}/compare/${feed.count[0]}...${feed.count[1]}`))?.ahead_by;
+      return Number.isInteger(n) ? `${feed.count[0]}-${n}` : null;
+    }
+    if (feed.tags) {
+      const names = ((await asked(`${api}/tags?per_page=100`)) ?? []).map((t) => t.name).filter((n) => new RegExp(feed.tags).test(n));
+      return names.sort().at(-1) ?? null;
+    }
+    return (await asked(`${api}/releases/latest`))?.tag_name ?? null;
+  }
+  if (!feed.url || !feed.path) return null;
+  const v = feed.path.split('.').reduce((v, k) => v?.[k], await asked(feed.url));
+  return typeof v === 'string' ? v : null;
+};
+
 if (saving) {
   const db = scanSave.restDb({ url: SUPABASE_URL, key: process.env.SUPABASE_KEY });
-  const [games, saves, [row]] = await Promise.all([
-    db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'backup,newest')]);
+  const [games, saves, [row], held] = await Promise.all([
+    db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'backup,newest'),
+    db.rows('emu_files_now', 'path,size,saved_at,sha1')]);
+
+  const feeds = [...Object.entries(rules.macSaves), [rules.frontend.name, rules.frontend]].filter(([, r]) => r.feed);
+  const answers = await Promise.all(feeds.map(async ([name, r]) => [name, await newestOf(r.feed)]));
+  // Each emulator still followed, by its answer now, else its last; a retired one drops out.
+  const newest = Object.fromEntries(answers.map(([name, v]) => [name, v ?? row?.newest?.[name]]).filter(([, v]) => v));
+  const unanswered = answers.filter(([, v]) => !v).map(([name]) => name);
+
+  const given = await scanSave.givenChanged(scan, async (rel) => {
+    const st = fs.existsSync(abs(rel)) && fs.statSync(abs(rel));
+    return st ? { size: st.size, mtimeMs: st.mtimeMs } : null;
+  }, held.filter((f) => f.sha1));
+  await scanSave.putGiven(db, given, {
+    sha1Of: (rel) => sha1Of(abs(rel)),
+    bytesOf: async (rel) => fs.readFileSync(abs(rel)),
+    mac: 'home server',
+    names: [...Object.keys(rules.macSaves), rules.frontend.name, 'Rux Emu Helper'],
+  });
+
   const change = scanSave.changes(scan, games, saves);
-  const counts = Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`);
-  await scanSave.save(db, scanSave.rowsOf(scan, change, { backup: row?.backup, newest: row?.newest }));
-  console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the drive; ${counts.join(', ') || 'nothing changed'}`);
+  await scanSave.save(db, scanSave.rowsOf(scan, change, { backup: row?.backup, newest }));
+  const counts = [...Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`),
+    ...(given.length ? [`${given.length} files every Mac is given put in Supabase`] : [])];
+  console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the drive; ${counts.join(', ') || 'nothing changed'}`
+    + (unanswered.length ? `; no newest version from ${unanswered.join(', ')}` : ''));
   process.exit(0);
 }
 

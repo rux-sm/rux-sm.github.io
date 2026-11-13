@@ -279,7 +279,7 @@
     const version = [facts([
       ['In Supabase', installer ? `${kept ?? 'A build'} · ${installer.name}` : 'No installer for it yet'],
       ['Newest out', out ? `${out}${rule.feed?.rolling ? ' · a new build every few days' : ''}`
-        : rule.feed ? 'Not asked yet: Update asks its project' : 'Not followed: it is a development build'],
+        : rule.feed ? 'Not asked yet: the home server asks its project each night' : 'Not followed: it is a development build'],
       ...stands.map(s => [`${s.mac.name}${s.mac.live ? ' · this Mac' : ''}`,
         !s.app ? 'Not installed' : s.known ? `${s.known}${s.app.receipt ? ' · installed by the helper' : ''}`
           : says ? 'Installed' : 'Installed; the app does not say its version']),

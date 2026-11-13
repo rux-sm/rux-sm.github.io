@@ -2891,7 +2891,8 @@ a.scheduler-tip__go { text-decoration: none; }
 /* ON A BAR LONGER THAN A DAY the rows keep to the width a one-day bar gives
    them: one day of this bar, worked out as the bar's own width is, less the
    gap and the two default paddings, with the marks at the destination row's
-   end. So every bar's writing is one size. A live bar's stands in today's
+   end, every row cut short with an ellipsis as a one-day bar's is. So every
+   bar's writing is one size. A live bar's stands in today's
    column, `--scheduler-today` days in, which road-bar.js sets while the bus
    is out. The rows stay where their trip puts them as the board scrolls: a
    trip whose first day is out of view is swiped to, or selected, to be read. */
@@ -2902,12 +2903,6 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar > .scheduler-bar__row {
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
 }
-/* The customer, the update and the crew run to the trip's end, since a
-   day is too short for most of them; the empty update still opens the card
-   from the whole line. A live bar's seats keep to today's column, as their
-   rest meters are a day's. */
-.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update),
-.scheduler-bar:not(.scheduler-bar--road) > .scheduler-bar__drivers { max-inline-size: none; }
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }

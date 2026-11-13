@@ -670,11 +670,9 @@
     const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
       : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
     /* How many buses the leg takes, written after the destination on a leg of
-       more than one, as the figure alone: `3`. The board numbers them down its rows, as `nth`, and
-       every bus after the first says which it is in place of the update, so
-       the trip's news is read once. */
+       more than one, as the figure alone: `3`. Every bus shows the trip's
+       newest update, since the bus column already says which bus a bar is. */
     const count = leg.count || 1;
-    const later = count > 1 && b.nth > 1;
 
     const { facts, problems, tone } = factsOf(b, board);
     const alert = tone ? alertMark(tone, problems.map(a => a.words).join(' · ')) : null;
@@ -775,10 +773,9 @@
 
     // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;
-    const nthWords = later ? `Bus ${b.nth} of ${count}` : null;
     // The update's words have no hover label: Updates, which the chat mark opens, has them whole.
-    const news = el('span', null, nthWords ?? latest?.body ?? '');
-    const age = later ? null : ageMark(latest?.created_at);
+    const news = el('span', null, latest?.body ?? '');
+    const age = ageMark(latest?.created_at);
     const updateRow = el('div', 'scheduler-bar__row scheduler-bar__update');
     /* A chat mark leads the row, in the column the crew's marks stand in
        below it, and is the button that opens Updates, as the alert badge
@@ -788,8 +785,7 @@
     chat.type = 'button';
     chat.dataset.cardOpener = '';
     chat.setAttribute('aria-expanded', 'false');
-    chat.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
-      .filter(Boolean).join('. '));
+    chat.setAttribute('aria-label', `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`);
     chat.append(svgUse('#m-chat', '16', '0 0 32 32'));
     updateRow.appendChild(runOf(chat, age, news));
     bar.appendChild(updateRow);

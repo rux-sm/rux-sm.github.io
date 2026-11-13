@@ -196,9 +196,9 @@ expect('a split\'s drop-off points down and its pickup up, each saying which leg
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
   [['3', 'Marco'], ['3', 'Lena'], ['3', 'Needs a bus']]);
-expect('the first of them carries the update, the others say which bus they are with no age',
-  drawn('trip-bar', 'More than one bus').map(b => [has(b, '.scheduler-bar__age'), /^Bus /.test(text(b, '.scheduler-bar__update')) ? text(b, '.scheduler-bar__update') : 'update']),
-  [[true, 'update'], [false, 'Bus 2 of 3'], [false, 'Bus 3 of 3']]);
+expect('every one of them carries the trip\'s update and its age',
+  drawn('trip-bar', 'More than one bus').map(b => [has(b, '.scheduler-bar__age'), /^Bus \d+ of/.test(text(b, '.scheduler-bar__update'))]),
+  [[true, false], [true, false], [true, false]]);
 // The samples are dated from today, so the weekdays are whichever they fall on.
 expect('a leg crossing the week\'s edge shows only its time inside the week, its track running out the other way, and names both days on its tooltip, with no +1',
   drawn('trip-bar', 'Either side of the week').map(b => [[...b.querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => w.textContent),

@@ -24,7 +24,8 @@
 <!-- The Library as a room, built beside index.html until it takes its place;
      docs/plans/emu-room.md is the plan. room.js draws Your Mac, what this Mac
      has set up and holds, over Rux's Collection: a row of consoles, then the
-     picked console's games. A game opens in the side panel. The shell is
+     picked console's games. A game is dragged between them, and pressed it
+     opens in the side panel. The shell is
      templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -169,6 +170,9 @@
           <div class="emu-room__head">
             <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
             <a class="rux--link" href="status.html" id="emu-room-health"></a>
+            <!-- What a move just did, from room.js, with Undo where it can be taken back. -->
+            <p class="emu-room__said"><span role="status" id="emu-room-said"></span>
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="emu-room-undo" hidden>Undo</button></p>
             <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
           </div>
           <div class="emu-scene">

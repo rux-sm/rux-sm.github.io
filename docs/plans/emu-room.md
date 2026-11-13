@@ -18,8 +18,8 @@ fun to use while staying plain. It replaces the front page that
 - **The room is built as its own page, `emu/room.html`, beside the
   Library,** which keeps working until the room takes its place; nothing
   links to the room until then. It draws Your Mac and Rux's Collection from
-  the real games and this Mac, and a game opens its side panel; nothing is
-  dragged yet.
+  the real games and this Mac; a game is dragged between them and opens its
+  side panel when pressed. A console is not dragged yet.
 - **Until a Mac's room is kept, the console of each game it holds stands in
   the room,** plugged in where this Mac has its emulator and unplugged where
   it has not, so a Mac with every emulator installed still starts with a
@@ -75,9 +75,9 @@ fun to use while staying plain. It replaces the front page that
   Download; onto its console plays it, the helper's Play; straight from
   Rux's Collection onto its console downloads and then plays. A home
   console's game dropped on the TV counts as dropped on its console. Dragged
-  back anywhere on Rux's Collection it comes off this Mac at once, with Undo,
-  since its saves stay and getting it back is one drag; there is no separate
-  return area. Picking it up turns the collection to its console, so its own
+  back anywhere on Rux's Collection its cover leaves this Mac at once, with
+  Undo, and its files go a few seconds later, so Undo downloads nothing;
+  its saves stay, and there is no separate return area. Picking it up turns the collection to its console, so its own
   cover is there to light up.
 - **The TV shows a home console's game while it runs,** and a handheld
   lights its own screen.
@@ -86,6 +86,8 @@ fun to use while staying plain. It replaces the front page that
   Bring in, Put back, or in red why not, such as "Doesn't fit the Game Boy"
   and "Plug it in first". The place it will land lights up. The word and the
   move come from one function, so they never disagree.
+- **One line beside Your Mac's name says what a move did,** such as
+  "Playing." or why the helper refused, with Undo where it can be taken back.
 - **A game on this Mac whose console is not plugged in is dimmed,** with a
   small tag naming the console it needs.
 - **Favourites is a shelf you drag games onto,** from Rux's Collection or
@@ -136,17 +138,20 @@ None open.
 
 - [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
-      button.
+      button, and have it say which game runs, to light the TV or a
+      handheld's screen.
 - [ ] Fold the menu to a strip of icons on `room.html`.
 - [ ] Lay out a room of more than eight consoles, where each is now too
       narrow for its name.
 - [ ] Tag a game whose console is not plugged in with that console; it is
       only dimmed.
-- [ ] Build the drag with pointer events, the menu, the plug, and the
-      controller's pick up and put down.
-- [ ] Wire the moves to Download, Install, `R.carry.remove`, Play, Remove a
-      game and the favourite mark, loading `carry.js` and `saves-rules.js`.
-- [ ] Add the wrong-console reaction and the sounds.
+- [ ] Drag a console between Rux's Collection and the room, with its menu
+      and its plug as a button: plugging in is the helper's install and
+      unplugging `R.carry.remove`, which says "Plug it in first" where the
+      word now says its emulator is not on this Mac.
+- [ ] Pick up and put down a game or console with a controller's A.
+- [ ] Add the wrong-console reaction, the game going into its console, and
+      the sounds.
 - [ ] Lay it out on the phone without Your Mac, and see the drawings in
       Safari.
 - [ ] Make the room `index.html`, update `emu/README.md` and drop the

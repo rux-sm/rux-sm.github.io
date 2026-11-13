@@ -13,7 +13,17 @@
    each its drawing from brand/consoles.svg over its name and count. Pressing
    a console picks it, and its games show beneath as covers in one row, A to
    Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
-   game-panel.js. docs/plans/emu-room.md is what the room is still to do.
+   game-panel.js.
+
+   A game is dragged with the pointer, where the helper answers. A word
+   follows it and says what letting go will do, and the place it would land
+   lights: onto Your Mac downloads it, onto its console or the TV plays it,
+   downloading it first if it must, onto the Favourites shelf marks it, and
+   back onto Rux's Collection takes it off this Mac or off Favourites. A
+   console it does not fit says so in red and nothing happens. One line by
+   Your Mac's name says what a move did. A game taken off this Mac leaves
+   the shelf at once and its files go a few seconds later, so Undo is only
+   putting it back. docs/plans/emu-room.md is what the room is still to do.
    ========================================================================== */
 (() => {
   'use strict';
@@ -29,6 +39,8 @@
   let helper = null;
   // How a game stands on this Mac, from the helper's library and downloads.
   let stands = () => ({ state: 'away' });
+  // Whether the helper keeps a library on this Mac, to download to and remove from.
+  let keeps = false;
   // The bytes this Mac has free for games, or null where no helper says.
   let free = null;
   // The console whose games show.
@@ -39,6 +51,16 @@
   const gamesOf = system => games.filter(g => g.system === system);
   // Whether this Mac has a system's emulator, where a helper answers.
   const plays = system => Boolean(helper?.systems?.includes(system));
+  // A drive with the games plugged into this Mac, which a game plays from unheld.
+  const drive = () => Boolean(helper?.collection) && (!keeps || !helper.collection.network);
+  // The handhelds, which light their own screens; every other console plays on the TV.
+  const HANDHELD = new Set(['gb', 'gbc', 'gba', 'nds', 'n3ds']);
+  // Games taken off this Mac whose files go once Undo's time has passed, by key.
+  const leaving = new Map();
+  // Games to play as soon as they have arrived, by key.
+  const wanted = new Set();
+  // How a game stands on this Mac; one leaving it is away already.
+  const standing = g => (leaving.has(keyOf(g)) ? { state: 'away', total: 0, done: 0 } : stands(g));
 
   const SVG = 'http://www.w3.org/2000/svg';
   const svgOf = (cls, box) => {
@@ -107,10 +129,10 @@
     $('emu-room-space').textContent = free == null ? '' : `${R.size(free)} free`;
     $('emu-ledge').replaceChildren(...games.filter(g => g.notes?.favourite).map(g => {
       const li = coverItem(g, true);
-      if (stands(g).state !== 'held') { li.firstChild.classList.add('emu-cover--away'); li.firstChild.title = `${g.title}, not on this Mac`; }
+      if (standing(g).state !== 'held') { li.firstChild.classList.add('emu-cover--away'); li.firstChild.title = `${g.title}, not on this Mac`; }
       return li;
     }));
-    const mine = games.map(g => [g, stands(g)]).filter(([, s]) => s.state === 'held' || s.state === 'arriving');
+    const mine = games.map(g => [g, standing(g)]).filter(([, s]) => s.state === 'held' || s.state === 'arriving');
     const here = Object.keys(R.SYSTEMS).filter(s => mine.some(([g]) => g.system === s));
     $('emu-stand').replaceChildren(...here.map(unit));
     $('emu-stand').classList.toggle('emu-stand--empty', !here.length);
@@ -142,7 +164,7 @@
     $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
     $('emu-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
-      if (stands(g).state === 'held') {
+      if (standing(g).state === 'held') {
         li.firstChild.classList.add('emu-cover--here');
         li.firstChild.append(useOf(svgOf('emu-cover__tick', '0 0 32 32'), 'i-checkmark--filled'));
         li.firstChild.title = `${g.title}, on this Mac`;
@@ -169,14 +191,15 @@
   const render = () => { renderRoom(); renderCollection(); };
 
   // What the helper says of this Mac, read again; while a game arrives it is
-  // read every three seconds, so its veil lifts.
+  // read every second, so its veil lifts.
   let again = 0;
   async function takeMac(mac) {
     helper = mac.helper;
+    keeps = Boolean(helper?.library) && mac.library != null;
     stands = R.helper.standings(mac.library, mac.downloads);
-    free = helper?.library && mac.library != null ? (await R.helper.space().catch(() => null))?.free ?? null : null;
+    free = keeps ? (await R.helper.space().catch(() => null))?.free ?? null : null;
     clearTimeout(again);
-    if (games.some(g => stands(g).state === 'arriving')) again = setTimeout(look, 3000);
+    if (games.some(g => stands(g).state === 'arriving')) again = setTimeout(look, 1000);
   }
   const readMac = async () => takeMac(await R.thisMac.read());
   const told = () => JSON.stringify([helper, free, games.map(g => { const s = stands(g); return s.state === 'away' ? 0 : [s.state, s.done]; })]);
@@ -184,8 +207,189 @@
   async function look() {
     const before = told();
     await readMac();
-    if (told() !== before && !panelOpen()) render();
+    // Nothing is drawn again under a held game or an open panel.
+    if (told() !== before && !panelOpen() && !drag?.on) render();
+    // A game wanted for play starts once it is here, and is let go if it stopped.
+    for (const key of [...wanted]) {
+      const g = games.find(x => keyOf(x) === key);
+      const state = g ? stands(g).state : 'away';
+      if (state === 'arriving') continue;
+      wanted.delete(key);
+      if (state === 'held') play(g);
+    }
   }
+
+  // THE MOVES ----------------------------------------------------------------
+  // One line by Your Mac's name says what a move did, and offers Undo where
+  // it can be taken back; it clears itself.
+  let saidFor = 0;
+  function say(text = '', undo = null, ms = 4000) {
+    clearTimeout(saidFor);
+    $('emu-room-said').textContent = text;
+    $('emu-room-undo').hidden = !undo;
+    $('emu-room-undo').onclick = undo && (() => { say(); undo(); });
+    if (text) saidFor = setTimeout(say, ms);
+  }
+  async function download(g, thenPlay = false) {
+    const key = keyOf(g);
+    // A game brought back while it was leaving only stays.
+    if (leaving.has(key)) { clearTimeout(leaving.get(key).timer); leaving.delete(key); }
+    if (stands(g).state !== 'held') {
+      try { await R.helper.download(g); }
+      catch (error) { say(error.message); return; }
+    }
+    if (thenPlay) wanted.add(key);
+    await look();
+    render();
+  }
+  async function play(g) {
+    say('Starting…');
+    try { await R.thisMac.play(g, say); }
+    catch (error) { say(error.message); }
+  }
+  // Its cover leaves the shelf now and its files go when Undo's time has
+  // passed, or as the page closes, so Undo downloads nothing.
+  const UNDO = 6000;
+  function takeOff(g) {
+    const key = keyOf(g);
+    wanted.delete(key);
+    const go = async () => {
+      leaving.delete(key);
+      try { await R.helper.remove(g); }
+      catch (error) { say(error.message); }
+      await readMac();
+      if (!panelOpen() && !drag?.on) render();
+    };
+    leaving.set(key, { timer: setTimeout(go, UNDO), go });
+    render();
+    say(`${nameOf(g)} is off this Mac. Its saves stay.`, () => { clearTimeout(leaving.get(key)?.timer); leaving.delete(key); render(); }, UNDO);
+  }
+  window.addEventListener('pagehide', () => { for (const { timer, go } of leaving.values()) { clearTimeout(timer); go(); } });
+  async function favourite(g, on) {
+    try { await R.data.saveNotes({ system: g.system, title: g.title, favourite: on }); }
+    catch (error) { console.error(error); say('The favourite could not be saved. Try again.'); return; }
+    g.notes = { ...g.notes, system: g.system, title: g.title, favourite: on };
+    render();
+  }
+
+  // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
+  // place that lights, and the move itself, or null where nothing would
+  // happen. One answer, so the word never disagrees with the drop. `home`
+  // lights the game's own cover in Rux's Collection too.
+  function intent(g, from, under) {
+    if (!under) return null;
+    const yes = (word, light, run, home = false) => ({ word, light, run, home });
+    const no = (word, light) => ({ word, light, no: true });
+    const s = standing(g);
+    const unit = under.closest('.emu-unit')
+      ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? $('emu-stand').querySelector(`[data-system="${g.system}"]`) : null);
+    if (unit) {
+      const system = unit.dataset.system;
+      if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit);
+      if (!plays(system)) return no('Its emulator is not on this Mac', unit);
+      if (s.state === 'arriving') return no('Still downloading', unit);
+      if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
+      if (keeps) return yes('Download and play', unit, () => download(g, true));
+      return no('Plug in the drive to play', unit);
+    }
+    if (under.closest('.emu-wall')) return g.notes?.favourite ? null : yes('Add to Favourites', $('emu-ledge'), () => favourite(g, true));
+    if (under.closest('.emu-scene')) {
+      return keeps && (s.state === 'away' || s.state === 'failed') ? yes('Download', under.closest('.emu-scene'), () => download(g)) : null;
+    }
+    if (under.closest('#emu-collection')) {
+      if (from === 'ledge') return yes('Take off Favourites', $('emu-collection'), () => favourite(g, false), true);
+      if (from === 'shelf') return yes('Take off this Mac', $('emu-collection'), () => takeOff(g), true);
+    }
+    return null;
+  }
+
+  // THE DRAG, with the pointer, where the helper answers. A press that does
+  // not move is the cover's own click, which opens its game.
+  let drag = null;
+  const word = el('div', 'emu-word');
+  word.hidden = true;
+  document.body.append(word);
+  const FROM = [['#emu-onmac', 'shelf'], ['#emu-ledge', 'ledge'], ['#emu-games', 'collection']];
+  const unlight = () => {
+    for (const cls of ['emu-lit', 'emu-no', 'emu-cover--home']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
+  };
+  function drop() {
+    word.hidden = true;
+    unlight();
+    for (const u of $('emu-stand').children) u.classList.remove('emu-unit--fit', 'emu-unit--dim');
+  }
+  // A cover's picture is not dragged away as a file.
+  document.addEventListener('dragstart', e => { if (e.target.closest?.('.emu-cover')) e.preventDefault(); });
+  document.addEventListener('pointerdown', e => {
+    const src = e.target.closest?.('.emu-cover[data-game]');
+    if (!src || e.button > 0 || !helper) return;
+    const g = games.find(x => keyOf(x) === src.dataset.game);
+    const from = FROM.find(([sel]) => src.closest(sel))?.[1];
+    if (g && from) drag = { src, g, from, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
+  });
+  document.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.on) {
+      if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
+      drag.on = true;
+      const r = drag.src.getBoundingClientRect();
+      Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
+      const ghost = el('div', 'emu-ghost');
+      const copy = drag.src.cloneNode(true);
+      copy.style.inlineSize = `${r.width}px`;
+      ghost.append(copy);
+      document.body.append(ghost);
+      drag.ghost = ghost;
+      drag.src.classList.add('emu-cover--held');
+      // The consoles it fits light and the rest dim, so where it goes shows.
+      for (const u of $('emu-stand').children) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
+      // Coming back from the room, the collection turns to its console and
+      // its row to the game, so its own cover is there to light.
+      if (drag.from !== 'collection') {
+        if (pick !== drag.g.system) { pick = drag.g.system; showPick(); }
+        const row = $('emu-games');
+        const own = row.querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`);
+        if (own) row.scrollLeft = own.offsetLeft - row.offsetLeft - (row.clientWidth - own.offsetWidth) / 2;
+      }
+    }
+    drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) rotate(-3deg)`;
+    const it = intent(drag.g, drag.from, document.elementFromPoint(e.clientX, e.clientY));
+    unlight();
+    word.hidden = !it;
+    if (!it) return;
+    word.textContent = it.word;
+    word.classList.toggle('emu-word--no', Boolean(it.no));
+    word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
+    it.light.classList.add(it.no ? 'emu-no' : 'emu-lit');
+    if (it.home) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
+  });
+  // A drag that ended on its own cover would press it; that one click is swallowed.
+  let dragged = false;
+  document.addEventListener('click', e => { if (dragged) { dragged = false; e.stopPropagation(); e.preventDefault(); } }, true);
+  document.addEventListener('pointerup', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    drag = null;
+    if (!d.on) return;
+    drop();
+    dragged = true;
+    setTimeout(() => { dragged = false; });
+    const it = intent(d.g, d.from, document.elementFromPoint(e.clientX, e.clientY));
+    const done = () => { d.ghost.remove(); d.src.classList.remove('emu-cover--held'); if (it && !it.no) it.run(); };
+    // A move that happens fades where it was dropped; any other flies back
+    // to where it came from. Both are Carbon's productive motion.
+    if (it && !it.no) { d.ghost.classList.add('emu-ghost--gone'); setTimeout(done, 110); return; }
+    d.ghost.classList.add('emu-ghost--back');
+    d.ghost.style.transform = `translate(${d.home.left}px, ${d.home.top}px)`;
+    setTimeout(done, 240);
+  });
+  document.addEventListener('pointercancel', () => {
+    if (!drag) return;
+    drop();
+    drag.ghost?.remove();
+    drag.src.classList.remove('emu-cover--held');
+    drag = null;
+  });
 
   // The cover a game was opened from, to come back to when its panel closes.
   let opener = null;

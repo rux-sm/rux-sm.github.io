@@ -10,7 +10,8 @@
    which takes the game's files and leaves its saves. Where the helper is
    not running it offers to start it. A game played is marked with when,
    for Recently played. `onChanged` is told when what this Mac holds, or
-   whether the helper runs, has changed.
+   whether the helper runs, has changed. `play` is Play itself, which the
+   room uses too.
    ========================================================================== */
 (() => {
   'use strict';
@@ -26,6 +27,18 @@
     if (!helper) return NOTHING;
     const [library, downloads] = await Promise.all([H.library().catch(() => null), H.downloads().catch(() => null)]);
     return { helper, library, downloads };
+  }
+
+  // Plays a game: its saves carried to this Mac first, the helper's Play, the
+  // saves carried back when its emulator quits, and the game marked with
+  // when. `say` is told each step in words; a refusal is thrown.
+  async function play(g, say = () => {}) {
+    const carried = await R.carry?.before(g.system, say);
+    await H.play(g);
+    say('Playing.');
+    if (carried) R.carry.after(g.system, say);
+    try { g.notes = { ...g.notes, system: g.system, title: g.title, played_at: await R.data.markPlayed(g) }; }
+    catch (error) { console.error(error); say('Playing, but it could not be marked as played.'); }
   }
 
   const button = (text, cls, onClick) => {
@@ -135,14 +148,8 @@
         const play = button('Play', 'rux--btn--primary', async () => {
           play.disabled = true;
           said.textContent = 'Starting…';
-          try {
-            const carried = await R.carry?.before(g.system, text => { said.textContent = text; });
-            await H.play(g);
-            said.textContent = 'Playing.';
-            if (carried) R.carry.after(g.system, text => { if (!closed()) said.textContent = text; });
-            try { g.notes = { ...g.notes, system: g.system, title: g.title, played_at: await R.data.markPlayed(g) }; }
-            catch (error) { console.error(error); said.textContent = 'Playing, but it could not be marked as played.'; }
-          } catch (error) { said.textContent = error.message; }
+          try { await play(g, text => { if (!closed()) said.textContent = text; }); }
+          catch (error) { said.textContent = error.message; }
           play.disabled = false;
         });
         buttons.push(play);
@@ -207,5 +214,5 @@
     return box;
   }
 
-  R.thisMac = { read, area };
+  R.thisMac = { read, area, play };
 })();

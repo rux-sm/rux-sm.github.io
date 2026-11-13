@@ -22,18 +22,25 @@ fun to use while staying plain. It replaces the front page that
   opening Status.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
-- **Rux's Collection has two parts, Rux's Consoles and Rux's Games.** Every
-  console has its own spot in Rux's Consoles; while it is in the room the
-  spot stands empty, outlined, as the place it goes back to.
-- **Rux's Games shows one console's games at a time,** picked from a row of
-  labels, one per console with its count, as covers in one row that scrolls
-  sideways, A to Z; one this Mac has is dimmed with a tick. There is no All,
-  because one console at a time is neater.
+- **Rux's Collection is one row of consoles over the picked console's
+  games.** Each console is a tile with its drawing, name and count; pressing
+  it shows its games and dragging it brings it up. While a console is in the
+  room its tile stands outlined and faint, as the place it goes back to, and
+  still shows its games when pressed.
+- **The picked console's games have a heading:** its name, its count, where
+  it stands, such as "In your room, unplugged", and Bring to Your Mac while
+  it is not in the room. The games are covers in one row that scrolls
+  sideways, A to Z; one this Mac has is dimmed with a tick, and can still be
+  picked up. There is no All, because one console at a time is neater.
 - **There is no Recently played,** because a Mac holds only a handful of
   games, and those are on its shelf or in Favourites.
-- **Your Mac holds the consoles on a stand above a power strip on the
-  left, and the Favourites shelf over the On this Mac shelf on the right,**
-  with how much room is used.
+- **Your Mac is one scene.** One TV and the consoles stand on a board on the
+  left, with a power strip under it; this Mac's games stand on the same board
+  on the right, with Favourites on a wall shelf above them and how much room
+  is used in the heading. An empty room says "Drag a console up here."
+- **The plug is the whole socket under its console.** Plugged in it sits in
+  the strip; unplugged it hangs loose, its socket blinks and it says "Plug
+  in".
 - **A console comes in unplugged, and plugging it in installs its
   emulator.** Unplugging it takes the emulator off this Mac, once no other
   plugged-in console uses it, and an unplugged console goes back to its spot
@@ -52,17 +59,29 @@ fun to use while staying plain. It replaces the front page that
   rux and applied on a yes.
 - **An emulator that plays several consoles readies them all.** Plugging in
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance show
-  Ready in Rux's Consoles, and each arrives plugged in when dragged into the room;
+  Ready in Rux's Collection, and each arrives plugged in when dragged into
+  the room;
   until then their games cannot be played.
 - **A game moves the same way:** onto Your Mac downloads it, `this-mac.js`'s
-  Download; onto its console plays it, the helper's Play, and the screen
-  lights up while it runs; straight from Rux's Games onto its console
-  downloads and then plays. Dragged back anywhere on Rux's Games, where its
-  own cover lights up, it comes off this Mac at once, with Undo, since its
-  saves stay and getting it back is one drag; there is no separate return
-  area.
-- **Favourites is a shelf you drag games onto,** from Rux's Games or the
-  room, and off again back to Rux's Games; it is `emu_notes`' favourite mark.
+  Download; onto its console plays it, the helper's Play; straight from
+  Rux's Collection onto its console downloads and then plays. A home
+  console's game dropped on the TV counts as dropped on its console. Dragged
+  back anywhere on Rux's Collection it comes off this Mac at once, with Undo,
+  since its saves stay and getting it back is one drag; there is no separate
+  return area. Picking it up turns the collection to its console, so its own
+  cover is there to light up.
+- **The TV shows a home console's game while it runs,** and a handheld
+  lights its own screen.
+- **A word follows what is held and says what letting go will do:**
+  Download, Play, Download and play, Add to Favourites, Take off this Mac,
+  Bring in, Put back, or in red why not, such as "Doesn't fit the Game Boy"
+  and "Plug it in first". The place it will land lights up. The word and the
+  move come from one function, so they never disagree.
+- **A game on this Mac whose console is not plugged in is dimmed,** with a
+  small tag naming the console it needs.
+- **Favourites is a shelf you drag games onto,** from Rux's Collection or
+  the room, and off again back to Rux's Collection; it is `emu_notes`'
+  favourite mark. A favourite this Mac lacks is dimmed.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
   where it goes shows before it is dropped.
 - **A game goes in as it would on the real console:** a cartridge drops into
@@ -80,10 +99,13 @@ fun to use while staying plain. It replaces the front page that
   switch in the header turns them off.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
-  moves as buttons; pressing a console opens a small menu with its moves; the plug is a button, Enter does on a keyboard, and on a
-  controller A picks up and A puts down.
+  moves as buttons; pressing a console in the room opens a small menu with
+  its moves, and one in the collection has Bring to Your Mac in its heading;
+  the plug is a button, Enter does on a keyboard, and on a controller A picks
+  up and A puts down.
 - **The consoles are a new set, drawn for the room,** each a plain flat
-  drawing with a screen that glows; the home consoles stand under a TV.
+  drawing; the home consoles stand beside the one TV, and a handheld's own
+  screen glows.
 - **Covers keep one height and their own art's width,** as now.
 - **Without the helper, such as on the phone, Your Mac is not shown,** and
   Rux's Collection is the library to browse.
@@ -91,7 +113,7 @@ fun to use while staying plain. It replaces the front page that
   `emu-`, every colour a `--rux-*` token; motion follows Carbon's, and the
   head shake, which Carbon has no answer for, says so beside it.
 - **The prototype is a private page with invented games,**
-  claude.ai/artifact/69qMaJrD8rSz8nXS5xeTng, and is not part of the site.
+  claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, and is not part of the site.
 
 ## Questions
 

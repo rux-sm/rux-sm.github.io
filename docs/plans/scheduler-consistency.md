@@ -39,6 +39,19 @@ and the side nav is grouped. Nothing a page can do today is removed.
 - **The Billing tab's second section is not also named Billing,** and what
   is filled in once the trip is back, Miles and Driver pay, stands under its
   own heading, so Mark billing done ends the part it marks.
+- **A form's Cancel and Save are in a foot that stays in view,** as the trip
+  editor's are, on every record page and on Settings, so Save is never
+  scrolled away. The words are Cancel and Save everywhere.
+- **Every page keeps its header and its content to the set width, pulled
+  in,** and the board alone runs to the window's edges, header and all,
+  while its View menu's Fill the window is on.
+- **Delete is in an overflow menu in a record's header, shown only when the
+  record can be deleted.** A record that cannot be says to set it Inactive
+  where its Status is.
+- **Decline on the driver's page keeps its size and is an outline,** Accept
+  the one solid button, since the confirmation already catches a wrong tap.
+- **Follow-ups, Vehicle types and Kinds are Carbon's ghost buttons,** their
+  words kept.
 - **Every rule a page needs is Design's or the app's own under
   `scheduler-`,** as the policy says; no change here edits a Carbon file.
 - **Each task is checked in Chrome on :8641 in every theme before its
@@ -46,29 +59,13 @@ and the side nav is grouped. Nothing a page can do today is removed.
 
 ## Questions
 
-1. **Saving a form.** Record pages end in Cancel and Save, Settings has
-   Discard changes and Save at its top, and the trip editor has Reset and
-   Save in a fixed foot. Should all three be one pattern, and which: the
-   record pages' buttons at the form's end, or a foot that stays in view?
-   The recommendation is a foot that stays in view, worded Cancel and Save,
-   since a long form's Save is otherwise off screen.
-2. **The header on a wide screen.** List and record pages inset the menu
-   button and logo to the content column, and the board has them at the
-   screen's edge. Carbon's shell keeps them at the edge. Is the inset
-   deliberate?
-3. **Delete on a record.** A disabled Delete with its reason is always on
-   the page. Should it move to an overflow menu in the header and show only
-   when the record can be deleted, or stay, so the reason is always read?
-4. **The side nav's groups.** Proposed: Schedule, Live map, Trips,
+1. **The side nav's groups.** Proposed: Schedule, Live map, Trips,
    Maintenance schedule; then Fleet, Drivers, Partners, Contacts, Customers,
    Locations, Documents; then Quote calculator, QuickBooks; then Forms,
    History, Settings. Is that the office's order?
-5. **Decline on the driver's page.** Decline is as large and as solid as
-   Accept. Should it be quieter, to make a wrong tap less likely, or stay
-   as large, since a driver's page keeps its actions big and obvious?
-6. **Toolbar links.** Follow-ups, Vehicle types and Kinds are links in a
-   table's toolbar. Should they be Carbon's ghost buttons, or one settings
-   button on each list?
+2. **The Live map and the Maintenance schedule.** Both fill the window
+   today. Do they keep to the set width like every other page, or are they
+   wide like the board in Fill the window?
 
 ## Tasks
 
@@ -84,14 +81,19 @@ and the side nav is grouped. Nothing a page can do today is removed.
 - [ ] Take the Active tag off the Fleet and Partners lists' active rows.
 - [ ] Say a warning most rows share once over the table, on Documents and
   on the Drivers list's medical card column.
-- [ ] Group the side nav, in the block every page carries, once question 4
+- [ ] Group the side nav, in the block every page carries, once question 1
   is answered.
 - [ ] Rename the Billing tab's second section and set Miles and Driver pay
   under their own heading.
 - [ ] Give the Live map's panel Carbon's skeleton while Samsara is asked
   the first time.
-- [ ] Make saving one pattern, once question 1 is answered.
-- [ ] Settle the header's inset, Delete's place, Decline's weight and the
-  toolbar links, once questions 2, 3, 5 and 6 are answered.
+- [ ] Give the record pages and Settings the foot that stays in view, with
+  Cancel and Save.
+- [ ] Hold the board's header and content to the set width while Fill the
+  window is off, and the Live map and the Maintenance schedule as question
+  2 is answered.
+- [ ] Move Delete to an overflow menu in each record's header.
+- [ ] Make Decline an outline on the driver's page.
+- [ ] Make Follow-ups, Vehicle types and Kinds ghost buttons.
 - [ ] Bring `scheduler/README.md` and `scheduler/docs/screen-inventory.md`
   to what each task changed, in that task's commit.

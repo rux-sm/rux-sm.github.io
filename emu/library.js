@@ -78,13 +78,24 @@
     return img;
   }
 
-  // A cover: the game's art, else its name on the tile. Its system gives it its box's shape.
+  // A cover: the game's art, else its name on the tile. Its system gives it
+  // its box's shape until the art loads, and then the art's own shape does,
+  // so every cover is one height and as wide as its own box art. The shape
+  // goes on the cover button where there is one, because it sets the width.
   function cover(g, cls) {
     const box = el('div', cls);
     box.dataset.system = g.system;
-    const name = () => box.replaceChildren(el('span', 'emu-cover-title', nameOf(g)));
+    const name = () => {
+      box.replaceChildren(el('span', 'emu-cover-title', nameOf(g)));
+      (box.closest('.emu-cover') ?? box).style.removeProperty('--emu-box');
+    };
     const img = art(g, name);
-    if (img) box.append(img);
+    if (img) {
+      img.addEventListener('load', () => {
+        if (img.naturalWidth && img.naturalHeight) (box.closest('.emu-cover') ?? box).style.setProperty('--emu-box', `${img.naturalWidth} / ${img.naturalHeight}`);
+      });
+      box.append(img);
+    }
     return box;
   }
 

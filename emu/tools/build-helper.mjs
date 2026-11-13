@@ -6,8 +6,13 @@
 //
 // It needs Xcode's Swift, so it runs on a Mac that builds the site; the Mac
 // that installs the helper needs nothing. The app runs on Apple silicon and
-// Intel, is signed for this Mac only (macOS asks once to open it), and is
-// replaced whole each time. The site's emulators.json goes inside it, and the
+// Intel, and is replaced whole each time. It is signed with the Rux Emu
+// Helper certificate in this Mac's keychain, a free one made in Keychain
+// Access, so macOS knows every build as the same app and keeps each
+// permission it gave, where a build signed for itself alone is asked about
+// again; a Mac allows it once by hand, since Apple vouches for no free
+// certificate. A Mac without the certificate is refused here rather than
+// building one macOS takes for another app. The site's emulators.json goes inside it, and the
 // emulation folder's server.json, `{ "home": "http://<address>:8090",
 // "public": "https://<name>" }`, the home server's two addresses; its
 // version is the one main.swift says.
@@ -27,6 +32,12 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const source = path.join(here, '..', 'helper', 'main.swift');
 const version = fs.readFileSync(source, 'utf8').match(/^let version = "(\d+)"$/m)[1];
 const name = 'Rux Emu Helper';
+const identity = 'Rux Emu Helper';
+const identities = execFileSync('security', ['find-identity', '-p', 'codesigning'], { encoding: 'utf8' });
+if (!identities.includes(`"${identity}"`)) {
+  console.error(`No "${identity}" certificate in this Mac's keychain: make it in Keychain Access, Certificate Assistant, Create a Certificate, Self Signed Root, Code Signing, or import it from the Mac that has it.`);
+  process.exit(1);
+}
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'emu-helper-'));
 
 try {
@@ -64,7 +75,7 @@ try {
   </dict></array>
 </dict></plist>
 `);
-  execFileSync('codesign', ['--force', '--sign', '-', app]);
+  execFileSync('codesign', ['--force', '--sign', identity, app]);
 
   // What Check this Mac.command was, which the helper replaces: the command,
   // its tool and copy of emulators.json, and the reports it wrote.

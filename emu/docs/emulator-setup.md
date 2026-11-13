@@ -128,10 +128,15 @@ Problems lists a save with no game.
 
 ## Rux Emu Helper
 
-Double-click `Install Rux Emu Helper.command` on the drive. Its game
-controller appears in the menu bar, and it starts at each log-in. The first
-time the Rux Emu site asks it something, Chrome asks whether the site may
-reach this Mac: Allow.
+Double-click `Install Rux Emu Helper.command` on the drive or the server's
+share, or download the helper from the Status page. Its game controller
+appears in the menu bar, and it starts at each log-in. Each Mac allows it
+once: macOS asks to open it, Chrome asks whether the site may reach this
+Mac, and macOS asks once whether it may read the drive and the share. It is
+signed with the Rux Emu Helper certificate, so a newer build keeps every
+permission given. `emu/tools/build-helper.mjs` builds it only on a Mac whose
+keychain holds that certificate; to build on another, export it from
+Keychain Access as a `.p12` file and import it there.
 
 ## Checking a Mac
 

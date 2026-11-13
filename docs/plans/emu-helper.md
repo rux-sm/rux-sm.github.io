@@ -67,11 +67,6 @@ None open.
 ## Tasks
 
 - [ ] Delete the test shortcut, Rux Emu Open, in Shortcuts.
-- [ ] rux makes the certificate in Keychain Access: Certificate Assistant,
-  Create a Certificate, named Rux Emu Helper, Self Signed Root, Code
-  Signing.
-- [ ] Sign the helper with it in `emu/tools/build-helper.mjs`, and prove on
-  the MacBook Pro that a second build keeps the share's permission.
 - [ ] Have the helper update itself on a press, from the newest zip
   Supabase holds.
 - [ ] Add Set up this Mac to the Status page.

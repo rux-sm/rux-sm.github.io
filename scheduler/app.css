@@ -917,7 +917,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    are the tip's. A phone's board keeps the narrow column above, so the
    parts only the tile shows are drawn here alone. */
 .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due) { display: none; }
-.scheduler-row-head :is(.scheduler-row-head__fuel-end, .scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
 /* The tile, with no rule beside it: the tiles are the column's edge, and the
    board comes to rest on a day, so no trip stands cut by it. */
 .scheduler-page:not([data-board="compact"]) :is(.scheduler-week--scroll, .scheduler-band) { --scheduler-head-min: var(--scheduler-tile-head); }
@@ -1085,7 +1085,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__box { border-color: var(--scheduler-head-box-on-edge); background: var(--scheduler-head-box-on); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]):has(.scheduler-row-head__dial--warning) .scheduler-row-head__box { border-color: var(--scheduler-head-box-low-edge); background: var(--scheduler-head-box-low); }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under, .scheduler-row-head__fuel-end) { color: var(--rux-text-primary); }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) :is(.scheduler-row-head__dial, .scheduler-row-head__under) { color: var(--rux-text-primary); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head:has(.scheduler-row-head__box) :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { margin-inline: var(--scheduler-box-clear); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__dial { align-self: start; align-items: flex-start; block-size: auto; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll[data-bar-rows="6"] .scheduler-row-head__speed { flex-direction: column; align-items: flex-start; gap: 0; max-inline-size: 100%; }
@@ -1103,9 +1103,9 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__no-signal { display: block; white-space: normal; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__insp { grid-row: 3 / span 3; flex-direction: column; align-items: flex-start; margin: 0; padding: 0; font-size: var(--rux-label-01-font-size); font-weight: var(--rux-label-01-font-weight); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head .scheduler-row-head__insp-word { display: inline; }
-/* THE FUEL, read from E to F: the two letters in label-01's grey at the
-   ends of the gauge's four blocks. Grey, orange when low and red when
-   critical. The percent is the phone's column's and a screen reader's. */
+/* THE FUEL: the gauge's four blocks, filled from the left, the full width
+   of its row. Grey, orange when low and red when critical. The percent is
+   the phone's column's and a screen reader's. */
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__level[data-tank="F"] { grid-row: 5; justify-self: stretch; align-self: center; margin: 0; }
 :where(.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll) .scheduler-row-head { --scheduler-head-track: var(--rux-layer-03); }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel {
@@ -1117,19 +1117,6 @@ button.scheduler-row-head__num:focus { outline: none; }
   margin: 0;
 }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__fuel-icon, .scheduler-row-head__fuel-pct) { display: none; }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-end {
-  /* A box of whole pixels for each letter, so the blocks between them stand on whole pixels too. */
-  display: block;
-  flex: none;
-  inline-size: var(--rux-spacing-03);
-  block-size: var(--rux-spacing-05);
-  text-align: center;
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  font-weight: var(--rux-label-01-font-weight);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__fuel-meter {
   display: block;
   flex: 1 1 auto;

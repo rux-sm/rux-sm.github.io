@@ -81,7 +81,7 @@ surface.
 | :--- | :--- | :--- |
 | Number | The number, 14px semibold, a longer one cut short; and while the bus has a mark, its alert at the line's end, at least 8px after it | 18px, the bar's line 1 |
 | State | The speed in heading-compact-02 and Idle and Off in heading-compact-01, each on 18px, with mph or elapsed time under it in label-01. A lost signal has its own label, No signal on the state's two label lines, and a bus without a tracker shows its inspection in label-01, amber within 45 days | 34px, 9px under the number |
-| Fuel | A gauge read from E to F: the letters in label-01's grey at its ends and four blocks between them, 2px apart, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 16px, 8px under the state |
+| Fuel | A gauge of four blocks across the row, 2px apart, filled from the left, lit to the nearest quarter of the tank and one while any is left. Grey, orange when low and red when critical. No pump and no percent; the phone's column and a screen reader keep the percent | 16px, 8px under the state |
 | Foot | The lift and sleeper, low DEF with its percentage in label-01 in the tank's colour, or the age of a lost signal | 16px, 9px under the fuel, on the card's inset |
 
 A bus with a tracker has a box round its state and fuel, its sides on the
@@ -91,7 +91,7 @@ It says whether the engine runs. Off or with no signal it is the column's
 own surface, a step below the card as a bar's tail is below the bar, with
 no border. While the engine runs, idle or moving, it has a 1px border in
 the green over a 16% tint of it, amber past the speeding limit or idling
-too long, and its words, E and F with them, are the primary text, since the green and the
+too long, and its words are the primary text, since the green and the
 secondary grey on the tint fall under 4.5 to 1. Views shorter than six
 lines have no box and keep the state on one row.
 

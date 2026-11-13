@@ -155,9 +155,7 @@
     pump.classList.add('scheduler-row-head__fuel-icon');
     const percent = el('span', 'scheduler-row-head__fuel-pct', pct == null ? '–' : String(pct));
     if (pct != null) percent.appendChild(el('span', 'scheduler-row-head__fuel-unit', '%'));
-    // The gauge's ends, which the Mac's tile shows in the pump's and the percent's place.
-    box.append(pump, el('span', 'scheduler-row-head__fuel-end', 'E'), el('span', 'scheduler-row-head__fuel-meter'),
-      el('span', 'scheduler-row-head__fuel-end', 'F'), percent);
+    box.append(pump, el('span', 'scheduler-row-head__fuel-meter'), percent);
     return box;
   }
 

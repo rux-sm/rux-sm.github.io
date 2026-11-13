@@ -25,6 +25,15 @@ fun to use while staying plain. It replaces the front page that
   emulator.** Unplugging it takes the emulator off this Mac, once no other
   plugged-in console uses it, and an unplugged console goes back to Storage
   with no question; a plugged-in one says "Unplug me first."
+- **Plugging in is the helper's install, unplugging is `R.carry.remove`,**
+  which carries the saves and keeps the settings in Supabase before the
+  emulator goes to the Trash; the light blinks while the install's request is
+  waiting, since it reports no progress. Plugging back in restores this Mac's
+  kept settings, so a console comes back as it was.
+- **Whether an emulator is installed is read live from the helper,** never
+  stored. Only which consoles stand in this Mac's room, and which of those
+  are unplugged, is kept, since an unplugged Game Boy can stand beside a
+  plugged-in Game Boy Color while mGBA stays installed.
 - **An emulator that plays several consoles readies them all.** Plugging in
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance show
   Ready in Storage, and each arrives plugged in when dragged into the room;
@@ -65,17 +74,19 @@ fun to use while staying plain. It replaces the front page that
   row in Storage above the consoles?
 - Later, should a controller plug into a console the same way, to set up
   its buttons?
+- Where is each Mac's room kept: in Supabase per Mac, so it follows a helper
+  reinstall, which is a database change shown to rux first; or in the
+  browser, where clearing it empties the room?
 
 ## Tasks
 
-- [ ] Give Rux Emu Helper a Remove for one emulator that leaves its saves,
-      and say which emulators are installed, for unplugging.
-- [ ] Keep which consoles stand in each Mac's room, plugged in or not.
+- [ ] Keep which consoles stand in each Mac's room, and which are unplugged.
 - [ ] Draw the new console set.
 - [ ] Draw Storage and Your Mac from the real games, consoles and this Mac.
 - [ ] Build the drag with pointer events, the menu, the plug, and the
       controller's pick up and put down.
-- [ ] Wire the moves to Download, Install, Play, Remove and the favourite mark.
+- [ ] Wire the moves to Download, Install, `R.carry.remove`, Play, Remove a
+      game and the favourite mark, loading `carry.js` and `saves-rules.js`.
 - [ ] Add the wrong-console reaction and the sounds.
 - [ ] Lay it out on the phone without Your Mac.
 - [ ] Update `emu/README.md` and drop the front-page lines from

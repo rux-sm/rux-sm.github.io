@@ -65,7 +65,6 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   // Rounded, because a span across a daylight-saving change is 23 or 25 hours.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
-  const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
   const clock = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
   const stamp = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   const rangeFormat = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -221,7 +220,6 @@
     for (let i = 0; i < DAYS; i++) {
       const d = addDays(start, i);
       const cell = el('div', 'scheduler-day');
-      if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
       if (iso(d) === today) {
         cell.classList.add('scheduler-day--today');
         cell.setAttribute('aria-current', 'date');

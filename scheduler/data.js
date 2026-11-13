@@ -173,9 +173,6 @@
   };
   // The days a view starting on `start` draws the trips of: NEAR_VIEW days either side.
   const drawnRange = start => [addDays(start, -NEAR_VIEW), addDays(viewEnd(start), NEAR_VIEW)];
-  // The weekend is read from the date, not the column, because a Sunday-first
-  // week puts it at both ends. The board and the driver roster share it.
-  const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
@@ -1299,7 +1296,6 @@
   // A day's header cell. Today is marked on its header cell only.
   function dayCell(d, today) {
     const cell = el('div', 'scheduler-day');
-    if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
     if (iso(d) === today) {
       cell.classList.add('scheduler-day--today');
       cell.setAttribute('aria-current', 'date');
@@ -12003,8 +11999,6 @@
       cell.appendChild(el('span', 'scheduler-avail__letter', [...short].slice(0, 1).join('')));
       cell.title = d.toLocaleDateString(undefined, two
         ? { weekday: 'long', month: 'short', day: 'numeric' } : { weekday: 'long' });
-      // Weekend letters dim, as the board's day header does.
-      if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
       // Today is marked on its letter, as on the board's header.
       if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);

@@ -23,9 +23,10 @@
      one has expired, as a driver's head marks their licence and medical
      card; the engine's lamp, amber or red, whose codes lead their line
      in the tip; an inspection in Samsara that marked the bus unsafe,
-     red, until a mechanic resolves it there; maintenance Samsara counts
-     overdue, amber; and DEF while it is low, amber, or critical, red, since
-     a normal DEF needs nothing of the office. The words of each are the number's toggletip's. The
+     red, until a mechanic resolves it there; and DEF while it is low,
+     amber, or critical, red, since a normal DEF needs nothing of the
+     office. Maintenance Samsara counts overdue is the tip's alone and the
+     Fleet page's, since it does not stop the bus going out today. The words of each are the number's toggletip's. The
      kit holds them worst first; the Mac's tile shows the worst one's tone
      as its alert, and a phone's narrow column shows the papers' mark with
      the out-of-service mark.
@@ -215,11 +216,11 @@
 
   /* The kit's marks this draws, the papers' one mark in the worst tone and
      the engine's lamp, each with its words on its label, or none. */
-  function drawMarks(head, papers, lamp, live, unsafe = null, overdue = null) {
+  function drawMarks(head, papers, lamp, live, unsafe = null) {
     const top = head.querySelector(':scope > .scheduler-row-head__top');
     if (!top) return;
     let kit = top.querySelector(':scope > .scheduler-row-head__kit');
-    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def)').forEach(m => m.remove());
+    kit?.querySelectorAll(':scope > :is(.scheduler-row-head__papers, .scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__def)').forEach(m => m.remove());
     const def = live?.def != null ? levelOf(live.def, DEF) : null;
     const marks = [];
     if (papers.length) {
@@ -229,7 +230,6 @@
     }
     if (lamp) marks.push(['scheduler-row-head__lamp', lamp.tone, '#m-car_repair-fill', [lamp.word, ...(live?.faults ?? [])].join('. ')]);
     if (unsafe) marks.push(['scheduler-row-head__unsafe', unsafe.tone, '#i-warning--filled', unsafe.word]);
-    if (overdue) marks.push(['scheduler-row-head__due', overdue.tone, '#i-warning--alt--filled', overdue.word]);
     if (def === 'low' || def === 'critical') marks.push(['scheduler-row-head__def', def === 'critical' ? 'error' : 'warning',
       def === 'critical' ? '#i-warning--filled' : '#i-warning--alt--filled', `DEF ${live.def}%, ${def}`]);
     if (!marks.length) {
@@ -261,7 +261,7 @@
     const top = head.querySelector('.scheduler-row-head__top');
 
     const lamp = lampOf(shown);
-    drawMarks(head, papers, lamp, shown, unsafeOf(shown), overdueOf(shown));
+    drawMarks(head, papers, lamp, shown, unsafeOf(shown));
 
     const state = shown ? stateOf(shown) : null;
     // What the engine is doing, for a theme that quiets a bus at rest.
@@ -306,20 +306,30 @@
 
     if (opts.tip) {
       const lines = tipLines(bus, live);
-      let box = opts.tip.querySelector('.scheduler-tip__live');
-      if (!lines.length) box?.remove();
-      else {
-        if (!box) {
-          box = el('div', 'scheduler-tip__row scheduler-tip__live');
-          opts.tip.querySelector('.scheduler-tip__head')?.after(box);
-        }
-        // A line the tile's alert stands for leads with that alert's mark in its tone.
-        box.replaceChildren(...lines.map(({ words, tone }) => {
-          const said = el('div', tone ? `scheduler-tip__lamp scheduler-tip__lamp--${tone}` : null, words);
-          if (tone) said.prepend(svgUse(TONE_ICON[tone], '16', '0 0 32 32'));
-          return said;
-        }));
+      const warnings = lines.filter(l => l.tone);
+      const facts = lines.filter(l => !l.tone);
+      opts.tip.querySelectorAll(':scope > :is(.scheduler-tip__live, .scheduler-tip__facts)').forEach(n => n.remove());
+      const tipHead = opts.tip.querySelector('.scheduler-tip__head');
+      // Each warning leads with the tile's alert mark in its tone.
+      const warnBox = warnings.length ? el('div', 'scheduler-tip__row scheduler-tip__live') : null;
+      warnBox?.append(...warnings.map(({ words, tone }) => {
+        const said = el('div', `scheduler-tip__lamp scheduler-tip__lamp--${tone}`, words);
+        said.prepend(svgUse(TONE_ICON[tone], '16', '0 0 32 32'));
+        return said;
+      }));
+      // Each fact is its label over a short value, the town a link to the bus on the Live map.
+      const factBox = facts.length ? el('dl', 'scheduler-tip__row scheduler-tip__facts') : null;
+      for (const f of facts) {
+        const value = el('dd', null);
+        if (f.place && bus.id != null) {
+          const a = el('a', 'rux--link', f.words);
+          a.href = `live.html?bus=${encodeURIComponent(bus.id)}`;
+          a.title = f.place;
+          value.appendChild(a);
+        } else value.textContent = f.words;
+        factBox.append(el('dt', null, f.label), value);
       }
+      tipHead?.after(...[warnBox, factBox].filter(Boolean));
     }
   }
 
@@ -343,34 +353,47 @@
   // The mark a line leads with: the warning triangle or the error circle, as the tile's alert is.
   const TONE_ICON = { warning: '#i-warning--alt--filled', error: '#i-warning--filled' };
 
-  /* The lines the number's toggletip adds: its papers' words while one
-     expires within WARN_DAYS, and while the bus is answered for, what it is
-     doing. Each is `{ words, tone }`, the tone `warning` or `error` on a
-     line the tile's alert stands for, so the tip marks what the tile
-     warns of. */
+  // A place as its town and state: "4910 East Chase, Baytown, TX, 77521" is "Baytown, TX".
+  const townOf = place => {
+    const parts = String(place).split(',').map(p => p.trim()).filter(Boolean);
+    if (/^\d{5}(-\d{4})?$/.test(parts.at(-1) ?? '')) parts.pop();
+    return parts.slice(-2).join(', ');
+  };
+
+  /* The lines the number's toggletip adds, warnings first, each
+     `{ words, tone }` with the tone `warning` or `error`, marked as the
+     tile's alert is: an engine lamp, an unsafe inspection, papers expiring within WARN_DAYS,
+     maintenance overdue, a bus speeding or idling too long. Then the facts,
+     each `{ label, words }` on a short row of its own: what it is doing now
+     and when it was seen, the town it is in, its fuel and DEF, its miles,
+     and an inspection further off. */
   function tipLines(bus, live) {
     const papers = papersOf(bus);
     const insp = inspection(bus);
     // An inspection further off than WARN_DAYS is a fact, not an alert; a nearer one is among the papers.
-    const papersOrInspection = papers.length ? papers : insp ? [{ words: insp.words, tone: null }] : [];
-    if (!live) return papersOrInspection;
+    const later = !papers.length && insp ? { label: 'Inspection', words: insp.words.replace(/^Inspection expires /, '') } : null;
+    if (!live) return [...papers, later].filter(Boolean);
     const state = stateOf(live);
     const lamp = lampOf(live);
     const toned = found => (found ? { words: found.word, tone: found.tone } : null);
+    const seen = live.seen && state.engine !== 'none' ? `seen ${ago(live.seen)} ago` : null;
     return [
-      { words: state.words, tone: state.tone === 'warning' ? 'warning' : null },
-      live.place,
-      [live.fuel != null ? `Fuel ${live.fuel}%` : null, live.def != null ? `DEF ${live.def}%` : null].filter(Boolean).join(' · ') || null,
-      live.odometer != null ? `${live.odometer.toLocaleString()} mi` : null,
-      live.seen ? `Last seen ${ago(live.seen)} ago` : null,
-      ...papersOrInspection,
       lamp ? { words: [lamp.word, ...(live.faults ?? [])].join(' · '), tone: lamp.tone } : null,
       toned(unsafeOf(live)),
+      ...papers,
       toned(overdueOf(live)),
-    ].filter(Boolean).map(line => (typeof line === 'string' ? { words: line, tone: null } : line));
+      state.tone === 'warning' ? { words: state.words, tone: 'warning' } : null,
+      state.tone === 'warning' ? (seen ? { label: 'Now', words: seen.replace(/^s/, 'S') } : null)
+        : { label: 'Now', words: [state.words, seen].filter(Boolean).join(' · ') },
+      live.place ? { label: 'Where', words: townOf(live.place), place: live.place } : null,
+      live.fuel != null || live.def != null
+        ? { label: 'Fuel', words: [live.fuel != null ? `${live.fuel}%` : null, live.def != null ? `DEF ${live.def}%` : null].filter(Boolean).join(' · ') } : null,
+      live.odometer != null ? { label: 'Miles', words: live.odometer.toLocaleString() } : null,
+      later,
+    ].filter(Boolean);
   }
-  // The same lines as words alone.
-  const tipOf = (bus, live) => tipLines(bus, live).map(line => line.words);
+  // The same lines as words alone, a fact's label before it.
+  const tipOf = (bus, live) => tipLines(bus, live).map(line => (line.label ? `${line.label}: ${line.words}` : line.words));
 
   window.SchedulerBusHead = { draw, alertEl, tipOf, stateOf, papersOf, unsafeOf, overdueOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

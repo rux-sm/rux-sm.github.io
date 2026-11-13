@@ -665,10 +665,10 @@ const dayIn = n => {
   const due = [{ title: 'Oil change', status: 'overdue', words: 'Overdue by 2,533 mi' }, { title: 'Brakes', status: 'upcoming', words: 'Due in 900 mi' }];
   const head = busHead({ engine: 'off', mph: 0, due });
   const mark = head.querySelector('.scheduler-row-head__due');
-  expect('maintenance Samsara counts overdue is an amber mark on the bus and a line of the tip; upcoming is neither',
-    [mark?.dataset.tone, mark?.getAttribute('aria-label'), BusHead.tipOf({}, { engine: 'off', mph: 0, due }).includes('Oil change: overdue by 2,533 mi'),
+  expect('maintenance Samsara counts overdue is a warning of the tip and no mark on the bus; upcoming is neither',
+    [mark, BusHead.tipOf({}, { engine: 'off', mph: 0, due }).includes('Oil change: overdue by 2,533 mi'),
       BusHead.overdueOf({ due: [due[1]] })],
-    ['warning', 'Oil change: overdue by 2,533 mi', true, null]);
+    [null, true, null]);
 }
 expect('moving: the speed over mph in a filled green display, the fuel\'s percent and meter, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__fuel-pct'), line(h), marks(h)]; })(),
@@ -707,9 +707,11 @@ expect('no answer for the bus: the inspection alone, amber within 45 days, and n
     has(busHead(null, { capacity: 56, inspection_exp: dayIn(20) }), '.scheduler-row-head__insp--soon'),
     has(busHead(null, { capacity: 56, inspection_exp: dayIn(90) }), '.scheduler-row-head__insp--soon')],
   [null, true, false]);
-expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
+expect('a live bus\'s tip puts its warnings first, the lamp then the inspection, and its state after them',
   BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
-  ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
+  ['Engine warning lamp on', 'Inspection expires in 20 days', 'Now: Engine off']);
+expect('an inspection further off than 45 days is a fact of the tip, under its label',
+  BusHead.tipOf({ inspection_exp: dayIn(90) }, { engine: 'off', mph: 0 }).at(-1).startsWith('Inspection: '), true);
 const fuel = h => { const f = h.querySelector('.scheduler-row-head__fuel'); return f ? [text(f, '.scheduler-row-head__fuel-pct'), f.dataset.level ?? null, f.style.getPropertyValue('--scheduler-tank-lit')] : null; };
 expect('the fuel: its percent and a gauge lit to the nearest quarter, one block while any is left, low at 25% and critical at 10%',
   [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 52, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }].map(l => fuel(busHead(l))),
@@ -721,10 +723,10 @@ expect('the compact board\'s one dot takes the worst tone',
   ['normal', 'warning', 'error', 'quiet']);
 expect('the tip words what the head shows',
   BusHead.tipOf({}, { engine: 'on', mph: 64, place: 'San Marcos, TX', fuel: 72, def: 60, odometer: 292044, seen: new Date().toISOString(), fault: 'check', faults: ['Coolant level: Low'] }),
-  ['Moving, 64 mph', 'San Marcos, TX', 'Fuel 72% · DEF 60%', '292,044 mi', 'Last seen 0m ago', 'Engine warning lamp on · Coolant level: Low']);
-expect('a standing bus\'s tip says its state, then the address, naming the city once',
+  ['Engine warning lamp on · Coolant level: Low', 'Now: Moving, 64 mph · seen 0m ago', 'Where: San Marcos, TX', 'Fuel: 72% · DEF 60%', 'Miles: 292,044']);
+expect('a standing bus\'s tip says its state, then its town, the street and ZIP left to the link\'s title',
   BusHead.tipOf({}, { engine: 'idle', engine_at: ago(12), mph: 0, place: '4015 South Interstate 35, San Marcos, TX, 78666', seen: new Date().toISOString() }).slice(0, 2),
-  ['Idling 12m', '4015 South Interstate 35, San Marcos, TX, 78666']);
+  ['Now: Idling 12m · seen 0m ago', 'Where: San Marcos, TX']);
 const papers = h => { const m = h.querySelector('.scheduler-row-head__papers'); return m ? [m.dataset.tone, m.getAttribute('aria-label')] : null; };
 expect('the papers\' one mark: amber while one expires within 45 days, red once one has expired, the soonest first, and none further off',
   [papers(busHead(null, { capacity: 56, inspection_exp: dayIn(20) })),
@@ -734,7 +736,7 @@ expect('the papers\' one mark: amber while one expires within 45 days, red once 
 expect('the tip words each paper in the inspection\'s place',
   [BusHead.tipOf({ registration_exp: dayIn(10), inspection_exp: dayIn(90) }, null),
     BusHead.tipOf({ insurance_exp: dayIn(0) }, { engine: 'off', mph: 0, fault: null, faults: [] })],
-  [['Registration expires in 10 days'], ['Engine off', 'Insurance expires today']]);
+  [['Registration expires in 10 days'], ['Insurance expires today', 'Now: Engine off']]);
 
 console.log('\n  The roster');
 const H = 3600e3;

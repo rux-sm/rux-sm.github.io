@@ -643,6 +643,12 @@ button.scheduler-row-head__num::after {
 .scheduler-tip__mark { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
 .scheduler-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
 .scheduler-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
+/* A bus's facts, after its warnings: each a short label in the VIN's quiet
+   step beside its value, in two columns, so the tip reads as rows rather
+   than a paragraph. A town that runs long is cut short. */
+.scheduler-tip__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--rux-spacing-02) var(--rux-spacing-05); margin: 0; }
+.scheduler-tip__facts > dt { opacity: .75; }
+.scheduler-tip__facts > dd { margin: 0; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .scheduler-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A warning, or an engine lamp that is on: the lamp before its words, in
    Carbon's support colour for an inverse surface, its inner mark filled as
@@ -876,7 +882,7 @@ button.scheduler-row-head__num:focus { outline: none; }
    `scheduler/docs/board-layout.md` has the measures; its type and seats
    are the tip's. A phone's board keeps the narrow column above, so the
    parts only the tile shows are drawn here alone. */
-.scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def) { display: none; }
+.scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__def) { display: none; }
 .scheduler-row-head :is(.scheduler-row-head__fuel-icon, .scheduler-row-head__no-signal, .scheduler-row-head__seen) { display: none; }
 /* The tile, with no rule beside it: the tiles are the column's edge, and the
    board comes to rest on a day, so no trip stands cut by it. */
@@ -1001,7 +1007,7 @@ button.scheduler-row-head__num:focus { outline: none; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__due, .scheduler-row-head__def) { display: inline-flex; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head :is(.scheduler-row-head__lamp, .scheduler-row-head__unsafe, .scheduler-row-head__def) { display: inline-flex; }
 .scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-row-head__dot { display: none; }
 /* The speed is heading-compact-02 and Idle and Off heading-compact-01, on
    the row's height so the tile's rows stay put: a word with its minutes is

@@ -67,7 +67,8 @@
     if (here.running) return out;
 
     const kept = new Map();
-    for (const folder of folders) for (const f of await R.data.files(`${folder}/`)) kept.set(f.path, f);
+    // A file of no bytes is no save, as the helper leaves it out on the Mac.
+    for (const folder of folders) for (const f of await R.data.files(`${folder}/`)) if (Number(f.size) > 0) kept.set(f.path, f);
     const mine = new Map(here.files.map(f => [f.path, f]));
 
     // This Mac's copy put in Supabase, read against its fingerprint.

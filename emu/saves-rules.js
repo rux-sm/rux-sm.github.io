@@ -90,6 +90,8 @@
   const group = (files, games, emulators) => {
     const out = new Map();
     for (const { rel, systems, file } of files) {
+      // A file of no bytes, as mGBA makes for a game that keeps no save, is none.
+      if (!Number(file.size)) continue;
       const { system, game } = match(rel, systems, games, emulators);
       if (!game && !SAYS_ORPHANS.has(emulators[system].saves)) continue;
       const kind = kindOf(rel);

@@ -148,7 +148,7 @@
         buttons.push(play);
       }
       if (keeps && !here) {
-        const get = button(s.done ? 'Resume download' : 'Download to this Mac', buttons.length ? 'rux--btn--tertiary' : 'rux--btn--primary', async () => {
+        const get = button(s.state === 'failed' ? 'Try again' : s.done ? 'Resume download' : 'Download to this Mac', buttons.length ? 'rux--btn--tertiary' : 'rux--btn--primary', async () => {
           get.disabled = true;
           said.textContent = 'Asking Rux Emu Helper…';
           try { await H.download(g); draw(); }

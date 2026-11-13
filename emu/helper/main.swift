@@ -126,7 +126,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "32"
+let version = "33"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -842,10 +842,12 @@ func sha1Of(_ path: String) -> String? {
   files.contents(atPath: path).map { Insecure.SHA1.hash(data: $0).map { String(format: "%02x", $0) }.joined() }
 }
 
-// Each save in an emulator's carried folders, under 200 MB, which holds a console's whole disk image.
+// Each save in an emulator's carried folders, under 200 MB, which holds a
+// console's whole disk image; a file of no bytes, as mGBA makes for a game
+// that keeps no save, is none.
 func carriedFiles(_ e: Saver) -> [(path: String, at: String, size: Int)] {
   carriedPlaces(e).flatMap { place in
-    walk(place.dir).filter { $0.size < 200_000_000 && place.holds(String($0.path.dropFirst(place.dir.count + 1))) }
+    walk(place.dir).filter { $0.size > 0 && $0.size < 200_000_000 && place.holds(String($0.path.dropFirst(place.dir.count + 1))) }
       .map { (place.stored + $0.path.dropFirst(place.dir.count), $0.path, $0.size) }
   }
 }
@@ -1162,6 +1164,14 @@ func install(_ body: Data) -> (Int, [String: Any]) {
   return (200, ["installed": app, "version": version, "receipt": written])
 }
 
+// Whether a request failed because its server could not be reached at all:
+// no such name, nothing listening, no network, or no answer in time.
+func unreachable(_ error: Error) -> Bool {
+  guard let e = error as? URLError else { return false }
+  return [.cannotFindHost, .cannotConnectToHost, .dnsLookupFailed, .notConnectedToInternet, .timedOut,
+          .secureConnectionFailed, .cannotLoadFromNetwork].contains(e.code)
+}
+
 // MARK: Removing an emulator
 
 // Everything an emulator leaves on this Mac: its app in either Applications
@@ -1466,6 +1476,9 @@ final class Downloads: NSObject, URLSessionDataDelegate {
     return added
   }
 
+  // What a download says when the home server answers at neither address.
+  let noServer = "The home server did not answer, at home or from outside. Check it is on, then try again."
+
   // The home address when it answers within a second and a half, else the public name.
   private func base() -> (url: String, from: String)? {
     if let h = servers.home, let url = URL(string: h + "/") {
@@ -1550,6 +1563,7 @@ final class Downloads: NSObject, URLSessionDataDelegate {
     case 401: set(n.key, ["error": "Sign in again, then download it again."]); completionHandler(.cancel)
     case 403: set(n.key, ["error": "This account may not download."]); completionHandler(.cancel)
     case 404: set(n.key, ["error": "The home server does not have that file."]); completionHandler(.cancel)
+    case 502, 503, 504: set(n.key, ["error": noServer]); completionHandler(.cancel)
     default: set(n.key, ["error": "The home server answered \(r.statusCode)."]); completionHandler(.cancel)
     }
   }
@@ -1569,7 +1583,9 @@ final class Downloads: NSObject, URLSessionDataDelegate {
     if gone { return stopped(n.part) }
     if let refused { return fail(n.key, refused) }
     // Cut short: the part stays, so asking again resumes it.
-    if let error { return fail(n.key, "The download stopped: \(error.localizedDescription) Ask again to resume it.") }
+    if let error {
+      return fail(n.key, unreachable(error) ? noServer : "The download stopped: \(error.localizedDescription) Try again to resume it.")
+    }
     guard n.got == n.total else {
       removePart(n.part)
       return fail(n.key, "The file arrived at \(n.got) bytes, not \(n.total).")

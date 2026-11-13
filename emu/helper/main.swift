@@ -113,7 +113,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "18"
+let version = "19"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -993,20 +993,35 @@ func install(_ body: Data) -> (Int, [String: Any]) {
     return (502, ["error": "The installer arrived but is not the file Supabase lists."])
   }
 
-  let out = tmp + "/out"
-  try? files.createDirectory(atPath: out, withIntermediateDirectories: true)
-  let kind = name.lowercased()
-  var mounted = false
-  defer { if mounted { run("/usr/bin/hdiutil", ["detach", out, "-force"]) } }
-  if kind.hasSuffix(".zip") {
-    guard run("/usr/bin/ditto", ["-x", "-k", file, out]) else { return (500, ["error": "The installer did not unzip."]) }
-  } else if kind.hasSuffix(".dmg") {
-    mounted = run("/usr/bin/hdiutil", ["attach", file, "-nobrowse", "-readonly", "-noautoopen", "-mountpoint", out], answer: "Y\n")
-    guard mounted else { return (500, ["error": "The installer's disk image did not open."]) }
-  } else if kind.hasSuffix(".tar.gz") || kind.hasSuffix(".tgz") || kind.hasSuffix(".tar.xz") {
-    guard run("/usr/bin/tar", ["-xf", file, "-C", out]) else { return (500, ["error": "The installer did not unpack."]) }
-  } else {
-    return (415, ["error": "The helper does not open that kind of installer."])
+  // Unpacked layer by layer, since a download may wrap its app twice, as
+  // Mesen's zip holds a zip and Cemu's a disk image: each layer is opened
+  // into a folder of its own until one holds the app, three layers at most.
+  var mounts: [String] = []
+  defer { for m in mounts.reversed() { run("/usr/bin/hdiutil", ["detach", m, "-force"]) } }
+  func unpack(_ archive: String, into dir: String) -> String? {
+    try? files.createDirectory(atPath: dir, withIntermediateDirectories: true)
+    let kind = (archive as NSString).lastPathComponent.lowercased()
+    if kind.hasSuffix(".zip") {
+      return run("/usr/bin/ditto", ["-x", "-k", archive, dir]) ? nil : "The installer did not unzip."
+    } else if kind.hasSuffix(".dmg") {
+      guard run("/usr/bin/hdiutil", ["attach", archive, "-nobrowse", "-readonly", "-noautoopen", "-mountpoint", dir], answer: "Y\n") else {
+        return "The installer's disk image did not open."
+      }
+      mounts.append(dir)
+      return nil
+    } else if kind.hasSuffix(".tar.gz") || kind.hasSuffix(".tgz") || kind.hasSuffix(".tar.xz") {
+      return run("/usr/bin/tar", ["-xf", archive, "-C", dir]) ? nil : "The installer did not unpack."
+    }
+    return "The helper does not open that kind of installer."
+  }
+  let packed = { (p: String) in [".zip", ".dmg", ".tar.gz", ".tgz", ".tar.xz"].contains { p.lowercased().hasSuffix($0) } }
+  var out = tmp + "/out"
+  if let error = unpack(file, into: out) { return (error.hasPrefix("The helper does not") ? 415 : 500, ["error": error]) }
+  for layer in 1...2 where appUnder(out, apps) == nil {
+    guard let inner = walk(out).map({ $0.path }).first(where: packed) else { break }
+    let next = tmp + "/out\(layer + 1)"
+    if let error = unpack(inner, into: next) { return (500, ["error": error]) }
+    out = next
   }
   guard let found = appUnder(out, apps) else { return (500, ["error": "The installer holds no \(apps.joined(separator: " or "))."]) }
 

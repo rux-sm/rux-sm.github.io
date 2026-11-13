@@ -102,7 +102,7 @@ fun to use while staying plain. It replaces the front page that
 
 - [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
-      button; the helper is the NAS session's file.
+      button.
 - [ ] Draw the new console set.
 - [ ] Draw Rux's Collection and Your Mac from the real games, consoles and this Mac.
 - [ ] Build the drag with pointer events, the menu, the plug, and the

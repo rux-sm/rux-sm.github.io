@@ -123,6 +123,7 @@ export const ICONS = {
   'error--filled': { material: 'error-fill', rux: null },
   'error--outline': { material: 'block', rux: null },  // A ring with a bar across it, in both families: barred.
   'event--busy': { material: 'event_busy', rux: null },  // Carbon draws no crossed-out day; Material's is a calendar with a cross.
+  'eyedropper': { material: 'colorize', rux: null },  // A dropper in both families: the tool that takes a colour from a drawing.
   'fit-to-width': { material: 'fit_screen', rux: null },
   'folder': { material: 'folder', rux: null },
   'gas-station': { material: 'local_gas_station', rux: null },  // A bus's fuel in the bus column, at 16px.
@@ -166,6 +167,7 @@ export const ICONS = {
   'radio-button': { material: 'radio_button_unchecked', rux: null },
   'recently-viewed': { material: 'history', rux: null },
   'redo': { material: 'redo', rux: null },
+  'reflect--horizontal': { material: 'flip', rux: null },  // A shape and its mirror across a line, in both families: drawing mirrored left to right.
   'request-quote': { material: 'request_quote', rux: null },
   'reset': { material: 'restart_alt', rux: null },
   'route': { material: 'route', rux: null },  // Carbon draws no route; Material's is a path between two pins.

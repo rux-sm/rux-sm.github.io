@@ -2970,6 +2970,23 @@ a.scheduler-tip__go { text-decoration: none; }
 
 /* With the time row off, the times go with it. */
 .scheduler-week--no-time .scheduler-road__times { display: none; }
+/* ON THE MAC'S BOARD THE TRACK IS THE BAR'S FOOT: a trip under way is the
+   one bar with a 4px line along its bottom edge, the trip's progress filled
+   from the start in the success green, the green a running bus and a
+   driver at the wheel wear, over a fifth of the bar's ink, its stops' ticks
+   on it, and clipped to the bar's corners. Its times stand at the row's
+   ends with nothing between them. */
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-bar--road > .scheduler-bar__row.scheduler-road__times:has(> .scheduler-road__track) { position: static; }
+.scheduler-page:not([data-board="compact"]) .scheduler-week--scroll .scheduler-bar--road > .scheduler-bar__row.scheduler-road__times > .scheduler-road__track {
+  --scheduler-track: var(--rux-spacing-02);
+  position: absolute;
+  inset: auto 0 0;
+  margin: 0;
+  border-radius: 0 0 var(--scheduler-bar-radius, 0) var(--scheduler-bar-radius, 0);
+  background:
+    linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
+    color-mix(in srgb, currentColor var(--scheduler-track-ink), transparent);
+}
 /* The driver at the wheel stands first in their row. */
 .scheduler-crew--wheel { order: -1; }
 /* A driver's name is its words' width rounded up to a whole pixel, still

@@ -22,8 +22,9 @@
 </head>
 <body>
 <!-- The Library as a room, built beside index.html until it takes its place;
-     docs/plans/emu-room.md is the plan. room.js draws Rux's Collection: a row
-     of consoles, then the picked console's games. The shell is
+     docs/plans/emu-room.md is the plan. room.js draws Your Mac, what this Mac
+     has set up and holds, over Rux's Collection: a row of consoles, then the
+     picked console's games. A game opens in the side panel. The shell is
      templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -161,13 +162,44 @@
           <p>No scan yet. <a class="rux--link" href="status.html">Update</a> scans the drive.</p>
         </div>
 
-        <!-- Rux's Collection, from room.js: every console with games, then the picked console's name and count. -->
+        <!-- Your Mac, from room.js, shown where Rux Emu Helper answers: one scene that
+             stays in view. A TV and this Mac's consoles stand on a board over a power
+             strip; its games stand on the same board, the favourites on a shelf above. -->
+        <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
+          <div class="emu-room__head">
+            <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
+            <a class="rux--link" href="status.html" id="emu-room-health"></a>
+            <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
+          </div>
+          <div class="emu-scene">
+            <div class="emu-stage">
+              <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
+              <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
+            </div>
+            <div class="emu-side">
+              <div class="emu-wall">
+                <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
+                <p class="emu-cap" id="emu-ledge-h">Favourites</p>
+              </div>
+              <div>
+                <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
+                <p class="emu-cap emu-cap--under" id="emu-onmac-h"></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Rux's Collection, from room.js: every console with games, then the picked
+             console's games as covers in one row. -->
         <section class="rux--stack-vertical rux--stack-scale-5" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
           <h2 class="rux--type-heading-03" id="emu-collection-h">Rux's Collection</h2>
           <div class="emu-cabinet" id="emu-cabinet" role="group" aria-label="Consoles"></div>
-          <div class="emu-picked">
-            <h3 class="rux--type-heading-02" id="emu-picked"></h3>
-            <p class="emu-row__sub" id="emu-picked-sub"></p>
+          <div class="rux--stack-vertical rux--stack-scale-3">
+            <div class="emu-picked">
+              <h3 class="rux--type-heading-02" id="emu-picked"></h3>
+              <p class="emu-row__sub" id="emu-picked-sub"></p>
+            </div>
+            <ul class="emu-shelf" role="list" id="emu-games" aria-labelledby="emu-picked"></ul>
           </div>
         </section>
       </div>

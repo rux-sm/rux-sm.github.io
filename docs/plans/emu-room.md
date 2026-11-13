@@ -17,7 +17,13 @@ fun to use while staying plain. It replaces the front page that
 
 - **The room is built as its own page, `emu/room.html`, beside the
   Library,** which keeps working until the room takes its place; nothing
-  links to the room until then. It holds Rux's Collection's row of consoles.
+  links to the room until then. It draws Your Mac and Rux's Collection from
+  the real games and this Mac, and a game opens its side panel; nothing is
+  dragged yet.
+- **Until a Mac's room is kept, the console of each game it holds stands in
+  the room,** plugged in where this Mac has its emulator and unplugged where
+  it has not, so a Mac with every emulator installed still starts with a
+  handful.
 - **Your Mac is a band across the top that stays in view while the page
   scrolls,** and Rux's Collection fills the full width below it, so a drag
   is a short move up. The menu folds to a strip of icons on this page, and a
@@ -40,7 +46,7 @@ fun to use while staying plain. It replaces the front page that
 - **Your Mac is one scene.** One TV and the consoles stand on a board on the
   left, with a power strip under it; this Mac's games stand on the same board
   on the right, with Favourites on a wall shelf above them and how much room
-  is used in the heading. An empty room says "Drag a console up here."
+  is free in the heading. An empty room says "Drag a console up here."
 - **The plug is the whole socket under its console.** Plugged in it sits in
   the strip; unplugged it hangs loose, its socket blinks and it says "Plug
   in".
@@ -107,7 +113,9 @@ fun to use while staying plain. It replaces the front page that
   the plug is a button, Enter does on a keyboard, and on a controller A picks
   up and A puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one plain
-  flat drawing per system on the foot of one 3:2 box. Every fill is an
+  flat drawing per system on the foot of one 3:2 box, which `room.js` puts
+  into its page, since a drawing in another file draws nothing in Safari.
+  Every fill is an
   `--emu-console-*` property that `app.css` sets from Design's tokens, so a
   console follows the theme, and a handheld's screen is its own property, to
   light while it plays. The home consoles stand beside the one TV.
@@ -129,13 +137,17 @@ None open.
 - [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Give Rux Emu Helper a quit request the page can send, for the power
       button.
-- [ ] Draw the picked console's games under its name in `room.html`, then
-      Your Mac from this Mac's consoles and games.
+- [ ] Fold the menu to a strip of icons on `room.html`.
+- [ ] Lay out a room of more than eight consoles, where each is now too
+      narrow for its name.
+- [ ] Tag a game whose console is not plugged in with that console; it is
+      only dimmed.
 - [ ] Build the drag with pointer events, the menu, the plug, and the
       controller's pick up and put down.
 - [ ] Wire the moves to Download, Install, `R.carry.remove`, Play, Remove a
       game and the favourite mark, loading `carry.js` and `saves-rules.js`.
 - [ ] Add the wrong-console reaction and the sounds.
-- [ ] Lay it out on the phone without Your Mac.
+- [ ] Lay it out on the phone without Your Mac, and see the drawings in
+      Safari.
 - [ ] Make the room `index.html`, update `emu/README.md` and drop the
       front-page lines from `docs/plans/emu-front-end.md`.

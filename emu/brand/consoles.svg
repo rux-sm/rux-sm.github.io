@@ -1,22 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg">
 <!-- Emu's consoles, one symbol per system, each standing on the foot of a 96 by 64 box.
-     Every fill is one of the emu-console properties, which app.css sets from Design's
-     tokens, so a console follows the theme; a console's own screen is emu-console-screen. -->
-<symbol id="nes" viewBox="0 0 96 64"><title>NES</title>
+     room.js puts this file into its page, so each is drawn from there. Every fill is one of
+     the emu-console properties, which app.css sets from Design's tokens, so a console
+     follows the theme; a console's own screen is emu-console-screen. -->
+<symbol id="emu-console-nes" viewBox="0 0 96 64"><title>NES</title>
   <rect x="6" y="32" width="84" height="32" rx="2" style="fill:var(--emu-console-body)"/>
   <rect x="6" y="32" width="84" height="12" rx="2" style="fill:var(--emu-console-shade)"/>
   <rect x="14" y="48" width="46" height="10" rx="1" style="fill:var(--emu-console-detail)"/>
   <rect x="66" y="50" width="8" height="4" style="fill:var(--emu-console-red)"/>
   <rect x="78" y="50" width="8" height="4" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="snes" viewBox="0 0 96 64"><title>SNES</title>
+<symbol id="emu-console-snes" viewBox="0 0 96 64"><title>SNES</title>
   <rect x="8" y="38" width="80" height="26" rx="4" style="fill:var(--emu-console-body)"/>
   <rect x="24" y="30" width="48" height="14" rx="3" style="fill:var(--emu-console-shade)"/>
   <rect x="31" y="33" width="34" height="5" rx="1" style="fill:var(--emu-console-detail)"/>
   <rect x="14" y="50" width="14" height="6" rx="3" style="fill:var(--emu-console-purple)"/>
   <rect x="68" y="50" width="14" height="6" rx="3" style="fill:var(--emu-console-purple)"/>
 </symbol>
-<symbol id="n64" viewBox="0 0 96 64"><title>N64</title>
+<symbol id="emu-console-n64" viewBox="0 0 96 64"><title>N64</title>
   <path d="M4 64 14 40q2-4 6-4h56q4 0 6 4l10 24z" style="fill:var(--emu-console-shade)"/>
   <rect x="32" y="30" width="32" height="10" rx="2" style="fill:var(--emu-console-body)"/>
   <rect x="20" y="43" width="9" height="4" rx="2" style="fill:var(--emu-console-red)"/>
@@ -25,7 +26,7 @@
   <circle cx="56" cy="55" r="3" style="fill:var(--emu-console-detail)"/>
   <circle cx="72" cy="55" r="3" style="fill:var(--emu-console-detail)"/>
 </symbol>
-<symbol id="gc" viewBox="0 0 96 64"><title>GameCube</title>
+<symbol id="emu-console-gc" viewBox="0 0 96 64"><title>GameCube</title>
   <path d="M36 22v-8h24v8h-3v-5H39v5z" style="fill:var(--emu-console-shade)"/>
   <rect x="26" y="20" width="44" height="44" rx="4" style="fill:var(--emu-console-purple)"/>
   <circle cx="48" cy="40" r="14" style="fill:var(--emu-console-ink);fill-opacity:0.3"/>
@@ -34,14 +35,14 @@
   <rect x="43" y="57" width="7" height="3" style="fill:var(--emu-console-ink);fill-opacity:0.4"/>
   <rect x="54" y="57" width="7" height="3" style="fill:var(--emu-console-ink);fill-opacity:0.4"/>
 </symbol>
-<symbol id="wii" viewBox="0 0 96 64"><title>Wii</title>
+<symbol id="emu-console-wii" viewBox="0 0 96 64"><title>Wii</title>
   <path d="M30 60h36l4 4H26z" style="fill:var(--emu-console-shade)"/>
   <rect x="36" y="8" width="24" height="52" rx="2" style="fill:var(--emu-console-body)"/>
   <rect x="46" y="14" width="4" height="28" rx="2" style="fill:var(--emu-console-blue)"/>
   <circle cx="48" cy="49" r="2.5" style="fill:var(--emu-console-detail)"/>
   <rect x="45" y="54" width="6" height="2" rx="1" style="fill:var(--emu-console-detail)"/>
 </symbol>
-<symbol id="wiiu" viewBox="0 0 96 64"><title>Wii U</title>
+<symbol id="emu-console-wiiu" viewBox="0 0 96 64"><title>Wii U</title>
   <rect x="16" y="54" width="64" height="10" rx="4" style="fill:var(--emu-console-shade)"/>
   <rect x="26" y="58" width="28" height="2" rx="1" style="fill:var(--emu-console-ink)"/>
   <rect x="14" y="12" width="68" height="38" rx="10" style="fill:var(--emu-console-body)"/>
@@ -54,7 +55,7 @@
   <circle cx="72" cy="36" r="1.6" style="fill:var(--emu-console-ink)"/>
   <circle cx="76" cy="39" r="1.6" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="switch" viewBox="0 0 96 64"><title>Switch</title>
+<symbol id="emu-console-switch" viewBox="0 0 96 64"><title>Switch</title>
   <rect x="12" y="30" width="18" height="34" rx="8" style="fill:var(--emu-console-blue)"/>
   <rect x="22" y="30" width="8" height="34" style="fill:var(--emu-console-blue)"/>
   <rect x="66" y="30" width="18" height="34" rx="8" style="fill:var(--emu-console-red)"/>
@@ -66,7 +67,7 @@
   <circle cx="21" cy="53" r="1.6" style="fill:var(--emu-console-ink)"/>
   <circle cx="75" cy="40" r="1.6" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="gb" viewBox="0 0 96 64"><title>Game Boy</title>
+<symbol id="emu-console-gb" viewBox="0 0 96 64"><title>Game Boy</title>
   <rect x="30" y="2" width="36" height="62" rx="3" style="fill:var(--emu-console-body)"/>
   <rect x="34" y="7" width="28" height="24" rx="2" style="fill:var(--emu-console-shade)"/>
   <rect x="38" y="10" width="20" height="18" style="fill:var(--emu-console-screen)"/>
@@ -77,7 +78,7 @@
   <rect x="41" y="56" width="5" height="2" rx="1" style="fill:var(--emu-console-shade)"/>
   <rect x="48" y="56" width="5" height="2" rx="1" style="fill:var(--emu-console-shade)"/>
 </symbol>
-<symbol id="gbc" viewBox="0 0 96 64"><title>Game Boy Color</title>
+<symbol id="emu-console-gbc" viewBox="0 0 96 64"><title>Game Boy Color</title>
   <rect x="31" y="8" width="34" height="56" rx="5" style="fill:var(--emu-console-teal)"/>
   <rect x="35" y="13" width="26" height="22" rx="2" style="fill:var(--emu-console-ink)"/>
   <rect x="38" y="16" width="20" height="16" style="fill:var(--emu-console-screen)"/>
@@ -86,7 +87,7 @@
   <circle cx="54" cy="48" r="3" style="fill:var(--emu-console-ink)"/>
   <circle cx="61" cy="44" r="3" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="gba" viewBox="0 0 96 64"><title>Game Boy Advance</title>
+<symbol id="emu-console-gba" viewBox="0 0 96 64"><title>Game Boy Advance</title>
   <rect x="8" y="24" width="80" height="40" rx="16" style="fill:var(--emu-console-purple)"/>
   <rect x="30" y="30" width="36" height="26" rx="2" style="fill:var(--emu-console-ink)"/>
   <rect x="33" y="33" width="30" height="20" style="fill:var(--emu-console-screen)"/>
@@ -95,7 +96,7 @@
   <circle cx="74" cy="47" r="3" style="fill:var(--emu-console-ink)"/>
   <circle cx="81" cy="42" r="3" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="nds" viewBox="0 0 96 64"><title>DS</title>
+<symbol id="emu-console-nds" viewBox="0 0 96 64"><title>DS</title>
   <rect x="22" y="4" width="52" height="28" rx="3" style="fill:var(--emu-console-body)"/>
   <rect x="33" y="8" width="30" height="20" style="fill:var(--emu-console-screen)"/>
   <rect x="26" y="32" width="44" height="4" style="fill:var(--emu-console-shade)"/>
@@ -106,7 +107,7 @@
   <circle cx="67" cy="50" r="1.6" style="fill:var(--emu-console-ink)"/>
   <circle cx="71" cy="47" r="1.6" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="n3ds" viewBox="0 0 96 64"><title>3DS</title>
+<symbol id="emu-console-n3ds" viewBox="0 0 96 64"><title>3DS</title>
   <rect x="18" y="4" width="60" height="28" rx="3" style="fill:var(--emu-console-blue)"/>
   <rect x="27" y="8" width="42" height="20" style="fill:var(--emu-console-screen)"/>
   <rect x="22" y="32" width="52" height="4" style="fill:var(--emu-console-shade)"/>
@@ -118,7 +119,7 @@
   <circle cx="69" cy="50" r="1.6" style="fill:var(--emu-console-ink)"/>
   <circle cx="73" cy="47" r="1.6" style="fill:var(--emu-console-ink)"/>
 </symbol>
-<symbol id="psx" viewBox="0 0 96 64"><title>PlayStation</title>
+<symbol id="emu-console-psx" viewBox="0 0 96 64"><title>PlayStation</title>
   <rect x="8" y="40" width="80" height="24" rx="3" style="fill:var(--emu-console-body)"/>
   <rect x="20" y="34" width="40" height="9" rx="4" style="fill:var(--emu-console-shade)"/>
   <rect x="14" y="52" width="18" height="6" rx="1" style="fill:var(--emu-console-detail)"/>
@@ -126,7 +127,7 @@
   <rect x="66" y="46" width="14" height="4" rx="2" style="fill:var(--emu-console-detail)"/>
   <rect x="66" y="54" width="14" height="4" rx="2" style="fill:var(--emu-console-detail)"/>
 </symbol>
-<symbol id="ps2" viewBox="0 0 96 64"><title>PlayStation 2</title>
+<symbol id="emu-console-ps2" viewBox="0 0 96 64"><title>PlayStation 2</title>
   <rect x="6" y="36" width="84" height="28" rx="2" style="fill:var(--emu-console-shade)"/>
   <rect x="6" y="41" width="84" height="1.5" style="fill:var(--emu-console-ink)"/>
   <rect x="6" y="45" width="84" height="1.5" style="fill:var(--emu-console-ink)"/>
@@ -134,7 +135,7 @@
   <rect x="64" y="53" width="6" height="2" style="fill:var(--emu-console-detail)"/>
   <rect x="76" y="53" width="6" height="2" style="fill:var(--emu-console-blue)"/>
 </symbol>
-<symbol id="xbox" viewBox="0 0 96 64"><title>Xbox</title>
+<symbol id="emu-console-xbox" viewBox="0 0 96 64"><title>Xbox</title>
   <path d="M28 30 40 22h16l12 8z" style="fill:var(--emu-console-shade)"/>
   <rect x="6" y="28" width="84" height="36" rx="3" style="fill:var(--emu-console-shade)"/>
   <circle cx="48" cy="29" r="6" style="fill:var(--emu-console-green)"/>

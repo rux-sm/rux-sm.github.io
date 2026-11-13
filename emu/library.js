@@ -23,7 +23,7 @@
 
   const R = window.Emu;
   const $ = id => document.getElementById(id);
-  const { el } = R;
+  const { el, nameOf, cover } = R;
   if (!R?.data) { R?.notice('Emu needs a log-in to read the collection.'); return; }
 
   const RECENT = 12;
@@ -38,8 +38,6 @@
   let showing = 'all';
 
   const keyOf = g => `${g.system}/${g.title}`;
-  // A game's name without the bracketed tags its list adds: region, languages, revision.
-  const nameOf = g => g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title;
   const playedAt = g => g.notes?.played_at ?? null;
   const byPlayed = (a, b) => new Date(playedAt(b)) - new Date(playedAt(a));
   const countOf = n => `${n} ${n === 1 ? 'game' : 'games'}`;
@@ -63,41 +61,6 @@
   ];
   // The system #<system> names, or null for home.
   const route = () => { const s = decodeURIComponent(location.hash.slice(1)); return R.SYSTEMS[s] ? s : null; };
-
-  // A game's art: the first of its pictures that loads, else `none()`.
-  function art(g, none) {
-    const urls = R.artOf(g);
-    if (!urls.length) { none(); return null; }
-    const img = el('img');
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    let i = 0;
-    img.addEventListener('error', () => { i += 1; if (i < urls.length) img.src = urls[i]; else { img.remove(); none(); } });
-    img.src = urls[0];
-    return img;
-  }
-
-  // A cover: the game's art, else its name on the tile. Its system gives it
-  // its box's shape until the art loads, and then the art's own shape does,
-  // so every cover is one height and as wide as its own box art. The shape
-  // goes on the cover button where there is one, because it sets the width.
-  function cover(g, cls) {
-    const box = el('div', cls);
-    box.dataset.system = g.system;
-    const name = () => {
-      box.replaceChildren(el('span', 'emu-cover-title', nameOf(g)));
-      (box.closest('.emu-cover') ?? box).style.removeProperty('--emu-box');
-    };
-    const img = art(g, name);
-    if (img) {
-      img.addEventListener('load', () => {
-        if (img.naturalWidth && img.naturalHeight) (box.closest('.emu-cover') ?? box).style.setProperty('--emu-box', `${img.naturalWidth} / ${img.naturalHeight}`);
-      });
-      box.append(img);
-    }
-    return box;
-  }
 
   // A cover as the button that opens its game.
   function coverItem(g) {

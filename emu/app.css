@@ -119,3 +119,60 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cabinet__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-cabinet__name, .emu-cabinet__count { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; }
 .emu-cabinet__count { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* A cover's marks. One this Mac holds is dimmed under a tick in Rux's
+   Collection; one this Mac lacks, or whose console it cannot play, is dimmed
+   in the room; one arriving sits under a veil that lifts from the foot. */
+.emu-cover--here, .emu-scene .emu-cover { position: relative; }
+.emu-cover--here .emu-cover-art, .emu-cover--away .emu-cover-art { opacity: .45; }
+.emu-cover__tick { position: absolute; inset-block-start: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--rux-background); fill: var(--rux-support-success); }
+.emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer-01); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
+
+/* YOUR MAC: one scene that stays in view under the header while Rux's
+   Collection scrolls. Everything stands on one board, drawn across the scene
+   at --emu-under from its foot; what hangs or is named under the board has
+   that height. */
+.emu-room { position: sticky; inset-block-start: 3rem; z-index: 1; display: grid; gap: var(--rux-spacing-03); background: var(--rux-background); padding-block: var(--rux-spacing-03) var(--rux-spacing-05); }
+.emu-room[hidden] { display: none; }
+.emu-room__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
+.emu-room__space { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+.emu-scene { --emu-under: 4.75rem; --emu-board: .5rem; position: relative; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: end; gap: var(--rux-spacing-07); padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; background: var(--rux-layer-01); }
+.emu-scene::before { content: ""; position: absolute; inset-inline: 0; inset-block-end: var(--emu-under); block-size: var(--emu-board); background: var(--rux-border-strong-01); }
+.emu-cap { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+
+/* The TV and the consoles. A console is as wide as the stage lets it be, so
+   more of them stand closer and smaller. */
+.emu-stage { display: flex; align-items: flex-end; gap: var(--rux-spacing-06); min-inline-size: 0; }
+.emu-tv { flex: 0 1 9rem; min-inline-size: 5rem; position: relative; padding: var(--rux-spacing-02); background: var(--rux-border-strong-01); margin-block-end: calc(var(--emu-under) + var(--emu-board) + .375rem); }
+.emu-tv::after { content: ""; position: absolute; inset-block-start: 100%; inset-inline-start: calc(50% - 1.5rem); inline-size: 3rem; block-size: .375rem; background: var(--rux-border-strong-01); clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); }
+.emu-tv__screen { aspect-ratio: 16 / 10; background: var(--rux-background); }
+.emu-stand { list-style: none; flex: 1 1 0; min-inline-size: 0; position: relative; display: flex; align-items: flex-end; gap: var(--rux-spacing-05); }
+/* The power strip, hung under the board the length of the consoles. */
+.emu-stand::before { content: ""; position: absolute; inset-inline: calc(-1 * var(--rux-spacing-03)); inset-block-end: calc(var(--emu-under) - 14px); block-size: 14px; background: var(--rux-layer-03); }
+.emu-stand--empty::before { display: none; }
+.emu-unit { flex: 0 1 7.5rem; min-inline-size: 3rem; display: grid; justify-items: center; }
+.emu-unit .emu-console { inline-size: 100%; block-size: auto; margin-block-end: var(--emu-board); }
+.emu-unit__under { position: relative; inline-size: 100%; block-size: var(--emu-under); display: grid; justify-items: center; align-content: start; padding-block-start: 42px; }
+.emu-plug { position: absolute; inset-block-start: 0; inset-inline-start: calc(50% - 22px); inline-size: 44px; block-size: 42px; }
+.emu-plug__socket { fill: var(--rux-background); }
+.emu-plug__cord { fill: none; stroke: var(--rux-border-strong-01); stroke-width: 2; stroke-linecap: round; }
+.emu-plug__body { fill: var(--rux-icon-secondary); transform-box: fill-box; transform-origin: center; }
+.emu-plug__prong { opacity: 0; }
+.emu-unit--off .emu-plug__body { transform: translate(-7px, 9px) rotate(-24deg); }
+.emu-unit--off .emu-plug__prong { opacity: 1; }
+.emu-unit--off .emu-console { opacity: .45; }
+.emu-unit--off .emu-led { background: var(--rux-border-strong-01); }
+.emu-unit__name { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; color: var(--rux-text-secondary); }
+.emu-led { display: inline-block; inline-size: .375rem; block-size: .375rem; border-radius: 50%; background: var(--rux-support-success); margin-inline-end: var(--rux-spacing-02); vertical-align: middle; }
+
+/* The games: the favourites on a wall shelf, this Mac's on the board, each a
+   cover without its name, in a row that scrolls sideways. */
+.emu-side { display: grid; gap: var(--rux-spacing-04); min-inline-size: 0; }
+.emu-side > * { min-inline-size: 0; }
+.emu-wall { justify-self: start; max-inline-size: 100%; min-inline-size: 12rem; display: grid; gap: var(--rux-spacing-02); }
+.emu-ledge, .emu-onmac { list-style: none; display: flex; align-items: flex-end; gap: var(--rux-spacing-03); overflow-x: auto; padding: 4px 4px 0; }
+.emu-ledge > *, .emu-onmac > * { flex: none; }
+.emu-ledge { --emu-cover-height: 3rem; min-block-size: calc(3rem + 4px); border-block-end: .375rem solid var(--rux-border-strong-01); }
+.emu-onmac { --emu-cover-height: 5.25rem; min-block-size: calc(5.25rem + 4px); margin-block-end: var(--emu-board); }
+.emu-scene .emu-cover-title { padding: var(--rux-spacing-01); font-size: .625rem; line-height: .75rem; }
+.emu-cap--under { block-size: var(--emu-under); padding-block-start: var(--rux-spacing-03); }

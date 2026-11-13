@@ -25,10 +25,12 @@ fun to use while staying plain. It replaces the front page that
 - **Rux's Collection has two parts, Rux's Consoles and Rux's Games.** Every
   console has its own spot in Rux's Consoles; while it is in the room the
   spot stands empty, outlined, as the place it goes back to.
-- **Rux's Games has a label per console, with its count, and All.** A label
-  shows that console's games; All shows every console's games, each under
-  its name. Games are in A to Z order, and one this Mac has is dimmed with a
-  tick.
+- **Rux's Games shows one console's games at a time,** picked from a row of
+  labels, one per console with its count, as covers in one row that scrolls
+  sideways, A to Z; one this Mac has is dimmed with a tick. There is no All,
+  because one console at a time is neater.
+- **There is no Recently played,** because a Mac holds only a handful of
+  games, and those are on its shelf or in Favourites.
 - **Your Mac holds the consoles on a stand above a power strip on the
   left, and the Favourites shelf over the On this Mac shelf on the right,**
   with how much room is used.
@@ -44,7 +46,10 @@ fun to use while staying plain. It replaces the front page that
 - **Whether an emulator is installed is read live from the helper,** never
   stored. Only which consoles stand in this Mac's room, and which of those
   are unplugged, is kept, since an unplugged Game Boy can stand beside a
-  plugged-in Game Boy Color while mGBA stays installed.
+  plugged-in Game Boy Color while mGBA stays installed. It is kept in
+  Supabase, as a new `room` column on the Mac's `emu_macs` row, which that
+  row's other writes leave alone; the column is a database change shown to
+  rux and applied on a yes.
 - **An emulator that plays several consoles readies them all.** Plugging in
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance show
   Ready in Rux's Consoles, and each arrives plugged in when dragged into the room;
@@ -82,19 +87,16 @@ fun to use while staying plain. It replaces the front page that
 
 ## Questions
 
-- Rux's Games as covers, or as spines on a bookshelf that fit many more
-  across? The prototype's Covers and Shelf switch shows both.
-- Recently played has no place in the room yet: drop it, or keep it as a
-  row in Rux's Collection above the consoles?
 - Later, should a controller plug into a console the same way, to set up
   its buttons?
-- Where is each Mac's room kept: in Supabase per Mac, so it follows a helper
-  reinstall, which is a database change shown to rux first; or in the
-  browser, where clearing it empties the room?
+- Which interactions make the room most sensible and fun: a game lighting
+  up the consoles it fits as it is picked up, a power button on each console
+  to stop a game, a cartridge sliding in or a disc tray opening, a download
+  filling its cover from the bottom?
 
 ## Tasks
 
-- [ ] Keep which consoles stand in each Mac's room, and which are unplugged.
+- [ ] Add the `room` column to `emu_macs`, on rux's yes, and read and write it.
 - [ ] Draw the new console set.
 - [ ] Draw Rux's Collection and Your Mac from the real games, consoles and this Mac.
 - [ ] Build the drag with pointer events, the menu, the plug, and the

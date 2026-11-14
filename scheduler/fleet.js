@@ -322,8 +322,12 @@
       kit.appendChild(equipment(b));
 
       const where = state(b, outByBus.get(b.id));
+      // A tag marks the exception: an active unit says so to a screen
+      // reader alone, so the units out or Inactive are the ones seen.
       const status = el('td');
-      status.appendChild(statusTag(STATE[where].label, STATE[where].colour));
+      status.appendChild(where === 'active'
+        ? el('span', 'rux--visually-hidden', STATE.active.label)
+        : statusTag(STATE[where].label, STATE[where].colour));
 
       const due = el('td');
       due.appendChild(indicator(service(b)));

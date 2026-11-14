@@ -78,7 +78,6 @@ and the side nav is grouped. Nothing a page can do today is removed.
 - [ ] Put every record's tabs in the one order.
 - [ ] Give History and Send to chat their one place in every record's
   header.
-- [ ] Take the Active tag off the Fleet and Partners lists' active rows.
 - [ ] Say a warning most rows share once over the table, on Documents and
   on the Drivers list's medical card column.
 - [ ] Group the side nav, in the block every page carries, once question 1

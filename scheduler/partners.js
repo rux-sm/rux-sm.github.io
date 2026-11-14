@@ -141,7 +141,9 @@
       papers.appendChild(line);
 
       const status = el('td');
-      status.appendChild(p.status === 'active' ? statusTag('Active', 'rux--tag--green') : statusTag('Inactive', 'rux--tag--gray'));
+      // A tag marks the exception: an active partner says so to a screen
+      // reader alone.
+      status.appendChild(p.status === 'active' ? el('span', 'rux--visually-hidden', 'Active') : statusTag('Inactive', 'rux--tag--gray'));
       tr.append(who, papers, status);
       body.appendChild(tr);
     }

@@ -6,9 +6,9 @@
    or decline each leg. The page is a few screens, named in the address's
    hash so the phone's Back button walks them:
 
-     (none)                       home: My trips and My documents, the next
-                                  trip, and the office's Call and Text
-     #trips                       one row a leg, soonest first, by month
+     (none)                       home, which is the driver's trips: one row
+                                  a leg, soonest first, by month, then My
+                                  documents and the office's Call and Text
      #trip/<trip>/<leg>           one leg: where and when, who to call, its
                                   papers, and Accept and Decline at the foot
      #trip/<trip>/<leg>/stops     that leg's stops and times
@@ -237,13 +237,13 @@
   }
   function route() {
     const parts = currentHash().split('/').map(p => { try { return decodeURIComponent(p); } catch { return p; } });
-    if (parts[0] === 'trips') return { screen: 'trips' };
     if (parts[0] === 'documents') return { screen: 'documents' };
     if (parts[0] === 'trip' && parts[1]) {
       const item = items?.find(i => !i.error && String(i.trip.id) === parts[1] && String(i.leg) === parts[2]);
       if (item) return { screen: parts[3] === 'stops' && !item.cancelled ? 'stops' : 'trip', item };
-      return { screen: 'trips' };
     }
+    // A leg no longer on the link, and the address of the list a link once
+    // had beside its home, land on home.
     return { screen: 'home' };
   }
 
@@ -277,10 +277,10 @@
      confirmed yet; the trip's own screen says Confirmed too. */
   const unconfirmed = l => !l.cancelled && l.trip?.confirmed === false;
   const rowTags = l => {
-    if (!unconfirmed(l)) return statusTag(l);
-    const both = el('span', 'scheduler-driver-row__tags');
-    both.append(statusTag(l), tag(w.notConfirmed, 'magenta', '#m-schedule'));
-    return both;
+    const tags = el('span', 'scheduler-driver-tags');
+    tags.appendChild(statusTag(l));
+    if (unconfirmed(l)) tags.appendChild(tag(w.notConfirmed, 'magenta', '#m-schedule'));
+    return tags;
   };
 
   /* A screen's head: a way back where there is one, the heading, which takes
@@ -302,11 +302,13 @@
   }
 
   /* A ROW THAT OPENS SOMETHING: Carbon's clickable tile, an icon or a day at
-     the left, the words, then a tag and a chevron at the right. A screen's
-     row opens in place; a paper's opens on its own page. A row with nothing
+     the left, the words, then a tag and a chevron at the right. Tags given
+     as `under` stand below the words instead, so a leg's place and time keep
+     the row's whole width on a phone. A screen's row opens in place; a
+     paper's opens on its own page. A row with nothing
      to open yet, `disabled`, is a plain tile with the same parts and no
      chevron, as a signed form's row is. */
-  function row({ hash, href, newTab, lead, title, line, end, disabled }) {
+  function row({ hash, href, newTab, lead, title, line, under, end, disabled }) {
     const a = disabled ? el('div', 'rux--tile scheduler-driver-row') : el('a', 'rux--tile rux--tile--clickable scheduler-driver-row');
     if (hash) linkTo(a, hash);
     else if (href) a.href = href;
@@ -315,6 +317,7 @@
     const words = el('span', 'scheduler-driver-row__words');
     words.appendChild(el('span', 'rux--type-heading-compact-02', title));
     if (line) words.appendChild(el('span', 'rux--type-body-compact-01 scheduler-driver-muted', line));
+    if (under) words.appendChild(under);
     a.appendChild(words);
     if (end) a.appendChild(end);
     if (!disabled) a.appendChild(icon(newTab ? '#m-open_in_new' : '#m-keyboard_arrow_right', 20));
@@ -367,31 +370,42 @@
     return b;
   }
   const whereOf = l => (l.cancelled ? l.destination || w.destination : l.destinationWord ? w[l.destinationWord] : l.destination);
-  const lengthOf = l => [daysOf(l) === 1 ? w.dayTrip : w.days(daysOf(l)), l.bus ? w.bus(l.bus) : null].filter(Boolean).join(' · ');
+  /* A leg's row says what a driver checks a trip for: Today or Tomorrow,
+     when to be there, how many days where it is more than one, and the bus. */
+  const rowLine = l => [
+    soonText(l.start, l.end),
+    l.relief?.at ? w.handoffAt(timeText(l.relief.at)) : l.time ? w.spotAt(timeText(l.time)) : null,
+    daysOf(l) > 1 ? w.days(daysOf(l)) : null,
+    l.bus ? w.bus(l.bus) : null,
+  ].filter(Boolean).join(' · ');
 
-  // -- home ----------------------------------------------------------------------
+  // -- home: the driver's trips ---------------------------------------------------
+  /* The trips are the page, so home is the list itself with nothing to open
+     first: the count that waits for an answer under the greeting, then one
+     row a leg, soonest first, under each month as the office's own list is.
+     The forms to sign and the office come after. */
   function homeScreen() {
     const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    const today = dayPart(todayIso(), { weekday: 'long', month: 'long', day: 'numeric' });
-    screen.appendChild(head(w.hello(driverName), today));
-
     const waiting = shown.filter(l => ['pending', 'changed'].includes(stateOf(l).status)).length;
-    const toSign = forms.filter(f => f.waiting).length;
-    const count = n => (n ? tag(String(n), 'blue') : null);
-    screen.appendChild(rows(
-      row({ hash: 'trips', lead: rowIcon('#m-directions_bus'), title: w.myTrips,
-        line: waiting ? w.waiting(waiting) : shown.length ? w.allAnswered : w.noTrips, end: count(waiting) }),
-      forms.length ? row({ hash: 'documents', lead: rowIcon('#m-description'), title: w.myDocuments,
-        line: toSign ? w.forms.waiting(toSign) : w.allSigned, end: count(toSign) }) : null,
-    ));
+    const legs = items.filter(i => !i.error);
+    screen.appendChild(head(w.hello(driverName), waiting ? w.waiting(waiting) : shown.length ? w.allAnswered : legs.length ? '' : w.noTrips));
+    if (!legs.length) screen.appendChild(el('p', 'rux--type-body-01 scheduler-driver-muted', w.noTripsText));
 
-    // The soonest leg the driver has not turned down, one line to open it by.
-    const next = shown.find(l => stateOf(l).status !== 'declined');
-    if (next) {
-      const when = [soonText(next.start, next.end) || rangeText(next.start, next.end, true, locale()), whereOf(next)].filter(Boolean).join(' · ');
-      const at = next.relief?.at ? w.handoffAt(timeText(next.relief.at)) : next.time ? w.spotAt(timeText(next.time)) : '';
-      screen.appendChild(section(w.nextUp, rows(row({ hash: legHash(next), lead: dayBlock(next.start), title: when,
-        line: [at, next.bus ? w.bus(next.bus) : null].filter(Boolean).join(' · ') }))));
+    const months = new Map();
+    for (const l of legs) {
+      const month = dayPart(l.start, { month: 'long', year: 'numeric' });
+      if (!months.has(month)) months.set(month, []);
+      months.get(month).push(l);
+    }
+    for (const [month, list] of months) {
+      screen.appendChild(section(month, rows(...list.map(l => row({ hash: legHash(l), lead: dayBlock(l.start),
+        title: whereOf(l), line: l.cancelled ? '' : rowLine(l), under: rowTags(l) })))));
+    }
+
+    const toSign = forms.filter(f => f.waiting).length;
+    if (forms.length) {
+      screen.appendChild(rows(row({ hash: 'documents', lead: rowIcon('#m-description'), title: w.myDocuments,
+        line: toSign ? w.forms.waiting(toSign) : w.allSigned, end: toSign ? tag(String(toSign), 'blue') : null })));
     }
 
     screen.appendChild(person(null, w.office, phone(OFFICE.call), OFFICE.call, OFFICE.text));
@@ -414,32 +428,12 @@
     return screen;
   }
 
-  // -- my trips ------------------------------------------------------------------
-  function tripsScreen() {
-    const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    const waiting = shown.filter(l => ['pending', 'changed'].includes(stateOf(l).status)).length;
-    screen.appendChild(head(w.myTrips, waiting ? w.waiting(waiting) : shown.length ? w.allAnswered : w.noTripsText,
-      { label: w.home, hash: '' }));
-    // Under each month, as the office's own list is.
-    const months = new Map();
-    for (const i of items.filter(i => !i.error)) {
-      const month = dayPart(i.start, { month: 'long', year: 'numeric' });
-      if (!months.has(month)) months.set(month, []);
-      months.get(month).push(i);
-    }
-    for (const [month, legs] of months) {
-      screen.appendChild(section(month, rows(...legs.map(l => row({ hash: legHash(l), lead: dayBlock(l.start),
-        title: whereOf(l), line: lengthOf(l), end: rowTags(l) })))));
-    }
-    return screen;
-  }
-
   // -- one trip --------------------------------------------------------------------
   function tripScreen(l) {
     const screen = el('div', 'rux--stack-vertical rux--stack-scale-6 scheduler-driver-trip');
     const dates = [soonText(l.start, l.end), rangeText(l.start, l.end, true, locale())].filter(Boolean).join(' · ');
     const top = head(whereOf(l), [dates, l.cancelled ? null : l.bus ? w.bus(l.bus) : w.busNotSet].filter(Boolean).join(' · '),
-      { label: w.myTrips, hash: 'trips' });
+      { label: w.myTrips, hash: '' });
     const tags = el('div', 'scheduler-driver-tags');
     tags.appendChild(statusTag(l));
     if (!l.cancelled) tags.appendChild(unconfirmed(l) ? tag(w.notConfirmed, 'magenta', '#m-schedule') : tag(w.confirmedTag, 'cyan', '#m-check'));
@@ -636,7 +630,7 @@
     const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const waiting = forms.filter(x => x.waiting);
     const signed = forms.filter(x => !x.waiting);
-    screen.appendChild(head(w.myDocuments, f.cardText, { label: w.home, hash: '' }));
+    screen.appendChild(head(w.myDocuments, f.cardText, { label: w.myTrips, hash: '' }));
     const day = v => new Date(String(v).length === 10 ? `${v}T12:00:00` : v)
       .toLocaleDateString(locale(), { month: 'short', day: 'numeric', year: 'numeric' });
     const title = form => (lang === 'es' ? form.titleEs : form.title);
@@ -737,11 +731,10 @@
     if (!items) return;
     shown = items.filter(i => !i.cancelled);
     const r = route();
-    const screen = r.screen === 'trips' ? tripsScreen()
-      : r.screen === 'trip' ? tripScreen(r.item)
-        : r.screen === 'stops' ? stopsScreen(r.item)
-          : r.screen === 'documents' ? documentsScreen()
-            : homeScreen();
+    const screen = r.screen === 'trip' ? tripScreen(r.item)
+      : r.screen === 'stops' ? stopsScreen(r.item)
+        : r.screen === 'documents' ? documentsScreen()
+          : homeScreen();
     screenEl.replaceChildren(screen);
     say(null);
     if (moved) {

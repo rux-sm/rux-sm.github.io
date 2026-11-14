@@ -5689,9 +5689,6 @@ html[data-scheduler-takeover] {
 .scheduler-driver-row { display: flex; align-items: center; gap: var(--rux-spacing-04); }
 .scheduler-driver-row > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-driver-row > .rux--tag { flex: none; margin: 0; }
-/* A row's two tags, its answer over Not confirmed yet. */
-.scheduler-driver-row__tags { flex: none; display: grid; justify-items: end; gap: var(--rux-spacing-02); }
-.scheduler-driver-row__tags > .rux--tag { margin: 0; }
 .scheduler-driver-row__words { flex: 1 1 auto; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); overflow-wrap: anywhere; }
 .scheduler-driver-row__icon { flex: none; display: inline-flex; color: var(--rux-icon-primary); }
 /* A leg's day at its row's left: the weekday small over the date large. */

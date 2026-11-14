@@ -118,8 +118,8 @@ so the ink drawn there is the ink that prints. After a sent quote: `docs/booking
 The pages in `share/` are for people without a log-in, who arrive by a link: `share/document.html`
 opens a trip document, `share/track.html` shows a customer their bus on Samsara's map while its leg is out, `share/maintenance.html` shows the maintenance crew two weeks of buses, their
 days out and the recent changes, a bar opening its leg's times and whether its bus has left, is on
-the road or is back, and `share/driver.html` shows a driver, in English or Spanish, a home with My
-trips, the legs dispatch sent them, and My documents, the forms to sign. A leg opens its own screen:
+the road or is back, and `share/driver.html` shows a driver, in English or Spanish, a home that lists
+their trips, the legs dispatch sent them, above My documents, the forms to sign. A leg opens its own screen:
 where and when, who to call, its stops, the itinerary file and the envelope, `share/form.html`, with
 Accept and Decline at its foot; a cancelled leg stays until its day passes, and the page reads the
 trips again on return and before Accept. Staff see the same schedule inside the app at `maintenance.html`,

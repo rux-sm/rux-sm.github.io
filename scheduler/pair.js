@@ -295,16 +295,17 @@
       chatButton(link, recordId);
     };
 
-    /* Send to chat, beside History: the team chat opens with this record as a
-       link above its box. Shown for a saved record once the chat is on the
-       page, which team-chat.js says when its person is read. */
+    /* Send to chat, right after History, which alone is pushed to the row's
+       end, so the two stand as a pair there: the team chat opens with this
+       record as a link above its box. Shown for a saved record once the chat
+       is on the page, which team-chat.js says when its person is read. */
     const CHAT_KINDS = ['customer', 'contact', 'driver', 'bus', 'location'];
     let chatFor = null;
     const chatButton = (history, recordId) => {
       if (!CHAT_KINDS.includes(one)) return;
       let btn = $(id(`${one}-chat`));
       if (!btn) {
-        btn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-pair-history', 'Send to chat');
+        btn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Send to chat');
         btn.type = 'button';
         btn.id = id(`${one}-chat`);
         btn.appendChild(svgUse('#m-chat', '16', '0 0 32 32', 'rux--btn__icon'));

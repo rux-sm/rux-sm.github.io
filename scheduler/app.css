@@ -6329,7 +6329,8 @@ html[data-scheduler-takeover] {
   flex-wrap: wrap;
   gap: var(--rux-spacing-04);
 }
-/* The record's History link sits at the end of its title row. */
+/* The record's History link sits at the end of its title row, and Send to
+   chat follows it there. */
 .scheduler-pair-history { margin-inline-start: auto; }
 .scheduler-pair-group {
   border: 0;

@@ -75,7 +75,6 @@ and the side nav is grouped. Nothing a page can do today is removed.
   Billing tab's steps, the Files tab and the driver record's trips.
 - [ ] Replace `None` and the like with the dash wherever the gap asks for
   nothing, on the pages after the Customers list, which has it.
-- [ ] Put every record's tabs in the one order.
 - [ ] Give History and Send to chat their one place in every record's
   header.
 - [ ] Say a warning most rows share once over the table, on Documents and

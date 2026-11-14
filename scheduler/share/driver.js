@@ -599,27 +599,19 @@
     const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const waiting = forms.filter(x => x.waiting);
     const signed = forms.filter(x => !x.waiting);
-    screen.appendChild(head(w.myDocuments, f.cardText, { label: w.myTrips, hash: '' }));
+    screen.appendChild(head(w.myDocuments, '', { label: w.myTrips, hash: '' }));
     const day = v => new Date(String(v).length === 10 ? `${v}T12:00:00` : v)
       .toLocaleDateString(locale(), { month: 'short', day: 'numeric', year: 'numeric' });
     const title = form => (lang === 'es' ? form.titleEs : form.title);
+    // Each list's heading says its state, so a row carries its name alone, and a signed one its day.
     if (waiting.length) {
       screen.appendChild(section(f.toSign, rows(...waiting.map(form => row({
-        href: `sign.html?${new URLSearchParams({ s: token, form: form.id })}`, lead: rowIcon('#m-edit'),
-        title: title(form), line: f.fillOut, end: tag(f.toSign, 'blue', '#m-pending-fill') })))));
+        href: `sign.html?${new URLSearchParams({ s: token, form: form.id })}`, lead: rowIcon('#m-edit'), title: title(form) })))));
     }
     if (signed.length) {
-      const list = rows(...signed.map(form => {
-        const r = el('div', 'rux--tile scheduler-driver-row');
-        r.appendChild(rowIcon('#m-check_circle'));
-        const words = el('span', 'scheduler-driver-row__words');
-        words.appendChild(el('span', 'rux--type-heading-compact-02', title(form)));
-        if (form.signedAt) words.appendChild(el('span', 'rux--type-body-compact-01 scheduler-driver-muted',
-          form.endsOn ? f.signedUntil(day(form.signedAt), day(form.endsOn)) : f.signedOn(day(form.signedAt))));
-        r.append(words, tag(f.signed, 'green', '#m-check_circle-fill'));
-        return r;
-      }));
-      screen.appendChild(section(f.signed, list));
+      screen.appendChild(section(f.signed, rows(...signed.map(form => row({
+        disabled: true, lead: rowIcon('#m-check_circle'), title: title(form),
+        line: [form.signedAt && day(form.signedAt), form.signedAt && form.endsOn && f.goodUntil(day(form.endsOn))].filter(Boolean).join(' · ') })))));
     }
     return screen;
   }

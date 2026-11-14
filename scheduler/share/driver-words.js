@@ -114,12 +114,9 @@
 
     // The forms the driver signs: My documents and sign.html.
     forms: {
-      cardText: 'The office keeps a signed copy of each one on your file.',
       toSign: 'To sign',
       signed: 'Signed',
-      fillOut: 'Fill out and sign',
-      signedOn: day => `Signed ${day}`,
-      signedUntil: (day, until) => `Signed ${day} · good until ${until}`,
+      goodUntil: day => `good until ${day}`,
       waiting: n => (n === 1 ? '1 form to sign' : `${n} forms to sign`),
       back: 'Back to My documents',
       intro: 'Answer every question, check your details, and sign at the bottom.',
@@ -249,12 +246,9 @@
     declineConfirm: 'Rechazar viaje',
 
     forms: {
-      cardText: 'La oficina guarda una copia firmada de cada uno en tu expediente.',
       toSign: 'Por firmar',
       signed: 'Firmado',
-      fillOut: 'Llenar y firmar',
-      signedOn: day => `Firmado el ${day}`,
-      signedUntil: (day, until) => `Firmado el ${day} · vale hasta el ${until}`,
+      goodUntil: day => `vale hasta el ${day}`,
       waiting: n => (n === 1 ? '1 formulario por firmar' : `${n} formularios por firmar`),
       back: 'Volver a Mis documentos',
       intro: 'Contesta cada pregunta, revisa tus datos y firma al final.',

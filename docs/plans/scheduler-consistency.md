@@ -50,8 +50,6 @@ and the side nav is grouped. Nothing a page can do today is removed.
   where its Status is.
 - **Decline on the driver's page keeps its size and is an outline,** Accept
   the one solid button, since the confirmation already catches a wrong tap.
-- **Follow-ups, Vehicle types and Kinds are Carbon's ghost buttons,** their
-  words kept.
 - **Every rule a page needs is Design's or the app's own under
   `scheduler-`,** as the policy says; no change here edits a Carbon file.
 - **Each task is checked in Chrome on :8641 in every theme before its
@@ -92,6 +90,5 @@ and the side nav is grouped. Nothing a page can do today is removed.
   2 is answered.
 - [ ] Move Delete to an overflow menu in each record's header.
 - [ ] Make Decline an outline on the driver's page.
-- [ ] Make Follow-ups, Vehicle types and Kinds ghost buttons.
 - [ ] Bring `scheduler/README.md` and `scheduler/docs/screen-inventory.md`
   to what each task changed, in that task's commit.

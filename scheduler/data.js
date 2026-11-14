@@ -2019,7 +2019,8 @@
     for (const row of stripRows) {
       const now = row.track.style.getPropertyValue('--scheduler-lanes');
       let lanes = row.least;
-      for (const item of row.items) if (item.start <= last && item.end >= first) lanes = Math.max(lanes, item.lane + 1);
+      // A bar's `end` is the day after its last, so one that ends where the view starts is off screen.
+      for (const item of row.items) if (item.start < last && (item.end > first || item.start >= first)) lanes = Math.max(lanes, item.lane + 1);
       if (now !== String(lanes)) row.track.style.setProperty('--scheduler-lanes', lanes);
       for (const item of row.items) {
         if (item.el && item.el.hasAttribute('data-folded') !== item.lane >= lanes) item.el.toggleAttribute('data-folded', item.lane >= lanes);

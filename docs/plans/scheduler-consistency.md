@@ -73,8 +73,8 @@ and the side nav is grouped. Nothing a page can do today is removed.
   driver, unit, customer, partner and contact records' Trips tabs.
 - [ ] Give every read date the one format, through one function, on the
   Billing tab's steps, the Files tab and the driver record's trips.
-- [ ] Replace `Not picked`, `None` and the like with the dash wherever the
-  gap asks for nothing, on the Customers list first.
+- [ ] Replace `None` and the like with the dash wherever the gap asks for
+  nothing, on the pages after the Customers list, which has it.
 - [ ] Put every record's tabs in the one order.
 - [ ] Give History and Send to chat their one place in every record's
   header.

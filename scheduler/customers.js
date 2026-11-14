@@ -136,7 +136,7 @@
         pl.append(el('span', null, p.name), el('span', 'scheduler-pair-cell__detail', p.address));
         where.appendChild(pl);
       } else {
-        where.appendChild(el('span', 'scheduler-pair-note', 'Not picked'));
+        where.textContent = '—';
       }
 
       const n = peopleOf(c).length;

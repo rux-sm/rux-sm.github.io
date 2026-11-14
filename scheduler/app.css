@@ -5623,8 +5623,8 @@ html[data-scheduler-takeover] {
    tag and a chevron at the right, set 2px apart so the page between them
    rules them. Phone first; the staff view holds the screens to a phone's
    width, so staff read them at the size drivers do. */
-/* The Trips tab of a driver's record: the office's work, then the
-   driver's page, which is as wide as a phone. */
+/* The Trips tab of a driver's record: the office's work and the driver's
+   page, which is as wide as a phone, under it on a phone. */
 .scheduler-send {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -5639,18 +5639,35 @@ html[data-scheduler-takeover] {
 .scheduler-send__preview[hidden],
 .scheduler-send__list[hidden] { display: none; }
 .scheduler-send :is(h2, p) { margin: 0; }
-/* A record's column is half the page's width, too narrow for the phone
-   beside the work. Where the window leaves the phone's width free at the
-   column's right, the section reaches into that margin and stands the phone
-   there, in view while the work beside it scrolls and no taller than the
-   window leaves it. */
-@media (min-width: 106rem) {
+/* THE PHONE STANDS BESIDE THE WORK wherever the window is wider than a
+   phone itself, in view while the work scrolls and no taller than the window
+   leaves it. It is a preview, so a window too narrow for it at full size
+   draws it smaller, whole, rather than under the work: `zoom` shrinks the
+   frame with the page inside still laid out at a phone's width. From the
+   large breakpoint a record's column is the middle half of the page, so the
+   section reaches into the free margin at its right, by the phone's width
+   or half the column, whichever is less. */
+@media (min-width: 42rem) {
   .scheduler-send {
-    grid-template-columns: minmax(0, 1fr) 24.375rem;
-    margin-inline-end: calc(-24.375rem - var(--rux-spacing-07));
+    --scheduler-phone-zoom: 0.7;
+    --scheduler-phone-width: calc(24.375rem * var(--scheduler-phone-zoom));
+    grid-template-columns: minmax(0, 1fr) var(--scheduler-phone-width);
   }
   .scheduler-send__preview { position: sticky; inset-block-start: calc(3rem + var(--rux-spacing-05)); }
-  .scheduler-send__preview > .scheduler-leg-staff { max-block-size: calc(100dvh - 8rem); }
+  .scheduler-send__preview > .scheduler-leg-staff {
+    zoom: var(--scheduler-phone-zoom);
+    inline-size: 24.375rem;
+    max-block-size: calc((100dvh - 8rem) / var(--scheduler-phone-zoom));
+  }
+}
+@media (min-width: 66rem) {
+  .scheduler-send {
+    --scheduler-phone-zoom: 0.75;
+    margin-inline-end: calc(-1 * min(50%, var(--scheduler-phone-width) + var(--rux-spacing-07)));
+  }
+}
+@media (min-width: 106rem) {
+  .scheduler-send { --scheduler-phone-zoom: 1; }
 }
 /* The trips' table scrolls inside itself, sideways on a phone and down past
    a screen's height, so the message stays in reach. */

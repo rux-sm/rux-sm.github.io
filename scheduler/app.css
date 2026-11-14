@@ -5732,8 +5732,6 @@ html[data-scheduler-takeover] {
 .scheduler-driver-answer__buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
 .scheduler-driver-answer__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
 .scheduler-driver-answer__error { margin: 0; color: var(--rux-text-error); }
-.scheduler-driver-stops { display: grid; gap: var(--rux-spacing-01); margin: 0; padding: 0; list-style: none; }
-.scheduler-driver-stops > li { display: grid; gap: var(--rux-spacing-02); }
 /* Call or Text: the icon with its word under it, in a square the size of a
    thumb, in Carbon's secondary button colours. Carbon's button puts the word
    beside the icon, which leaves a name no room on a phone. */

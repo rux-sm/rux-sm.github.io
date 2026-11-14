@@ -36,21 +36,16 @@
     noTripsText: 'New assignments will appear here after dispatch schedules them.',
     wentWrong: 'Something went wrong',
 
-    // The screens: home, which is My trips, a trip, its stops, and My documents.
+    // The screens: home, which is My trips, a trip, and My documents.
     myTrips: 'My trips',
     myDocuments: 'My documents',
     allSigned: 'Everything is signed',
-    office: 'Office',
     needsAnswer: 'Needs answer',
     changedTag: 'Changed',
     // Whether the customer has confirmed the trip, which the page reads live.
     notConfirmed: 'Not confirmed yet',
     notConfirmedText: "The customer hasn't confirmed this trip yet, so it may still change.",
-    confirmedTag: 'Confirmed',
     days: n => `${n} days`,
-    whoToCall: 'Who to call',
-    details: 'Details',
-    stopsTitle: 'Stops',
 
     today: 'Today',
     tomorrow: 'Tomorrow',
@@ -81,8 +76,8 @@
     text: 'Text',
     callName: name => `Call ${name}`,
     textName: name => `Text ${name}`,
-    showAllCrew: n => `Show all crew (${n})`,
-    showLessCrew: 'Show less crew',
+    showEveryone: n => `Show everyone (${n})`,
+    showLess: 'Show less',
 
     itinerary: 'Itinerary',
     updated: 'Updated',
@@ -99,10 +94,6 @@
     was: v => ` (was ${v})`,
     newItinerary: 'New itinerary',
     changedJustNow: 'This trip just changed. Read it again, then answer.',
-    stops: n => `Stops (${n})`,
-    stopArrive: time => `arrive ${time}`,
-    stopLeave: time => `leave ${time}`,
-    stopUnnamed: 'Stop',
     cancelled: 'Cancelled',
     cancelledText: "This trip was cancelled. You don't need to do anything.",
 
@@ -187,16 +178,11 @@
     myTrips: 'Mis viajes',
     myDocuments: 'Mis documentos',
     allSigned: 'Todo está firmado',
-    office: 'Oficina',
     needsAnswer: 'Por responder',
     changedTag: 'Cambió',
     notConfirmed: 'Sin confirmar',
     notConfirmedText: 'El cliente todavía no confirma este viaje, así que puede cambiar.',
-    confirmedTag: 'Confirmado',
     days: n => `${n} días`,
-    whoToCall: 'A quién llamar',
-    details: 'Detalles',
-    stopsTitle: 'Paradas',
 
     today: 'Hoy',
     tomorrow: 'Mañana',
@@ -227,8 +213,8 @@
     text: 'Mensaje',
     callName: name => `Llamar a ${name}`,
     textName: name => `Mandar mensaje a ${name}`,
-    showAllCrew: n => `Ver todos los choferes (${n})`,
-    showLessCrew: 'Ver menos',
+    showEveryone: n => `Ver a todos (${n})`,
+    showLess: 'Ver menos',
 
     itinerary: 'Itinerario',
     updated: 'Actualizado',
@@ -244,10 +230,6 @@
     was: v => ` (antes ${v})`,
     newItinerary: 'Itinerario nuevo',
     changedJustNow: 'Este viaje acaba de cambiar. Léelo otra vez y luego responde.',
-    stops: n => `Paradas (${n})`,
-    stopArrive: time => `llega ${time}`,
-    stopLeave: time => `sale ${time}`,
-    stopUnnamed: 'Parada',
     cancelled: 'Cancelado',
     cancelledText: 'Este viaje se canceló. No tienes que hacer nada.',
 

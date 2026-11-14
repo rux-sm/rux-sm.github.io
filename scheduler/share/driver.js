@@ -8,10 +8,9 @@
 
      (none)                       home, which is the driver's trips: one row
                                   a leg, soonest first, by month, then My
-                                  documents and the office's Call and Text
+                                  documents
      #trip/<trip>/<leg>           one leg: where and when, who to call, its
                                   papers, and Accept and Decline at the foot
-     #trip/<trip>/<leg>/stops     that leg's stops and times
      #documents                   the forms to sign, then the signed ones
 
    The rest of a trip is on the itinerary file uploaded to it and the
@@ -58,10 +57,6 @@
   const staffPage = document.body.dataset.driver === 'staff';
   const client = window.Rux?.account?.client;
   const phone = value => window.SchedulerPhone?.format(value) ?? String(value ?? '');
-
-  /* The office's two numbers, as the letterhead gives them: the line rings
-     and the cell takes a text. */
-  const OFFICE = { call: '9569941169', text: '9566489691' };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -240,7 +235,7 @@
     if (parts[0] === 'documents') return { screen: 'documents' };
     if (parts[0] === 'trip' && parts[1]) {
       const item = items?.find(i => !i.error && String(i.trip.id) === parts[1] && String(i.leg) === parts[2]);
-      if (item) return { screen: parts[3] === 'stops' && !item.cancelled ? 'stops' : 'trip', item };
+      if (item) return { screen: 'trip', item };
     }
     // A leg no longer on the link, and the address of the list a link once
     // had beside its home, land on home.
@@ -274,7 +269,8 @@
   const statusTag = l => (l.cancelled ? tag(w.cancelled, 'red', '#m-cancel-fill') : (STATUS_TAG[stateOf(l).status] ?? STATUS_TAG.pending)());
   /* Whether the customer has confirmed the trip, read with it each load, so
      a confirmation reaches the driver with nothing sent. A row says only Not
-     confirmed yet; the trip's own screen says Confirmed too. */
+     confirmed yet, and so does the trip's own screen; a confirmed trip says
+     nothing. */
   const unconfirmed = l => !l.cancelled && l.trip?.confirmed === false;
   const rowTags = l => {
     const tags = el('span', 'scheduler-driver-tags');
@@ -335,8 +331,8 @@
   /* A PERSON ON ONE ROW: the name and a second line, then Call and Text at
      the right, each an icon with its word under it. In words beside the icon,
      as Carbon's buttons put them, the pair took the room a name needs on a
-     phone; this keeps the words and fits. The same for the office, the
-     day-of contact and the crew, so a call looks one way on every screen. */
+     phone; this keeps the words and fits. The same for the day-of contact
+     and the crew, so a call looks one way on every one. */
   const callButton = (word, href, iconId, label) => {
     const a = el('a', 'scheduler-call-button');
     a.href = href;
@@ -383,7 +379,8 @@
   /* The trips are the page, so home is the list itself with nothing to open
      first: the count that waits for an answer under the greeting, then one
      row a leg, soonest first, under each month as the office's own list is.
-     The forms to sign and the office come after. */
+     The forms to sign come after. The office is not here to call: its text
+     is what brought the driver the link. */
   function homeScreen() {
     const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const waiting = shown.filter(l => ['pending', 'changed'].includes(stateOf(l).status)).length;
@@ -407,8 +404,6 @@
       screen.appendChild(rows(row({ hash: 'documents', lead: rowIcon('#m-description'), title: w.myDocuments,
         line: toSign ? w.forms.waiting(toSign) : w.allSigned, end: toSign ? tag(String(toSign), 'blue') : null })));
     }
-
-    screen.appendChild(person(null, w.office, phone(OFFICE.call), OFFICE.call, OFFICE.text));
 
     /* THE SWITCH, at the foot, written in the language it switches to, so a
        driver finds it whichever the page is in. The phone remembers it. The
@@ -436,11 +431,11 @@
       { label: w.myTrips, hash: '' });
     const tags = el('div', 'scheduler-driver-tags');
     tags.appendChild(statusTag(l));
-    if (!l.cancelled) tags.appendChild(unconfirmed(l) ? tag(w.notConfirmed, 'magenta', '#m-schedule') : tag(w.confirmedTag, 'cyan', '#m-check'));
+    // A confirmed trip is the usual one and says nothing; one still waiting says so.
+    if (unconfirmed(l)) tags.appendChild(tag(w.notConfirmed, 'magenta', '#m-schedule'));
     // The role only where it is not the usual one.
     if (!l.cancelled && (l.role || 'driver') !== 'driver') tags.appendChild(tag(w.role[roleKey(l.role)], 'gray', '#m-person'));
     top.appendChild(tags);
-    if (!l.cancelled && l.customer) top.appendChild(el('p', 'rux--type-body-compact-01 scheduler-driver-muted', l.customer));
     if (unconfirmed(l)) top.appendChild(el('p', 'rux--type-body-compact-01', w.notConfirmedText));
     screen.appendChild(top);
 
@@ -476,10 +471,9 @@
       screen.appendChild(plan);
     }
 
-    /* WHO TO CALL: the leg's contact, then the rest of its contacts as
-       Backup, then the crew by their role, the driver's own bus first; another
-       bus's crew says which bus. A big trip's crew past the first three waits
-       behind a button. */
+    /* WHO TO CALL: the leg's contact, alone. The rest of its contacts as
+       Backup and the crew by their role, the driver's own bus first and
+       another bus's crew saying which bus, wait behind a button. */
     const people = [
       ...l.contacts.map((c, i) => person(i ? w.backup : w.contact, c.name || w.noName, c.phone ? phone(c.phone) : '', c.phone)),
       ...l.crew.flatMap(bus => bus.people.map(p => person(
@@ -487,38 +481,35 @@
         p.name || w.crewMember, p.phone ? phone(p.phone) : '', p.phone))),
     ];
     if (people.length) {
-      const list = rows(...people);
-      const crewStart = l.contacts.length;
-      const hideFrom = Math.max(crewStart + 3, 4);
-      people.forEach((p, i) => { p.hidden = i >= hideFrom; });
-      const s = section(w.whoToCall, list);
-      if (people.length > hideFrom) {
-        const all = w.showAllCrew(people.length - crewStart);
+      const calls = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      people.forEach((p, i) => { p.hidden = i >= 1; });
+      calls.appendChild(rows(...people));
+      if (people.length > 1) {
+        const all = w.showEveryone(people.length);
         const more = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', all);
         more.type = 'button';
         more.setAttribute('aria-expanded', 'false');
         more.addEventListener('click', () => {
           const open = more.getAttribute('aria-expanded') !== 'true';
           more.setAttribute('aria-expanded', String(open));
-          people.forEach((p, i) => { if (i >= hideFrom) p.hidden = !open; });
-          more.textContent = open ? w.showLessCrew : all;
+          people.forEach((p, i) => { if (i >= 1) p.hidden = !open; });
+          more.textContent = open ? w.showLess : all;
         });
-        s.appendChild(el('div')).appendChild(more);
+        calls.appendChild(el('div')).appendChild(more);
       }
-      screen.appendChild(s);
+      screen.appendChild(calls);
     }
 
-    /* THE LEG'S PAPERS, where the details are: its stops, the itinerary file
-       uploaded to the trip, or No itinerary yet where there is none, and the
-       driver's envelope, which comes back here. */
+    /* THE LEG'S PAPERS, where the details are: the itinerary file uploaded to
+       the trip, or Not sent yet where there is none, and the driver's
+       envelope, which comes back here. The stops are on the itinerary. */
     const files = l.itineraries.map(d => [d, fileUrl(d.id)]).filter(([, url]) => url);
-    screen.appendChild(section(w.details, rows(
-      l.stops.length ? row({ hash: `${legHash(l)}/stops`, lead: rowIcon('#m-route'), title: w.stops(l.stops.length) }) : null,
+    screen.appendChild(rows(
       ...(files.length
         ? files.map(([d, url]) => row({ href: url, newTab: true, lead: rowIcon('#m-description'), title: w.itinerary, line: d.updated ? w.updated : '' }))
         : [row({ disabled: true, lead: rowIcon('#m-description'), title: w.itinerary, line: w.noItinerary })]),
       row({ href: sheetUrl(l, 'envelope'), lead: rowIcon('#m-mail'), title: w.envelope }),
-    )));
+    ));
 
     const response = responseOf(l, state);
     if (response) screen.appendChild(response);
@@ -596,28 +587,6 @@
     buttons.append(decline, accept);
     wrap.append(buttons, error);
     return wrap;
-  }
-
-  /* EACH STOP: the list the driver carries on paper, so a change to the stops
-     can be read here. A stop says when the bus gets there and when it leaves,
-     which is the next stop's leaving time. */
-  function stopsScreen(l) {
-    const screen = el('div', 'rux--stack-vertical rux--stack-scale-6');
-    screen.appendChild(head(w.stopsTitle, [whereOf(l), rangeText(l.start, l.end, true, locale())].filter(Boolean).join(' · '),
-      { label: whereOf(l), hash: legHash(l) }));
-    const list = el('ol', 'scheduler-driver-stops');
-    l.stops.forEach((st, i) => {
-      const arrive = st.type === 'pickup' ? st.spot || st.arrive : st.arrive;
-      const leave = l.stops[i + 1]?.depart_prev;
-      const item = el('li', 'rux--tile');
-      item.append(el('p', 'rux--type-heading-compact-02', clean(st.name) || clean(st.address) || clean(st.label) || w.stopUnnamed));
-      if (clean(st.name) && clean(st.address)) item.appendChild(el('address', 'rux--type-body-compact-01 scheduler-driver-muted', clean(st.address)));
-      const times = [arrive && w.stopArrive(timeText(arrive)), leave && w.stopLeave(timeText(leave))].filter(Boolean).join(' · ');
-      if (times) item.appendChild(el('p', 'rux--type-body-compact-01', times));
-      list.appendChild(item);
-    });
-    screen.appendChild(list);
-    return screen;
   }
 
   // -- my documents ------------------------------------------------------------------
@@ -732,9 +701,8 @@
     shown = items.filter(i => !i.cancelled);
     const r = route();
     const screen = r.screen === 'trip' ? tripScreen(r.item)
-      : r.screen === 'stops' ? stopsScreen(r.item)
-        : r.screen === 'documents' ? documentsScreen()
-          : homeScreen();
+      : r.screen === 'documents' ? documentsScreen()
+        : homeScreen();
     screenEl.replaceChildren(screen);
     say(null);
     if (moved) {

@@ -120,7 +120,7 @@ opens a trip document, `share/track.html` shows a customer their bus on Samsara'
 days out and the recent changes, a bar opening its leg's times and whether its bus has left, is on
 the road or is back, and `share/driver.html` shows a driver, in English or Spanish, a home that lists
 their trips, the legs dispatch sent them, above My documents, the forms to sign. A leg opens its own screen:
-where and when, who to call, its stops, the itinerary file and the envelope, `share/form.html`, with
+where and when, who to call, the itinerary file and the envelope, `share/form.html`, with
 Accept and Decline at its foot; a cancelled leg stays until its day passes, and the page reads the
 trips again on return and before Accept. Staff see the same schedule inside the app at `maintenance.html`,
 from the side nav, where a bar's details also open its trip, and they copy the public link to send and replace it when it has gone further

@@ -7,8 +7,8 @@ type: plan
 ## Goal
 
 The Library is a room that fills the page: Your Mac, holding what this Mac
-has set up and downloaded. A panel opens on each side of it and closes to a
-tab. On the left Rux's Server is every console and game the server
+has set up and downloaded. A panel opens on each side of it and closes
+away. On the left Rux's Server is every console and game the server
 holds, borrowed by dragging it into the room; on the right Storage is what
 belongs to the account playing, its saves and each console's controls.
 Getting a game, setting up its console and playing it are one gesture each,
@@ -25,14 +25,18 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   the room,** plugged in where this Mac has its emulator and unplugged where
   it has not, so a Mac with every emulator installed still starts with a
   handful.
-- **The room fills the page, with a panel on each side that closes to a
-  tab:** Rux's Server on the left and Storage on the right, so a drag is
-  a short move sideways and the room is never scrolled away. The collection
-  starts open and Storage closed, and each stays as it was last left,
+- **The room fills the page, with a panel on each side that closes away:**
+  Rux's Server on the left and Storage on the right, so a drag is a short
+  move sideways and the room is never scrolled away. A closed panel leaves
+  nothing behind, and the button of its name beside Your Mac opens it. The
+  server starts open and Storage closed, and each stays as it was last left,
   remembered in the browser. The page takes Design's wide frame, and in a
-  window under 66rem the three stack, the room first. The menu is Carbon's rail on this page, a strip of
-  icons, which Design's frame clears, and a line beside Your Mac says whether
-  the helper runs and the server answers, opening Status.
+  window under 66rem the three stack, the room first. The menu is behind the
+  header's button at every width, so nothing stands beside the room, and a
+  line beside Your Mac says whether the helper runs and the server answers,
+  opening Status.
+- **The room has no box:** its wall and floor are not drawn, so the TV, its
+  stand, the rug and the games stand on the page itself.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
 - **The left panel is headed Rux's Server,** so it is not mistaken for the

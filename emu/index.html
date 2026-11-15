@@ -59,7 +59,7 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Rux Emu">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle rux--header__menu-toggle__hidden" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
@@ -109,9 +109,9 @@
 
   <!-- The scrim, shown only below 66rem and wider than a phone, where the nav overlays the page. -->
   <div class="rux--side-nav__overlay"></div>
-  <!-- The menu is Carbon's rail on this page, a strip of icons, so the wall has the
-       width: `--ux` puts it under the header, as on every page, and `--rail` after it makes it 3rem. -->
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--rail" aria-label="Emu">
+  <!-- The menu is behind the header's button on this page, at every width, so the room has
+       the page: `--hidden` after `--ux` closes it, and the button carries no `__hidden`. -->
+  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Emu">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--large rux--side-nav__item--active">
         <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page" title="Library">
@@ -153,7 +153,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content emu-main emu-main--rail">
+<main id="main-content" class="rux--content emu-main emu-main--whole">
   <div class="rux--css-grid rux--css-grid--full-width">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
@@ -173,7 +173,7 @@
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is three
              columns that fill the page: Rux's Server, every console and game
              to borrow; Your Mac, the room; and Storage, what the account
-             playing keeps. Each side panel's heading closes it to a tab.
+             playing keeps. Each side panel's heading closes it away.
              Without the helper only Rux's Server shows, as the library. -->
         <div class="emu-wall" id="emu-wall">
           <!-- Rux's Server: every console with games, then the picked console's games as covers. -->
@@ -199,12 +199,15 @@
           <!-- Your Mac: what this Mac has set up and downloaded, drawn as a room by room.js. -->
           <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
             <div class="emu-room__head">
+              <!-- Each opens its panel, and shows only while that panel is closed. -->
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-open" id="emu-server-open" aria-controls="emu-collection" hidden>Rux's Server</button>
               <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
               <a class="rux--link" href="status.html" id="emu-room-health"></a>
               <!-- What a move just did, from room.js, with Undo where it can be taken back. -->
               <p class="emu-room__said"><span role="status" id="emu-room-said"></span>
                 <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="emu-room-undo" hidden>Undo</button></p>
               <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-open" id="emu-storage-open" aria-controls="emu-storage" hidden>Storage</button>
             </div>
             <!-- The room seen from above and in front: the back wall with the TV on its stand and the Favourites shelves, then the floor with the rug, the handhelds' table and this Mac's games where they were left. -->
             <div class="emu-scene">

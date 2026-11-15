@@ -7,9 +7,10 @@
 @media (min-width: 66rem) {
   .emu-main { padding-inline-start: 18rem; }
 }
-/* The room's page has the rail in the nav's place, so it clears 3rem there. */
+/* The room's page keeps its menu behind the header's button, so it has the
+   whole width and .rux--content's own 2rem. */
 @media (min-width: 66rem) {
-  .emu-main.emu-main--rail { padding-inline-start: 5rem; }
+  .emu-main.emu-main--whole { padding-inline-start: 2rem; }
 }
 
 /* The filters, side by side in one row that wraps. */
@@ -137,8 +138,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* THE WALL. Where the helper answers, room.js marks it --mac, and from 66rem
    it is three columns as tall as the page under the header: Rux's Server,
    Your Mac and Storage. A side panel is 22rem and scrolls inside itself; its
-   heading is a button that closes it to a 3rem tab, its name turned on its
-   side. Below 66rem the three stack, the room first, and nothing closes.
+   heading is a button that closes it away, and the button of its name
+   beside Your Mac opens it. Below 66rem the three stack, the room first, and nothing closes.
    Without the helper Rux's Server is the page. Carbon's side panel lies over
    the page, and these stand beside the room, so they are Emu's own. */
 .emu-side[hidden] { display: none; }
@@ -155,11 +156,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-wall--mac .emu-side__toggle:hover { color: var(--rux-text-secondary); }
   .emu-wall--mac .emu-side__toggle:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
   .emu-wall--mac .emu-side__toggle svg { display: block; }
-  .emu-wall--mac .emu-side--closed { inline-size: 3rem; padding-inline: 0; }
-  .emu-wall--mac .emu-side--closed .emu-side__body { display: none; }
-  .emu-wall--mac .emu-side--closed > h2 { block-size: 100%; }
-  .emu-wall--mac .emu-side--closed .emu-side__toggle { writing-mode: vertical-rl; justify-content: flex-start; block-size: 100%; inline-size: 3rem; padding-block: var(--rux-spacing-03); margin: 0; }
-  .emu-wall--mac .emu-side--closed .emu-side__toggle svg { transform: rotate(180deg); }
+  .emu-wall--mac .emu-side--server { grid-column: 1; }
+  .emu-wall--mac .emu-room { grid-column: 2; }
+  .emu-wall--mac .emu-side--storage { grid-column: 3; }
+  .emu-wall--mac .emu-side--closed { display: none; }
   /* A panel's covers are smaller, so three stand in a row. */
   .emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
 }
@@ -180,8 +180,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-room[hidden] { display: none; }
 .emu-room__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
 .emu-room__space { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
-.emu-scene { --emu-px: 3px; position: relative; flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--rux-layer-01); }
-.emu-backwall { position: relative; flex: 1 1 0; min-block-size: calc(134 * var(--emu-px)); display: grid; align-content: end; justify-items: center; padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) 0; border-block-end: calc(2 * var(--emu-px)) solid var(--rux-border-strong-01); }
+/* The buttons that open a closed panel, which only the wide page has. */
+.emu-open[hidden] { display: none; }
+@media (max-width: 65.98rem) { .emu-open { display: none; } }
+.emu-scene { --emu-px: 3px; position: relative; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.emu-backwall { position: relative; flex: 1 1 0; min-block-size: calc(134 * var(--emu-px)); display: grid; align-content: end; justify-items: center; padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) 0; }
 .emu-cap { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 
 /* The stage: the TV on the stand's top ledge, over a cubby per home
@@ -242,11 +245,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* Where the wall is only as tall as what stands on it, both shelves stay clear above the TV. */
 @media (max-width: 65.98rem) { .emu-backwall { padding-block-start: calc(1.25rem + 54 * var(--emu-px)); } }
 
-/* The floor: planks, a rug in its middle with the handhelds' table on it,
+/* The floor: a rug in its middle with the handhelds' table on it,
    and this Mac's games lying where room.js puts them, --emu-x and --emu-y
    each a share of the floor from 0 to 1. The list of games takes no press
    itself, so a drop between them lands on the floor. */
-.emu-floor { position: relative; flex: none; block-size: calc(76 * var(--emu-px)); background: var(--rux-layer-accent-01) repeating-linear-gradient(to bottom, transparent 0 calc(11 * var(--emu-px)), var(--rux-border-subtle-01) calc(11 * var(--emu-px)) calc(12 * var(--emu-px))); }
+.emu-floor { position: relative; flex: none; block-size: calc(76 * var(--emu-px)); }
 .emu-floor > .emu-cap { position: absolute; inset-block-start: var(--emu-px); inset-inline-start: calc(2 * var(--emu-px)); }
 .emu-rug { position: absolute; inset: 12% 24%; display: grid; place-items: center; background: var(--rux-layer-02); outline: calc(2 * var(--emu-px)) solid var(--rux-border-subtle-01); outline-offset: calc(-4 * var(--emu-px)); }
 .emu-dock { list-style: none; display: flex; align-items: flex-end; gap: calc(3 * var(--emu-px)); padding: calc(2 * var(--emu-px)) calc(4 * var(--emu-px)) 0; background: var(--rux-layer-03); box-shadow: 0 calc(3 * var(--emu-px)) var(--rux-border-strong-01); }

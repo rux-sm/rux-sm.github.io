@@ -2,8 +2,9 @@
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers the page is a wall of three: Rux's Server,
-   Your Mac and Storage. A side panel's heading closes it to a tab and opens
-   it again, as it was last left in this browser; Rux's Server starts open
+   Your Mac and Storage. A side panel's heading closes it away and the
+   button of its name beside Your Mac opens it again, as it was last left in
+   this browser; Rux's Server starts open
    and Storage closed. Without the helper Rux's Server is the whole page.
 
    Your Mac is a room seen from above and in front. On its back wall the TV
@@ -541,20 +542,26 @@
     }));
   }
 
-  // THE SIDE PANELS. A panel's heading closes it to a tab and opens it again,
-  // as it was last left in this browser.
-  for (const [id, toggle, key, open] of [['emu-collection', 'emu-server-toggle', 'emu-server-panel', true], ['emu-storage', 'emu-storage-toggle', 'emu-storage-panel', false]]) {
+  // THE SIDE PANELS. A panel's heading closes it away, and the button of its
+  // name beside Your Mac opens it again, as it was last left in this
+  // browser. The press moves to the other of the two, so a keyboard keeps
+  // its place.
+  for (const [id, toggle, opener, key, open] of [['emu-collection', 'emu-server-toggle', 'emu-server-open', 'emu-server-panel', true], ['emu-storage', 'emu-storage-toggle', 'emu-storage-open', 'emu-storage-panel', false]]) {
     let shown = open;
     try { shown = (localStorage.getItem(key) ?? (open ? 'open' : 'closed')) === 'open'; } catch { /* a browser that keeps nothing starts as the page does */ }
     const show = () => {
       $(id).classList.toggle('emu-side--closed', !shown);
       $(toggle).setAttribute('aria-expanded', String(shown));
+      $(opener).hidden = shown;
     };
-    $(toggle).addEventListener('click', () => {
+    const turn = () => {
       shown = !shown;
       try { localStorage.setItem(key, shown ? 'open' : 'closed'); } catch { /* it lasts until the page closes */ }
       show();
-    });
+      $(shown ? toggle : opener).focus();
+    };
+    $(toggle).addEventListener('click', turn);
+    $(opener).addEventListener('click', turn);
     show();
   }
 

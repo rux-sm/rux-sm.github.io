@@ -18,8 +18,8 @@ tools above it and the colours beside it.
 - **Size:** presets for an Emu home console, 36 × 24, an Emu handheld, 24
   high and up to 36 wide, and icons at 16 and 32, or any size up to 256.
   Resize keeps the drawing anchored to its bottom left.
-- **Palettes:** Sprites' own 70 colours, in `palette.json`, with any colour
-  beside them; Sprites P3, the same 70 made more vivid for a Display P3
+- **Palettes:** Sprites' own 94 colours, in `palette.json`, with any colour
+  beside them; Sprites P3, the same 94 made more vivid for a Display P3
   screen and worked out from `palette.json` as the page loads; or Emu
   consoles, which is only the twenty colours in
   `emu/brand/consoles/palette.json`. Switching carries each colour to the
@@ -51,7 +51,7 @@ file and says the path it belongs at.
 | `app.js` | the editor: the canvas, the tools, undo, the colours, Size and Save |
 | `data.js` | the palettes and presets, the colour spaces, and the draft kept in this browser |
 | `files.js` | opening a PNG, the PNG and SVG writers, and the checkout's folder |
-| `palette.json` | Sprites' 70 colours, in ramps |
+| `palette.json` | Sprites' 94 colours, in ramps |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |
 | `brand/` | `icon.svg` for the tile and `favicon.svg` for the tab |
 

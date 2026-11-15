@@ -142,6 +142,8 @@ const helpers = `window.__strip = (() => {
       const target = new Date(strip); target.setDate(target.getDate() + at);
       // Written back in the input's own format, m/d/yyyy or ISO.
       const day = target.toISOString().slice(0, 10);
+      // A page loaded again opens where it was left, and picking the day it stands on moves nothing.
+      if (day === toIso(input.value)) { await rest(); return; }
       input.value = input.value.includes('/') ? day.split('-').map(Number).slice(1).join('/') + '/' + day.slice(0, 4) : day;
       input.dispatchEvent(new Event('change', { bubbles: true }));
       await until(() => label() !== was, 8000, 'the week picked');

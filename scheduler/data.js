@@ -11087,7 +11087,7 @@
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
     if (!name || e.target.closest('.rux--popover')) return;
     window.getSelection?.()?.removeAllRanges();
-    follow(`drivers.html?id=${encodeURIComponent(name.dataset.driverId)}`, true);
+    follow(`drivers.html?id=${encodeURIComponent(name.dataset.driverId)}`);
   });
   // Enter and Space press the tile's button; Escape on a tile puts a picked driver down.
   availGrid?.addEventListener('keydown', e => {
@@ -11098,17 +11098,17 @@
 
   /* A NAME'S MENU, from a right-click, the menu key or a finger's hold, the
      most used first: Pick out trips dims every trip but the driver's; Send
-     trips opens the Driver view in a new tab; Add time off opens the time
+     trips opens the Driver view; Add time off opens the time
      off dialog; Call and Text reach the driver as a trip's Contacts do,
-     shown only with a number; Open driver opens the driver's record in a
-     new tab, so the board stays as it is, as a double-click on the name
-     does. Placed and opened as the bar's menu is. */
+     shown only with a number; Open driver opens the driver's record, as a
+     double-click on the name does. Both leave the board in this tab, which
+     comes back to its place. Placed and opened as the bar's menu is. */
   const driverMenu = document.getElementById('scheduler-driver-menu');
   let driverMenuFor = null;
   let heldName = false;
 
   // Follows a link as a press on it would, so a call or a text never
-  // navigates the board away.
+  // navigates the board away; `away` opens it in a new tab.
   const follow = (href, away) => {
     const a = Object.assign(document.createElement('a'), { href });
     if (away) { a.target = '_blank'; a.rel = 'noopener'; }
@@ -11692,8 +11692,8 @@
     window.Rux?.menu?.close?.(driverMenu);
     driverMenu.hidden = true;
     const ref = encodeURIComponent(driver.id);
-    if (item.id === 'scheduler-driver-menu-send') follow(`drivers.html?id=${ref}#send`, true);
-    else if (item.id === 'scheduler-driver-menu-open') follow(`drivers.html?id=${ref}`, true);
+    if (item.id === 'scheduler-driver-menu-send') follow(`drivers.html?id=${ref}#send`);
+    else if (item.id === 'scheduler-driver-menu-open') follow(`drivers.html?id=${ref}`);
     else if (item.id === 'scheduler-driver-menu-call') follow(`tel:${dial(driver.phone)}`);
     else if (item.id === 'scheduler-driver-menu-text') {
       if (textsInMessages(driver)) follow(driver.texting_url, true);
@@ -11704,8 +11704,8 @@
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
   /* A BUS HEAD'S MENU, from a right-click, the menu key or a finger's hold:
-     Open bus opens the bus's Fleet record in a
-     new tab, as Open driver opens the driver's, and Show on map, for a bus
+     Open bus opens the bus's Fleet record, as Open driver opens the
+     driver's, and Show on map, for a bus
      Samsara answers for, opens the Live map on it, as the bar's menu does.
      A double-click on the head opens the record too, as one on a name or a
      trip does. A press is the head's own, its tip. */
@@ -11762,7 +11762,7 @@
     const head = busHeadOf(e.target);
     if (!head) return;
     window.getSelection?.()?.removeAllRanges();
-    follow(`fleet.html?id=${encodeURIComponent(head.dataset.busId)}`, true);
+    follow(`fleet.html?id=${encodeURIComponent(head.dataset.busId)}`);
   });
   busMenu?.addEventListener('click', e => {
     const item = e.target.closest('.rux--menu-item');
@@ -11770,7 +11770,7 @@
     window.Rux?.menu?.close?.(busMenu);
     busMenu.hidden = true;
     const ref = encodeURIComponent(busMenuFor);
-    if (item.id === 'scheduler-bus-menu-open') follow(`fleet.html?id=${ref}`, true);
+    if (item.id === 'scheduler-bus-menu-open') follow(`fleet.html?id=${ref}`);
     else if (item.id === 'scheduler-bus-menu-map') location.href = `live.html?bus=${ref}`;
     else if (item.id === 'scheduler-bus-menu-away') {
       addAway('bus', busMenuFor, panelIndex.buses?.get(busMenuFor)?.number ?? 'this bus');
@@ -15750,7 +15750,7 @@
     window.Rux?.menu?.close?.(seatMenu);
     seatMenu.hidden = true;
     const bar = findBar(ref);
-    if (item.id === 'scheduler-seat-menu-open') follow(`drivers.html?id=${encodeURIComponent(driverId)}`, true);
+    if (item.id === 'scheduler-seat-menu-open') follow(`drivers.html?id=${encodeURIComponent(driverId)}`);
     else if (item.id === 'scheduler-seat-menu-call') follow(`tel:${dial(driver.phone)}`);
     else if (item.id === 'scheduler-seat-menu-text') {
       if (textsInMessages(driver)) follow(driver.texting_url, true);
@@ -19090,7 +19090,25 @@
   });
 
   // -- the week, and moving between them ------------------------------------
-  let cursor = cursorFor(new Date());
+  /* THE BOARD'S PLACE, kept for this tab. Leaving the page saves the first day
+     in view and how far down the board is scrolled, and the next opening
+     starts there, so a visit to a driver's or a bus's record comes back to
+     the same spot. A board left on today's week saves no day, so it opens on
+     today whenever that is, and a link to one trip opens that trip instead. */
+  const PLACE_KEY = 'scheduler.place';
+  const leftAt = (() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(PLACE_KEY) || 'null') || {};
+      return { day: /^\d{4}-\d{2}-\d{2}$/.test(saved.day) ? saved.day : null, top: Number(saved.top) || 0 };
+    } catch { return { day: null, top: 0 }; }
+  })();
+  let cursor = leftAt.day ? parseISO(leftAt.day) : cursorFor(new Date());
+  window.addEventListener('pagehide', () => {
+    const onToday = iso(cursor) === iso(cursorFor(new Date()));
+    try {
+      sessionStorage.setItem(PLACE_KEY, JSON.stringify({ day: onToday ? null : iso(cursor), top: schEl.scrollTop }));
+    } catch { /* a tab that cannot keep its place opens on today */ }
+  });
   let shown = null;   // the week actually on screen, which is not `cursor` mid-fetch
   // The read in flight, and whether anything asked for another while it ran.
   let reading = null;
@@ -20683,7 +20701,7 @@
       history.replaceState(null, '', location.pathname);
       openDraftTrip(asked.get('draft'));
     } else {
-      show();
+      show().then(() => { if (leftAt.top) schEl.scrollTop = leftAt.top; });
     }
     listen();
   })();

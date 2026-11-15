@@ -6,11 +6,13 @@ type: plan
 
 ## Goal
 
-The Library becomes two panels: Your Mac, a room holding what this Mac has
-set up and downloaded, and below it Rux's Collection, every console and game
-the collection holds. Things move between them by dragging, so getting a game,
-setting up its console and playing it are one gesture each, and the page is
-fun to use while staying plain. It is Emu's front page, `emu/index.html`,
+The Library is a room that fills the page: Your Mac, holding what this Mac
+has set up and downloaded. A panel opens on each side of it and closes to a
+tab. On the left Rux's Collection is every console and game the server
+holds, borrowed by dragging it into the room; on the right Storage is what
+belongs to the account playing, its saves and each console's controls.
+Getting a game, setting up its console and playing it are one gesture each,
+and the page is fun to use while staying plain. It is Emu's front page, `emu/index.html`,
 drawn by `emu/room.js`; the rest of Emu is unchanged.
 
 ## Decisions
@@ -23,34 +25,34 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   the room,** plugged in where this Mac has its emulator and unplugged where
   it has not, so a Mac with every emulator installed still starts with a
   handful.
-- **Your Mac is a band across the top that stays in view while the page
-  scrolls,** and Rux's Collection fills the full width below it, so a drag
-  is a short move up. The menu is Carbon's rail on this page, a strip of
+- **The room fills the page, with a panel on each side that closes to a
+  tab:** Rux's Collection on the left and Storage on the right, so a drag is
+  a short move sideways and the room is never scrolled away. The collection
+  starts open and Storage closed, and each stays as it was last left,
+  remembered in the browser. The menu is Carbon's rail on this page, a strip of
   icons, which Design's frame clears, and a line beside Your Mac says whether
   the helper runs and the server answers, opening Status.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
-- **Rux's Collection is one row of consoles over the picked console's
+- **Rux's Collection is a panel of consoles over the picked console's
   games.** Each console is a tile with its drawing, name and count; pressing
-  it shows its games and dragging it brings it up. While a console is in the
+  it shows its games and dragging it brings it into the room. While a console is in the
   room its tile stands outlined and faint, as the place it goes back to, and
   still shows its games when pressed. One whose emulator this Mac has shows
   a green light.
 - **The picked console's games have a heading:** its name, its count, where
   it stands, such as "In your room, unplugged", and Bring to Your Mac while
-  it is not in the room. The games are covers in one row that scrolls
-  sideways, A to Z; one this Mac has is dimmed with a tick, and can still be
+  it is not in the room. The games are covers that wrap down the panel, A
+  to Z; one this Mac has is dimmed with a tick, and can still be
   picked up. There is no All, because one console at a time is neater.
 - **There is no Recently played,** because a Mac holds only a handful of
   games, and those are on its shelf or in Favourites.
-- **Your Mac is a media wall, about 430px tall,** so the room and Rux's
-  Collection, with covers about 110×150, both fit an 850px window. In the
-  middle the TV stands on a stand of cubbies, one per home console in the
+- **Your Mac is a media wall as tall as the page.** In the middle the TV stands on a stand of cubbies, one per home console in the
   room and one ghost cubby to drop the next on, never fewer than three, so
   the stand is only as big as what it holds. Handhelds stand in a dock on the
   stand's top beside the TV, since they light their own screen. A bookcase on
   the right holds Favourites face out on its top shelf and this Mac's other
-  games as spines below, A to Z; the pegboard is on the left. The floor is
+  games as spines below, A to Z. The floor is
   only ground, and how much room is free is in the heading. An empty room is
   three cubbies under the TV, the ghost one saying "Drag a console up here."
 - **An empty cubby or dock spot names the console it waits for,** faintly,
@@ -102,28 +104,31 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   its saves stay, and there is no separate return area. Picking it up turns the collection to its console, so its own
   cover is there to light up.
 - **A place means the same for everything:** in Rux's Collection a thing is
-  kept on the server or in Supabase and not on this Mac, in the room it is
-  on this Mac, and in or plugged into a console it is the one the next Play
-  uses.
+  kept on the server and not on this Mac, in Storage it is the account's own,
+  kept in Supabase, in the room it is on this Mac, and in or plugged into a
+  console it is the one the next Play uses.
 - **A memory card is one game's save,** drawn tucked into its game's cover
   and in its console's slot while the game is in. A game can have several,
   each with a name; only one is in at a time, since an emulator finds a save
-  by a fixed name. A game's other cards hang on the pegboard, so the room
-  stays plain, unless the game is a favourite.
-- **The room has one pegboard, on the wall left of the stand, which holds
-  what can be swapped on whatever is picked:** a picked game's cards, and a
-  picked console's own, such as a PS2's whole cards. It is headed with what
-  is picked and what hangs there, such as "Moon Tower, spare memory cards",
-  and is not there when nothing is picked or nothing can be swapped. A thing
-  is dragged from it onto its game or console to swap it in, and the one
-  swapped out hangs back on the pegboard. Picking something else rehangs it.
-- **No controller is drawn until button mappings exist.** Then a controller
-  is a mapping, the coloured ones alternates a game can be given, and they
-  hang on the pegboard like cards; putting a console away never waits on
-  one, since a mapping holds nothing to lose.
-- **The pegboard calls a save what its console does:** a memory card, a
+  by a fixed name. A game's other cards are in Storage, so the room stays
+  plain, unless the game is a favourite.
+- **Storage holds what can be swapped on whatever is picked,** under a
+  heading for each kind: a picked game's cards, and a picked console's own,
+  such as a PS2's whole cards and its controls. It is headed with what is
+  picked, such as "Moon Tower", and with nothing picked it lists each console
+  in the room with what it keeps. A thing is dragged from it onto its game or
+  console to swap it in, and the one swapped out goes back to Storage.
+- **A console's controls are an item in Storage for each controller,** named
+  for the controller, such as "Pro Controller", since an emulator keeps a
+  layout for each controller it has seen. They travel with the account, as
+  `docs/plans/emu-emulator-profiles.md` carries them, so a layout set on one
+  Mac is there on the next, and putting a console away carries them with its
+  saves.
+- **Storage calls a save what its console does:** a memory card, a
   cartridge's save or save data, a word each system has in
   `emu/emulators.json`.
+- **A game's side panel opens over Storage,** on the right, and closing it
+  shows Storage as it was.
 - **Pulling a game's card out starts a new save:** Play with no card in
   finds no save, the emulator makes one, and at quit it is a new card.
   Dropping another card onto the game swaps it in.
@@ -153,7 +158,7 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   the room, and off again back to Rux's Collection; it is `emu_notes`'
   favourite mark. A favourite this Mac lacks is dimmed.
 - **Favourites are what stays out.** A favourite's other cards stand
-  beside its cover on the shelf and not on the pegboard, so the games played
+  beside its cover on the shelf and not in Storage, so the games played
   most swap a card in one drag. A card has no favourite mark of its own; it
   is out because its game is.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
@@ -192,37 +197,44 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   light it, a playing TV glowing on the wall in its game's colour.
 - **Carbon lays out everything around the room, and the art pixel
   everything inside it.** The frame, the headings, the status line, Rux's
-  Collection, type, tokens, motion curves and target sizes follow Carbon,
+  Collection, Storage, type, tokens, motion curves and target sizes follow Carbon,
   and the room's outer box takes Carbon's spacing; inside that box sizes,
   gaps and moves are whole art pixels, since Carbon's 8px steps do not
   divide by three and a sprite between pixels blurs.
 - **Covers keep one height and their own art's width,** as now.
-- **Without the helper, such as on the phone, Your Mac is not shown,** and
-  Rux's Collection is the library to browse.
+- **Without the helper, such as on the phone, the room and Storage are not
+  shown,** and Rux's Collection fills the page as the library to browse.
 - **The room, the stand, the shelves and the drag are Emu's own,** under
   `emu-`, every colour a `--rux-*` token; motion follows Carbon's, and the
   head shake, which Carbon has no answer for, says so beside it.
 - **The prototype is a private page with invented games,**
   claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, and is not part of the site;
   the media wall is sketched beside the two layouts not taken, empty and
-  full, at claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv.
+  full, at claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv. Both show the
+  collection below the room, not beside it.
 
 ## Questions
 
 - Do a game's save states ride with its card, or stay with the game
   whichever card is in?
 - Pressing a game opens its side panel today. Does pressing it also pick
-  it for the pegboard, or does the pegboard follow only the game in a
-  console?
+  it for Storage, or does Storage follow only the game in a console?
+- Is the left panel headed Rux's Collection, as the page says now, or Rux's
+  server, so it is not mistaken for the Collection page in the menu?
 
 ## Tasks
 
+- [ ] Lay the room out to fill the page, with Rux's Collection a panel on
+      its left and Storage a panel on its right, each closing to a tab and
+      remembered.
 - [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Name the copies of a save Supabase keeps, as cards, and have the
       helper swap which one is on this Mac while its emulator is closed.
-- [ ] Draw the pegboard and a game's cards, on its cover, in its console's
-      slot and on the pegboard, with pulling one out, dropping one in and
-      the console's card light.
+- [ ] Draw a game's cards, on its cover, in its console's slot and in
+      Storage, with pulling one out, dropping one in and the console's card
+      light.
+- [ ] List a console's controls in Storage, one for each controller, once
+      `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Draw each console in pixels, as `emu/docs/drawing-consoles.md` says.
 - [ ] Draw the rest of the room in pixel art: the TV 80×54 art pixels, a
       card 8×10, a plug or power button 8×8, and the furniture as 16×16
@@ -236,5 +248,5 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
       button, and have it say which game runs, to light the TV or a
       handheld's screen.
 - [ ] Pick up and put down a game or console with a controller's A.
-- [ ] Lay it out on the phone without Your Mac, and see the drawings in
-      Safari.
+- [ ] Lay it out on the phone as Rux's Collection alone, and see the
+      drawings in Safari.

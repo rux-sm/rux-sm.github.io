@@ -26,11 +26,11 @@ One rule for every emulator:
   follows to any Mac with the internet and no drive. The drive, and the home
   server after it, hold the games and a dated backup.
 - **Every kind of file an emulator writes has one of five classes,** named
-  in `emulators.json`: shared, which is saves, memory cards and save states,
-  carried both ways; collected, which is screenshots, carried from the Mac to
+  in `emulators.json`: shared, which is saves, memory cards, save states and
+  controls, carried both ways; collected, which is screenshots, carried from the Mac to
   Supabase; provided, which is BIOS, keys and firmware, carried from
-  Supabase to the Mac; the Mac's own, which is settings, controls and
-  per-game settings, backed up to Supabase; and local, which is caches, logs
+  Supabase to the Mac; the Mac's own, which is settings and per-game
+  settings, backed up to Supabase; and local, which is caches, logs
   and recent lists, never carried.
 - **An emulator keeps its files in its own folder on the Mac,** because no
   setting moves every file: Dolphin's and Azahar's save states, Mesen 2's
@@ -81,6 +81,16 @@ One rule for every emulator:
   profile, into `settings/preferred/<emulator>/`; a new Mac starts from it,
   and any Mac takes it only when asked, with the settings Emu manages
   written over it.
+- **A console's controls travel with the account, as its saves do,** so a
+  button layout set on one Mac is there on the next with the same
+  controller, while the rest of an emulator's settings, such as its window
+  and graphics, stay each Mac's own. Where an emulator keeps controls in
+  files of their own, as DuckStation's and PCSX2's `inputprofiles` and
+  Cemu's `controllerProfiles` are, those files are shared; where they are
+  lines in its settings file, as in Gopher64's `config.json`, the helper
+  carries those lines alone. An emulator knows a layout by its controller's
+  name, so another controller, or the same one by cable where it was set by
+  Bluetooth, may need a layout of its own.
 - **A settings file is stored with the Mac's home folder written as `~`,**
   so a set kept on one Mac opens on another, and a file or line that holds a
   log-in, as PCSX2's `secrets.ini` and Dolphin's achievements token do, is
@@ -178,6 +188,12 @@ None open.
 In this order, the iMac near the end, as the test of a Mac that starts
 with nothing:
 
+- [ ] Name where each emulator keeps its controls in `emulators.json`, a
+  file of their own or lines in its settings, and carry them as shared
+  around Play.
+- [ ] Set a layout on one Mac and play with it on another, the same
+  controller by cable and by Bluetooth, and say in the decision above what
+  each emulator did.
 - [ ] Write the drive's dated zip from Supabase during Update, in place of
   the zip uploaded there.
 - [ ] Set the iMac up from nothing but the site: Rux Emu Helper from

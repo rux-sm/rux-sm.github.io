@@ -19,8 +19,10 @@ deciding whether Pixels' inks join it.
   the way down. A ramp's shadows lean toward violet or a cooler neighbour
   and its lights toward yellow, and its chroma peaks in the middle, so it
   shades a form without going muddy or neon; skin, brown, slate and sage
-  give the muted colours stone, metal and shade need. The lightest tones
-  stand as near as 0.004 in OKLab, too close to tell apart. A ramp that falls short on a real
+  give the muted colours stone, metal and shade need. The eight tones step
+  evenly from 0.25 to 0.90, so the darkest still reads as its colour and the
+  lightest still holds some, and no two colours are closer than 0.02 in
+  OKLab. A ramp that falls short on a real
   drawing is changed in `sprites/palette.json`, its one home.
 - **Sprites' 122 colours are the standard, and Sprites P3 is their vivid
   twin.** sRGB is what most screens, apps and the Emu converter show, so

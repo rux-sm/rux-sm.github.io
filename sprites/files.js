@@ -23,7 +23,8 @@
 
    FINDING. gallery() lists the pictures standing directly in the folders it
    is given, and those at the paths it is given that still exist, the last
-   changed first; Open draws them as tiles. browse() is the file picker, for
+   changed first; the gallery draws them as tiles. allowed() says whether
+   that can be done without asking. browse() is the file picker, for
    a picture anywhere else.
 
    OPENING. A PNG is read pixel by pixel. An SVG is read only as the writer
@@ -67,6 +68,12 @@
       await store('readwrite', s => s.put(root, 'checkout'));
     }
     return root;
+  }
+
+  // Whether the checkout can be read now, with nothing asked of anyone.
+  async function allowed() {
+    const root = await store('readonly', s => s.get('checkout')).catch(() => null);
+    return !!root && await root.queryPermission({ mode: 'readwrite' }) === 'granted';
   }
 
   // A path in the checkout: folders and a file name, no step up and no slash at either end.
@@ -251,5 +258,5 @@
     return new Blob([text], { type: 'image/svg+xml' });
   }
 
-  S.files = { canWrite, checkout, checkPath, write, download, gallery, browse, read, png, svg };
+  S.files = { canWrite, allowed, checkout, checkPath, write, download, gallery, browse, read, png, svg };
 })();

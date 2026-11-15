@@ -30,11 +30,14 @@
    The canvas is a Display P3 one, so a P3 colour shows as itself on a
    screen that can show it.
 
-   OPENING. In Chrome, Open shows a window of tiles: every picture in the
-   palettes' folders and every drawing this browser saved or opened
-   elsewhere, the last changed first, with Browse for any other file. With
-   nothing to show, or in a browser that cannot read the checkout, it goes
-   straight to the file picker.
+   THE GALLERY is the first view, and the editor the second, at #draw, so
+   a reload stays where it was and Back leaves the editor. The gallery's
+   tiles are New drawing, then the drawing with changes no file holds, then
+   in Chrome every picture in the palettes' folders and every drawing this
+   browser saved or opened elsewhere, the last changed first. Chrome reads
+   the checkout only once it is allowed, which takes a click on each visit
+   unless it was allowed for good, so until then a button stands where the
+   saved tiles will. Browse is the file picker, for any other file.
 
    SAVING. The Save window takes a path in the checkout and a format, and
    files.js writes it in the palette's colour space. A 1× PNG or an SVG
@@ -42,9 +45,10 @@
    PNG is a copy. Emu consoles saves only the 1× PNG, at a console's size.
    The draft, data.js's, is kept on every step.
 
-   CHANGES NOT SAVED. Leaving the page asks first, and so do Open and New
-   drawing, which replace the drawing: undo would bring it back only until
-   the page is loaded again.
+   CHANGES NOT SAVED. Leaving the page asks first, and so do a tile, Browse
+   and New drawing, which replace the drawing: undo would bring it back
+   only until the page is loaded again. Going to the gallery replaces
+   nothing, so it asks nothing.
    ========================================================================== */
 (() => {
   'use strict';
@@ -442,17 +446,23 @@
   heightField.addEventListener('input', syncPreset);
   widthField.addEventListener('change', syncPreset);
   heightField.addEventListener('change', syncPreset);
-  $('sprites-size').addEventListener('click', () => {
+  function sizeFor(resizing) {
     widthField.value = drawing.w;
     heightField.value = drawing.h;
     presetSelect.value = presetOf(drawing.w, drawing.h);
+    $('sprites-resize').hidden = !resizing;
+  }
+  $('sprites-size').addEventListener('click', () => sizeFor(true));
+  $('sprites-new-tile').addEventListener('click', () => {
+    sizeFor(false);
+    window.Rux?.modal?.open('sprites-size-modal', $('sprites-new-tile'));
   });
   // ---- changes not saved ----
   // Runs a step that replaces the drawing, asking first when that would
   // lose pixels no file holds.
   let after = null;
   function sure(then, trigger) {
-    if (!dirty || drawing.px.every(v => v === -1)) { then(); return; }
+    if (!unsaved()) { then(); return; }
     after = then;
     window.Rux?.modal?.open('sprites-discard-modal', trigger);
   }
@@ -468,7 +478,7 @@
     if (!(w >= 1 && h >= 1 && w <= LIMIT && h <= LIMIT)) { note('error', `A drawing is 1 to ${LIMIT} pixels a side.`); return; }
     if (blank) {
       window.Rux?.modal?.close('sprites-size-modal');
-      sure(() => resize(w, h, true), $('sprites-size'));
+      sure(() => resize(w, h, true), editor.hidden ? $('sprites-new-tile') : $('sprites-size'));
     } else resize(w, h, false);
   }
   function resize(w, h, blank) {
@@ -485,6 +495,7 @@
       }
     } else path = null;
     drawing = { w, h, px };
+    view('draw');
     fit();
     commit(true);
     window.Rux?.modal?.close('sprites-size-modal');
@@ -510,6 +521,7 @@
     path = got.path;
     if (path) S.known.add(path);
     setPal(await S.palette(want));
+    view('draw');
     // An SVG is saved as an SVG again, where its palette saves one.
     if (/\.svg$/i.test(got.file.name) && pal.free) formatField.value = 'svg';
     fit();
@@ -529,46 +541,60 @@
     }
   };
 
-  // The tiles: a picture and its file name, the whole path in its title.
-  const gallery = $('sprites-gallery');
-  let shown = [];
-  function tile(got) {
+  // ---- the gallery ----
+  const editor = $('sprites-editor'), galleryView = $('sprites-gallery-view'), gallery = $('sprites-gallery');
+  // A tile: a picture and a name, the whole path in its title.
+  function tile(blob, name, title, act) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'rux--tile rux--tile--clickable sprites-tile';
-    b.title = got.path;
-    const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(got.file) });
-    const name = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name', textContent: got.path.split('/').at(-1) });
-    b.append(img, name);
-    b.addEventListener('click', opening(async () => {
-      window.Rux?.modal?.close('sprites-open-modal');
-      await load(got);
-    }));
+    b.title = title;
+    const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(blob) });
+    const text = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name', textContent: name });
+    b.append(img, text);
+    b.addEventListener('click', () => act(b));
     return b;
   }
-  $('sprites-open-modal').addEventListener('rux:modal-closed', () => {
-    for (const img of gallery.querySelectorAll('img')) URL.revokeObjectURL(img.src);
-    gallery.replaceChildren();
-    shown = [];
-  });
-
-  const openFrom = opening(async () => {
-    if (S.files.canWrite) {
+  // The drawing in hand, where it has pixels no file holds.
+  const unsaved = () => dirty && drawing.px.some(v => v !== -1);
+  let drawn = 0;
+  async function showGallery(ask = false) {
+    const turn = ++drawn;
+    const tiles = [];
+    if (unsaved()) tiles.push(tile(await S.files.png(drawing, 1, pal.space), 'Not saved', path ?? 'Not saved yet', () => view('draw')));
+    let allowed = false;
+    if (S.files.canWrite && (ask || await S.files.allowed())) {
       const kept = S.known.get();
-      shown = await S.files.gallery(S.FOLDERS, kept);
+      const found = await S.files.gallery(S.FOLDERS, kept);
+      allowed = true;
       // A drawing whose file has gone is no longer kept.
-      const there = new Set(shown.map(g => g.path));
+      const there = new Set(found.map(g => g.path));
       if (kept.some(p => !there.has(p))) S.known.set(kept.filter(p => there.has(p)));
+      tiles.push(...found.map(got => tile(got.file, got.path.split('/').at(-1), got.path, b => sure(opening(() => load(got)), b))));
     }
-    if (!shown.length) { await load(await S.files.browse()); return; }
-    gallery.replaceChildren(...shown.map(tile));
-    window.Rux?.modal?.open('sprites-open-modal', $('sprites-open'));
-  });
-  $('sprites-open').addEventListener('click', () => sure(openFrom, $('sprites-open')));
-  $('sprites-browse').addEventListener('click', opening(async () => {
-    window.Rux?.modal?.close('sprites-open-modal');
-    await load(await S.files.browse());
-  }));
+    if (turn !== drawn) { for (const t of tiles) URL.revokeObjectURL(t.firstChild.src); return; }
+    for (const img of gallery.querySelectorAll('img')) URL.revokeObjectURL(img.src);
+    gallery.replaceChildren($('sprites-new-tile'), ...tiles);
+    $('sprites-allow').hidden = !S.files.canWrite || allowed;
+  }
+  $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));
+  $('sprites-browse').addEventListener('click', () => sure(opening(async () => load(await S.files.browse())), $('sprites-browse')));
+  $('sprites-to-gallery').addEventListener('click', () => view('gallery'));
+
+  // One view at a time; the address says which, so a reload keeps it.
+  function view(name) {
+    const draw = name === 'draw';
+    if ((location.hash === '#draw') !== draw) {
+      if (draw) location.hash = 'draw';
+      else history.pushState(null, '', location.pathname + location.search);
+    }
+    if (!editor.hidden === draw && galleryView.hidden === draw) return;
+    editor.hidden = !draw;
+    galleryView.hidden = draw;
+    if (draw) { fit(); show(); } else { note('', ''); opening(showGallery)(); }
+  }
+  window.addEventListener('hashchange', () => view(location.hash === '#draw' ? 'draw' : 'gallery'));
+  window.addEventListener('popstate', () => view(location.hash === '#draw' ? 'draw' : 'gallery'));
 
   // ---- save ----
   const pathField = $('sprites-save-path'), formatField = $('sprites-format');
@@ -635,6 +661,7 @@
   // ---- keys ----
   const typing = t => t instanceof Element && t.closest('input, select, textarea, [contenteditable]');
   document.addEventListener('keydown', e => {
+    if (editor.hidden) return;
     const cmd = e.metaKey || e.ctrlKey;
     if (cmd && e.key.toLowerCase() === 's') { e.preventDefault(); if (!document.querySelector('.rux--modal.is-visible')) openSave(); return; }
     if (typing(e.target) || document.querySelector('.rux--modal.is-visible')) return;
@@ -653,7 +680,7 @@
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readLook(); render(); });
   new ResizeObserver(() => { if (fitted) fit(); show(); }).observe(stage);
 
-  // ---- start: the draft, or a blank icon ----
+  // ---- start: the draft, or a blank icon, in the view the address names ----
   (async () => {
     const d = S.draft.load();
     if (d) {
@@ -671,7 +698,7 @@
       note('error', 'Could not load the palette.', err.message);
     }
     readLook();
-    fit();
-    show();
+    galleryView.hidden = true;
+    view(location.hash === '#draw' ? 'draw' : 'gallery');
   })();
 })();

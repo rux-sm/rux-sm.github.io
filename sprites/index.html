@@ -21,8 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- Sprites, one page: the drawing in the middle, its tools above it and its
-     colours beside it. app.js draws and edits, data.js holds the palettes and
+<!-- Sprites, one page with two views. The gallery comes first: a tile to
+     start a new drawing and one for every saved one. The editor is the
+     drawing in the middle, its tools above it and its colours beside it. app.js draws and edits, data.js holds the palettes and
      the draft, files.js opens and saves. The shell is Home's: the header
      alone, no side nav. -->
 
@@ -109,7 +110,26 @@
         <h1 class="rux--visually-hidden">Sprites</h1>
         <div id="sprites-notes" aria-live="polite"></div>
 
+        <!-- THE GALLERY. app.js adds a tile for the drawing not yet saved and
+             one for each picture in the checkout after the first. -->
+        <div class="sprites-view" id="sprites-gallery-view">
+          <div class="sprites-gallery" id="sprites-gallery">
+            <button type="button" class="rux--tile rux--tile--clickable sprites-tile" id="sprites-new-tile">
+              <span class="sprites-tile__picture sprites-tile__picture--new"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></span>
+              <span class="rux--type-body-compact-01 sprites-tile__name">New drawing</span>
+            </button>
+          </div>
+          <div class="sprites-bar">
+            <button type="button" class="rux--btn rux--btn--md rux--btn--tertiary" id="sprites-allow" hidden>Show saved drawings</button>
+            <button type="button" class="rux--btn rux--btn--md rux--btn--ghost" id="sprites-browse">Browse</button>
+          </div>
+        </div>
+
+        <div class="sprites-view" id="sprites-editor" hidden>
         <div class="sprites-bar" role="toolbar" aria-label="Tools">
+          <div class="sprites-bar__group">
+            <button type="button" class="rux--btn rux--btn--md rux--btn--ghost" id="sprites-to-gallery">Gallery</button>
+          </div>
           <div class="rux--content-switcher rux--layout--size-md rux--content-switcher--icon-only rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist" aria-label="Tool" id="sprites-tools">
       <span class="rux--content-switcher-popover__wrapper rux--content-switcher-popover--selected">
         <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="true" aria-label="Pencil (B)" title="Pencil (B)" tabindex="0" data-tool="pencil">
@@ -146,7 +166,6 @@
           </div>
           <div class="sprites-bar__group sprites-bar__end">
             <button type="button" class="rux--btn rux--btn--md rux--btn--ghost" data-rux-open="sprites-size-modal" id="sprites-size">Size</button>
-            <button type="button" class="rux--btn rux--btn--md rux--btn--secondary" id="sprites-open">Open</button>
             <button type="button" class="rux--btn rux--btn--md rux--btn--primary" id="sprites-save">Save</button>
           </div>
         </div>
@@ -192,14 +211,16 @@
             </section>
           </aside>
         </div>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
-<!-- Size, from the bar: a preset or any size; Resize keeps the drawing,
-     anchored to its bottom left, and New starts a blank one. Both are steps
-     Undo takes back. -->
+<!-- Size, from the bar or the gallery's New drawing tile: a preset or any
+     size; Resize keeps the drawing, anchored to its bottom left, and New
+     starts a blank one. Both are steps Undo takes back. From the gallery
+     there is no drawing to resize, so only New shows. -->
 <div class="rux--layer-one rux--modal" id="sprites-size-modal" role="presentation">
   <div role="dialog" aria-modal="true" aria-labelledby="sprites-size-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
     <div class="rux--modal-header">
@@ -275,30 +296,8 @@
   </div>
 </div>
 
-<!-- Open, from the bar: app.js fills the tiles from the checkout, a picture
-     and its file name each, and Browse is the file picker. -->
-<div class="rux--layer-one rux--modal" id="sprites-open-modal" role="presentation">
-  <div role="dialog" aria-modal="true" aria-labelledby="sprites-open-h" tabindex="-1" class="rux--modal-container">
-    <div class="rux--modal-header">
-      <h2 class="rux--modal-header__heading" id="sprites-open-h">Open</h2>
-      <div class="rux--modal-close-button">
-        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="rux--modal-content">
-      <div class="sprites-gallery" id="sprites-gallery"></div>
-    </div>
-    <div class="rux--modal-footer">
-      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-      <button type="button" class="rux--btn rux--btn--primary" id="sprites-browse">Browse</button>
-    </div>
-  </div>
-</div>
-
-<!-- Asked before Open or New drawing replaces a drawing with changes not
-     saved. -->
+<!-- Asked before a tile, Browse or New drawing replaces a drawing with
+     changes not saved. -->
 <div class="rux--layer-one rux--modal" id="sprites-discard-modal" role="presentation">
   <div role="dialog" aria-modal="true" aria-labelledby="sprites-discard-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
     <div class="rux--modal-header">

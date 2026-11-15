@@ -28,7 +28,7 @@
 
    WHERE DRAWINGS LIVE. Each palette has a folder a new drawing's save
    starts in: sprites/art/ for Sprites' own two, the home of a drawing no
-   app has claimed yet, and Emu's consoles folder for its palette. Open
+   app has claimed yet, and Emu's consoles folder for its palette. The gallery
    shows every picture in those folders, and beside them the drawings this
    browser saved or opened anywhere else in the checkout, whose paths are
    kept here.
@@ -149,7 +149,7 @@
     set(f) { try { localStorage.setItem(FOLDER, f); } catch { /* the next save starts in the palette's folder */ } },
   };
 
-  // The folders Open looks in, and the paths of drawings kept outside them,
+  // The folders the gallery looks in, and the paths of drawings kept outside them,
   // the newest first.
   const FOLDERS = [...new Set(PALETTES.map(p => p.folder))];
   const KNOWN = 'sprites-known', MOST = 60;
@@ -160,7 +160,7 @@
         return Array.isArray(list) ? list.filter(p => typeof p === 'string') : [];
       } catch { return []; }
     },
-    set(list) { try { localStorage.setItem(KNOWN, JSON.stringify(list.slice(0, MOST))); } catch { /* Open still shows the folders */ } },
+    set(list) { try { localStorage.setItem(KNOWN, JSON.stringify(list.slice(0, MOST))); } catch { /* the gallery still shows the folders */ } },
     add(path) { known.set([path, ...known.get().filter(p => p !== path)]); },
   };
 

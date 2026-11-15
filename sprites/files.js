@@ -18,8 +18,7 @@
    drawn on a P3 canvas, which writes the profile into the file; its SVG
    paints each rect in P3 over an sRGB fill for an app that has no P3. The 1× PNG is 8-bit RGBA, not
    interlaced, with every pixel opaque or clear, which is the picture
-   emu/tools/build-consoles.mjs reads; the converter stays the one path from
-   a console's drawing into consoles.svg.
+   Emu's room reads a console from.
 
    FINDING. gallery() lists the pictures standing directly in the folders it
    is given, and those at the paths it is given that still exist, the last

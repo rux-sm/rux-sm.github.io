@@ -95,9 +95,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-panel-art { max-inline-size: 16rem; }
 
 /* THE ROOM, the front page. Carbon has no room, so its parts are Emu's own.
-   A console's drawing is its symbol in brand/consoles.svg, whose fills are
-   these properties, each one of Design's tokens, so a console follows the
-   theme. Every drawing stands on the foot of one 3:2 box. */
+   A console's drawing is the symbol room.js makes of its PNG in
+   brand/consoles/, whose fills are these properties, each one of Design's
+   tokens, so a console follows the theme. A home console's is 36 by 24. */
 .emu-console {
   display: block; block-size: 3rem; aspect-ratio: 3 / 2;
   --emu-console-body: var(--rux-icon-secondary); --emu-console-shade: var(--rux-border-strong-01);
@@ -107,7 +107,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   --emu-console-green: var(--rux-tag-border-green); --emu-console-screen: var(--rux-layer-01);
   /* A pixel drawing's lit edges and shadows, each its base mixed lighter or
      darker, so every material has three shades from one token;
-     tools/build-consoles.mjs's palette names them. */
+     brand/consoles/palette.json names them. */
   --emu-console-body-hi: color-mix(in srgb, var(--emu-console-body), white 35%); --emu-console-body-lo: color-mix(in srgb, var(--emu-console-body), black 30%);
   --emu-console-shade-hi: color-mix(in srgb, var(--emu-console-shade), white 35%); --emu-console-shade-lo: color-mix(in srgb, var(--emu-console-shade), black 30%);
   --emu-console-screen-hi: color-mix(in srgb, var(--emu-console-screen), white 30%);

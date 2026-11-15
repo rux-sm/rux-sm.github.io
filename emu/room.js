@@ -25,7 +25,7 @@
    and opens Status; beside it is how much room is free.
 
    Rux's Server is every console with games, each its drawing from
-   brand/consoles.svg over its name and count; one in
+   brand/consoles/ over its name and count; one in
    the room is outlined and faint, the place it goes back to, and one whose
    emulator this Mac has shows a green light. Pressing a console, there or in
    the room, picks it: its name, count and how it stands show beneath, with
@@ -194,19 +194,68 @@
     sfx.pick();
   });
 
-  // The consoles' sprite, put into the page once, because a drawing in
-  // another file draws nothing in Safari.
+  // The consoles' drawings, read once from brand/consoles/ and put into the
+  // page as a symbol each, so a console is drawn in the theme's colours. A
+  // drawing is a PNG in the colours of palette.json, each of which names one
+  // --emu-console-* property that app.css sets; a pixel becomes a rect
+  // filled with its property, a run along a row one rect, and a run the same
+  // as the one above it joined to that. A colour a browser reads a shade off
+  // takes the nearest in the palette.
   let sprite = null;
-  const consoles = () => (sprite ??= fetch('brand/consoles.svg')
-    .then(r => { if (!r.ok) throw new Error(`consoles.svg: ${r.status}`); return r.text(); })
-    .then(text => {
-      const svg = new DOMParser().parseFromString(text, 'image/svg+xml').documentElement;
-      svg.style.display = 'none';
-      document.body.append(document.importNode(svg, true));
-    }));
-  // A console's drawing, which app.css colours: a pixel drawing from
-  // tools/build-consoles.mjs, 24 art pixels high, a home console 36 wide and
-  // a handheld its own width.
+  const DRAWN = 'brand/consoles/';
+  async function symbolOf(system, palette) {
+    const file = await fetch(`${DRAWN}${system}.png`);
+    if (!file.ok) throw new Error(`${system}.png: ${file.status}`);
+    const bitmap = await createImageBitmap(await file.blob(), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+    const { width: w, height: h } = bitmap;
+    const ctx = Object.assign(document.createElement('canvas'), { width: w, height: h }).getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(bitmap, 0, 0);
+    const { data } = ctx.getImageData(0, 0, w, h);
+    const far = (c, i) => (c[0] - data[i]) ** 2 + (c[1] - data[i + 1]) ** 2 + (c[2] - data[i + 2]) ** 2;
+    const at = (x, y) => {
+      const i = (y * w + x) * 4;
+      return data[i + 3] < 128 ? null : palette.reduce((best, c) => (far(c, i) < far(best, i) ? c : best))[3];
+    };
+    const symbol = document.createElementNS(SVG, 'symbol');
+    symbol.id = `emu-console-${system}`;
+    symbol.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    symbol.setAttribute('shape-rendering', 'crispEdges');
+    let above = new Map();
+    for (let y = 0; y < h; y++) {
+      const here = new Map();
+      for (let x = 0; x < w;) {
+        const prop = at(x, y);
+        let end = x + 1;
+        while (end < w && at(end, y) === prop) end++;
+        if (prop) {
+          const key = `${x},${end},${prop}`;
+          let rect = above.get(key);
+          if (rect) rect.setAttribute('height', Number(rect.getAttribute('height')) + 1);
+          else {
+            rect = document.createElementNS(SVG, 'rect');
+            for (const [name, value] of [['x', x], ['y', y], ['width', end - x], ['height', 1]]) rect.setAttribute(name, value);
+            rect.style.fill = `var(--emu-console-${prop})`;
+            symbol.append(rect);
+          }
+          here.set(key, rect);
+        }
+        x = end;
+      }
+      above = here;
+    }
+    return symbol;
+  }
+  const consoles = () => (sprite ??= (async () => {
+    const got = await fetch(`${DRAWN}palette.json`);
+    if (!got.ok) throw new Error(`palette.json: ${got.status}`);
+    const palette = (await got.json()).colours.map(({ property, hex }) => [...[1, 3, 5].map(n => parseInt(hex.slice(n, n + 2), 16)), property]);
+    const svg = document.createElementNS(SVG, 'svg');
+    svg.style.display = 'none';
+    svg.append(...await Promise.all(Object.keys(R.SYSTEMS).map(system => symbolOf(system, palette))));
+    document.body.append(svg);
+  })());
+  // A console's drawing, which app.css colours: 24 art pixels high, a home
+  // console 36 wide and a handheld its own width.
   const consoleOf = system => useOf(svgOf('emu-console', '0 0 36 24'), `emu-console-${system}`);
   function handOf(system) {
     const { width, height } = document.getElementById(`emu-console-${system}`).viewBox.baseVal;

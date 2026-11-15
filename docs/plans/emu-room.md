@@ -212,10 +212,10 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   it, and its heading has Bring to Your Mac or Put back; the plug is a
   button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
-- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one pixel
-  drawing per system, seen from above and in front as
-  `emu/docs/drawing-consoles.md` says, which `room.js` puts into its page,
-  since a drawing in another file draws nothing in Safari. Every fill is an
+- **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
+  drawing per system, a PNG seen from above and in front as
+  `emu/docs/drawing-consoles.md` says, which `room.js` reads and puts into
+  its page as a symbol, so a saved drawing shows on the next load. Every fill is an
   `--emu-console-*` property that `app.css` sets from Design's tokens, so a
   console follows the theme, and a handheld's screen is its own property, to
   light while it plays.

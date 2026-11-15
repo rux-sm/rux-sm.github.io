@@ -32,8 +32,8 @@ colours beside it, with Gallery to go back.
   drawing no app has claimed yet; one an app uses is saved where that app
   reads it. A Sprites P3 PNG carries a Display P3 profile, which Open
   reads to open it in Sprites P3 again; its SVG paints each colour in P3
-  over an sRGB fill. Emu consoles saves only the 1× PNG that
-  `emu/tools/build-consoles.mjs` turns into `emu/brand/consoles.svg`, so
+  over an sRGB fill. Emu consoles saves only the 1× PNG, which
+  Emu's room reads when it loads, so
   `emu/docs/drawing-consoles.md` is how a console is drawn.
 - **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
   the drawing it was saved from. Any other SVG is turned away. In Chrome,

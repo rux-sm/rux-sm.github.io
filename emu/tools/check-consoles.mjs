@@ -1,37 +1,39 @@
 #!/usr/bin/env node
 /* ==========================================================================
-   build-consoles.mjs — a console's pixel drawing into brand/consoles.svg
+   check-consoles.mjs — a console's pixel drawing, checked before the room reads it
    --------------------------------------------------------------------------
    A console is drawn in any pixel editor as a PNG in emu/brand/consoles/,
    named for its system, such as snes.png: a home console 36 by 24 pixels, a
    handheld 24 high and as wide as it needs, up to 36. It uses only the
    palette below, whose every colour stands for one --emu-console-*
-   property, so the drawing takes the room's theme. This tool turns each
-   drawing into its symbol in brand/consoles.svg, a rect for each run of one
-   colour. Sprites, at /sprites/, draws in the palette and saves the PNG this
-   reads.
+   property, so the drawing takes the room's theme. room.js reads each PNG
+   itself, so a saved drawing shows on the next load. This tool says where a
+   drawing is the wrong size or holds a colour outside the palette; Sprites,
+   at /sprites/, draws in the palette and at a console's size, so a drawing
+   it saves passes.
 
-       node emu/tools/build-consoles.mjs              every drawing into consoles.svg
-       node emu/tools/build-consoles.mjs --template   the palette and blank canvases
+       node emu/tools/check-consoles.mjs              every drawing checked
+       node emu/tools/check-consoles.mjs --template   the palette and blank canvases
 
-   The palette is brand/consoles/palette.json. --template writes
-   brand/consoles/palette.gpl, which Aseprite, LibreSprite,
-   Pixelorama and GIMP load as a palette, palette.png, a strip of the same
-   colours for an editor that takes a palette from a picture, and home.png
-   and handheld.png, blank canvases at the two sizes. emu/docs/drawing-consoles.md
+   The palette is brand/consoles/palette.json. --template writes, into
+   brand/consoles/template/ so no console's folder holds anything but
+   consoles, palette.gpl, which Aseprite, LibreSprite, Pixelorama and GIMP
+   load as a palette, palette.png, a strip of the same colours for an editor
+   that takes a palette from a picture, and home.png and handheld.png, blank
+   canvases at the two sizes. emu/docs/drawing-consoles.md
    is how to draw one.
    ========================================================================== */
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync, deflateSync, crc32 } from 'node:zlib';
 
 const EMU = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = join(EMU, 'brand', 'consoles');
-const SPRITE = join(EMU, 'brand', 'consoles.svg');
+const TEMPLATE = join(DIR, 'template');
 
 // The palette, whose one home is brand/consoles/palette.json, which Sprites
-// also draws with: each property, the colour it is drawn in, and what it is
+// draws with and room.js reads: each property, the colour it is drawn in, and what it is
 // for. app.css sets every property from Design's tokens; a -hi or -lo shade
 // is its base mixed lighter or darker, so each material has three shades.
 const PALETTE = JSON.parse(readFileSync(join(DIR, 'palette.json'), 'utf8')).colours
@@ -114,65 +116,37 @@ function writePng(file, width, height, colourAt) {
 }
 
 function template() {
-  mkdirSync(DIR, { recursive: true });
-  writeFileSync(join(DIR, 'palette.gpl'), ['GIMP Palette', 'Name: Emu consoles', 'Columns: 2', '#',
+  mkdirSync(TEMPLATE, { recursive: true });
+  writeFileSync(join(TEMPLATE, 'palette.gpl'), ['GIMP Palette', 'Name: Emu consoles', 'Columns: 2', '#',
     ...PALETTE.map(([prop, rgb]) => `${[0, 2, 4].map(i => String(parseInt(rgb.slice(i, i + 2), 16)).padStart(3)).join(' ')}\t${prop}`)].join('\n') + '\n');
-  writePng(join(DIR, 'palette.png'), PALETTE.length, 1, x => PALETTE[x][1]);
-  writePng(join(DIR, 'home.png'), WIDE, HIGH, () => null);
-  writePng(join(DIR, 'handheld.png'), 16, HIGH, () => null);
-  console.log(`wrote palette.gpl, palette.png, home.png and handheld.png in ${DIR}`);
+  writePng(join(TEMPLATE, 'palette.png'), PALETTE.length, 1, x => PALETTE[x][1]);
+  writePng(join(TEMPLATE, 'home.png'), WIDE, HIGH, () => null);
+  writePng(join(TEMPLATE, 'handheld.png'), 16, HIGH, () => null);
+  console.log(`wrote palette.gpl, palette.png, home.png and handheld.png in ${TEMPLATE}`);
 }
 
-// One drawing as a symbol: runs of a colour along each row, and a run the
-// same as the one above it joined to it, so a plain area is one rect.
-function symbolOf(system, file, title) {
+// One drawing: its size by its name, and every pixel clear or in the palette.
+function checkOf(system, file) {
   const png = readPng(file);
   const hand = HANDHELD.has(system);
   if (png.height !== HIGH || (hand ? png.width > WIDE : png.width !== WIDE)) {
     throw new Error(`${file}: ${png.width} by ${png.height}; a ${hand ? `handheld is ${HIGH} high and up to ${WIDE} wide` : `home console is ${WIDE} by ${HIGH}`}`);
   }
-  const rects = [];
-  let above = new Map();
-  for (let y = 0; y < png.height; y++) {
-    const here = new Map();
-    for (let x = 0; x < png.width;) {
-      const hex = png.at(x, y);
-      let end = x + 1;
-      while (end < png.width && png.at(end, y) === hex) end++;
-      if (hex) {
-        const prop = BY_RGB.get(hex);
-        if (!prop) throw new Error(`${file}: #${hex} at ${x},${y} is not in the palette`);
-        const key = `${x},${end},${prop}`;
-        const rect = above.get(key);
-        if (rect) rect.h++;
-        else rects.push({ x, y, w: end - x, h: 1, prop });
-        here.set(key, rect ?? rects.at(-1));
-      }
-      x = end;
-    }
-    above = here;
+  for (let y = 0; y < png.height; y++) for (let x = 0; x < png.width; x++) {
+    const hex = png.at(x, y);
+    if (hex && !BY_RGB.has(hex)) throw new Error(`${file}: #${hex} at ${x},${y} is not in the palette`);
   }
-  const body = rects.map(r => `  <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" style="fill:var(--emu-console-${r.prop})"/>`).join('\n');
-  return `<symbol id="emu-console-${system}" viewBox="0 0 ${png.width} ${png.height}" shape-rendering="crispEdges"><title>${title}</title>\n${body}\n</symbol>`;
 }
 
-function build() {
-  let sprite = readFileSync(SPRITE, 'utf8');
-  const drawn = existsSync(DIR) ? readdirSync(DIR).filter(f => /^[a-z0-9]+\.png$/.test(f) && !['palette.png', 'home.png', 'handheld.png'].includes(f)) : [];
-  for (const f of drawn) {
-    const system = f.slice(0, -4);
-    const old = sprite.match(new RegExp(`<symbol id="emu-console-${system}"[^>]*>(?:<title>([^<]*)</title>)?[\\s\\S]*?</symbol>`));
-    if (!old) throw new Error(`${f}: consoles.svg has no symbol emu-console-${system}`);
-    sprite = sprite.replace(old[0], symbolOf(system, join(DIR, f), old[1] ?? system));
-    console.log(`drew ${system}`);
-  }
-  writeFileSync(SPRITE, sprite);
-  if (!drawn.length) console.log('no drawings yet; --template writes the canvases and the palette');
+function check() {
+  const drawn = readdirSync(DIR).filter(f => /^[a-z0-9]+\.png$/.test(f));
+  for (const f of drawn) checkOf(f.slice(0, -4), join(DIR, f));
+  console.log(`${drawn.length} drawings, each the right size and in the palette`);
 }
 
 try {
   if (process.argv.includes('--template')) template();
-  else build();
+  else check();
 } catch (error) {
   console.error(error.message);
   process.exit(1);

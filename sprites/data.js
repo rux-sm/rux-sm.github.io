@@ -4,10 +4,9 @@
    PALETTES. Each palette has one home, a JSON file beside what it is for,
    which this fetches and never copies. Sprites' own is sprites/palette.json,
    122 colours in ramps, and leaves free colour open beside it. Emu consoles
-   is emu/brand/consoles/palette.json, which emu/tools/build-consoles.mjs
-   reads too: twenty colours, each bound to an --emu-console-* property, and
-   nothing else may be drawn with, so a console Sprites saves never stops
-   the converter. Every palette comes back in one shape: ramps of
+   is emu/brand/consoles/palette.json, which Emu's room reads too: twenty
+   colours, each bound to an --emu-console-* property, and nothing else may
+   be drawn with, so every pixel of a console Sprites saves has a property. Every palette comes back in one shape: ramps of
    { n, label }, a space, and css(n) to paint a colour with.
 
    SPRITES P3 is Sprites' own palette made more vivid for a Display P3
@@ -42,10 +41,10 @@
     {
       id: 'emu-consoles', name: 'Emu consoles', url: '/emu/brand/consoles/palette.json', free: false, space: 'srgb',
       folder: 'emu/brand/consoles/',
-      // The size build-consoles.mjs takes, which it checks again by the file's name.
+      // The size Emu's room draws a console at.
       fits: (w, h) => h === 24 && w <= 36,
       rule: 'A console is 24 high and at most 36 wide.',
-      after: 'Run node emu/tools/build-consoles.mjs to draw it into consoles.svg.',
+      after: 'Load Emu\'s room again to see it there.',
     },
   ];
 

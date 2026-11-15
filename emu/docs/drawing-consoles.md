@@ -6,15 +6,15 @@ type: how-to
 
 A console in the room is a pixel drawing that takes the room's theme. You
 draw it in Sprites, the site's pixel editor at `/sprites/`, or any other, in
-a fixed set of colours, and
-`tools/build-consoles.mjs` turns it into its symbol in `brand/consoles.svg`.
-Each colour stands for one `--emu-console-*` property, so the same drawing
-is lit in the day theme and dark in the evening one.
+a fixed set of colours, and save it as a PNG in `brand/consoles/`, which
+`room.js` reads when the room loads. Each colour stands for one
+`--emu-console-*` property, so the same drawing is lit in the day theme and
+dark in the evening one.
 
 ## The canvas and the palette
 
-`brand/consoles/` holds what to start from, written by
-`node emu/tools/build-consoles.mjs --template`:
+`brand/consoles/template/` holds what another editor starts from, written by
+`node emu/tools/check-consoles.mjs --template`:
 
 | File | What it is |
 | :--- | :--- |
@@ -44,7 +44,7 @@ one, `-hi` for a lit edge and `-lo` for a shadow: `body` for the plastic,
 the darkest lines and slots, and `screen` with `screen-hi` a handheld's
 screen, which lights while it plays. Red, purple, teal, blue and green each
 have a plain shade and a `-lo` one. Clear pixels stay clear. The palette's
-one home is `brand/consoles/palette.json`, which the converter and Sprites
+one home is `brand/consoles/palette.json`, which the room and Sprites
 both read; the room's `app.css` sets each property from Design's tokens.
 
 ## Steps
@@ -52,19 +52,18 @@ both read; the room's `app.css` sets each property from Design's tokens.
 1. Open Sprites, choose the Emu consoles palette and the Home console or
    Handheld size, or open a console already drawn in `brand/consoles/`.
    Sprites draws with only the palette's colours and no half-clear pixels.
-   In another editor, copy `home.png` or `handheld.png` instead and load
-   `palette.gpl`.
+   In another editor, copy the blank home or handheld canvas from the
+   template folder instead and load its palette.
 2. Save it as `brand/consoles/<system>.png`, named for the system as
    `R.SYSTEMS` in `app.js` names it: snes for the SNES, gba for the Game Boy
    Advance, psx for the PlayStation. Sprites writes it straight into the
    checkout in Chrome.
 3. Another editor saves it as an 8-bit PNG, RGB, RGBA or indexed, not
    interlaced.
-4. Run `node emu/tools/build-consoles.mjs`. It redraws the symbol of each
-   console in `brand/consoles/`. A colour
+4. After another editor, run `node emu/tools/check-consoles.mjs`. A colour
    outside the palette, or the wrong size, stops it with the file and the
    pixel.
 5. Where the slot or tray moved, set the console's place in `SLOT` in
    `room.js`: how far down the drawing a game goes in, from 0 to 1.
-6. Open the room on :8641 and look at the console in both themes, then
-   commit the PNG with `brand/consoles.svg`.
+6. Load the room on :8641 again and look at the console in both themes,
+   then commit the PNG. The published site shows it after the push.

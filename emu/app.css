@@ -59,7 +59,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-files { white-space: pre-line; font-size: .75rem; }
 
 /* BOX ART, which Carbon has no component for: a console's games are a shelf
-   that scrolls sideways, each game its cover over its name. Every cover is one
+   of covers that wraps, each game its cover over its name. Every cover is one
    height, and as wide as its own box art makes it at that height, so the
    art fills its cover; app.js's cover sets that shape as the art loads. Until
    then, and with no art, a cover takes its system's box shape, or 3:4 for a
@@ -70,8 +70,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-shelf { --emu-cover-height: 8.75rem; }
 }
 /* The shelf's 4px inset keeps a focused cover's ring inside what it shows. */
-.emu-shelf { display: flex; gap: var(--rux-spacing-05); overflow-x: auto; padding: 4px 4px var(--rux-spacing-03); margin-inline: -4px; }
-.emu-shelf > * { flex: none; }
+.emu-shelf { list-style: none; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rux-spacing-05) var(--rux-spacing-03); padding: 4px; margin: -4px; }
 :is(.emu-cover, .emu-panel-art)[data-system="nes"] { --emu-box: 7 / 10; }
 :is(.emu-cover, .emu-panel-art)[data-system="snes"] { --emu-box: 7 / 5; }
 .emu-cover { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: grid; gap: var(--rux-spacing-03); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); text-align: start; }
@@ -104,12 +103,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   --emu-console-teal-lo: color-mix(in srgb, var(--emu-console-teal), black 35%); --emu-console-blue-lo: color-mix(in srgb, var(--emu-console-blue), black 35%);
   --emu-console-green-lo: color-mix(in srgb, var(--emu-console-green), black 35%);
 }
-/* Rux's Collection: one row of consoles that scrolls sideways, each as wide as
-   the row lets it be between 4.5 and 6.5rem, the picked one marked as
-   Carbon marks a selected tab, on its fast-02 fade. Each is its drawing over
-   its name and count from the top, so a name on two lines moves no drawing. */
-.emu-cabinet { display: flex; gap: var(--rux-spacing-03); overflow-x: auto; }
-.emu-cabinet__console { appearance: none; border: 0; border-block-end: 3px solid transparent; background: var(--rux-layer-01); color: inherit; font: inherit; cursor: pointer; flex: 1 0 4.5rem; max-inline-size: 6.5rem; display: grid; justify-items: center; align-content: start; gap: var(--rux-spacing-01); padding: var(--rux-spacing-04) var(--rux-spacing-02) var(--rux-spacing-03); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+/* Rux's Server: its consoles wrap, each at least 4.5rem wide, the picked one
+   marked as Carbon marks a selected tab, on its fast-02 fade. Each is its
+   drawing over its name and count from the top, so a name on two lines moves
+   no drawing. */
+.emu-cabinet { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: var(--rux-spacing-03); }
+.emu-cabinet__console { appearance: none; border: 0; border-block-end: 3px solid transparent; background: var(--rux-layer-01); color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: center; align-content: start; gap: var(--rux-spacing-01); padding: var(--rux-spacing-04) var(--rux-spacing-02) var(--rux-spacing-03); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cabinet__console:hover { background: var(--rux-layer-hover-01); }
 .emu-cabinet__console[aria-pressed="true"] { background: var(--rux-layer-selected-01); border-block-end-color: var(--rux-border-interactive); }
 .emu-cabinet__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
@@ -117,25 +116,60 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cabinet__count { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 
 /* A cover's marks. One this Mac holds is dimmed under a tick in Rux's
-   Collection; one this Mac lacks, or whose console it cannot play, is dimmed
+   Server; one this Mac lacks, or whose console it cannot play, is dimmed
    in the room; one arriving sits under a veil that lifts from the foot. */
 .emu-cover--here, .emu-scene .emu-cover { position: relative; }
 .emu-cover--here .emu-cover-art, .emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover__tick { position: absolute; inset-block-start: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--rux-background); fill: var(--rux-support-success); }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer-01); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
-/* YOUR MAC: a media wall that stays in view under the header while Rux's
-   Collection scrolls. The room's own box keeps Carbon's spacing; inside it
-   every size is a whole number of art pixels, --emu-px, three CSS pixels on
-   a laptop and two below 75rem, so the pixel art drawn to these boxes lands
-   on whole pixels. The TV stands on the stand in the middle with the
-   handhelds' dock beside it, the bookcase on the right, all on the floor. */
-.emu-room { position: sticky; inset-block-start: 3rem; z-index: 1; display: grid; gap: var(--rux-spacing-03); background: var(--rux-background); padding-block: var(--rux-spacing-03) var(--rux-spacing-05); }
+/* THE WALL. Where the helper answers, room.js marks it --mac, and from 66rem
+   it is three columns as tall as the page under the header: Rux's Server,
+   Your Mac and Storage. A side panel is 22rem and scrolls inside itself; its
+   heading is a button that closes it to a 3rem tab, its name turned on its
+   side. Below 66rem the three stack, the room first, and nothing closes.
+   Without the helper Rux's Server is the page. Carbon's side panel lies over
+   the page, and these stand beside the room, so they are Emu's own. */
+.emu-side[hidden] { display: none; }
+.emu-side__toggle { appearance: none; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; padding: 0; margin-block-end: var(--rux-spacing-05); display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); inline-size: 100%; text-align: start; pointer-events: none; }
+.emu-side__toggle svg { display: none; flex: none; }
+@media (min-width: 66rem) {
+  .emu-wall--mac { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: var(--rux-spacing-05); block-size: calc(100dvh - 7rem); min-block-size: 30rem; }
+  .emu-wall--mac .emu-side { display: flex; flex-direction: column; inline-size: 22rem; min-block-size: 0; }
+  .emu-wall--mac .emu-side[hidden] { display: none; }
+  .emu-wall--mac .emu-side--server { border-inline-end: 1px solid var(--rux-border-subtle-01); padding-inline-end: var(--rux-spacing-05); }
+  .emu-wall--mac .emu-side--storage { border-inline-start: 1px solid var(--rux-border-subtle-01); padding-inline-start: var(--rux-spacing-05); }
+  .emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; }
+  .emu-wall--mac .emu-side__toggle { pointer-events: auto; cursor: pointer; min-block-size: 2rem; }
+  .emu-wall--mac .emu-side__toggle:hover { color: var(--rux-text-secondary); }
+  .emu-wall--mac .emu-side__toggle:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+  .emu-wall--mac .emu-side__toggle svg { display: block; }
+  .emu-wall--mac .emu-side--closed { inline-size: 3rem; padding-inline: 0; }
+  .emu-wall--mac .emu-side--closed .emu-side__body { display: none; }
+  .emu-wall--mac .emu-side--closed > h2 { block-size: 100%; }
+  .emu-wall--mac .emu-side--closed .emu-side__toggle { writing-mode: vertical-rl; justify-content: flex-start; block-size: 100%; inline-size: 3rem; padding-block: var(--rux-spacing-03); margin: 0; }
+  .emu-wall--mac .emu-side--closed .emu-side__toggle svg { transform: rotate(180deg); }
+  /* A panel's covers are smaller, so three stand in a row. */
+  .emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
+}
+@media (max-width: 65.98rem) {
+  .emu-wall--mac { display: flex; flex-direction: column; gap: var(--rux-spacing-07); }
+  .emu-wall--mac .emu-room { order: -1; }
+}
+
+/* YOUR MAC: a media wall as tall as the page, its furniture on the floor at
+   its foot. The room's own box keeps Carbon's spacing; inside it
+   every size is a whole number of art pixels, --emu-px, three CSS pixels
+   where the room is 56rem wide or more and two where it is narrower, so the
+   pixel art drawn to these boxes lands on whole pixels. The TV stands on the
+   stand in the middle with the handhelds' dock beside it, the bookcase on
+   the right, all on the floor. */
+.emu-room { container-type: inline-size; display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; min-block-size: 0; }
 .emu-room[hidden] { display: none; }
 .emu-room__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
 .emu-room__space { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
-.emu-scene { --emu-px: 3px; --emu-floor: calc(6 * var(--emu-px)); position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; column-gap: calc(8 * var(--emu-px)); padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) var(--emu-floor); background: var(--rux-layer-01); }
-@media (max-width: 74.98rem) { .emu-scene { --emu-px: 2px; } }
+.emu-scene { --emu-px: 3px; --emu-floor: calc(6 * var(--emu-px)); position: relative; flex: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; align-content: end; overflow-x: auto; column-gap: calc(8 * var(--emu-px)); padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) var(--emu-floor); background: var(--rux-layer-01); }
+@container (max-width: 55.98rem) { .emu-scene { --emu-px: 2px; } }
 .emu-scene::after { content: ""; position: absolute; inset: auto 0 0; block-size: var(--emu-floor); background: var(--rux-layer-accent-01); }
 .emu-cap { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 
@@ -187,7 +221,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit__name .emu-led { margin: 0; }
 .emu-unit--hand .emu-unit__name > span { display: none; }
 .emu-unit--hand .emu-unit__under { padding-inline: 0; }
-/* In Rux's Collection the light keeps one corner of every console, whatever its name's length. */
+/* In Rux's Server the light keeps one corner of every console, whatever its name's length. */
 .emu-cabinet__console { position: relative; }
 .emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
 .emu-led { flex: none; inline-size: .375rem; block-size: .375rem; margin-block-start: .3125rem; border-radius: 50%; background: var(--rux-support-success); }
@@ -224,7 +258,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
 .emu-scene.emu-lit, .emu-ledge.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-#emu-collection.emu-lit, #emu-collection.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: var(--rux-spacing-03); }
+#emu-collection.emu-lit, #emu-collection.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
 #emu-collection.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
@@ -236,7 +270,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* What a move just did, by Your Mac's name. */
 .emu-room__said { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: .875rem; line-height: 1.125rem; color: var(--rux-text-secondary); }
 
-/* A console's place in Rux's Collection while it stands in the room: outlined
+/* A console's place in Rux's Server while it stands in the room: outlined
    and faint, and lit as the place it goes back to while it is held. A green
    light marks one whose emulator this Mac has. The picked console's move
    sits beside its name. */

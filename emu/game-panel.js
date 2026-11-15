@@ -52,7 +52,7 @@
       const ul = el('ul', 'rux--list--unordered');
       for (const s of own) {
         const li = el('li', 'rux--list__item');
-        const a = el('a', 'rux--link', `${s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save'}, last saved ${R.date(s.saved_at)}${s.note ? ` · ${s.note}` : ''}`);
+        const a = el('a', 'rux--link', `${R.saveKind(s)}, last saved ${R.date(s.saved_at)}${s.note ? ` · ${s.note}` : ''}`);
         a.href = `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}`;
         li.append(a);
         ul.append(li);

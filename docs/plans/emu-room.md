@@ -29,7 +29,8 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   tab:** Rux's Server on the left and Storage on the right, so a drag is
   a short move sideways and the room is never scrolled away. The collection
   starts open and Storage closed, and each stays as it was last left,
-  remembered in the browser. The menu is Carbon's rail on this page, a strip of
+  remembered in the browser. The page takes Design's wide frame, and in a
+  window under 66rem the three stack, the room first. The menu is Carbon's rail on this page, a strip of
   icons, which Design's frame clears, and a line beside Your Mac says whether
   the helper runs and the server answers, opening Status.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
@@ -226,9 +227,6 @@ None open.
 
 ## Tasks
 
-- [ ] Lay the room out to fill the page, with Rux's Server a panel on
-      its left and Storage a panel on its right, each closing to a tab and
-      remembered.
 - [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Name the copies of a save Supabase keeps, as cards, and have the
       helper swap which one is on this Mac, with its save states, while its

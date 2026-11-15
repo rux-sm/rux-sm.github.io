@@ -136,6 +136,8 @@
     return games.map(g => ({ ...g, notes: by.get(`${g.system}/${g.title}`) ?? null }));
   };
 
+  // What a save is called by its kind.
+  const saveKind = s => (s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save');
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   // A game's name without the bracketed tags its list adds: region, languages, revision.
   const nameOf = g => g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title;
@@ -234,7 +236,7 @@
   };
 
   window.Emu = Object.assign(window.Emu || {}, {
-    SYSTEMS, systemName, PREFERRED, artOf, nameOf, cover, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
+    SYSTEMS, systemName, PREFERRED, artOf, nameOf, cover, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
     size, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

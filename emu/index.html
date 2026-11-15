@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="white">
+<html lang="en" data-theme="white" data-frame="wide">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -21,11 +21,12 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The Library, Emu's front page, as a room; docs/plans/emu-room.md is the
-     plan. room.js draws Your Mac, what this Mac has set up and holds, over
-     Rux's Collection: a row of consoles, then the picked console's games. A
-     game is dragged between them, and pressed it opens in the side panel.
-     The shell is templates/app-shell.html. -->
+<!-- The Library, Emu's front page, as a room that fills the page;
+     docs/plans/emu-room.md is the plan. room.js draws Your Mac, what this Mac
+     has set up and holds, between two panels: Rux's Server, every console and
+     game to borrow, and Storage, what the account playing keeps. A game or a
+     console is dragged between the server and the room, and a game pressed
+     opens in the side panel. The shell is templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -36,6 +37,7 @@
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-chevron--left" viewBox="0 0 16 16"><path d="M5 8 10 3 10.7 3.7 6.4 8 10.7 12.3 10 13z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-checkmark--outline" viewBox="0 0 32 32"><path d="M14 21.414 9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z" style="fill:var(--rux-icon-path-1)"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
@@ -107,7 +109,7 @@
 
   <!-- The scrim, shown only below 66rem and wider than a phone, where the nav overlays the page. -->
   <div class="rux--side-nav__overlay"></div>
-  <!-- The menu is Carbon's rail on this page, a strip of icons, so the room has the
+  <!-- The menu is Carbon's rail on this page, a strip of icons, so the wall has the
        width: `--ux` puts it under the header, as on every page, and `--rail` after it makes it 3rem. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--rail" aria-label="Emu">
     <ul class="rux--side-nav__items">
@@ -152,10 +154,10 @@
 </header>
 
 <main id="main-content" class="rux--content emu-main emu-main--rail">
-  <div class="rux--css-grid">
+  <div class="rux--css-grid rux--css-grid--full-width">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
-        <h1 id="emu-title">Library</h1>
+        <h1 class="rux--visually-hidden" id="emu-title">Library</h1>
         <div id="emu-error" hidden>
           <div class="rux--inline-notification rux--inline-notification--error" role="alert">
             <div class="rux--inline-notification__details">
@@ -168,57 +170,80 @@
           <p>No scan yet. <a class="rux--link" href="status.html">Update</a> scans the drive.</p>
         </div>
 
-        <!-- Your Mac, from room.js, shown where Rux Emu Helper answers: a media wall
-             that stays in view. The TV stands on a stand of cubbies, one per home
-             console, with the handhelds in a dock beside it; the bookcase holds the
-             favourites face out over this Mac's other games as spines. -->
-        <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
-          <div class="emu-room__head">
-            <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
-            <a class="rux--link" href="status.html" id="emu-room-health"></a>
-            <!-- What a move just did, from room.js, with Undo where it can be taken back. -->
-            <p class="emu-room__said"><span role="status" id="emu-room-said"></span>
-              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="emu-room-undo" hidden>Undo</button></p>
-            <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
-          </div>
-          <div class="emu-scene">
-            <div class="emu-stage">
-              <div class="emu-top">
-                <ul class="emu-dock" role="list" id="emu-dock-l" aria-label="Handhelds on this Mac"></ul>
-                <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
-                <ul class="emu-dock" role="list" id="emu-dock-r" aria-label="Handhelds on this Mac"></ul>
-              </div>
-              <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
-            </div>
-            <div class="emu-case">
-              <div class="emu-favs">
-                <p class="emu-cap" id="emu-ledge-h">Favourites</p>
-                <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
-              </div>
-              <div class="emu-mine">
-                <p class="emu-cap" id="emu-onmac-h"></p>
-                <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
+        <!-- The wall, from room.js. Where Rux Emu Helper answers it is three
+             columns that fill the page: Rux's Server, every console and game
+             to borrow; Your Mac, the room; and Storage, what the account
+             playing keeps. Each side panel's heading closes it to a tab.
+             Without the helper only Rux's Server shows, as the library. -->
+        <div class="emu-wall" id="emu-wall">
+          <!-- Rux's Server: every console with games, then the picked console's games as covers. -->
+          <section class="emu-side emu-side--server" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
+            <h2 class="rux--type-heading-03" id="emu-collection-h"><button type="button" class="emu-side__toggle" id="emu-server-toggle" aria-expanded="true" aria-controls="emu-server-body"><span>Rux's Server</span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button></h2>
+            <div class="emu-side__body" id="emu-server-body">
+              <div class="rux--stack-vertical rux--stack-scale-5">
+                <div class="emu-cabinet" id="emu-cabinet" role="group" aria-label="Consoles"></div>
+                <div class="rux--stack-vertical rux--stack-scale-3">
+                  <div class="emu-picked">
+                    <div>
+                      <h3 class="rux--type-heading-02" id="emu-picked"></h3>
+                      <p class="emu-row__sub" id="emu-picked-sub"></p>
+                    </div>
+                    <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary" id="emu-picked-move" hidden></button>
+                  </div>
+                  <ul class="emu-shelf" role="list" id="emu-games" aria-labelledby="emu-picked"></ul>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <!-- Rux's Collection, from room.js: every console with games, then the picked
-             console's games as covers in one row. -->
-        <section class="rux--stack-vertical rux--stack-scale-5" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
-          <h2 class="rux--type-heading-03" id="emu-collection-h">Rux's Collection</h2>
-          <div class="emu-cabinet" id="emu-cabinet" role="group" aria-label="Consoles"></div>
-          <div class="rux--stack-vertical rux--stack-scale-3">
-            <div class="emu-picked">
-              <div>
-                <h3 class="rux--type-heading-02" id="emu-picked"></h3>
-                <p class="emu-row__sub" id="emu-picked-sub"></p>
-              </div>
-              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary" id="emu-picked-move" hidden></button>
+          <!-- Your Mac: the TV stands on a stand of cubbies, one per home
+               console, with the handhelds in a dock beside it; the bookcase holds
+               the favourites face out over this Mac's other games as spines. -->
+          <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
+            <div class="emu-room__head">
+              <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
+              <a class="rux--link" href="status.html" id="emu-room-health"></a>
+              <!-- What a move just did, from room.js, with Undo where it can be taken back. -->
+              <p class="emu-room__said"><span role="status" id="emu-room-said"></span>
+                <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="emu-room-undo" hidden>Undo</button></p>
+              <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
             </div>
-            <ul class="emu-shelf" role="list" id="emu-games" aria-labelledby="emu-picked"></ul>
-          </div>
-        </section>
+            <div class="emu-scene">
+              <div class="emu-stage">
+                <div class="emu-top">
+                  <ul class="emu-dock" role="list" id="emu-dock-l" aria-label="Handhelds on this Mac"></ul>
+                  <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
+                  <ul class="emu-dock" role="list" id="emu-dock-r" aria-label="Handhelds on this Mac"></ul>
+                </div>
+                <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
+              </div>
+              <div class="emu-case">
+                <div class="emu-favs">
+                  <p class="emu-cap" id="emu-ledge-h">Favourites</p>
+                  <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
+                </div>
+                <div class="emu-mine">
+                  <p class="emu-cap" id="emu-onmac-h"></p>
+                  <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Storage: the picked console's saves, each opening in Saves. -->
+          <section class="emu-side emu-side--storage" id="emu-storage" aria-labelledby="emu-storage-h" hidden>
+            <h2 class="rux--type-heading-03" id="emu-storage-h"><button type="button" class="emu-side__toggle" id="emu-storage-toggle" aria-expanded="true" aria-controls="emu-storage-body"><span>Storage</span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button></h2>
+            <div class="emu-side__body" id="emu-storage-body">
+              <div class="rux--stack-vertical rux--stack-scale-3">
+                <div>
+                  <h3 class="rux--type-heading-02" id="emu-storage-for"></h3>
+                  <p class="emu-row__sub" id="emu-storage-sub"></p>
+                </div>
+                <div class="rux--contained-list rux--contained-list--inset-rulers"><ul role="list" aria-labelledby="emu-storage-for" id="emu-storage-saves"></ul></div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   </div>

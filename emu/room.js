@@ -1,7 +1,12 @@
 /* ==========================================================================
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
-   Your Mac is a media wall, shown where Rux Emu Helper answers. The TV
+   Where Rux Emu Helper answers the page is a wall of three: Rux's Server,
+   Your Mac and Storage. A side panel's heading closes it to a tab and opens
+   it again, as it was last left in this browser; Rux's Server starts open
+   and Storage closed. Without the helper Rux's Server is the whole page.
+
+   Your Mac is a media wall as tall as the page. The TV
    stands on a stand of cubbies, one per home console and a ghost cubby to
    bring the next to, never fewer than three, in two tiers past five; the
    handhelds stand in a dock on the stand beside the TV. A bookcase holds
@@ -15,23 +20,26 @@
    its saves and settings kept, once no other plugged-in console uses it. A line says the helper runs and where the games come from,
    and opens Status; beside it is how much room is free.
 
-   Rux's Collection is a row of consoles, one for each system with games,
-   each its drawing from brand/consoles.svg over its name and count; one in
+   Rux's Server is every console with games, each its drawing from
+   brand/consoles.svg over its name and count; one in
    the room is outlined and faint, the place it goes back to, and one whose
    emulator this Mac has shows a green light. Pressing a console, there or in
    the room, picks it: its name, count and how it stands show beneath, with
-   Bring to Your Mac or Put back, over its games as covers in one row, A to
+   Bring to Your Mac or Put back, over its games as covers, A to
    Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
    game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
+   Storage is the picked console's saves, newest first, each opening in
+   Saves.
+
    A game or a console is dragged with the pointer, where the helper
    answers: a console onto Your Mac comes in, and an unplugged one dragged
-   back onto Rux's Collection goes back. A word
+   back onto Rux's Server goes back. A word
    follows it and says what letting go will do, and the place it would land
    lights: onto Your Mac downloads it, onto its console or the TV plays it,
    downloading it first if it must, onto the Favourites shelf marks it, and
-   back onto Rux's Collection takes it off this Mac or off Favourites. A
+   back onto Rux's Server takes it off this Mac or off Favourites. A
    console it does not fit says so in red and nothing happens. One line by
    Your Mac's name says what a move did. A game taken off this Mac leaves
    the shelf at once and its files go a few seconds later, so Undo is only
@@ -251,13 +259,14 @@
   function ghostCubby(empty) {
     const li = el('li', 'emu-cubby emu-cubby--ghost');
     li.id = 'emu-ghost-cubby';
-    li.title = 'Drag a console here from Rux\'s Collection';
-    if (empty) li.append(el('span', null, 'Drag a console up here'));
+    li.title = 'Drag a console here from Rux\'s Server';
+    if (empty) li.append(el('span', null, 'Drag a console here'));
     return li;
   }
 
   function renderRoom() {
     $('emu-room').hidden = !helper;
+    $('emu-wall').classList.toggle('emu-wall--mac', Boolean(helper));
     if (!helper) return;
     const from = helper.collection ? (helper.collection.network ? 'Server connected' : 'Drive plugged in') : 'No games found';
     $('emu-room-health').textContent = `Helper running · ${from}`;
@@ -303,7 +312,7 @@
     $('emu-onmac-h').textContent = `On this Mac · ${countOf(mine.filter(([, s]) => s.state === 'held').length)}`;
   }
 
-  // RUX'S COLLECTION ---------------------------------------------------------
+  // RUX'S SERVER -------------------------------------------------------------
   // The picked console is pressed and named, with its count, how it stands
   // on this Mac and the move it can make without being dragged, over its games.
   function showPick() {
@@ -330,10 +339,11 @@
       }
       return li;
     }));
-    $('emu-games').scrollLeft = 0;
+    $('emu-server-body').scrollTop = 0;
+    renderStorage();
   }
 
-  function renderCollection() {
+  function renderServer() {
     const systems = Object.keys(R.SYSTEMS).filter(s => gamesOf(s).length);
     if (!systems.includes(pick)) pick = systems[0] ?? null;
     $('emu-cabinet').replaceChildren(...systems.map(system => {
@@ -354,13 +364,50 @@
     }));
     showPick();
   }
+  // STORAGE ------------------------------------------------------------------
+  // The picked console's saves, newest first, each a link to it in Saves.
+  function renderStorage() {
+    $('emu-storage').hidden = !helper || !pick;
+    if (!helper || !pick) return;
+    const own = saves.filter(s => s.system === pick).sort((a, b) => String(b.saved_at ?? '').localeCompare(String(a.saved_at ?? '')));
+    $('emu-storage-for').textContent = R.systemName(pick);
+    $('emu-storage-sub').textContent = own.length ? `${own.length} ${own.length === 1 ? 'save' : 'saves'}` : 'No saves yet';
+    $('emu-storage-saves').replaceChildren(...own.map(s => {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content emu-row');
+      a.href = `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}`;
+      const main = el('span', 'emu-row__main');
+      main.append(el('span', '', s.game ?? s.name), el('span', 'emu-row__sub', `${R.saveKind(s)} · ${R.date(s.saved_at)}`));
+      a.append(main);
+      li.append(a);
+      return li;
+    }));
+  }
+
+  // THE SIDE PANELS. A panel's heading closes it to a tab and opens it again,
+  // as it was last left in this browser.
+  for (const [id, toggle, key, open] of [['emu-collection', 'emu-server-toggle', 'emu-server-panel', true], ['emu-storage', 'emu-storage-toggle', 'emu-storage-panel', false]]) {
+    let shown = open;
+    try { shown = (localStorage.getItem(key) ?? (open ? 'open' : 'closed')) === 'open'; } catch { /* a browser that keeps nothing starts as the page does */ }
+    const show = () => {
+      $(id).classList.toggle('emu-side--closed', !shown);
+      $(toggle).setAttribute('aria-expanded', String(shown));
+    };
+    $(toggle).addEventListener('click', () => {
+      shown = !shown;
+      try { localStorage.setItem(key, shown ? 'open' : 'closed'); } catch { /* it lasts until the page closes */ }
+      show();
+    });
+    show();
+  }
+
   // A console pressed, in the room or the collection, is the one whose games show.
   function choose(system) {
     if (!gamesOf(system).length) return;
     pick = system;
     showPick();
   }
-  const render = () => { renderRoom(); renderCollection(); };
+  const render = () => { renderRoom(); renderServer(); };
 
   // What the helper says of this Mac, read again; while a game arrives it is
   // read every second, so its veil lifts.
@@ -563,7 +610,7 @@
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
   // place that lights, and the move itself, or null where nothing would
   // happen. One answer, so the word never disagrees with the drop. `home`
-  // lights the game's own cover in Rux's Collection too.
+  // lights the game's own cover in Rux's Server too.
   const yes = (word, light, run, home = false) => ({ word, light, run, home });
   // A move refused: `says` is the console and its line, said when the game is let go.
   const no = (word, light, says = null, home = false) => ({ word, light, no: true, says, home });

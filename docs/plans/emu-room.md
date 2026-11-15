@@ -234,9 +234,8 @@ None open.
 ## Tasks
 
 - [ ] Name an empty cubby or dock spot after the console it waits for.
-- [ ] Build Rux Emu Helper 35, which takes a carried save off this Mac to
-      the Trash on `removeCarried`, with `emu/tools/build-helper.mjs`, and
-      update each Mac to it from Status.
+- [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
+      a Mac to the Trash on `removeCarried`, and see it take one off.
 - [ ] Have a carry take a save off a Mac where Supabase's newest copy of it
       says it was taken out and the Mac's is unchanged since its last carry,
       so a card pulled out on one Mac is not carried back up from another.

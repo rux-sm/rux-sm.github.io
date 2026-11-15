@@ -161,8 +161,9 @@
     },
     // How each Mac stood when its saves were last gathered.
     macs: () => all(() => client.from('emu_macs').select('*').order('name')),
-    // The consoles standing in a Mac's room on the Library, each true while
-    // plugged in: null where none was ever moved, or the Mac has no row.
+    // A Mac's room on the Library: each console standing in it, true while
+    // plugged in, and under `floor` where each game lies; null where nothing
+    // was ever moved, or the Mac has no row.
     async room(mac) {
       const { data: row, error } = await client.from('emu_macs').select('room').eq('name', mac).maybeSingle();
       fail(error);

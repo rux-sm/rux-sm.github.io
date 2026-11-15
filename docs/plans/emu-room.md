@@ -173,9 +173,9 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   "Playing." or why the helper refused, with Undo where it can be taken back.
 - **A game on this Mac whose console is not plugged in is dimmed,** its
   title naming the console it needs.
-- **A room of more than five cubbies is crowded:** the stand grows a second
-  tier and the TV gets smaller, which holds all ten home consoles, and the
-  table grows to take every handheld.
+- **The stand takes as many rows as the room's width asks, up to three,**
+  each as full as the next, and the TV is smaller over more than one, which
+  holds all ten home consoles; the table grows to take every handheld.
 - **Favourites are two small shelves on the wall you drag games onto,**
   face out, from Rux's Server or the floor, and off again; it is
   `emu_notes`' favourite mark. A favourite this Mac lacks is dimmed.
@@ -210,9 +210,9 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   `--emu-console-*` property that `app.css` sets from Design's tokens, so a
   console follows the theme, and a handheld's screen is its own property, to
   light while it plays.
-- **The room is drawn as pixel art at one whole scale,** three CSS pixels to
-  an art pixel on a laptop and two below about 1200px wide, never scaled in
-  between, so its edges stay sharp. Each material has three shades mixed
+- **The room is drawn as pixel art at one whole scale,** four CSS pixels to
+  an art pixel, three or two, the largest at which the wall and floor fit the
+  room's box, never scaled in between, so its edges stay sharp. Each material has three shades mixed
   from one token, and colour is kept for state: green ready, amber busy or
   saves not safe yet, red no, blue where a drop lands. The day theme is a
   pale wall and warm wood; in the evening the room is dark and its lights
@@ -254,14 +254,11 @@ None open.
       light.
 - [ ] List a console's controls in Storage, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.
-- [ ] Lay the room out as seen from above and in front: the wall with the
-      TV, its stand and the Favourites shelves, the floor with the rug and
-      the handhelds' table, and no bookcase.
-- [ ] Lay this Mac's games on the floor, each where it was left and dragged
-      to move, its spot kept in the Mac's `room`, with the pile past twenty.
+- [ ] Gather the games untouched longest into a pile that opens when
+      pressed, once the floor holds more than about twenty.
 - [ ] Draw each console in pixels from above and in front, and say that view
       in `emu/docs/drawing-consoles.md`.
-- [ ] Draw the rest of the room in pixel art: the TV 80×54 art pixels, a
+- [ ] Draw the rest of the room in pixel art: the TV 112×72 art pixels, a
       card 8×10, a plug or power button 8×8, and the furniture as 16×16
       tiles that grow.
 

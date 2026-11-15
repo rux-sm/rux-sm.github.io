@@ -196,9 +196,7 @@
             </div>
           </section>
 
-          <!-- Your Mac: the TV stands on a stand of cubbies, one per home
-               console, with the handhelds in a dock beside it; the bookcase holds
-               the favourites face out over this Mac's other games as spines. -->
+          <!-- Your Mac: what this Mac has set up and downloaded, drawn as a room by room.js. -->
           <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
             <div class="emu-room__head">
               <h2 class="rux--type-heading-03" id="emu-room-h">Your Mac</h2>
@@ -208,24 +206,22 @@
                 <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="emu-room-undo" hidden>Undo</button></p>
               <p class="emu-row__sub emu-room__space" id="emu-room-space"></p>
             </div>
+            <!-- The room seen from above and in front: the back wall with the TV on its stand and the Favourites shelves, then the floor with the rug, the handhelds' table and this Mac's games where they were left. -->
             <div class="emu-scene">
-              <div class="emu-stage">
-                <div class="emu-top">
-                  <ul class="emu-dock" role="list" id="emu-dock-l" aria-label="Handhelds on this Mac"></ul>
+              <div class="emu-backwall">
+                <div class="emu-stage">
                   <div class="emu-tv" aria-hidden="true"><div class="emu-tv__screen"></div></div>
-                  <ul class="emu-dock" role="list" id="emu-dock-r" aria-label="Handhelds on this Mac"></ul>
+                  <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
                 </div>
-                <ul class="emu-stand" role="list" id="emu-stand" aria-label="Consoles on this Mac"></ul>
-              </div>
-              <div class="emu-case">
                 <div class="emu-favs">
                   <p class="emu-cap" id="emu-ledge-h">Favourites</p>
                   <ul class="emu-ledge" role="list" id="emu-ledge" aria-labelledby="emu-ledge-h"></ul>
                 </div>
-                <div class="emu-mine">
-                  <p class="emu-cap" id="emu-onmac-h"></p>
-                  <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
-                </div>
+              </div>
+              <div class="emu-floor" id="emu-floor">
+                <p class="emu-cap" id="emu-onmac-h"></p>
+                <div class="emu-rug"><ul class="emu-dock" role="list" id="emu-dock" aria-label="Handhelds on this Mac"></ul></div>
+                <ul class="emu-onmac" role="list" id="emu-onmac" aria-labelledby="emu-onmac-h"></ul>
               </div>
             </div>
           </section>

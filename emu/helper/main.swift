@@ -38,6 +38,9 @@
 //                          the moment it was saved, and noted as carried
 //   POST   /mac/carried/mark  ?path=&sha1=, that save noted as carried, when
 //                          it still has that SHA-1
+//   POST   /mac/carried/remove  ?path=&sha1=, that save moved to the Trash
+//                          when it still has that SHA-1 and its emulator is
+//                          closed, and no longer noted as carried
 //   GET    /mac/given      ?emulator=, each BIOS, key or firmware file that
 //                          emulator holds in the folders Supabase fills
 //   PUT    /mac/given      ?emulator=&path=<its path in Supabase>, the body
@@ -124,7 +127,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "34"
+let version = "35"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -890,6 +893,28 @@ func markCarried(_ path: String, _ sha1: String) -> (Int, [String: Any]) {
   guard let found = carriedAt(path), sha1Of(found.at) == sha1 else { return (409, ["error": "That save changed since it was read."]) }
   note(path, sha1)
   return (200, ["carried": path])
+}
+
+// A carried save taken off this Mac, as a card pulled out of its game is:
+// moved to the Trash, never deleted, only while it is the copy the site read
+// and its emulator is closed, and its note of a last carry dropped.
+func removeCarried(_ path: String, _ sha1: String) -> (Int, [String: Any]) {
+  guard let found = carriedAt(path) else { return (404, ["error": "That is not a save Emu carries."]) }
+  if playing(found.e.rule) { return (409, ["error": "Quit \(found.e.name) first, so its save can be taken out."]) }
+  // One already gone is taken off, so asking twice is no fault.
+  if exists(found.at) {
+    guard sha1Of(found.at) == sha1 else { return (409, ["error": "That save changed since it was read."]) }
+    guard (try? files.trashItem(at: URL(fileURLWithPath: found.at), resultingItemURL: nil)) != nil else {
+      return (500, ["error": "The helper could not move that save to the Trash."])
+    }
+  }
+  ledgerLock.lock()
+  var all = files.contents(atPath: ledgerFile).flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: String] } ?? [:]
+  all[path] = nil
+  try? JSONSerialization.data(withJSONObject: all, options: [.sortedKeys]).write(to: URL(fileURLWithPath: ledgerFile), options: .atomic)
+  ledgerLock.unlock()
+  showWaiting()
+  return (200, ["removed": path])
 }
 
 // Whether any carried save differs from its last carry.
@@ -1681,6 +1706,7 @@ final class Server {
     case ("GET", "/mac/carried"):
       off { carriedAt(q["path"] ?? "").flatMap { bytes($0.at, at: nil, n: nil) }.map(Reply.bytes) ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
     case ("POST", "/mac/carried/mark"): off { let (code, out) = markCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
+    case ("POST", "/mac/carried/remove"): off { let (code, out) = removeCarried(q["path"] ?? "", q["sha1"] ?? ""); return .json(code, out) }
     case ("GET", "/mac/save"):
       off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
         ?? .json(404, ["error": "That is not a save this Mac keeps."]) }

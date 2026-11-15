@@ -234,8 +234,12 @@ None open.
 ## Tasks
 
 - [ ] Name an empty cubby or dock spot after the console it waits for.
-- [ ] Give Rux Emu Helper a request that takes a save's files off this
-      Mac, which a card pulled out or swapped for one of fewer files needs.
+- [ ] Build Rux Emu Helper 35, which takes a carried save off this Mac to
+      the Trash on `removeCarried`, with `emu/tools/build-helper.mjs`, and
+      update each Mac to it from Status.
+- [ ] Have a carry take a save off a Mac where Supabase's newest copy of it
+      says it was taken out and the Mac's is unchanged since its last carry,
+      so a card pulled out on one Mac is not carried back up from another.
 - [ ] Swap which card is in its game, with its save states, while its
       emulator is closed, and name a card.
 - [ ] Draw a game's card on its cover and in its console's slot, with

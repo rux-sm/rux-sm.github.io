@@ -13,6 +13,8 @@
    a helper too old; `macSaves` each save this Mac keeps itself and
    `macSave` one's bytes; `removal` what removing an emulator would move to
    the Trash, or null from a helper too old to, and `uninstall` that done;
+   `removeCarried` a carried save moved to the Trash, as a card pulled out
+   of its game is, or null from a helper too old to;
    and `play` opens one game. `call` is any of its
    calls, drive.js's too: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
@@ -99,6 +101,9 @@
   const carried = async path => new Uint8Array(await (await call(`/mac/carried?path=${encodeURIComponent(path)}`, {}, true)).arrayBuffer());
   const putCarried = (path, saved, bytes) => call(`/mac/carried?path=${encodeURIComponent(path)}&saved=${encodeURIComponent(saved ?? '')}`, { method: 'PUT', body: bytes }, true);
   const markCarried = (path, sha1) => call(`/mac/carried/mark?path=${encodeURIComponent(path)}&sha1=${sha1}`, { method: 'POST' }, true);
+  // A carried save moved to this Mac's Trash while it is the copy read and
+  // its emulator is closed: true, or null from a helper too old to.
+  const removeCarried = async (path, sha1) => (await call(`/mac/carried/remove?path=${encodeURIComponent(path)}&sha1=${sha1}`, { method: 'POST' }) ? true : null);
 
   // The BIOS, key and firmware files an emulator holds in the folders Supabase fills, or null from a helper too old to take them.
   const given = async emulator => { const r = await call(`/mac/given?${at(emulator)}`); return r ? r.json() : null; };
@@ -194,7 +199,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

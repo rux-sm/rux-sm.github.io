@@ -114,11 +114,12 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   each with a name; only one is in at a time, since an emulator finds a save
   by a fixed name. A game's other cards are in Storage, so the room stays
   plain, unless the game is a favourite.
-- **Storage holds what can be swapped on whatever is picked,** under a
-  heading for each kind: a picked game's cards, and a picked console's own,
-  such as a PS2's whole cards and its controls. It is headed with what is
-  picked, such as "Moon Tower", and with nothing picked it lists each console
-  in the room with what it keeps. A thing is dragged from it onto its game or
+- **Storage follows the picked console and the game in it,** under a
+  heading for each kind: that game's cards, and the console's own, such as
+  a PS2's whole cards and its controls. It is headed with the console and
+  its game, such as "SNES, Moon Tower", and with no console picked it lists
+  each console in the room with what it keeps. Pressing a game opens its
+  side panel and leaves Storage as it is, so one press does one thing. A thing is dragged from it onto its game or
   console to swap it in, and the one swapped out goes back to Storage.
 - **A console's controls are an item in Storage for each controller,** named
   for the controller, such as "Pro Controller", since an emulator keeps a
@@ -131,6 +132,10 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   `emu/emulators.json`.
 - **A game's side panel opens over Storage,** on the right, and closing it
   shows Storage as it was.
+- **A game's save states ride with its card,** since a card is one
+  playthrough and a state loaded into another would be saved over it;
+  swapping a card swaps its states. Where the card is a console's whole
+  card, as on the PS2 and the GameCube, states stay with the game.
 - **Pulling a game's card out starts a new save:** Play with no card in
   finds no save, the emulator makes one, and at quit it is a new card.
   Dropping another card onto the game swaps it in.
@@ -217,10 +222,7 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
 
 ## Questions
 
-- Do a game's save states ride with its card, or stay with the game
-  whichever card is in?
-- Pressing a game opens its side panel today. Does pressing it also pick
-  it for Storage, or does Storage follow only the game in a console?
+None open.
 
 ## Tasks
 
@@ -229,7 +231,8 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
       remembered.
 - [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Name the copies of a save Supabase keeps, as cards, and have the
-      helper swap which one is on this Mac while its emulator is closed.
+      helper swap which one is on this Mac, with its save states, while its
+      emulator is closed.
 - [ ] Draw a game's cards, on its cover, in its console's slot and in
       Storage, with pulling one out, dropping one in and the console's card
       light.

@@ -73,7 +73,7 @@
   }
   function words() {
     $('scheduler-sign-back').href = $('scheduler-sign-done-back').href = backHref;
-    $('scheduler-sign-back-text').textContent = $('scheduler-sign-done-back-text').textContent = w.back;
+    $('scheduler-sign-back-text').textContent = $('scheduler-sign-done-back-text').textContent = WORDS[lang ?? 'en'].myDocuments;
     $('scheduler-sign-skip').textContent = WORDS[lang ?? 'en'].skip;
   }
 
@@ -209,11 +209,9 @@
      signature is sent as dark ink cropped to what was drawn. */
   function signature(signedOn) {
     const wrap = el('div', 'scheduler-sign-pad-wrap rux--layer-two');
-    const label = el('span', 'rux--label', w.signWithFinger);
-    label.id = 'scheduler-sign-pad-label';
     const box = el('div', 'scheduler-sign-pad');
     box.setAttribute('role', 'img');
-    box.setAttribute('aria-labelledby', label.id);
+    box.setAttribute('aria-label', w.signHere);
     const canvas = el('canvas');
     box.append(el('span', 'scheduler-sign-pad__x rux--type-heading-03', '×'), el('span', 'scheduler-sign-pad__line'),
       el('span', 'scheduler-sign-pad__hint rux--type-body-compact-01', w.signHere), canvas);
@@ -224,7 +222,7 @@
     foot.append(el('span', 'rux--type-body-compact-01 scheduler-sign-muted', signedOn ? w.dateSigned(longDate(today())) : ''), clear);
     const error = el('p', 'scheduler-sign-error rux--type-body-compact-01', w.signInBox);
     error.hidden = true;
-    wrap.append(label, box, foot, error);
+    wrap.append(box, foot, error);
 
     const ctx = canvas.getContext('2d');
     let strokes = [];
@@ -287,12 +285,12 @@
     whens.length = 0;
     const values = prefill(driver);
 
-    const head = el('div', 'rux--stack-vertical rux--stack-scale-3');
-    head.appendChild(el('h1', 'rux--type-productive-heading-04', f.title));
-    if (lang === 'es') head.appendChild(el('p', 'rux--type-body-01 scheduler-sign-muted', f.titleEs));
-    head.append(el('p', 'rux--type-body-01', `${w.intro} ${w.translated}`));
-    const switcher = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', WORDS[lang].switchTo);
+    // The title in the driver's language, as My documents lists it.
+    page.appendChild(el('h1', 'rux--type-productive-heading-04', lang === 'es' && f.titleEs ? f.titleEs : f.title));
+    // The switch, at the foot as on the schedule, in the language it switches to.
+    const switcher = el('button', 'rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md', WORDS[lang].switchTo);
     switcher.type = 'button';
+    switcher.lang = lang === 'es' ? 'en' : 'es';
     switcher.addEventListener('click', () => {
       // The answers so far survive the switch.
       const kept = answers();
@@ -307,10 +305,6 @@
       }
       showWhens();
     });
-    const sw = el('div');
-    sw.appendChild(switcher);
-    head.appendChild(sw);
-    page.appendChild(head);
 
     // A tile for each heading; a run of lines shares one grid.
     let tile = null, grid = null;
@@ -321,7 +315,6 @@
       if (field.type === 'heading') { tile.appendChild(both('h2', 'rux--type-productive-heading-03', field)); continue; }
       if (field.type === 'line' || field.type === 'date') {
         if (!grid) {
-          if (field.prefill) tile.appendChild(el('p', 'rux--type-body-compact-01 scheduler-sign-muted', w.fromProfile));
           grid = el('div', 'scheduler-sign-fields rux--layer-two');
           tile.appendChild(grid);
         }
@@ -343,7 +336,8 @@
     submit.type = 'submit';
     submit.id = 'scheduler-sign-submit';
     submit.append(el('span', null, w.submit), icon('#m-send', 'rux--btn__icon'));
-    foot.append(error, submit, el('p', 'rux--type-body-compact-01 scheduler-sign-muted', w.private));
+    foot.append(error, submit);
+    foot.appendChild(el('div')).appendChild(switcher);
     page.appendChild(foot);
     showWhens();
   }
@@ -367,7 +361,6 @@
     if (!result.error) {
       $('scheduler-sign-form').hidden = true;
       $('scheduler-sign-done-title').textContent = w.doneTitle(form.driver.name?.split(' ')[0] || '');
-      $('scheduler-sign-done-text').textContent = w.doneText(longDate(result.data?.signed ?? today()));
       $('scheduler-sign-done').hidden = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;

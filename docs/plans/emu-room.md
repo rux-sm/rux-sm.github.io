@@ -132,7 +132,7 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   cartridge's save or save data, a word each system has in
   `emu/emulators.json`.
 - **A card's name, and which of a game's cards is in, is a row in
-  Supabase,** in a table of cards, since a file's copies carry no name. A
+  Supabase,** in `emu_cards`, since a file's copies carry no name. A
   card out of its game keeps its files under `cards/`, so the copies dropped
   from a save never take a card's bytes.
 - **A card is every carried file of its game,** its save and its save
@@ -234,9 +234,8 @@ None open.
 ## Tasks
 
 - [ ] Name an empty cubby or dock spot after the console it waits for.
-- [ ] Make the table of cards in Supabase, and give Rux Emu Helper a
-      request that takes a save's files off this Mac, which a card pulled
-      out or swapped for one of fewer files needs.
+- [ ] Give Rux Emu Helper a request that takes a save's files off this
+      Mac, which a card pulled out or swapped for one of fewer files needs.
 - [ ] Swap which card is in its game, with its save states, while its
       emulator is closed, and name a card.
 - [ ] Draw a game's card on its cover and in its console's slot, with

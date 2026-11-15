@@ -117,7 +117,7 @@ the installers, into `~/Documents/Emu backups/`, recorded on the drive for the S
 ## How it works
 
 `emu_games`, `emu_saves` and `emu_drive` hold the last scan saved, `emu_macs` how each Mac
-stood, `emu_notes` rux's marks and notes, and the `emu-backups` bucket the backup zips.
+stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, and the `emu-backups` bucket the backup zips.
 `emu_files` lists each copy of each file the `emu-collection` bucket holds, its bytes there
 under its SHA-1 and its newest copy in the view `emu_files_now`: the BIOS, keys, firmware
 and installers every Mac is given, and the last five copies of each Mac's settings for an

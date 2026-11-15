@@ -239,8 +239,6 @@ None open.
 - [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
       a Mac to the Trash on `removeCarried`.
-- [ ] Take a real card out and put it back from Storage, which no test
-      against a stand-in proves of the database and the helper together.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on
       the 3DS, Wii U, Switch, Xbox, GameCube and Wii, once which files are
       one game's alone is proven; Storage lists those cards with no moves.

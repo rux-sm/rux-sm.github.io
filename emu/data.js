@@ -80,7 +80,7 @@
       fail(error);
       const old = rows.slice(5);
       for (const r of old) fail((await client.from('emu_files').delete().eq('path', file.path).eq('carried_at', r.carried_at)).error);
-      for (const sha1 of new Set(old.map(r => r.sha1))) {
+      for (const sha1 of new Set(old.map(r => r.sha1).filter(Boolean))) {
         const { data: left, error: e } = await client.from('emu_files').select('path').eq('sha1', sha1).limit(1);
         fail(e);
         if (!left.length) fail((await client.storage.from(COLLECTION).remove([sha1])).error);
@@ -91,6 +91,23 @@
       const { data: rows, error } = await client.from('emu_files').select('*').eq('path', path).eq('sha1', sha1).limit(1);
       fail(error);
       return rows[0] ?? null;
+    },
+    // The files under a folder that were taken out, as a card pulled out of
+    // its game is: each path whose newest copy says so, having no bytes.
+    gone: async (folder = '') => (await all(() => client.from('emu_files_now').select('path').is('sha1', null).like('path', `${folder}%`).order('path'))).map(r => r.path),
+    // A file marked taken out, its copies kept: its newest copy has no bytes.
+    async takeOut(path, mac) {
+      fail((await client.from('emu_files').insert({ path, sha1: null, size: null, mac })).error);
+    },
+    // Each card: a named save of a game, and whether it is in.
+    cards: () => all(() => client.from('emu_cards').select('*').order('created_at')),
+    async addCard(row) {
+      const { data: made, error } = await client.from('emu_cards').insert(row).select().single();
+      fail(error);
+      return made;
+    },
+    async setCard(id, values) {
+      fail((await client.from('emu_cards').update(values).eq('id', id)).error);
     },
     // A file taken out of Supabase, as scan-save.js takes one out.
     dropFile: path => window.Emu.scanSave.dropFile(data.db(), path),

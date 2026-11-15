@@ -14,6 +14,15 @@
    running emulator. This browser remembers which copy was set aside, so a
    game's panel can offer it: `standing` says how a game's saves stand on
    this Mac, and `useOther` plays the copy set aside in place of the other.
+   A card is a game's carried save, every file of it, with a name in
+   emu_cards. `cardsFor` is each game of a system with the card that is in
+   and those out; `takeOut` pulls a game's card: its files copied under
+   cards/<its id>/, taken off this Mac to the Trash and marked taken out in
+   Supabase, so the next Play starts a new save; `putIn` takes out the one
+   that is in and brings another back; `rename` names one. A carry takes a
+   save off a Mac where Supabase says it was taken out and the Mac's is a
+   copy Supabase keeps, so a card pulled out on one Mac is not carried back
+   up from another.
    `tools/carry.test.mjs` runs each case against a stand-in helper and
    Supabase, in `npm run check`.
 
@@ -66,13 +75,23 @@
     if (!folders.length) return null;
     const here = await H.carry(name);
     if (!here?.carries) return null;
-    const out = { running: here.running, mac: here.mac, up: 0, down: 0, both: [] };
+    const out = { running: here.running, mac: here.mac, up: 0, down: 0, off: 0, both: [] };
     if (here.running) return out;
 
     const kept = new Map();
     // A file of no bytes is no save, as the helper leaves it out on the Mac.
     for (const folder of folders) for (const f of await R.data.files(`${folder}/`)) if (Number(f.size) > 0) kept.set(f.path, f);
     const mine = new Map(here.files.map(f => [f.path, f]));
+    // A save taken out elsewhere goes off this Mac too, where its copy here
+    // is one Supabase keeps; one changed since is a new save and goes up. A
+    // helper too old to take it off leaves it, and it is not carried up.
+    const gone = new Set((await Promise.all(folders.map(folder => R.data.gone(`${folder}/`)))).flat());
+    for (const [path, f] of [...mine]) {
+      if (kept.has(path) || !gone.has(path)) continue;
+      if (f.carried !== f.sha1 && !await R.data.copyOf(path, f.sha1)) continue;
+      if (await H.removeCarried(path, f.sha1)) out.off += 1;
+      mine.delete(path);
+    }
 
     // This Mac's copy put in Supabase, read against its fingerprint.
     const up = async f => {
@@ -198,7 +217,7 @@
     if (!mac) throw new Error('Rux Emu Helper did not say which Mac this is.');
     await backUp(name, mac);
     const again = await carryNow(name);
-    if (again && (again.running || again.up || again.down || again.both.length)) throw new Error(`${name}'s saves changed as they were kept. Try again.`);
+    if (again && (again.running || again.up || again.down || again.off || again.both.length)) throw new Error(`${name}'s saves changed as they were kept. Try again.`);
     const here = await H.settings(name);
     const newest = (await R.data.settings()).get(`${mac.replaceAll('/', '_')}/${name}`)?.[0]?.files ?? [];
     const print = list => list.map(f => `${f.rel}|${f.sha1}`).sort().join('\n');
@@ -285,6 +304,111 @@
     return run(name);
   }
 
+  // CARDS. A system's carried saves by game, read once: its emulator, what
+  // this Mac and Supabase hold, and which game each path is part of.
+  async function savesOf(system, games) {
+    const emulators = await R.emulators();
+    const name = emulators.systems[system]?.emulator;
+    const folders = foldersOf(emulators.macSaves[name]);
+    if (!folders.length) return null;
+    const here = await H.carry(name);
+    if (!here?.carries) return null;
+    const kept = new Map();
+    for (const folder of folders) for (const f of await R.data.files(`${folder}/`)) if (Number(f.size) > 0) kept.set(f.path, f);
+    const mine = new Map(here.files.map(f => [f.path, f]));
+    const mineOf = games.filter(g => g.system === system);
+    // A save's path is saves/<the folder of its emulator's first system>/<the rest>.
+    const gameOf = path => {
+      const [, top, ...rest] = path.replace(/^cards\/[^/]+\//, '').split('/');
+      if (!emulators.systems[top]) return null;
+      const m = R.saveRules.match(rest.join('/'), R.saveRules.systemsOf(top, emulators.systems), mineOf, emulators.systems);
+      return m.system === system ? m.game : null;
+    };
+    return { name, here, kept, mine, gameOf };
+  }
+  const nextName = rows => { for (let n = 1; ; n += 1) if (!rows.some(c => c.name === `Card ${n}`)) return `Card ${n}`; };
+  const cardsOf = async game => (await R.data.cards()).filter(c => c.system === game.system && c.game === game.title);
+  const lastOf = files => files.map(f => f.saved_at ?? '').sort().at(-1) ?? null;
+  const statesOf = files => files.filter(f => R.saveRules.kindOf(f.path.split('/').slice(2).join('/')) === 'state').length;
+
+  // Each game of a system with a card: the one in, null where none is, and
+  // those out, each with its name, when it was saved last and how many saves
+  // and save states it holds, and whether this system's cards can be
+  // moved; null where the system's saves are not carried.
+  async function cardsFor(system, games) {
+    const its = await savesOf(system, games);
+    if (!its) return null;
+    const rows = (await R.data.cards()).filter(c => c.system === system && c.game);
+    const out = new Map();
+    const of = title => out.get(title) ?? out.set(title, { in: null, out: [] }).get(title);
+    const held = new Map();
+    for (const [path, f] of its.kept) {
+      const g = its.gameOf(path);
+      if (g) held.set(g.title, [...held.get(g.title) ?? [], f]);
+    }
+    for (const [title, files] of held) {
+      const row = rows.find(c => c.game === title && c.inserted);
+      of(title).in = { id: row?.id ?? null, name: row?.name ?? null, saved: lastOf(files), states: statesOf(files), saves: files.length - statesOf(files) };
+    }
+    const away = await R.data.files('cards/');
+    for (const row of rows.filter(c => !c.inserted)) {
+      const files = away.filter(f => f.path.startsWith(`cards/${row.id}/`)).map(f => ({ ...f, path: f.path.slice(`cards/${row.id}/`.length) }));
+      of(row.game).out.push({ id: row.id, name: row.name, saved: lastOf(files), states: statesOf(files), saves: files.length - statesOf(files) });
+    }
+    // A card moves only where a save's own name says whose it is, so a game's
+    // card is that game's alone.
+    const moves = R.saveRules.SAYS_ORPHANS.has((await R.emulators()).systems[system].saves);
+    return { emulator: its.name, running: its.here.running, moves, games: out };
+  }
+
+  const never = () => { throw new Error('Supabase no longer holds that save.'); };
+  // A game's card pulled out: carried first so Supabase holds it as it is,
+  // then copied under cards/<its id>/, taken off this Mac, marked taken out
+  // and named as out. Each step leaves the save whole if the next fails: it
+  // is copied before it is taken off, and off this Mac before Supabase says
+  // so, since a carry brings back what only Supabase holds.
+  async function takeOutNow(game, games) {
+    const first = await savesOf(game.system, games);
+    if (!first) throw new Error('Its saves are not carried.');
+    if (first.here.running) throw new Error(`Quit ${first.name} first, so its card can come out.`);
+    await carryNow(first.name);
+    const its = await savesOf(game.system, games);
+    const files = [...its.kept.values()].filter(f => its.gameOf(f.path) === game);
+    if (!files.length) throw new Error('That game has no save to take out.');
+    if (files.some(f => its.mine.has(f.path) && its.mine.get(f.path).sha1 !== f.sha1)) throw new Error('Its save changed as it was read. Try again.');
+    const rows = await cardsOf(game);
+    const card = rows.find(c => c.inserted) ?? await R.data.addCard({ system: game.system, game: game.title, name: nextName(rows), inserted: true });
+    for (const f of files) await R.data.keepCopy({ path: `cards/${card.id}/${f.path}`, sha1: f.sha1, size: f.size, saved: f.saved_at, mac: f.mac }, never);
+    for (const f of files) {
+      if (its.mine.has(f.path) && !await H.removeCarried(f.path, f.sha1)) throw new Error('Rux Emu Helper on this Mac is too old: update it first.');
+    }
+    for (const f of files) await R.data.takeOut(f.path, its.here.mac);
+    await R.data.setCard(card.id, { inserted: false });
+    return card;
+  }
+  // A card put in its game: the one that is in comes out first, then this
+  // one's files become the game's newest in Supabase, it is named as in, its
+  // copies under cards/ go, and a carry brings it to this Mac.
+  async function putInNow(game, games, id) {
+    const its = await savesOf(game.system, games);
+    if (!its) throw new Error('Its saves are not carried.');
+    if (its.here.running) throw new Error(`Quit ${its.name} first, so its card can go in.`);
+    const files = await R.data.files(`cards/${id}/`);
+    if (!(await cardsOf(game)).some(c => c.id === id && !c.inserted) || !files.length) throw new Error('Supabase no longer keeps that card.');
+    if ([...its.kept.keys(), ...its.mine.keys()].some(p => its.gameOf(p) === game)) await takeOutNow(game, games);
+    for (const f of files) await R.data.keepCopy({ path: f.path.slice(`cards/${id}/`.length), sha1: f.sha1, size: f.size, saved: f.saved_at, mac: f.mac }, never);
+    await R.data.setCard(id, { inserted: true });
+    for (const f of files) await R.data.dropFile(f.path);
+    return carryNow(its.name);
+  }
+  const takeOut = async (game, games) => queued(await emulatorOf(game.system), () => takeOutNow(game, games));
+  const putIn = async (game, games, id) => queued(await emulatorOf(game.system), () => putInNow(game, games, id));
+  // A card named: the one in that has no row yet is given one.
+  async function rename(game, id, name) {
+    if (id) return R.data.setCard(id, { name });
+    return R.data.addCard({ system: game.system, game: game.title, name, inserted: true });
+  }
+
   // Before a game plays: whether its emulator's saves are carried. A carry
   // that fails says so and the game plays with this Mac's saves.
   async function before(system, say = () => {}) {
@@ -339,5 +463,5 @@
     }
   })();
 
-  R.carry = { run, give, start, setUp, remove, before, after, standing, useOther };
+  R.carry = { run, give, start, setUp, remove, before, after, standing, useOther, cardsFor, takeOut, putIn, rename };
 })();

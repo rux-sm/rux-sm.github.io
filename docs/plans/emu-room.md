@@ -137,6 +137,9 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   from a save never take a card's bytes.
 - **A card is every carried file of its game,** its save and its save
   states, swapped as one, so a game never plays files from two cards.
+- **A card taken out is marked so in Supabase,** its path's newest copy
+  holding no bytes, and a carry takes it off any Mac whose copy Supabase
+  already keeps, so it is not carried back up from another Mac.
 - **A game's side panel opens over Storage,** on the right, and closing it
   shows Storage as it was.
 - **A game's save states ride with its card,** since a card is one
@@ -235,12 +238,14 @@ None open.
 
 - [ ] Name an empty cubby or dock spot after the console it waits for.
 - [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
-      a Mac to the Trash on `removeCarried`, and see it take one off.
-- [ ] Have a carry take a save off a Mac where Supabase's newest copy of it
-      says it was taken out and the Mac's is unchanged since its last carry,
-      so a card pulled out on one Mac is not carried back up from another.
-- [ ] Swap which card is in its game, with its save states, while its
-      emulator is closed, and name a card.
+      a Mac to the Trash on `removeCarried`.
+- [ ] Take a real card out and put it back from Storage, which no test
+      against a stand-in proves of the database and the helper together.
+- [ ] Move a card where a save is a folder under a title or disc ID, as on
+      the 3DS, Wii U, Switch, Xbox, GameCube and Wii, once which files are
+      one game's alone is proven; Storage lists those cards with no moves.
+- [ ] Offer a game's other card from its side panel as a card, in place of
+      the copy `carry.js` sets aside in this browser.
 - [ ] Draw a game's card on its cover and in its console's slot, with
       pulling one out, dropping one in from Storage and the console's card
       light.

@@ -58,7 +58,7 @@ try {
   check('a save is under its own name', await read(root, 'saves/gb/A Game (USA).sav') === 'save one');
   check('a Mac\'s settings are under the Mac and the emulator', await read(root, 'settings/a Mac/mGBA/config.ini') === 'settings');
   check('a file keeps the moment it was saved', (await stat(join(root, 'owner', 'saves/gb/A Game (USA).sav'))).mtime.toISOString() === '2026-03-04T05:06:07.000Z');
-  check('every table is written', (await readdir(join(root, 'owner', 'tables'))).length === 6);
+  check('every table is written', (await readdir(join(root, 'owner', 'tables'))).length === 7);
   check('rux\'s notes are among them', JSON.parse(await read(root, 'tables/emu_notes.json'))[0].note === 'at the gym');
 
   w = world(first);

@@ -38,6 +38,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-card__body { fill: var(--rux-border-strong-01); }
 .emu-card__label { fill: var(--rux-layer-01); }
 .emu-card__pin { fill: var(--rux-layer-accent-01); }
+/* A card out of its game is drawn faint, and a card's name is a plain button that renames it. */
+.emu-card-out .emu-card { opacity: .45; }
+.emu-card-name { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: var(--rux-link-primary); text-align: start; cursor: pointer; justify-self: start; }
+.emu-card-name:hover { color: var(--rux-link-primary-hover); text-decoration: underline; }
+.emu-card-name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 
 /* The side panel's facts: a label over each value. */
 .emu-facts { display: grid; gap: var(--rux-spacing-05); }

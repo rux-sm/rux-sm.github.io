@@ -36,7 +36,7 @@ const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
 const BUCKET = 'emu-collection';
 // Each Emu table and the columns that order its rows, so a page never repeats one.
 const TABLES = { emu_files: 'path,carried_at', emu_games: 'system,title', emu_saves: 'system,name,kind,location',
-  emu_notes: 'system,title', emu_macs: 'name', emu_drive: 'id' };
+  emu_notes: 'system,title', emu_macs: 'name', emu_drive: 'id', emu_cards: 'id' };
 const ACCOUNT = 'owner';
 
 // A file's path as Supabase lists it, made a path inside the copy, or null
@@ -71,6 +71,8 @@ export async function copy({ root, key, url = SUPABASE_URL, fetch = globalThis.f
 
   const now = await rows('emu_files_now', 'path');
   for (const f of now) {
+    // A save taken out, as a card pulled from its game is, has no bytes to copy.
+    if (f.sha1 == null) continue;
     const parts = inside(f.path);
     if (!parts || !/^[0-9a-f]{40}$/.test(f.sha1 ?? '')) { done.failed += 1; log(`refused ${f.path}`); continue; }
     const dest = join(home, ...parts);

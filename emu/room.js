@@ -30,8 +30,8 @@
    game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
-   Storage is the picked console's saves as cards, each opening in Saves:
-   one for each game, called what its console calls a save, then the
+   Storage is the picked console's saves as cards: each game's, the one in
+   it and those out, with Take out, Put in and a name to change, then the
    console's own.
 
    A game or a console is dragged with the pointer, where the helper
@@ -373,41 +373,110 @@
       + '<rect class="emu-card__pin" x="1" y="7" width="1" height="2"/><rect class="emu-card__pin" x="3" y="7" width="1" height="2"/><rect class="emu-card__pin" x="5" y="7" width="1" height="2"/>';
     return svg;
   }
-  // The picked console's saves as cards, each opening in Saves: one for each
-  // game, its save by the word its console has for one with its save states
-  // riding along, then the console's own, which name no game. A save gathered
-  // from several places is one card, as it was saved last.
-  function renderStorage() {
+  // The picked console's saves as cards. A game's cards come from what Emu
+  // carries: the one in its game, called what its console calls a save with
+  // its save states riding along, then those out, each named. Take out pulls
+  // the one in, so the next Play starts a new save; Put in swaps one back;
+  // a card's name is a button that renames it. Then the console's own, which
+  // name no game, each opening in Saves. What is read is kept half a minute,
+  // so a room drawn again each second asks nothing.
+  let stored = { system: null, at: 0, cards: null };
+  let storing = 0;
+  async function renderStorage(fresh = false) {
     $('emu-storage').hidden = !helper || !pick;
     if (!helper || !pick) return;
-    const word = emulators?.systems?.[pick]?.saveWord ?? 'Save';
-    const last = rows => rows.map(s => s.saved_at ?? '').sort().at(-1);
-    const cards = new Map();
-    for (const s of saves.filter(x => x.system === pick)) {
-      const key = s.game ? `game/${s.game}` : `own/${s.name}/${s.kind}`;
-      cards.set(key, [...cards.get(key) ?? [], s]);
+    const system = pick;
+    const turn = ++storing;
+    $('emu-storage-for').textContent = R.systemName(system);
+    if (fresh || stored.system !== system || Date.now() - stored.at > 30000) {
+      let cards = null;
+      try { cards = await R.carry?.cardsFor(system, games) ?? null; } catch (error) { console.error(error); }
+      if (turn !== storing) return;
+      stored = { system, at: Date.now(), cards };
     }
-    const row = (rows, name, sub) => {
-      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
-      const a = el('a', 'rux--contained-list-item__content emu-row emu-row--card');
-      a.href = `saves.html?save=${encodeURIComponent(`${pick}/${rows[0].name}`)}`;
+    const { cards } = stored;
+    const word = emulators?.systems?.[system]?.saveWord ?? 'Save';
+    const states = n => (n ? `${n} save ${n === 1 ? 'state' : 'states'}` : '');
+    const line = (name, sub, action) => {
+      const li = el('li', action ? 'rux--contained-list-item rux--contained-list-item--with-action' : 'rux--contained-list-item');
+      const content = el('div', 'rux--contained-list-item__content emu-row emu-row--card');
       const main = el('span', 'emu-row__main');
-      main.append(el('span', '', name), el('span', 'emu-row__sub', [...sub, R.date(last(rows))].filter(Boolean).join(' · ')));
-      a.append(cardOf(), main);
-      li.append(a);
+      main.append(name, el('span', 'emu-row__sub', sub.filter(Boolean).join(' · ')));
+      content.append(cardOf(), main);
+      li.append(content);
+      if (action) { const slot = el('div', 'rux--contained-list-item__action'); slot.append(action); li.append(slot); }
       return li;
     };
-    const byName = (a, b) => a[0].localeCompare(b[0]);
-    const mine = [...cards].filter(([key]) => key.startsWith('game/')).sort(byName).map(([, rows]) => {
-      const states = Math.max(0, ...rows.filter(s => s.kind === 'state').map(s => s.files?.length ?? 1));
-      const kept = rows.some(s => s.kind !== 'state');
-      const g = games.find(x => x.system === pick && x.title === rows[0].game);
-      return row(rows, g ? nameOf(g) : rows[0].game, [kept ? word : '', states ? `${states} save ${states === 1 ? 'state' : 'states'}` : '']);
+    const press = (label, run) => {
+      const b = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', label);
+      b.type = 'button';
+      b.addEventListener('click', run);
+      return b;
+    };
+    // A move on a card: said as it goes, every button held until it is done.
+    const move = async (doing, done, run) => {
+      for (const b of $('emu-storage-lists').querySelectorAll('button')) b.disabled = true;
+      say(doing, null, 600000);
+      try { await run(); sfx.done(); say(done); } catch (error) { console.error(error); sfx.no(); say(error.message); }
+      renderStorage(true);
+    };
+    // A card's name as the button that renames it, in a field in its place.
+    const named = (g, card, shown) => {
+      const b = el('button', 'emu-card-name', shown);
+      b.type = 'button';
+      b.title = 'Rename this card';
+      b.addEventListener('click', () => {
+        const field = el('input', 'rux--text-input');
+        field.type = 'text';
+        field.maxLength = 60;
+        field.value = card.name ?? '';
+        field.setAttribute('aria-label', `Name of ${nameOf(g)}'s card`);
+        let over = false;
+        const end = async keep => {
+          if (over) return;
+          over = true;
+          const name = field.value.trim();
+          if (!keep || !name || name === card.name) { field.replaceWith(b); return; }
+          await move('Naming the card…', `Named ${name}.`, () => R.carry.rename(g, card.id, name));
+        };
+        field.addEventListener('keydown', e => { if (e.key === 'Enter') end(true); else if (e.key === 'Escape') { e.stopPropagation(); end(false); } });
+        field.addEventListener('blur', () => end(false));
+        b.replaceWith(field);
+        field.focus();
+        field.select();
+      });
+      return b;
+    };
+    const mine = [];
+    for (const [title, c] of [...cards?.games ?? []].sort((a, b) => a[0].localeCompare(b[0]))) {
+      const g = games.find(x => x.system === system && x.title === title);
+      if (!g) continue;
+      const can = cards.moves;
+      if (c.in) {
+        mine.push(line(el('span', '', nameOf(g)),
+          [can ? null : c.in.name, c.in.saves ? word : '', states(c.in.states), R.date(c.in.saved)],
+          can ? press('Take out', () => move('Taking its card out…', `${nameOf(g)}'s card is in Storage. Its next Play starts a new save.`, () => R.carry.takeOut(g, games))) : null));
+        if (can) mine.at(-1).querySelector('.emu-row__main').firstChild.after(named(g, c.in, c.in.name ?? 'Name this card'));
+      }
+      for (const card of c.out) {
+        const li = line(el('span', '', nameOf(g)), ['Out', states(card.states), R.date(card.saved)],
+          press('Put in', () => move('Putting the card in…', `${card.name} is in ${nameOf(g)}.`, () => R.carry.putIn(g, games, card.id))));
+        li.classList.add('emu-card-out');
+        li.querySelector('.emu-row__main').firstChild.after(named(g, card, card.name));
+        mine.push(li);
+      }
+    }
+    const last = rows => rows.map(s => s.saved_at ?? '').sort().at(-1);
+    const own = new Map();
+    for (const s of saves.filter(x => x.system === system && !x.game)) own.set(`${s.name}/${s.kind}`, [...own.get(`${s.name}/${s.kind}`) ?? [], s]);
+    const ownRows = [...own].sort((a, b) => a[0].localeCompare(b[0])).map(([, rows]) => {
+      const a = el('a', 'rux--link', rows[0].name);
+      a.href = `saves.html?save=${encodeURIComponent(`${system}/${rows[0].name}`)}`;
+      return line(a, [R.saveKind(rows[0]), R.date(last(rows))]);
     });
-    const own = [...cards].filter(([key]) => key.startsWith('own/')).sort(byName).map(([, rows]) => row(rows, rows[0].name, [R.saveKind(rows[0])]));
-    $('emu-storage-for').textContent = R.systemName(pick);
-    $('emu-storage-sub').textContent = cards.size ? `${cards.size} ${cards.size === 1 ? 'save' : 'saves'}` : 'No saves yet';
-    $('emu-storage-lists').replaceChildren(...[['Games', mine], ['The console\'s own', own]].filter(([, items]) => items.length).map(([title, items]) => {
+    const count = mine.length + ownRows.length;
+    $('emu-storage-sub').textContent = count ? `${count} ${count === 1 ? 'card' : 'cards'}` : 'No saves yet';
+    $('emu-storage-lists').replaceChildren(...[['Games', mine], ['The console\'s own', ownRows]].filter(([, items]) => items.length).map(([title, items]) => {
       const list = el('div', 'rux--contained-list rux--contained-list--inset-rulers');
       const head = el('div', 'rux--contained-list__header');
       head.append(el('h4', 'rux--contained-list__label', title));

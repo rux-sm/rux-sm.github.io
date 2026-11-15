@@ -13,18 +13,20 @@ deciding whether Pixels' inks join it.
 
 ## Decisions
 
-- **Sprites' 94 colours are kept only if they draw well.** Each ramp is
-  spaced evenly in OKLCH lightness, its shadows lean toward violet or a
-  cooler neighbour and its lights toward yellow, and its chroma peaks in the
-  middle, so a ramp shades a form without going muddy or neon; grey, skin,
-  brown and a slate-to-sage ramp give the muted colours stone, metal and
-  shade need; no two colours are closer than 0.036 in OKLab. A ramp that falls short on a real
+- **Sprites' 122 colours are kept only if they draw well.** Ten greys run
+  from black to white, and each of the fourteen colours has eight tones, one
+  at the OKLCH lightness of each grey between, so a column is one tone all
+  the way down. A ramp's shadows lean toward violet or a cooler neighbour
+  and its lights toward yellow, and its chroma peaks in the middle, so it
+  shades a form without going muddy or neon; skin, brown, slate and sage
+  give the muted colours stone, metal and shade need. The lightest tones
+  stand as near as 0.004 in OKLab, too close to tell apart. A ramp that falls short on a real
   drawing is changed in `sprites/palette.json`, its one home.
-- **Sprites' 94 colours are the standard, and Sprites P3 is their vivid
+- **Sprites' 122 colours are the standard, and Sprites P3 is their vivid
   twin.** sRGB is what most screens, apps and the Emu converter show, so
   `sprites/palette.json` stays the one home and Sprites P3 is worked out
   from it in `sprites/data.js`; it is judged on a P3 screen alongside the
-  94.
+  122.
 - **Sprites keeps its own drawing code.** Whether the Pixelator's board
   moves onto it is decided once both can be compared.
 - **Sprites stands in the switcher like every app,** and the page lock opens
@@ -38,5 +40,5 @@ deciding whether Pixels' inks join it.
 
 ## Tasks
 
-- [ ] Draw a console, an icon and a small character in Sprites' 94 colours,
+- [ ] Draw a console, an icon and a small character in Sprites' 122 colours,
       and in Sprites P3, and change any ramp that falls short.

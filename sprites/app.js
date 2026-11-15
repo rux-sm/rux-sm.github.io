@@ -333,9 +333,13 @@
   }
   function drawSwatches() {
     const box = $('sprites-ramps');
+    // A ramp shorter than the widest stands in its middle, so Sprites' eight
+    // tones sit under the eight greys between black and white.
+    const widest = Math.max(...pal.ramps.map(r => r.colours.length));
     box.replaceChildren(...pal.ramps.map(r => {
       const row = document.createElement('div');
       row.className = 'sprites-ramp';
+      row.style.setProperty('--sprites-indent', String(Math.floor((widest - r.colours.length) / 2)));
       row.setAttribute('role', 'group');
       row.setAttribute('aria-label', r.name);
       row.append(...r.colours.map(c => swatch(c.n, c.label)));

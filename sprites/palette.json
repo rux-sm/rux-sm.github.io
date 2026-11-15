@@ -2,19 +2,19 @@
   "name": "Sprites",
   "ramps": [
     {"name": "grey", "colours": ["#000000", "#0f0f0f", "#292929", "#484848", "#666666", "#898989", "#ababab", "#d1d1d1", "#f5f5f5", "#ffffff"]},
-    {"name": "red", "colours": ["#5b0018", "#88011f", "#b7041e", "#e81013", "#fc5950", "#fe978b"]},
-    {"name": "orange", "colours": ["#883500", "#a84c02", "#c96400", "#e97e04", "#fe9f3d", "#fec991"]},
-    {"name": "yellow", "colours": ["#5f4201", "#806303", "#a08703", "#c2ad0c", "#f2da18", "#fef8be"]},
-    {"name": "green", "colours": ["#013823", "#045f30", "#058b1e", "#4ab30f", "#8bd759", "#caf9a1"]},
-    {"name": "teal", "colours": ["#013537", "#035b5a", "#03847c", "#08af9f", "#56d8c3", "#abfbe7"]},
-    {"name": "sky", "colours": ["#003344", "#03596f", "#087e99", "#10aac8", "#5bd0e9", "#bfeef8"]},
-    {"name": "blue", "colours": ["#002358", "#02448d", "#0169c3", "#0892f6", "#6ebdff", "#c0e3fe"]},
-    {"name": "purple", "colours": ["#2c085a", "#511796", "#7935cb", "#a05df3", "#c292fe", "#e0c8fe"]},
-    {"name": "magenta", "colours": ["#490a54", "#781684", "#a730b0", "#d158d3", "#eb8ce6", "#f5c6ef"]},
-    {"name": "pink", "colours": ["#590b44", "#8d0964", "#bf2280", "#e94c9c", "#ff86ba", "#fec5d9"]},
-    {"name": "skin", "colours": ["#512c27", "#76473e", "#9d6356", "#ca816a", "#efa589", "#fed3c1"]},
-    {"name": "brown", "colours": ["#331604", "#553211", "#74522e", "#8f7556", "#b19b7c", "#d2c2a8"]},
-    {"name": "slate", "colours": ["#2b404e", "#425c6d", "#5c798c", "#7b96a9", "#9db5c6", "#c2d4e0"]},
-    {"name": "sage", "colours": ["#2c4431", "#446049", "#5d7e63", "#7b9c81", "#9bbba1", "#bfd9c3"]}
+    {"name": "red", "colours": ["#250005", "#530015", "#8a011f", "#c0061d", "#fc1a20", "#fd8175", "#febfb7", "#fff2f0"]},
+    {"name": "orange", "colours": ["#1f0700", "#481800", "#782e00", "#a24801", "#d06901", "#f88c0a", "#fec589", "#fff3e7"]},
+    {"name": "yellow", "colours": ["#170d00", "#382500", "#5f4201", "#7f6203", "#a18803", "#c1ac0c", "#ebd316", "#fef8bf"]},
+    {"name": "green", "colours": ["#00140a", "#01321f", "#03572f", "#057c2c", "#2fa40a", "#6cc53a", "#a1ea67", "#eafcdc"]},
+    {"name": "teal", "colours": ["#001314", "#013032", "#025353", "#037671", "#069e92", "#37c4b1", "#5fedd3", "#defdf5"]},
+    {"name": "sky", "colours": ["#00121a", "#002e3e", "#025065", "#06728b", "#0d99b6", "#3cbdd9", "#89e1f4", "#e8f9fc"]},
+    {"name": "blue", "colours": ["#000d2a", "#00255c", "#02458f", "#0165be", "#078cef", "#57b2ff", "#a7d8fe", "#edf7ff"]},
+    {"name": "purple", "colours": ["#14022e", "#320a64", "#581c9f", "#7b35cf", "#a15ff4", "#c08ffe", "#dec4fe", "#f8f2ff"]},
+    {"name": "magenta", "colours": ["#1c0222", "#42084c", "#70147c", "#9b29a5", "#c74ecb", "#e97be5", "#f3bded", "#fcf1fb"]},
+    {"name": "pink", "colours": ["#200217", "#4a0738", "#7f0b5c", "#b01a78", "#e04296", "#fb78b3", "#febbd3", "#fff1f5"]},
+    {"name": "skin", "colours": ["#1a0a08", "#3d201c", "#663b33", "#8b564b", "#b97562", "#e2957a", "#fac3ac", "#fff2ed"]},
+    {"name": "brown", "colours": ["#1c0901", "#3f2007", "#623f1d", "#7f5f3d", "#9d8565", "#bca88a", "#dccfbb", "#f7f5f0"]},
+    {"name": "slate", "colours": ["#081016", "#1c2b35", "#344b5b", "#4f6a7c", "#728da1", "#95afc2", "#c2d4e0", "#f2f6f8"]},
+    {"name": "sage", "colours": ["#08120a", "#1c2e20", "#364f3b", "#506f56", "#729378", "#95b59b", "#bfd9c3", "#f1f7f2"]}
   ]
 }

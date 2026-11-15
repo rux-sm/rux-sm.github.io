@@ -10,15 +10,13 @@ The Library becomes two panels: Your Mac, a room holding what this Mac has
 set up and downloaded, and below it Rux's Collection, every console and game
 the collection holds. Things move between them by dragging, so getting a game,
 setting up its console and playing it are one gesture each, and the page is
-fun to use while staying plain. It replaces the front page that
-`docs/plans/emu-front-end.md` describes; the rest of Emu is unchanged.
+fun to use while staying plain. It is Emu's front page, `emu/index.html`,
+drawn by `emu/room.js`; the rest of Emu is unchanged.
 
 ## Decisions
 
-- **The room is built as its own page, `emu/room.html`, beside the
-  Library,** which keeps working until the room takes its place; nothing
-  links to the room until then. It draws Your Mac and Rux's Collection from
-  the real games and this Mac; a game or a console is dragged between them,
+- **The room draws Your Mac and Rux's Collection from the real games and
+  this Mac;** a game or a console is dragged between them,
   a plug sets an emulator up, putting an unplugged console back takes it
   off, and a game opens its side panel when pressed.
 - **Until a Mac's room is kept, the console of each game it holds stands in
@@ -240,5 +238,3 @@ fun to use while staying plain. It replaces the front page that
 - [ ] Pick up and put down a game or console with a controller's A.
 - [ ] Lay it out on the phone without Your Mac, and see the drawings in
       Safari.
-- [ ] Make the room `index.html`, update `emu/README.md` and drop the
-      front-page lines from `docs/plans/emu-front-end.md`.

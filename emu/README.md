@@ -9,10 +9,10 @@ The repository root's `AGENTS.md` is the policy, and
 
 ## What it is
 
-`index.html` is the Library: the recently played and the favourites as shelves of
-box art from libretro's thumbnails, then a tile for each system, showing its console
-and what stands in its way on this Mac, that opens its games as a grid; a line above
-says what this Mac holds and can play, and the next step. `collection.html` is the
+`index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper
+answers, is a TV on a stand of this Mac's consoles beside a bookcase of its games; below
+it Rux's Collection is a row of consoles over the picked one's games, as box art from
+libretro's thumbnails, and a game or console is dragged between the two. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks
 each game this Mac holds, and On this Mac lists only those, each with Remove, over
 how much room is free. A game's status is its worst problem, as Problems lists them,
@@ -137,7 +137,7 @@ public.
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `update.js` | Update, on the Status page |
 | `game-panel.js`, `this-mac.js`, `carry.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; its emulator's saves carried between this Mac and Supabase around Play; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
-| `library.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
+| `room.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
 | `search.js` | Search, in every page's header |
 | `app.css` | the filters, rows, the side panel's facts and its part for this Mac, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone; a search result as a row, not a link |

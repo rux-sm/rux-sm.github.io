@@ -164,8 +164,7 @@
     },
 
     // rux's notes on a game: played, finished, favourite, plays and a note.
-    // When Play last opened a game, for the Library's Recently played; the
-    // marks and note stay as they are.
+    // When Play last opened a game; the marks and note stay as they are.
     async markPlayed(game) {
       const played_at = new Date().toISOString();
       fail((await client.from('emu_notes').upsert({ system: game.system, title: game.title, played_at }, { onConflict: 'system,title' })).error);

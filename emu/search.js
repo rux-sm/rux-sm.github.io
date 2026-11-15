@@ -4,7 +4,7 @@
    The header's one search finds any game in the collection by its title,
    from every page, in Design's modal that each page carries as
    #emu-search-modal. A game picked opens in the Library with its panel,
-   ./?game=<system>/<title>#<system>, which library.js reads. The games are
+   ./?game=<system>/<title>, which room.js reads. The games are
    read the first time the window opens. ⌘K or Ctrl+K opens it too.
    ========================================================================== */
 (() => {
@@ -21,7 +21,7 @@
   let games = null;
   let reading = false;
 
-  const hrefOf = g => `./?game=${encodeURIComponent(`${g.system}/${g.title}`)}#${g.system}`;
+  const hrefOf = g => `./?game=${encodeURIComponent(`${g.system}/${g.title}`)}`;
 
   // Nothing is drawn until the games are read, so a search typed meanwhile is not said to find none.
   async function read() {

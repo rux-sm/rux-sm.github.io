@@ -6,26 +6,15 @@ type: plan
 
 ## Goal
 
-Emu's front page is a tile for each system, opening a grid of box art for
-every game it has, and Play on a game opens it in its emulator on the
-MacBook Pro, so the site, not ES-DE, is where a game is picked. The rest of
-Emu is `docs/plans/emu-app.md`.
+Emu shows every game as box art, and Play on a game opens it in its emulator
+on the MacBook Pro, so the site, not ES-DE, is where a game is picked. The
+front page is `docs/plans/emu-room.md`, and the rest of Emu
+`docs/plans/emu-app.md`.
 
 ## Decisions
 
-- **The front page is the library:** the recently played and the
-  favourites as rows of box art, then a tile for each system with games,
-  its console on it, with a search across every game; a system's
-  tile opens its games as a grid, all of them, its favourites or its
-  recently played, at its own address so Back and a bookmark work. A game
-  opens a side panel with its art, notes, played and favourite, and Play.
-  The Collection table is its own page.
-- **A system's tile shows rux's own pixel art of its console,** drawn into
-  `emu/brand/systems/`, and until then libretro's Systematic picture of it,
-  CC BY 4.0, loaded from libretro's GitHub and credited below the tiles;
-  consoles' own photos and logos are their makers' and stay out.
-- **Play marks when a game was last played,** in `emu_notes.played_at`, for
-  Recently played; it changes no mark or note.
+- **Play marks when a game was last played,** in `emu_notes.played_at`; it changes
+  no mark or note.
 - **Covers show a game's name without its list's tags,** region, languages
   and revision, which its panel keeps.
 - **Play asks Rux Emu Helper to open the game,** because a web page cannot
@@ -34,11 +23,8 @@ Emu is `docs/plans/emu-app.md`.
   which is the name the drive's files carry; it is loaded from
   thumbnails.libretro.com and cached by the browser, and nothing is stored.
   A game the lists do not name shows its title on a plain tile.
-- **A controller moves around the page** through Chrome's Gamepad API: the
-  stick or pad moves to the nearest tile or cover in that direction, A opens
-  a system, then a game, then plays it, and B goes back a step.
 - **Play shows only where it can work:** where the helper answers and has
-  the collection. Elsewhere, such as the phone, the page is the library to
+  the collection. Elsewhere, such as the phone, the page is the collection to
   browse, with no Play button.
 - **A Switch game shows a plain tile with its name** until its art is settled.
 - **ES-DE goes once the library and Play work,** since without internet a
@@ -53,9 +39,6 @@ Emu is `docs/plans/emu-app.md`.
   icon, which Ryujinx shows, read from the game file by the scan?
 
 ## Tasks
-
-- [ ] Draw a pixel-art console for each system into `emu/brand/systems/`,
-  as `<system>.png`, and list each in `DRAWN` in `emu/app.js`.
 
 - [ ] Remove ES-DE from the how-to, `emulators.json`, the Mac check and
   Status, and from the MacBook Pro.

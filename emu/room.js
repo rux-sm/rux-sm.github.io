@@ -1,5 +1,5 @@
 /* ==========================================================================
-   room.js — the Library as a room, on room.html
+   room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
    Your Mac is a media wall, shown where Rux Emu Helper answers. The TV
    stands on a stand of cubbies, one per home console and a ghost cubby to
@@ -22,7 +22,8 @@
    the room, picks it: its name, count and how it stands show beneath, with
    Bring to Your Mac or Put back, over its games as covers in one row, A to
    Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
-   game-panel.js.
+   game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
+   that game's console and opens its panel.
 
    A game or a console is dragged with the pointer, where the helper
    answers: a console onto Your Mac comes in, and an unplugged one dragged
@@ -740,6 +741,16 @@
     $('emu-empty').hidden = games.length > 0;
     $('emu-collection').hidden = games.length === 0;
     render();
+    // The game ?game= names, opened once over its console and taken off the address.
+    const url = new URL(location.href);
+    const key = url.searchParams.get('game');
+    if (key) {
+      url.searchParams.delete('game');
+      url.hash = '';
+      history.replaceState(null, '', url);
+      const g = games.find(x => keyOf(x) === key);
+      if (g) { choose(g.system); openGame(g); }
+    }
   }
 
   // The helper may be started or quit, an emulator installed or a download

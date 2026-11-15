@@ -30,8 +30,9 @@
    game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
-   Storage is the picked console's saves, newest first, each opening in
-   Saves.
+   Storage is the picked console's saves as cards, each opening in Saves:
+   one for each game, called what its console calls a save, then the
+   console's own.
 
    A game or a console is dragged with the pointer, where the helper
    answers: a console onto Your Mac comes in, and an unplugged one dragged
@@ -365,22 +366,56 @@
     showPick();
   }
   // STORAGE ------------------------------------------------------------------
-  // The picked console's saves, newest first, each a link to it in Saves.
+  // A card, 8 by 10 art pixels: its body with a corner cut, a label and contacts.
+  function cardOf() {
+    const svg = svgOf('emu-card', '0 0 8 10');
+    svg.innerHTML = '<path class="emu-card__body" d="M0 0H7V1H8V10H0Z"/><rect class="emu-card__label" x="1" y="1" width="5" height="4"/>'
+      + '<rect class="emu-card__pin" x="1" y="7" width="1" height="2"/><rect class="emu-card__pin" x="3" y="7" width="1" height="2"/><rect class="emu-card__pin" x="5" y="7" width="1" height="2"/>';
+    return svg;
+  }
+  // The picked console's saves as cards, each opening in Saves: one for each
+  // game, its save by the word its console has for one with its save states
+  // riding along, then the console's own, which name no game. A save gathered
+  // from several places is one card, as it was saved last.
   function renderStorage() {
     $('emu-storage').hidden = !helper || !pick;
     if (!helper || !pick) return;
-    const own = saves.filter(s => s.system === pick).sort((a, b) => String(b.saved_at ?? '').localeCompare(String(a.saved_at ?? '')));
-    $('emu-storage-for').textContent = R.systemName(pick);
-    $('emu-storage-sub').textContent = own.length ? `${own.length} ${own.length === 1 ? 'save' : 'saves'}` : 'No saves yet';
-    $('emu-storage-saves').replaceChildren(...own.map(s => {
+    const word = emulators?.systems?.[pick]?.saveWord ?? 'Save';
+    const last = rows => rows.map(s => s.saved_at ?? '').sort().at(-1);
+    const cards = new Map();
+    for (const s of saves.filter(x => x.system === pick)) {
+      const key = s.game ? `game/${s.game}` : `own/${s.name}/${s.kind}`;
+      cards.set(key, [...cards.get(key) ?? [], s]);
+    }
+    const row = (rows, name, sub) => {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
-      const a = el('a', 'rux--contained-list-item__content emu-row');
-      a.href = `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}`;
+      const a = el('a', 'rux--contained-list-item__content emu-row emu-row--card');
+      a.href = `saves.html?save=${encodeURIComponent(`${pick}/${rows[0].name}`)}`;
       const main = el('span', 'emu-row__main');
-      main.append(el('span', '', s.game ?? s.name), el('span', 'emu-row__sub', `${R.saveKind(s)} · ${R.date(s.saved_at)}`));
-      a.append(main);
+      main.append(el('span', '', name), el('span', 'emu-row__sub', [...sub, R.date(last(rows))].filter(Boolean).join(' · ')));
+      a.append(cardOf(), main);
       li.append(a);
       return li;
+    };
+    const byName = (a, b) => a[0].localeCompare(b[0]);
+    const mine = [...cards].filter(([key]) => key.startsWith('game/')).sort(byName).map(([, rows]) => {
+      const states = Math.max(0, ...rows.filter(s => s.kind === 'state').map(s => s.files?.length ?? 1));
+      const kept = rows.some(s => s.kind !== 'state');
+      const g = games.find(x => x.system === pick && x.title === rows[0].game);
+      return row(rows, g ? nameOf(g) : rows[0].game, [kept ? word : '', states ? `${states} save ${states === 1 ? 'state' : 'states'}` : '']);
+    });
+    const own = [...cards].filter(([key]) => key.startsWith('own/')).sort(byName).map(([, rows]) => row(rows, rows[0].name, [R.saveKind(rows[0])]));
+    $('emu-storage-for').textContent = R.systemName(pick);
+    $('emu-storage-sub').textContent = cards.size ? `${cards.size} ${cards.size === 1 ? 'save' : 'saves'}` : 'No saves yet';
+    $('emu-storage-lists').replaceChildren(...[['Games', mine], ['The console\'s own', own]].filter(([, items]) => items.length).map(([title, items]) => {
+      const list = el('div', 'rux--contained-list rux--contained-list--inset-rulers');
+      const head = el('div', 'rux--contained-list__header');
+      head.append(el('h4', 'rux--contained-list__label', title));
+      const ul = el('ul');
+      ul.setAttribute('role', 'list');
+      ul.append(...items);
+      list.append(head, ul);
+      return list;
     }));
   }
 

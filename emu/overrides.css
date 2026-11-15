@@ -17,3 +17,5 @@
 /* A row of Search's results is a link, where Carbon's clickable row is a
    button, so it takes the row's text colour and no underline. */
 .rux--contained-list-item--clickable a.rux--contained-list-item__content { color: var(--rux-text-primary); text-decoration: none; }
+/* A save's card stands beside its name, where Carbon sets a row's content as one block. */
+.rux--contained-list-item--clickable .rux--contained-list-item__content.emu-row--card { display: flex; }

@@ -131,6 +131,12 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
 - **Storage calls a save what its console does:** a memory card, a
   cartridge's save or save data, a word each system has in
   `emu/emulators.json`.
+- **A card's name, and which of a game's cards is in, is a row in
+  Supabase,** in a table of cards, since a file's copies carry no name. A
+  card out of its game keeps its files under `cards/`, so the copies dropped
+  from a save never take a card's bytes.
+- **A card is every carried file of its game,** its save and its save
+  states, swapped as one, so a game never plays files from two cards.
 - **A game's side panel opens over Storage,** on the right, and closing it
   shows Storage as it was.
 - **A game's save states ride with its card,** since a card is one
@@ -228,11 +234,13 @@ None open.
 ## Tasks
 
 - [ ] Name an empty cubby or dock spot after the console it waits for.
-- [ ] Name the copies of a save Supabase keeps, as cards, and have the
-      helper swap which one is on this Mac, with its save states, while its
-      emulator is closed.
-- [ ] Draw a game's cards, on its cover, in its console's slot and in
-      Storage, with pulling one out, dropping one in and the console's card
+- [ ] Make the table of cards in Supabase, and give Rux Emu Helper a
+      request that takes a save's files off this Mac, which a card pulled
+      out or swapped for one of fewer files needs.
+- [ ] Swap which card is in its game, with its save states, while its
+      emulator is closed, and name a card.
+- [ ] Draw a game's card on its cover and in its console's slot, with
+      pulling one out, dropping one in from Storage and the console's card
       light.
 - [ ] List a console's controls in Storage, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.

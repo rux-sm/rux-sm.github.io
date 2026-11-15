@@ -32,6 +32,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rux-spacing-05); inline-size: 100%; text-align: start; }
 .emu-row__main { display: grid; min-inline-size: 0; }
 .emu-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+/* A save's card in Storage: 8 by 10 art pixels at three to one, its edges kept sharp. */
+.emu-row--card { justify-content: flex-start; align-items: center; gap: var(--rux-spacing-04); }
+.emu-card { flex: none; inline-size: 1.5rem; block-size: 1.875rem; shape-rendering: crispEdges; }
+.emu-card__body { fill: var(--rux-border-strong-01); }
+.emu-card__label { fill: var(--rux-layer-01); }
+.emu-card__pin { fill: var(--rux-layer-accent-01); }
 
 /* The side panel's facts: a label over each value. */
 .emu-facts { display: grid; gap: var(--rux-spacing-05); }

@@ -61,6 +61,7 @@
       "emulator": "Mesen 2",
       "why": "The most accurate NES emulator, native on macOS.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/Library/Application Support/Mesen2",
       "launch": {
         "app": "Mesen.app",
@@ -74,6 +75,7 @@
       "emulator": "Mesen 2",
       "why": "The most accurate SNES emulator, native on macOS.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/Library/Application Support/Mesen2",
       "launch": {
         "app": "Mesen.app",
@@ -87,6 +89,7 @@
       "emulator": "Gopher64",
       "why": "Renders up to 8× with an overclock that removes slowdown, notarized and native on Apple Silicon.",
       "saves": "n64header",
+      "saveWord": "Cartridge save",
       "settings": "~/Library/Containers/io.github.gopher64.gopher64/Data/Library/Application Support/gopher64",
       "launch": {
         "app": "Gopher64.app",
@@ -98,6 +101,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
@@ -112,6 +116,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
@@ -126,6 +131,7 @@
       "emulator": "mGBA",
       "why": "Accurate and light, and it saves as plain .sav files.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/.config/mgba",
       "launch": {
         "app": "mGBA.app",
@@ -146,6 +152,7 @@
       "emulator": "melonDS",
       "why": "The most accurate DS emulator, native on macOS.",
       "saves": "name",
+      "saveWord": "Cartridge save",
       "settings": "~/Library/Preferences/melonDS",
       "launch": {
         "app": "melonDS.app",
@@ -175,6 +182,7 @@
       "emulator": "Azahar",
       "why": "The maintained successor to Citra; it plays a decrypted .3ds as it is.",
       "saves": "titleId",
+      "saveWord": "Save data",
       "settings": "~/Library/Application Support/Azahar",
       "launch": {
         "app": "Azahar.app",
@@ -188,6 +196,7 @@
       "emulator": "DuckStation",
       "why": "The most accurate and fastest PS1 emulator; it reads CHD and .m3u and keeps one memory card per game.",
       "saves": "serial",
+      "saveWord": "Memory card",
       "settings": "~/Library/Application Support/DuckStation",
       "launch": {
         "app": "DuckStation.app",
@@ -208,6 +217,7 @@
       "emulator": "PCSX2",
       "why": "The only mature PS2 emulator; its Mac build runs under Rosetta, and only unofficial forks are native.",
       "saves": "serial",
+      "saveWord": "Memory card",
       "settings": "~/Library/Application Support/PCSX2",
       "launch": {
         "app": "PCSX2.app",
@@ -227,6 +237,7 @@
       "emulator": "Dolphin",
       "why": "The only mature GameCube emulator; it reads RVZ.",
       "saves": "discId",
+      "saveWord": "Memory card",
       "settings": "~/Library/Application Support/Dolphin",
       "launch": {
         "app": "Dolphin.app",
@@ -242,6 +253,7 @@
       "emulator": "Dolphin",
       "why": "The only mature Wii emulator; it reads RVZ.",
       "saves": "discId",
+      "saveWord": "Save data",
       "settings": "~/Library/Application Support/Dolphin",
       "launch": {
         "app": "Dolphin.app",
@@ -257,6 +269,7 @@
       "emulator": "Cemu",
       "why": "The only mature Wii U emulator; its automatic builds are native on Apple Silicon, where the 2.6 release runs under Rosetta. A .wua needs no keys.",
       "saves": "titleId",
+      "saveWord": "Save data",
       "settings": "~/Library/Application Support/Cemu",
       "launch": {
         "app": "Cemu.app",
@@ -271,6 +284,7 @@
       "emulator": "Ryujinx",
       "why": "The Switch emulator with a supported Apple Silicon build, from ryujinx.app; Eden calls its Mac build experimental.",
       "saves": "titleId",
+      "saveWord": "Save data",
       "savesIn": "^Ryujinx/bis/user/save/",
       "settings": "~/Library/Application Support/Ryujinx",
       "launch": {
@@ -298,6 +312,7 @@
       "emulator": "xemu",
       "why": "The only mature Xbox emulator.",
       "saves": "titleId",
+      "saveWord": "Save data",
       "settings": "~/Library/Application Support/xemu",
       "launch": {
         "app": "xemu.app",

@@ -50,15 +50,22 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   picked up. There is no All, because one console at a time is neater.
 - **There is no Recently played,** because a Mac holds only a handful of
   games, and those are on its shelf or in Favourites.
-- **Your Mac is a media wall as tall as the page.** In the middle the TV stands on a stand of cubbies, one per home console in the
-  room and one ghost cubby to drop the next on, never fewer than three, so
-  the stand is only as big as what it holds. Handhelds stand in a dock on the
-  stand's top beside the TV, since they light their own screen. A bookcase on
-  the right holds Favourites face out on its top shelf and this Mac's other
-  games as spines below, A to Z. The floor is
-  only ground, and how much room is free is in the heading. An empty room is
-  three cubbies under the TV, the ghost one saying "Drag a console up here."
-- **An empty cubby or dock spot names the console it waits for,** faintly,
+- **Your Mac is a room seen from above and in front,** its back wall across
+  the top and more than half its height, so each thing shows its front and
+  its top and the room fills a tall column. On the wall the TV stands on a
+  stand of cubbies, one per home console in the room and one ghost cubby to
+  drop the next on, never fewer than three, so the stand is only as big as
+  what it holds. The floor is a shallow strip with a rug, and a low table on
+  it for the handhelds, since they light their own screen. There is no door
+  and no bookcase, since things arrive from Rux's Server beside it. How much
+  room is free is in the heading. An empty room is three cubbies under the
+  TV, the ghost one saying "Drag a console up here."
+- **A game on this Mac lies on the floor where it was left,** its cover face
+  up, and is dragged to move it. One just downloaded lands by the rug's edge,
+  clear of the others. Each game's spot is kept with this Mac's room, in the
+  `room` column of its `emu_macs` row. Past about twenty the games untouched
+  longest gather into a pile that opens when pressed.
+- **An empty cubby or table spot names the console it waits for,** faintly,
   so where a console goes shows before it is brought.
 - **The plug is a socket under its console, in its cubby,** with a target of
   at least 24px. Plugged in it is pushed in with a light beside it;
@@ -165,15 +172,13 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
 - **One line beside Your Mac's name says what a move did,** such as
   "Playing." or why the helper refused, with Undo where it can be taken back.
 - **A game on this Mac whose console is not plugged in is dimmed,** its
-  spine's label naming the console it needs, since a spine has no room for a
-  tag.
+  title naming the console it needs.
 - **A room of more than five cubbies is crowded:** the stand grows a second
   tier and the TV gets smaller, which holds all ten home consoles, and the
-  dock takes handhelds on both sides of the TV. Past three shelves of spines
-  the bookcase scrolls, its heading counting them all.
-- **Favourites is a shelf you drag games onto,** from Rux's Server or
-  the room, and off again back to Rux's Server; it is `emu_notes`'
-  favourite mark. A favourite this Mac lacks is dimmed.
+  table grows to take every handheld.
+- **Favourites are two small shelves on the wall you drag games onto,**
+  face out, from Rux's Server or the floor, and off again; it is
+  `emu_notes`' favourite mark. A favourite this Mac lacks is dimmed.
 - **Favourites are what stays out.** A favourite's other cards stand
   beside its cover on the shelf and not in Storage, so the games played
   most swap a card in one drag. A card has no favourite mark of its own; it
@@ -226,9 +231,9 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   head shake, which Carbon has no answer for, says so beside it.
 - **The prototype is a private page with invented games,**
   claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, and is not part of the site;
-  the media wall is sketched beside the two layouts not taken, empty and
-  full, at claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv. Both show the
-  collection below the room, not beside it.
+  an earlier room, seen side on, is sketched at
+  claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv. Both show the collection below
+  the room, not beside it, and neither the view from above.
 
 ## Questions
 
@@ -236,7 +241,7 @@ None open.
 
 ## Tasks
 
-- [ ] Name an empty cubby or dock spot after the console it waits for.
+- [ ] Name an empty cubby or table spot after the console it waits for.
 - [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
       a Mac to the Trash on `removeCarried`.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on
@@ -249,7 +254,13 @@ None open.
       light.
 - [ ] List a console's controls in Storage, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.
-- [ ] Draw each console in pixels, as `emu/docs/drawing-consoles.md` says.
+- [ ] Lay the room out as seen from above and in front: the wall with the
+      TV, its stand and the Favourites shelves, the floor with the rug and
+      the handhelds' table, and no bookcase.
+- [ ] Lay this Mac's games on the floor, each where it was left and dragged
+      to move, its spot kept in the Mac's `room`, with the pile past twenty.
+- [ ] Draw each console in pixels from above and in front, and say that view
+      in `emu/docs/drawing-consoles.md`.
 - [ ] Draw the rest of the room in pixel art: the TV 80×54 art pixels, a
       card 8×10, a plug or power button 8×8, and the furniture as 16×16
       tiles that grow.

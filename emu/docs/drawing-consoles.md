@@ -27,6 +27,17 @@ A home console is exactly 36 by 24. A handheld is 24 high and as wide as it
 needs, up to 36: 16 for a Game Boy, wider for a Game Boy Advance. Every
 console stands on the bottom row, which is the floor of its cubby.
 
+## The view
+
+The room is seen from above and in front, so a console shows two faces. Its
+top is drawn first, in the plain shade with a `-hi` row along its back edge,
+and holds what is on top of the real one: the slot, the lid, the switches.
+Its front is drawn under that, in the `-lo` shade, with the ports and the
+tray. A console that stands upright, like the Wii, is mostly front under a
+thin top. A handheld lies face up on the table: its whole face, screen and
+buttons, over three rows of `-lo` for the edge nearest you; one that folds
+stands its top screen up behind the half lying flat.
+
 The palette has twenty colours. Each material has three shades, the plain
 one, `-hi` for a lit edge and `-lo` for a shadow: `body` for the plastic,
 `shade` for a second plastic. `detail` is labels, vents and stickers, `ink`
@@ -50,8 +61,10 @@ both read; the room's `app.css` sets each property from Design's tokens.
 3. Another editor saves it as an 8-bit PNG, RGB, RGBA or indexed, not
    interlaced.
 4. Run `node emu/tools/build-consoles.mjs`. It redraws the symbol of each
-   console in `brand/consoles/` and leaves the rest as they were. A colour
+   console in `brand/consoles/`. A colour
    outside the palette, or the wrong size, stops it with the file and the
    pixel.
-5. Open the room on :8641 and look at the console in both themes, then
+5. Where the slot or tray moved, set the console's place in `SLOT` in
+   `room.js`: how far down the drawing a game goes in, from 0 to 1.
+6. Open the room on :8641 and look at the console in both themes, then
    commit the PNG with `brand/consoles.svg`.

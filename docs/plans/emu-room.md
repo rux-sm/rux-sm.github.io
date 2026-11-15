@@ -212,8 +212,9 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   it, and its heading has Bring to Your Mac or Put back; the plug is a
   button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
-- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one drawing
-  per system on the foot of one 3:2 box, which `room.js` puts into its page,
+- **The consoles are Emu's own set, `emu/brand/consoles.svg`,** one pixel
+  drawing per system, seen from above and in front as
+  `emu/docs/drawing-consoles.md` says, which `room.js` puts into its page,
   since a drawing in another file draws nothing in Safari. Every fill is an
   `--emu-console-*` property that `app.css` sets from Design's tokens, so a
   console follows the theme, and a handheld's screen is its own property, to
@@ -264,8 +265,6 @@ None open.
       `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Gather the games untouched longest into a pile that opens when
       pressed, once the floor holds more than about twenty.
-- [ ] Draw each console in pixels from above and in front, and say that view
-      in `emu/docs/drawing-consoles.md`.
 - [ ] Draw the rest of the room in pixel art: the TV 112×72 art pixels, a
       card 8×10, a plug or power button 8×8, and the furniture as 16×16
       tiles that grow.

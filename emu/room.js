@@ -204,24 +204,15 @@
       svg.style.display = 'none';
       document.body.append(document.importNode(svg, true));
     }));
-  // A console's drawing, which app.css colours. A pixel drawing from
-  // tools/build-consoles.mjs is its own size, 24 art pixels high; a flat one
-  // stands on the foot of a 96 by 64 box, and a handheld's is cut to its own
-  // width, from x, each width a whole number of art pixels at 24 to the 64.
-  const HANDBOX = { gb: [24, 48], gbc: [24, 48], gba: [4, 88], nds: [20, 56], n3ds: [12, 72] };
-  const consoleOf = system => useOf(svgOf('emu-console', '0 0 96 64'), `emu-console-${system}`);
+  // A console's drawing, which app.css colours: a pixel drawing from
+  // tools/build-consoles.mjs, 24 art pixels high, a home console 36 wide and
+  // a handheld its own width.
+  const consoleOf = system => useOf(svgOf('emu-console', '0 0 36 24'), `emu-console-${system}`);
   function handOf(system) {
-    const own = document.getElementById(`emu-console-${system}`)?.viewBox.baseVal;
-    const flat = !own || own.height === 64;
-    const [x, w] = flat ? HANDBOX[system] ?? [0, 96] : [0, own.width];
-    const h = flat ? 64 : own.height;
-    const svg = svgOf('emu-console emu-console--hand', `${x} 0 ${w} ${h}`);
-    svg.style.setProperty('--emu-art-w', w * 24 / h);
-    useOf(svg, `emu-console-${system}`);
-    // The symbol drawn its whole size, so a cut box shows only its middle.
-    svg.lastChild.setAttribute('width', flat ? 96 : w);
-    svg.lastChild.setAttribute('height', h);
-    return svg;
+    const { width, height } = document.getElementById(`emu-console-${system}`).viewBox.baseVal;
+    const svg = svgOf('emu-console emu-console--hand', `0 0 ${width} ${height}`);
+    svg.style.setProperty('--emu-art-w', width);
+    return useOf(svg, `emu-console-${system}`);
   }
   // The consoles standing in the room, in its cubbies or its dock.
   const units = () => $('emu-room').querySelectorAll('.emu-unit');
@@ -639,7 +630,7 @@
   }
   // The slot a game goes into, as a part of its console's drawing from the
   // top, and the consoles that take a disc.
-  const SLOT = { nes: 0.5, snes: 0.47, n64: 0.47, gc: 0.31, wii: 0.3, wiiu: 0.88, switch: 0.47, gb: 0.03, gbc: 0.12, gba: 0.37, nds: 0.56, n3ds: 0.56, psx: 0.53, ps2: 0.78, xbox: 0.66 };
+  const SLOT = { nes: 0.67, snes: 0.38, n64: 0.38, gc: 0.29, wii: 0.42, wiiu: 0.35, switch: 0.17, gb: 0.06, gbc: 0.14, gba: 0.33, nds: 0.5, n3ds: 0.5, psx: 0.46, ps2: 0.72, xbox: 0.72 };
   const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
   const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A timer beside each animation, so the game still starts where one is not run.

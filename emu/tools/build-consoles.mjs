@@ -8,8 +8,8 @@
    palette below, whose every colour stands for one --emu-console-*
    property, so the drawing takes the room's theme. This tool turns each
    drawing into its symbol in brand/consoles.svg, a rect for each run of one
-   colour, and leaves every console not yet drawn as it was. Sprites, at
-   /sprites/, draws in the palette and saves the PNG this reads.
+   colour. Sprites, at /sprites/, draws in the palette and saves the PNG this
+   reads.
 
        node emu/tools/build-consoles.mjs              every drawing into consoles.svg
        node emu/tools/build-consoles.mjs --template   the palette and blank canvases

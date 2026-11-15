@@ -31,6 +31,8 @@ tools above it and the colours beside it.
   over an sRGB fill. Emu consoles saves only the 1× PNG that
   `emu/tools/build-consoles.mjs` turns into `emu/brand/consoles.svg`, so
   `emu/docs/drawing-consoles.md` is how a console is drawn.
+- **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
+  the drawing it was saved from. Any other SVG is turned away.
 
 The drawing as it stands is kept in this browser, so a reload loses
 nothing.
@@ -50,7 +52,7 @@ file and says the path it belongs at.
 | `index.html` | the page, from Design's header-only shell |
 | `app.js` | the editor: the canvas, the tools, undo, the colours, Size and Save |
 | `data.js` | the palettes and presets, the colour spaces, and the draft kept in this browser |
-| `files.js` | opening a PNG, the PNG and SVG writers, and the checkout's folder |
+| `files.js` | opening a PNG or an SVG Sprites saved, the PNG and SVG writers, and the checkout's folder |
 | `palette.json` | Sprites' 94 colours, in ramps |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |
 | `brand/` | `icon.svg` for the tile and `favicon.svg` for the tab |

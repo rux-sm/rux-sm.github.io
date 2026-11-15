@@ -1,5 +1,5 @@
 /* ==========================================================================
-   files.js — opening a PNG, and saving a drawing into the checkout
+   files.js — opening a PNG or an SVG, and saving a drawing into the checkout
    --------------------------------------------------------------------------
    A drawing is { w, h, px }: px holds one number a pixel, row by row, the
    colour as 0xRRGGBB or -1 where it is clear. No pixel is half clear.
@@ -20,6 +20,11 @@
    interlaced, with every pixel opaque or clear, which is the picture
    emu/tools/build-consoles.mjs reads; the converter stays the one path from
    a console's drawing into consoles.svg.
+
+   OPENING. A PNG is read pixel by pixel. An SVG is read only as the writer
+   here writes one, rect by rect, so it comes back as the drawing it was
+   saved from; any other SVG is turned away, since a picture of curves has
+   no pixels to read.
    ========================================================================== */
 (() => {
   'use strict';
@@ -85,20 +90,20 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
-  // A PNG picked from the checkout, or from the file picker elsewhere, with
+  // A PNG or an SVG picked from the checkout, or from the file picker elsewhere, with
   // its path in the checkout when the browser can say it.
   async function open() {
     if (canWrite) {
       const root = await checkout();
       const [handle] = await window.showOpenFilePicker({
         id: 'sprites-open', startIn: root,
-        types: [{ description: 'PNG pictures', accept: { 'image/png': ['.png'] } }],
+        types: [{ description: 'PNG and SVG pictures', accept: { 'image/png': ['.png'], 'image/svg+xml': ['.svg'] } }],
       });
       const parts = await root.resolve(handle);
       return { file: await handle.getFile(), path: parts ? parts.join('/') : null };
     }
     return new Promise(resolve => {
-      const input = Object.assign(document.createElement('input'), { type: 'file', accept: 'image/png' });
+      const input = Object.assign(document.createElement('input'), { type: 'file', accept: 'image/png,image/svg+xml' });
       input.addEventListener('change', () => resolve(input.files[0] ? { file: input.files[0], path: null } : null));
       input.click();
     });
@@ -122,6 +127,7 @@
   // carried into P3 for a P3 one; a file with any other profile is carried
   // into sRGB, and says so.
   async function read(file) {
+    if (file.type === 'image/svg+xml' || /\.svg$/i.test(file.name)) return readSvg(file);
     const raw = await pixels(file, null);
     const srgb = await pixels(file, 'srgb');
     let { w, h, data } = raw, space = 'srgb', converted = false;
@@ -137,6 +143,35 @@
       px[i] = a < 128 ? -1 : (data[i * 4] << 16) | (data[i * 4 + 1] << 8) | data[i * 4 + 2];
     }
     return { w, h, px, soft, space, converted };
+  }
+
+  // An SVG as svg() below writes it: whole-number rects one pixel high, each
+  // a hex fill, and in a Display P3 drawing a P3 fill in its style as well,
+  // which is then the colour read.
+  const WHOLE = /^\d+$/, HEX = /^#[0-9a-f]{6}$/i;
+  const P3 = /^fill:\s*color\(display-p3 ([\d.]+) ([\d.]+) ([\d.]+)\)$/;
+  async function readSvg(file) {
+    const not = () => new Error(`${file.name} is not an SVG that Sprites saved.`);
+    const root = new DOMParser().parseFromString(await file.text(), 'image/svg+xml').documentElement;
+    const box = (root.getAttribute('viewBox') ?? '').split(' ');
+    if (root.localName !== 'svg' || box.length !== 4 || box[0] !== '0' || box[1] !== '0' || !WHOLE.test(box[2]) || !WHOLE.test(box[3])) throw not();
+    const w = Number(box[2]), h = Number(box[3]);
+    if (!w || !h) throw not();
+    if (w > 256 || h > 256) throw new Error(`${file.name} is ${w} × ${h}; Sprites draws up to 256 a side.`);
+    const px = new Int32Array(w * h).fill(-1);
+    let vivid = 0;
+    for (const rect of root.children) {
+      const [x, y, width, height, fill] = ['x', 'y', 'width', 'height', 'fill'].map(a => rect.getAttribute(a) ?? '');
+      if (rect.localName !== 'rect' || ![x, y, width].every(v => WHOLE.test(v)) || height !== '1' || !HEX.test(fill)) throw not();
+      if (Number(y) >= h || Number(x) + Number(width) > w) throw not();
+      const p3 = P3.exec(rect.getAttribute('style') ?? '');
+      if (rect.hasAttribute('style') && !p3) throw not();
+      if (p3) vivid++;
+      const n = p3 ? p3.slice(1).reduce((all, v) => (all << 8) | Math.round(Number(v) * 255), 0) : S.numOf(fill);
+      px.fill(n, Number(y) * w + Number(x), Number(y) * w + Number(x) + Number(width));
+    }
+    if (vivid && vivid !== root.children.length) throw not();
+    return { w, h, px, soft: 0, space: vivid ? 'display-p3' : 'srgb', converted: false };
   }
 
   function png({ w, h, px }, scale = 1, space = 'srgb') {

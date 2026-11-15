@@ -477,6 +477,8 @@
       drawing = { w: read.w, h: read.h, px: read.px };
       path = got.path;
       setPal(await S.palette(want));
+      // An SVG is saved as an SVG again, where its palette saves one.
+      if (/\.svg$/i.test(got.file.name) && pal.free) formatField.value = 'svg';
       fit();
       commit(true);
       dirty = false;

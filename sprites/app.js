@@ -30,10 +30,21 @@
    The canvas is a Display P3 one, so a P3 colour shows as itself on a
    screen that can show it.
 
+   OPENING. In Chrome, Open shows a window of tiles: every picture in the
+   palettes' folders and every drawing this browser saved or opened
+   elsewhere, the last changed first, with Browse for any other file. With
+   nothing to show, or in a browser that cannot read the checkout, it goes
+   straight to the file picker.
+
    SAVING. The Save window takes a path in the checkout and a format, and
-   files.js writes it in the palette's colour space. Emu consoles saves only
-   the 1× PNG, at a console's size. The draft, data.js's, is kept on every step, and leaving with
-   changes not saved asks first.
+   files.js writes it in the palette's colour space. A 1× PNG or an SVG
+   holds the drawing as drawn, so its path becomes the drawing's; a larger
+   PNG is a copy. Emu consoles saves only the 1× PNG, at a console's size.
+   The draft, data.js's, is kept on every step.
+
+   CHANGES NOT SAVED. Leaving the page asks first, and so do Open and New
+   drawing, which replace the drawing: undo would bring it back only until
+   the page is loaded again.
    ========================================================================== */
 (() => {
   'use strict';
@@ -436,9 +447,31 @@
     heightField.value = drawing.h;
     presetSelect.value = presetOf(drawing.w, drawing.h);
   });
+  // ---- changes not saved ----
+  // Runs a step that replaces the drawing, asking first when that would
+  // lose pixels no file holds.
+  let after = null;
+  function sure(then, trigger) {
+    if (!dirty || drawing.px.every(v => v === -1)) { then(); return; }
+    after = then;
+    window.Rux?.modal?.open('sprites-discard-modal', trigger);
+  }
+  $('sprites-discard-go').addEventListener('click', () => {
+    const then = after;
+    after = null;
+    window.Rux?.modal?.close('sprites-discard-modal');
+    then?.();
+  });
+
   function newSize(blank) {
     const { w, h } = sizeOf();
     if (!(w >= 1 && h >= 1 && w <= LIMIT && h <= LIMIT)) { note('error', `A drawing is 1 to ${LIMIT} pixels a side.`); return; }
+    if (blank) {
+      window.Rux?.modal?.close('sprites-size-modal');
+      sure(() => resize(w, h, true), $('sprites-size'));
+    } else resize(w, h, false);
+  }
+  function resize(w, h, blank) {
     begin();
     const px = new Int32Array(w * h).fill(-1);
     if (!blank) {
@@ -461,38 +494,81 @@
   $('sprites-new').addEventListener('click', () => newSize(true));
 
   // ---- open ----
-  $('sprites-open').addEventListener('click', async () => {
-    try {
-      const got = await S.files.open();
-      if (!got) return;
-      const read = await S.files.read(got.file);
-      // A P3 file opens in Sprites P3. A console drawing opens in its
-      // palette; any other sRGB file stays in the palette in use when that
-      // can draw it, and otherwise opens in Sprites' own.
-      const emu = await S.palette('emu-consoles');
-      const want = read.space === 'display-p3' ? (pal.space === 'display-p3' ? pal.id : 'sprites-p3')
-        : got.path?.startsWith(emu.folder) && read.px.every(v => emu.has(v)) ? 'emu-consoles'
-          : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
-      begin();
-      drawing = { w: read.w, h: read.h, px: read.px };
-      path = got.path;
-      setPal(await S.palette(want));
-      // An SVG is saved as an SVG again, where its palette saves one.
-      if (/\.svg$/i.test(got.file.name) && pal.free) formatField.value = 'svg';
-      fit();
-      commit(true);
-      dirty = false;
-      keep();
-      show();
-      const changes = [
-        read.soft ? `${read.soft} half-clear ${read.soft === 1 ? 'pixel was' : 'pixels were'} made opaque or clear.` : '',
-        read.converted ? 'Its colour profile is neither sRGB nor Display P3, so its colours were carried into sRGB.' : '',
-      ].filter(Boolean).join(' ');
-      note('success', `Opened ${got.path ?? got.file.name}.`, changes);
-    } catch (err) {
+  // A picked file becomes the drawing.
+  async function load(got) {
+    if (!got) return;
+    const read = await S.files.read(got.file);
+    // A P3 file opens in Sprites P3. A console drawing opens in its
+    // palette; any other sRGB file stays in the palette in use when that
+    // can draw it, and otherwise opens in Sprites' own.
+    const emu = await S.palette('emu-consoles');
+    const want = read.space === 'display-p3' ? (pal.space === 'display-p3' ? pal.id : 'sprites-p3')
+      : got.path?.startsWith(emu.folder) && read.px.every(v => emu.has(v)) ? 'emu-consoles'
+        : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
+    begin();
+    drawing = { w: read.w, h: read.h, px: read.px };
+    path = got.path;
+    if (path) S.known.add(path);
+    setPal(await S.palette(want));
+    // An SVG is saved as an SVG again, where its palette saves one.
+    if (/\.svg$/i.test(got.file.name) && pal.free) formatField.value = 'svg';
+    fit();
+    commit(true);
+    dirty = false;
+    keep();
+    show();
+    const changes = [
+      read.soft ? `${read.soft} half-clear ${read.soft === 1 ? 'pixel was' : 'pixels were'} made opaque or clear.` : '',
+      read.converted ? 'Its colour profile is neither sRGB nor Display P3, so its colours were carried into sRGB.' : '',
+    ].filter(Boolean).join(' ');
+    note('success', `Opened ${got.path ?? got.file.name}.`, changes);
+  }
+  const opening = act => async (...args) => {
+    try { await act(...args); } catch (err) {
       if (err.name !== 'AbortError') note('error', 'Could not open it.', err.message);
     }
+  };
+
+  // The tiles: a picture and its file name, the whole path in its title.
+  const gallery = $('sprites-gallery');
+  let shown = [];
+  function tile(got) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'rux--tile rux--tile--clickable sprites-tile';
+    b.title = got.path;
+    const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(got.file) });
+    const name = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name', textContent: got.path.split('/').at(-1) });
+    b.append(img, name);
+    b.addEventListener('click', opening(async () => {
+      window.Rux?.modal?.close('sprites-open-modal');
+      await load(got);
+    }));
+    return b;
+  }
+  $('sprites-open-modal').addEventListener('rux:modal-closed', () => {
+    for (const img of gallery.querySelectorAll('img')) URL.revokeObjectURL(img.src);
+    gallery.replaceChildren();
+    shown = [];
   });
+
+  const openFrom = opening(async () => {
+    if (S.files.canWrite) {
+      const kept = S.known.get();
+      shown = await S.files.gallery(S.FOLDERS, kept);
+      // A drawing whose file has gone is no longer kept.
+      const there = new Set(shown.map(g => g.path));
+      if (kept.some(p => !there.has(p))) S.known.set(kept.filter(p => there.has(p)));
+    }
+    if (!shown.length) { await load(await S.files.browse()); return; }
+    gallery.replaceChildren(...shown.map(tile));
+    window.Rux?.modal?.open('sprites-open-modal', $('sprites-open'));
+  });
+  $('sprites-open').addEventListener('click', () => sure(openFrom, $('sprites-open')));
+  $('sprites-browse').addEventListener('click', opening(async () => {
+    window.Rux?.modal?.close('sprites-open-modal');
+    await load(await S.files.browse());
+  }));
 
   // ---- save ----
   const pathField = $('sprites-save-path'), formatField = $('sprites-format');
@@ -539,7 +615,10 @@
       if (S.files.canWrite) await S.files.write(target, blob);
       else S.files.download(target, blob);
       // The path is the drawing's only when the file holds it as drawn.
-      if (format === 'png1') path = target;
+      if (format === 'png1' || format === 'svg') {
+        path = target;
+        if (S.files.canWrite) S.known.add(target);
+      }
       dirty = false;
       S.folder.set(target.replace(/[^/]*$/, ''));
       keep();

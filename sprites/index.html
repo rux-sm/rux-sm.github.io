@@ -275,6 +275,50 @@
   </div>
 </div>
 
+<!-- Open, from the bar: app.js fills the tiles from the checkout, a picture
+     and its file name each, and Browse is the file picker. -->
+<div class="rux--layer-one rux--modal" id="sprites-open-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="sprites-open-h" tabindex="-1" class="rux--modal-container">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="sprites-open-h">Open</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <div class="sprites-gallery" id="sprites-gallery"></div>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary" id="sprites-browse">Browse</button>
+    </div>
+  </div>
+</div>
+
+<!-- Asked before Open or New drawing replaces a drawing with changes not
+     saved. -->
+<div class="rux--layer-one rux--modal" id="sprites-discard-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="sprites-discard-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="sprites-discard-h">Changes not saved</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <p>This drawing has changes no file holds. Carrying on throws them away.</p>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--danger" id="sprites-discard-go">Discard changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- Save, from the bar or Cmd S: a path in the checkout and a format.
      files.js writes it there in Chrome and downloads it elsewhere. -->
 <div class="rux--layer-one rux--modal" id="sprites-save-modal" role="presentation">
@@ -296,7 +340,7 @@
           <div class="rux--text-input__field-outer-wrapper">
             <div class="rux--text-input__field-wrapper" id="sprites-save-path-wrap">
               <svg class="rux--text-input__invalid-icon" id="sprites-save-path-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" hidden><use href="#i-warning--filled"/></svg>
-              <input id="sprites-save-path" class="rux--text-input" type="text" placeholder="emu/brand/consoles/snes.png" autocomplete="off" spellcheck="false">
+              <input id="sprites-save-path" class="rux--text-input" type="text" placeholder="sprites/art/star.png" autocomplete="off" spellcheck="false">
             </div>
             <div class="rux--form-requirement" id="sprites-save-error"></div>
             <div class="rux--form__helper-text" id="sprites-save-help"></div>

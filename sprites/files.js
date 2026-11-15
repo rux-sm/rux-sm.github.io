@@ -21,6 +21,11 @@
    emu/tools/build-consoles.mjs reads; the converter stays the one path from
    a console's drawing into consoles.svg.
 
+   FINDING. gallery() lists the pictures standing directly in the folders it
+   is given, and those at the paths it is given that still exist, the last
+   changed first; Open draws them as tiles. browse() is the file picker, for
+   a picture anywhere else.
+
    OPENING. A PNG is read pixel by pixel. An SVG is read only as the writer
    here writes one, rect by rect, so it comes back as the drawing it was
    saved from; any other SVG is turned away, since a picture of curves has
@@ -90,9 +95,41 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
+  const PICTURE = /\.(png|svg)$/i;
+  // A folder or a file of the checkout by its path, or null where there is none.
+  async function reach(root, path, kind) {
+    const parts = path.split('/').filter(Boolean);
+    try {
+      let dir = root;
+      for (const part of parts.slice(0, kind === 'file' ? -1 : undefined)) dir = await dir.getDirectoryHandle(part);
+      return kind === 'file' ? await dir.getFileHandle(parts.at(-1)) : dir;
+    } catch { return null; }
+  }
+
+  // The pictures in these folders and at these paths, as { path, file }, the
+  // last changed first. A folder or a path that is not there gives none.
+  async function gallery(folders, paths) {
+    const root = await checkout();
+    const found = new Map();
+    for (const folder of folders) {
+      const dir = await reach(root, folder, 'folder');
+      if (!dir) continue;
+      for await (const [name, handle] of dir.entries()) {
+        if (handle.kind === 'file' && PICTURE.test(name)) found.set(folder + name, handle);
+      }
+    }
+    for (const path of paths) {
+      if (found.has(path) || !PICTURE.test(path)) continue;
+      const handle = await reach(root, path, 'file');
+      if (handle) found.set(path, handle);
+    }
+    const all = await Promise.all([...found].map(async ([path, handle]) => ({ path, file: await handle.getFile() })));
+    return all.sort((a, b) => b.file.lastModified - a.file.lastModified);
+  }
+
   // A PNG or an SVG picked from the checkout, or from the file picker elsewhere, with
   // its path in the checkout when the browser can say it.
-  async function open() {
+  async function browse() {
     if (canWrite) {
       const root = await checkout();
       const [handle] = await window.showOpenFilePicker({
@@ -214,5 +251,5 @@
     return new Blob([text], { type: 'image/svg+xml' });
   }
 
-  S.files = { canWrite, checkout, checkPath, write, download, open, read, png, svg };
+  S.files = { canWrite, checkout, checkPath, write, download, gallery, browse, read, png, svg };
 })();

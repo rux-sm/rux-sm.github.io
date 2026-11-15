@@ -25,13 +25,20 @@
    THE DRAFT is the drawing as it stands, kept in localStorage on every step,
    so a reload or a closed tab loses nothing. It is this browser's only;
    what is meant to last is saved into the checkout.
+
+   WHERE DRAWINGS LIVE. Each palette has a folder a new drawing's save
+   starts in: sprites/art/ for Sprites' own two, the home of a drawing no
+   app has claimed yet, and Emu's consoles folder for its palette. Open
+   shows every picture in those folders, and beside them the drawings this
+   browser saved or opened anywhere else in the checkout, whose paths are
+   kept here.
    ========================================================================== */
 (() => {
   'use strict';
 
   const PALETTES = [
-    { id: 'sprites', name: 'Sprites', url: '/sprites/palette.json', free: true, folder: '', space: 'srgb' },
-    { id: 'sprites-p3', name: 'Sprites P3', url: '/sprites/palette.json', free: true, folder: '', space: 'display-p3', vivid: true },
+    { id: 'sprites', name: 'Sprites', url: '/sprites/palette.json', free: true, folder: 'sprites/art/', space: 'srgb' },
+    { id: 'sprites-p3', name: 'Sprites P3', url: '/sprites/palette.json', free: true, folder: 'sprites/art/', space: 'display-p3', vivid: true },
     {
       id: 'emu-consoles', name: 'Emu consoles', url: '/emu/brand/consoles/palette.json', free: false, space: 'srgb',
       folder: 'emu/brand/consoles/',
@@ -142,5 +149,20 @@
     set(f) { try { localStorage.setItem(FOLDER, f); } catch { /* the next save starts in the palette's folder */ } },
   };
 
-  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, palette, draft, folder, hexOf, numOf, convert, cssOf });
+  // The folders Open looks in, and the paths of drawings kept outside them,
+  // the newest first.
+  const FOLDERS = [...new Set(PALETTES.map(p => p.folder))];
+  const KNOWN = 'sprites-known', MOST = 60;
+  const known = {
+    get() {
+      try {
+        const list = JSON.parse(localStorage.getItem(KNOWN) ?? '[]');
+        return Array.isArray(list) ? list.filter(p => typeof p === 'string') : [];
+      } catch { return []; }
+    },
+    set(list) { try { localStorage.setItem(KNOWN, JSON.stringify(list.slice(0, MOST))); } catch { /* Open still shows the folders */ } },
+    add(path) { known.set([path, ...known.get().filter(p => p !== path)]); },
+  };
+
+  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, FOLDERS, palette, draft, folder, known, hexOf, numOf, convert, cssOf });
 })();

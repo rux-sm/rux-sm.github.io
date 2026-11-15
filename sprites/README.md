@@ -26,16 +26,22 @@ tools above it and the colours beside it.
   one of the same name, so a drawing moves between Sprites and Sprites P3
   and back unchanged.
 - **Saving:** a path in the checkout and a format: PNG at 1×, 2×, 4× or
-  8×, or SVG. A Sprites P3 PNG carries a Display P3 profile, which Open
+  8×, or SVG. A new drawing's path starts in `sprites/art/`, the home of a
+  drawing no app has claimed yet; one an app uses is saved where that app
+  reads it. A Sprites P3 PNG carries a Display P3 profile, which Open
   reads to open it in Sprites P3 again; its SVG paints each colour in P3
   over an sRGB fill. Emu consoles saves only the 1× PNG that
   `emu/tools/build-consoles.mjs` turns into `emu/brand/consoles.svg`, so
   `emu/docs/drawing-consoles.md` is how a console is drawn.
 - **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
-  the drawing it was saved from. Any other SVG is turned away.
+  the drawing it was saved from. Any other SVG is turned away. In Chrome,
+  Open shows tiles of every picture in `sprites/art/` and Emu's consoles
+  folder, and of each drawing this browser saved or opened elsewhere in the
+  checkout, with Browse for any other file.
 
 The drawing as it stands is kept in this browser, so a reload loses
-nothing.
+nothing. Open and New drawing ask before they replace a drawing with
+changes no file holds.
 
 ## Saving into the checkout
 
@@ -51,8 +57,8 @@ file and says the path it belongs at.
 | :--- | :--- |
 | `index.html` | the page, from Design's header-only shell |
 | `app.js` | the editor: the canvas, the tools, undo, the colours, Size and Save |
-| `data.js` | the palettes and presets, the colour spaces, and the draft kept in this browser |
-| `files.js` | opening a PNG or an SVG Sprites saved, the PNG and SVG writers, and the checkout's folder |
+| `data.js` | the palettes and presets, the colour spaces, the draft kept in this browser, and the paths Open's tiles remember |
+| `files.js` | opening a PNG or an SVG Sprites saved, listing the pictures Open shows, the PNG and SVG writers, and the checkout's folder |
 | `palette.json` | Sprites' 94 colours, in ramps |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |
 | `brand/` | `icon.svg` for the tile and `favicon.svg` for the tab |

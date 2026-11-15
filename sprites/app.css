@@ -61,3 +61,13 @@
 
 /* SIZE: width and height side by side. */
 .sprites-size-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+/* OPEN: tiles of the saved drawings, each a picture on the stage's checks'
+   ground with its file name under it. The picture is scaled up whole. */
+.sprites-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: .5rem; }
+.sprites-tile { display: grid; gap: .5rem; align-content: start; text-align: start; inline-size: 100%; border: 0; cursor: pointer; }
+.sprites-tile__picture {
+  inline-size: 100%; aspect-ratio: 1; object-fit: contain; image-rendering: pixelated;
+  background: var(--rux-layer-02);
+}
+.sprites-tile__name { overflow-wrap: anywhere; color: var(--rux-text-primary); }

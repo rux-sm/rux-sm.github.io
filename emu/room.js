@@ -227,8 +227,8 @@
   const units = () => $('emu-room').querySelectorAll('.emu-unit');
   const unitOf = system => $('emu-room').querySelector(`.emu-unit[data-system="${system}"]`);
 
-  // A game's cover as the button that opens it. `small` leaves its name off,
-  // for the room, where its art names it.
+  // A game's cover as the button that opens it. `small` is one in the room,
+  // its name a tag that shows as it grows under the pointer.
   function coverItem(g, small) {
     const li = el('li');
     const b = el('button', 'emu-cover');
@@ -237,7 +237,7 @@
     b.dataset.system = g.system;
     b.title = g.title;
     b.append(cover(g, 'emu-cover-art'));
-    if (small) b.setAttribute('aria-label', `${nameOf(g)}, ${R.systemName(g.system)}`);
+    if (small) { b.setAttribute('aria-label', `${nameOf(g)}, ${R.systemName(g.system)}`); b.append(el('span', 'emu-cover-tag', nameOf(g))); }
     else b.append(el('span', 'emu-cover-name', nameOf(g)));
     b.addEventListener('click', () => openGame(g));
     li.append(b);
@@ -303,10 +303,10 @@
     const scene = document.querySelector('.emu-scene').getBoundingClientRect();
     const rows = px => { const tiers = Math.ceil(count / Math.max(1, Math.floor((scene.width - 16 * px) / (40 * px)))); return { px, per: Math.ceil(count / tiers), tiers }; };
     // Where the TV is too wide to stand between the Favourites shelves and
-    // their mirror, the wall is taller by the shelves, 58 wide and 56 tall.
+    // their mirror, the wall is taller by two shelves, 58 wide and 40 tall.
     const fits = ({ px, tiers }) => {
       const tv = tiers > 1 ? [80, 54] : [112, 72];
-      const under = (tv[0] + 2 * 64) * px > scene.width ? 56 : 0;
+      const under = (tv[0] + 2 * 64) * px > scene.width ? 40 : 0;
       return tiers <= 3 && (tv[0] + 12) * px <= scene.width
         && (!tall.matches || (76 + 4 + under + tv[1] + 5 + tiers * 44 + 8) * px <= scene.height);
     };
@@ -739,7 +739,7 @@
   // pointer, as shares of the floor, kept inside it.
   function spotAt(point) {
     const f = $('emu-onmac').getBoundingClientRect();
-    const h = 22 * parseFloat(getComputedStyle(document.querySelector('.emu-scene')).getPropertyValue('--emu-px'));
+    const h = 14 * parseFloat(getComputedStyle(document.querySelector('.emu-scene')).getPropertyValue('--emu-px'));
     const w = h * 0.75;
     const share = (at, from, size, own) => Math.round(Math.min(1, Math.max(0, (at - from - own / 2) / Math.max(1, size - own))) * 1000) / 1000;
     return [share(point.x, f.left, f.width, w), share(point.y, f.top, f.height, h)];

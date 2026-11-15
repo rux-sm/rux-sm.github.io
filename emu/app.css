@@ -183,7 +183,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* The buttons that open a closed panel, which only the wide page has. */
 .emu-open[hidden] { display: none; }
 @media (max-width: 65.98rem) { .emu-open { display: none; } }
-.emu-scene { --emu-px: 3px; position: relative; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.emu-scene { --emu-px: 3px; position: relative; flex: 1; display: flex; flex-direction: column; min-block-size: 0; }
 .emu-backwall { position: relative; flex: 1 1 0; min-block-size: calc(134 * var(--emu-px)); display: grid; align-content: end; justify-items: center; padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) 0; }
 .emu-cap { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 
@@ -236,17 +236,18 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
 .emu-led { flex: none; inline-size: .375rem; block-size: .375rem; margin-block-start: .3125rem; border-radius: 50%; background: var(--rux-support-success); }
 
-/* Favourites: two small shelves up on the wall, each cover face out and 22
-   art pixels tall, a shelf's board under each row; more than two rows
-   scroll. */
+/* Favourites: small shelves up on the wall, each cover face out and 14 art
+   pixels tall, a shelf's board under each row. */
 .emu-favs { position: absolute; inset-block-start: calc(4 * var(--emu-px)); inset-inline-end: calc(6 * var(--emu-px)); display: grid; gap: var(--emu-px); inline-size: calc(58 * var(--emu-px)); }
-.emu-ledge { --emu-cover-height: calc(22 * var(--emu-px)); list-style: none; display: flex; flex-wrap: wrap; align-items: flex-end; align-content: start; gap: calc(2 * var(--emu-px)); min-block-size: calc(24 * var(--emu-px)); max-block-size: calc(48 * var(--emu-px)); overflow-y: auto; background: repeating-linear-gradient(to bottom, transparent 0 calc(22 * var(--emu-px)), var(--rux-icon-secondary) calc(22 * var(--emu-px)) calc(24 * var(--emu-px))); }
+.emu-ledge { --emu-cover-height: calc(14 * var(--emu-px)); list-style: none; display: flex; flex-wrap: wrap; align-items: flex-end; align-content: start; gap: calc(2 * var(--emu-px)); min-block-size: calc(16 * var(--emu-px)); padding-block-end: calc(2 * var(--emu-px)); background: repeating-linear-gradient(to bottom, transparent 0 calc(14 * var(--emu-px)), var(--rux-icon-secondary) calc(14 * var(--emu-px)) calc(16 * var(--emu-px))); }
+.emu-ledge > li { position: relative; }
+.emu-ledge .emu-cover { transform-origin: 100% 0; }
 .emu-ledge > * { flex: none; }
-/* Where the wall is only as tall as what stands on it, both shelves stay clear above the TV. */
-@media (max-width: 65.98rem) { .emu-backwall { padding-block-start: calc(1.25rem + 54 * var(--emu-px)); } }
+/* Where the wall is only as tall as what stands on it, two shelves stay clear above the TV. */
+@media (max-width: 65.98rem) { .emu-backwall { padding-block-start: calc(1.25rem + 38 * var(--emu-px)); } }
 
 /* The floor: a rug in its middle with the handhelds' table on it,
-   and this Mac's games lying where room.js puts them, --emu-x and --emu-y
+   and this Mac's games lying small where room.js puts them, --emu-x and --emu-y
    each a share of the floor from 0 to 1. The list of games takes no press
    itself, so a drop between them lands on the floor. */
 .emu-floor { position: relative; flex: none; block-size: calc(76 * var(--emu-px)); }
@@ -254,9 +255,21 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-rug { position: absolute; inset: 12% 24%; display: grid; place-items: center; background: var(--rux-layer-02); outline: calc(2 * var(--emu-px)) solid var(--rux-border-subtle-01); outline-offset: calc(-4 * var(--emu-px)); }
 .emu-dock { list-style: none; display: flex; align-items: flex-end; gap: calc(3 * var(--emu-px)); padding: calc(2 * var(--emu-px)) calc(4 * var(--emu-px)) 0; background: var(--rux-layer-03); box-shadow: 0 calc(3 * var(--emu-px)) var(--rux-border-strong-01); }
 .emu-dock:empty { display: none; }
-.emu-onmac { --emu-cover-height: calc(22 * var(--emu-px)); list-style: none; position: absolute; inset: max(1.25rem, calc(5 * var(--emu-px))) calc(3 * var(--emu-px)) calc(3 * var(--emu-px)); pointer-events: none; }
-.emu-onmac > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; box-shadow: var(--emu-px) var(--emu-px) 0 var(--rux-shadow); }
-.emu-onmac .emu-cover { cursor: grab; }
+.emu-onmac { --emu-cover-height: calc(14 * var(--emu-px)); list-style: none; position: absolute; inset: max(1.25rem, calc(5 * var(--emu-px))) calc(3 * var(--emu-px)) calc(3 * var(--emu-px)); pointer-events: none; }
+.emu-onmac > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; }
+.emu-onmac .emu-cover { cursor: grab; box-shadow: var(--emu-px) var(--emu-px) 0 var(--rux-shadow); transform-origin: calc(var(--emu-x) * 100%) calc(var(--emu-y) * 100%); }
+/* A cover in the room is small, 14 art pixels tall, and grows to 22 under
+   the pointer or the keyboard, over its neighbours and toward the room's
+   middle so it stays inside, with its name beneath it. Carbon has no growing
+   tile: this is its fast-02 on the productive standard curve. */
+.emu-scene .emu-cover { transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-scene li:is(:hover, :focus-within) { z-index: 2; }
+.emu-scene .emu-cover:focus-visible { transform: scale(calc(22 / 14)); }
+@media (hover: hover) { .emu-scene .emu-cover:hover { transform: scale(calc(22 / 14)); } }
+.emu-cover-tag { display: none; position: absolute; inset-block-start: calc(100% + var(--rux-spacing-01)); inset-inline-start: 50%; transform: translateX(-50%); padding: var(--rux-spacing-01) var(--rux-spacing-02); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: calc(.75rem * 14 / 22); line-height: 1.34; white-space: nowrap; pointer-events: none; }
+.emu-scene .emu-cover:focus-visible .emu-cover-tag { display: block; }
+@media (hover: hover) { .emu-scene .emu-cover:hover .emu-cover-tag { display: block; } }
+@media (prefers-reduced-motion: reduce) { .emu-scene .emu-cover { transition: none; } }
 .emu-scene .emu-cover-title { padding: var(--rux-spacing-01); font-size: .625rem; line-height: .75rem; }
 
 /* A CROWDED ROOM, more than five cubbies: the stand grows a second tier of

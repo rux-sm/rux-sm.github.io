@@ -175,6 +175,10 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   move come from one function, so they never disagree.
 - **One line beside Your Mac's name says what a move did,** such as
   "Playing." or why the helper refused, with Undo where it can be taken back.
+- **A cover in the room is small and grows under the pointer or the
+  keyboard,** from 14 art pixels tall to 22, over its neighbours, with its
+  name beneath it, so the room reads as furniture first and the floor holds
+  more; on the floor and on the Favourites shelves alike.
 - **A game on this Mac whose console is not plugged in is dimmed,** its
   title naming the console it needs.
 - **The stand takes as many rows as the room's width asks, up to three,**

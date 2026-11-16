@@ -16,9 +16,14 @@ The room is seen from above and in front, so a console shows two faces. Its
 top is drawn first and holds what is on top of the real one: the slot, the
 lid, the switches. Its front is drawn under that, a tone or two darker, with
 the ports and the tray. The two feet are cut from the bottom corners: one
-pixel on the two rows above the last, two on the last. A black console's top
-is edged a tone lighter, and a white one's a tone darker, so it shows on a
-shelf of its own colour.
+pixel on the two rows above the last, two on the last.
+
+Every console has an outline one pixel wide in black, grey 1: each drawn
+pixel with a clear pixel or the canvas's edge beside it, above or below. It
+is drawn inside the shape, so the shape keeps its size, and it shows a black
+console on a dark shelf and a white one on a light shelf alike. Black
+plastic is drawn in grey 4 over grey 3, so its faces show inside the
+outline.
 
 ## The size
 

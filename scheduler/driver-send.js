@@ -25,7 +25,8 @@
    revoke_driver_schedule_share stops it, and replace_driver_schedule_share
    gives it a new address, which stops the old one. A link's dates run from
    the first leg on it to the last. Copy only copies, because a copied text
-   is not a sent one. Mark as sent, enabled while the driver has not
+   is not a sent one, and then opens the driver's Google Messages
+   conversation, when they have one, to paste it in. Mark as sent, enabled while the driver has not
    answered a trip on their page, sets each such leg to Pending response
    through sync_trip_driver_statuses, which takes the trip's whole crew,
    read again for the mark, and changes only the rows marked dirty.
@@ -312,7 +313,9 @@
 
   const tripsWord = n => `${n} ${n === 1 ? 'trip' : 'trips'}`;
 
-  /* Copies the message and marks nothing. The answers are read again, so
+  /* Copies the message, marks nothing, and opens the driver's Google
+     Messages conversation, which takes no text, while the press still lets
+     a tab open. The answers are read again, so
      the list and the offer of Mark as sent are current; answers that cannot
      be read end the offer. */
   async function copy() {
@@ -322,6 +325,7 @@
       note.textContent = "The message couldn't be copied here. It is selected; copy it yourself.";
       return;
     }
+    if (driver.texting_url) window.open(driver.texting_url, '_blank', 'noopener');
     try { statuses = await readStatuses(); } catch {
       note.textContent = "Copied. The driver's answers could not be read, so no trip can be marked here; set them from the trip.";
       $('scheduler-send-mark').disabled = true;
@@ -425,6 +429,7 @@
      written in, or set the driver Inactive, so the tab reads again. */
   document.addEventListener('scheduler:driver-loaded', e => {
     driver = e.detail?.id ? e.detail : null;
+    $('scheduler-send-copy').firstChild.textContent = driver?.texting_url ? 'Copy and open Messages ' : 'Copy message ';
     stale = true;
     show();
   });

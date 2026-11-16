@@ -8308,6 +8308,10 @@
     const ref = creating ? null : (again?.ref ?? (bar ? barRef(bar) : null));
     const trip = draft ?? again?.trip ?? (ref ? panelIndex.trips.get(ref.tripId) : null);
     if (!trip) return;
+    const editorWasShut = !!tripEl?.hidden;
+    /* The trip already in the editor, opened again by Reset, a save, a late
+       write or another of its legs, keeps its tab and scroll. */
+    const sameTrip = !editorWasShut && (creating ? !!again : !!ref && panelArgs?.ref?.tripId === ref.tripId);
     panelArgs = { ref, draft, trip: creating ? null : trip };
     // The leg the bar or link names, by its key, or the trip's first.
     const named = ref ? legByKey(trip, ref.legKey ?? ref.leg ?? 'outbound') : null;
@@ -10894,9 +10898,10 @@
     refreshDirty();
     loadFleetClashes();
 
-    /* A trip keeps the tab the last one was on, so going through trips on
-       Buses stays on Buses; a new trip starts on Details, where it begins. */
-    if (creating && !again) {
+    /* A trip opened into a shut editor, and a new trip, start on Details, where
+       a trip begins; going from trip to trip in an open editor keeps the tab,
+       so going through trips on Buses stays on Buses. */
+    if (editorWasShut || (creating && !again)) {
       const details = document.getElementById('scheduler-tab-details');
       if (details && details.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(details.closest('[role="tablist"]'), details);
     }
@@ -10905,8 +10910,9 @@
     panelEl.hidden = false;
     // Said on the root for overrides.css, which lifts the toast over the panel's actions.
     document.documentElement.setAttribute('data-scheduler-panel', '');
-    const editorWasShut = !!tripEl?.hidden;
     if (tripEl) tripEl.hidden = false;
+    // Another trip starts at the top, once the body shows and can be scrolled.
+    if (!sameTrip) panelBody.scrollTop = 0;
     // The editor always opens, and the oldest panels close for its room.
     if (editorWasShut) void makeRoom('editor');
     // Once the panel shows, so Open trip and the driver grid treat this trip

@@ -370,7 +370,7 @@ A click selects a trip bar, its outline and its days in the driver grid, kept th
 the same week, such as a save or a live change, and opens nothing more. A right-click selects it
 too, an open card waiting until the menu shuts. A double-click, Enter, the bar's right-click menu, or on a phone the half sheet's
 Edit trip loads it into the panel, and the board scrolls across to show that trip whole beside it. A trip
-opens on the tab the last one was on. New trip is the toolbar's + before its ⋮, an icon button like the
+opens at the top of the editor, on Details when the editor was shut and on the tab the last one was on when it was open. New trip is the toolbar's + before its ⋮, an icon button like the
 others, and a row of the overflow menu where the toolbar has no room; it puts down the
 selected trip and opens on Details. The trip's tips open only when asked, each from one of the bar's
 marks and never its words. A 16px icon, Carbon's ghost icon button, takes a square of the trip's strong ink at a fifth behind it,

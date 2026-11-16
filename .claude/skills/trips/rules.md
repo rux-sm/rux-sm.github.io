@@ -22,6 +22,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - When a customer changes a quoted trip's days or route, the trip is priced again by the calculator on the new route and days, as its Bus rental line, never as the old price with a line added, because the calculator's figure is what the office quotes that trip new.
 - When a customer changes a signed trip's days or route, only the route and days are changed and the price stays as signed, because the signed contract fixes it; a new price the office quotes for the change replaces it, as the latest quote sent.
 - A transfer a customer adds after their trip is signed and paid is quoted as its own trip with its own price, never as a leg on the signed one, because the signed quote and its invoice stay as they were.
+- A contract quoted by the day before its days are known, such as a shuttle for weeks, is entered as its first day alone, a route for each group of buses at one rate, and a Bus rental line per route with its route picked and its daily rate typed, the line's words saying it is a daily rate and the span, because the quote is a price a day; the days go in as legs once the customer confirms them.
 - A booking whose buses run different itineraries on the same days is one trip, each group a route of its leg, added with Add route on the Route tab's Summary menu and named for the group, with its buses chosen in each vehicle's window, because one booking has one contract, PO, quote and invoice.
 
 ## Route

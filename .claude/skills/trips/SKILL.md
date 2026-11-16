@@ -125,8 +125,9 @@ reads only the ones before it. Nothing is written until step 10.
 11. **After the save.** Read it back with `get_trip`, then Forms on the
     bar's right-click menu, Route, Detailed: one sheet with the stops, each wait's status,
     the hours, the miles, the rate and the price, as the save wrote them.
-12. **Reply.** Draft the email in Missive by `emails.md`. rux prints the quote
-    from Forms, Quote, which is two sheets, and sends it himself.
+12. **Reply.** Draft the email in Missive by `emails.md`. rux saves the quote
+    from Forms, Quote, which is two sheets, as a PDF and sends it himself, and
+    its Office copy prints the quote's first sheet and the Detailed route for the office.
 13. **Quote sent.** Press the Billing tile's Quote sent row and mark it sent, then Mark billing done and
     Save, only when rux asks for the mark in words. "Done" or "sent" alone is
     not that, because the mark records what the customer was sent.

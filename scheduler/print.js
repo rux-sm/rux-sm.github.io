@@ -21,6 +21,8 @@
      reads    (client, copies) -> what the copies print beyond their bus, read
               before they are drawn, or left out
      render   (subject) -> an element, or a list of them, one per sheet
+     office   { sheets, form, layout }: the Office copy button, which prints
+              this form's first `sheets` with another form's layout, or left out
 
    A FORM COMPUTES NOTHING. Every number arrives worked out: a quote's from
    quote.js, which holds the office spreadsheet's formulas, and a leg's miles
@@ -2925,6 +2927,10 @@
       typed: { always: true, fields: QUOTE_FIELDS },
       fileName: quoteFileName,
       render: quote,
+      /* THE OFFICE COPY: the quote's first sheet, as typed, and each leg's
+         Detailed route, in one print. It is the paper the office files when a
+         quote goes out; the customer's copy is the whole quote, saved as a PDF. */
+      office: { sheets: 1, form: 'driver-itinerary', layout: 'detailed' },
     },
     {
       id: 'card-authorization',
@@ -3252,8 +3258,9 @@
      envelope on the trip, which starts as this bus's and grows when the rest
      of the trip answers. `copies` stays this bus's, as the fallback for a trip
      that will not answer. */
-  let current = null; // { form, subject, copies, every, chosen, layout }
-  let printingAll = false;
+  let current = null; // { form, subject, copies, every, chosen, layout, office }
+  // The stack a print laid on the sheet, 'all' or 'office', taken back after it.
+  let stacked = null;
 
   // A length written onto the root in inches, as the CSS pixels it means.
   const paperPx = name => {
@@ -3511,6 +3518,19 @@
     sheet.replaceChildren(...current.every.flatMap(c => [current.form.render(c, current.layout)].flat()));
   };
 
+  /* The Office copy lays this form's first sheets as they stand, typing and
+     all, then the other form's copies in its layout, as freshly drawn as a
+     form opened on its own. The sheets moved here are the ones `draw` keeps,
+     so putting the form back after the dialog puts back what was typed. */
+  const drawOffice = () => {
+    const { form, office } = current;
+    const own = [...sheet.querySelectorAll(':scope > .scheduler-form')].slice(0, form.office.sheets);
+    const added = office.copies.flatMap(c => [office.form.render(c, form.office.layout)].flat());
+    for (const card of added) card.setAttribute('data-theme', 'g10');
+    sheet.replaceChildren(...own, ...added);
+    for (const card of added) office.form.drawn?.(card, false);
+  };
+
   /* THE TITLE A SAVED COPY IS OFFERED UNDER. Chrome's Save as PDF names the
      file after the page's title, so a form that says what its file is called
      holds the title to that for the length of the dialog. Printed from the
@@ -3535,9 +3555,9 @@
       titled.forEach((doc, i) => { doc.title = titlesBefore[i]; });
       titlesBefore = null;
     }
-    const all = printingAll;
-    if (all) {
-      printingAll = false;
+    const all = stacked === 'all';
+    if (stacked) {
+      stacked = null;
       draw();
     }
     askToMark(all);
@@ -3872,11 +3892,29 @@
       all.title = 'Every copy on this trip';
       all.setAttribute('aria-label', `Print every copy on this trip, ${every.length} in all`);
       all.addEventListener('click', () => {
-        printingAll = true;
+        stacked = 'all';
         drawAll();
         requestAnimationFrame(() => window.print());
       });
       actions.push(all);
+    }
+
+    /* OFFICE COPY, IN THE PANEL TOO, where the quote is opened from the
+       board: it is the one print the office makes of every quote it sends.
+       Pressed, it prints the sheet's frame, which is the panel's own Print
+       framed or the page's standing alone. */
+    if (current.office) {
+      const office = el('button', 'scheduler-print__cell scheduler-print__cell--action scheduler-print__cell--label', 'Office copy');
+      office.type = 'button';
+      const other = current.office.form;
+      const layoutName = other.layouts?.find(l => l.id === form.office.layout)?.name;
+      office.title = `${form.short}, first page, and ${[layoutName, other.short].filter(Boolean).join(' ').toLowerCase()}`;
+      office.addEventListener('click', () => {
+        stacked = 'office';
+        drawOffice();
+        requestAnimationFrame(() => window.print());
+      });
+      actions.push(office);
     }
 
     /* The prints are one thing in the toolbar, so a row that has to break
@@ -4154,7 +4192,7 @@
     'This page reads the schedule through the account script, which a local preview leaves off. The cloud preview is http://localhost:8641/.');
 
   // The form on the sheet, once its subject has answered.
-  function show(form, subject, copies, chosen, blank) {
+  function show(form, subject, copies, chosen, blank, office = null) {
     setCrumbs(form, subject.trip);
     drawnSheets.clear();
     current = {
@@ -4165,6 +4203,7 @@
       every: copies,
       blank: Boolean(blank),
       layout: layoutWanted(form, blank),
+      office,
     };
     buildControls();
     draw();
@@ -4292,13 +4331,28 @@
       leg: asked || (assignment ? placeOfVehicle(trip, assignment) : legKey(trip, 'outbound')),
       seat: null,
     };
-    // The Detailed layout's figures add the office's pre-trip and post-trip
-    // time, and its price says which rentals were priced as local.
-    if (form.layouts?.some(l => l.trip)) {
-      await Promise.all([readRouteTimes(client).catch(() => {}), readQuoteRules(client).catch(() => {})]);
-    }
+    /* The Detailed layout's figures add the office's pre-trip and post-trip
+       time, and its price says which rentals were priced as local; the
+       Office copy's other form is read beside them. */
+    const other = formOf(form.office?.form);
+    const [office] = await Promise.all([
+      other ? officeCopies(client, other, trip.id) : null,
+      ...([form, other].some(f => f?.layouts?.some(l => l.trip))
+        ? [readRouteTimes(client).catch(() => {}), readQuoteRules(client).catch(() => {})] : []),
+    ]);
     const copies = form.copies(subject);
-    show(form, subject, copies, Math.max(0, copies.findIndex(c => c.leg === subject.leg)));
+    show(form, subject, copies, Math.max(0, copies.findIndex(c => c.leg === subject.leg)), false, office);
+  }
+
+  /* THE OFFICE COPY'S OTHER FORM, read by that form's own columns, as it is
+     read opened on its own, so its sheets print what they print there: every
+     leg of the trip, with no bus named. A trip that will not answer leaves
+     the button off rather than printing half the paper. */
+  async function officeCopies(client, other, tripId) {
+    const { data, error } = await client.from('trips').select(tripQuery(other)).eq('id', tripId).maybeSingle();
+    if (error || !data) return null;
+    const copies = other.copies({ trip: data, assignment: null, leg: legKey(data, 'outbound'), seat: null });
+    return copies.length ? { form: other, copies } : null;
   }
 
   /* ONE BUS ON ONE LEG, for a form that binds it: a bar on the board is that,

@@ -26,7 +26,8 @@
    what the link holds. Send opens one row a driver with the text in their
    language; Copy the text records the send through send_driver_forms, which
    asks for the form, keeps their link live and copies the text with that
-   link in it, to paste into Messages. A flagged signing heads the Forms tab
+   link in it, then opens the driver's Google Messages conversation, when
+   they have one, to paste it into. A flagged signing heads the Forms tab
    until Mark as read, so the office reads it before a school gets it.
    ========================================================================== */
 (() => {
@@ -280,8 +281,9 @@
 
   // -- sending --------------------------------------------------------------------
   /* One row a driver: who, the forms, and Copy the text, which records the
-     send, asks for the forms, keeps their link live and copies the text
-     with it. `only` names the forms; without it each driver gets every form
+     send, asks for the forms, keeps their link live, copies the text with
+     it and opens the driver's Google Messages conversation, which takes no
+     text, to paste it in. `only` names the forms; without it each driver gets every form
      they owe. */
   function openSend(list, only) {
     const body = $('scheduler-forms-send-body');
@@ -294,7 +296,7 @@
         el('p', 'rux--type-body-compact-01 scheduler-form-cell__when', `${these.map(f => f.title).join(', ')} · in ${d.language === 'es' ? 'Spanish' : 'English'}`));
       const message = el('p', 'scheduler-forms-message rux--type-body-compact-01');
       message.hidden = true;
-      const copy = el('button', 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm', 'Copy the text');
+      const copy = el('button', 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm', d.texting_url ? 'Copy and open Messages' : 'Copy the text');
       copy.type = 'button';
       copy.addEventListener('click', async () => {
         copy.disabled = true;
@@ -308,6 +310,7 @@
         message.textContent = Text.forms(first(d), titles, data.token, data.language);
         message.hidden = false;
         try { await navigator.clipboard.writeText(message.textContent); copy.textContent = 'Copied'; } catch { copy.textContent = 'Copy it from here'; }
+        if (d.texting_url) window.open(d.texting_url, '_blank', 'noopener');
         load().catch(() => {});
       });
       row.append(words, copy, message);
@@ -323,7 +326,7 @@
   async function load() {
     const [overview, people, current, flagged] = await Promise.all([
       client.rpc('get_driver_forms_overview'),
-      client.from('drivers').select('id,name,short_name,language').eq('status', 'active').order('name'),
+      client.from('drivers').select('id,name,short_name,language,texting_url').eq('status', 'active').order('name'),
       client.from('driver_forms').select('id,title,title_es,yearly,ask_everyone').is('retired_at', null).order('title'),
       client.from('driver_form_signings').select('id,driver_id,form_id,document_id,signed_at')
         .eq('flagged', true).is('flag_read_at', null).order('signed_at', { ascending: false }),

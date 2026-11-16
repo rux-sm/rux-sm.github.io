@@ -85,6 +85,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - A yellow (amber) trip is a placeholder: the bus is held, no quote is sent yet. Asked to add a trip, look for a placeholder with the same customer and dates and fill it in with `draft_trip_change` rather than drafting a new one. Report it as a placeholder, not a booking.
 - A customer still choosing between dates gets a placeholder on each date, and one still choosing a destination names both, as `Corpus Christi or San Antonio, TX`, because an undecided trip holds a bus with nothing quoted or confirmed, which is what a placeholder is.
+- A customer who asks for quotes to two destinations on the same day, only one of which will run, gets one trip naming both, as `Alice or San Antonio, TX`, priced at the farther destination, and the other quote is a second trip printed from Forms and then cancelled, because two live trips ask the board for twice the buses; the one trip's quote names its own destination, typed on the sheet before printing.
 
 ## Not yet decided
 

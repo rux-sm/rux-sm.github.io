@@ -485,7 +485,7 @@
     'trip_pos(id,position,ref,amount,date)',
     'trip_invoices(id,position,number,amount,date)',
     // The quote's lines, which the Billing tab edits and the quote prints.
-    'trip_quote_lines(id,position,kind,leg,leg_id,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
+    'trip_quote_lines(id,position,kind,leg,leg_id,route_id,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
     // `miles` sums to the estimate a trip without its own shows. The rest are
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,route_id,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
@@ -6535,9 +6535,18 @@
   /* A leg's vehicles, by its key or by the old word a quote line names it
      by. A line of a trip that is not split names no leg, and goes by the
      first leg's. */
-  const fleetOfLeg = leg => editing?.fleet?.[legHeld(leg) ? leg : legKeyOf(leg === 'return' ? 'return' : 'outbound')] ?? [];
+  const fleetKey = leg => (legHeld(leg) ? leg : legKeyOf(leg === 'return' ? 'return' : 'outbound'));
+  const fleetOfLeg = leg => editing?.fleet?.[fleetKey(leg)] ?? [];
   // A leg's buses on the Buses tab.
   const legBuses = leg => Math.max(fleetOfLeg(leg).length, 1);
+  /* A line's route: the one it names while its leg still has it, so a line
+     of a route since taken off counts the whole leg again. */
+  const lineRoute = l => (l?.route && legRoutes(fleetKey(l.leg)).some(r => r.id === l.route) ? l.route : null);
+  // A rental's buses: its route's where it names one, its leg's otherwise.
+  const lineBuses = l => {
+    const route = lineRoute(l);
+    return route ? Math.max(routeBuses(fleetKey(l.leg), route).length, 1) : legBuses(l.leg);
+  };
   // A leg's co-driver seats that are on, which a second driver line counts.
   // A leg's co-driver seats that are on, or one route's where it is named.
   const coDrivers = (leg, route = null) => fleetOfLeg(leg)
@@ -6570,7 +6579,7 @@
   // each is a relief driver, charged on its own.
   const reliefSeats = leg => fleetOfLeg(leg)
     .reduce((n, b) => n + (b.seats?.['relief-start']?.on ? 1 : 0) + (b.seats?.['relief-end']?.on ? 1 : 0), 0);
-  const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg)
+  const lineQty = l => (l.kind === 'rental' ? lineBuses(l)
     : l.kind === 'second_driver' && linesLive && coDrivers(l.leg) > 0 ? coDrivers(l.leg)
     : l.kind === 'relief' && linesLive && reliefSeats(l.leg) > 0 ? reliefSeats(l.leg)
     : money(String(l.quantity ?? '')));
@@ -6649,8 +6658,9 @@
      from the drives it has looked up since the trip opened; any other route
      reads its saved stops, spread over the leg's days. Estimated miles stand
      in only while the route has no miles, on a trip of one leg. `leg` is a
-     key, or an old word. */
-  function legFigures(leg) {
+     key, or an old word; `route`, where it is one of the leg's, prices that
+     route alone, as a line of one route is priced. */
+  function legFigures(leg, route = null) {
     const key = legHeld(leg) ? leg : legKeyOf(leg);
     const r = editing?.route;
     const { from = null, to = null } = legDaysNow(key) ?? {};
@@ -6676,6 +6686,7 @@
       return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
         dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
     };
+    if (routes.length > 1 && routes.some(x => x.id === route)) return figuresOf(route);
     const all = (routes.length > 1 ? routes.map(x => x.id) : [null]).map(figuresOf);
     return all.reduce((best, f) => (f.route > best.route ? f : best), all[0]);
   }
@@ -6704,7 +6715,7 @@
   /* A rental counts dead miles only once they are turned on, from the line's
      window or the calculator: the route's, or a figure typed over them. */
   function lineBasis(l) {
-    const f = legFigures(l.leg);
+    const f = legFigures(l.leg, lineRoute(l));
     const dead = !l.deadOn ? 0 : l.deadTyped ? Number(l.dead_miles) || 0 : f.dead;
     return { miles: f.miles, perDay: f.perDay, dead, days: f.days, rate: l.rate ?? defaultRate() };
   }
@@ -6788,6 +6799,7 @@
     const calc = QL.offers(l, held) ? calcCost(l) : null;
     const meta = [
       splitNow() && (l.kind === 'rental' || l.kind === 'second_driver') ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
+      l.kind === 'rental' ? routeWord(fleetKey(l.leg), lineRoute(l)) : null,
       cost === null ? 'No cost yet' : `${qty} × ${usdCents(cost)}`,
       calc !== null && calc !== cost ? `calculator ${usdCents(calc)}` : null,
       // A typed cost was not made by a rate, so it names none.
@@ -6796,6 +6808,13 @@
     return { name: l.item || lineKind(l.kind).label, meta, much: cost === null ? '' : usdCents(round2(qty * cost)),
       amount: cost === null ? 0 : round2(qty * cost), calc: calc !== null && calc !== cost ? calc : null };
   }
+
+  // A route's name on a line, `Route 2` where it has none; null for the whole leg.
+  const routeWord = (key, route) => {
+    const routes = legRoutes(key);
+    const at = routes.findIndex(r => r.id === route);
+    return at < 0 ? null : routes[at].name || `Route ${at + 1}`;
+  };
 
   /* ── A quote line's window ──
      Each line is a tile on the Billing tab, as each vehicle is on the Buses
@@ -6833,11 +6852,13 @@
   /* One line's fields, each id carrying the line's key: what the line is,
      which leg on a split trip, the words the quote prints and the price, and
      only those its kind uses. A bus rental's quantity is the leg's buses and
-     its item is Bus Rental, so it shows neither; its description left blank
+     its item is Bus Rental, so it shows neither; on a leg of more than one
+     route a rental names the route it is for, or the whole leg, and counts
+     that route's buses. Its description left blank
      is written from the trip when the quote is printed, so it follows the
      trip's dates and times. A blank description waits behind Add
      description. The fields stand two to a row in a fixed order, Kind
-     and Item, the leg, Quantity and Cost, then a rental's rate, so a field a kind does not use
+     and Item, the leg, the route, Quantity and Cost, then a rental's rate, so a field a kind does not use
      leaves the next to close up in pairs. */
   function lineFields(l) {
     const id = part => `scheduler-f-q${l.key}-${part}`;
@@ -6847,6 +6868,11 @@
       ? selectField(id('leg'), 'Leg', l.leg ?? 'outbound', [['outbound', 'Drop-off'], ['return', 'Pickup']])
       : null;
     const item = textField(id('item'), 'Item', l.item ?? lineKind(l.kind).item);
+    // The routes of the leg chosen now, and the whole leg first.
+    const routeChoices = legNow => [['', 'Whole leg'],
+      ...legRoutes(fleetKey(legNow)).map((r, i) => [r.id, r.name || `Route ${i + 1}`])];
+    const route = selectField(id('route'), 'Route', lineRoute(l) ?? '', routeChoices(l.leg));
+    const routeSelect = route.querySelector('select');
 
     const descItem = el('div', 'rux--form-item scheduler-dialog-grid__wide');
     const descLabel = el('div', 'rux--text-area__label-wrapper');
@@ -6869,7 +6895,7 @@
     descBtn.addEventListener('click', () => { descOpen = true; sync(); desc.focus(); });
 
     const cost = money(String(l.cost ?? ''));
-    const qty = moneyField(id('qty'), 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
+    const qty = moneyField(id('qty'), 'Quantity', l.kind === 'rental' ? lineBuses(l) : (l.quantity ?? 1));
     // quote-lines.js says what Cost opens on: nothing, on a line that follows the calculator.
     const costField = moneyField(id('cost'), l.kind === 'discount' ? 'Amount off' : 'Cost',
       window.SchedulerQuoteLines.costShown(l, cost));
@@ -6879,15 +6905,19 @@
        the field's hint. */
     const rateField = selectField(id('rate'), 'Mileage rate', String(l.rate ?? defaultRate() ?? ''),
       (quoteRates?.mileage ?? []).map(m => [String(m.rate), `$${m.rate.toFixed(2)}${m.note ? ` · ${m.note}` : ''}`]));
-    const routeDead = legFigures(l.leg).dead;
+    const routeDead = legFigures(l.leg, lineRoute(l)).dead;
     const deadField = moneyField(id('dead'), 'Dead miles', !l.deadOn ? null : l.deadTyped ? l.dead_miles : routeDead);
-    deadField.querySelector('input').placeholder = routeDead > 0 ? `None · ${Math.round(routeDead)} by route` : 'None';
+    // The hint is the dead miles of the leg and route chosen now.
+    const drawDeadHint = (legNow, routeNow) => {
+      const dead = legFigures(legNow, routeNow).dead;
+      deadField.querySelector('input').placeholder = dead > 0 ? `None · ${Math.round(dead)} by route` : 'None';
+    };
     const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
     /* What a blank Cost becomes, for the kind and leg chosen now: the
        calculator's figure stands in the empty field, as Estimated miles
        shows the route's, and the help under it says where it comes from. */
-    const drawCostHelp = (k, legNow) => {
-      const line = { ...l, kind: k, leg: splitNow() ? legNow : l.leg };
+    const drawCostHelp = (k, legNow, routeNow) => {
+      const line = { ...l, kind: k, leg: splitNow() ? legNow : l.leg, route: routeNow };
       const b = lineBasis(line);
       const calc = calcCost(line, b);
       costField.querySelector('input').placeholder = calc === null ? '' : usdCents(calc);
@@ -6900,7 +6930,7 @@
     const hotelRef = textField(id('hotelref'), 'Confirmation number', l.hotelRef !== undefined ? l.hotelRef : editing?.hotel?.[hotelLeg(l)]?.ref ?? null);
     hotelRef.classList.add('scheduler-dialog-grid__wide');
     hotelRef.appendChild(el('div', 'rux--form__helper-text', 'Typed in, the hotel counts as booked.'));
-    grid.append(kind, item, ...(leg ? [leg] : []), qty, costField, rateField, deadField, costHelp, hotelRef, descItem, descAdd);
+    grid.append(kind, item, ...(leg ? [leg] : []), route, qty, costField, rateField, deadField, costHelp, hotelRef, descItem, descAdd);
 
     // The kind decides the item's usual name and words, whether the quantity
     // is the leg's buses, and what the price is called.
@@ -6910,9 +6940,19 @@
       const k = kindSelect.value;
       const qtyInput = qty.querySelector('input');
       const legNow = legSelect?.value ?? null;
+      // The route list is the leg's chosen now; a route not on it is the whole leg.
+      const choices = routeChoices(splitNow() ? legNow : l.leg);
+      if (routeSelect.dataset.leg !== String(legNow)) {
+        const keep = choices.some(([v]) => v === routeSelect.value) ? routeSelect.value : '';
+        routeSelect.replaceChildren(...choices.map(([v, t]) => { const o = el('option', 'rux--select-option', t); o.value = v; return o; }));
+        routeSelect.value = keep;
+        routeSelect.dataset.leg = String(legNow);
+      }
+      route.hidden = k !== 'rental' || choices.length < 3;
+      const routeNow = route.hidden ? null : routeSelect.value || null;
       const drivers = k === 'second_driver' ? coDrivers(legNow) : 0;
       qtyInput.disabled = k === 'rental' || drivers > 0;
-      if (k === 'rental') qtyInput.value = String(legBuses(legNow));
+      if (k === 'rental') qtyInput.value = String(lineBuses({ leg: splitNow() ? legNow : l.leg, route: routeNow }));
       if (drivers > 0) qtyInput.value = String(drivers);
       // A quantity the buses or seats set is not typed, so it is not shown.
       qty.hidden = qtyInput.disabled;
@@ -6922,8 +6962,9 @@
       descHelp.hidden = k !== 'rental';
       rateField.hidden = k !== 'rental' || !quoteRates;
       deadField.hidden = k !== 'rental';
+      if (!deadField.hidden) drawDeadHint(splitNow() ? legNow : l.leg, routeNow);
       costHelp.hidden = !window.SchedulerQuoteLines.priced(k);
-      if (!costHelp.hidden) drawCostHelp(k, legNow);
+      if (!costHelp.hidden) drawCostHelp(k, legNow, routeNow);
       costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
       // A hotel's confirmation is its leg's; a new leg shows that leg's.
       hotelRef.hidden = k !== 'hotel';
@@ -6950,6 +6991,7 @@
       sync();
     });
     legSelect?.addEventListener('change', sync);
+    routeSelect.addEventListener('change', sync);
     sync();
     return grid;
   }
@@ -6968,6 +7010,7 @@
     Object.assign(l, {
       kind,
       leg: splitNow() ? (val('leg') || 'outbound') : null,
+      route: kind === 'rental' ? val('route') || null : null,
       // A rental's item is Bus Rental, as its field is not shown.
       item: kind === 'rental' ? (l.item || lineKind('rental').item || null) : (val('item') || null),
       description: val('desc') || null,
@@ -6981,7 +7024,7 @@
       const on = dead !== null && dead > 0;
       Object.assign(l, { rate: rate ?? was?.rate ?? null,
         dead_miles: on ? dead : null, deadOn: on,
-        deadTyped: on && Math.round(dead) !== Math.round(legFigures(l.leg).dead) });
+        deadTyped: on && Math.round(dead) !== Math.round(legFigures(l.leg, lineRoute(l)).dead) });
     }
     return l;
   }
@@ -7073,7 +7116,7 @@
      save. It only reads, since the checks that call it draw nothing: a price
      is moved by `followLines`, which draws it. */
   const linesToSave = () => linePending.map((l, position) => ({
-    id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null,
+    id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null, route_id: lineRoute(l),
     item: l.item ?? null, description: l.description ?? null,
     quantity: lineQty(l), cost: money(String(l.cost ?? '')), amount: lineAmount(l),
     cost_typed: !!l.cost_typed,
@@ -7086,7 +7129,7 @@
     if (!editing || editing.linesLoaded === false) return null;
     const was = editing.lines || [];
     const NUMBERS = ['quantity', 'cost', 'amount', 'miles', 'dead_miles', 'rate'];
-    const keys = ['position', 'kind', 'leg', 'item', 'description', 'cost_typed', ...NUMBERS];
+    const keys = ['position', 'kind', 'leg', 'route_id', 'item', 'description', 'cost_typed', ...NUMBERS];
     const seen = new Set();
     const inserts = [];
     const updates = [];
@@ -10219,7 +10262,7 @@
          from its lines shows the difference instead of arming Save to undo it. */
       linePending = editing.linesLoaded && !editing.creating
         ? editing.lines.map(l => ({
-          id: String(l.id), kind: l.kind || 'other', leg: l.leg ?? null,
+          id: String(l.id), kind: l.kind || 'other', leg: l.leg ?? null, route: l.route_id ?? null,
           item: l.item ?? null, description: l.description ?? null,
           quantity: l.quantity ?? null, cost: l.cost ?? null, cost_typed: !!l.cost_typed,
           miles: l.miles ?? null, dead_miles: l.dead_miles ?? null,
@@ -10231,7 +10274,7 @@
          A rental saved with dead miles has them on, and dead miles that
          differ from the route's were typed. */
       for (const l of linePending) {
-        const f = legFigures(l.leg);
+        const f = legFigures(l.leg, lineRoute(l));
         l.deadOn = l.kind === 'rental' && Number(l.dead_miles) > 0;
         l.deadTyped = l.deadOn && Math.round(l.dead_miles) !== Math.round(f.dead);
         l.basis = JSON.stringify(lineBasis(l));
@@ -10272,18 +10315,21 @@
       // records it.
       let totalBefore = null;
       /* A split trip starts with a rental per leg, anything else with one,
-         sharing the typed price between them to the cent. The empty quote's
-         tile starts from these. */
+         sharing the typed price between them to the cent, and a leg of more
+         than one route with a rental per route at the leg's price a bus. The
+         empty quote's tile starts from these. */
       quoteSeed = () => {
         const legs = splitNow() ? ['outbound', 'return'] : [null];
         const quoted = money(quotedInput.value);
         const share = quoted === null ? null : round2(quoted / legs.length);
-        return legs.map((leg, i) => {
+        return legs.flatMap((leg, i) => {
           const legTotal = quoted === null ? null
             : (i < legs.length - 1 ? share : round2(quoted - share * (legs.length - 1)));
           const cost = legTotal === null ? null : round2(legTotal / legBuses(leg));
-          return { kind: 'rental', leg, item: 'Bus Rental', description: null,
-            quantity: null, cost, cost_typed: cost !== null, miles: null, dead_miles: null, rate: null };
+          const routes = legRoutes(fleetKey(leg));
+          return (routes.length > 1 ? routes.map(r => r.id) : [null]).map(route => ({
+            kind: 'rental', leg, route, item: 'Bus Rental', description: null,
+            quantity: null, cost, cost_typed: cost !== null, miles: null, dead_miles: null, rate: null }));
         });
       };
       /* THE DEAD-MILE DISCOUNT IS OFFERED PAST THE OFFICE'S LIMIT, as the Route

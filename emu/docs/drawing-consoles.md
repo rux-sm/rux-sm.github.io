@@ -4,66 +4,59 @@ type: how-to
 
 # Drawing a console for the room
 
-A console in the room is a pixel drawing that takes the room's theme. You
-draw it in Sprites, the site's pixel editor at `/sprites/`, or any other, in
-a fixed set of colours, and save it as a PNG in `brand/consoles/`, which
-`room.js` reads when the room loads. Each colour stands for one
-`--emu-console-*` property, so the same drawing is lit in the day theme and
-dark in the evening one.
-
-## The canvas and the palette
-
-`brand/consoles/template/` holds what another editor starts from, written by
-`node emu/tools/check-consoles.mjs --template`:
-
-| File | What it is |
-| :--- | :--- |
-| `home.png` | a blank 36 by 24 canvas, for a home console |
-| `handheld.png` | a blank 16 by 24 canvas, for a handheld |
-| `palette.gpl` | the colours, for Aseprite, LibreSprite, Pixelorama or GIMP |
-| `palette.png` | the same colours in a strip, for an editor that takes a palette from a picture |
-
-A home console is exactly 36 by 24. A handheld is 24 high and as wide as it
-needs, up to 36: 16 for a Game Boy, wider for a Game Boy Advance. Every
-console stands on the bottom row, which is the floor of its cubby.
+A console in the room is a pixel drawing, a PNG in `brand/consoles/` named
+for its system as `R.SYSTEMS` in `app.js` names it: `snes.png`, `gba.png`,
+`psx.png`. The room shows it pixel for pixel in its own colours, the same in
+every theme. You draw it in Sprites, the site's pixel editor at `/sprites/`,
+in Sprites' palette, `sprites/palette.json`.
 
 ## The view
 
 The room is seen from above and in front, so a console shows two faces. Its
-top is drawn first, in the plain shade with a `-hi` row along its back edge,
-and holds what is on top of the real one: the slot, the lid, the switches.
-Its front is drawn under that, in the `-lo` shade, with the ports and the
-tray. A console that stands upright, like the Wii, is mostly front under a
-thin top. A handheld lies face up on the table: its whole face, screen and
-buttons, over three rows of `-lo` for the edge nearest you; one that folds
-stands its top screen up behind the half lying flat.
+top is drawn first and holds what is on top of the real one: the slot, the
+lid, the switches. Its front is drawn under that, a tone or two darker, with
+the ports and the tray. The two feet are cut from the bottom corners: one
+pixel on the two rows above the last, two on the last. A black console's top
+is edged a tone lighter, and a white one's a tone darker, so it shows on a
+shelf of its own colour.
 
-The palette has twenty colours. Each material has three shades, the plain
-one, `-hi` for a lit edge and `-lo` for a shadow: `body` for the plastic,
-`shade` for a second plastic. `detail` is labels, vents and stickers, `ink`
-the darkest lines and slots, and `screen` with `screen-hi` a handheld's
-screen, which lights while it plays. Red, purple, teal, blue and green each
-have a plain shade and a `-lo` one. Clear pixels stay clear. The palette's
-one home is `brand/consoles/palette.json`, which the room and Sprites
-both read; the room's `app.css` sets each property from Design's tokens.
+## The size
+
+A home console's canvas is 36 by 24, and it stands on the bottom row, in the
+middle. Its shape comes from the real console's size, rounded hard so most
+share one shape. One pixel is about 7 mm, the NES filling the width:
+
+- **Wide** is the real width over 7, and never over 36.
+- **Top rows** are the real depth over 14, and never over 14.
+- **Front rows** are the real height over 9, rounded to 6, 8 or 10.
+
+| Shape | Wide | Top | Front | Consoles |
+| :--- | ---: | ---: | ---: | :--- |
+| Tall slab | 36 | 14 | 10 | NES, Xbox |
+| Mid slab | 36 | 14 | 8 | SNES, N64, PlayStation 2 |
+| Low slab | 36 | 14 | 6 | PlayStation |
+| Narrow low slab | 24 | 14 | 6 | Wii U |
+| Cube | 22 | 12 | 12 | GameCube |
+| Tower | 8 | 6 | 18 | Wii |
+
+The Wii is taller than the canvas at this scale, so its tower is squashed.
+The Switch stands in its dock and keeps its own shape.
+
+A handheld is 24 high and as wide as it needs, up to 36: 16 for a Game Boy,
+30 for a Game Boy Advance. It lies face up on the table, drawn larger than
+the home consoles' scale: its whole face, screen and buttons, over three
+rows a tone darker for the edge nearest you. One that folds stands its top
+screen up behind the half lying flat.
 
 ## Steps
 
-1. Open Sprites, choose the Emu consoles palette and the Home console or
-   Handheld size, or open a console already drawn in `brand/consoles/`.
-   Sprites draws with only the palette's colours and no half-clear pixels.
-   In another editor, copy the blank home or handheld canvas from the
-   template folder instead and load its palette.
-2. Save it as `brand/consoles/<system>.png`, named for the system as
-   `R.SYSTEMS` in `app.js` names it: snes for the SNES, gba for the Game Boy
-   Advance, psx for the PlayStation. Sprites writes it straight into the
-   checkout in Chrome.
-3. Another editor saves it as an 8-bit PNG, RGB, RGBA or indexed, not
-   interlaced.
-4. After another editor, run `node emu/tools/check-consoles.mjs`. A colour
-   outside the palette, or the wrong size, stops it with the file and the
-   pixel.
-5. Where the slot or tray moved, set the console's place in `SLOT` in
+1. Open Sprites and pick the console from the gallery, or start a new
+   drawing at the Home console or Handheld size.
+2. Draw it on its shape from the table, in the Sprites palette.
+3. Save it as `emu/brand/consoles/<system>.png`, a 1× PNG. Sprites writes
+   it straight into the checkout in Chrome.
+4. Where the slot or tray moved, set the console's place in `SLOT` in
    `room.js`: how far down the drawing a game goes in, from 0 to 1.
-6. Load the room on :8641 again and look at the console in both themes,
-   then commit the PNG. The published site shows it after the push.
+5. Load the room on :8641 again and look at the console in a dark theme and
+   a light one, then commit the PNG. The published site shows it after the
+   push.

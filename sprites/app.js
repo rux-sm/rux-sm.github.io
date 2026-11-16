@@ -23,8 +23,8 @@
 
    COLOUR comes from the palette, which data.js loads. Sprites' own palette
    and Sprites P3 leave the colour field open beside them, and the last
-   eight colours taken from outside the palette stand as swatches; Emu
-   consoles allows only its twenty. Switching palettes carries each pixel
+   eight colours taken from outside the palette stand as swatches.
+   Switching palettes carries each pixel
    to the colour of the same label, or into the new palette's colour space
    when it allows any colour, and refuses while a pixel has nowhere to go.
    The canvas is a Display P3 one, so a P3 colour shows as itself on a
@@ -42,7 +42,7 @@
    SAVING. The Save window takes a path in the checkout and a format, and
    files.js writes it in the palette's colour space. A 1× PNG or an SVG
    holds the drawing as drawn, so its path becomes the drawing's; a larger
-   PNG is a copy. Emu consoles saves only the 1× PNG, at a console's size.
+   PNG is a copy.
    The draft, data.js's, is kept on every step.
 
    CHANGES NOT SAVED. Leaving the page asks first, and so do a tile, Browse
@@ -513,13 +513,10 @@
   async function load(got) {
     if (!got) return;
     const read = await S.files.read(got.file);
-    // A P3 file opens in Sprites P3. A console drawing opens in its
-    // palette; any other sRGB file stays in the palette in use when that
-    // can draw it, and otherwise opens in Sprites' own.
-    const emu = await S.palette('emu-consoles');
+    // A P3 file opens in Sprites P3. An sRGB file stays in the palette in
+    // use when that can draw it, and otherwise opens in Sprites' own.
     const want = read.space === 'display-p3' ? (pal.space === 'display-p3' ? pal.id : 'sprites-p3')
-      : got.path?.startsWith(emu.folder) && read.px.every(v => emu.has(v)) ? 'emu-consoles'
-        : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
+      : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
     begin();
     drawing = { w: read.w, h: read.h, px: read.px };
     path = got.path;
@@ -621,7 +618,7 @@
     const name = path ? path.split('/').at(-1) : 'drawing.png';
     pathField.value = (folder + name).replace(/\.(png|svg)$/, `.${extFor(formatField.value)}`);
     $('sprites-save-help').textContent = S.files.canWrite
-      ? ['Written straight into the checkout.', pal.rule, pal.space === 'display-p3' ? 'A PNG carries a Display P3 profile; an SVG gives each colour an sRGB one too, for an app that cannot show P3.' : ''].filter(Boolean).join(' ')
+      ? ['Written straight into the checkout.', pal.space === 'display-p3' ? 'A PNG carries a Display P3 profile; an SVG gives each colour an sRGB one too, for an app that cannot show P3.' : ''].filter(Boolean).join(' ')
       : 'This browser cannot write into the checkout, so it downloads the file; move it to this path.';
     pathError('');
     window.Rux?.modal?.open('sprites-save-modal', $('sprites-save'));
@@ -639,7 +636,6 @@
     if (bad) { pathError(bad); return; }
     const format = formatField.value;
     if (!target.endsWith(`.${extFor(format)}`)) { pathError(`An ${extFor(format).toUpperCase()} ends in .${extFor(format)}.`); return; }
-    if (pal.fits && !pal.fits(drawing.w, drawing.h)) { pathError(`This is ${drawing.w} × ${drawing.h}. ${pal.rule}`); return; }
     try {
       const blob = format === 'svg' ? S.files.svg(drawing, pal.space) : await S.files.png(drawing, Number(format.slice(3)), pal.space);
       if (S.files.canWrite) await S.files.write(target, blob);
@@ -654,8 +650,7 @@
       keep();
       show();
       window.Rux?.modal?.close('sprites-save-modal');
-      const after = pal.after && target.startsWith(pal.folder) ? pal.after : '';
-      note('success', S.files.canWrite ? `Saved ${target}.` : `Downloaded ${target.split('/').at(-1)}.`, after);
+      note('success', S.files.canWrite ? `Saved ${target}.` : `Downloaded ${target.split('/').at(-1)}.`);
     } catch (err) {
       if (err.name !== 'AbortError') pathError(err.message);
     }

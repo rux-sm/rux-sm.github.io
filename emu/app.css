@@ -95,26 +95,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-panel-art { max-inline-size: 16rem; }
 
 /* THE ROOM, the front page. Carbon has no room, so its parts are Emu's own.
-   A console's drawing is the symbol room.js makes of its PNG in
-   brand/consoles/, whose fills are these properties, each one of Design's
-   tokens, so a console follows the theme. A home console's is 36 by 24. */
-.emu-console {
-  display: block; block-size: 3rem; aspect-ratio: 3 / 2;
-  --emu-console-body: var(--rux-icon-secondary); --emu-console-shade: var(--rux-border-strong-01);
-  --emu-console-detail: var(--rux-layer-03); --emu-console-ink: var(--rux-background);
-  --emu-console-red: var(--rux-support-error); --emu-console-purple: var(--rux-tag-border-purple);
-  --emu-console-teal: var(--rux-tag-border-teal); --emu-console-blue: var(--rux-tag-border-blue);
-  --emu-console-green: var(--rux-tag-border-green); --emu-console-screen: var(--rux-layer-01);
-  /* A pixel drawing's lit edges and shadows, each its base mixed lighter or
-     darker, so every material has three shades from one token;
-     brand/consoles/palette.json names them. */
-  --emu-console-body-hi: color-mix(in srgb, var(--emu-console-body), white 35%); --emu-console-body-lo: color-mix(in srgb, var(--emu-console-body), black 30%);
-  --emu-console-shade-hi: color-mix(in srgb, var(--emu-console-shade), white 35%); --emu-console-shade-lo: color-mix(in srgb, var(--emu-console-shade), black 30%);
-  --emu-console-screen-hi: color-mix(in srgb, var(--emu-console-screen), white 30%);
-  --emu-console-red-lo: color-mix(in srgb, var(--emu-console-red), black 35%); --emu-console-purple-lo: color-mix(in srgb, var(--emu-console-purple), black 35%);
-  --emu-console-teal-lo: color-mix(in srgb, var(--emu-console-teal), black 35%); --emu-console-blue-lo: color-mix(in srgb, var(--emu-console-blue), black 35%);
-  --emu-console-green-lo: color-mix(in srgb, var(--emu-console-green), black 35%);
-}
+   A console's drawing is its PNG in brand/consoles/, shown pixel for pixel
+   in its own colours, the same in every theme. A home console's is 36 by 24. */
+.emu-console { display: block; block-size: 3rem; aspect-ratio: 3 / 2; object-fit: contain; image-rendering: pixelated; }
 /* Rux's Server: its consoles wrap, each at least 4.5rem wide, the picked one
    marked as Carbon marks a selected tab, on its fast-02 fade. Each is its
    drawing over its name and count from the top, so a name on two lines moves
@@ -205,7 +188,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; }
 .emu-unit__console:focus-visible, .emu-plug:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-unit .emu-console { inline-size: calc(36 * var(--emu-px)); block-size: calc(24 * var(--emu-px)); }
-.emu-unit .emu-console--hand { inline-size: calc(var(--emu-art-w) * var(--emu-px)); aspect-ratio: auto; }
+.emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
 .emu-unit__under { display: flex; align-items: center; justify-content: center; gap: calc(2 * var(--emu-px)); inline-size: 100%; min-inline-size: 0; block-size: max(24px, calc(8 * var(--emu-px))); padding-inline: calc(2 * var(--emu-px)); }
 /* The plug: the whole socket is the button, at least 24px. */
 .emu-plug { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; flex: none; display: grid; place-items: center; inline-size: max(24px, calc(8 * var(--emu-px))); block-size: 100%; }

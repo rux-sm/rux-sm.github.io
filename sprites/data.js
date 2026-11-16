@@ -3,10 +3,8 @@
    --------------------------------------------------------------------------
    PALETTES. Each palette has one home, a JSON file beside what it is for,
    which this fetches and never copies. Sprites' own is sprites/palette.json,
-   122 colours in ramps, and leaves free colour open beside it. Emu consoles
-   is emu/brand/consoles/palette.json, which Emu's room reads too: twenty
-   colours, each bound to an --emu-console-* property, and nothing else may
-   be drawn with, so every pixel of a console Sprites saves has a property. Every palette comes back in one shape: ramps of
+   122 colours in ramps, and leaves free colour open beside it. Every
+   palette comes back in one shape: ramps of
    { n, label }, a space, and css(n) to paint a colour with.
 
    SPRITES P3 is Sprites' own palette made more vivid for a Display P3
@@ -27,8 +25,8 @@
 
    WHERE DRAWINGS LIVE. Each palette has a folder a new drawing's save
    starts in: sprites/art/ for Sprites' own two, the home of a drawing no
-   app has claimed yet, and Emu's consoles folder for its palette. The gallery
-   shows every picture in those folders, and beside them the drawings this
+   app has claimed yet. The gallery shows every picture there and in Emu's
+   consoles folder, which Emu's room shows as they are drawn, and beside them the drawings this
    browser saved or opened anywhere else in the checkout, whose paths are
    kept here.
    ========================================================================== */
@@ -38,14 +36,6 @@
   const PALETTES = [
     { id: 'sprites', name: 'Sprites', url: '/sprites/palette.json', free: true, folder: 'sprites/art/', space: 'srgb' },
     { id: 'sprites-p3', name: 'Sprites P3', url: '/sprites/palette.json', free: true, folder: 'sprites/art/', space: 'display-p3', vivid: true },
-    {
-      id: 'emu-consoles', name: 'Emu consoles', url: '/emu/brand/consoles/palette.json', free: false, space: 'srgb',
-      folder: 'emu/brand/consoles/',
-      // The size Emu's room draws a console at.
-      fits: (w, h) => h === 24 && w <= 36,
-      rule: 'A console is 24 high and at most 36 wide.',
-      after: 'Load Emu\'s room again to see it there.',
-    },
   ];
 
   const PRESETS = {
@@ -109,9 +99,7 @@
         if (!r.ok) throw new Error(`${p.url}: ${r.status}`);
         return r.json();
       }).then(json => {
-        const ramps = json.ramps
-          ? json.ramps.map(r => ({ name: r.name, colours: r.colours.map((hex, i) => ({ n: p.vivid ? vivid(numOf(hex)) : numOf(hex), label: `${r.name} ${i + 1}` })) }))
-          : [{ name: json.name, colours: json.colours.map(c => ({ n: numOf(c.hex), label: `${c.property}, ${c.purpose}` })) }];
+        const ramps = json.ramps.map(r => ({ name: r.name, colours: r.colours.map((hex, i) => ({ n: p.vivid ? vivid(numOf(hex)) : numOf(hex), label: `${r.name} ${i + 1}` })) }));
         const all = new Map(ramps.flatMap(r => r.colours.map(c => [c.n, c])));
         const byLabel = new Map([...all.values()].map(c => [c.label, c.n]));
         return {
@@ -150,7 +138,7 @@
 
   // The folders the gallery looks in, and the paths of drawings kept outside them,
   // the newest first.
-  const FOLDERS = [...new Set(PALETTES.map(p => p.folder))];
+  const FOLDERS = [...new Set(PALETTES.map(p => p.folder)), 'emu/brand/consoles/'];
   const KNOWN = 'sprites-known', MOST = 60;
   const known = {
     get() {

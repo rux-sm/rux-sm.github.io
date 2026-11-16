@@ -194,74 +194,15 @@
     sfx.pick();
   });
 
-  // The consoles' drawings, read once from brand/consoles/ and put into the
-  // page as a symbol each, so a console is drawn in the theme's colours. A
-  // drawing is a PNG in the colours of palette.json, each of which names one
-  // --emu-console-* property that app.css sets; a pixel becomes a rect
-  // filled with its property, a run along a row one rect, and a run the same
-  // as the one above it joined to that. A colour a browser reads a shade off
-  // takes the nearest in the palette.
-  let sprite = null;
-  const DRAWN = 'brand/consoles/';
-  async function symbolOf(system, palette) {
-    const file = await fetch(`${DRAWN}${system}.png`);
-    if (!file.ok) throw new Error(`${system}.png: ${file.status}`);
-    const bitmap = await createImageBitmap(await file.blob(), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
-    const { width: w, height: h } = bitmap;
-    const ctx = Object.assign(document.createElement('canvas'), { width: w, height: h }).getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(bitmap, 0, 0);
-    const { data } = ctx.getImageData(0, 0, w, h);
-    const far = (c, i) => (c[0] - data[i]) ** 2 + (c[1] - data[i + 1]) ** 2 + (c[2] - data[i + 2]) ** 2;
-    const at = (x, y) => {
-      const i = (y * w + x) * 4;
-      return data[i + 3] < 128 ? null : palette.reduce((best, c) => (far(c, i) < far(best, i) ? c : best))[3];
-    };
-    const symbol = document.createElementNS(SVG, 'symbol');
-    symbol.id = `emu-console-${system}`;
-    symbol.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    symbol.setAttribute('shape-rendering', 'crispEdges');
-    let above = new Map();
-    for (let y = 0; y < h; y++) {
-      const here = new Map();
-      for (let x = 0; x < w;) {
-        const prop = at(x, y);
-        let end = x + 1;
-        while (end < w && at(end, y) === prop) end++;
-        if (prop) {
-          const key = `${x},${end},${prop}`;
-          let rect = above.get(key);
-          if (rect) rect.setAttribute('height', Number(rect.getAttribute('height')) + 1);
-          else {
-            rect = document.createElementNS(SVG, 'rect');
-            for (const [name, value] of [['x', x], ['y', y], ['width', end - x], ['height', 1]]) rect.setAttribute(name, value);
-            rect.style.fill = `var(--emu-console-${prop})`;
-            symbol.append(rect);
-          }
-          here.set(key, rect);
-        }
-        x = end;
-      }
-      above = here;
-    }
-    return symbol;
-  }
-  const consoles = () => (sprite ??= (async () => {
-    const got = await fetch(`${DRAWN}palette.json`);
-    if (!got.ok) throw new Error(`palette.json: ${got.status}`);
-    const palette = (await got.json()).colours.map(({ property, hex }) => [...[1, 3, 5].map(n => parseInt(hex.slice(n, n + 2), 16)), property]);
-    const svg = document.createElementNS(SVG, 'svg');
-    svg.style.display = 'none';
-    svg.append(...await Promise.all(Object.keys(R.SYSTEMS).map(system => symbolOf(system, palette))));
-    document.body.append(svg);
-  })());
-  // A console's drawing, which app.css colours: 24 art pixels high, a home
-  // console 36 wide and a handheld its own width.
-  const consoleOf = system => useOf(svgOf('emu-console', '0 0 36 24'), `emu-console-${system}`);
-  function handOf(system) {
-    const { width, height } = document.getElementById(`emu-console-${system}`).viewBox.baseVal;
-    const svg = svgOf('emu-console emu-console--hand', `0 0 ${width} ${height}`);
-    svg.style.setProperty('--emu-art-w', width);
-    return useOf(svg, `emu-console-${system}`);
+  // A console's drawing: its PNG in brand/consoles/, shown pixel for pixel
+  // in its own colours, the same in every theme. app.css sizes it by its
+  // height, 24 art pixels, so a handheld is as wide as it was drawn.
+  function consoleOf(system, hand) {
+    const img = el('img', hand ? 'emu-console emu-console--hand' : 'emu-console');
+    img.src = `brand/consoles/${system}.png`;
+    img.alt = '';
+    img.draggable = false;
+    return img;
   }
   // The consoles standing in the room, in its cubbies or its dock.
   const units = () => $('emu-room').querySelectorAll('.emu-unit');
@@ -301,7 +242,7 @@
     body.type = 'button';
     body.dataset.console = system;
     body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'plugged in' : state === 'setting' ? 'being set up' : 'unplugged'}`);
-    body.append(hand ? handOf(system) : consoleOf(system));
+    body.append(consoleOf(system, hand));
     body.addEventListener('click', () => choose(system));
     const plug = el('button', 'emu-plug');
     plug.type = 'button';
@@ -679,7 +620,7 @@
   }
   // The slot a game goes into, as a part of its console's drawing from the
   // top, and the consoles that take a disc.
-  const SLOT = { nes: 0.67, snes: 0.38, n64: 0.38, gc: 0.29, wii: 0.42, wiiu: 0.35, switch: 0.17, gb: 0.06, gbc: 0.14, gba: 0.33, nds: 0.5, n3ds: 0.5, psx: 0.46, ps2: 0.72, xbox: 0.72 };
+  const SLOT = { nes: 0.67, snes: 0.29, n64: 0.29, gc: 0.21, wii: 0.5, wiiu: 0.83, switch: 0.17, gb: 0.06, gbc: 0.14, gba: 0.33, nds: 0.5, n3ds: 0.5, psx: 0.42, ps2: 0.75, xbox: 0.71 };
   const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
   const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A timer beside each animation, so the game still starts where one is not run.
@@ -1007,7 +948,7 @@
     let rows, notes, mac, live;
     try {
       [rows, notes, saves, mac, emulators, live] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
-        R.thisMac.read(), R.emulators(), R.helper.onMac ? R.helper.mac() : null, consoles()]);
+        R.thisMac.read(), R.emulators(), R.helper.onMac ? R.helper.mac() : null]);
       macName = live?.mac ?? null;
       room = macName ? await R.data.room(macName) : null;
     } catch (error) {

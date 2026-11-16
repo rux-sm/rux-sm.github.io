@@ -22,9 +22,7 @@ colours beside it, with Gallery to go back.
   Resize keeps the drawing anchored to its bottom left.
 - **Palettes:** Sprites' own 122 colours, in `palette.json`, with any colour
   beside them; Sprites P3, the same 122 made more vivid for a Display P3
-  screen and worked out from `palette.json` as the page loads; or Emu
-  consoles, which is only the twenty colours in
-  `emu/brand/consoles/palette.json`. Switching carries each colour to the
+  screen and worked out from `palette.json` as the page loads. Switching carries each colour to the
   one of the same name, so a drawing moves between Sprites and Sprites P3
   and back unchanged.
 - **Saving:** a path in the checkout and a format: PNG at 1×, 2×, 4× or
@@ -32,9 +30,8 @@ colours beside it, with Gallery to go back.
   drawing no app has claimed yet; one an app uses is saved where that app
   reads it. A Sprites P3 PNG carries a Display P3 profile, which Open
   reads to open it in Sprites P3 again; its SVG paints each colour in P3
-  over an sRGB fill. Emu consoles saves only the 1× PNG, which
-  Emu's room reads when it loads, so
-  `emu/docs/drawing-consoles.md` is how a console is drawn.
+  over an sRGB fill. Emu's room shows a console's 1× PNG as it is drawn,
+  and `emu/docs/drawing-consoles.md` is how one is drawn.
 - **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
   the drawing it was saved from. Any other SVG is turned away. In Chrome,
   the gallery shows every picture in `sprites/art/` and Emu's consoles

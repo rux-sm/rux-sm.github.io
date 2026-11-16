@@ -213,12 +213,10 @@ drawn by `emu/room.js`; the rest of Emu is unchanged.
   button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
-  drawing per system, a PNG seen from above and in front as
-  `emu/docs/drawing-consoles.md` says, which `room.js` reads and puts into
-  its page as a symbol, so a saved drawing shows on the next load. Every fill is an
-  `--emu-console-*` property that `app.css` sets from Design's tokens, so a
-  console follows the theme, and a handheld's screen is its own property, to
-  light while it plays.
+  drawing per system, a PNG in Sprites' palette on the standard shapes
+  `emu/docs/drawing-consoles.md` sets. The room shows each as it is drawn,
+  in the same colours in every theme, so a saved drawing shows on the next
+  load.
 - **The room is drawn as pixel art at one whole scale,** four CSS pixels to
   an art pixel, three or two, the largest at which the wall and floor fit the
   room's box, never scaled in between, so its edges stay sharp. Each material has three shades mixed

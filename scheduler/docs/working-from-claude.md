@@ -42,7 +42,9 @@ Plain questions, no particular wording:
 - when does a driver's background check end
 
 Availability counts a bus busy when it is on a trip or out of service, and a
-driver busy when they are on a trip or on time off. A bus back at the yard
+driver busy when they are on a trip or on time off. A relief driver is busy
+only on the day they drive: the day the bus leaves for relief at start, the
+day it is back for relief at end. A bus back at the yard
 before the late-return hour, 4:00 AM unless the Settings page says otherwise,
 came back the night before, so that day is free; the answer names it with the
 time it is back, since a departure before then cannot be promised. A bus that

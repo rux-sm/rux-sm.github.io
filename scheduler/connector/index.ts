@@ -30,6 +30,7 @@ const FollowUp = rules.SchedulerFollowUp
 const Week = rules.SchedulerWeek
 const Shape = rules.SchedulerTripShape
 const Past = rules.SchedulerPastMidnight
+const Clashes = rules.SchedulerClashes
 
 // Where a draft link points. The scheduler's trip editor reads `?draft=<id>`.
 const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io/scheduler/'
@@ -401,7 +402,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off. A bus that leaves the yard the day before its leg, to be at a far pickup by its spot, takes that day too. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time: one that is free that day is not promised a departure before it, and the driver\'s rest is counted from it. A bus that leaves the yard the evening before its leg at or after the office\'s night hour (11:00 PM unless the Settings page says otherwise) left for that leg, so its leg does not take that evening\'s day either: leaves_that_night lists the buses and drivers of a leg that starts the day after the last day asked and leave the yard on its evening, with the time: one that is free that day is not promised a return after it, and the driver\'s rest is counted to it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
+              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off; a relief driver drives two hours or less at one end of a leg, so is busy only on the day the bus leaves (relief at start) or is back (relief at end). A bus that leaves the yard the day before its leg, to be at a far pickup by its spot, takes that day too. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time: one that is free that day is not promised a departure before it, and the driver\'s rest is counted from it. A bus that leaves the yard the evening before its leg at or after the office\'s night hour (11:00 PM unless the Settings page says otherwise) left for that leg, so its leg does not take that evening\'s day either: leaves_that_night lists the buses and drivers of a leg that starts the day after the last day asked and leave the yard on its evening, with the time: one that is free that day is not promised a return after it, and the driver\'s rest is counted to it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -454,10 +455,12 @@ Deno.serve(
             const wanted = [...new Set([...running, ...lateTrips.map((t) => t.id), ...nightTrips.map((t) => t.id)])]
             const assignments = wanted.length
               ? orThrow(await supabase.from('trip_assignments')
-                  .select('id, bus_id, trip_id, leg, route_id, trip_drivers(driver_id)').in('trip_id', wanted))
+                  .select('id, bus_id, trip_id, leg, route_id, trip_drivers(driver_id, role, report_time)').in('trip_id', wanted))
               : []
 
-            // A bus and its crew are busy only on their own leg's days. A row whose leg the trip does not have is counted busy.
+            // A bus and its crew are busy only on their own leg's days, and a relief driver only on
+            // the day of their part of it, as clashes.js's `seatRange` gives it. A row whose leg the
+            // trip does not have is counted busy.
             const tripOf = new Map(trips.map((t) => [t.id, t]))
             // The key of the leg a vehicle is on, by its route, as week.js reads it.
             const keyOf = (a: Row) => Week.legKeyOfVehicle(tripOf.get(a.trip_id), a)
@@ -469,7 +472,12 @@ Deno.serve(
               const leg = legOf.get(a.trip_id)?.get(keyOf(a))
               if (leg && !legRuns(leg)) continue
               if (a.bus_id) busyBuses.add(a.bus_id)
-              for (const d of a.trip_drivers ?? []) if (d.driver_id) busyDrivers.add(d.driver_id)
+              const week = leg ? Week.legByKey(tripOf.get(a.trip_id), leg.key, a.route_id ?? null) : null
+              for (const d of a.trip_drivers ?? []) {
+                if (!d.driver_id) continue
+                const part = week ? Clashes.seatRange(week, d.role ?? 'driver', d.report_time) : null
+                if (!part || (part.from <= until && part.to >= from)) busyDrivers.add(d.driver_id)
+              }
             }
             for (const o of offRoad) if (overlaps(o, from, until)) busyBuses.add(o.bus_id)
             for (const o of timeOff) if (overlaps(o, from, until)) busyDrivers.add(o.driver_id)

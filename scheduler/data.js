@@ -96,7 +96,7 @@
 
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
-  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, apartPairs, pairWords, tripCrew } = window.SchedulerClashes;
+  const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, seatRange, fitFor, rankDrivers, autoPicks, cardLapse, apartPairs, pairWords, tripCrew } = window.SchedulerClashes;
 
   const PROJECT = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
   const PUBLISHABLE = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
@@ -3400,6 +3400,11 @@
      drivers are taken. A clash warns; it never stops a pick. */
   let fleetClashes = null;
   let fleetClashKey = '';
+  /* The read the leg fits came from, and the fits of relief seats, which
+     are read on their own part of the leg as `seatRange` gives it, by leg,
+     role and swap time. */
+  let fleetNearby = null;
+  let fleetSeatFits = new Map();
 
   const fleetLegDates = legDaysNow;
 
@@ -3431,12 +3436,22 @@
       return;
     }
     if (editing !== forTrip) return;
+    fleetNearby = nearby;
+    fleetSeatFits = new Map();
     fleetClashes = Object.fromEntries(fleetLegs()
       .map(leg => [leg, fitFor(nearby, ranges[leg], { tripId: editing.id })]));
     drawFleet();
   }
 
-  const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
+  // What stands in the way of a seat in `role` on `leg`, with its swap time: the leg's fit, or a relief's part of it.
+  function seatFit(leg, role = 'driver', swap = null) {
+    const fit = fleetClashes?.[leg] ?? null;
+    if (!fit?.range || !RELIEF.has(role)) return fit;
+    const key = `${leg}|${role}|${swap ?? ''}`;
+    if (!fleetSeatFits.has(key)) fleetSeatFits.set(key, fitFor(fleetNearby, seatRange(fit.range, role, swap), { tripId: editing.id }));
+    return fleetSeatFits.get(key);
+  }
+  const clashText = (leg, kind, id, role, swap) => (id == null ? '' : (seatFit(leg, role, swap)?.[kind].get(id) ?? []).join(' · '));
   /* The drivers in the editor's seats that are on, on the legs whose days
      overlap `leg`'s as the form holds them, the seat `except` left out: the
      crew a driver in that seat works beside, on their bus or another. While
@@ -3566,8 +3581,8 @@
     return out;
   };
 
-  const fleetDriverOptions = (leg, seat) => rankDrivers([...panelIndex.driversById.values()]
-    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(seat.driverId)), fleetClashes?.[leg] ?? null,
+  const fleetDriverOptions = (leg, seat, role) => rankDrivers([...panelIndex.driversById.values()]
+    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(seat.driverId)), seatFit(leg, role, seat.reportTime),
   fleetCrew(leg, seat), editing?.id, editing?.apartAllowed)
     .map(r => ({
       id: r.d.id, name: r.d.name || r.d.short_name || 'Unnamed driver',
@@ -3620,10 +3635,10 @@
     const dup = seat.driverId && dups.has(`${leg}:${seat.driverId}`);
     const picker = fleetPicker({
       id, label: SEAT_LABEL[role], placeholder: 'Choose a driver',
-      options: fleetDriverOptions(leg, seat),
+      options: fleetDriverOptions(leg, seat, role),
       current: seat.driverId,
       error: dup ? 'This driver is in another seat on this leg' : '',
-      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
+      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId, role, seat.reportTime), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId, role, seat.reportTime)].filter(Boolean).join(' · ') : '',
       warnIcon: false,
     });
     picker.dataset.fleetLeg = leg;
@@ -3744,7 +3759,7 @@
     line.append(mark, who);
     const dup = seat.driverId != null && dups.has(`${leg}:${seat.driverId}`);
     const warn = dup ? 'In another seat on this leg'
-      : [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
+      : [clashText(leg, 'drivers', seat.driverId, role, seat.reportTime), seatLapse(leg, seat.driverId), seatApart(leg, seat), clashText(leg, 'near', seat.driverId, role, seat.reportTime)].filter(Boolean).join(' · ');
     if (warn) line.appendChild(fleetWarn(warn));
     return line;
   }
@@ -4059,7 +4074,7 @@
   const emptySeats = (leg, withBus = true) => ROLES.flatMap(r => (editing?.fleet?.[leg] ?? [])
     .filter(b => !b.partner && (b.busId != null) === withBus
       && (r.role === 'driver' || b.seats[r.role].on) && !b.seats[r.role].driverId)
-    .map(b => b.seats[r.role]));
+    .map(b => ({ seat: b.seats[r.role], role: r.role })));
 
   function assignBestButton(leg) {
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Assign best');
@@ -4076,22 +4091,21 @@
 
   function assignBest(leg) {
     const seats = emptySeats(leg);
-    const fit = fleetClashes?.[leg];
-    if (!seats.length || !fit) return;
+    if (!seats.length || !fleetClashes?.[leg]) return;
     const taken = new Set((editing.fleet[leg] ?? []).flatMap(b => ROLES
       .filter(r => r.role === 'driver' || b.seats[r.role].on)
       .map(r => b.seats[r.role].driverId).filter(id => id != null).map(String)));
     // The crew grows with each pick, so no two picks are a pair kept apart.
     const crew = fleetCrew(leg);
-    const free = autoPicks(rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => !d.status || d.status === 'active'), fit, crew, editing.id, editing.apartAllowed))
-      .filter(r => !taken.has(String(r.d.id)));
+    const active = [...panelIndex.driversById.values()].filter(d => !d.status || d.status === 'active');
     let filled = 0;
-    for (const seat of seats) {
-      const at = free.findIndex(r => !apartPairs(r.d, crew, editing.id, editing.apartAllowed).length);
-      if (at < 0) break;
-      const [next] = free.splice(at, 1);
+    // Each seat is ranked on its own part of the leg, so a relief is free on the days they do not drive.
+    for (const { seat, role } of seats) {
+      const next = autoPicks(rankDrivers(active, seatFit(leg, role, seat.reportTime), crew, editing.id, editing.apartAllowed))
+        .find(r => !taken.has(String(r.d.id)) && !apartPairs(r.d, crew, editing.id, editing.apartAllowed).length);
+      if (!next) continue;
       Object.assign(seat, { driverId: next.d.id, status: 'off', statusDirty: false });
+      taken.add(String(next.d.id));
       crew.push(next.d);
       filled++;
     }
@@ -7928,7 +7942,7 @@
         if (bus) said.push(`Bus ${panelIndex.buses.get(b.busId)?.number ?? ''}: ${bus}`);
         for (const r of ROLES) {
           const seat = b.seats[r.role];
-          const what = seatFilled(seat) ? clashText(leg, 'drivers', seat.driverId) : '';
+          const what = seatFilled(seat) ? clashText(leg, 'drivers', seat.driverId, r.role, seat.reportTime) : '';
           const who = what ? panelIndex.driversById.get(seat.driverId) : null;
           if (what) said.push(`${who?.short_name || who?.name || 'A driver'}: ${what}`);
         }
@@ -10790,6 +10804,8 @@
     editing.fleetCounts = Object.fromEntries(fleetLegs().map(k => [k, editing.fleet[k].length]));
     fleetClashes = null;
     fleetClashKey = '';
+    fleetNearby = null;
+    fleetSeatFits = new Map();
     drawFleet();
     // The quote's lines count the Buses tab's buses, so they draw after it,
     // and from here follow it.
@@ -11843,18 +11859,22 @@
       }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
-    // Each vehicle on its route's days and times, as its bar is drawn.
+    /* Each seat on its route's days and times, as its bar is drawn, or on
+       its own part of them: a relief driver is busy only on the day they
+       drive, as `seatRange` gives it. */
     for (const trip of trips || []) {
-      for (const leg of rangesOf(trip)) {
-        const place = clip(leg.from, leg.to, weekStart, weekEnd);
-        if (!place) continue;
-        for (const a of leg.vehicles) {
+      for (const route of rangesOf(trip)) {
+        if (!clip(route.from, route.to, weekStart, weekEnd)) continue;
+        for (const a of route.vehicles) {
           // Only the roles that are on, as the bar's crew counts them, so the
           // grid and the bar agree on who is driving.
           const on = activeRolesOf(a);
           for (const td of a.trip_drivers || []) {
             const row = byId.get(td.driver_id);
             if (!row || !on.has(td.role || 'driver')) continue;
+            const leg = seatRange(route, td.role || 'driver', td.report_time);
+            const place = clip(leg.from, leg.to, weekStart, weekEnd);
+            if (!place) continue;
             const what = trip.destination || 'Trip';
             // The bar a busy day selects, by the values `findBar` reads.
             const ref = { tripId: String(trip.id), leg: leg.leg, legKey: leg.key, assignmentId: a.id != null ? String(a.id) : null };
@@ -15345,7 +15365,7 @@
     try {
       const nearby = await nearbyFor(found.range);
       fit = fitFor(left ? withoutSeat(nearby, left.assign.id, left.role) : nearby,
-        found.range, { assignmentId: found.assign.id });
+        seatRange(found.range, role, found.seat?.report_time), { assignmentId: found.assign.id });
     } catch (err) {
       return refuse('error', `The driver was not assigned. ${err.message}`);
     }

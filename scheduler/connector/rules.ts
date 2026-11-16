@@ -2086,6 +2086,8 @@ const window = {};
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
    licence or medical card that runs out before a leg ends, and
    `paperLapse` a paper a partner must hold that it lacks or that runs out.
+   `seatRange` is the part of a leg a seat works: all of it, or a relief
+   driver's few hours at one end.
 
    THE STANDING RULE: `standing(trip, leg, nearby, read)` is what stands in
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
@@ -2179,6 +2181,35 @@ const window = {};
     return daysBetween(backDay, departDay(later)) * 24 - end + start;
   };
 
+  /* THE PART OF A LEG A SEAT WORKS. A driver or co-driver works the whole
+     leg. A relief driver drives RELIEF_HOURS or less at one end: relief at
+     start from the yard departure to the swap, on the day the bus leaves,
+     and relief at end from the swap to the yard return, on the day it is
+     back, so they are free on the leg's other days. The swap is the seat's
+     `report_time`, or RELIEF_HOURS from the leg's own time when it has none;
+     a leg with no time at that end gives the relief its day with no times,
+     which clashes with a trip that shares the day, because unknown is not
+     fine. `range` is a route as `rangesOf` gives it, and comes back whole
+     for any seat but a relief's. */
+  const RELIEF_HOURS = 2;
+  const clockOf = h => { const m = Math.round(((h % 24) + 24) % 24 * 60); return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+  function seatRange(range, role, swap = null) {
+    if (!range || (role !== 'relief-start' && role !== 'relief-end')) return range;
+    const at = clockHours(swap);
+    if (role === 'relief-start') {
+      const day = iso(departDay(range));
+      const start = clockHours(range.depart);
+      const end = at ?? (start == null ? null : start + RELIEF_HOURS);
+      return { ...range, from: day, to: day, ends: day, departDays: 0, outDays: 0,
+        back: end == null ? null : clockOf(end), backDays: start != null && end != null && (end >= 24 || end < start) ? 1 : 0 };
+    }
+    const day = iso(addDays(parseISO(range.to), daysBack(range)));
+    const end = clockHours(range.back);
+    const start = at ?? (end == null ? null : end - RELIEF_HOURS);
+    return { ...range, from: day, to: day, ends: day, backDays: 0, outDays: 0,
+      depart: start == null ? null : clockOf(start), departDays: start != null && end != null && (start < 0 || start > end) ? 1 : 0 };
+  }
+
   /* How another leg sits against this one, by the clock: 'clash', 'near'
      with the hours of rest between them, or null when it is days away. Legs
      over the same days clash. Two that share only the day one ends and the
@@ -2204,7 +2235,9 @@ const window = {};
     return rest != null && rest < 0 ? { kind: 'clash' } : { kind: 'near', rest };
   }
 
-  /* What stands in each bus's and driver's way on one leg's dates. `buses`
+  /* What stands in each bus's and driver's way on one leg's dates, or on a
+     seat's part of them as `seatRange` gives it, each seat around read on its
+     own part. `buses`
      and `drivers` are clashes, which a pick warns of, as `besideOf` reads
      them; `near` is a trip back-to-back with it, which warns but does not
      rule the driver out, and `tight` the drivers among them whose rest is
@@ -2240,33 +2273,27 @@ const window = {};
     for (const { t, l } of memo.all) {
       if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
       if ((l.to && l.to < recent.from) || l.from > after) continue;
-      const beside = besideOf(range, l);
-      const clash = beside?.kind === 'clash';
-      const next = beside?.kind === 'near';
-      const days = [];
-      if (datesOverlap(recent, l)) {
-        for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
-      }
-      if (!clash && !next && !days.length) continue;
+      // The bus is out for the whole route; each seat on it for its own part.
+      const busClash = besideOf(range, l)?.kind === 'clash';
+      const text = `On trip ${t.destination || 'with no destination'}`;
       for (const a of l.vehicles) {
         if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
-        const text = `On trip ${t.destination || 'with no destination'}`;
+        if (busClash) add(buses, a.bus_id, text);
         const on = activeRolesOf(a);
-        const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
-        if (clash) {
-          add(buses, a.bus_id, text);
-          for (const d of crew) add(drivers, d.driver_id, text);
-        } else if (next) {
-          const rest = beside.rest;
-          const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
-          for (const d of crew) {
+        for (const d of a.trip_drivers || []) {
+          if (d.driver_id == null || !on.has(d.role || 'driver')) continue;
+          const part = seatRange(l, d.role || 'driver', d.report_time);
+          const beside = besideOf(range, part);
+          if (beside?.kind === 'clash') add(drivers, d.driver_id, text);
+          else if (beside?.kind === 'near') {
+            const rest = beside.rest;
+            const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
             add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
             if (rest == null || rest < REST_HOURS) tight.add(d.driver_id);
           }
-        }
-        for (const d of crew) {
+          if (!datesOverlap(recent, part)) continue;
           if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
-          for (const day of days) worked.get(d.driver_id).add(day);
+          for (let day = parseISO(part.from > recent.from ? part.from : recent.from); iso(day) <= (part.to < recent.to ? part.to : recent.to); day = addDays(day, 1)) worked.get(d.driver_id).add(iso(day));
         }
       }
     }
@@ -2397,7 +2424,10 @@ const window = {};
           if (d.driver_id == null || !on.has(d.role || 'driver')) continue;
           const who = driversById.get(d.driver_id);
           const name = who?.short_name || who?.name || 'A driver';
-          for (const what of fit.drivers.get(d.driver_id) ?? []) put(a, d.driver_id, name, what);
+          // A relief is in the way of nothing off their own part of the leg.
+          const part = seatRange(range, d.role || 'driver', d.report_time);
+          const seatFit = part === range ? fit : fitFor(nearby, part, { tripId: trip.id });
+          for (const what of seatFit.drivers.get(d.driver_id) ?? []) put(a, d.driver_id, name, what);
           if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
           const lapse = who ? cardLapse(who, range) : '';
           if (lapse) put(a, d.driver_id, name, lapse);
@@ -2428,7 +2458,7 @@ const window = {};
       client.from('trips')
         .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,trip_type,'
           + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
-          + 'trip_stops(position,leg,route_id,type,depart_prev,depart_prev_date,arrive,spot,spot_date),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role)),'
+          + 'trip_stops(position,leg,route_id,type,depart_prev,depart_prev_date,arrive,spot,spot_date),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role,report_time)),'
           + 'ends:trip_legs!inner()')
         .is('cancelled_at', null).lte('start_date', past)
         .or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })
@@ -2440,7 +2470,7 @@ const window = {};
   }
 
   window.SchedulerClashes = {
-    REST_HOURS, RECENT_DAYS, APART_COLUMNS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse,
+    REST_HOURS, RECENT_DAYS, RELIEF_HOURS, APART_COLUMNS, datesOverlap, seatRange, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse,
     apartPairs, pairWords, apartWords, tripCrew, standing, readNearby,
   };
 })();

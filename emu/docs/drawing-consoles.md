@@ -27,31 +27,34 @@ outline.
 
 ## The size
 
-A home console's canvas is 36 by 24, and it stands on the bottom row, in the
-middle. Its shape comes from the real console's size, rounded hard so most
-share one shape. One pixel is about 7 mm, the NES filling the width:
+A home console's canvas is 36 by 24, and the console fills its whole height,
+so the consoles read as one set. It stands in the middle. Its front comes
+from the real console's height, and its top takes the rows left:
 
-- **Wide** is the real width over 7, and never over 36.
-- **Top rows** are the real depth over 14, and never over 14.
-- **Front rows** are the real height over 9, rounded to 6, 8 or 10.
+- **Front rows** are the real height over 9, rounded to an even number.
+- **Top rows** are 24 less the front.
+- **Wide** is the real width over 7, rounded to an even number, and never
+  over 36.
 
 | Shape | Wide | Top | Front | Consoles |
 | :--- | ---: | ---: | ---: | :--- |
 | Tall slab | 36 | 14 | 10 | NES, Xbox |
-| Mid slab | 36 | 14 | 8 | SNES, N64, PlayStation 2 |
-| Low slab | 36 | 14 | 6 | PlayStation |
-| Narrow low slab | 24 | 14 | 6 | Wii U |
-| Cube | 22 | 12 | 12 | GameCube |
+| Mid slab | 36 | 16 | 8 | SNES, N64, PlayStation 2 |
+| Low slab | 36 | 18 | 6 | PlayStation |
+| Narrow low slab | 24 | 18 | 6 | Wii U |
+| Cube | 24 | 12 | 12 | GameCube |
 | Tower | 8 | 6 | 18 | Wii |
 
-The Wii is taller than the canvas at this scale, so its tower is squashed.
-The Switch stands in its dock and keeps its own shape.
+Filling the height is why a low console's top is deeper than its real depth
+would make it. The Switch stands in its dock and keeps its own shape, 24
+rows high. A cube's feet are not cut.
 
-A handheld is 24 high and as wide as it needs, up to 36: 16 for a Game Boy,
-30 for a Game Boy Advance. It lies face up on the table, drawn larger than
-the home consoles' scale: its whole face, screen and buttons, over three
-rows a tone darker for the edge nearest you. One that folds stands its top
-screen up behind the half lying flat.
+A handheld is 24 high and as wide as it needs, up to 36: 16 for a Game Boy.
+It lies face up on the table, drawn larger than the home consoles' scale:
+its whole face, screen and buttons, over three rows a tone darker for the
+edge nearest you. One that folds stands its top screen up behind the half
+lying flat. A Game Boy Advance is wider than it is tall, so it fills its
+width, 30, and not the height.
 
 ## Steps
 

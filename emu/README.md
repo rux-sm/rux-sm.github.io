@@ -10,7 +10,7 @@ The repository root's `AGENTS.md` is the policy, and
 ## What it is
 
 `index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper
-answers, one TV with up to three consoles and their favourite games where they were left, fills the page, and two buttons at its foot open a drawer on each side: Rux's Server, every console and game as box
+answers, one TV with up to three consoles and their favourite games where they were left, fills the page, and a thin rail down each side opens a drawer on that side: Rux's Server, every console and game as box
 art from libretro's thumbnails, to drag into the room, and My Stuff, this Mac's consoles put away, its games and the picked console's
 saves as cards to take out, put in and name; without the helper Rux's Server is the page. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks
@@ -21,7 +21,7 @@ it, `this-mac.js`, which is Play, Download to this Mac with its progress and Rem
 from this Mac; then its region, version and format, each file's header and
 fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, `search.js`,
 finds any game by title and opens it on the Library, ⌘K too; it sits in each page's
-header with the pages' menu, but in the room the TV's knobs or case open both, and Sound.
+header with the pages' menu, but in the room the TV's knobs or case open both, with Tidy up, Put everything away and Sound.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad

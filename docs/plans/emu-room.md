@@ -8,8 +8,8 @@ type: plan
 
 The Library is a room that fills the page: Your Mac, the play surface for
 what is in use now. It is the page itself with a single CRT TV, up to three
-consoles and their favourite games, each standing wherever it is left. Two
-buttons at the foot open a drawer on each side: Server on the left is every
+consoles and their favourite games, each standing wherever it is left. A thin
+rail down each side of the window opens a drawer on that side: Server on the left is every
 console and game the server holds, borrowed by dragging it into the room; My
 Stuff on the right is everything on this Mac, its consoles put away, its
 games and the saves the account keeps. Getting a game, setting up its
@@ -65,11 +65,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   overlapping while the room can hold them; the thing just dropped holds
   still and the others make room. The swept spots are kept, so a larger
   window leaves the pile as it is, and things are put back by hand.
-- **Two quiet buttons at the foot of the page, Server and My Stuff, each open
-  their drawer,** outlined while it is closed and filled while it is open, on Design's foot bar, `frame-bar` in
-  `design/css/rux-frame.css`. A drawer slides over its side of the room and
+- **A thin rail down each side of the window, Server on the left and My
+  Stuff on the right, each opens its drawer,** the whole rail the button,
+  its name running along it, and lit while its drawer is open. A drawer
+  slides out from its rail over that side of the room and
   the rest stays in view, so a drag out of it lands a short move away.
-  Pressing its button again, or Escape, closes it, and a closed drawer leaves
+  Pressing its rail again, or Escape, closes it, and a closed drawer leaves
   nothing behind. Both start closed each time the page loads, so the room
   shows whole. The menu is behind the header's button at every
   width, and the account is the header's round button, so nothing else
@@ -137,10 +138,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the page is looked at again, since the helper does not say when a game
   ends. A minute after it goes quiet with nothing touched, the mark drifts
   around the glass until the pointer or a key moves.
-- **Tidy up, at the end of the foot bar, lays the TV at the top in the
+- **Tidy up, in the TV's menu, lays the TV at the top in the
   middle and the consoles in rows under it,** with Undo on the TV, since a
   swept pile stays until it is put back.
-- **Put everything away, beside Tidy up, puts every console that is out
+- **Put everything away, under Tidy up in the TV's menu, puts every console that is out
   away,** with Undo on the TV.
 - **A console from Rux's Server that is not set up comes in unlit, and Set
   up in its menu installs its emulator.** One this Mac has comes out lit
@@ -241,7 +242,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   panel, `game-panel.js`, with its details, saves and notes and the same
   moves as buttons; pressing a console, in the room or Rux's Server, picks
   it, and its heading has Bring to Your Mac, Put away or Put back; a console's menu opens
-  from the keyboard as from the pointer, Tidy up is a button, Enter does on a keyboard, and on a controller A picks up and A
+  from the keyboard as from the pointer, Tidy up is a menu item, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
   drawing per system, a PNG in Sprites' palette on the standard shapes
@@ -255,7 +256,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   yet, red no, blue where a drop lands. The TV lights only while it has
   something to say.
 - **Carbon lays out everything around the room, and the art pixel
-  everything inside it.** The frame, the foot bar, the drawers, type,
+  everything inside it.** The frame, the rails, the drawers, type,
   tokens, motion curves and target sizes follow Carbon; inside the room
   sizes, gaps and moves are whole art pixels, since Carbon's 8px steps do not
   divide by three and a sprite between pixels blurs.
@@ -268,7 +269,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The earlier prototypes show a furnished room and are superseded:**
   claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, a room seen from above with a
   stand of cubbies, and claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv, seen side
-  on. Neither shows the solid room, the foot buttons or the drawers.
+  on. Neither shows the solid room, the rails or the drawers.
 
 ## Questions
 

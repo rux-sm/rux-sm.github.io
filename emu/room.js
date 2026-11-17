@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is the room, Your Mac: the TV, up
    to three consoles and the favourite games they bring out, each standing
-   where it was left. Two buttons at the page's foot open a drawer on each
+   where it was left. A rail at each side of the window opens a drawer on each
    side, Rux's Server on the left and My Stuff on the right, both closed each
    time the page loads. Without the helper Rux's Server is the whole page.
 
@@ -232,8 +232,9 @@
     return svg;
   };
   // THE TV'S MENU, under its knobs: the other pages, as the header's menu
-  // lists them, then Search and Sound. So the room's header holds only the
-  // account, and the TV is how the room goes anywhere else.
+  // lists them, then Tidy up and Put everything away, then Search and Sound.
+  // So the room's header holds only the account, and the TV is how the room
+  // goes anywhere else.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
     const knobs = $('emu-tv-knobs');
@@ -242,9 +243,15 @@
       const icon = a.querySelector('svg').cloneNode(true);
       return menuItem(menu, a.textContent.trim(), () => { location.href = a.href; }, { icon });
     });
-    const divider = el('li', 'rux--menu-item-divider');
-    divider.setAttribute('role', 'separator');
-    menu.replaceChildren(...pages, divider,
+    const divider = () => {
+      const li = el('li', 'rux--menu-item-divider');
+      li.setAttribute('role', 'separator');
+      return li;
+    };
+    menu.replaceChildren(...pages, divider(),
+      menuItem(menu, 'Tidy up', tidy),
+      menuItem(menu, 'Put everything away', putAllAway, { off: !stand.size }),
+      divider(),
       menuItem(menu, 'Search games', () => window.Rux.modal.open('emu-search-modal', knobs), { icon: iconOf('#i-search'), shortcut: '⌘K' }),
       menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }));
     window.Rux.menu.open(menu, knobs);
@@ -373,10 +380,13 @@
   function renderRoom() {
     const mac = Boolean(helper);
     $('emu-room').hidden = !mac;
-    $('emu-bar').hidden = !mac;
+    $('emu-server-open').hidden = !mac;
+    $('emu-stuff-open').hidden = !mac;
     $('emu-stuff').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
-    document.body.classList.toggle('emu-has-bar', mac);
+    // A drawer floats over the room on layer-01, so what is in it steps a layer up.
+    for (const id of ['emu-collection', 'emu-stuff']) $(id).classList.toggle('rux--layer-two', mac);
+    document.body.classList.toggle('emu-has-rails', mac);
     // Where the room is, the TV's menu holds the pages and Search, so the header does not.
     $('emu-menu-open').hidden = mac;
     $('emu-search-open').hidden = mac || !R.data;
@@ -732,7 +742,7 @@
     }));
   }
 
-  // THE DRAWERS. Each button at the page's foot opens its drawer over that
+  // THE DRAWERS. Each rail at the window's side opens its drawer over that
   // side of the room and closes it again, as does the drawer's own close and
   // Escape. Both start closed each time the page loads, so the room shows whole.
   const drawers = [['emu-collection', 'emu-server-open', 'emu-server-close'], ['emu-stuff', 'emu-stuff-open', 'emu-stuff-close']]
@@ -741,8 +751,6 @@
       const show = () => {
         $(id).classList.toggle('emu-side--open', shown);
         $(opener).setAttribute('aria-expanded', String(shown));
-        $(opener).classList.toggle('rux--btn--primary', shown);
-        $(opener).classList.toggle('rux--btn--tertiary', !shown);
       };
       const set = to => {
         shown = to;
@@ -1024,7 +1032,6 @@
     keep(wishes(), next);
     say('Tidied up.', () => keep(wishes(), before), UNDO);
   }
-  $('emu-tidy').addEventListener('click', tidy);
   // PUT EVERYTHING AWAY: every console out of the room, those set up into My
   // Stuff and any other back to Rux's Server; Undo brings them out again.
   function putAllAway() {
@@ -1035,7 +1042,6 @@
     keep({});
     say('Everything is put away.', () => keep(...before), UNDO);
   }
-  $('emu-away').addEventListener('click', putAllAway);
   // Put away into My Stuff: out of the room, its emulator still on this Mac.
   function putAway(system) {
     if (stand.get(system) !== 'on') { refuse(system, BUSY[stand.get(system)]?.(system) ?? 'Set me up first.'); return; }

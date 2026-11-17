@@ -171,7 +171,7 @@
 
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is the
              room, Your Mac, filling the page, with a drawer on each side that
-             a button at the page's foot opens: Rux's Server on the left, every
+             the rail at that side opens: Rux's Server on the left, every
              console and game to borrow, and My Stuff on the right, this Mac's
              games and the account's saves. Without the helper only Rux's
              Server shows, as the library. -->
@@ -264,17 +264,10 @@
     </div>
   </div>
 </main>
-<!-- The buttons that open the room's drawers, and Tidy up, on Design's bar at the foot; shown where the helper answers. -->
-<div class="frame-bar emu-bar" id="emu-bar" hidden>
-  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection">Server</button>
-  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff">My Stuff</button>
-  <!-- Lays the room back out in rows, or puts every console away, from room.js. -->
-  <div class="emu-bar__end">
-    <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="emu-away">Put everything away</button>
-    <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="emu-tidy">Tidy up</button>
-  </div>
-</div>
-<!-- The TV's menu, filled and opened under its knobs by room.js: the other pages, Search and Sound. -->
+<!-- The rails at the window's sides, each the button that opens its drawer: Rux's Server on the left, My Stuff on the right; shown where the helper answers. -->
+<button type="button" class="emu-rail emu-rail--server" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection" hidden><span class="rux--type-body-compact-01 emu-rail__label">Server</span></button>
+<button type="button" class="emu-rail emu-rail--stuff" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff" hidden><span class="rux--type-body-compact-01 emu-rail__label">My Stuff</span></button>
+<!-- The TV's menu, filled and opened under its knobs by room.js: the other pages, Tidy up and Put everything away, Search and Sound. -->
 <ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
 <!-- A console's menu, filled and opened under the console by room.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>

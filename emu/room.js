@@ -943,7 +943,7 @@
     if (from === 'collection' && inRoom) {
       return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', null, () => bring(system, spotAt(point, size)));
     }
-    if (from === 'room' && inRoom) return yes(null, null, () => moveTo(system, spotAt(point, size)));
+    if (from === 'room' && inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
       return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
@@ -958,13 +958,54 @@
     return r ? [r.width, r.height] : [36 * px, 32 * px];
   };
   // The TV moves anywhere in the room, with no word, as a console does.
-  const tvIntent = (under, point, size) => (under?.closest('#emu-room') ? yes(null, null, () => moveTo('tv', spotAt(point, size))) : null);
+  const tvIntent = (under, point, size) => (under?.closest('#emu-room') ? { ...yes(null, null, () => moveTo('tv', spotAt(point, size))), move: true } : null);
   const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point)
     : d.tv ? tvIntent(under, point, sizeOf(d)) : consoleIntent(d.system, d.from, under, point, sizeOf(d)));
 
   // THE DRAG, with the pointer, where the helper answers. A press that does
   // not move is the cover's or the console's own click.
   let drag = null;
+  // CARRYING. A console in the room, or the TV, is itself moved, never a
+  // copy of it. It lifts off the floor and follows the pointer a little
+  // behind, closing a share of the gap each frame, the TV a smaller share
+  // since it is heavier, and leans the way it is going by how fast it goes.
+  // Put down in the room it stays where it is and the rest make room; let
+  // go anywhere else it slides back to where it stood. Carbon has no motion
+  // for a carried thing; where motion is reduced it keeps to the pointer
+  // and does not lean.
+  function carry(d) {
+    const key = d.tv ? 'tv' : d.system;
+    const node = d.tv ? $('emu-tv') : unitOf(d.system);
+    const share = calm() ? 1 : d.tv ? 0.14 : 0.22;
+    Object.assign(d, { live: node, key, stood: [...drawn[key]], cur: [...drawn[key]], to: [...drawn[key]], px: pxOf() });
+    node.classList.add('emu-carried');
+    const step = () => {
+      if (!d.live) return;
+      const vx = (d.to[0] - d.cur[0]) * share;
+      d.cur = [d.cur[0] + vx, d.cur[1] + (d.to[1] - d.cur[1]) * share];
+      node.style.setProperty('--emu-left', d.cur[0]);
+      node.style.setProperty('--emu-top', d.cur[1]);
+      node.style.rotate = calm() ? '' : `${Math.max(-6, Math.min(6, vx * 1.5)).toFixed(2)}deg`;
+      d.frame = requestAnimationFrame(step);
+    };
+    d.frame = requestAnimationFrame(step);
+  }
+  // Put down: `moved` where it stays in the room, else it goes back.
+  function setDown(d, moved) {
+    cancelAnimationFrame(d.frame);
+    const node = d.live;
+    d.live = null;
+    node.style.rotate = '';
+    node.classList.remove('emu-carried');
+    if (moved) {
+      // It is drawn next from where it is, and eases the last of the way.
+      drawn[d.key] = d.cur;
+      moveTo(d.key, d.to.map(Math.round));
+      return;
+    }
+    node.style.setProperty('--emu-left', d.stood[0]);
+    node.style.setProperty('--emu-top', d.stood[1]);
+  }
   const word = el('div', 'emu-word');
   word.hidden = true;
   document.body.append(word);
@@ -998,9 +1039,11 @@
       sfx.pick();
       const r = drag.src.getBoundingClientRect();
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
-      // The copy is drawn where the ghost is, at the room's art pixel, with
-      // no ids or live region of its own.
-      const ghost = el('div', drag.g ? 'emu-ghost' : 'emu-ghost emu-ghost--thing');
+      if (!drag.g && drag.from === 'room') carry(drag);
+      // Anything else is held as a copy, drawn where the ghost is, at the
+      // room's art pixel, with no ids or live region of its own.
+      const ghost = el('div', 'emu-ghost');
+      ghost.hidden = Boolean(drag.live);
       ghost.style.setProperty('--emu-px', $('emu-room').style.getPropertyValue('--emu-px'));
       const copy = drag.src.cloneNode(true);
       for (const n of [copy, ...copy.querySelectorAll('[id], [role]')]) { n.removeAttribute('id'); n.removeAttribute('role'); }
@@ -1008,7 +1051,7 @@
       ghost.append(copy);
       document.body.append(ghost);
       drag.ghost = ghost;
-      drag.src.classList.add('emu-held');
+      if (!drag.live) drag.src.classList.add('emu-held');
       // A game's console lights and the rest dim, so where it goes shows.
       if (drag.g) for (const u of units()) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
       // Coming back from the room, the collection turns to its console and
@@ -1020,7 +1063,8 @@
         if (own) row.scrollLeft = own.offsetLeft - row.offsetLeft - (row.clientWidth - own.offsetWidth) / 2;
       }
     }
-    // A cover tilts in the hand; pixel art stays square, so its edges stay sharp.
+    if (drag.live) drag.to = [drag.stood[0] + (e.clientX - drag.x) / drag.px, drag.stood[1] + (e.clientY - drag.y) / drag.px];
+    // A cover tilts in the hand; a console's copy stays square, so its edges stay sharp.
     drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px)${drag.g ? ' rotate(-3deg)' : ''}`;
     const it = intentOf(drag, document.elementFromPoint(e.clientX, e.clientY), { x: e.clientX, y: e.clientY });
     unlight();
@@ -1053,6 +1097,14 @@
       if (it && !it.no) it.run();
       else if (it?.says) refuse(...it.says);
     };
+    // A thing carried is put down where it is, or goes back and then does
+    // what its drop asks, such as going back to Rux's Server.
+    if (d.live) {
+      setDown(d, Boolean(it?.move));
+      if (it?.move) d.ghost.remove();
+      else done();
+      return;
+    }
     // A move that happens fades where it was dropped; any other flies back
     // to where it came from. Both are Carbon's productive motion.
     if (it && !it.no) { d.ghost.classList.add('emu-ghost--gone'); setTimeout(done, 110); return; }
@@ -1063,6 +1115,7 @@
   document.addEventListener('pointercancel', () => {
     if (!drag) return;
     drop();
+    if (drag.live) setDown(drag, false);
     drag.ghost?.remove();
     drag.src.classList.remove('emu-held');
     drag = null;

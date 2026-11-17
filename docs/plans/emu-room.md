@@ -102,9 +102,14 @@ Emu is unchanged.
   set up. A plug with no cable to anywhere read as nothing.
 - **A console's name shows only under the pointer or the keyboard,** as a
   tag beneath it, so the room at rest is only its drawings.
-- **Each thing on the floor throws a hard shadow two art pixels down, lifts
-  a little while it is held and lands when put down, and slides to a spot it
-  is pushed to.** Things the window pushes into one another clack.
+- **A console in the room, or the TV, is itself carried, never a copy of
+  it,** so it feels like a thing with weight: it lifts two art pixels off
+  the floor over a longer shadow, follows the pointer a little behind, the
+  TV further behind since it is heavier, leans the way it goes, and lands
+  where it is put down. Let go outside the room it slides back.
+- **Each thing on the floor throws a hard shadow two art pixels down and
+  slides to a spot it is pushed to.** Things the window pushes into one
+  another clack.
 - **The TV behaves as a CRT:** scanlines on its glass, its picture opening
   from a line as it speaks and closing to a dot as it goes quiet. A home
   console's game shows its cover on the glass once it has started, until

@@ -1,58 +1,65 @@
 /* ==========================================================================
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
-   Where Rux Emu Helper answers, the page is the room, Your Mac: one solid
-   space with the TV near its top and the consoles this Mac has set up
-   standing below it, each where it was left. Two buttons at the page's foot
-   open a drawer on each side, Rux's Server on the left and My Stuff on the
-   right, both closed each time the page loads. Without the helper Rux's
-   Server is the whole page.
+   Where Rux Emu Helper answers, the page is the room, Your Mac: the TV, up
+   to three consoles and the favourite games they bring out, each standing
+   where it was left. Two buttons at the page's foot open a drawer on each
+   side, Rux's Server on the left and My Stuff on the right, both closed each
+   time the page loads. Without the helper Rux's Server is the whole page.
+
+   A console has three places. In Rux's Server it is not on this Mac; in My
+   Stuff it is set up and put away; in the room it is out. Which consoles
+   are out, and where each thing in the room stands, is this Mac's room,
+   kept on its row in Supabase; whether a console is set up is read from the
+   helper. Pressing or right-clicking a console opens its menu: one set up
+   has Put away, and Remove, which the TV asks about before the emulator's
+   saves and settings are kept and it is taken off this Mac; one not set up
+   has Set up, which installs its emulator, and Put back. Its power light,
+   on its drawing, is lit while it is set up and blinks while it is set up
+   or removed. A name shows under the pointer or the keyboard.
 
    The TV is the room's one screen. At rest it shows this Mac's name and how
    much room is free, and links Status when no games are found; while a move
-   runs it names it, and after one it says what it did, with Undo where it
-   can be taken back.
+   runs it names it, after one it says what it did, with Undo where it can
+   be taken back, and it asks before an emulator is removed. A home
+   console's game shows its cover there once it starts, a wire running to
+   the TV from its console.
 
-   Which consoles stand in the room, which of them are on, and where
-   each stands, is this Mac's room, kept on its row in Supabase; until
-   something is moved, the console of each game this Mac holds stands there.
-   A console is on only where this Mac has its emulator too. Pressing or
-   right-clicking it opens its menu: Turn on, which sets its emulator up on
-   this Mac; Turn off, which keeps its emulator's saves and settings in
-   Supabase and takes nothing off; and Put back, there once it is off, which
-   takes the emulator off this Mac where no other console in the room plays
-   in it. Its power light, on its drawing, is lit while it is on and blinks
-   while it is set up or its saves are kept. A console's name shows under the pointer or
-   the keyboard.
+   A console that is out and set up brings its favourites out: the
+   favourites of its system this Mac holds, fewer each as more consoles are
+   out. They hop out of it and land around it, and each stays where it
+   landed or was left until its console is put away.
 
    Rux's Server is every console with games, each its drawing from
    brand/consoles/ over its name and count; one in
    the room is outlined and faint, the place it goes back to, and one whose
    emulator this Mac has shows a green light. Pressing a console, there or in
    the room, picks it: its name, count and how it stands show beneath, with
-   Bring to Your Mac or Put back, over its games as covers, A to
+   Bring to Your Mac, Put away or Put back, over its games as covers, A to
    Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
    game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
-   My Stuff has two tabs. Games is this Mac's games, favourites first, one
-   still arriving under a veil that lifts as it comes. Saves is the picked
-   console's saves as cards: each game's, the one in it and those out, with
-   Take out, Put in and a name to change, then the console's own.
+   My Stuff has three tabs. Consoles is each console set up and put away,
+   dragged or pressed to bring it out. Games is this Mac's games, favourites
+   first, one still arriving under a veil that lifts as it comes. Saves is
+   the picked console's saves as cards: each game's, the one in it and those
+   out, with Take out, Put in and a name to change, then the console's own.
 
-   A game or a console is dragged with the pointer, where the helper
-   answers. A word follows it and says what letting go will do, and a place
-   it would land lights where that place is one thing, such as a console or
-   Rux's Server, never the room as a whole. A console onto the room comes in where it is
-   let go, one in the room moves where it is let go, and one turned off
-   dragged back onto Rux's Server goes back. A game onto the room or My
-   Stuff downloads it, onto its console or the TV plays it, downloading it
-   first if it must, and from My Stuff back onto Rux's Server takes it off
-   this Mac. A console it does not fit says so in red and nothing happens. A
-   game taken off this Mac leaves My Stuff at once and its files go a few
-   seconds later, so Undo is only putting it back.
+   A thing in the room is itself carried with the pointer, and anything
+   from a drawer is held as a copy. A word follows it and says what letting
+   go will do, and a place it would land lights where that place is one
+   thing, never the room as a whole. A console onto the room comes out where
+   it is let go, a fourth refused; onto My Stuff it is put away; onto Rux's
+   Server it is put back, or asked about where that would remove its
+   emulator. A game onto the room or My Stuff downloads it, onto its console
+   or the TV plays it, downloading it first if it must, and back onto Rux's
+   Server takes it off this Mac. A console it does not fit says so in red
+   and nothing happens. A game taken off this Mac leaves at once and its
+   files go a few seconds later, so Undo is only putting it back.
 
-   The wrong console shakes its head and says a line. A game played goes in
+   A smaller window sweeps the room's things into a pile, which stays. The
+   wrong console shakes its head and says a line. A game played goes in
    first as it would on the real console: a cartridge drops into its slot, a
    disc slides onto a tray. Each move makes a small sound, made here with no
    sound files, which the header's button turns off, remembered in this
@@ -84,8 +91,8 @@
   let room = null;
   // Consoles whose emulator is being set up now.
   const settingUp = new Set();
-  // Consoles whose emulator's saves and settings are being kept now, as one
-  // is turned off, or checked again as its emulator is taken off.
+  // Consoles whose emulator is being taken off this Mac now, its saves and
+  // settings kept first.
   const keeping = new Set();
   // The consoles standing in the room as drawn, each 'on', 'off', 'setting' or 'keeping'.
   let stand = new Map();
@@ -120,22 +127,33 @@
   // shares, under `places`, starts each thing from its share.
   const SLOTS = [0.62, 0.95].flatMap(y => [0.5, 0.3, 0.7, 0.1, 0.9].map(x => [x, y])).concat([[0.05, 0.1], [0.95, 0.1], [0.05, 0.35], [0.95, 0.35]]);
   const shareOf = key => room?.places?.[key] ?? (key === 'tv' ? [0.5, 0] : null);
-  // Which consoles stand in the room as it would be kept, each true while
-  // plugged in: its own, else the console of each game this Mac holds,
-  // plugged in. A room kept before consoles stood anywhere in it has a
-  // `floor` or `spots`, which are dropped, so those consoles are placed afresh.
+  // Which consoles are out in the room, as it would be kept: its own, and
+  // none where it was never kept. A room kept before things stood anywhere
+  // in it has a `floor` or `spots`, which are dropped.
   const wishes = () => {
-    if (!room) return Object.fromEntries(mineNow().map(([g]) => [g.system, true]));
+    if (!room) return {};
     const { floor, spots: old, places, placed: at, ...wish } = room;
     return wish;
   };
-  // Each console in the room, in the collection's order. One is on where it
-  // was left plugged in and this Mac has its emulator.
+  // Each console out in the room, in the collection's order: 'on' where this
+  // Mac has its emulator, 'off' where it is not set up yet, 'setting' while
+  // it is set up and 'keeping' while its emulator is taken off.
   const consolesNow = () => {
     const wish = wishes();
     return new Map(Object.keys(R.SYSTEMS).filter(sys => sys in wish)
-      .map(sys => [sys, settingUp.has(sys) ? 'setting' : keeping.has(sys) ? 'keeping' : wish[sys] && plays(sys) ? 'on' : 'off']));
+      .map(sys => [sys, settingUp.has(sys) ? 'setting' : keeping.has(sys) ? 'keeping' : plays(sys) ? 'on' : 'off']));
   };
+  // At most this many consoles are out at once, and each that is set up
+  // brings this many of its favourites out, by how many consoles are out, so
+  // the floor holds about twelve covers.
+  const CAP = 3;
+  const BRINGS = [0, 8, 6, 4];
+  // The games out on the floor: for each console that is out and set up, the
+  // favourites of its system this Mac holds or is being sent, A to Z.
+  const floorGames = () => [...stand].filter(([, state]) => state === 'on').flatMap(([system]) => games
+    .filter(g => g.system === system && g.notes?.favourite && ['held', 'arriving'].includes(standing(g).state))
+    .slice(0, BRINGS[Math.min(stand.size, CAP)]));
+  const floorKey = g => `game:${keyOf(g)}`;
 
   const SVG = 'http://www.w3.org/2000/svg';
   const svgOf = (cls, box) => {
@@ -233,7 +251,7 @@
   // whole drawing dimmed. Its name is a tag that shows under the pointer or
   // the keyboard, and while it is set up.
   const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting', keeping: 'emu-unit emu-unit--setting' };
-  const BUSY = { setting: system => `Setting up ${emulatorOf(system)}…`, keeping: () => 'Keeping its saves…' };
+  const BUSY = { setting: system => `Setting up ${emulatorOf(system)}…`, keeping: system => `Removing ${emulatorOf(system)}…` };
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
@@ -252,7 +270,7 @@
     body.type = 'button';
     body.dataset.console = system;
     body.setAttribute('aria-haspopup', 'menu');
-    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'on' : state === 'setting' ? 'being set up' : state === 'keeping' ? 'keeping its saves' : 'off'}`);
+    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'ready to play' : state === 'setting' ? 'being set up' : state === 'keeping' ? 'being removed' : 'not set up'}`);
     body.append(consoleOf(system, hand));
     const at = LIGHT[system];
     if (at) {
@@ -265,16 +283,15 @@
     li.append(body, el('span', 'emu-unit__name', BUSY[state]?.(system) ?? called));
     return li;
   }
-  // A CONSOLE'S MENU, Design's menu under the console: Turn on or Turn off,
-  // and Put back once it is off, each saying what it does to this Mac. So
-  // setting an emulator up is two presses and taking one off is more, and
-  // no control is drawn on the room.
+  // A CONSOLE'S MENU, Design's menu under the console. One that is set up
+  // has Put away, which is harmless, and Remove, which the TV then asks
+  // about; one that is not has Set up and Put back. So no control is drawn
+  // on the room, and an emulator is never taken off in one press.
   function openMenu(system, trigger) {
     const menu = $('emu-console-menu');
     window.Rux.menu.close(menu);
     const state = stand.get(system);
     const emulator = emulatorOf(system);
-    const called = R.systemName(system);
     const item = (label, run, { off = false, danger = false } = {}) => {
       const li = el('li', `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}${off ? ' rux--menu-item--disabled' : ''}`);
       li.setAttribute('role', 'menuitem');
@@ -285,15 +302,31 @@
       if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
       return li;
     };
-    // Turning off only keeps its saves; putting back is what can take the emulator off.
-    const last = lastOf(system);
-    const power = BUSY[state] ? item(BUSY[state](system), null, { off: true })
-      : state === 'on' ? item('Turn off', () => unplug(system))
-      : item(plays(system) ? 'Turn on' : `Turn on and set up ${emulator}`, () => plugIn(system));
-    menu.setAttribute('aria-label', called);
-    menu.replaceChildren(power, item(last ? `Put back and remove ${emulator}` : 'Put back', () => putBack(system), { off: state !== 'off', danger: last && state === 'off' }));
+    menu.setAttribute('aria-label', R.systemName(system));
+    menu.replaceChildren(...(BUSY[state] ? [item(BUSY[state](system), null, { off: true })]
+      : state === 'on' ? [item('Put away', () => putAway(system)), item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]
+      : [item(`Set up ${emulator}`, () => setUp(system)), item('Put back', () => putBack(system))]));
     window.Rux.menu.open(menu, trigger);
   }
+  // A favourite out on the floor: its cover as the button that opens it and
+  // is carried, its name a tag as a console's is, under a veil while it
+  // arrives. Its width follows its art, so the room settles again as the art loads.
+  function floorCover(g) {
+    const li = coverItem(g);
+    li.className = 'emu-floor-cover';
+    li.dataset.key = floorKey(g);
+    li.dataset.of = g.system;
+    const s = standing(g);
+    if (s.state === 'arriving') {
+      const veil = el('span', 'emu-cover__veil');
+      veil.style.blockSize = `${Math.round(100 - (s.total ? s.done / s.total : 0) * 100)}%`;
+      li.querySelector('.emu-cover-art').append(veil);
+    }
+    li.querySelector('img')?.addEventListener('load', () => requestAnimationFrame(() => { if (li.isConnected && !drag?.on) settle(); }));
+    li.append(el('span', 'emu-unit__name', nameOf(g)));
+    return li;
+  }
+  const thingOf = key => $('emu-units').querySelector(`[data-key="${CSS.escape(key)}"]`);
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
   const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
@@ -317,14 +350,12 @@
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderTv();
     stand = consolesNow();
-    // Each console starts where it was last drawn, so a move slides from there.
-    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => {
-      const li = unit(system, state);
-      if (drawn[system]) { li.style.setProperty('--emu-left', drawn[system][0]); li.style.setProperty('--emu-top', drawn[system][1]); }
-      return li;
-    }));
+    // Each thing starts where it was last drawn, so a move slides from there.
+    const from = (li, key) => { if (drawn[key]) { li.style.setProperty('--emu-left', drawn[key][0]); li.style.setProperty('--emu-top', drawn[key][1]); } return li; };
+    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => from(unit(system, state), system)),
+      ...floorGames().map(g => from(floorCover(g), floorKey(g))));
     // The thing just put down lands.
-    const landing = landed === 'tv' ? $('emu-tv') : landed && unitOf(landed);
+    const landing = landed === 'tv' ? $('emu-tv') : landed && (unitOf(landed) ?? thingOf(landed));
     landed = null;
     if (landing) { landing.classList.remove('emu-lands'); void landing.offsetWidth; landing.classList.add('emu-lands'); }
     $('emu-floor-empty').hidden = stand.size > 0;
@@ -332,7 +363,21 @@
     showSound();
     renderStuff();
   }
-  // THE SWEEP. The TV and the consoles are things on the floor. Each starts
+  // THE WIRE, from the console that is playing to the TV, while its game's
+  // cover is on the glass: out of the console's back and into the TV's foot.
+  let wire = null;
+  function drawWire() {
+    const svg = $('emu-wire');
+    const u = wire && unitOf(wire)?.querySelector('.emu-console');
+    svg.style.display = u ? 'block' : 'none';
+    if (!u) return;
+    const r = $('emu-room').getBoundingClientRect();
+    const a = u.getBoundingClientRect();
+    const b = $('emu-tv').getBoundingClientRect();
+    const [x1, y1, x2, y2] = [a.left + a.width / 2 - r.left, a.top - r.top + 2, b.left + b.width / 2 - r.left, b.bottom - r.top - 2].map(Math.round);
+    svg.firstElementChild.setAttribute('d', `M${x1} ${y1} C ${x1} ${y1 - 36}, ${x2} ${y2 + 48}, ${x2} ${y2}`);
+  }
+  // THE SWEEP. The TV, the consoles and the covers are things on the floor. Each starts
   // where it was kept; the room's edges push whatever is past them back in,
   // and whatever then overlaps moves to the nearest free spot, so a smaller
   // window sweeps them into a pile, touching but not overlapping while the
@@ -356,15 +401,27 @@
     const W = box.clientWidth / px;
     const H = box.clientHeight / px;
     const kept = placed();
-    const items = [['tv', $('emu-tv')], ...[...box.children].map(li => [li.dataset.system, li])].map(([key, node]) => {
+    const items = [['tv', $('emu-tv')], ...[...box.children].map(li => [li.dataset.key ?? li.dataset.system, li])].map(([key, node]) => {
       const at = kept[key];
       return { key, node, w: node.offsetWidth / px, h: node.offsetHeight / px, x: at?.[0] ?? 0, y: at?.[1] ?? 0, loose: !at, still: key === held };
     });
     const inside = n => { n.x = Math.min(Math.max(0, n.x), Math.max(0, W - n.w)); n.y = Math.min(Math.max(0, n.y), Math.max(0, H - n.h)); };
     const over = (a, b) => [Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y)];
     const clear = n => items.every(m => m === n || m.loose || over(n, m).some(o => o <= 0));
-    // A thing with no place takes its share, or the first slot nothing covers.
+    // A thing with no place takes its share, or the first slot nothing
+    // covers. A cover with none lands around its console, each a step
+    // further round it, and is drawn hopping out from the console's middle.
     for (const n of items.filter(i => i.loose)) {
+      const home = n.node.dataset.of && items.find(m => m.key === n.node.dataset.of);
+      if (home) {
+        const mates = items.filter(m => m.node.dataset.of === home.key);
+        const turn = (mates.indexOf(n) / mates.length) * 2 * Math.PI + 0.5;
+        n.x = home.x + home.w / 2 + Math.cos(turn) * 46 - n.w / 2;
+        n.y = home.y + home.h / 2 + Math.sin(turn) * 32 - n.h / 2;
+        n.pop = [home.x + home.w / 2 - n.w / 2, home.y + home.h / 2 - n.h / 2];
+        n.loose = false;
+        continue;
+      }
       const share = shareOf(n.key);
       for (const [sx, sy] of share ? [share] : SLOTS) {
         n.x = sx * (W - n.w);
@@ -404,24 +461,47 @@
     drawn = {};
     for (const n of items) {
       drawn[n.key] = [Math.round(n.x * 10) / 10, Math.round(n.y * 10) / 10];
-      // A thing drawn for the first time appears in its place; any other slides to it.
+      // A thing drawn for the first time appears in its place, or at its
+      // console's middle where it hops out of it; any other slides to its place.
       const fresh = !n.node.style.getPropertyValue('--emu-left');
       if (fresh) n.node.style.transition = 'none';
+      if (fresh && n.pop) {
+        n.node.style.setProperty('--emu-left', n.pop[0]);
+        n.node.style.setProperty('--emu-top', n.pop[1]);
+        void n.node.offsetWidth;
+        n.node.style.transition = '';
+      }
       n.node.style.setProperty('--emu-left', drawn[n.key][0]);
       n.node.style.setProperty('--emu-top', drawn[n.key][1]);
-      if (fresh) { void n.node.offsetWidth; n.node.style.transition = ''; }
+      if (fresh && !n.pop) { void n.node.offsetWidth; n.node.style.transition = ''; }
     }
+    drawWire();
+    setTimeout(drawWire, 260);
     const swept = items.some(n => String(kept[n.key]) !== String(drawn[n.key]));
     clearTimeout(sweptFor);
     // Kept once the window has stopped moving, and never under a held thing.
     const later = () => { sweptFor = setTimeout(() => (drag?.on ? later() : keep(wishes())), 800); };
     if (room && swept) later();
   }
-  // MY STUFF: this Mac's games, favourites first and then A to Z. A
-  // favourite this Mac lacks is dimmed, one arriving sits under a veil that
-  // lifts as it comes, and one whose console is not plugged in is dimmed with
-  // the console it needs in its title.
+  // MY STUFF. Consoles is each console set up on this Mac and put away, a
+  // tile that is dragged into the room or pressed to bring it out. Games is
+  // this Mac's games, favourites first and then A to Z: a favourite this Mac
+  // lacks is dimmed, one arriving sits under a veil that lifts as it comes,
+  // and one whose console is not out and set up is dimmed with what it needs
+  // in its title.
   function renderStuff() {
+    const away = Object.keys(R.SYSTEMS).filter(system => plays(system) && !stand.has(system) && gamesOf(system).length);
+    $('emu-stuff-consoles').replaceChildren(...away.map(system => {
+      const b = el('button', 'emu-cabinet__console');
+      b.type = 'button';
+      b.dataset.system = system;
+      b.dataset.console = system;
+      b.title = `Bring out the ${R.systemName(system)}`;
+      b.append(consoleOf(system), el('span', 'emu-cabinet__name', R.systemName(system)), el('span', 'emu-cabinet__count', countOf(gamesOf(system).filter(g => standing(g).state === 'held').length)));
+      b.addEventListener('click', () => bring(system));
+      return b;
+    }));
+    $('emu-stuff-consoles-none').hidden = away.length > 0;
     const mine = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
     const list = games.filter(g => mine.has(keyOf(g)) || g.notes?.favourite)
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
@@ -436,7 +516,8 @@
         b.querySelector('.emu-cover-art').append(veil);
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
-        b.title = stand.has(g.system) ? `${g.title}. Turn on the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
+        const called = R.systemName(g.system);
+        b.title = stand.has(g.system) ? `${g.title}. Set up the ${called} to play.` : plays(g.system) ? `${g.title}. Bring out the ${called} to play.` : `${g.title}. Needs the ${called}.`;
       }
       return li;
     }));
@@ -453,11 +534,11 @@
     const emulator = pick && emulatorOf(pick);
     const st = stand.get(pick);
     const state = !pick || !emulator ? '' : !helper ? `Plays in ${emulator}`
-      : st === 'on' ? 'In your room, ready to play' : st === 'setting' ? `Setting up ${emulator}` : st === 'keeping' ? 'Keeping its saves'
-      : st === 'off' ? 'In your room, off' : plays(pick) ? `${emulator} is already set up` : `Plays in ${emulator}`;
+      : st === 'on' ? 'Out in your room' : st === 'setting' ? `Setting up ${emulator}` : st === 'keeping' ? `Removing ${emulator}`
+      : st === 'off' ? 'In your room, not set up' : plays(pick) ? 'On this Mac, put away' : `Plays in ${emulator}`;
     $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
     const move = $('emu-picked-move');
-    const [label, run] = !pick || !helper ? [] : !st ? ['Bring to Your Mac', () => bring(pick)] : st === 'off' ? ['Put back', () => putBack(pick)] : [];
+    const [label, run] = !pick || !helper ? [] : !st ? ['Bring to Your Mac', () => bring(pick)] : st === 'off' ? ['Put back', () => putBack(pick)] : st === 'on' ? ['Put away', () => putAway(pick)] : [];
     move.hidden = !label;
     move.textContent = label ?? '';
     move.onclick = run ?? null;
@@ -705,8 +786,9 @@
   // Undo where it can be taken back; it settles back to rest by itself. A
   // move refused or failed lights it red.
   let saidFor = 0;
-  function say(text = '', undo = null, ms = 4000, bad = false) {
+  function say(text = '', undo = null, ms = 4000, bad = false, label = 'Undo') {
     clearTimeout(saidFor);
+    wire = null;
     const tv = $('emu-tv');
     const was = tv.classList.contains('emu-tv--lit') || tv.classList.contains('emu-tv--no');
     $('emu-room-said').textContent = text;
@@ -717,7 +799,11 @@
     // Its picture collapses as it goes quiet, as a CRT's does.
     tv.classList.toggle('emu-tv--off', was && !text);
     $('emu-room-undo').hidden = !undo;
+    $('emu-room-undo').textContent = label;
     $('emu-room-undo').onclick = undo && (() => { say(); undo(); });
+    // A question has Keep beside its answer, which only closes it.
+    $('emu-room-keep').hidden = !undo || label === 'Undo';
+    drawWire();
     if (text) saidFor = setTimeout(say, ms);
     wake();
   }
@@ -731,6 +817,8 @@
     $('emu-tv-art').replaceChildren(cover(g, 'emu-tv__cover'));
     $('emu-tv-rest').hidden = true;
     showing = Date.now();
+    wire = g.system;
+    drawWire();
   }
   window.addEventListener('focus', () => { if (showing && Date.now() - showing > 3000) { showing = 0; say(); } });
   // THE SCREENSAVER. A minute after the TV went quiet with nothing touched,
@@ -745,6 +833,7 @@
   }
   let woke = 0;
   for (const type of ['pointermove', 'pointerdown', 'keydown']) document.addEventListener(type, () => { if (Date.now() - woke > 1000) { woke = Date.now(); wake(); } }, { passive: true });
+  $('emu-room-keep').addEventListener('click', () => say());
   const sayNo = text => say(text, null, 6000, true);
   async function download(g, thenPlay = false) {
     const key = keyOf(g);
@@ -835,10 +924,11 @@
   window.addEventListener('pagehide', () => { for (const { timer, go } of leaving.values()) { clearTimeout(timer); go(); } });
   // A CONSOLE'S MOVES. The room is kept whole each time one moves; a Mac
   // Status has not saved yet has no row to keep it on, and is told so.
-  // Every console and the TV keep the spot they are drawn at, so moving one
-  // moves no other; `at` gives the spots that change.
+  // Every thing keeps the spot it is drawn at, so moving one moves no
+  // other; `at` gives the spots that change. A cover's spot goes with its console.
   async function keep(wish, at = {}) {
-    room = { ...wish, placed: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([key]) => key in wish || key === 'tv')) };
+    room = { ...wish, placed: Object.fromEntries(Object.entries({ ...drawn, ...at })
+      .filter(([key]) => key in wish || key === 'tv' || (key.startsWith('game:') && key.slice(5).split('/')[0] in wish))) };
     render();
     if (!macName) return;
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }
@@ -852,23 +942,23 @@
     const px = pxOf();
     return [Math.round((point.x - f.left - w / 2) / px), Math.round((point.y - f.top - h / 2) / px)];
   }
-  // A console in the room, or the TV as `tv`, moved to a spot.
+  // A console in the room, the TV as `tv` or a cover by its key, moved to a spot.
   function moveTo(system, spot) {
     held = system;
     landed = system;
     sfx.drop();
     return keep(wishes(), { [system]: spot });
   }
-  // Into the room, at a spot where it was let go: plugged in already where
-  // this Mac has its emulator.
+  // Out into the room, at a spot where it was let go, from either drawer.
+  // A fourth is refused.
   async function bring(system, spot = null) {
     if (stand.has(system)) return;
+    if (stand.size >= CAP) { sfx.no(); sayNo('Three is plenty. Put one away first.'); return; }
     held = system;
     landed = system;
-    const ready = plays(system);
     sfx.drop();
-    await keep({ ...wishes(), [system]: ready }, spot ? { [system]: spot } : {});
-    if (ready) say(`${emulatorOf(system)} is already set up. The ${R.systemName(system)} is ready.`);
+    await keep({ ...wishes(), [system]: true }, spot ? { [system]: spot } : {});
+    if (!plays(system)) say(`The ${R.systemName(system)} is not set up yet. Press it to set it up.`, null, 6000);
   }
   // TIDY UP: the TV at the top in the middle and the consoles in rows under
   // it, each row centred, in the collection's order; Undo puts everything
@@ -882,6 +972,8 @@
     const tv = $('emu-tv');
     const next = { tv: [Math.round((W - tv.offsetWidth / px) / 2), 0] };
     const rows = [[]];
+    // The covers land around their consoles again.
+    for (const key of Object.keys(drawn)) if (key.startsWith('game:')) delete drawn[key];
     for (const li of [...stand.keys()].map(unitOf)) {
       const w = li.offsetWidth / px;
       const row = rows.at(-1);
@@ -900,70 +992,78 @@
     say('Tidied up.', () => keep(wishes(), before), UNDO);
   }
   $('emu-tidy').addEventListener('click', tidy);
-  // Whether putting a console back takes its emulator off this Mac: where
-  // this Mac has it and no other console in the room plays in it.
-  const lastOf = system => plays(system) && !Object.keys(wishes()).some(sys => sys !== system && emulatorOf(sys) === emulatorOf(system));
-  // Back to Rux's Server, once it is off, which is once its saves are kept.
-  // The last console of its emulator takes the emulator off this Mac: its
-  // saves and settings are checked against Supabase again first, and it
-  // stays in the room where that fails.
-  async function putBack(system) {
-    const st = stand.get(system);
-    if (st !== 'off') { refuse(system, st === 'keeping' ? 'Still keeping your saves.' : st === 'setting' ? 'Hang on, still setting up.' : 'Turn me off first.'); return; }
-    const emulator = emulatorOf(system);
-    sfx.drop();
-    if (lastOf(system)) {
-      keeping.add(system);
-      render();
-      say(`Taking ${emulator} off this Mac…`, null, 600000);
-      try { await R.carry.remove(emulator); }
-      catch (error) { console.error(error); keeping.delete(system); render(); sayNo(error.message); return; }
-      keeping.delete(system);
-      await readMac();
-      say(`${emulator} is off this Mac. Your saves stay.`);
-    }
+  // PUT EVERYTHING AWAY: every console out of the room, those set up into My
+  // Stuff and any other back to Rux's Server; Undo brings them out again.
+  function putAllAway() {
+    if (!stand.size) return;
+    const before = [wishes(), { ...drawn }];
+    held = null;
+    sfx.unplug();
+    keep({});
+    say('Everything is put away.', () => keep(...before), UNDO);
+  }
+  $('emu-away').addEventListener('click', putAllAway);
+  // Put away into My Stuff: out of the room, its emulator still on this Mac.
+  function putAway(system) {
+    if (stand.get(system) !== 'on') { refuse(system, BUSY[stand.get(system)]?.(system) ?? 'Set me up first.'); return; }
+    const before = [wishes(), { ...drawn }];
     const next = wishes();
     delete next[system];
+    sfx.unplug();
+    keep(next);
+    say(`The ${R.systemName(system)} is put away.`, () => keep(...before), UNDO);
+  }
+  // Back to Rux's Server: only one that is not set up, which takes nothing off this Mac.
+  function putBack(system) {
+    if (stand.get(system) !== 'off') { refuse(system, BUSY[stand.get(system)]?.(system) ?? 'Remove me from my menu.'); return; }
+    const next = wishes();
+    delete next[system];
+    sfx.drop();
     keep(next);
   }
-  // Plugging in sets its emulator up where this Mac lacks it: installed from
-  // Supabase, then made ready with the settings this Mac kept, as Status does.
-  async function plugIn(system) {
-    const emulator = emulatorOf(system);
-    sfx.plug();
-    if (!plays(system)) {
-      settingUp.add(system);
-      render();
-      try {
-        const installer = R.installerOf(await R.data.files(), emulator);
-        if (!installer) throw new Error(`Supabase holds no installer for ${emulator}.`);
-        await R.carry.setUp(emulator, installer, R.keptVersion(installer),
-          part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, null, 600000));
-        const also = Object.keys(R.SYSTEMS).filter(sys => sys !== system && emulatorOf(sys) === emulator && !stand.has(sys) && gamesOf(sys).length);
-        sfx.done();
-        say(also.length ? `${emulator} is set up. It also plays ${also.map(R.systemName).join(' and ')}.` : `${emulator} is set up.`);
-      } catch (error) { console.error(error); sayNo(error.message); }
-      settingUp.delete(system);
-      await readMac();
-    }
-    await keep({ ...wishes(), [system]: plays(system) });
+  // Removing an emulator: the TV asks first. Its saves and settings are
+  // kept in Supabase and checked, then the helper moves it to the Trash, and
+  // every console that played in it leaves the room. Where keeping fails
+  // nothing is removed.
+  function askRemove(system) {
+    if (stand.get(system) !== 'on') return;
+    say(`Remove ${emulatorOf(system)} from this Mac? Your saves are kept.`, () => remove(system), 20000, false, 'Remove');
   }
-  // Turning off keeps its emulator's saves and settings in Supabase and
-  // takes nothing off this Mac. It is off only once they are kept, which is
-  // what lets it be put back; where keeping fails it stays on.
-  async function unplug(system) {
+  async function remove(system) {
     const emulator = emulatorOf(system);
+    keeping.add(system);
+    render();
+    say(`Keeping ${emulator}'s saves and settings…`, null, 600000);
+    try { await R.carry.remove(emulator); }
+    catch (error) { console.error(error); keeping.delete(system); render(); sayNo(error.message); return; }
+    keeping.delete(system);
+    await readMac();
+    const next = Object.fromEntries(Object.entries(wishes()).filter(([sys]) => emulatorOf(sys) !== emulator));
     sfx.unplug();
-    if (plays(system)) {
-      keeping.add(system);
-      render();
-      say(`Keeping ${emulator}'s saves and settings…`, null, 600000);
-      try { await R.carry.keep(emulator); }
-      catch (error) { console.error(error); keeping.delete(system); render(); sayNo(error.message); return; }
-      keeping.delete(system);
-      say(`The ${R.systemName(system)} is off. Its saves are kept.`);
-    }
-    await keep({ ...wishes(), [system]: false });
+    await keep(next);
+    say(`${emulator} is off this Mac. Your saves stay.`);
+  }
+  // Setting up installs its emulator from Supabase, then makes it ready with
+  // the settings this Mac kept, as Status does.
+  async function setUp(system) {
+    const emulator = emulatorOf(system);
+    if (plays(system) || settingUp.has(system)) return;
+    sfx.plug();
+    settingUp.add(system);
+    render();
+    say(`Setting up ${emulator}…`, null, 600000);
+    try {
+      const installer = R.installerOf(await R.data.files(), emulator);
+      if (!installer) throw new Error(`Supabase holds no installer for ${emulator}.`);
+      await R.carry.setUp(emulator, installer, R.keptVersion(installer),
+        part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, null, 600000));
+      const also = Object.keys(R.SYSTEMS).filter(sys => sys !== system && emulatorOf(sys) === emulator && !stand.has(sys) && gamesOf(sys).length);
+      sfx.done();
+      say(also.length ? `${emulator} is set up. ${also.map(R.systemName).join(' and ')} ${also.length > 1 ? 'are' : 'is'} in My Stuff too.` : `${emulator} is set up.`);
+    } catch (error) { console.error(error); sayNo(error.message); }
+    settingUp.delete(system);
+    await readMac();
+    render();
   }
 
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
@@ -984,8 +1084,8 @@
       const system = unit.dataset.system;
       if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
       if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
-      if (stand.get(system) === 'keeping') return no('Still keeping its saves', unit, [system, 'Still keeping your saves.']);
-      if (stand.get(system) !== 'on') return no('Turn it on first', unit, [system, 'Turn me on first.']);
+      if (stand.get(system) === 'keeping') return no('Being removed', unit, [system, 'I am being removed.']);
+      if (stand.get(system) !== 'on') return no('Set it up first', unit, [system, 'Set me up first.']);
       if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
       if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
       if (keeps) return yes('Download and play', unit, () => download(g, true));
@@ -997,24 +1097,32 @@
       if (!keeps || (s.state !== 'away' && s.state !== 'failed')) return null;
       return yes('Download', null, () => download(g));
     }
-    if (under.closest('#emu-collection') && from === 'shelf') return yes('Take off this Mac', $('emu-collection'), () => takeOff(g), true);
+    if (under.closest('#emu-collection') && (from === 'shelf' || from === 'floor')) return yes('Take off this Mac', $('emu-collection'), () => takeOff(g), true);
+    // A cover on the floor moves where it is let go.
+    if (from === 'floor' && under.closest('#emu-room')) return { ...yes(null, null, () => {}), move: true };
     return null;
   }
 
-  // The same for a console: into the room from the collection, and back to
-  // its place once it is unplugged.
+  // The same for a console: out into the room from either drawer, moved in
+  // the room, put away onto My Stuff, and onto Rux's Server put back where
+  // it is not set up, or asked about on the TV where it is.
   function consoleIntent(system, from, under, point, size) {
     if (!under) return null;
     const inRoom = under.closest('#emu-room');
-    if (from === 'collection' && inRoom) {
-      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', null, () => bring(system, spotAt(point, size)));
+    if (from !== 'room' && inRoom) {
+      if (stand.size >= CAP) return no('Put one away first', null, [system, 'Three is plenty. Put one away first.']);
+      return yes(plays(system) ? 'Bring out' : 'Bring in', null, () => bring(system, spotAt(point, size)));
     }
-    if (from === 'room' && inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
-    if (from === 'room' && under.closest('#emu-collection')) {
-      const st = stand.get(system);
-      return st === 'off' ? yes(lastOf(system) ? `Put back, and take ${emulatorOf(system)} off this Mac` : 'Put back', $('emu-collection'), () => putBack(system), true)
-        : no(st === 'setting' ? 'Still setting up' : st === 'keeping' ? 'Still keeping its saves' : 'Turn it off first', $('emu-collection'),
-          [system, st === 'setting' ? 'Hang on, still setting up.' : st === 'keeping' ? 'Still keeping your saves.' : 'Turn me off first.'], true);
+    if (from !== 'room') return null;
+    if (inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
+    const st = stand.get(system);
+    const busy = BUSY[st] && no(st === 'setting' ? 'Still setting up' : 'Being removed', null, [system, BUSY[st](system)]);
+    if (under.closest('#emu-stuff.emu-side--open')) {
+      return busy || (st === 'on' ? yes('Put away', $('emu-stuff'), () => putAway(system)) : no('Not set up yet', $('emu-stuff'), [system, 'Set me up first.']));
+    }
+    if (under.closest('#emu-collection')) {
+      return busy || (st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
+        : yes(`Remove ${emulatorOf(system)} from this Mac`, $('emu-collection'), () => askRemove(system), true));
     }
     return null;
   }
@@ -1032,7 +1140,7 @@
   // THE DRAG, with the pointer, where the helper answers. A press that does
   // not move is the cover's or the console's own click.
   let drag = null;
-  // CARRYING. A console in the room, or the TV, is itself moved, never a
+  // CARRYING. A console in the room, a cover on the floor or the TV is itself moved, never a
   // copy of it. It lifts off the floor and follows the pointer a little
   // behind, closing a share of the gap each frame, the TV a smaller share
   // since it is heavier, and leans the way it is going by how fast it goes.
@@ -1041,8 +1149,8 @@
   // for a carried thing; where motion is reduced it keeps to the pointer
   // and does not lean.
   function carry(d) {
-    const key = d.tv ? 'tv' : d.system;
-    const node = d.tv ? $('emu-tv') : unitOf(d.system);
+    const key = d.tv ? 'tv' : d.g ? floorKey(d.g) : d.system;
+    const node = d.tv ? $('emu-tv') : d.g ? thingOf(key) : unitOf(d.system);
     const share = calm() ? 1 : d.tv ? 0.14 : 0.22;
     Object.assign(d, { live: node, key, stood: [...drawn[key]], cur: [...drawn[key]], to: [...drawn[key]], px: pxOf() });
     node.classList.add('emu-carried');
@@ -1053,6 +1161,7 @@
       node.style.setProperty('--emu-left', d.cur[0]);
       node.style.setProperty('--emu-top', d.cur[1]);
       node.style.rotate = calm() ? '' : `${Math.max(-6, Math.min(6, vx * 1.5)).toFixed(2)}deg`;
+      if (wire) drawWire();
       d.frame = requestAnimationFrame(step);
     };
     d.frame = requestAnimationFrame(step);
@@ -1076,7 +1185,7 @@
   const word = el('div', 'emu-word');
   word.hidden = true;
   document.body.append(word);
-  const FROM = [['#emu-stuff-games', 'shelf'], ['#emu-games', 'collection']];
+  const FROM = [['#emu-units', 'floor'], ['#emu-stuff-games', 'shelf'], ['#emu-games', 'collection']];
   const unlight = () => {
     for (const cls of ['emu-lit', 'emu-no', 'emu-cover--home', 'emu-cabinet__console--home']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
   };
@@ -1093,7 +1202,7 @@
     const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
     // The TV is carried by its case; its link and Undo stay presses.
     if (src.id === 'emu-tv') { if (!e.target.closest('a, button')) drag = { ...at, tv: true, from: 'room' }; return; }
-    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : 'collection' }; return; }
+    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : src.closest('#emu-stuff') ? 'stuff' : 'collection' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
     if (g && from) drag = { ...at, g, from };
@@ -1106,7 +1215,7 @@
       sfx.pick();
       const r = drag.src.getBoundingClientRect();
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
-      if (!drag.g && drag.from === 'room') carry(drag);
+      if (drag.from === 'room' || drag.from === 'floor') carry(drag);
       // Anything else is held as a copy, drawn where the ghost is, at the
       // room's art pixel, with no ids or live region of its own.
       const ghost = el('div', 'emu-ghost');

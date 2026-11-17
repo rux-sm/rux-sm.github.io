@@ -6,19 +6,21 @@ type: plan
 
 ## Goal
 
-The Library is a room that fills the page: Your Mac, holding the consoles
-this Mac has set up. It is the page itself with a single CRT TV, and the
-TV and the consoles stand wherever they are left. Two buttons at the foot open a drawer on each side: Server on the left
-is every console and game the server holds, borrowed by dragging it into the
-room; My Stuff on the right is what is yours, the games on this Mac and the
-saves the account keeps. Getting a game, setting up its console and playing
-it are one gesture each, and the page is fun to use while staying plain. It
-is Emu's front page, `emu/index.html`, drawn by `emu/room.js`; the rest of
-Emu is unchanged.
+The Library is a room that fills the page: Your Mac, the play surface for
+what is in use now. It is the page itself with a single CRT TV, up to three
+consoles and their favourite games, each standing wherever it is left. Two
+buttons at the foot open a drawer on each side: Server on the left is every
+console and game the server holds, borrowed by dragging it into the room; My
+Stuff on the right is everything on this Mac, its consoles put away, its
+games and the saves the account keeps. Getting a game, setting up its
+console and playing it are one gesture each, and the page is fun to use
+while staying plain. It is Emu's front page, `emu/index.html`, drawn by
+`emu/room.js`; the rest of Emu is unchanged.
 
 ## Decisions
 
-- **The room holds only the TV and the consoles.** It is the page's own
+- **The room holds only the TV, the consoles that are out and their
+  favourite games.** It is the page's own
   background, with no fill, wall, floor, furniture, shelves or heading, so
   there is nothing to read but what this Mac has.
 - **The TV is a CRT in pixel art, `emu/brand/consoles/tv.png`, which starts
@@ -35,13 +37,28 @@ Emu is unchanged.
   announces the same change to assistive technology. Errors that say where to
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
-- **The whole room is for the TV and the consoles in the room,** each a
+- **A console has three places.** In Rux's Server it is not on this Mac. In
+  My Stuff it is set up on this Mac and put away. In the room it is out,
+  ready to play. Putting one away is harmless, and only taking it back to
+  Rux's Server removes its emulator.
+- **At most three consoles are out at once,** so the floor never fills. A
+  fourth is refused as a wrong game is: it goes back and the TV says "Three
+  is plenty. Put one away first."
+- **A console that is out brings its favourite games out with it.** They
+  hop out of it and land around it, covers 20 art pixels tall: the
+  favourites of its system that this Mac holds, A to Z, 8 for one console
+  out, 6 each for two and 4 each for three, so the floor holds about twelve.
+  A cover is a thing on the floor like any other: it stays where it landed
+  or was left, is carried with weight, and is dropped on its console to
+  play. It goes back into My Stuff when its console is put away. Any other
+  game is dragged from My Stuff.
+- **The whole room is for the TV, the consoles and the covers,** each a
   thing on the floor standing where it was last left, its top-left corner in
   art pixels from the room's, dragged to move it. One brought in stands
   where it was let go, and one brought without a drag in the first clear
   spot clear of the TV. Each one's spot is kept with this Mac's room, in the
   `room` column of its `emu_macs` row. An empty room says faintly "Drag a
-  console here from Server."
+  console here from Server or My Stuff."
 - **A smaller window sweeps the room's things into a pile, and they stay
   there.** Its edges push in whatever is past them, and whatever then
   overlaps takes the nearest free spot, so things end up touching but not
@@ -72,12 +89,13 @@ Emu is unchanged.
   it is not in the room. The games are covers that wrap down the panel, A
   to Z; one this Mac has is dimmed with a tick, and can still be
   picked up. There is no All, because one console at a time is neater.
-- **My Stuff has two tabs, Games and Saves,** so the room needs no separate
-  Saves button.
+- **My Stuff has three tabs, Consoles, Games and Saves.** Consoles is each
+  console set up on this Mac and put away, as a tile that is dragged into
+  the room or pressed to bring it out.
 - **Games lists every game on this Mac,** favourites first, then the rest A to
   Z, as covers that are dragged onto a console to play. A favourite is
   `emu_notes`' favourite mark, and one this Mac lacks is dimmed. A game whose
-  console is not on is dimmed, its title naming the console it needs.
+  console is not out is dimmed, its title naming the console it needs.
   There is no Recently played, because a Mac holds only a handful of games.
 - **Saves follows the picked console and the game in it,** under a heading
   for each kind: that game's cards, and the console's own, such as a PS2's
@@ -89,22 +107,17 @@ Emu is unchanged.
   shows My Stuff as it was. Pressing a game opens its side panel and leaves
   My Stuff as it is, so one press does one thing.
 - **The room draws Your Mac and Rux's Server from the real games and
-  this Mac;** a game or a console is dragged between them,
-  turning a console on from its menu sets an emulator up, putting one that is off back takes it
-  off, and a game opens its side panel when pressed.
-- **Until a Mac's room is kept, the console of each game it holds stands in
-  the room,** on where this Mac has its emulator and off where
-  it has not, so a Mac with every emulator installed still starts with a
-  handful.
-- **A console is turned on and off from its own menu,** opened under it by
-  pressing or right-clicking it: Turn on, Turn off and Put back, each saying
-  what it does to this Mac, such as "Put back and remove mGBA". So setting an
-  emulator up or taking it off is always two presses, and no control is
-  drawn on the room, where a button under each console spoiled the art.
+  this Mac;** a game or a console is dragged between them, and a game opens
+  its side panel when pressed.
+- **A room never kept is empty,** its set-up consoles in My Stuff.
+- **A console has its own menu,** opened under it by pressing or
+  right-clicking it, so no control is drawn on the room. One that is set up
+  has Put away and "Remove mGBA from this Mac"; one that is not has "Set up
+  mGBA" and Put back.
 - **A console's power light is on its drawing,** over the drawing's own
-  light pixel, in the real console's colour: glowing softly while it is on,
-  blinking while its emulator is set up, and unlit with the whole drawing
-  dimmed while it is off.
+  light pixel, in the real console's colour: glowing softly while it is set
+  up, blinking while its emulator is set up or removed, and unlit with the
+  whole drawing dimmed until it is set up.
 - **A console's name shows only under the pointer or the keyboard,** as a
   tag beneath it, so the room at rest is only its drawings.
 - **A console in the room, or the TV, is itself carried, never a copy of
@@ -115,6 +128,9 @@ Emu is unchanged.
 - **Each thing on the floor throws a hard shadow two art pixels down and
   slides to a spot it is pushed to.** Things the window pushes into one
   another clack.
+- **One wire runs from the console that is playing to the TV,** while its
+  game's cover is on the glass, so which console is on the TV shows. A
+  handheld lights its own screen and has none.
 - **The TV behaves as a CRT:** scanlines on its glass, its picture opening
   from a line as it speaks and closing to a dot as it goes quiet. A home
   console's game shows its cover on the glass once it has started, until
@@ -124,39 +140,31 @@ Emu is unchanged.
 - **Tidy up, at the end of the foot bar, lays the TV at the top in the
   middle and the consoles in rows under it,** with Undo on the TV, since a
   swept pile stays until it is put back.
-- **A console shows its card light once it is off.** When that light turns
-  green the console lifts a little, ready to carry back.
-- **A console comes in off, and turning it on installs its emulator.**
-- **An emulator comes off this Mac by putting its console away, one step at
-  a time, with no question,** so no single press removes anything. The game
-  comes out of the console, which stops it. It is turned off, which keeps its
-  emulator's saves and settings in Supabase, `R.carry.keep`, and takes
-  nothing off this Mac: its light blinks while they are kept, it is off only
-  once they are, and it stays on where keeping fails. Putting it back is
-  there only once it is off. Dragging it back to its place in Rux's
-  Server is the last step, and takes the emulator off once no other
-  console in the room uses it. Each step refuses until the one before is
-  done, with "Take the game out first.", "Turn me off first." or "Still
-  keeping your saves.", and turning it back on before the last step changes
-  nothing.
-- **Turning on is the helper's install, putting back is `R.carry.remove`,**
-  which keeps the saves and settings again, so what changed since the
-  console was turned off is safe, before the emulator goes to the Trash,
-  and leaves the console in the room where that fails; the light blinks while the install's request is
-  waiting, since it reports no progress. Bringing the console back and
-  turning it on restores this Mac's kept settings, so it comes back as it
-  was.
+- **Put everything away, beside Tidy up, puts every console that is out
+  away,** with Undo on the TV.
+- **A console from Rux's Server that is not set up comes in unlit, and Set
+  up in its menu installs its emulator.** One this Mac has comes out lit
+  from either drawer.
+- **Removing an emulator is three steps, and the TV asks before it goes.**
+  Remove in the console's menu, or dragging the console onto Rux's Server,
+  has the TV ask "Remove mGBA from this Mac? Your saves are kept." with
+  Remove and Keep. Remove keeps its saves and settings in Supabase,
+  `R.carry.remove`, checks both are held, and only then has the helper move
+  the emulator to the Trash; the console goes back to Rux's Server, and
+  every console that played in it leaves My Stuff. Where keeping fails
+  nothing is removed and the TV says why.
+- **Setting up is the helper's install,** made ready with the settings this
+  Mac kept, so an emulator comes back as it was; the light blinks while the
+  install's request is waiting, since it reports no progress.
 - **Whether an emulator is installed is read live from the helper,** never
-  stored. Only which consoles stand in this Mac's room, where each stands and
-  which are off, is kept, since a Game Boy that is off can stand beside
-  a Game Boy Color that is on while mGBA stays installed. It is kept in
+  stored. Only which consoles are out in this Mac's room, and where each
+  thing in it stands, is kept. It is kept in
   Supabase, in the `room` column of the Mac's `emu_macs` row, which that
   row's other writes leave alone. A Mac has that row once Status has saved
   it; until then the TV says its room is not kept.
-- **An emulator that plays several consoles readies them all.** Turning on
-  the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance show
-  a green light in Rux's Server, and each arrives on when dragged
-  into the room; until then their games cannot be played from the room.
+- **An emulator that plays several consoles readies them all.** Setting up
+  the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance
+  appear in My Stuff's Consoles, and removing mGBA takes all three.
 - **A game moves the same way:** onto My Stuff or the room's open space
   downloads it, `this-mac.js`'s Download, and it shows in Games; onto its
   console plays it, the helper's Play; straight from Rux's Server onto its
@@ -168,9 +176,9 @@ Emu is unchanged.
   is there to light up.
 - **A place means the same for everything:** in Rux's Server a thing is
   kept on the server and not on this Mac, in My Stuff's Games it is on this
-  Mac, in its Saves it is the account's own, kept in Supabase, in the room a
-  console is set up on this Mac, and in a console a thing is
-  the one the next Play uses.
+  Mac, in its Saves it is the account's own, kept in Supabase, in its Consoles it is set up and put away, in the
+  room a thing is out to play with, and in a console a thing is the one the
+  next Play uses.
 - **A memory card is one game's save,** drawn tucked into its game's cover
   and in its console's slot while the game is in. A game can have several,
   each with a name; only one is in at a time, since an emulator finds a save
@@ -209,7 +217,7 @@ Emu is unchanged.
   Download, Play, Download and play, Add to Favourites, Take off this Mac,
   Bring in, Put back, which names the emulator that will go, such as "Put
   back, and take mGBA off this Mac", or in red why not, such as "Doesn't fit
-  the Game Boy" and "Turn it on first". A console moved in the room has no
+  the Game Boy" and "Set it up first". A console moved in the room has no
   word, since the drag shows it. The place it will land lights up where it is
   one thing, such as a console or Rux's Server, never the whole room or My
   Stuff. The
@@ -219,20 +227,20 @@ Emu is unchanged.
 - **A game goes in as it would on the real console:** a cartridge drops into
   its slot, a disc slides onto a tray that opens and shuts, then the TV names
   it. A download fills its cover from the bottom as it comes.
-- **Turning a console off while its game runs stops the game first.** The
+- **Putting a console away while its game runs stops the game first.** The
   helper quits an emulator only from the controller's + and − today, so the
   page needs a quit request from it.
 - **The wrong console says no and does nothing:** it shakes its head, buzzes
   and says a short line, such as "Doesn't fit. Try the SNES.", and the game
-  goes back. A console that is off says "Turn me on first."
+  goes back. A console not set up says "Set me up first."
 - **Every move makes a small sound,** made in the browser with no sound
-  files: a click to pick up, a thunk and rising tone to turn on, a chime
+  files: a click to pick up, a thunk and rising tone to set up, a chime
   when a download finishes, a start-up jingle to play, a buzz for no. A
   button in the header turns them off, remembered in the browser.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
   moves as buttons; pressing a console, in the room or Rux's Server, picks
-  it, and its heading has Bring to Your Mac or Put back; a console's menu opens
+  it, and its heading has Bring to Your Mac, Put away or Put back; a console's menu opens
   from the keyboard as from the pointer, Tidy up is a button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
@@ -281,7 +289,7 @@ None open.
 - [ ] List a console's controls in Saves, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Draw a card in pixel art.
-- [ ] Have turning a console off stop its game first, once the helper says
+- [ ] Have putting a console away stop its game first, once the helper says
       which runs.
 - [ ] Give Rux Emu Helper a quit request the page can send, and have it say
       which game runs so the TV can name active play and a handheld can light

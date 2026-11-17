@@ -23,10 +23,10 @@
 </head>
 <body>
 <!-- The Library, Emu's front page, as a room that fills the page;
-     docs/plans/emu-room.md is the plan. room.js draws Your Mac, the consoles
-     this Mac has set up under one TV, and two drawers: Rux's Server, every
-     console and game to borrow, and My Stuff, this Mac's games and the
-     account's saves. A game or a console is dragged between them, and a game
+     docs/plans/emu-room.md is the plan. room.js draws Your Mac, one TV with
+     up to three consoles and their favourite games, and two drawers: Rux's
+     Server, every console and game to borrow, and My Stuff, this Mac's
+     consoles put away, its games and the account's saves. A game or a console is dragged between them, and a game
      pressed opens in the side panel. The shell is templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -214,28 +214,38 @@
                 <div class="emu-tv__art" id="emu-tv-art"></div>
                 <div class="emu-tv__saver" aria-hidden="true"><img src="/brand/logo.svg" alt=""></div>
                 <p class="emu-tv__said" role="status" id="emu-room-said"></p>
-                <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-tv__undo" id="emu-room-undo" hidden>Undo</button>
+                <span class="emu-tv__answers">
+                  <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-tv__undo" id="emu-room-undo" hidden>Undo</button>
+                  <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-tv__undo" id="emu-room-keep" hidden>Keep</button>
+                </span>
               </div>
             </div>
-            <!-- The whole room, under the TV, where each console stands where it was left. -->
+            <!-- The wire from the console that is playing to the TV, drawn by room.js. -->
+            <svg class="emu-wire" id="emu-wire" aria-hidden="true"><path/></svg>
+            <!-- The whole room, under the TV, where each console and each favourite out with it stands where it was left. -->
             <div class="emu-floor" id="emu-floor">
-              <p class="emu-floor__empty" id="emu-floor-empty" hidden>Drag a console here from Server.</p>
+              <p class="emu-floor__empty" id="emu-floor-empty" hidden>Drag a console here from Server or My Stuff.</p>
               <ul class="emu-units" role="list" id="emu-units" aria-label="Consoles on this Mac"></ul>
             </div>
           </section>
 
-          <!-- My Stuff: this Mac's games, and the picked console's saves as cards. -->
+          <!-- My Stuff: this Mac's consoles put away, its games, and the picked console's saves as cards. -->
           <section class="emu-side emu-side--stuff" id="emu-stuff" aria-labelledby="emu-stuff-h" hidden>
             <div class="emu-side__head">
               <h2 class="rux--type-heading-03" id="emu-stuff-h">My Stuff</h2>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--md emu-side__close" id="emu-stuff-close" aria-label="Close My Stuff" title="Close"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
             </div>
             <div class="rux--content-switcher" role="tablist" aria-label="My Stuff" id="emu-stuff-tabs">
-              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" aria-controls="emu-stuff-games-pane" data-pane="emu-stuff-games-pane"><span class="rux--content-switcher__label">Games</span></button>
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" aria-controls="emu-stuff-consoles-pane" data-pane="emu-stuff-consoles-pane"><span class="rux--content-switcher__label">Consoles</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" aria-controls="emu-stuff-games-pane" data-pane="emu-stuff-games-pane" tabindex="-1"><span class="rux--content-switcher__label">Games</span></button>
               <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" aria-controls="emu-storage" data-pane="emu-storage" tabindex="-1"><span class="rux--content-switcher__label">Saves</span></button>
             </div>
             <div class="emu-side__body">
-              <div class="emu-pane" id="emu-stuff-games-pane" role="tabpanel">
+              <div class="emu-pane" id="emu-stuff-consoles-pane" role="tabpanel">
+                <p class="emu-row__sub" id="emu-stuff-consoles-none" hidden>No consoles put away. Drag one in from Server and set it up.</p>
+                <div class="emu-cabinet" id="emu-stuff-consoles" role="group" aria-label="Consoles on this Mac, put away"></div>
+              </div>
+              <div class="emu-pane" id="emu-stuff-games-pane" role="tabpanel" hidden>
                 <p class="emu-row__sub" id="emu-stuff-none" hidden>No games on this Mac yet. Drag one here from Server.</p>
                 <ul class="emu-shelf" role="list" id="emu-stuff-games" aria-label="Games on this Mac"></ul>
               </div>
@@ -257,8 +267,11 @@
 <div class="frame-bar emu-bar" id="emu-bar" hidden>
   <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection">Server</button>
   <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff">My Stuff</button>
-  <!-- Lays the TV and the consoles back out in rows, from room.js. -->
-  <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md emu-bar__tidy" id="emu-tidy">Tidy up</button>
+  <!-- Lays the room back out in rows, or puts every console away, from room.js. -->
+  <div class="emu-bar__end">
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="emu-away">Put everything away</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="emu-tidy">Tidy up</button>
+  </div>
 </div>
 <!-- A console's menu, filled and opened under the console by room.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>

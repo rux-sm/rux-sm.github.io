@@ -4,29 +4,25 @@
    The one copy of the close-out rules the board, the trip card and the Trips
    page share. A trip is back once its last leg's yard-back has passed, as
    week.js reads it on the office's clock. A trip that is back stops moving
-   on the board and asks only what its record lacks, in the words every alert
-   uses: a leg short of a bus or a seat with no driver, as the checklist
-   counts them; no actual miles; a filled seat with no pay, since every
-   driver is paid by the trip; no invoice, where the billing workflow
-   invoices; and a balance still owed that no PO covers. It asks while one of them is true and
-   closes itself once none is, so nothing is stored. Only a trip that ends on
+   on the board and is closed out once it is billed: it has an invoice,
+   where the billing workflow invoices, and a PO or a payment, so the money
+   is in hand or promised. It asks for whichever is missing, in the words
+   every alert uses, and closes itself once neither is, so nothing is
+   stored. Only a trip that ends on
    or after FROM asks anything, so the trips before close-out began raise
    nothing. `report` is what a trip that is back came to, its yard times,
    its money and what it asks, which the bar's marks and the post-trip entry
    in its Updates say.
 
-   Needs billing.js, week.js and leg-facts.js loaded first.
+   Needs billing.js and week.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
 
   const FROM = '2026-10-15';
-  const WORDS = {
-    bus: 'Bus missing', driver: 'Driver missing', miles: 'Actual miles missing', pay: 'Driver pay missing',
-    invoice: 'Invoice missing', balance: 'Balance due',
-  };
+  const WORDS = { invoice: 'Invoice missing', covered: 'PO or payment missing', balance: 'Balance due' };
   // Where the trip editor puts each one right.
-  const GO = { bus: 'fleet', driver: 'fleet', miles: 'billing', pay: 'billing', invoice: 'billing', balance: 'billing' };
+  const GO = { invoice: 'billing', covered: 'billing' };
 
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   const legsOf = trip => window.SchedulerWeek.legsOf(trip);
@@ -51,18 +47,15 @@
   function asks(trip, now = Date.now()) {
     if (placeholder(trip) || !isBack(trip, now) || lastDay(trip) < FROM) return [];
     const list = [];
-    const facts = legsOf(trip).map(l => window.SchedulerLegFacts.factsOf(trip, l.key));
-    if (facts.some(f => f.busesAssigned < f.busesNeeded)) list.push('bus');
-    if (facts.some(f => f.seatsOpen > 0)) list.push('driver');
-    if (trip.actual_miles == null || trip.actual_miles === '') list.push('miles');
-    if (facts.some(f => f.payLeft > 0)) list.push('pay');
     const Billing = window.SchedulerBilling;
     if (Billing.stepOn('invoiced') && !Billing.invoicedOf(trip)) list.push('invoice');
-    // A PO's payment is recorded on the printed schedule, so a PO covers what is owed.
-    const { price, remaining, poReceived } = Billing.of(trip);
-    if (price > 0 && remaining > 0 && !poReceived) list.push('balance');
+    const { price, paid, poReceived } = Billing.of(trip);
+    if (price > 0 && !poReceived && !(paid > 0)) list.push('covered');
     return list;
   }
+
+  // The invoice's number: the trip's first, or the first of its rows that has one.
+  const invoiceOf = trip => trip.invoice_number || (trip.trip_invoices || []).find(i => i.number)?.number || null;
 
   /* What a trip that is back came to, for its bar's marks and the post-trip
      entry first in its Updates: when its buses left the yard and were back,
@@ -93,7 +86,7 @@
       paid: paidInFull,
       paidOn: paidInFull ? datePaid : null,
       po: poReceived ? trip.po_ref || null : null,
-      invoice: trip.invoice_number || null,
+      invoice: invoiceOf(trip),
       owed: price > 0 && remaining > 0 && !poReceived ? remaining : 0,
       asks: asks(trip, now),
     };

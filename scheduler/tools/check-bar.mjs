@@ -212,17 +212,18 @@ expect('a trip back stays put and raises no alert, though its record lacks miles
 expect('a trip back says Paid in the alert badge\'s place once paid in full, and nothing when it is not',
   drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest .scheduler-bar__paid'), has(b, '.scheduler-bar__alert')]),
   [['', false], ['Paid', false], ['', false], ['Paid', false]].map(([p, a]) => [p || null, a]));
-expect('a trip back wears its money, then while close-out asks anything the close-out button, a card opener in Carbon\'s Incomplete that names what it asks',
+expect('a trip back wears its money, then the close-out button, a card opener: the invoice\'s number once it has one, else Carbon\'s Incomplete while close-out asks for it',
   drawn('trip-bar', 'Back at the yard').map(b => {
     const close = b.querySelector('.scheduler-bar__dest .scheduler-bar__close');
     return [has(b, '.scheduler-bar__dest .scheduler-bar__owed'), close?.getAttribute('aria-label') ?? null,
       close ? close.getAttribute('data-card-opener') != null : null,
-      close ? [...close.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null];
+      close ? [...close.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null,
+      close ? text(close, '.scheduler-bar__invoice') || null : null];
   }),
-  [[false, 'Close-out: Actual miles missing · Driver pay missing · Invoice missing', true, '#i-incomplete'],
-    [false, 'Close-out: Invoice missing', true, '#i-incomplete'],
-    [true, 'Close-out: Actual miles missing · Invoice missing · Balance due', true, '#i-incomplete'],
-    [false, null, null, null]]);
+  [[false, 'Close-out: Invoice missing', true, '#i-incomplete', null],
+    [false, 'Close-out: Invoice missing', true, '#i-incomplete', null],
+    [true, 'Close-out: Invoice missing', true, '#i-incomplete', null],
+    [false, 'Invoice 4108. Closed out', true, null, '4108']]);
 expect('a trip back keeps the regular update row and carries no driver status icon',
   drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__run > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
   [[true, false, 0], [true, false, 0], [true, false, 0], [true, false, 0]]);
@@ -432,10 +433,10 @@ expect('changing: the update open in its place as its words in a box, with Delet
 expect('deleting asks first', [text(tipDrawn('Deleting an update'), '.scheduler-tip__ask'), tipDrawn('Deleting an update').querySelectorAll('[data-editing] [data-edit-act]').map(b => b.dataset.editAct)],
   ['Delete this update?', ['cancel', 'delete']]);
 const after = tipDrawn('Close-out');
-expect('close-out: its heading and count, the post-trip entry, back at the yard against the plan, the money and where it is from, then a link for each thing close-out asks, and no footer',
+expect('close-out: its heading and count, the post-trip entry, back at the yard against the plan, the money and where it is from, then a link for what close-out asks, and no footer',
   [tipHead(after), /^Back at the yard .*, 40 min late$/.test(after.querySelector('.scheduler-tip__post .scheduler-tip__words')?.textContent ?? ''), text(after, '.scheduler-tip__by'),
     after.querySelectorAll('.scheduler-tip__close a.rux--link').map(a => [a.dataset.go, a.textContent]), after.querySelector('.rux--toggletip-actions')],
-  [['Close-out', '3'], true, 'After the trip · Samsara and Billing', [['billing', 'Actual miles missing'], ['billing', 'Invoice missing'], ['billing', 'Balance due $1,240']], null]);
+  [['Close-out', '1'], true, 'After the trip · Samsara and Billing', [['billing', 'Invoice missing']], null]);
 const afterSample = tipSample('Close-out');
 const afterUpdates = Tips.card(afterSample.rows[0].bars[0].trip, drawn('tips', 'Close-out')[0], 'updates', tipBoard(afterSample));
 expect('the same trip\'s Updates holds its updates alone, no post-trip entry or close-out links',

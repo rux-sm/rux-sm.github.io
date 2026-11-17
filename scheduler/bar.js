@@ -227,10 +227,11 @@
      its alert, which it never does, each mark in Carbon's status form: its
      money first, Paid in green once it is paid in full or Carbon's warning
      while a balance is owed that no PO covers, and a trip on a PO wears
-     neither; then, while close-out still asks anything, Carbon's Incomplete,
-     its symbol for a stepped process begun and not finished, as the button
-     that opens the trip's Updates at their post-trip entry. A trip with
-     nothing left to close wears its money alone, or nothing. */
+     neither; then the button that opens its close-out, the invoice's
+     number in blue once it has one, and Carbon's Incomplete, its symbol for
+     a stepped process begun and not finished, while it has none and
+     close-out asks for it. A trip with no invoice and nothing left to close
+     wears its money alone, or nothing. */
   const closeMarks = report => {
     if (!report) return null;
     const { WORDS } = window.SchedulerCloseOut;
@@ -247,13 +248,14 @@
       w.append(svgUse('#i-warning--alt--filled', '16', '0 0 32 32'));
       marks.push(w);
     }
-    if (report.asks.length) {
-      const b = el('button', 'scheduler-bar__close');
+    if (report.invoice || report.asks.length) {
+      const b = el('button', report.invoice ? 'scheduler-bar__close scheduler-bar__close--invoice' : 'scheduler-bar__close');
       b.type = 'button';
       b.setAttribute('aria-expanded', 'false');
-      b.setAttribute('aria-label', `Close-out: ${report.asks.map(a => WORDS[a]).join(' · ')}`);
+      const asked = report.asks.length ? `Close-out: ${report.asks.map(a => WORDS[a]).join(' · ')}` : 'Closed out';
+      b.setAttribute('aria-label', report.invoice ? `Invoice ${report.invoice}. ${asked}` : asked);
       b.dataset.cardOpener = '';
-      b.append(svgUse('#i-incomplete', '16', '0 0 32 32'));
+      b.append(report.invoice ? el('span', 'scheduler-bar__invoice', report.invoice) : svgUse('#i-incomplete', '16', '0 0 32 32'));
       marks.push(b);
     }
     if (!marks.length) return null;

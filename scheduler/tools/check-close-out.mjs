@@ -1,6 +1,6 @@
 // Runs close-out.js, what a trip that is back still asks, against sample
 // trips: when a trip counts as back on the office's clock, which trips ask
-// nothing, each thing a record can lack, and what a trip that is back came
+// nothing, the invoice and the PO or payment it asks for, and what a trip that is back came
 // to, its yard times and its money. The scripts it needs are loaded
 // beside it as a page loads them.
 import { readFileSync } from 'node:fs';
@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 const context = { window, Intl, Date, Math, Number, String, Map, Set, Array, JSON };
-for (const file of ['requirements.js', 'trip-shape.js', 'leg-facts.js', 'billing.js', 'past-midnight.js', 'week.js', 'close-out.js']) {
+for (const file of ['trip-shape.js', 'billing.js', 'past-midnight.js', 'week.js', 'close-out.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context);
 }
 const { FROM, isBack, asks, backAt } = window.SchedulerCloseOut;
@@ -27,8 +27,8 @@ const stops = (depart, back) => [
   { leg: 'outbound', type: 'return', position: 2, depart_prev: '17:00', arrive: back },
 ];
 const seat = { leg: 'outbound', bus_id: 'b1', active_roles: ['driver'], trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: 250 }] };
-// A day trip on Tuesday 20 October 2026, back at the yard at 6 PM, with its
-// record whole: a bus, a driver with their pay, actual miles, an invoice and paid.
+// A day trip on Tuesday 20 October 2026, back at the yard at 6 PM, closed
+// out: an invoice and paid.
 const done = {
   id: 't1', start_date: '2026-10-20', end_date: '2026-10-20', bus_count: 1,
   trip_stops: stops('06:00', '18:00'), trip_assignments: [seat],
@@ -54,22 +54,14 @@ expect('a trip that ended before close-out began asks nothing',
   asks({ ...done, start_date: '2026-10-01', end_date: '2026-10-01', actual_miles: null }, after), []);
 expect('close-out begins on its own day', FROM, '2026-10-15');
 expect('a placeholder asks nothing', asks({ ...done, trip_bar_color: 'amber', actual_miles: null }, after), []);
-expect('a leg short of a bus', asks({ ...done, bus_count: 2 }, after), ['bus']);
-expect('a seat with no driver', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [] }] }, after), ['driver']);
-expect('a co-driver turned on and not filled',
-  asks({ ...done, trip_assignments: [{ ...seat, active_roles: ['driver', 'co-driver'] }] }, after), ['driver']);
-expect('no actual miles', asks({ ...done, actual_miles: null }, after), ['miles']);
-expect('a seated driver with no pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: null }] }] }, after), ['pay']);
-expect('a pay of nothing is a pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: 0 }] }] }, after), []);
-expect('a seat that is off asks no pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [...seat.trip_drivers, { driver_id: 'd2', role: 'co-driver', pay: null }] }] }, after), []);
+expect('it asks nothing it does not need: no miles, no pay, no bus or driver',
+  asks({ ...done, actual_miles: null, bus_count: 2, trip_assignments: [] }, after), []);
 expect('no invoice', asks({ ...done, invoice_number: null }, after), ['invoice']);
-expect('a balance still owed', asks({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), ['balance']);
-expect('a balance a PO covers is not asked for', asks({ ...done, po_ref: 'PO-1', trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), []);
-expect('everything at once, in the card\'s order',
-  asks({ ...done, bus_count: 2, trip_assignments: [{ ...seat, active_roles: ['driver', 'co-driver'], trip_drivers: [{ driver_id: 'd1', role: 'driver' }] }], actual_miles: null, invoice_number: null, trip_payments: [] }, after),
-  ['bus', 'driver', 'miles', 'pay', 'invoice', 'balance']);
-expect('a leg with no bus at all asks for the bus, which has no seat yet',
-  asks({ ...done, trip_assignments: [] }, after), ['bus']);
+expect('neither a PO nor a payment', asks({ ...done, trip_payments: [] }, after), ['covered']);
+expect('a payment of part of the price is a payment', asks({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), []);
+expect('a PO with nothing paid', asks({ ...done, po_ref: 'PO-1', trip_payments: [] }, after), []);
+expect('a trip with no price asks for no PO or payment', asks({ ...done, quoted_price: null, trip_payments: [] }, after), []);
+expect('both at once, in the card\'s order', asks({ ...done, invoice_number: null, trip_payments: [] }, after), ['invoice', 'covered']);
 
 // ── what it came to ─────────────────────────────────────────────────────────
 const { report } = window.SchedulerCloseOut;
@@ -83,7 +75,9 @@ expect('a bus with no Samsara times is counted and gives none',
   [came.timed, report(done, after).back, report(done, after).timed, report(done, after).buses], [1, null, 0, 1]);
 const money = t => { const r = report(t, after); return [r.paid, r.paidOn, r.po, r.invoice, r.owed, r.asks]; };
 expect('paid in full, on the day its last payment landed, with its invoice', money(done), [true, '2026-10-21', null, '15800', 0, []]);
-expect('a balance owed with no PO', money({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }), [false, null, null, '15800', 600, ['balance']]);
+expect('a balance owed with no PO', money({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }), [false, null, null, '15800', 600, []]);
+expect('the invoice is the first row with a number when the column has none',
+  money({ ...done, invoice_number: null, invoiced: true, trip_invoices: [{ number: null }, { number: '15801' }] })[3], '15801');
 expect('a PO carries its reference and owes nothing', money({ ...done, po_ref: 'PO-1', trip_payments: [] }), [false, null, 'PO-1', '15800', 0, []]);
 expect('a trip before close-out began still reports its money, and asks nothing',
   money({ ...done, start_date: '2026-10-01', end_date: '2026-10-01', actual_miles: null }), [true, '2026-10-21', null, '15800', 0, []]);

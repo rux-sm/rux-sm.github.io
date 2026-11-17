@@ -10509,22 +10509,20 @@
       const paySection = section('Driver pay', seatMilesBox);
 
       /* CLOSED, the end of the tab once the trip is back: close-out.js's list
-         read off the trip with this tab's miles and pay as typed, so a field
-         filled here counts before Save. Closed when nothing is left. */
+         read off the trip with this tab's invoices, POs and payments as they
+         stand, so one added here counts before Save. Closed when nothing is
+         left. */
       const closedBox = el('div', 'scheduler-done');
       const closedSection = section(null, closedBox);
-      const NEEDS = { bus: 'a bus on every leg', driver: 'a driver in every seat', miles: 'actual miles',
-        pay: "each driver's pay", invoice: 'an invoice', balance: 'the balance paid' };
+      const NEEDS = { invoice: 'an invoice', covered: 'a PO or a payment' };
       const drawClosed = () => {
         const CloseOut = window.SchedulerCloseOut;
         closedSection.hidden = !CloseOut?.isBack(trip);
         if (closedSection.hidden) return;
-        const typed = new Map((editing?.fleet ? fleetLegs().flatMap(leg => editing.fleet[leg]) : [])
-          .flatMap(b => ROLES.map(r => b.seats[r.role]).filter(x => x.rowId).map(x => [String(x.rowId), x.pay])));
-        const actual = money(document.getElementById('scheduler-f-actmiles')?.value ?? '');
-        const asked = CloseOut.asks({ ...trip, actual_miles: actual,
-          trip_assignments: (trip.trip_assignments || []).map(a => ({ ...a, trip_drivers: (a.trip_drivers || []).map(d =>
-            (typed.has(String(d.id)) ? { ...d, pay: typed.get(String(d.id)) } : d)) })) });
+        const asked = CloseOut.asks({ ...trip,
+          invoiced: invPending.length > 0, invoice_number: invPending.find(i => i.number)?.number ?? null, invoice_status: null,
+          po_received: poPending.length > 0, po_ref: poPending[0]?.ref ?? null, trip_pos: poPending,
+          trip_payments: payPending });
         closedBox.classList.toggle('scheduler-done--on', !asked.length);
         if (!asked.length) {
           const head = el('p', 'scheduler-done__head');
@@ -10669,7 +10667,6 @@
               payInput.addEventListener('input', () => {
                 const n = money(payInput.value);
                 seat.pay = n == null ? null : Math.max(0, round2(n));
-                drawClosed();
               });
               return pair(field, payField);
             });
@@ -10691,7 +10688,6 @@
         }
         seatMilesBox.replaceChildren(...groups);
         paySection.hidden = !groups.length;
-        drawClosed();
       };
       seatMilesDrawn = drawSeatMiles;
       // Once the editor is built, since its Buses tab, which seats the drivers, comes after this one.
@@ -10829,9 +10825,9 @@
       };
       drawBillingList = drawBilling;
       // A PO or a payment can settle the price, which holds the lines' costs.
-      const drawMoney = () => { drawBilling(); if (linesLive) redrawLines(); };
+      const drawMoney = () => { drawBilling(); drawClosed(); if (linesLive) redrawLines(); };
       redrawPos = drawMoney;
-      redrawInvoices = drawBilling;
+      redrawInvoices = () => { drawBilling(); drawClosed(); };
       redrawPayments = drawMoney;
       redrawContract = drawBilling;
 
@@ -10845,7 +10841,6 @@
         closedSection,
       );
       drawClosed();
-      document.getElementById('scheduler-f-actmiles')?.addEventListener('input', drawClosed);
       syncEstHint();
       // The quoted price redraws the figures on `input`, so they follow each keystroke.
       document.getElementById('scheduler-f-quoted')?.addEventListener('input', drawSummary);

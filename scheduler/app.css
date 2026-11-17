@@ -1654,7 +1654,8 @@ button.scheduler-row-head__num:focus { outline: none; }
    would, 4px apart: Paid in the green Carbon gives a green tag's words,
    4.5 to 1 or more on Layer 02 in every theme, and in a tip the
    green `.scheduler-tip` mixes for its surface; the warning triangle as the
-   alert draws it; and the close-out button, Carbon's Incomplete in the
+   alert draws it; and the close-out button, the invoice's number in the
+   link blue at the label size Paid takes, or Carbon's Incomplete in the
    status blue, a glyph alone as the alert is. */
 .scheduler-bar__marks { flex: none; display: inline-flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); overflow: visible; }
 .scheduler-bar__paid {
@@ -1668,6 +1669,12 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar .scheduler-bar__close { display: inline-flex; align-items: center; }
 .scheduler-bar :is(.scheduler-bar__owed, .scheduler-bar__close) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-bar__close > svg { color: var(--rux-status-blue); }
+.scheduler-bar__invoice {
+  color: var(--rux-link-primary);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
 /* The footer spans the trip. */
 .scheduler-bar__update, .scheduler-bar__drivers { background: var(--scheduler-footer); color: var(--scheduler-footer-fg); }
 .scheduler-bar__update, .scheduler-bar__drivers {
@@ -1747,6 +1754,9 @@ button.scheduler-row-head__num:focus { outline: none; }
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   position: relative;
 }
+/* The close-out button that holds the invoice's number is as wide as the
+   number, with the glyph's height, so its fill and focus ring frame it. */
+.scheduler-bar .scheduler-bar__close--invoice { inline-size: auto; padding-inline: var(--rux-spacing-01); }
 /* A MARK TAKES A PRESS ON ITS ROW'S 18px BY 24px, Carbon's smallest target
    across and the row's own height, round the 16px glyph: 4px into the
    bar's inset or the gap either side, where no other mark stands, and never

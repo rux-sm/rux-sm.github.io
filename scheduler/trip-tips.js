@@ -716,7 +716,7 @@
     const paid = report.paid ? (report.paidOn ? `Paid ${dayWords(report.paidOn)}` : 'Paid') : null;
     const filed = [report.po ? `PO ${report.po}` : null, report.invoice ? `Invoice ${report.invoice}` : null].filter(Boolean);
     const from = [report.back != null || report.out != null ? 'Samsara' : null, 'Billing'].filter(Boolean).join(' and ');
-    const asks = report.asks.map(a => ({ id: a, go: GO[a], words: a === 'balance' ? `${WORDS.balance} ${usd(report.owed)}` : WORDS[a] }));
+    const asks = report.asks.map(a => ({ id: a, go: GO[a], words: WORDS[a] }));
     return { lines, paid, filed, by: `After the trip · ${from}`, asks };
   }
   /* The entry drawn: its lines as words, Paid among the filed ones in its

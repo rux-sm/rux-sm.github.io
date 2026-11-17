@@ -36,7 +36,7 @@ the board, the Trips page or the connector's `needs_attention`.
   3. **Waiting on customers:** the follow-ups, the due ones first, each
      named by what it waits on: confirmation, PO or deposit, or itinerary.
   4. **Back and still open:** the trips `close-out.js` says are back and
-     still lack a balance, an invoice, actual miles or driver pay.
+     still lack an invoice, or a PO or a payment.
   5. **Paperwork:** a driver's licence or medical card that has ended, ends
      within the Drivers page's 30 days, or is not on file.
 - **A section is its count and its first few rows, then All N into the page

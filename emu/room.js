@@ -101,12 +101,12 @@
   // The games this Mac holds or is being sent, each with how it stands.
   const mineNow = () => games.map(g => [g, standing(g)]).filter(([, st]) => st.state === 'held' || st.state === 'arriving');
   // Where each console stands in the room, by its system, each a share of
-  // the open space across and down from 0 to 1: kept in the room beside
-  // the consoles, under `spots`, which names no console.
-  const spots = () => room?.spots ?? {};
-  // The places a console never placed takes, in order: along the middle of
-  // the open space from its centre outward, then its foot, then its top.
-  const SLOTS = [0.5, 0.95, 0.1].flatMap(y => [0.5, 0.25, 0.75, 0.05, 0.95].map(x => [x, y]));
+  // the whole room across and down from 0 to 1: kept in the room beside
+  // the consoles, under `places`, which names no console.
+  const spots = () => room?.places ?? {};
+  // The places a console never placed takes, in order: in a row under the
+  // TV from the middle outward, then along the room's foot, then beside the TV.
+  const SLOTS = [0.62, 0.95].flatMap(y => [0.5, 0.3, 0.7, 0.1, 0.9].map(x => [x, y])).concat([[0.05, 0.1], [0.95, 0.1], [0.05, 0.35], [0.95, 0.35]]);
   // Where each of these consoles stands: its kept spot, else the first place
   // no other console is near, else one from its name, so it is the same each time.
   function spotsOf(list) {
@@ -122,11 +122,11 @@
   }
   // Which consoles stand in the room as it would be kept, each true while
   // plugged in: its own, else the console of each game this Mac holds,
-  // plugged in. A room kept before consoles stood anywhere has a `floor`,
-  // which is dropped.
+  // plugged in. A room kept before consoles stood anywhere in it has a
+  // `floor` or `spots`, which are dropped, so those consoles are placed afresh.
   const wishes = () => {
     if (!room) return Object.fromEntries(mineNow().map(([g]) => [g.system, true]));
-    const { floor, spots: kept, ...wish } = room;
+    const { floor, spots: old, places, ...wish } = room;
     return wish;
   };
   // Each console in the room, in the collection's order. One is on where it
@@ -683,7 +683,7 @@
   // Every console keeps the spot it is drawn at, so moving one moves no other.
   async function keep(wish, at = spots()) {
     const drawn = Object.fromEntries(spotsOf([...stand.keys()]));
-    room = { ...wish, spots: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([sys]) => sys in wish)) };
+    room = { ...wish, places: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([sys]) => sys in wish)) };
     render();
     if (!macName) return;
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }

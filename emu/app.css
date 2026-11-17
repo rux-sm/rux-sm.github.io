@@ -151,11 +151,11 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
    where the consoles stand. Inside it every size is a whole number of art
    pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
    pixel art lands on whole pixels. */
-.emu-room { --emu-px: 3px; display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--emu-px)); block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
+.emu-room { --emu-px: 3px; position: relative; display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--emu-px)); block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
 /* The TV, 112 by 72 art pixels: quiet at rest, lit while it says what a move
    does, red when a move is refused or failed. */
-.emu-tv { flex: none; inline-size: calc(112 * var(--emu-px)); block-size: calc(72 * var(--emu-px)); padding: calc(3 * var(--emu-px)) calc(3 * var(--emu-px)) calc(5 * var(--emu-px)); background: var(--rux-border-strong-01); }
+.emu-tv { position: relative; z-index: 1; flex: none; inline-size: calc(112 * var(--emu-px)); block-size: calc(72 * var(--emu-px)); padding: calc(3 * var(--emu-px)) calc(3 * var(--emu-px)) calc(5 * var(--emu-px)); background: var(--rux-border-strong-01); }
 .emu-tv__screen { block-size: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--rux-spacing-02); padding: var(--rux-spacing-03); text-align: center; background: var(--rux-background); color: var(--rux-text-primary); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-tv__rest[hidden] { display: none; }
 .emu-tv__name { font-size: .875rem; line-height: 1.125rem; font-weight: 600; }
@@ -168,12 +168,12 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-tv__undo[hidden] { display: none; }
 .emu-tv__undo, .emu-tv__undo:hover { color: inherit; }
 .emu-tv.emu-lit, .emu-tv.emu-no { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
-/* The open space: each console placed by room.js, --emu-x and --emu-y each a
-   share of the space from 0 to 1. The list takes no press itself, so a drop
-   between consoles lands on the space. */
-.emu-floor { position: relative; flex: 1; align-self: stretch; min-block-size: calc(40 * var(--emu-px)); }
+/* The space the consoles stand in, the whole room under the TV: each placed
+   by room.js, --emu-x and --emu-y each a share of the room from 0 to 1. The
+   list takes no press itself, so a drop between consoles lands on the room. */
+.emu-floor { position: absolute; inset: 0; }
 .emu-floor.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-.emu-floor__empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
+.emu-floor__empty { position: absolute; inset: 55% 0 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
 .emu-floor__empty[hidden] { display: none; }
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
 .emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; display: grid; justify-items: center; }

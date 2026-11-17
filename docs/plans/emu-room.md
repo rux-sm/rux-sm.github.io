@@ -35,7 +35,7 @@ Emu is unchanged.
   announces the same change to assistive technology. Errors that say where to
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
-- **The open space below the TV is only for the consoles in the room,** each
+- **The whole room around the TV is for the consoles in the room,** each
   standing where it was last left and dragged to move it, and moving one
   moves no other. One brought in stands where it was let go, and one brought
   without a drag in the first clear spot. Each console's spot is kept with this Mac's

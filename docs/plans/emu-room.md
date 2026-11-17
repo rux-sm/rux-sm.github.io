@@ -302,8 +302,6 @@ None open.
 
 - [ ] Give Rux Emu Helper a call that says whether the home server answers,
       and show it on the strip beside the collection.
-- [ ] Have Tidy up's Undo put the room back as it stood; today it keeps the
-      tidied rows.
 - [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
       a Mac to the Trash on `removeCarried`.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on

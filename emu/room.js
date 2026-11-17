@@ -97,8 +97,10 @@
   // console standing in it, true while plugged in; null until one is moved.
   let macName = null;
   let room = null;
-  // The drive's row from the last Update saved, for when that was.
+  // The drive's row from the last Update saved, for when that was, and the
+  // version of Rux Emu Helper Supabase holds, the one a Mac should run.
   let driveRow = null;
+  let newestHelper = null;
   // Consoles whose emulator is being set up now.
   const settingUp = new Set();
   // Consoles whose emulator is being taken off this Mac now, its saves and
@@ -384,13 +386,16 @@
   // at most half the room's width, else two.
   const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
   // THE STRIP AT REST: this Mac as Carbon's icon indicators. The helper and
-  // its version; the collection it found, a drive or the home server's
-  // share, or none, which opens Status; the room this Mac has free for games,
-  // a caution under LOW; and when Update last saved, a caution after STALE
-  // days. In a narrow window only the summary shows: the first caution, or Ready.
+  // its version, a caution opening Status where Supabase holds a newer one;
+  // the collection it found, a drive or the home server's share, or none,
+  // which is only quiet where this Mac keeps a library to play from; the
+  // room this Mac has free for games, a caution under LOW, or a caution
+  // where a current helper keeps no library; and when Update last saved, a
+  // caution after STALE days. In a narrow window only the summary shows: the
+  // worst, or Ready.
   const LOW = 10e9;
   const STALE = 30;
-  const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
+  const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], off: ['rux--icon-indicator--not-started', '#i-circle-dash'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
   function indicator(kind, text, href = null, cls = '') {
     const li = el('li', `rux--icon-indicator ${cls}`.trim());
     const [status, icon] = INDICATOR[kind];
@@ -402,11 +407,13 @@
   }
   function renderStrip() {
     const found = helper.collection;
+    const library = Boolean(helper.library);
+    const behind = newestHelper != null && Number(helper.version) < Number(newestHelper);
     const days = driveRow?.scanned_at ? (Date.now() - new Date(driveRow.scanned_at)) / 864e5 : null;
     const facts = [
-      ['ok', `Helper ${helper.version ?? ''}`.trim()],
-      found ? ['ok', found.network ? 'Server share' : `Drive ${found.drive}`] : ['bad', 'No games found', 'status.html'],
-      free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
+      behind ? ['warn', `Helper ${helper.version}, update to ${newestHelper}`, 'status.html'] : ['ok', `Helper ${helper.version ?? ''}`.trim()],
+      found ? ['ok', found.network ? 'Server share' : `Drive ${found.drive}`] : library ? ['off', 'No drive'] : ['bad', 'No games on this Mac', 'status.html'],
+      !library ? (behind ? null : ['warn', 'No library on this Mac', 'status.html']) : free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
       days == null ? ['warn', 'Never updated', 'status.html'] : [days > STALE ? 'warn' : 'ok', `Updated ${R.when(driveRow.scanned_at)}`, 'status.html'],
     ].filter(Boolean);
     const worst = facts.find(f => f[0] === 'bad') ?? facts.find(f => f[0] === 'warn');
@@ -786,23 +793,26 @@
     }));
   }
 
-  // THE DRAWERS. Each of the head's buttons opens its drawer over that side
-  // of the room, filled while it is open, and closes it again, as does the drawer's own close and
+  // THE DRAWERS. Each of the head's toggles opens its drawer over that side
+  // of the room, its icon filled and the button selected while it is open,
+  // and closes it again, as does the drawer's own close and
   // Escape. Both start closed each time the page loads, so the room shows whole.
+  const ICON = { 'emu-collection': ['#i-open-panel--left', '#i-open-panel--filled--left'], 'emu-mine': ['#i-open-panel--right', '#i-open-panel--filled--right'] };
   const drawers = [['emu-collection', 'emu-server-open', 'emu-server-close'], ['emu-mine', 'emu-mine-open', 'emu-mine-close']]
     .map(([id, opener, closer]) => {
       let shown = false;
       const show = () => {
         $(id).classList.toggle('emu-side--open', shown);
         $(opener).setAttribute('aria-expanded', String(shown));
-        $(opener).classList.toggle('rux--btn--primary', shown);
-        $(opener).classList.toggle('rux--btn--tertiary', !shown);
+        $(opener).classList.toggle('rux--btn--selected', shown);
+        $(opener).querySelector('use').setAttribute('href', ICON[id][Number(shown)]);
       };
       const set = to => {
         shown = to;
         show();
       };
-      $(opener).addEventListener('click', () => set(!shown));
+      // Opened, a drawer takes the focus on its title, as Carbon's side panel does.
+      $(opener).addEventListener('click', () => { set(!shown); if (shown) $(`${id}-h`).focus({ preventScroll: true }); });
       $(closer).addEventListener('click', () => { set(false); $(opener).focus(); });
       show();
       return { id, opener, set, open: () => shown };
@@ -1428,7 +1438,9 @@
       [rows, notes, saves, mac, emulators, live] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(),
         R.thisMac.read(), R.emulators(), R.helper.onMac ? R.helper.mac() : null]);
       macName = live?.mac ?? null;
-      [room, driveRow] = await Promise.all([macName ? R.data.room(macName) : null, R.data.drive()]);
+      let files;
+      [room, driveRow, files] = await Promise.all([macName ? R.data.room(macName) : null, R.data.drive(), R.data.files()]);
+      newestHelper = R.installerOf(files, 'Rux Emu Helper')?.name.match(/-(\d+)-macOS/)?.[1] ?? null;
     } catch (error) {
       console.error(error);
       R.notice('Emu could not read the collection. Try again.');
@@ -1456,5 +1468,13 @@
   // The helper may be started or quit, an emulator installed or a download
   // ended, while the page is away: it is read again when the page is back.
   window.addEventListener('focus', () => { if (games.length) look(); });
+  // Update may have saved from another tab while the page was away, so when
+  // it last did is read again too, and the strip redrawn.
+  window.addEventListener('focus', async () => {
+    const row = await R.data.drive().catch(() => driveRow);
+    if (row?.scanned_at === driveRow?.scanned_at) return;
+    driveRow = row;
+    if (helper) renderStrip();
+  });
   load();
 })();

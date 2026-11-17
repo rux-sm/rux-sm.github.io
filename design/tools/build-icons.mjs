@@ -66,6 +66,10 @@ const ICONS = [
   // this sprite -- which is why check-icons counts it among the symbols nothing
   // points at rather than failing on it.
   'color-palette',
+  // A SIDE PANEL'S TOGGLE, Carbon's open-panel at each side, outline while the
+  // panel is shut and filled while it is open: Emu's room opens its drawers
+  // from them, as the scheduler's head opens its panels from icon buttons.
+  'open-panel--left', 'open-panel--filled--left', 'open-panel--right', 'open-panel--filled--right',
   // A GROUP OF PEOPLE, asked for by Scheduler 2026-09-07. A roster control
   // sitting in a toolbar Carbon draws as icons had to be a text button, because
   // the sprite held exactly one person in 62 -- `user--avatar`, which the shell's

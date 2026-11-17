@@ -19,3 +19,10 @@
 [data-theme="rux-dark"] {
   --emu-tile-edge: 1px solid var(--rux-border-subtle-01);
 }
+/* A tile's head holds its controls in from its edges as the scheduler's
+   heads do, by the theme's toolbar inset and gap (docs/button-spacing.md in
+   Design): flush and edge to edge in Carbon's themes and Rux dark, in from
+   a rounded tile's corner in the rest. */
+[data-theme="geist-dark"] { --emu-head-inset: var(--rux-spacing-05); --emu-head-gap: var(--rux-spacing-03); }
+[data-theme="ant-dark"] { --emu-head-inset: 8px; --emu-head-gap: var(--rux-spacing-03); }
+[data-theme^="apple-"] { --emu-head-inset: var(--rux-spacing-04); --emu-head-gap: var(--rux-spacing-03); }

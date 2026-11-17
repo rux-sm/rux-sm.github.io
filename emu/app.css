@@ -140,12 +140,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__head[hidden] { display: none; }
 .emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
-.emu-side__head { justify-content: space-between; padding-inline-start: var(--rux-spacing-05); }
-/* The room's head: Rux's Server at its start, the room's name, the strip
-   taking what is left, then My Room and the room's menu at its end. Its
-   name gives way first in a narrow window. */
-.emu-head { gap: 0; }
+.emu-side__head { justify-content: space-between; padding-block: var(--emu-head-inset, 0); padding-inline: var(--rux-spacing-05) var(--emu-head-inset, 0); }
+/* The room's head: Rux's Server's toggle at its start, the room's name, the
+   strip taking what is left, then My Room's toggle and the room's menu at
+   its end, in by the theme's inset (theme.css). Its name gives way first in
+   a narrow window. */
+.emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); }
 .emu-head .emu-tile__title { padding-inline: var(--rux-spacing-05); }
+.emu-tile__title:focus { outline: none; }
+.emu-tile__title:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 @media (max-width: 41.98rem) { .emu-head .emu-tile__title { display: none; } }
 /* THE STRIP: the room's one place for words, on one line. At rest it is
    this Mac's facts as Carbon's icon indicators; while a move runs or after

@@ -28,17 +28,22 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
-- **The room tile's head is Rux's Server's button, the room's name, the
-  strip, My Room's button and the room's ⋮ menu,** on the md size token's
-  height over a rule, its name in heading-compact-02, as the scheduler's
-  week name is. The two buttons are outlined while their drawer is closed
-  and filled while it is open, and the menu holds Tidy up and Put
-  everything away. In a narrow window the room's name gives way first.
+- **The room tile's head is Rux's Server's toggle, the room's name, the
+  strip, My Room's toggle and the room's ⋮ menu,** on the md size token's
+  height over a rule, in by the theme's toolbar inset as the scheduler's
+  heads are, its name in heading-compact-02, as the scheduler's week name
+  is. Each toggle is Carbon's open-panel icon for its side, named by its
+  tooltip, filled and selected while its drawer is open, and the menu holds
+  Tidy up and Put everything away. In a narrow window the room's name gives
+  way first.
 - **The strip is the room's one communication surface.** At rest it is
-  Carbon's icon indicators: the helper and its version; the collection it
-  found, a drive or the home server's share, or none, which opens Status;
-  this Mac's free space, a caution under 10 GB; and when Update last saved,
-  opening Status, a caution after 30 days. In a window under 66rem it is
+  Carbon's icon indicators: the helper and its version, a caution opening
+  Status where Supabase holds a newer one; the collection it found, a drive
+  or the home server's share, quiet as "No drive" where this Mac keeps a
+  library, and a caution where it has neither; this Mac's free space, a
+  caution under 10 GB, or a caution where a current helper keeps no
+  library; and when Update last saved, opening Status, a caution after 30
+  days, read again when the page comes back. In a window under 66rem it is
   one indicator, the first caution, or Ready. While a room action is
   underway it names that one action in their place: setting up an emulator,
   downloading a game, getting a game ready to play or playing a
@@ -80,7 +85,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   window leaves the pile as it is, and things are put back by hand.
 - **Each drawer is a tile floating over its side of the room, under the
   head,** 22rem wide and 8px in from the room's edges, raised with Carbon's
-  raised shadow, its own head its title and close, and the rest stays in
+  raised shadow, its own head its title and close, its title taking the
+  focus as it opens, as Carbon's side panel's does, and the rest stays in
   view, so a drag out of it lands a short move away. It floats rather than
   standing beside the room, so opening one never narrows the room and
   sweeps its things. It unfolds from its side on Carbon's moderate-02.

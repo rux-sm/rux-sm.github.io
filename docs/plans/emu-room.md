@@ -35,12 +35,19 @@ Emu is unchanged.
   announces the same change to assistive technology. Errors that say where to
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
-- **The whole room is for the TV and the consoles in the room,** each
-  standing where it was last left and dragged to move it, and moving one
-  moves no other. One brought in stands where it was let go, and one brought
-  without a drag in the first clear spot clear of the TV. Each one's spot is kept with this Mac's
-  room, in the `room` column of its `emu_macs` row. An empty room says
-  faintly "Drag a console here from Server."
+- **The whole room is for the TV and the consoles in the room,** each a
+  thing on the floor standing where it was last left, its top-left corner in
+  art pixels from the room's, dragged to move it. One brought in stands
+  where it was let go, and one brought without a drag in the first clear
+  spot clear of the TV. Each one's spot is kept with this Mac's room, in the
+  `room` column of its `emu_macs` row. An empty room says faintly "Drag a
+  console here from Server."
+- **A smaller window sweeps the room's things into a pile, and they stay
+  there.** Its edges push in whatever is past them, and whatever then
+  overlaps takes the nearest free spot, so things end up touching but not
+  overlapping while the room can hold them; the thing just dropped holds
+  still and the others make room. The swept spots are kept, so a larger
+  window leaves the pile as it is, and things are put back by hand.
 - **Two solid buttons at the foot of the page, Server and My Stuff, each open
   their drawer,** on Design's foot bar, `frame-bar` in
   `design/css/rux-frame.css`. A drawer slides over its side of the room and

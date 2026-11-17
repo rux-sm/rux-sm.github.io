@@ -154,11 +154,12 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-room { --emu-px: 3px; position: relative; block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
 /* The TV: a CRT drawn as brand/consoles/tv.png, 80 by 60 art pixels, placed
-   by room.js as a console is and dragged the same way. What it says sits on
+   by room.js as a console is, --emu-left and --emu-top in art pixels, and
+   dragged the same way. What it says sits on
    its glass, 54 by 36 art pixels from 6 across and 16 down. The glass is
    dark in every theme, so the screen reads Gray 100's tokens: quiet at rest,
    lit while it says what a move does, red when a move is refused or failed. */
-.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-x, .5) * 100%); inset-block-start: calc(var(--emu-y, 0) * 100%); transform: translate(calc(var(--emu-x, .5) * -100%), calc(var(--emu-y, 0) * -100%)); inline-size: calc(80 * var(--emu-px)); block-size: calc(60 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(60 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
 .emu-tv__screen { position: absolute; inset-inline-start: calc(6 * var(--emu-px)); inset-block-start: calc(16 * var(--emu-px)); inline-size: calc(54 * var(--emu-px)); block-size: calc(36 * var(--emu-px)); border-radius: calc(2 * var(--emu-px)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--rux-spacing-02); padding: var(--rux-spacing-03); overflow: hidden; text-align: center; background: transparent; color: var(--rux-text-primary); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-tv__rest[hidden] { display: none; }
 .emu-tv__name { font-size: .875rem; line-height: 1.125rem; font-weight: 600; }
@@ -171,13 +172,13 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-tv__undo[hidden] { display: none; }
 .emu-tv__undo, .emu-tv__undo:hover { color: inherit; }
 /* The space the consoles stand in, the whole room under the TV: each placed
-   by room.js, --emu-x and --emu-y each a share of the room from 0 to 1. The
+   by room.js, --emu-left and --emu-top its top-left corner in art pixels. The
    list takes no press itself, so a drop between consoles lands on the room. */
 .emu-floor { position: absolute; inset: 0; }
 .emu-floor__empty { position: absolute; inset: 55% 0 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
 .emu-floor__empty[hidden] { display: none; }
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
-.emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; display: grid; justify-items: center; }
+.emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); pointer-events: auto; display: grid; justify-items: center; }
 
 /* A console: its drawing over its socket and its light. A home console's
    box is 36 by 24 art pixels; a handheld is as tall, cut to its width. */

@@ -101,38 +101,25 @@
   const emulatorOf = system => emulators?.systems?.[system]?.emulator ?? null;
   // The games this Mac holds or is being sent, each with how it stands.
   const mineNow = () => games.map(g => [g, standing(g)]).filter(([, st]) => st.state === 'held' || st.state === 'arriving');
-  // Where each console stands in the room, by its system, each a share of
-  // the whole room across and down from 0 to 1: kept in the room beside
-  // the consoles, under `places`, which names no console.
-  const spots = () => room?.places ?? {};
-  // The places a console never placed takes, in order: in a row under the
-  // TV from the middle outward, then along the room's foot, then beside the TV.
+  // Where each thing in the room stands, by its system or `tv` for the TV:
+  // its top-left corner in art pixels from the room's top-left, kept under
+  // `placed`. A thing stays where it was left or pushed, whatever the
+  // window does after.
+  const placed = () => room?.placed ?? {};
+  // Where a thing with no place yet starts, as a share of the room across
+  // and down: the TV at the top in the middle, and a console at the first of
+  // these that nothing covers, in a row under the TV from the middle
+  // outward, then along the room's foot, then beside the TV. A room kept as
+  // shares, under `places`, starts each thing from its share.
   const SLOTS = [0.62, 0.95].flatMap(y => [0.5, 0.3, 0.7, 0.1, 0.9].map(x => [x, y])).concat([[0.05, 0.1], [0.95, 0.1], [0.05, 0.35], [0.95, 0.35]]);
-  // Where the TV stands, kept under `places` as `tv`: at the top in the middle until it is moved.
-  const tvAt = () => spots().tv ?? [0.5, 0];
-  // Where each of these consoles stands: its kept spot, else the first place
-  // no other console and not the TV is near, else one from its name, so it
-  // is the same each time.
-  function spotsOf(list) {
-    const kept = spots();
-    const out = new Map(list.filter(sys => kept[sys]).map(sys => [sys, kept[sys]]));
-    const tv = tvAt();
-    const near = ([x, y]) => (Math.abs(tv[0] - x) < 0.25 && Math.abs(tv[1] - y) < 0.4)
-      || [...out.values()].some(([a, b]) => Math.abs(a - x) < 0.15 && Math.abs(b - y) < 0.3);
-    for (const sys of list) {
-      if (out.has(sys)) continue;
-      const n = [...sys].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
-      out.set(sys, SLOTS.find(slot => !near(slot)) ?? [(n % 97) / 96, (n % 13) / 12]);
-    }
-    return out;
-  }
+  const shareOf = key => room?.places?.[key] ?? (key === 'tv' ? [0.5, 0] : null);
   // Which consoles stand in the room as it would be kept, each true while
   // plugged in: its own, else the console of each game this Mac holds,
   // plugged in. A room kept before consoles stood anywhere in it has a
   // `floor` or `spots`, which are dropped, so those consoles are placed afresh.
   const wishes = () => {
     if (!room) return Object.fromEntries(mineNow().map(([g]) => [g.system, true]));
-    const { floor, spots: old, places, ...wish } = room;
+    const { floor, spots: old, places, placed: at, ...wish } = room;
     return wish;
   };
   // Each console in the room, in the collection's order. One is on where it
@@ -290,22 +277,85 @@
     if (!mac) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderTv();
-    const [tx, ty] = tvAt();
-    $('emu-tv').style.setProperty('--emu-x', tx);
-    $('emu-tv').style.setProperty('--emu-y', ty);
     stand = consolesNow();
-    // Each console where it stands, the ones nearer the foot drawn over those behind.
-    const at = spotsOf([...stand.keys()]);
-    $('emu-units').replaceChildren(...[...stand].sort((a, b) => at.get(a[0])[1] - at.get(b[0])[1]).map(([system, state]) => {
-      const li = unit(system, state);
-      const [x, y] = at.get(system);
-      li.style.setProperty('--emu-x', x);
-      li.style.setProperty('--emu-y', y);
-      return li;
-    }));
+    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => unit(system, state)));
     $('emu-floor-empty').hidden = stand.size > 0;
+    settle();
     showSound();
     renderStuff();
+  }
+  // THE SWEEP. The TV and the consoles are things on the floor. Each starts
+  // where it was kept; the room's edges push whatever is past them back in,
+  // and whatever then overlaps moves to the nearest free spot, so a smaller
+  // window sweeps them into a pile, touching but not overlapping while the
+  // room can hold them. The thing just moved holds still and the others
+  // make room. Where a sweep
+  // moved anything, the room is kept as it now stands, so nothing returns
+  // when the window grows: things are put back by hand. A room never kept
+  // is laid out afresh each time and not kept by a sweep.
+  let held = null;
+  // Where each thing is drawn, in art pixels, after the last sweep.
+  let drawn = {};
+  let sweptFor = 0;
+  function settle() {
+    const px = pxOf();
+    const box = $('emu-units');
+    const W = box.clientWidth / px;
+    const H = box.clientHeight / px;
+    const kept = placed();
+    const items = [['tv', $('emu-tv')], ...[...box.children].map(li => [li.dataset.system, li])].map(([key, node]) => {
+      const at = kept[key];
+      return { key, node, w: node.offsetWidth / px, h: node.offsetHeight / px, x: at?.[0] ?? 0, y: at?.[1] ?? 0, loose: !at, still: key === held };
+    });
+    const inside = n => { n.x = Math.min(Math.max(0, n.x), Math.max(0, W - n.w)); n.y = Math.min(Math.max(0, n.y), Math.max(0, H - n.h)); };
+    const over = (a, b) => [Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y)];
+    const clear = n => items.every(m => m === n || m.loose || over(n, m).some(o => o <= 0));
+    // A thing with no place takes its share, or the first slot nothing covers.
+    for (const n of items.filter(i => i.loose)) {
+      const share = shareOf(n.key);
+      for (const [sx, sy] of share ? [share] : SLOTS) {
+        n.x = sx * (W - n.w);
+        n.y = sy * (H - n.h);
+        if (clear(n)) break;
+      }
+      n.loose = false;
+    }
+    // The edges push in whatever is past them. Then each thing, the one just
+    // moved first and then those the edges pushed least, keeps its spot if
+    // nothing placed covers it, else takes the nearest free spot beside what
+    // is placed, so a pile packs edge to edge. Where none is free it stays
+    // where the edge left it.
+    for (const n of items) { n.want = [n.x, n.y]; inside(n); n.shove = Math.hypot(n.x - n.want[0], n.y - n.want[1]); }
+    const order = [...items].sort((a, b) => Number(b.still) - Number(a.still) || a.shove - b.shove || a.y - b.y || a.x - b.x);
+    const done = [];
+    const fits = n => n.x >= 0 && n.y >= 0 && n.x + n.w <= W + 0.01 && n.y + n.h <= H + 0.01 && done.every(m => over(n, m).some(o => o <= 0.01));
+    for (const n of order) {
+      const [x0, y0] = [n.x, n.y];
+      const xs = [x0, 0, W - n.w, ...done.flatMap(m => [m.x - n.w, m.x + m.w])];
+      const ys = [y0, 0, H - n.h, ...done.flatMap(m => [m.y - n.h, m.y + m.h])];
+      let best = null;
+      for (const x of xs) {
+        for (const y of ys) {
+          const d = Math.hypot(x - x0, y - y0);
+          if (best && d >= best[2]) continue;
+          Object.assign(n, { x, y });
+          if (fits(n)) best = [x, y, d];
+        }
+      }
+      Object.assign(n, best ? { x: best[0], y: best[1] } : { x: x0, y: y0 });
+      done.push(n);
+    }
+    drawn = {};
+    for (const n of items) {
+      drawn[n.key] = [Math.round(n.x * 10) / 10, Math.round(n.y * 10) / 10];
+      n.node.style.setProperty('--emu-left', drawn[n.key][0]);
+      n.node.style.setProperty('--emu-top', drawn[n.key][1]);
+    }
+    const swept = items.some(n => String(kept[n.key]) !== String(drawn[n.key]));
+    clearTimeout(sweptFor);
+    // Kept once the window has stopped moving, and never under a held thing.
+    const later = () => { sweptFor = setTimeout(() => (drag?.on ? later() : keep(wishes())), 800); };
+    if (room && swept) later();
   }
   // MY STUFF: this Mac's games, favourites first and then A to Z. A
   // favourite this Mac lacks is dimmed, one arriving sits under a veil that
@@ -550,8 +600,13 @@
   }
   const render = () => { renderRoom(); renderServer(); };
   // The room's art pixel follows its width, so it is set again when the
-  // room's box changes.
-  new ResizeObserver(() => { if (helper) $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`); }).observe($('emu-room'));
+  // room's box changes, and its edges sweep what they reach.
+  new ResizeObserver(() => {
+    if (!helper) return;
+    $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
+    held = null;
+    settle();
+  }).observe($('emu-room'));
 
   // What the helper says of this Mac, read again; while a game arrives it is
   // read every second, so its veil lifts.
@@ -689,34 +744,37 @@
   window.addEventListener('pagehide', () => { for (const { timer, go } of leaving.values()) { clearTimeout(timer); go(); } });
   // A CONSOLE'S MOVES. The room is kept whole each time one moves; a Mac
   // Status has not saved yet has no row to keep it on, and is told so.
-  // Every console and the TV keep the spot they are drawn at, so moving one moves no other.
-  async function keep(wish, at = spots()) {
-    const drawn = { ...Object.fromEntries(spotsOf([...stand.keys()])), tv: tvAt() };
-    room = { ...wish, places: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([sys]) => sys in wish || sys === 'tv')) };
+  // Every console and the TV keep the spot they are drawn at, so moving one
+  // moves no other; `at` gives the spots that change.
+  async function keep(wish, at = {}) {
+    room = { ...wish, placed: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([key]) => key in wish || key === 'tv')) };
     render();
     if (!macName) return;
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }
     catch (error) { console.error(error); sayNo('The room could not be kept. Try again.'); }
   }
-  // Where a console let go at a point stands: its middle under the pointer,
-  // as shares of the open space, kept inside it. `size` is its width and height.
+  // Where a thing let go at a point stands: its middle under the pointer, its
+  // top-left in art pixels; the sweep keeps it inside the room. `size` is its
+  // width and height in CSS pixels.
   function spotAt(point, [w, h]) {
-    const f = $('emu-floor').getBoundingClientRect();
-    const share = (at, from, size, own) => Math.round(Math.min(1, Math.max(0, (at - from - own / 2) / Math.max(1, size - own))) * 1000) / 1000;
-    return [share(point.x, f.left, f.width, w), share(point.y, f.top, f.height, h)];
+    const f = $('emu-units').getBoundingClientRect();
+    const px = pxOf();
+    return [Math.round((point.x - f.left - w / 2) / px), Math.round((point.y - f.top - h / 2) / px)];
   }
   // A console in the room, or the TV as `tv`, moved to a spot.
   function moveTo(system, spot) {
+    held = system;
     sfx.drop();
-    return keep(wishes(), { ...spots(), [system]: spot });
+    return keep(wishes(), { [system]: spot });
   }
   // Into the room, at a spot where it was let go: plugged in already where
   // this Mac has its emulator.
   async function bring(system, spot = null) {
     if (stand.has(system)) return;
+    held = system;
     const ready = plays(system);
     sfx.drop();
-    await keep({ ...wishes(), [system]: ready }, spot ? { ...spots(), [system]: spot } : spots());
+    await keep({ ...wishes(), [system]: ready }, spot ? { [system]: spot } : {});
     if (ready) say(`${emulatorOf(system)} is already set up. The ${R.systemName(system)} is ready.`);
   }
   function putBack(system) {

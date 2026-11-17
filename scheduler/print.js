@@ -162,17 +162,14 @@
      the word, with the old columns. What a print marks and the quote's lines
      are still kept by the word. */
   const SHAPE = window.SchedulerTripShape;
-  const legRow = (trip, leg) => (SHAPE && Array.isArray(trip?.trip_legs)
-    ? SHAPE.legOf(trip, leg) ?? SHAPE.legOfWord(trip, leg) ?? SHAPE.legOfRoute(trip, leg) : null);
+  const {
+    legOfKey: legRow, namesRoute, routeOfKey, wordOfKey: wordOf, isReturnKey: isReturn,
+    busesOfKey: legBuses, onLegKey: onLeg, onRouteKey: onRoute, stopsOfKey: stopsOf,
+  } = SHAPE;
   /* A ROUTE'S PAPERS. On a leg of more than one route, a copy is named by
      its route's id, which `legRow` finds the leg of, so the leg's days, files
      and contacts are the route's too; its stops and vehicles are the route's
-     own. A leg's key names its first route's stops. */
-  const namesRoute = (trip, key) => !!legRow(trip, key)?.routes.some(r => r.id === key);
-  const routeOfKey = (trip, key) => {
-    const l = legRow(trip, key);
-    return l ? l.routes.find(r => r.id === key) ?? l.routes[0] ?? null : null;
-  };
+     own. */
   // A route's name on a leg of more than one, `Route 2` where it has none; null otherwise.
   const routeName = (trip, key) => {
     const l = legRow(trip, key);
@@ -180,27 +177,16 @@
     const at = l.routes.findIndex(r => r.id === key);
     return l.routes[at].name || `Route ${at + 1}`;
   };
-  // The old word a leg mirrors, and its key: its id, or the word on a trip with no legs.
-  const wordOf = (trip, leg) => legRow(trip, leg)?.word ?? (leg === 'return' ? 'return' : 'outbound');
+  // The leg's key: its id, or the word on a trip with no legs.
   const legKey = (trip, leg) => legRow(trip, leg)?.id ?? wordOf(trip, leg);
-  const isReturn = (trip, leg) => wordOf(trip, leg) === 'return';
   // The key of the leg a vehicle is on: its route's leg, or its old word.
   const legOfVehicle = (trip, a) => (SHAPE && Array.isArray(trip?.trip_legs) && SHAPE.legOfRoute(trip, a?.route_id)?.id)
     || legKey(trip, a?.leg || 'outbound');
-  // The days a leg runs, and the buses it takes.
+  // The days a leg runs.
   const legStart = (trip, leg) => (legRow(trip, leg) ? legRow(trip, leg).start
     : isReturn(trip, leg) ? (trip.return_start_date || trip.end_date) : trip.start_date);
   const legEnd = (trip, leg) => (legRow(trip, leg) ? legRow(trip, leg).end
     : isReturn(trip, leg) ? (trip.return_end_date || trip.end_date) : trip.end_date);
-  const legBuses = (trip, leg) => (legRow(trip, leg) ? legRow(trip, leg).busCount
-    : isReturn(trip, leg) ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count);
-  /* Whether a vehicle is on the leg, or on the route a route's key names:
-     on one of the leg's routes, or naming its word. */
-  const onLeg = (trip, leg, row) => (!legRow(trip, leg) ? (row?.leg || 'outbound') === wordOf(trip, leg)
-    : namesRoute(trip, leg) ? row?.route_id === leg : legRow(trip, leg).routes.some(r => r.id === row?.route_id));
-  // Whether a stop is on the route a key names, a leg's first where it names a leg, or naming its word.
-  const onRoute = (trip, key, row) => (legRow(trip, key) ? row?.route_id === routeOfKey(trip, key)?.id
-    : (row?.leg || 'outbound') === wordOf(trip, key));
   // What a vehicle's papers print for: its route where its leg has more than one, and its leg otherwise.
   const placeOfVehicle = (trip, a) => {
     const leg = legOfVehicle(trip, a);
@@ -880,20 +866,8 @@
     return b ? `${day(a)} – ${day(b)}` : day(a);
   };
 
-  /* The legs a trip has, by their keys, which is the list of copies. It
-     reads the stops rather than the buses because the stops are what this
-     form prints: a leg with a bus and no route has nothing to fill in. A
-     trip with no stops at all still offers its first leg, blank. */
-  const legsOf = trip => {
-    const legs = SHAPE && Array.isArray(trip?.trip_legs) ? SHAPE.legsOf(trip) : [];
-    if (legs.length) {
-      const found = legs.filter(l => (trip.trip_stops || []).some(s => l.routes.some(r => r.id === s.route_id))).map(l => l.id);
-      return found.length ? found : [legs[0].id];
-    }
-    const have = new Set((trip.trip_stops || []).map(s => s.leg || 'outbound'));
-    const found = LEGS.filter(leg => have.has(leg));
-    return found.length ? found : ['outbound'];
-  };
+  // The legs a trip has, by their keys, which is the list of copies.
+  const legsOf = SHAPE.keysWithStops;
 
   /* The itinerary's copies: each leg, and on a leg of more than one route
      each route with stops, by its id, so every group's drivers have their
@@ -906,10 +880,6 @@
   });
   // A copy's name in the list of copies: its leg's days, and its route's name on a leg of more than one.
   const copyDays = (trip, key) => [legDays(trip, key), routeName(trip, key)].filter(Boolean).join(', ');
-
-  const stopsOf = (trip, leg) => (trip.trip_stops || [])
-    .filter(s => onRoute(trip, leg, s))
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   /* A STOP'S TIMES, labelled by what the driver needs from that row rather
      than by the column they are kept in.
@@ -1554,121 +1524,18 @@
     return negative ? -n : n;
   };
 
-  /* THE TWO TIMES THE QUOTE NAMES ARE THE GROUP'S, not the bus's. The group
-     leaves the pickup at the first stop's `depart_prev` and is back at the
-     yard row's, which is where the Route tab keeps what the editor labels
-     Group departs and Group arrives. A leg that never comes back -- a one-way
-     -- has no yard row, and its arrival is the last stop's. */
-  function quoteTimes(trip) {
-    const legs = legsOf(trip);
-    const out = stopsOf(trip, legs[0]);
-    const home = stopsOf(trip, legs.at(-1));
-    return {
-      leave: out.find(s => s.type === 'stop')?.depart_prev || null,
-      back: home.find(s => s.type === 'return')?.depart_prev
-        || home.filter(s => s.type === 'stop').at(-1)?.arrive || null,
-    };
-  }
-
-  /* The last day of the trip, the latest any leg ends, which the
-     description's range and the agreement's trip date both end on. A blank
-     form's trip has no legs and is read by its own columns. */
-  const lastDay = trip => SHAPE.daysOf(trip)?.last
-    ?? (trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date);
-
-  /* Whether a leg's line names 56 seats: a vehicle on it carries the 56
-     passengers need. A slot with no row yet asks for what the trip does, as
-     the Buses tab seeds it. */
-  function asks56(trip, leg) {
-    const rows = (trip.trip_assignments || []).filter(a => onLeg(trip, leg, a));
-    const count = legBuses(trip, leg);
-    return rows.some(a => a.needs?.pax56 === true)
-      || (rows.length < Math.max(Number(count) || 0, 1) && needsOf(trip).some(n => n.id === 'pax56'));
-  }
-
-  /* The line item's description, in the wording the Billing tab copies. */
-  // The trip's first leg, whose pickup and buses a whole-trip line names.
-  const firstLegOf = trip => (SHAPE && Array.isArray(trip?.trip_legs) && SHAPE.firstLeg(trip)?.id) || 'outbound';
-  function quoteDescription(trip) {
-    const times = quoteTimes(trip);
-    return window.SchedulerQuoteText.description({
-      type: trip.trip_type,
-      buses: legRow(trip, firstLegOf(trip)) ? legBuses(trip, firstLegOf(trip)) : trip.bus_count,
-      pax56: asks56(trip, firstLegOf(trip)),
-      pickup: stopsOf(trip, firstLegOf(trip)).find(s => s.type === 'pickup')?.address
-        || trip.pickup_address || '',
-      destination: trip.destination,
-      from: trip.start_date,
-      to: lastDay(trip),
-      leave: times.leave,
-      back: times.back,
-    });
-  }
-
-  /* ONE LEG'S DESCRIPTION, for a drop-off and pickup trip, which is quoted
-     as two rentals. Each names its own buses, seats, days and the time the
-     group leaves on that leg, and neither says when it arrives: to the
-     customer each leg is a departure. Both are handed the trip's own pickup
-     and destination, and quote-text.js names the leg and runs the way back
-     from the destination, so the two lines read as one journey there and
-     back. */
-  function legDescription(trip, leg) {
-    const out = wordOf(trip, leg);
-    const shaped = legRow(trip, leg);
-    const stops = stopsOf(trip, leg ?? out);
-    return window.SchedulerQuoteText.description({
-      type: trip.trip_type,
-      buses: legBuses(trip, leg ?? out),
-      pax56: asks56(trip, leg ?? out),
-      pickup: stopsOf(trip, firstLegOf(trip)).find(s => s.type === 'pickup')?.address
-        || trip.pickup_address || '',
-      destination: trip.destination,
-      from: shaped ? shaped.start : out === 'return' ? trip.return_start_date : trip.start_date,
-      to: shaped ? shaped.end : out === 'return' ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
-      leave: stops.find(s => s.type === 'stop')?.depart_prev || null,
-      leg: out,
-    });
-  }
-
-  /* THE LINES THE QUOTE PRINTS: the trip's saved quote lines, in order, as the
-     Billing tab keeps them. A rental line left without words takes the trip's
-     own, a leg's on a drop-off and pickup trip. A trip with no lines is its
-     quoted price as the rental, and a drop-off and pickup is two rentals, one
-     per leg, the price shared between them to the cent. */
-  function quoteLines(trip) {
-    const split = trip.trip_type === 'dropoff_pickup';
-    const count = n => (n == null || !Number.isFinite(Number(n)) ? '' : String(Number(n)));
-    const saved = (trip.trip_quote_lines || []).slice()
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-    if (saved.length) {
-      return saved.map(l => ({
-        item: l.item || '',
-        desc: l.description
-          || (l.kind === 'rental' ? (split ? legDescription(trip, l.leg) : quoteDescription(trip)) : ''),
-        qty: count(l.quantity),
-        cost: l.cost == null ? '' : money(l.cost),
-        total: l.amount == null ? '' : money(l.amount),
-      }));
-    }
-    const total = Number(trip.quoted_price);
-    const priced = Number.isFinite(total) && total !== 0;
-    const shapedLegs = SHAPE && Array.isArray(trip?.trip_legs) ? SHAPE.legsOf(trip).map(l => l.id) : [];
-    const legs = split ? (shapedLegs.length ? shapedLegs : ['outbound', 'return']) : [null];
-    const share = Math.round((total / legs.length) * 100) / 100;
-    return legs.map((leg, i) => {
-      // A whole trip's buses are its first leg's, as its one rental line has always counted.
-      const buses = legBuses(trip, leg ?? firstLegOf(trip));
-      const n = Math.max(Number(buses) || 0, 1);
-      const legTotal = i < legs.length - 1 ? share : Math.round((total - share * (legs.length - 1)) * 100) / 100;
-      return {
-        item: 'Bus Rental',
-        desc: split ? legDescription(trip, leg) : quoteDescription(trip),
-        qty: buses ? String(n) : '',
-        cost: priced ? money(legTotal / n) : '',
-        total: priced ? money(legTotal) : '',
-      };
-    });
-  }
+  /* THE LINES THE QUOTE PRINTS AND THEIR WORDS are `saved-quote.js`'s,
+     which the QuickBooks export writes on the invoice too. Read when a sheet
+     is drawn, because the driver's share page loads this file without it
+     and draws no quote. */
+  const SAVED = () => window.SchedulerSavedQuote;
+  const quoteDescription = trip => SAVED().description(trip);
+  const legDescription = (trip, leg) => SAVED().legDescription(trip, leg);
+  const lastDay = trip => SAVED().lastDay(trip);
+  const quoteLines = trip => SAVED().lines(trip).map(l => ({
+    item: l.item, desc: l.desc, qty: l.qty == null ? '' : String(l.qty),
+    cost: l.cost == null ? '' : money(l.cost), total: l.total == null ? '' : money(l.total),
+  }));
 
   /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and
      divided once, with the label shaded as the office's own sheet shades it.

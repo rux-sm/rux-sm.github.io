@@ -80,33 +80,33 @@ file the office imports, so no invoice is typed by hand and none is made twice.
     invoice before the weekly run.
 - **QuickBooks numbers the invoices.** The IIF leaves Num empty, so an
   import never collides with a number QuickBooks has used.
-- **A file is imported once.** Mark imported turns each trip's Invoiced on,
+- **A file is imported once.** Mark imported gives each trip an invoice row
   with no number, so no export takes it again, and the page says the file
-  was marked so a second import is caught before QuickBooks sees it. The
-  number arrives with the next report, whose match fills it in.
+  was marked so a second import is caught before QuickBooks sees it. A row
+  rather than the Invoiced column alone, because the trip editor's Save sets
+  Invoiced from the rows. The next report's match fills the number in.
+- **An IIF line holds no item QuickBooks lacks,** so a trip with an Other
+  line is held back like one whose customer has no QuickBooks name.
 - **The import is done in single-user mode, signed in as Admin, after a
   backup,** because QuickBooks greys out IIF import in a shared file and an
   import cannot be undone.
 
 ## Questions
 
-- Does the next report's match fill the number on a trip Mark imported left
-  Invoiced with none, by the trip's facts as any invoice is matched, or does
-  the IIF carry the `trip_ref` in a field QuickBooks keeps, such as REQ #, so
-  the match is certain? The test import settles which fields survive.
+- The match fills an imported invoice's number by the trip's facts. Should
+  it also read the `Trip 100991` the IIF writes in the invoice's memo, or a
+  field such as REQ #, so the match is certain? The test import settles
+  which fields survive.
 
 ## Tasks
 
 - [ ] Pick the matches the scores left with rux on `scheduler/quickbooks.html`;
       the sure ones are saved, marked `QuickBooks match` in their history.
-- [ ] Import the one-invoice IIF of trip 100991, numbered TEST1, into a backup
-      company file, and settle from what QuickBooks makes of it the item and
-      account of each line, the customer, the P.O. #, the description and its
-      ñ, and the Bus # and REQ # fields.
-- [ ] Have the QuickBooks page fill `customers.qb_name` from the matched
-      invoices, the most-used name where there are several.
-- [ ] Build Export week and Mark imported on the QuickBooks
-      page, and Export to QuickBooks in the Billing tab's menu, with the page
-      in `switcher.json`'s scheduler links if it needs one, and the inventories.
-- [ ] Write `scheduler/docs/quickbooks.md`, the how-to for the weekly import:
-      single-user, Admin, backup, import, Mark imported, share again.
+- [ ] Press Save names on `scheduler/quickbooks.html` with the report chosen,
+      so Export has each customer's QuickBooks name.
+- [ ] Import trip 100991's file, from the Billing tab's Export to QuickBooks,
+      into a backup company file, and settle from what QuickBooks makes of it
+      the item and account of each line, the Sales Tax Payable account of the
+      zero tax line, the customer, the P.O. #, the memo, the description and
+      its ñ in Windows-1252, and the Bus # and REQ # fields; correct
+      `scheduler/quickbooks-iif.js` to match.

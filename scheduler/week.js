@@ -15,6 +15,23 @@
   const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
 
+  /* THE WEEK'S FIRST DAY, as the board's View menu sets it: Monday, Sunday,
+     or `today`, a week that starts on today's weekday, so the board opens
+     with today in its first column and every week from it starts on the
+     same weekday. The choice is kept in this browser under `VIEW_KEY` with
+     the board's other view settings; `sunday` is the key it replaced, read
+     when `weekStart` was never saved. `getDay()` is 0 for Sunday. */
+  const VIEW_KEY = 'scheduler.view';
+  const WEEK_STARTS = ['monday', 'sunday', 'today'];
+  const weekStartOf = saved => (WEEK_STARTS.includes(saved?.weekStart) ? saved.weekStart
+    : saved?.sunday === true ? 'sunday' : 'monday');
+  const savedWeekStart = () => {
+    try { return weekStartOf(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return 'monday'; }
+  };
+  const firstDayOf = (d, start) => new Date(d.getFullYear(), d.getMonth(), d.getDate() - (start === 'sunday' ? d.getDay()
+    : start === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
+      : (d.getDay() + 6) % 7));
+
   // -- the palette ----------------------------------------------------------
   /* The trip colours, read by the board, the editor, the bar menu and the
      printed week. `value` is what `trips.trip_bar_color` stores and `hue` is
@@ -319,5 +336,6 @@
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
     stopsOfLeg, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
+    VIEW_KEY, WEEK_STARTS, weekStartOf, savedWeekStart, firstDayOf,
   };
 })();

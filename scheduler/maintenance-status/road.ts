@@ -121,10 +121,52 @@ const window = {};
   const stopsOfRoute = (trip, routeId) => (trip?.trip_stops || []).filter(s => s.route_id === routeId).sort(byPosition);
   const vehiclesOfRoute = (trip, routeId) => (trip?.trip_assignments || []).filter(a => a.route_id === routeId).sort(byPosition);
 
+  /* A LEG OR ROUTE BY ITS KEY, as a saved trip's papers name one: a leg's
+     id, a route's id, which finds the route's leg, or the old word, which
+     finds the leg mirroring it. A trip read with no legs is read by the
+     word, with its old columns. On a leg of more than one route, a route's
+     key reads that route's stops and vehicles, and a leg's key its first
+     route's stops. */
+  const legOfKey = (trip, key) => (Array.isArray(trip?.trip_legs)
+    ? legOf(trip, key) ?? legOfWord(trip, key) ?? legOfRoute(trip, key) : null);
+  const namesRoute = (trip, key) => !!legOfKey(trip, key)?.routes.some(r => r.id === key);
+  const routeOfKey = (trip, key) => {
+    const l = legOfKey(trip, key);
+    return l ? l.routes.find(r => r.id === key) ?? l.routes[0] ?? null : null;
+  };
+  // The old word a leg mirrors.
+  const wordOfKey = (trip, key) => legOfKey(trip, key)?.word ?? (key === 'return' ? 'return' : 'outbound');
+  const isReturnKey = (trip, key) => wordOfKey(trip, key) === 'return';
+  // The buses a leg takes.
+  const busesOfKey = (trip, key) => (legOfKey(trip, key) ? legOfKey(trip, key).busCount
+    : isReturnKey(trip, key) ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count);
+  // Whether a vehicle is on the leg or route a key names, or names its word.
+  const onLegKey = (trip, key, row) => (!legOfKey(trip, key) ? (row?.leg || 'outbound') === wordOfKey(trip, key)
+    : namesRoute(trip, key) ? row?.route_id === key : legOfKey(trip, key).routes.some(r => r.id === row?.route_id));
+  // Whether a stop is on the route a key names, or names its word.
+  const onRouteKey = (trip, key, row) => (legOfKey(trip, key) ? row?.route_id === routeOfKey(trip, key)?.id
+    : (row?.leg || 'outbound') === wordOfKey(trip, key));
+  const stopsOfKey = (trip, key) => (trip?.trip_stops || []).filter(s => onRouteKey(trip, key, s)).sort(byPosition);
+  /* The keys of the legs with stops, in the order they run: what a form
+     prints and a quote's times are read from, since a leg with a bus and no
+     route has nothing to read. A trip with no stops still has its first leg. */
+  function keysWithStops(trip) {
+    const legs = Array.isArray(trip?.trip_legs) ? legsOf(trip) : [];
+    const stops = trip?.trip_stops || [];
+    if (legs.length) {
+      const found = legs.filter(l => stops.some(s => l.routes.some(r => r.id === s.route_id))).map(l => l.id);
+      return found.length ? found : [legs[0].id];
+    }
+    const have = new Set(stops.map(s => s.leg || 'outbound'));
+    const found = Object.keys(WORD_ORDER).filter(word => have.has(word));
+    return found.length ? found : ['outbound'];
+  }
+
   window.SchedulerTripShape = {
     legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg, daysOf, isSplit, isPickup,
     isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
     allContacts, contactsFor, stopsOfRoute, vehiclesOfRoute,
+    legOfKey, namesRoute, routeOfKey, wordOfKey, isReturnKey, busesOfKey, onLegKey, onRouteKey, stopsOfKey, keysWithStops,
   };
 })();
 
@@ -207,6 +249,23 @@ const window = {};
   const DAY = 864e5;
   const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
+
+  /* THE WEEK'S FIRST DAY, as the board's View menu sets it: Monday, Sunday,
+     or `today`, a week that starts on today's weekday, so the board opens
+     with today in its first column and every week from it starts on the
+     same weekday. The choice is kept in this browser under `VIEW_KEY` with
+     the board's other view settings; `sunday` is the key it replaced, read
+     when `weekStart` was never saved. `getDay()` is 0 for Sunday. */
+  const VIEW_KEY = 'scheduler.view';
+  const WEEK_STARTS = ['monday', 'sunday', 'today'];
+  const weekStartOf = saved => (WEEK_STARTS.includes(saved?.weekStart) ? saved.weekStart
+    : saved?.sunday === true ? 'sunday' : 'monday');
+  const savedWeekStart = () => {
+    try { return weekStartOf(JSON.parse(localStorage.getItem(VIEW_KEY) || '{}')); } catch { return 'monday'; }
+  };
+  const firstDayOf = (d, start) => new Date(d.getFullYear(), d.getMonth(), d.getDate() - (start === 'sunday' ? d.getDay()
+    : start === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
+      : (d.getDay() + 6) % 7));
 
   // -- the palette ----------------------------------------------------------
   /* The trip colours, read by the board, the editor, the bar menu and the
@@ -512,6 +571,7 @@ const window = {};
     TRIP_COLORS, tripColorOf, standardHueOf, hueFor, confirmedHue,
     stopsOfLeg, timesOf, legsOf, rangeOf, rangesOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt, AHEAD_DAYS,
+    VIEW_KEY, WEEK_STARTS, weekStartOf, savedWeekStart, firstDayOf,
   };
 })();
 

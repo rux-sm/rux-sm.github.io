@@ -1,8 +1,16 @@
 /* ==========================================================================
    quickbooks.js — THE QUICKBOOKS PAGE
    --------------------------------------------------------------------------
-   quickbooks.html matches QuickBooks' estimates and invoices to the trips.
-   The office chooses the Transaction Detail report; quickbooks-match.js
+   quickbooks.html sends a week's invoices to QuickBooks and matches what
+   QuickBooks holds to the trips.
+
+   EXPORT lists the week's confirmed trips with no invoice, the week
+   starting on the board's own first day and opening on this one, each
+   written or held back with why by quickbooks-iif.js. Export week saves the
+   IIF file, and Mark imported, once QuickBooks has taken it, records each
+   trip invoiced so no export takes it again.
+
+   MATCH: the office chooses the Transaction Detail report; quickbooks-match.js
    reads it and scores it against every trip, and this page lists what the
    scores leave open: an invoice or estimate that could be one of a few
    trips, each card with those trips ticked or not, the likeliest ticked,
@@ -11,8 +19,11 @@
    the Billing tab does: an invoice as a `trip_invoices` row, with the
    trip's invoice columns when it is the trip's first, and an estimate as
    `trip_prep.qb_estimate`, each with a history entry marked as a QuickBooks
-   match. Skip hides a card in this browser. Invoices no trip fits are
-   listed to look up by hand.
+   match; an invoice on a trip Mark imported left with an unnumbered row
+   numbers that row. Skip hides a card in this browser. Invoices no trip
+   fits are listed to look up by hand. And each customer's QuickBooks name
+   is the one its matched invoices carry, the most-used where there are
+   several, which Save names keeps for Export.
    ========================================================================== */
 (() => {
   'use strict';
@@ -20,6 +31,8 @@
   const { $, el } = window.SchedulerPair;
   const pair = window.SchedulerPair.page({ list: 'quickbooks', one: 'match' });
   const QB = window.SchedulerQuickBooksMatch;
+  const IIF = window.SchedulerQuickBooksIif;
+  const WEEK = window.SchedulerWeek;
 
   const SKIPPED_KEY = 'scheduler-quickbooks-skipped';
   const PAST_SHOWN = 5;
@@ -29,6 +42,7 @@
   let actor = null;
   let trips = [];
   let matched = null;
+  let customers = [];
   let showSkipped = false;
 
   // ── words ───────────────────────────────────────────────────────────────
@@ -58,8 +72,8 @@
   /* ── The trips ──
      Every trip, a thousand a read, with what it already records: its invoice
      numbers, from its rows and the old column, and its estimate tick. */
-  const TRIP_COLUMNS = 'id,trip_ref,start_date,end_date,customer,destination,quoted_price,quote_sent_price,po_ref,'
-    + 'cancelled_at,invoice_number,invoiced,trip_invoices(number,position),trip_prep(qb_estimate)';
+  const TRIP_COLUMNS = 'id,trip_ref,start_date,end_date,customer,customer_id,destination,quoted_price,quote_sent_price,po_ref,'
+    + 'cancelled_at,invoice_number,invoiced,trip_invoices(id,number,position),trip_prep(qb_estimate)';
   async function readTrips() {
     const rows = [];
     for (let from = 0; ; from += 1000) {
@@ -78,6 +92,9 @@
         prices: new Set([t.quoted_price, t.quote_sent_price].filter(p => p != null && p !== '').map(p => Math.round(Number(p)))),
         known: new Set(numbers.match(/\d{5}/g) || []),
         invoiceRows: (t.trip_invoices || []).length,
+        // The row Mark imported left for QuickBooks' number, which a match fills.
+        unnumbered: (t.trip_invoices || []).find(i => !i.number)?.id ?? null,
+        customerId: t.customer_id,
         invoiced: !!t.invoiced || !!t.invoice_number || (t.trip_invoices || []).length > 0,
         ticked: !!prep?.qb_estimate,
         row: t,
@@ -97,6 +114,7 @@
       const transactions = await QB.read(file);
       trips = await readTrips();
       matched = QB.match(transactions, trips);
+      customers = await readCustomers();
       pair.say(null);
       drop.textContent = `${file.name} · choose another report`;
       draw();
@@ -268,12 +286,152 @@
     drawList('Invoice', 'scheduler-quickbooks-invoice-list', 'scheduler-quickbooks-invoices', 'scheduler-quickbooks-invoices-h', 'Invoices');
     drawList('Estimate', 'scheduler-quickbooks-estimate-list', 'scheduler-quickbooks-estimates', 'scheduler-quickbooks-estimates-h', 'Estimates');
     drawNone();
+    drawNames();
   }
+
+  /* ── QuickBooks names ──
+     Each customer's name in QuickBooks, from the report's invoices already
+     on its trips: the name on most of them, the latest on a tie. Listed
+     where it is not the name the customer keeps now. */
+  async function readCustomers() {
+    const { data, error } = await db.from('customers').select('id,name,qb_name').order('name');
+    if (error) throw new Error(error.message);
+    return data;
+  }
+  function namesToSave() {
+    const seen = new Map();
+    for (const x of matched.Invoice) {
+      const id = x.trip?.customerId;
+      if (!id || !x.name || !(x.state === 'recorded' || x.saved)) continue;
+      const names = seen.get(id) || new Map();
+      const n = names.get(x.name) || { count: 0, last: '' };
+      names.set(x.name, { count: n.count + 1, last: x.date > n.last ? x.date : n.last });
+      seen.set(id, names);
+    }
+    return customers.flatMap(c => {
+      const names = seen.get(c.id);
+      if (!names) return [];
+      const [best, { count }] = [...names].sort(([, a], [, b]) => b.count - a.count || (a.last < b.last ? 1 : -1))[0];
+      return best === c.qb_name ? [] : [{ customer: c, name: best, count }];
+    });
+  }
+  function drawNames() {
+    const rows = namesToSave();
+    $('scheduler-quickbooks-names-rows').replaceChildren(...rows.map(r => {
+      const tr = el('tr');
+      tr.append(el('td', null, r.customer.name), el('td', null, r.customer.qb_name || 'None'),
+        el('td', null, `${r.name} · ${r.count} invoice${r.count === 1 ? '' : 's'}`));
+      return tr;
+    }));
+    $('scheduler-quickbooks-names').hidden = !rows.length;
+  }
+  $('scheduler-quickbooks-names-save').addEventListener('click', async e => {
+    const button = e.currentTarget;
+    const rows = namesToSave();
+    button.disabled = true;
+    try {
+      for (const r of rows) {
+        const { error } = await db.from('customers').update({ qb_name: r.name }).eq('id', r.customer.id);
+        if (error) throw new Error(`${r.customer.name}: ${error.message}`);
+        r.customer.qb_name = r.name;
+      }
+      pair.result('success', `Saved ${rows.length} QuickBooks name${rows.length === 1 ? '' : 's'}.`);
+      drawNames();
+      drawExport();
+    } catch (err) {
+      pair.result('error', `Not every name was saved. ${err.message}`);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  /* ── Export ──
+     One week at a time, never more, so a forgotten earlier trip cannot
+     slip into a file. `run` is the week as quickbooks-iif.js writes it, and
+     `saved` the file Export week saved, which Mark imported records. */
+  const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  let weekFirst = WEEK.firstDayOf(new Date(), WEEK.savedWeekStart());
+  let run = null;
+  let saved = null;
+  const weekDays = () => ({ from: isoDay(weekFirst), to: isoDay(plusDays(weekFirst, 6)) });
+  const fileName = () => `quickbooks-invoices_${weekDays().from}.iif`;
+
+  const SKIP_WORDS = { invoiced: 'Already invoiced', 'not confirmed': 'Not confirmed' };
+  function exportRow({ trip, total, why }, inFile) {
+    const tr = el('tr');
+    const qbName = trip.customers?.qb_name;
+    tr.append(
+      el('td', null, String(trip.trip_ref ?? '')),
+      el('td', null, days(trip.start_date, trip.end_date || trip.start_date)),
+      el('td', null, qbName || `${trip.customers?.name || trip.customer || 'No customer'}, no QuickBooks name`),
+      el('td', null, money.format(total ?? (Number(trip.quoted_price) || 0))),
+      el('td', null, inFile ? 'Yes' : SKIP_WORDS[why] || `Held back: ${why}`));
+    return tr;
+  }
+
+  function drawRun() {
+    const { from, to } = weekDays();
+    const marked = saved?.marked;
+    $('scheduler-quickbooks-export-rows').replaceChildren(
+      ...run.written.map(w => exportRow(w, true)),
+      ...run.held.map(h => exportRow(h, false)),
+      ...run.skipped.filter(k => k.why !== 'cancelled').map(k => exportRow(k, false)));
+    let text = `${days(from, to)}: ${run.written.length} to import`
+      + (run.held.length ? `, ${run.held.length} held back until what holds them is fixed.` : '.');
+    if (saved && !marked) text = `Saved ${saved.name} with ${saved.written.length} invoices. Import it into QuickBooks, then Mark imported.`;
+    if (marked) text = `Marked ${saved.written.length} trips imported. Each is invoiced now, so no export takes it again, and the next report's match numbers it.`;
+    $('scheduler-quickbooks-export-text').textContent = text;
+    $('scheduler-quickbooks-export-btn').disabled = !run.written.length;
+    $('scheduler-quickbooks-mark').disabled = !saved || marked;
+    $('scheduler-quickbooks-export').hidden = false;
+  }
+
+  async function drawExport() {
+    if (!db) return;
+    try {
+      run = IIF.write(await IIF.read(db, weekDays()), isoDay(new Date()));
+      drawRun();
+    } catch (err) {
+      pair.say('error', "This week's trips didn't load", err.message);
+    }
+  }
+
+  function moveWeek(n) {
+    weekFirst = plusDays(weekFirst, 7 * n);
+    saved = null;
+    drawExport();
+  }
+  $('scheduler-quickbooks-week-back').addEventListener('click', () => moveWeek(-1));
+  $('scheduler-quickbooks-week-next').addEventListener('click', () => moveWeek(1));
+  $('scheduler-quickbooks-export-btn').addEventListener('click', () => {
+    IIF.download(run.text, fileName());
+    saved = { name: fileName(), written: run.written, on: isoDay(new Date()), marked: false };
+    drawRun();
+  });
+  $('scheduler-quickbooks-mark').addEventListener('click', async e => {
+    const button = e.currentTarget;
+    button.disabled = true;
+    try {
+      await IIF.markImported(db, saved.written, saved.on, history);
+      saved.marked = true;
+      pair.result('success', `Marked ${saved.written.length} trips imported into QuickBooks.`);
+      const kept = saved;
+      await drawExport();
+      saved = kept;
+      drawRun();
+    } catch (err) {
+      button.disabled = false;
+      pair.result('error', `Not every trip was marked. ${err.message}`);
+    }
+  });
 
   /* ── Saving ── */
 
-  const snapshot = t => ({ id: t.id, trip_ref: t.row.trip_ref, start_date: t.start, end_date: t.end,
-                           customer: t.customer, destination: t.destination });
+  // A trip as this page reads it for Match, or as quickbooks-iif.js reads it for Export.
+  const snapshot = t => (t.row
+    ? { id: t.id, trip_ref: t.row.trip_ref, start_date: t.start, end_date: t.end, customer: t.customer, destination: t.destination }
+    : { id: t.id, trip_ref: t.trip_ref, start_date: t.start_date, end_date: t.end_date, customer: t.customer, destination: t.destination });
   async function history(t, changes) {
     const args = { p_trip_id: t.id, p_action: 'updated', p_snapshot: snapshot(t), p_changes: changes, p_metadata: HISTORY_META };
     if (actor) args.p_actor_name = actor;
@@ -283,17 +441,23 @@
 
   /* An invoice on each ticked trip, as the Billing tab's Invoices step adds
      one: a row after the trip's own, its amount when it bills one trip
-     alone, and on a trip's first invoice the columns other readers use. */
+     alone, and on a trip's first invoice the columns other readers use. A
+     trip Mark imported left with an unnumbered row is this invoice's, so
+     that row takes the number. */
   async function saveInvoice(x, chosen) {
     for (const t of chosen) {
       const first = !t.invoiced;
-      const { error } = await db.from('trip_invoices').insert({
-        trip_id: t.id, position: t.invoiceRows, number: x.num,
-        amount: chosen.length === 1 ? x.amount : null, date: x.date,
-      });
+      const facts = { number: x.num, amount: chosen.length === 1 ? x.amount : null, date: x.date };
+      const { error } = t.unnumbered
+        ? await db.from('trip_invoices').update(facts).eq('id', t.unnumbered)
+        : await db.from('trip_invoices').insert({ trip_id: t.id, position: t.invoiceRows, ...facts });
       if (error) throw new Error(error.message);
       const changes = [];
-      if (first) {
+      if (t.unnumbered) {
+        const { error: e2 } = await db.from('trips').update({ invoice_number: x.num }).eq('id', t.id);
+        if (e2) throw new Error(e2.message);
+        changes.push({ field: 'invoice_number', label: 'Invoice number', before: null, after: x.num });
+      } else if (first) {
         const { error: e2 } = await db.from('trips')
           .update({ invoice_status: 'Invoiced', invoiced: true, invoice_number: x.num }).eq('id', t.id);
         if (e2) throw new Error(e2.message);
@@ -303,7 +467,8 @@
       }
       changes.push({ field: 'invoices', label: `Invoice: ${x.num}`, before: null, after: `Date ${x.date}` });
       await history(t, changes);
-      t.invoiceRows += 1;
+      if (!t.unnumbered) t.invoiceRows += 1;
+      t.unnumbered = null;
       t.invoiced = true;
       t.known.add(x.num);
     }
@@ -344,5 +509,6 @@
   pair.start(async client => {
     db = client;
     try { actor = (await window.Rux.account.staffProfile())?.display_name || null; } catch { actor = null; }
+    drawExport();
   });
 })();

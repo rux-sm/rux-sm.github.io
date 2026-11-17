@@ -207,12 +207,12 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.25rem + var(--frame-safe-
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
 .emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); pointer-events: auto; display: grid; justify-items: center; }
 
-/* A console: its drawing over its power button. A home console's box is 36
+/* A console: its drawing, with its power light on it. A home console's box is 36
    by 24 art pixels; a handheld is as tall, cut to its width. Each thing on
    the floor, the TV too, throws a hard shadow two art pixels down, and
    slides to a new spot on Carbon's moderate-02, productive. */
 .emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; touch-action: none; }
-.emu-unit__console:focus-visible, .emu-power:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.emu-unit__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-unit .emu-console { inline-size: calc(36 * var(--emu-px)); block-size: calc(24 * var(--emu-px)); }
 .emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
 .emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
@@ -228,19 +228,26 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.25rem + var(--frame-safe-
 .emu-lands { animation: emu-land 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 @keyframes emu-land { from { translate: 0 calc(-2 * var(--emu-px)); } to { translate: 0 0; } }
 @media (prefers-reduced-motion: reduce) { .emu-units > li, .emu-tv { transition: none; } .emu-lands { animation: none; } }
-/* The power button, 8 art pixels in a target of at least 24px: green on,
-   grey off with the drawing dimmed, amber and blinking while the emulator
-   is set up, the only sign the helper gives of an install. Carbon has no
-   motion for waiting on a light. */
-.emu-power { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; display: grid; place-items: center; inline-size: max(24px, calc(8 * var(--emu-px))); block-size: max(24px, calc(8 * var(--emu-px))); margin-block-start: calc(2 * var(--emu-px)); color: var(--rux-support-success); }
-.emu-power__drawing { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); fill: currentColor; shape-rendering: crispEdges; }
-.emu-power:hover { color: var(--rux-icon-primary); }
-.emu-unit--off .emu-power { color: var(--rux-icon-secondary); }
-.emu-unit--off .emu-power:hover { color: var(--rux-support-success); }
+/* A console that is off is dimmed. Its power light is a patch over the
+   drawing's own light, --emu-lx and --emu-ly its place and --emu-lw and
+   --emu-lh its size in art pixels, in the real console's colour: shown and
+   softly glowing while the console is on, blinking while its emulator is
+   set up, the only sign the helper gives of an install, and away while it
+   is off, so the drawing's unlit pixel shows. Carbon has no motion for a
+   light; the glow breathes slowly, and neither moves where motion is reduced. */
 .emu-unit--off .emu-console { opacity: .45; }
-.emu-unit--setting .emu-power { color: var(--rux-support-warning); animation: emu-blink 800ms steps(2) infinite; }
+.emu-light { position: absolute; inset-inline-start: calc(var(--emu-lx) * var(--emu-px)); inset-block-start: calc(var(--emu-ly) * var(--emu-px)); inline-size: calc(var(--emu-lw) * var(--emu-px)); block-size: calc(var(--emu-lh) * var(--emu-px)); background: var(--emu-light); pointer-events: none; }
+.emu-light::after { content: ""; position: absolute; inset: 0; box-shadow: 0 0 calc(2 * var(--emu-px)) var(--emu-px) var(--emu-light); opacity: .7; animation: emu-glow 2400ms ease-in-out infinite alternate; }
+.emu-light--error { --emu-light: var(--rux-support-error); }
+.emu-light--success { --emu-light: var(--rux-support-success); }
+.emu-light--warning { --emu-light: var(--rux-support-warning); }
+.emu-light--info { --emu-light: var(--rux-support-info); }
+.emu-unit--off .emu-light { display: none; }
+.emu-unit--setting .emu-light { animation: emu-blink 800ms steps(2) infinite; }
+.emu-unit--setting .emu-light::after { animation: none; opacity: .35; }
+@keyframes emu-glow { from { opacity: .25; } to { opacity: .8; } }
 @keyframes emu-blink { 50% { opacity: .3; } }
-@media (prefers-reduced-motion: reduce) { .emu-unit--setting .emu-power { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .emu-light::after, .emu-unit--setting .emu-light { animation: none; } }
 /* A console's name is a tag under it that shows under the pointer or the
    keyboard, and while it is set up, on Carbon's fast-02 fade, so the room
    at rest is only its drawings. */

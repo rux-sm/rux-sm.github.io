@@ -90,16 +90,21 @@ Emu is unchanged.
   My Stuff as it is, so one press does one thing.
 - **The room draws Your Mac and Rux's Server from the real games and
   this Mac;** a game or a console is dragged between them,
-  a power button sets an emulator up, putting a console that is off back takes it
+  turning a console on from its menu sets an emulator up, putting one that is off back takes it
   off, and a game opens its side panel when pressed.
 - **Until a Mac's room is kept, the console of each game it holds stands in
   the room,** on where this Mac has its emulator and off where
   it has not, so a Mac with every emulator installed still starts with a
   handful.
-- **A console is turned on and off by a power button under it,** eight art
-  pixels in a target of at least 24px: green while it is on, grey while it
-  is off with its drawing dimmed, and blinking amber while its emulator is
-  set up. A plug with no cable to anywhere read as nothing.
+- **A console is turned on and off from its own menu,** opened under it by
+  pressing or right-clicking it: Turn on, Turn off and Put back, each saying
+  what it does to this Mac, such as "Turn off and remove mGBA". So setting an
+  emulator up or taking it off is always two presses, and no control is
+  drawn on the room, where a button under each console spoiled the art.
+- **A console's power light is on its drawing,** over the drawing's own
+  light pixel, in the real console's colour: glowing softly while it is on,
+  blinking while its emulator is set up, and unlit with the whole drawing
+  dimmed while it is off.
 - **A console's name shows only under the pointer or the keyboard,** as a
   tag beneath it, so the room at rest is only its drawings.
 - **A console in the room, or the TV, is itself carried, never a copy of
@@ -225,8 +230,8 @@ Emu is unchanged.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
   moves as buttons; pressing a console, in the room or Rux's Server, picks
-  it, and its heading has Bring to Your Mac or Put back; the power button is a
-  button, as is Tidy up, Enter does on a keyboard, and on a controller A picks up and A
+  it, and its heading has Bring to Your Mac or Put back; a console's menu opens
+  from the keyboard as from the pointer, Tidy up is a button, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
   drawing per system, a PNG in Sprites' palette on the standard shapes

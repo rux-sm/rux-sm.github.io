@@ -72,7 +72,10 @@ room writes on it there, so a redrawn TV keeps its glass in that place, or
 3. Save it as `emu/brand/consoles/<system>.png`, a 1× PNG. Sprites writes
    it straight into the checkout in Chrome.
 4. Where the slot or tray moved, set the console's place in `SLOT` in
-   `room.js`: how far down the drawing a game goes in, from 0 to 1.
+   `room.js`: how far down the drawing a game goes in, from 0 to 1. Where
+   its power light moved, set `LIGHT` there too: the light's left, top,
+   width and height in pixels and its colour. Draw the light unlit or dim;
+   the room lights it while the console is on.
 5. Load the room on :8641 again and look at the console in a dark theme and
    a light one, then commit the PNG. The published site shows it after the
    push.

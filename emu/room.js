@@ -16,10 +16,11 @@
    Which consoles stand in the room, which of them are on, and where
    each stands, is this Mac's room, kept on its row in Supabase; until
    something is moved, the console of each game this Mac holds stands there.
-   A console is on only where this Mac has its emulator too. Its power
-   button turns it on, which sets its emulator up on this Mac, and off,
-   which takes the emulator off, its saves and settings kept, once no other
-   console that is on uses it. A console's name shows under the pointer or
+   A console is on only where this Mac has its emulator too. Pressing or
+   right-clicking it opens its menu: Turn on, which sets its emulator up on
+   this Mac, Turn off, which takes the emulator off, its saves and settings
+   kept, once no other console that is on uses it, and Put back. Its power
+   light, on its drawing, is lit while it is on. A console's name shows under the pointer or
    the keyboard.
 
    Rux's Server is every console with games, each its drawing from
@@ -220,14 +221,22 @@
   }
 
   // YOUR MAC -----------------------------------------------------------------
-  // A console standing where it was left in the room, over its power button.
-  // Its drawing is a button that picks it and is dragged. The power button
-  // is green while it is on, grey while it is off, with the drawing dimmed,
-  // and blinks amber while its emulator is set up. Its name is a tag that
-  // shows under the pointer or the keyboard, and while it is set up.
+  // A console standing where it was left in the room: its drawing, a button
+  // that is dragged and, pressed or right-clicked, opens its menu. Its power
+  // light is lit on the drawing while it is on, blinks while its emulator
+  // is set up, and is the drawing's own unlit pixel while it is off, the
+  // whole drawing dimmed. Its name is a tag that shows under the pointer or
+  // the keyboard, and while it is set up.
   const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting' };
-  const POWER = '<rect x="3" y="0" width="2" height="4"/><rect x="1" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/>'
-    + '<rect x="0" y="2" width="1" height="4"/><rect x="7" y="2" width="1" height="4"/><rect x="1" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="2" y="7" width="4" height="1"/>';
+  // Where each console's power light is on its drawing, in art pixels from
+  // its top-left, how many pixels it covers, and its colour as the real
+  // console's light: error is red, success green, warning orange, info blue.
+  const LIGHT = {
+    nes: [4, 21, 1, 1, 'error'], snes: [3, 19, 1, 1, 'error'], n64: [17, 21, 2, 1, 'error'], gc: [8, 3, 2, 2, 'warning'],
+    wii: [15, 8, 2, 1, 'success'], wiiu: [28, 21, 1, 1, 'info'], switch: [9, 21, 1, 1, 'success'], gb: [2, 5, 1, 1, 'error'],
+    gbc: [2, 5, 1, 1, 'error'], gba: [21, 12, 1, 1, 'success'], nds: [18, 4, 1, 1, 'success'], n3ds: [3, 13, 2, 2, 'info'],
+    psx: [4, 14, 3, 1, 'success'], ps2: [32, 17, 1, 1, 'success'], xbox: [17, 18, 2, 2, 'success'],
+  };
   function unit(system, state) {
     const called = R.systemName(system);
     const hand = HANDHELD.has(system);
@@ -236,20 +245,49 @@
     const body = el('button', 'emu-unit__console');
     body.type = 'button';
     body.dataset.console = system;
+    body.setAttribute('aria-haspopup', 'menu');
     body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'on' : state === 'setting' ? 'being set up' : 'off'}`);
     body.append(consoleOf(system, hand));
-    body.addEventListener('click', () => choose(system));
-    const power = el('button', 'emu-power');
-    power.type = 'button';
-    power.disabled = state === 'setting';
-    power.title = state === 'on' ? `Turn off the ${called}` : `Turn on the ${called}`;
-    power.setAttribute('aria-label', power.title);
-    const drawing = svgOf('emu-power__drawing', '0 0 8 8');
-    drawing.innerHTML = POWER;
-    power.append(drawing);
-    power.addEventListener('click', () => (state === 'on' ? unplug : plugIn)(system));
-    li.append(body, power, el('span', 'emu-unit__name', state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
+    const at = LIGHT[system];
+    if (at) {
+      const light = el('i', `emu-light emu-light--${at[4]}`);
+      light.style.cssText = `--emu-lx:${at[0]};--emu-ly:${at[1]};--emu-lw:${at[2]};--emu-lh:${at[3]}`;
+      body.append(light);
+    }
+    body.addEventListener('click', () => { choose(system); openMenu(system, body); });
+    body.addEventListener('contextmenu', e => { e.preventDefault(); choose(system); openMenu(system, body); });
+    li.append(body, el('span', 'emu-unit__name', state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
     return li;
+  }
+  // A CONSOLE'S MENU, Design's menu under the console: Turn on or Turn off,
+  // each saying what it does to this Mac, and Put back while it is off. So
+  // setting an emulator up or taking it off is two presses, and no control
+  // is drawn on the room.
+  function openMenu(system, trigger) {
+    const menu = $('emu-console-menu');
+    window.Rux.menu.close(menu);
+    const state = stand.get(system);
+    const emulator = emulatorOf(system);
+    const called = R.systemName(system);
+    const item = (label, run, { off = false, danger = false } = {}) => {
+      const li = el('li', `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}${off ? ' rux--menu-item--disabled' : ''}`);
+      li.setAttribute('role', 'menuitem');
+      li.setAttribute('aria-haspopup', 'false');
+      li.tabIndex = off ? -1 : 0;
+      if (off) li.setAttribute('aria-disabled', 'true');
+      li.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'), el('div', 'rux--menu-item__label', label));
+      if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
+      return li;
+    };
+    // Turning off takes the emulator off only where no other console that is on uses it.
+    const wish = wishes();
+    const last = !Object.keys(wish).some(sys => sys !== system && wish[sys] && emulatorOf(sys) === emulator);
+    const power = state === 'setting' ? item(`Setting up ${emulator}…`, null, { off: true })
+      : state === 'on' ? item(last ? `Turn off and remove ${emulator}` : 'Turn off', () => unplug(system), { danger: last })
+      : item(plays(system) ? 'Turn on' : `Turn on and set up ${emulator}`, () => plugIn(system));
+    menu.setAttribute('aria-label', called);
+    menu.replaceChildren(power, item('Put back', () => putBack(system), { off: state !== 'off' }));
+    window.Rux.menu.open(menu, trigger);
   }
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
@@ -645,8 +683,8 @@
     const coming = games.filter(g => stands(g).state === 'arriving');
     await readMac();
     if (coming.some(g => stands(g).state === 'held')) sfx.done();
-    // Nothing is drawn again under a held game or an open panel.
-    if (told() !== before && !panelOpen() && !drag?.on) render();
+    // Nothing is drawn again under a held game, an open panel or a console's open menu.
+    if (told() !== before && !panelOpen() && !drag?.on && !window.Rux.menu.isOpen($('emu-console-menu'))) render();
     // A game wanted for play starts once it is here, and is let go if it stopped.
     for (const key of [...wanted]) {
       const g = games.find(x => keyOf(x) === key);

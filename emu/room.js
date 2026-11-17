@@ -620,7 +620,7 @@
   }
   // The slot a game goes into, as a part of its console's drawing from the
   // top, and the consoles that take a disc.
-  const SLOT = { nes: 0.67, snes: 0.25, n64: 0.25, gc: 0.21, wii: 0.5, wiiu: 0.83, switch: 0.04, gb: 0.02, gbc: 0.02, gba: 0.33, nds: 0.5, n3ds: 0.5, psx: 0.33, ps2: 0.75, xbox: 0.71 };
+  const SLOT = { nes: 0.67, snes: 0.25, n64: 0.25, gc: 0.21, wii: 0.5, wiiu: 0.83, switch: 0.04, gb: 0.02, gbc: 0.02, gba: 0.5, nds: 0.5, n3ds: 0.5, psx: 0.33, ps2: 0.75, xbox: 0.71 };
   const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
   const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A timer beside each animation, so the game still starts where one is not run.

@@ -80,9 +80,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the menu, as now; only the Library is drawn as a room.
 - **The left drawer is headed Rux's Server,** so it is not mistaken for the
   Collection page in the menu.
-- **Rux's Server is a panel of consoles over the picked console's
-  games.** Each console is a tile with its drawing, name and count; pressing
-  it shows its games and dragging it brings it into the room. While a console
+- **Rux's Server has two tabs, Consoles and the picked console's Games,**
+  as My Stuff has its own. Each console is a tile with its drawing, name and
+  count; pressing it turns to its games and dragging it brings it into the
+  room, and a thing dragged back turns Rux's Server to its own tab. While a console
   is in the room its tile stands outlined and faint, as the place it goes back
   to, and still shows its games when pressed. One whose emulator this Mac has
   shows a green light.

@@ -626,7 +626,7 @@
         b.title = `${emulatorOf(system)} is set up on this Mac`;
       }
       b.append(consoleOf(system), name, el('span', 'emu-cabinet__count', away ? 'In your room' : countOf(gamesOf(system).length)));
-      b.addEventListener('click', () => choose(system));
+      b.addEventListener('click', () => { choose(system); showPane('emu-server-games-pane'); });
       return b;
     }));
     showPick();
@@ -782,10 +782,16 @@
     for (const d of open) d.set(false);
     if (inside) $(inside.opener).focus();
   });
-  // My Stuff's tabs: Games, or the picked console's Saves.
-  $('emu-stuff-tabs').addEventListener('rux:content-switcher-selected', () => {
-    for (const b of $('emu-stuff-tabs').querySelectorAll('[data-pane]')) $(b.dataset.pane).hidden = b.getAttribute('aria-selected') !== 'true';
+  // Each drawer's tabs show one pane: Rux's Server its Consoles or the
+  // picked console's Games, My Stuff its Consoles, Games or the picked
+  // console's Saves. A console pressed in Rux's Server turns it to its games.
+  for (const id of ['emu-server-tabs', 'emu-stuff-tabs']) $(id).addEventListener('rux:content-switcher-selected', () => {
+    for (const b of $(id).querySelectorAll('[data-pane]')) $(b.dataset.pane).hidden = b.getAttribute('aria-selected') !== 'true';
   });
+  function showPane(pane) {
+    const tab = document.querySelector(`[data-pane="${pane}"]`);
+    if (tab.getAttribute('aria-selected') !== 'true') window.Rux.contentSwitcher.select(tab.closest('[role="tablist"]'), tab, { focus: false });
+  }
 
   // A console pressed, in the room or the collection, is the one whose games show.
   function choose(system) {
@@ -1304,6 +1310,7 @@
       word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
     }
     it.light?.classList.add(it.no ? 'emu-no' : 'emu-lit');
+    if (it.home) showPane(drag.g ? 'emu-server-games-pane' : 'emu-server-consoles-pane');
     if (it.home && drag.g) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
     if (it.home && !drag.g) $('emu-cabinet').querySelector(`[data-system="${drag.system}"]`)?.classList.add('emu-cabinet__console--home');
   });

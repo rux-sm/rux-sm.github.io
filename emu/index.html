@@ -176,25 +176,29 @@
              games and the account's saves. Without the helper only Rux's
              Server shows, as the library. -->
         <div class="emu-wall" id="emu-wall">
-          <!-- Rux's Server: every console with games, then the picked console's games as covers. -->
+          <!-- Rux's Server: every console with games, and the picked console's games as covers, a tab each, as My Stuff's are. -->
           <section class="emu-side emu-side--server" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
             <div class="emu-side__head">
               <h2 class="rux--type-heading-03" id="emu-collection-h">Rux's Server</h2>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--md emu-side__close" id="emu-server-close" aria-label="Close Rux's Server" title="Close"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
             </div>
+            <div class="rux--content-switcher" role="tablist" aria-label="Rux's Server" id="emu-server-tabs">
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" aria-controls="emu-server-consoles-pane" data-pane="emu-server-consoles-pane"><span class="rux--content-switcher__label">Consoles</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" aria-controls="emu-server-games-pane" data-pane="emu-server-games-pane" tabindex="-1"><span class="rux--content-switcher__label">Games</span></button>
+            </div>
             <div class="emu-side__body" id="emu-server-body">
-              <div class="rux--stack-vertical rux--stack-scale-5">
+              <div class="emu-pane" id="emu-server-consoles-pane" role="tabpanel">
                 <div class="emu-cabinet" id="emu-cabinet" role="group" aria-label="Consoles"></div>
-                <div class="rux--stack-vertical rux--stack-scale-3">
-                  <div class="emu-picked">
-                    <div>
-                      <h3 class="rux--type-heading-02" id="emu-picked"></h3>
-                      <p class="emu-row__sub" id="emu-picked-sub"></p>
-                    </div>
-                    <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary" id="emu-picked-move" hidden></button>
+              </div>
+              <div class="rux--stack-vertical rux--stack-scale-3 emu-pane" id="emu-server-games-pane" role="tabpanel" hidden>
+                <div class="emu-picked">
+                  <div>
+                    <h3 class="rux--type-heading-02" id="emu-picked"></h3>
+                    <p class="emu-row__sub" id="emu-picked-sub"></p>
                   </div>
-                  <ul class="emu-shelf" role="list" id="emu-games" aria-labelledby="emu-picked"></ul>
+                  <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary" id="emu-picked-move" hidden></button>
                 </div>
+                <ul class="emu-shelf" role="list" id="emu-games" aria-labelledby="emu-picked"></ul>
               </div>
             </div>
           </section>

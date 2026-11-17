@@ -139,8 +139,8 @@ body.emu-has-rails .emu-main { padding-inline: calc(var(--emu-rail) + var(--rux-
 .emu-wall--mac .emu-side--stuff.emu-side--open { clip-path: inset(0 0 0 -1rem); }
 .emu-wall--mac .emu-side--open { visibility: visible; transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
 .emu-wall--mac .emu-side__close { display: inline-flex; }
-.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; margin-block-start: var(--rux-spacing-05); }
-.emu-wall--mac .emu-side--server .emu-side__body { margin-block-start: 0; }
+.emu-side__body { margin-block-start: var(--rux-spacing-05); }
+.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; }
 @media (prefers-reduced-motion: reduce) { .emu-wall--mac .emu-side, .emu-wall--mac .emu-side--open { transition: none; } }
 /* A tab of My Stuff not chosen is gone, where a stack would show it. */
 .emu-pane[hidden] { display: none; }

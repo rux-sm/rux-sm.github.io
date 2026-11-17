@@ -66,9 +66,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   still and the others make room. The swept spots are kept, so a larger
   window leaves the pile as it is, and things are put back by hand.
 - **A thin rail down each side of the window, Server on the left and My
-  Stuff on the right, each opens its drawer,** the whole rail the button,
-  its name running along it, and lit while its drawer is open. A drawer
-  slides out from its rail over that side of the room and
+  Stuff on the right, each holds a tab that opens its drawer,** drawn as
+  Carbon's vertical tab with its name running along it. A drawer unfolds
+  from its rail's edge as Carbon's rail widens, one surface with it, over
+  that side of the room and
   the rest stays in view, so a drag out of it lands a short move away.
   Pressing its rail again, or Escape, closes it, and a closed drawer leaves
   nothing behind. Both start closed each time the page loads, so the room
@@ -114,11 +115,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room. One that is set up
   has Put away and "Remove mGBA from this Mac"; one that is not has "Set up
-  mGBA" and Put back.
+  Game Boy Advance", named for the console, and Put back.
 - **A console's power light is on its drawing,** over the drawing's own
   light pixel, in the real console's colour: glowing softly while it is set
-  up, blinking while its emulator is set up or removed, and unlit with the
-  whole drawing dimmed until it is set up.
+  up, flashing on and off while its emulator is set up or removed, with no
+  tag, since the TV says how far it has got, and unlit with the whole
+  drawing dimmed until it is set up.
 - **A console's name shows only under the pointer or the keyboard,** as a
   tag beneath it, so the room at rest is only its drawings.
 - **A console in the room, or the TV, is itself carried, never a copy of
@@ -130,7 +132,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   slides to a spot it is pushed to.** Things the window pushes into one
   another clack.
 - **One wire runs from the console that is playing to the TV,** while its
-  game's cover is on the glass, so which console is on the TV shows. A
+  game's cover is on the glass or while it is being set up, so which
+  console is on the TV shows; it runs out from the console as it plugs in. A
   handheld lights its own screen and has none.
 - **The TV behaves as a CRT:** scanlines on its glass, its picture opening
   from a line as it speaks and closing to a dot as it goes quiet. A home

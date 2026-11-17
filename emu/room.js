@@ -15,8 +15,10 @@
    has Put away, and Remove, which the TV asks about before the emulator's
    saves and settings are kept and it is taken off this Mac; one not set up
    has Set up, which installs its emulator, and Put back. Its power light,
-   on its drawing, is lit while it is set up and blinks while it is set up
-   or removed. A name shows under the pointer or the keyboard.
+   on its drawing, is lit while it is set up and flashes on and off while
+   it is set up or removed, while the TV says how far it has got, and a
+   home console is wired to the TV as it is set up. Its name shows under
+   the pointer or the keyboard.
 
    The TV is the room's one screen. At rest it shows this Mac's name and how
    much room is free, and links Status when no games are found; while a move
@@ -327,7 +329,7 @@
     }
     body.addEventListener('click', () => { choose(system); openMenu(system, body); });
     body.addEventListener('contextmenu', e => { e.preventDefault(); choose(system); openMenu(system, body); });
-    li.append(body, el('span', 'emu-unit__name', BUSY[state]?.(system) ?? called));
+    li.append(body, el('span', 'emu-unit__name', called));
     return li;
   }
   // A CONSOLE'S MENU, Design's menu under the console. One that is set up
@@ -343,7 +345,7 @@
     menu.setAttribute('aria-label', R.systemName(system));
     menu.replaceChildren(...(BUSY[state] ? [item(BUSY[state](system), null, { off: true })]
       : state === 'on' ? [item('Put away', () => putAway(system)), item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]
-      : [item(`Set up ${emulator}`, () => setUp(system)), item('Put back', () => putBack(system))]));
+      : [item(`Set up ${R.systemName(system)}`, () => setUp(system)), item('Put back', () => putBack(system))]));
     window.Rux.menu.open(menu, trigger);
   }
   // A favourite out on the floor: its cover as the button that opens it and
@@ -380,8 +382,8 @@
   function renderRoom() {
     const mac = Boolean(helper);
     $('emu-room').hidden = !mac;
-    $('emu-server-open').hidden = !mac;
-    $('emu-stuff-open').hidden = !mac;
+    $('emu-rail-server').hidden = !mac;
+    $('emu-rail-stuff').hidden = !mac;
     $('emu-stuff').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
     // A drawer floats over the room on layer-01, so what is in it steps a layer up.
@@ -406,19 +408,29 @@
     settle();
     renderStuff();
   }
-  // THE WIRE, from the console that is playing to the TV, while its game's
-  // cover is on the glass: out of the console's back and into the TV's foot.
+  // THE WIRE, from a home console to the TV, while its game's cover is on
+  // the glass or while it is being set up: out of the console's back and
+  // into the TV's foot. It draws itself in from the console each time it
+  // is plugged in.
   let wire = null;
+  let wired = null;
   function drawWire() {
     const svg = $('emu-wire');
-    const u = wire && unitOf(wire)?.querySelector('.emu-console');
+    const to = wire ?? [...settingUp].find(sys => !HANDHELD.has(sys) && unitOf(sys)) ?? null;
+    const u = to && unitOf(to)?.querySelector('.emu-console');
     svg.style.display = u ? 'block' : 'none';
+    const fresh = Boolean(u) && wired !== to;
+    wired = u ? to : null;
     if (!u) return;
     const r = $('emu-room').getBoundingClientRect();
     const a = u.getBoundingClientRect();
     const b = $('emu-tv').getBoundingClientRect();
     const [x1, y1, x2, y2] = [a.left + a.width / 2 - r.left, a.top - r.top + 2, b.left + b.width / 2 - r.left, b.bottom - r.top - 2].map(Math.round);
     svg.firstElementChild.setAttribute('d', `M${x1} ${y1} C ${x1} ${y1 - 36}, ${x2} ${y2 + 48}, ${x2} ${y2}`);
+    if (!fresh) return;
+    svg.classList.add('emu-wire--plug');
+    void svg.getBoundingClientRect();
+    svg.classList.remove('emu-wire--plug');
   }
   // THE SWEEP. The TV, the consoles and the covers are things on the floor. Each starts
   // where it was kept; the room's edges push whatever is past them back in,
@@ -751,6 +763,7 @@
       const show = () => {
         $(id).classList.toggle('emu-side--open', shown);
         $(opener).setAttribute('aria-expanded', String(shown));
+        $(opener).parentElement.classList.toggle('emu-rail--open', shown);
       };
       const set = to => {
         shown = to;
@@ -1200,7 +1213,7 @@
       node.style.setProperty('--emu-left', d.cur[0]);
       node.style.setProperty('--emu-top', d.cur[1]);
       node.style.rotate = calm() ? '' : `${Math.max(-6, Math.min(6, vx * 1.5)).toFixed(2)}deg`;
-      if (wire) drawWire();
+      if (wired) drawWire();
       d.frame = requestAnimationFrame(step);
     };
     d.frame = requestAnimationFrame(step);

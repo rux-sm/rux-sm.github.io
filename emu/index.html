@@ -222,7 +222,7 @@
               <button type="button" class="emu-tv__knobs" id="emu-tv-knobs" aria-haspopup="menu" aria-label="TV menu" title="Menu"></button>
             </div>
             <!-- The wire from the console that is playing to the TV, drawn by room.js. -->
-            <svg class="emu-wire" id="emu-wire" aria-hidden="true"><path/></svg>
+            <svg class="emu-wire" id="emu-wire" aria-hidden="true"><path pathLength="1"/></svg>
             <!-- The whole room, under the TV, where each console and each favourite out with it stands where it was left. -->
             <div class="emu-floor" id="emu-floor">
               <p class="emu-floor__empty" id="emu-floor-empty" hidden>Drag a console here from Server or My Stuff.</p>
@@ -264,9 +264,13 @@
     </div>
   </div>
 </main>
-<!-- The rails at the window's sides, each the button that opens its drawer: Rux's Server on the left, My Stuff on the right; shown where the helper answers. -->
-<button type="button" class="emu-rail emu-rail--server" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection" hidden><span class="rux--type-body-compact-01 emu-rail__label">Server</span></button>
-<button type="button" class="emu-rail emu-rail--stuff" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff" hidden><span class="rux--type-body-compact-01 emu-rail__label">My Stuff</span></button>
+<!-- The rails at the window's sides, each holding the tab that opens its drawer: Rux's Server on the left, My Stuff on the right; shown where the helper answers. -->
+<div class="emu-rail emu-rail--server" id="emu-rail-server" hidden>
+  <button type="button" class="emu-rail__tab" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection"><span class="rux--type-body-compact-01 emu-rail__label">Server</span></button>
+</div>
+<div class="emu-rail emu-rail--stuff" id="emu-rail-stuff" hidden>
+  <button type="button" class="emu-rail__tab" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff"><span class="rux--type-body-compact-01 emu-rail__label">My Stuff</span></button>
+</div>
 <!-- The TV's menu, filled and opened under its knobs by room.js: the other pages, Tidy up and Put everything away, Search and Sound. -->
 <ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
 <!-- A console's menu, filled and opened under the console by room.js. -->

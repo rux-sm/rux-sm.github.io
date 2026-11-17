@@ -85,9 +85,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-shelf { list-style: none; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rux-spacing-05) var(--rux-spacing-03); padding: 4px; margin: -4px; }
 :is(.emu-cover, .emu-panel-art)[data-system="nes"] { --emu-box: 7 / 10; }
 :is(.emu-cover, .emu-panel-art)[data-system="snes"] { --emu-box: 7 / 5; }
-.emu-cover { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: grid; gap: var(--rux-spacing-03); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); text-align: start; }
+.emu-cover { position: relative; appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: grid; gap: var(--rux-spacing-03); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); text-align: start; }
 .emu-cover:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.emu-cover-art, .emu-panel-art { display: grid; place-items: center; aspect-ratio: var(--emu-box, 3 / 4); overflow: hidden; background: var(--rux-layer-01); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-cover-art, .emu-panel-art { position: relative; display: grid; place-items: center; aspect-ratio: var(--emu-box, 3 / 4); overflow: hidden; background: var(--rux-layer-01); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover-01); }
 .emu-cover-art img, .emu-panel-art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
 .emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; text-align: center; overflow-wrap: anywhere; }
@@ -112,80 +112,75 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* A cover's marks. One this Mac holds is dimmed under a tick in Rux's
    Server; one this Mac lacks, or whose console it cannot play, is dimmed
-   in the room; one arriving sits under a veil that lifts from the foot. */
-.emu-cover--here, .emu-scene .emu-cover { position: relative; }
+   in My Stuff; one arriving sits under a veil that lifts from the foot. */
 .emu-cover--here .emu-cover-art, .emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover__tick { position: absolute; inset-block-start: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--rux-background); fill: var(--rux-support-success); }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer-01); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
-/* THE WALL. Where the helper answers, room.js marks it --mac, and from 66rem
-   it is three columns as tall as the page under the header: Rux's Server,
-   Your Mac and Storage. A side panel is 22rem and scrolls inside itself; its
-   heading is a button that closes it away, and the button of its name
-   beside Your Mac opens it. Below 66rem the three stack, the room first, and nothing closes.
-   Without the helper Rux's Server is the page. Carbon's side panel lies over
-   the page, and these stand beside the room, so they are Emu's own. */
+/* THE WALL. Where the helper answers, room.js marks it --mac: the room fills
+   the page between the header and the bar at the foot, and each side panel
+   is a drawer over its side of the room, 22rem or the whole width of a
+   phone, opened from the bar. Without the helper Rux's Server is the page.
+   Carbon's side panel is a dialog for one thing, and these stay open beside
+   the room while things are dragged out of them, so they are Emu's own. They
+   slide on Carbon's moderate-02, entering and leaving on its productive
+   curves. */
 .emu-side[hidden] { display: none; }
-.emu-side__toggle { appearance: none; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; padding: 0; margin-block-end: var(--rux-spacing-05); display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); inline-size: 100%; text-align: start; pointer-events: none; }
-.emu-side__toggle svg { display: none; flex: none; }
-@media (min-width: 66rem) {
-  .emu-wall--mac { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: var(--rux-spacing-05); block-size: calc(100dvh - 7rem); min-block-size: 30rem; }
-  .emu-wall--mac .emu-side { display: flex; flex-direction: column; inline-size: 22rem; min-block-size: 0; }
-  .emu-wall--mac .emu-side[hidden] { display: none; }
-  .emu-wall--mac .emu-side--server { border-inline-end: 1px solid var(--rux-border-subtle-01); padding-inline-end: var(--rux-spacing-05); }
-  .emu-wall--mac .emu-side--storage { border-inline-start: 1px solid var(--rux-border-subtle-01); padding-inline-start: var(--rux-spacing-05); }
-  .emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; }
-  .emu-wall--mac .emu-side__toggle { pointer-events: auto; cursor: pointer; min-block-size: 2rem; }
-  .emu-wall--mac .emu-side__toggle:hover { color: var(--rux-text-secondary); }
-  .emu-wall--mac .emu-side__toggle:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-  .emu-wall--mac .emu-side__toggle svg { display: block; }
-  .emu-wall--mac .emu-side--server { grid-column: 1; }
-  .emu-wall--mac .emu-room { grid-column: 2; }
-  .emu-wall--mac .emu-side--storage { grid-column: 3; }
-  .emu-wall--mac .emu-side--closed { display: none; }
-  /* A panel's covers are smaller, so three stand in a row. */
-  .emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
-}
-@media (max-width: 65.98rem) {
-  .emu-wall--mac { display: flex; flex-direction: column; gap: var(--rux-spacing-07); }
-  .emu-wall--mac .emu-room { order: -1; }
-}
+.emu-side__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); margin-block-end: var(--rux-spacing-05); }
+.emu-side__close { display: none; }
+body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-bottom)); }
+.emu-wall--mac .emu-side { position: fixed; z-index: 3; inset-block: 3rem calc(4.75rem + var(--frame-safe-bottom)); inline-size: min(22rem, 100vw); display: flex; flex-direction: column; padding: var(--rux-spacing-05); background: var(--rux-background); visibility: hidden; transition: transform 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
+.emu-wall--mac .emu-side[hidden] { display: none; }
+.emu-wall--mac .emu-side--server { inset-inline-start: 0; border-inline-end: 1px solid var(--rux-border-subtle-01); transform: translateX(-100%); }
+.emu-wall--mac .emu-side--stuff { inset-inline-end: 0; border-inline-start: 1px solid var(--rux-border-subtle-01); transform: translateX(100%); }
+.emu-wall--mac .emu-side--open { visibility: visible; transform: none; transition: transform 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
+.emu-wall--mac .emu-side__close { display: inline-flex; }
+.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; margin-block-start: var(--rux-spacing-05); }
+.emu-wall--mac .emu-side--server .emu-side__body { margin-block-start: 0; }
+@media (prefers-reduced-motion: reduce) { .emu-wall--mac .emu-side, .emu-wall--mac .emu-side--open { transition: none; } }
+/* A tab of My Stuff not chosen is gone, where a stack would show it. */
+.emu-pane[hidden] { display: none; }
+/* A drawer's covers are smaller, so three stand in a row. */
+.emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
+/* The bar at the foot: its two buttons side by side in the middle. */
+.emu-bar { display: flex; justify-content: center; gap: var(--rux-spacing-03); padding-inline: var(--rux-spacing-05); }
+.emu-bar[hidden] { display: none; }
+.emu-bar__btn { flex: 0 1 10rem; justify-content: center; padding-inline: var(--rux-spacing-05); }
 
-/* YOUR MAC: a room seen from above and in front. The room's own box keeps
-   Carbon's spacing; inside it every size is a whole number of art pixels,
-   --emu-px, which room.js sets to four CSS pixels, three or two, the
-   largest the room's box holds, so the pixel art drawn to these boxes lands
-   on whole pixels. The back wall is most of it, the TV on its stand at its
-   foot and the Favourites shelves up on its right; the floor is a strip 76
-   art pixels deep, with the rug, the handhelds' table and this Mac's
-   games. */
-.emu-room { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; min-block-size: 0; }
+/* YOUR MAC: one solid space, the TV near its top and the open space below it
+   where the consoles stand. Inside it every size is a whole number of art
+   pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
+   pixel art lands on whole pixels. */
+.emu-room { --emu-px: 3px; display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--emu-px)); block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); background: var(--rux-layer-01); }
 .emu-room[hidden] { display: none; }
-.emu-room__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
-.emu-room__space { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
-/* The buttons that open a closed panel, which only the wide page has. */
-.emu-open[hidden] { display: none; }
-@media (max-width: 65.98rem) { .emu-open { display: none; } }
-.emu-scene { --emu-px: 3px; position: relative; flex: 1; display: flex; flex-direction: column; min-block-size: 0; }
-.emu-backwall { position: relative; flex: 1 1 0; min-block-size: calc(134 * var(--emu-px)); display: grid; align-content: end; justify-items: center; padding: calc(4 * var(--emu-px)) calc(6 * var(--emu-px)) 0; }
-.emu-cap { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
-
-/* The stage: the TV on the stand's top ledge, over a cubby per home
-   console. --emu-per is how many stand in a row, set by room.js. */
-.emu-stage { display: grid; justify-items: center; }
-.emu-tv { --emu-tv-w: 112; --emu-tv-h: 72; position: relative; inline-size: calc(var(--emu-tv-w) * var(--emu-px)); block-size: calc(var(--emu-tv-h) * var(--emu-px)); padding: calc(3 * var(--emu-px)) calc(3 * var(--emu-px)) calc(5 * var(--emu-px)); margin-block-end: calc(2 * var(--emu-px)); background: var(--rux-border-strong-01); }
-.emu-tv::after { content: ""; position: absolute; inset-block-start: 100%; inset-inline-start: calc(50% - 10 * var(--emu-px)); inline-size: calc(20 * var(--emu-px)); block-size: calc(2 * var(--emu-px)); background: var(--rux-border-strong-01); }
-.emu-tv__screen { block-size: 100%; background: var(--rux-background); }
-.emu-stand { --emu-per: 3; --emu-cubby: 42; list-style: none; position: relative; display: grid; grid-template-columns: repeat(var(--emu-per), calc(38 * var(--emu-px))); gap: calc(2 * var(--emu-px)); justify-self: center; margin-block-start: calc(3 * var(--emu-px)); padding: calc(2 * var(--emu-px)); background: var(--rux-border-strong-01); }
-.emu-stand::before { content: ""; position: absolute; inset-inline: calc(-3 * var(--emu-px)); inset-block-start: calc(-3 * var(--emu-px)); block-size: calc(3 * var(--emu-px)); background: var(--rux-icon-secondary); }
-.emu-cubby { block-size: calc(var(--emu-cubby) * var(--emu-px)); display: grid; align-content: end; justify-items: center; padding-block-end: var(--emu-px); background: var(--rux-layer-02); }
-.emu-cubby--ghost { align-content: center; text-align: center; padding: calc(4 * var(--emu-px)); outline: 2px dashed var(--rux-border-interactive); outline-offset: calc(-3 * var(--emu-px)); color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; }
-.emu-cubby--ghost::before { content: "+"; color: var(--rux-border-interactive); font-size: 1.5rem; line-height: 1.5rem; }
-.emu-cubby--ghost.emu-lit { background: var(--rux-layer-selected-01); }
+/* The TV, 112 by 72 art pixels: quiet at rest, lit while it says what a move
+   does, red when a move is refused or failed. */
+.emu-tv { flex: none; inline-size: calc(112 * var(--emu-px)); block-size: calc(72 * var(--emu-px)); padding: calc(3 * var(--emu-px)) calc(3 * var(--emu-px)) calc(5 * var(--emu-px)); background: var(--rux-border-strong-01); }
+.emu-tv__screen { block-size: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--rux-spacing-02); padding: var(--rux-spacing-03); text-align: center; background: var(--rux-background); color: var(--rux-text-primary); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-tv__rest[hidden] { display: none; }
+.emu-tv__name { font-size: .875rem; line-height: 1.125rem; font-weight: 600; }
+.emu-tv__sub, .emu-tv__said { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+.emu-tv__sub { opacity: .7; }
+.emu-tv__sub .rux--link { color: inherit; text-decoration: underline; }
+.emu-tv__said:empty { display: none; }
+.emu-tv--lit .emu-tv__screen { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
+.emu-tv--no .emu-tv__screen { background: var(--rux-support-error); color: var(--rux-text-on-color); }
+.emu-tv__undo[hidden] { display: none; }
+.emu-tv__undo, .emu-tv__undo:hover { color: inherit; }
+.emu-tv.emu-lit, .emu-tv.emu-no { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
+/* The open space: each console placed by room.js, --emu-x and --emu-y each a
+   share of the space from 0 to 1. The list takes no press itself, so a drop
+   between consoles lands on the space. */
+.emu-floor { position: relative; flex: 1; align-self: stretch; min-block-size: calc(40 * var(--emu-px)); }
+.emu-floor.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
+.emu-floor__empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
+.emu-floor__empty[hidden] { display: none; }
+.emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
+.emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; display: grid; justify-items: center; }
 
 /* A console: its drawing over its socket and its light. A home console's
    box is 36 by 24 art pixels; a handheld is as tall, cut to its width. */
-.emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; }
+.emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; touch-action: none; }
 .emu-unit__console:focus-visible, .emu-plug:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-unit .emu-console { inline-size: calc(36 * var(--emu-px)); block-size: calc(24 * var(--emu-px)); }
 .emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
@@ -219,47 +214,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
 .emu-led { flex: none; inline-size: .375rem; block-size: .375rem; margin-block-start: .3125rem; border-radius: 50%; background: var(--rux-support-success); }
 
-/* Favourites: small shelves up on the wall, each cover face out and 14 art
-   pixels tall, a shelf's board under each row. */
-.emu-favs { position: absolute; inset-block-start: calc(4 * var(--emu-px)); inset-inline-end: calc(6 * var(--emu-px)); display: grid; gap: var(--emu-px); inline-size: calc(58 * var(--emu-px)); }
-.emu-ledge { --emu-cover-height: calc(14 * var(--emu-px)); list-style: none; display: flex; flex-wrap: wrap; align-items: flex-end; align-content: start; gap: calc(2 * var(--emu-px)); min-block-size: calc(16 * var(--emu-px)); padding-block-end: calc(2 * var(--emu-px)); background: repeating-linear-gradient(to bottom, transparent 0 calc(14 * var(--emu-px)), var(--rux-icon-secondary) calc(14 * var(--emu-px)) calc(16 * var(--emu-px))); }
-.emu-ledge > li { position: relative; }
-.emu-ledge .emu-cover { transform-origin: 100% 0; }
-.emu-ledge > * { flex: none; }
-/* Where the wall is only as tall as what stands on it, two shelves stay clear above the TV. */
-@media (max-width: 65.98rem) { .emu-backwall { padding-block-start: calc(1.25rem + 38 * var(--emu-px)); } }
-
-/* The floor: a rug in its middle with the handhelds' table on it,
-   and this Mac's games lying small where room.js puts them, --emu-x and --emu-y
-   each a share of the floor from 0 to 1. The list of games takes no press
-   itself, so a drop between them lands on the floor. */
-.emu-floor { position: relative; flex: none; block-size: calc(76 * var(--emu-px)); }
-.emu-floor > .emu-cap { position: absolute; inset-block-start: var(--emu-px); inset-inline-start: calc(2 * var(--emu-px)); }
-.emu-rug { position: absolute; inset: 12% 24%; display: grid; place-items: center; background: var(--rux-layer-02); outline: calc(2 * var(--emu-px)) solid var(--rux-border-subtle-01); outline-offset: calc(-4 * var(--emu-px)); }
-.emu-dock { list-style: none; display: flex; align-items: flex-end; gap: calc(3 * var(--emu-px)); padding: calc(2 * var(--emu-px)) calc(4 * var(--emu-px)) 0; background: var(--rux-layer-03); box-shadow: 0 calc(3 * var(--emu-px)) var(--rux-border-strong-01); }
-.emu-dock:empty { display: none; }
-.emu-onmac { --emu-cover-height: calc(14 * var(--emu-px)); list-style: none; position: absolute; inset: max(1.25rem, calc(5 * var(--emu-px))) calc(3 * var(--emu-px)) calc(3 * var(--emu-px)); pointer-events: none; }
-.emu-onmac > li { position: absolute; inset-inline-start: calc(var(--emu-x) * 100%); inset-block-start: calc(var(--emu-y) * 100%); transform: translate(calc(var(--emu-x) * -100%), calc(var(--emu-y) * -100%)); pointer-events: auto; }
-.emu-onmac .emu-cover { cursor: grab; box-shadow: var(--emu-px) var(--emu-px) 0 var(--rux-shadow); transform-origin: calc(var(--emu-x) * 100%) calc(var(--emu-y) * 100%); }
-/* A cover in the room is small, 14 art pixels tall, and grows to 22 under
-   the pointer or the keyboard, over its neighbours and toward the room's
-   middle so it stays inside, with its name beneath it. Carbon has no growing
-   tile: this is its fast-02 on the productive standard curve. */
-.emu-scene .emu-cover { transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-scene li:is(:hover, :focus-within) { z-index: 2; }
-.emu-scene .emu-cover:focus-visible { transform: scale(calc(22 / 14)); }
-@media (hover: hover) { .emu-scene .emu-cover:hover { transform: scale(calc(22 / 14)); } }
-.emu-cover-tag { display: none; position: absolute; inset-block-start: calc(100% + var(--rux-spacing-01)); inset-inline-start: 50%; transform: translateX(-50%); padding: var(--rux-spacing-01) var(--rux-spacing-02); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: calc(.75rem * 14 / 22); line-height: 1.34; white-space: nowrap; pointer-events: none; }
-.emu-scene .emu-cover:focus-visible .emu-cover-tag { display: block; }
-@media (hover: hover) { .emu-scene .emu-cover:hover .emu-cover-tag { display: block; } }
-@media (prefers-reduced-motion: reduce) { .emu-scene .emu-cover { transition: none; } }
-.emu-scene .emu-cover-title { padding: var(--rux-spacing-01); font-size: .625rem; line-height: .75rem; }
-
-/* A CROWDED ROOM, more than five cubbies: the stand grows a second tier of
-   shorter cubbies and the TV is smaller. */
-.emu-scene--crowded .emu-tv { --emu-tv-w: 80; --emu-tv-h: 54; }
-.emu-scene--crowded .emu-stand { --emu-cubby: 34; }
-
 /* THE DRAG. A game held is a copy of its cover under the pointer, with a
    word beside it for what letting go will do, red where nothing will. The
    place it would land is ringed, and its console glows while the rest dim.
@@ -272,8 +226,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-.emu-scene.emu-lit, .emu-ledge.emu-lit, .emu-floor.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-#emu-collection.emu-lit, #emu-collection.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
+#emu-collection.emu-lit, #emu-collection.emu-no, #emu-stuff.emu-lit { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
 #emu-collection.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
@@ -282,8 +235,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit--fit .emu-console { filter: drop-shadow(0 0 .5rem var(--rux-border-interactive)); }
 .emu-unit--fit .emu-unit__name { color: var(--rux-text-primary); }
 .emu-cover--home .emu-cover-art { opacity: 1; outline: 2px dashed var(--rux-border-interactive); outline-offset: 2px; }
-/* What a move just did, by Your Mac's name. */
-.emu-room__said { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: .875rem; line-height: 1.125rem; color: var(--rux-text-secondary); }
 
 /* A console's place in Rux's Server while it stands in the room: outlined
    and faint, and lit as the place it goes back to while it is held. A green

@@ -36,8 +36,9 @@ Emu is unchanged.
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
 - **The open space below the TV is only for the consoles in the room,** each
-  standing where it was last left and dragged to move it. One just brought in
-  lands in the first clear spot. Each console's spot is kept with this Mac's
+  standing where it was last left and dragged to move it, and moving one
+  moves no other. One brought in stands where it was let go, and one brought
+  without a drag in the first clear spot. Each console's spot is kept with this Mac's
   room, in the `room` column of its `emu_macs` row. An empty room says
   faintly "Drag a console here from Server."
 - **Two solid buttons at the foot of the page, Server and My Stuff, each open
@@ -204,9 +205,9 @@ Emu is unchanged.
   `emu/docs/drawing-consoles.md` sets. The room shows each as it is drawn,
   in the same colours in every theme, so a saved drawing shows on the next
   load.
-- **The consoles and the TV are drawn as pixel art at one whole scale,** four
-  CSS pixels to an art pixel, three or two, the largest at which the TV and
-  the consoles fit the room, never scaled in between, so their edges stay
+- **The consoles and the TV are drawn as pixel art at one whole scale,**
+  three CSS pixels to an art pixel where the TV takes at most half the
+  room's width, else two, never scaled in between, so their edges stay
   sharp. Colour is kept for state: green ready, amber busy or saves not safe
   yet, red no, blue where a drop lands. The room's colour is a token, light
   by day and dark in the evening, with the TV lighting only while it has
@@ -233,19 +234,6 @@ None open.
 
 ## Tasks
 
-- [ ] Strip the room to one solid colour: take out the wall, floor, stand,
-      cubbies, rug, table and Favourites shelves, and the heading beside
-      Your Mac.
-- [ ] Put the TV near the top as the room's one screen: this Mac's name,
-      free space and helper or server trouble at rest; the room's action,
-      result and Undo while one runs; and a live announcement for assistive
-      technology.
-- [ ] Let a console stand anywhere in the open space, dragged to move, the
-      first clear spot for a new one, and keep each spot in `emu_macs.room`.
-- [ ] Add the foot bar's Server and My Stuff buttons, each opening its
-      drawer over that side of the room, both closed at first and remembered.
-- [ ] Turn Storage into My Stuff, with a Games tab of this Mac's games,
-      favourites first, and a Saves tab of what Storage shows now.
 - [ ] Update each Mac to Rux Emu Helper 35, which takes a carried save off
       a Mac to the Trash on `removeCarried`.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on
@@ -268,3 +256,5 @@ None open.
 - [ ] Pick up and put down a game or console with a controller's A.
 - [ ] Lay it out on the phone as Rux's Server alone, and see the
       drawings in Safari.
+- [ ] With no console picked, list each console in the room in Saves with
+      what it keeps, in place of asking for a console to be pressed.

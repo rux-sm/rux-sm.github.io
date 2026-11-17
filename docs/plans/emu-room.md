@@ -177,7 +177,10 @@ Emu is unchanged.
   Download, Play, Download and play, Add to Favourites, Take off this Mac,
   Bring in, Put back, which names the emulator that will go, such as "Put
   back, and take mGBA off this Mac", or in red why not, such as "Doesn't fit
-  the Game Boy" and "Plug it in first". The place it will land lights up. The
+  the Game Boy" and "Plug it in first". A console moved in the room has no
+  word, since the drag shows it. The place it will land lights up where it is
+  one thing, such as a console or Rux's Server, never the whole room or My
+  Stuff. The
   word and the move come from one function, so they never disagree.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
   where it goes shows before it is dropped.

@@ -167,12 +167,10 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-tv--no .emu-tv__screen { background: var(--rux-support-error); color: var(--rux-text-on-color); }
 .emu-tv__undo[hidden] { display: none; }
 .emu-tv__undo, .emu-tv__undo:hover { color: inherit; }
-.emu-tv.emu-lit, .emu-tv.emu-no { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 /* The space the consoles stand in, the whole room under the TV: each placed
    by room.js, --emu-x and --emu-y each a share of the room from 0 to 1. The
    list takes no press itself, so a drop between consoles lands on the room. */
 .emu-floor { position: absolute; inset: 0; }
-.emu-floor.emu-lit { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
 .emu-floor__empty { position: absolute; inset: 55% 0 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
 .emu-floor__empty[hidden] { display: none; }
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
@@ -226,7 +224,7 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-#emu-collection.emu-lit, #emu-collection.emu-no, #emu-stuff.emu-lit { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
+#emu-collection.emu-lit, #emu-collection.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
 #emu-collection.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }

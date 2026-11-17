@@ -37,8 +37,9 @@
    Take out, Put in and a name to change, then the console's own.
 
    A game or a console is dragged with the pointer, where the helper
-   answers. A word follows it and says what letting go will do, and the
-   place it would land lights. A console onto the room comes in where it is
+   answers. A word follows it and says what letting go will do, and a place
+   it would land lights where that place is one thing, such as a console or
+   Rux's Server, never the room as a whole. A console onto the room comes in where it is
    let go, one in the room moves where it is let go, and an unplugged one
    dragged back onto Rux's Server goes back. A game onto the room or My
    Stuff downloads it, onto its console or the TV plays it, downloading it
@@ -756,7 +757,9 @@
 
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
   // place that lights, and the move itself, or null where nothing would
-  // happen. One answer, so the word never disagrees with the drop. `home`
+  // happen. A move the drag already shows, such as a console moved in the
+  // room, has no word, and a drop anywhere in the room or My Stuff lights
+  // nothing, since the whole of it would. One answer, so the word never disagrees with the drop. `home`
   // lights the game's own cover in Rux's Server too.
   const yes = (word, light, run, home = false) => ({ word, light, run, home });
   // A move refused: `says` is the console and its line, said when the game is let go.
@@ -780,7 +783,7 @@
     const to = under.closest('#emu-stuff.emu-side--open') ?? under.closest('.emu-floor, .emu-tv');
     if (to && from === 'collection') {
       if (!keeps || (s.state !== 'away' && s.state !== 'failed')) return null;
-      return yes('Download', to.closest('#emu-stuff') ?? $('emu-floor'), () => download(g));
+      return yes('Download', null, () => download(g));
     }
     if (under.closest('#emu-collection') && from === 'shelf') return yes('Take off this Mac', $('emu-collection'), () => takeOff(g), true);
     return null;
@@ -792,9 +795,9 @@
     if (!under) return null;
     const inRoom = under.closest('#emu-room');
     if (from === 'collection' && inRoom) {
-      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', $('emu-floor'), () => bring(system, spotAt(point, size)));
+      return yes(plays(system) ? 'Bring in, ready to play' : 'Bring in', null, () => bring(system, spotAt(point, size)));
     }
-    if (from === 'room' && inRoom) return yes('Move', $('emu-floor'), () => moveTo(system, spotAt(point, size)));
+    if (from === 'room' && inRoom) return yes(null, null, () => moveTo(system, spotAt(point, size)));
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
       return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
@@ -865,12 +868,14 @@
     drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) rotate(-3deg)`;
     const it = intentOf(drag, document.elementFromPoint(e.clientX, e.clientY), { x: e.clientX, y: e.clientY });
     unlight();
-    word.hidden = !it;
+    word.hidden = !it?.word;
     if (!it) return;
-    word.textContent = it.word;
-    word.classList.toggle('emu-word--no', Boolean(it.no));
-    word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
-    it.light.classList.add(it.no ? 'emu-no' : 'emu-lit');
+    if (it.word) {
+      word.textContent = it.word;
+      word.classList.toggle('emu-word--no', Boolean(it.no));
+      word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
+    }
+    it.light?.classList.add(it.no ? 'emu-no' : 'emu-lit');
     if (it.home && drag.g) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
     if (it.home && !drag.g) $('emu-cabinet').querySelector(`[data-system="${drag.system}"]`)?.classList.add('emu-cabinet__console--home');
   });

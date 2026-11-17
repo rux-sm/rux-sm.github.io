@@ -2,7 +2,8 @@
 // carry.test.mjs -- runs carry.js against a stand-in helper and Supabase:
 // one case per way a save can differ between a Mac and Supabase, then what a
 // game's panel is told and the press that plays the copy set aside, then a
-// save of several files, as Azahar's, carried as one, then a game's cards:
+// save of several files, as Azahar's, carried as one, an emulator kept and
+// then removed, then a game's cards:
 // one pulled out, a new save begun, the first put back, and a Mac that
 // still holds a save taken out elsewhere.
 
@@ -20,6 +21,7 @@ const check = (name, ok) => { if (!ok) fails++; console.log(ok ? '   ok   ' : ' 
 const GB = { emulator: 'mGBA', systems: { gb: { emulator: 'mGBA', saves: 'name' } }, macSaves: { mGBA: { places: [{ stored: 'saves/gb' }, { stored: 'saves/gb/states' }] } } };
 async function world({ local = {}, ledger = {}, remote = [], running = false, rules = GB, home = '~/.config/mgba', kept = new Map(), keptBytes = {}, oldHelper = false }) {
   const written = [];
+  const uninstalled = [];
   // local: path -> {text, saved}; remote rows oldest first: {path, text, saved}
   const mac = new Map(Object.entries(local).map(([p, v]) => [p, { bytes: enc(v.text), saved: v.saved }]));
   const led = new Map(Object.entries(ledger).map(([p, t]) => [p, sha(enc(t))]));
@@ -39,6 +41,7 @@ async function world({ local = {}, ledger = {}, remote = [], running = false, ru
     markCarried: async (p, s) => { if (sha(mac.get(p).bytes) !== s) throw new Error('changed'); led.set(p, s); },
     removeCarried: async (p, s) => { if (oldHelper) return null; if (running) throw new Error('running'); if (mac.has(p) && sha(mac.get(p).bytes) !== s) throw new Error('changed'); mac.delete(p); led.delete(p); return true; },
     manage: async () => ({}), settings: async () => ({ home, running, files: [] }),
+    uninstall: async name => { uninstalled.push(name); return true; },
     putSetting: async (name, rel, bytes) => { written.push([name, rel, new TextDecoder().decode(bytes)]); home = '~/.config/mgba'; },
   };
   const data = {
@@ -60,11 +63,21 @@ async function world({ local = {}, ledger = {}, remote = [], running = false, ru
   new Function('window', 'crypto', 'Blob', 'console', 'localStorage', src)(window, globalThis.crypto, Blob, console, localStorage);
   const out = await window.Emu.carry.run(rules.emulator);
   const text = b => new TextDecoder().decode(b);
-  return { out, written, cards, carry: window.Emu.carry, play: (p, t, saved) => mac.set(p, { bytes: enc(t), saved }), local: p => mac.has(p) ? text(mac.get(p).bytes) : null, remote: p => { const r = now().find(r => r.path === p); return r?.sha1 ? text(blobs.get(r.sha1)) : null; },
+  return { out, written, uninstalled, cards, carry: window.Emu.carry, play: (p, t, saved) => mac.set(p, { bytes: enc(t), saved }), local: p => mac.has(p) ? text(mac.get(p).bytes) : null, remote: p => { const r = now().find(r => r.path === p); return r?.sha1 ? text(blobs.get(r.sha1)) : null; },
     copies: p => rows.filter(r => r.path === p && r.sha1).map(r => text(blobs.get(r.sha1))), ledger: p => led.get(p), sha: t => sha(enc(t)) };
 }
 const P = 'saves/gb/Game.sav';
 let w;
+// Turning a console off keeps; only putting it back removes.
+w = await world({});
+w.play(P, 'A', '2026-01-01T00:00:00Z');
+await w.carry.keep('mGBA');
+check('keeping carries what was played since and takes nothing off this Mac', w.remote(P) === 'A' && w.local(P) === 'A' && w.uninstalled.length === 0);
+w.play(P, 'B', '2026-01-02T00:00:00Z');
+await w.carry.remove('mGBA');
+check('removing keeps what changed since it was kept, then takes the emulator off', w.remote(P) === 'B' && w.uninstalled.join() === 'mGBA');
+w = await world({ local: { [P]: { text: 'A', saved: 'x' } }, running: true });
+check('neither keeps nor removes under a running emulator', await w.carry.keep('mGBA').then(() => false, () => true) && await w.carry.remove('mGBA').then(() => false, () => true) && w.uninstalled.length === 0);
 w = await world({ local: { [P]: { text: 'A', saved: '2026-01-01T00:00:00Z' } } });
 check('only on this Mac goes up', w.remote(P) === 'A' && w.local(P) === 'A' && w.ledger(P) === w.sha('A') && w.out.up === 1);
 w = await world({ remote: [{ path: P, text: 'A', saved: '2026-01-01T00:00:00Z' }] });

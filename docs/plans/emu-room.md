@@ -98,7 +98,7 @@ Emu is unchanged.
   handful.
 - **A console is turned on and off from its own menu,** opened under it by
   pressing or right-clicking it: Turn on, Turn off and Put back, each saying
-  what it does to this Mac, such as "Turn off and remove mGBA". So setting an
+  what it does to this Mac, such as "Put back and remove mGBA". So setting an
   emulator up or taking it off is always two presses, and no control is
   drawn on the room, where a button under each console spoiled the art.
 - **A console's power light is on its drawing,** over the drawing's own
@@ -129,18 +129,20 @@ Emu is unchanged.
 - **A console comes in off, and turning it on installs its emulator.**
 - **An emulator comes off this Mac by putting its console away, one step at
   a time, with no question,** so no single press removes anything. The game
-  comes out of the console, which stops it. It is turned off, which only
-  stands the console off, its emulator still on this Mac. Its card
-  light turns green once every card of its games is in Saves, which the
-  page carries there itself. Dragging it back to its place in Rux's
+  comes out of the console, which stops it. It is turned off, which keeps its
+  emulator's saves and settings in Supabase, `R.carry.keep`, and takes
+  nothing off this Mac: its light blinks while they are kept, it is off only
+  once they are, and it stays on where keeping fails. Putting it back is
+  there only once it is off. Dragging it back to its place in Rux's
   Server is the last step, and takes the emulator off once no other
   console in the room uses it. Each step refuses until the one before is
   done, with "Take the game out first.", "Turn me off first." or "Still
   keeping your saves.", and turning it back on before the last step changes
   nothing.
 - **Turning on is the helper's install, putting back is `R.carry.remove`,**
-  which carries the saves and keeps the settings in Supabase before the
-  emulator goes to the Trash; the light blinks while the install's request is
+  which keeps the saves and settings again, so what changed since the
+  console was turned off is safe, before the emulator goes to the Trash,
+  and leaves the console in the room where that fails; the light blinks while the install's request is
   waiting, since it reports no progress. Bringing the console back and
   turning it on restores this Mac's kept settings, so it comes back as it
   was.
@@ -279,9 +281,8 @@ None open.
 - [ ] List a console's controls in Saves, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Draw a card in pixel art.
-- [ ] Move the emulator's removal from turning a console off to putting it
-      back, the held word naming the emulator that goes, and have turning
-      off stop the console's game first, once the helper says which runs.
+- [ ] Have turning a console off stop its game first, once the helper says
+      which runs.
 - [ ] Give Rux Emu Helper a quit request the page can send, and have it say
       which game runs so the TV can name active play and a handheld can light
       its own screen.

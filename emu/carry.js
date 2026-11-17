@@ -31,8 +31,10 @@
    removed, else the preferred ones. `setUp` is an emulator made ready on this
    Mac, as Status and the room do it: installed where an installer is given,
    then started, given its files, its saves carried and its managed settings
-   written. `remove` keeps an emulator's saves and
-   settings in Supabase, then has the helper move it and its folders to the
+   written. `keep` carries an emulator's saves and keeps its settings in
+   Supabase, and checks both are held as they are, as the room does when a
+   console is turned off. `remove` does the same, then has the helper move
+   the emulator and its folders to the
    Trash, so installing it again sets it up as it was. `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:
    those files and the saves brought, then the settings Emu manages written,
@@ -207,10 +209,9 @@
     return true;
   }
 
-  // An emulator off this Mac: its saves carried, its settings kept, both read
-  // again to be sure Supabase holds them as they are, then the helper moves
-  // the app and its folders to the Trash.
-  async function removeNow(name) {
+  // An emulator's saves carried and its settings kept, both read again to be
+  // sure Supabase holds them as they are. Nothing leaves this Mac.
+  async function keepNow(name) {
     const c = await carryNow(name);
     const mac = c?.mac ?? (await H.carry(name))?.mac;
     if (c?.running) throw new Error(`Quit ${name} first, so its saves can be kept.`);
@@ -222,6 +223,12 @@
     const newest = (await R.data.settings()).get(`${mac.replaceAll('/', '_')}/${name}`)?.[0]?.files ?? [];
     const print = list => list.map(f => `${f.rel}|${f.sha1}`).sort().join('\n');
     if (here?.files.length && print(here.files) !== print(newest)) throw new Error(`${name}'s settings changed as they were kept. Try again.`);
+  }
+  // An emulator off this Mac: kept as above, so whatever changed since it
+  // was last kept is safe, then the helper moves the app and its folders to
+  // the Trash.
+  async function removeNow(name) {
+    await keepNow(name);
     return H.uninstall(name);
   }
 
@@ -240,6 +247,7 @@
   }
 
   const run = name => queued(name, carryNow);
+  const keep = name => queued(name, keepNow);
   const remove = name => queued(name, removeNow);
   const give = name => queued(name, giveNow);
   const start = name => queued(name, startNow);
@@ -463,5 +471,5 @@
     }
   })();
 
-  R.carry = { run, give, start, setUp, remove, before, after, standing, useOther, cardsFor, takeOut, putIn, rename };
+  R.carry = { run, give, start, setUp, keep, remove, before, after, standing, useOther, cardsFor, takeOut, putIn, rename };
 })();

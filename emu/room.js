@@ -18,9 +18,11 @@
    something is moved, the console of each game this Mac holds stands there.
    A console is on only where this Mac has its emulator too. Pressing or
    right-clicking it opens its menu: Turn on, which sets its emulator up on
-   this Mac, Turn off, which takes the emulator off, its saves and settings
-   kept, once no other console that is on uses it, and Put back. Its power
-   light, on its drawing, is lit while it is on. A console's name shows under the pointer or
+   this Mac; Turn off, which keeps its emulator's saves and settings in
+   Supabase and takes nothing off; and Put back, there once it is off, which
+   takes the emulator off this Mac where no other console in the room plays
+   in it. Its power light, on its drawing, is lit while it is on and blinks
+   while it is set up or its saves are kept. A console's name shows under the pointer or
    the keyboard.
 
    Rux's Server is every console with games, each its drawing from
@@ -82,7 +84,10 @@
   let room = null;
   // Consoles whose emulator is being set up now.
   const settingUp = new Set();
-  // The consoles standing in the room as drawn, each 'on', 'off' or 'setting'.
+  // Consoles whose emulator's saves and settings are being kept now, as one
+  // is turned off, or checked again as its emulator is taken off.
+  const keeping = new Set();
+  // The consoles standing in the room as drawn, each 'on', 'off', 'setting' or 'keeping'.
   let stand = new Map();
 
   const keyOf = g => `${g.system}/${g.title}`;
@@ -129,7 +134,7 @@
   const consolesNow = () => {
     const wish = wishes();
     return new Map(Object.keys(R.SYSTEMS).filter(sys => sys in wish)
-      .map(sys => [sys, settingUp.has(sys) ? 'setting' : wish[sys] && plays(sys) ? 'on' : 'off']));
+      .map(sys => [sys, settingUp.has(sys) ? 'setting' : keeping.has(sys) ? 'keeping' : wish[sys] && plays(sys) ? 'on' : 'off']));
   };
 
   const SVG = 'http://www.w3.org/2000/svg';
@@ -227,7 +232,8 @@
   // is set up, and is the drawing's own unlit pixel while it is off, the
   // whole drawing dimmed. Its name is a tag that shows under the pointer or
   // the keyboard, and while it is set up.
-  const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting' };
+  const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting', keeping: 'emu-unit emu-unit--setting' };
+  const BUSY = { setting: system => `Setting up ${emulatorOf(system)}…`, keeping: () => 'Keeping its saves…' };
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
@@ -246,7 +252,7 @@
     body.type = 'button';
     body.dataset.console = system;
     body.setAttribute('aria-haspopup', 'menu');
-    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'on' : state === 'setting' ? 'being set up' : 'off'}`);
+    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'on' : state === 'setting' ? 'being set up' : state === 'keeping' ? 'keeping its saves' : 'off'}`);
     body.append(consoleOf(system, hand));
     const at = LIGHT[system];
     if (at) {
@@ -256,13 +262,13 @@
     }
     body.addEventListener('click', () => { choose(system); openMenu(system, body); });
     body.addEventListener('contextmenu', e => { e.preventDefault(); choose(system); openMenu(system, body); });
-    li.append(body, el('span', 'emu-unit__name', state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
+    li.append(body, el('span', 'emu-unit__name', BUSY[state]?.(system) ?? called));
     return li;
   }
   // A CONSOLE'S MENU, Design's menu under the console: Turn on or Turn off,
-  // each saying what it does to this Mac, and Put back while it is off. So
-  // setting an emulator up or taking it off is two presses, and no control
-  // is drawn on the room.
+  // and Put back once it is off, each saying what it does to this Mac. So
+  // setting an emulator up is two presses and taking one off is more, and
+  // no control is drawn on the room.
   function openMenu(system, trigger) {
     const menu = $('emu-console-menu');
     window.Rux.menu.close(menu);
@@ -279,14 +285,13 @@
       if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
       return li;
     };
-    // Turning off takes the emulator off only where no other console that is on uses it.
-    const wish = wishes();
-    const last = !Object.keys(wish).some(sys => sys !== system && wish[sys] && emulatorOf(sys) === emulator);
-    const power = state === 'setting' ? item(`Setting up ${emulator}…`, null, { off: true })
-      : state === 'on' ? item(last ? `Turn off and remove ${emulator}` : 'Turn off', () => unplug(system), { danger: last })
+    // Turning off only keeps its saves; putting back is what can take the emulator off.
+    const last = lastOf(system);
+    const power = BUSY[state] ? item(BUSY[state](system), null, { off: true })
+      : state === 'on' ? item('Turn off', () => unplug(system))
       : item(plays(system) ? 'Turn on' : `Turn on and set up ${emulator}`, () => plugIn(system));
     menu.setAttribute('aria-label', called);
-    menu.replaceChildren(power, item('Put back', () => putBack(system), { off: state !== 'off' }));
+    menu.replaceChildren(power, item(last ? `Put back and remove ${emulator}` : 'Put back', () => putBack(system), { off: state !== 'off', danger: last && state === 'off' }));
     window.Rux.menu.open(menu, trigger);
   }
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
@@ -448,7 +453,7 @@
     const emulator = pick && emulatorOf(pick);
     const st = stand.get(pick);
     const state = !pick || !emulator ? '' : !helper ? `Plays in ${emulator}`
-      : st === 'on' ? 'In your room, ready to play' : st === 'setting' ? `Setting up ${emulator}`
+      : st === 'on' ? 'In your room, ready to play' : st === 'setting' ? `Setting up ${emulator}` : st === 'keeping' ? 'Keeping its saves'
       : st === 'off' ? 'In your room, off' : plays(pick) ? `${emulator} is already set up` : `Plays in ${emulator}`;
     $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
     const move = $('emu-picked-move');
@@ -895,9 +900,28 @@
     say('Tidied up.', () => keep(wishes(), before), UNDO);
   }
   $('emu-tidy').addEventListener('click', tidy);
-  function putBack(system) {
-    if (stand.get(system) !== 'off') { refuse(system, 'Turn me off first.'); return; }
+  // Whether putting a console back takes its emulator off this Mac: where
+  // this Mac has it and no other console in the room plays in it.
+  const lastOf = system => plays(system) && !Object.keys(wishes()).some(sys => sys !== system && emulatorOf(sys) === emulatorOf(system));
+  // Back to Rux's Server, once it is off, which is once its saves are kept.
+  // The last console of its emulator takes the emulator off this Mac: its
+  // saves and settings are checked against Supabase again first, and it
+  // stays in the room where that fails.
+  async function putBack(system) {
+    const st = stand.get(system);
+    if (st !== 'off') { refuse(system, st === 'keeping' ? 'Still keeping your saves.' : st === 'setting' ? 'Hang on, still setting up.' : 'Turn me off first.'); return; }
+    const emulator = emulatorOf(system);
     sfx.drop();
+    if (lastOf(system)) {
+      keeping.add(system);
+      render();
+      say(`Taking ${emulator} off this Mac…`, null, 600000);
+      try { await R.carry.remove(emulator); }
+      catch (error) { console.error(error); keeping.delete(system); render(); sayNo(error.message); return; }
+      keeping.delete(system);
+      await readMac();
+      say(`${emulator} is off this Mac. Your saves stay.`);
+    }
     const next = wishes();
     delete next[system];
     keep(next);
@@ -924,19 +948,22 @@
     }
     await keep({ ...wishes(), [system]: plays(system) });
   }
-  // Unplugging takes its emulator off this Mac once no other plugged-in
-  // console here uses it: its saves and settings kept in Supabase first.
+  // Turning off keeps its emulator's saves and settings in Supabase and
+  // takes nothing off this Mac. It is off only once they are kept, which is
+  // what lets it be put back; where keeping fails it stays on.
   async function unplug(system) {
     const emulator = emulatorOf(system);
-    const next = { ...wishes(), [system]: false };
     sfx.unplug();
-    await keep(next);
-    if (!plays(system) || Object.keys(next).some(sys => next[sys] && emulatorOf(sys) === emulator)) return;
-    say(`Keeping ${emulator}'s saves and settings in Supabase…`, null, 600000);
-    try { await R.carry.remove(emulator); say(`${emulator} is off this Mac. Your saves stay.`); }
-    catch (error) { console.error(error); sayNo(error.message); }
-    await readMac();
-    render();
+    if (plays(system)) {
+      keeping.add(system);
+      render();
+      say(`Keeping ${emulator}'s saves and settings…`, null, 600000);
+      try { await R.carry.keep(emulator); }
+      catch (error) { console.error(error); keeping.delete(system); render(); sayNo(error.message); return; }
+      keeping.delete(system);
+      say(`The ${R.systemName(system)} is off. Its saves are kept.`);
+    }
+    await keep({ ...wishes(), [system]: false });
   }
 
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
@@ -957,6 +984,7 @@
       const system = unit.dataset.system;
       if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
       if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
+      if (stand.get(system) === 'keeping') return no('Still keeping its saves', unit, [system, 'Still keeping your saves.']);
       if (stand.get(system) !== 'on') return no('Turn it on first', unit, [system, 'Turn me on first.']);
       if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
       if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
@@ -984,8 +1012,9 @@
     if (from === 'room' && inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
-      return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
-        : no(st === 'setting' ? 'Still setting up' : 'Turn it off first', $('emu-collection'), [system, st === 'setting' ? 'Hang on, still setting up.' : 'Turn me off first.'], true);
+      return st === 'off' ? yes(lastOf(system) ? `Put back, and take ${emulatorOf(system)} off this Mac` : 'Put back', $('emu-collection'), () => putBack(system), true)
+        : no(st === 'setting' ? 'Still setting up' : st === 'keeping' ? 'Still keeping its saves' : 'Turn it off first', $('emu-collection'),
+          [system, st === 'setting' ? 'Hang on, still setting up.' : st === 'keeping' ? 'Still keeping your saves.' : 'Turn me off first.'], true);
     }
     return null;
   }

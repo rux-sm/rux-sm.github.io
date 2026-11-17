@@ -193,14 +193,19 @@
     return t.getUTCMonth() === m - 1 && t.getUTCDate() === d ? t.toISOString().slice(0, 10) : null;
   };
   const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-  // The days a memo names, "12/25", "12/25-26", "July 4, 2026", "JULY 18-20", read in the trip's year.
+  /* The days a memo names, "12/25", "12/25-26", "12/25/25", "July 4, 2026",
+     "JULY 18-20", "November 20-21,2025": in the year the memo writes, or
+     the trip's where it writes none, so last year's invoice for the same
+     dates names last year's days. */
+  const fullYear = y => (!y ? null : y.length === 2 ? 2000 + Number(y) : Number(y));
   function memoDays(memo, year) {
     const out = new Set();
-    for (const [, mon, d, d2] of memo.toLowerCase().matchAll(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:\s*-\s*(\d{1,2}))?/g)) {
-      for (const dd of [d, d2].filter(Boolean)) { const x = isoOf(year, MONTHS.indexOf(mon) + 1, +dd); if (x) out.add(x); }
+    const text = memo.toLowerCase();
+    for (const [, mon, d, d2, y] of text.matchAll(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*-\s*(\d{1,2})(?:st|nd|rd|th)?)?(?:\s*,?\s*(20\d{2})(?!\d))?/g)) {
+      for (const dd of [d, d2].filter(Boolean)) { const x = isoOf(fullYear(y) ?? year, MONTHS.indexOf(mon) + 1, +dd); if (x) out.add(x); }
     }
-    for (const [, m, d, d2] of memo.matchAll(/\b(\d{1,2})\/(\d{1,2})(?:-(\d{1,2}))?/g)) {
-      for (const dd of [d, d2].filter(Boolean)) { const x = isoOf(year, +m, +dd); if (x) out.add(x); }
+    for (const [, m, d, d2, y] of text.matchAll(/\b(\d{1,2})\/(\d{1,2})(?:-(\d{1,2}))?(?:\/(20\d{2}|\d{2})(?!\d))?/g)) {
+      for (const dd of [d, d2].filter(Boolean)) { const x = isoOf(fullYear(y) ?? year, +m, +dd); if (x) out.add(x); }
     }
     return out;
   }
@@ -214,6 +219,9 @@
     const onDay = days.has(t.start) || days.has(t.end);
     const amt = Math.round(x.amount || 0);
     const samePo = !!x.po && !!t.po && alnum(x.po) === alnum(t.po);
+    /* A line that names days, none of them the trip's, is another trip's,
+       unless its P.O. is this one's. */
+    if (days.size && !onDay && !samePo) return null;
     /* A trip saved with no customer, or a customer QuickBooks names otherwise,
        is still its transaction's when its P.O. is the trip's, or a line names
        its day and the price is its price. */

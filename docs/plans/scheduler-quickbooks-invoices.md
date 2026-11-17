@@ -20,7 +20,7 @@ file the office imports, so no invoice is typed by hand and none is made twice.
   Buses, LLC; and a Sales Tax line at zero,** as the office's own invoices
   do: 85 of its 87 discount lines in 2025 post to that account. An estimate
   posts to Estimates.
-- **QuickBooks names a customer its own way,** UTRGV for UTRGV Edinburg and
+- **QuickBooks names a customer its own way,** University of Texas R.G.V. for UTRGV Edinburg and
   Mercedes Independent School District for Mercedes High School, and an IIF
   name it does not hold adds a new customer. So Export writes each trip under
   the name QuickBooks already has, never a new one, and holds back a trip
@@ -33,8 +33,9 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **Export writes a Bus Rental line from the quoted price where a trip has no
   quote lines,** one per leg on a split trip, as the printed quote does,
   because only 5 of the 312 trips that have run with no invoice have lines.
-  Its description is the quote's, on one line, since an IIF field holds no
-  line break.
+  Its description is the quote's, a line of the invoice per line of the
+  quote, since an IIF field holds no line break and QuickBooks keeps only
+  the first 99 characters of an imported line's description.
 - **What QuickBooks holds is matched first, before anything is exported.**
   Most trips that have run have no invoice recorded, so an export before matching would make duplicates of invoices
   QuickBooks already has: an IIF import only adds, and never finds or changes
@@ -68,23 +69,30 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **A match is saved on a yes,** as a `trip_invoices` row with the number,
   amount and date, and a `trip_history` line, the way the Billing tab's
   Invoices step saves one, so the bar menu and the Billing tab show it.
-- **Export is two buttons that write the same IIF:** a TRNS line per invoice
-  and an SPL line per quote line, with the items the Billing tab already
-  names, Bus Rental, Addt'l Driver, Deductions and Hotel.
-  - **Export week,** on the QuickBooks page, takes every confirmed,
-    not-cancelled trip with no invoice whose first day is in the one week
-    chosen there, never more, so a forgotten earlier trip cannot slip in. The
-    week starts on the board's own first day and opens on the current week.
-  - **Export to QuickBooks,** in the Billing tab's menu beside Copy for
-    QuickBooks, takes the open trip alone, for a customer who asks for an
-    invoice before the weekly run.
-- **QuickBooks numbers the invoices.** The IIF leaves Num empty, so an
-  import never collides with a number QuickBooks has used.
-- **A file is imported once.** Mark imported gives each trip an invoice row
-  with no number, so no export takes it again, and the page says the file
-  was marked so a second import is caught before QuickBooks sees it. A row
-  rather than the Invoiced column alone, because the trip editor's Save sets
-  Invoiced from the rows. The next report's match fills the number in.
+- **Export is on the QuickBooks page alone, and waits for the report chosen
+  there,** because only the report knows which trips QuickBooks has invoiced:
+  a trip one of its invoices fits, not yet saved on the trip, is held back
+  until that match is saved, as trip 100991 was billed twice without it.
+  It writes a TRNS line per invoice and an SPL line per quote line, with the
+  items the Billing tab already names, Bus Rental, Addt'l Driver, Deductions
+  and Hotel. Export week takes every confirmed, not-cancelled trip with no
+  invoice whose first day is in the one week chosen there, never more, so a
+  forgotten earlier trip cannot slip in, and a row's Export takes that trip
+  alone, for a customer who asks before the weekly run. The week starts on
+  the board's own first day and opens on the current week.
+- **The file numbers the invoices,** from a Next invoice number the report
+  fills in as QuickBooks' last plus one and the office checks, because an
+  import leaves Num empty. It writes Bill To too, the QuickBooks name over
+  the customer's `bill_to`, since an import fills in nothing from the
+  customer.
+- **The file names the office's template, Standard Service Invoice 1,**
+  because QuickBooks for Mac has no default template: Create Invoice and an
+  import both open on the plain Standard Service Invoice.
+- **The file is in Mac Roman,** the code page QuickBooks for Mac reads an IIF
+  in, which turned a Windows-1252 ñ into Ò.
+- **A file is imported once.** Mark imported saves each trip's invoice with
+  its number, so no export takes it again, and the page says the file was
+  marked so a second import is caught before QuickBooks sees it.
 - **An IIF line holds no item QuickBooks lacks,** so a trip with an Other
   line is held back like one whose customer has no QuickBooks name.
 - **The import is done in single-user mode, signed in as Admin, after a
@@ -93,20 +101,16 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 
 ## Questions
 
-- The match fills an imported invoice's number by the trip's facts. Should
-  it also read the `Trip 100991` the IIF writes in the invoice's memo, or a
-  field such as REQ #, so the match is certain? The test import settles
-  which fields survive.
+- Only 7 customers have a `bill_to`, so most invoices' Bill To is the
+  QuickBooks name alone. Should the QuickBooks page read the addresses from
+  QuickBooks' Customer Contact List, as it reads the Transaction Detail
+  report?
 
 ## Tasks
 
 - [ ] Pick the matches the scores left with rux on `scheduler/quickbooks.html`;
       the sure ones are saved, marked `QuickBooks match` in their history.
-- [ ] Press Save names on `scheduler/quickbooks.html` with the report chosen,
-      so Export has each customer's QuickBooks name.
-- [ ] Import trip 100991's file, from the Billing tab's Export to QuickBooks,
-      into a backup company file, and settle from what QuickBooks makes of it
-      the item and account of each line, the Sales Tax Payable account of the
-      zero tax line, the customer, the P.O. #, the memo, the description and
-      its ñ in Windows-1252, and the Bus # and REQ # fields; correct
-      `scheduler/quickbooks-iif.js` to match.
+- [ ] Import one trip's file into a copy of the company file restored under
+      another name, and settle from what QuickBooks makes of it the number,
+      the Bill To, a description's later lines as lines with no item, an ñ,
+      the template, and the Bus # field; correct `scheduler/quickbooks-iif.js` to match.

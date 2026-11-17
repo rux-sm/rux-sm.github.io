@@ -10438,43 +10438,9 @@
           toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
         }
       };
-      /* Export to QuickBooks saves this one trip's invoice as an IIF file,
-         for a customer who asks for it before the QuickBooks page's weekly
-         run. It is written from the saved trip, as the weekly file is, so a
-         trip with changes waits for Save. Mark imported, once QuickBooks has
-         taken it, adds the invoice with no number to Invoices, which Save
-         keeps and the next report's match numbers. */
-      const exportToQuickBooks = async () => {
-        const IIF = window.SchedulerQuickBooksIif;
-        const tripId = editing?.trip?.id;
-        if (!tripId || editing.creating || changed()) {
-          toast('warning', 'Save the trip first', 'The invoice is written from the saved trip.');
-          return;
-        }
-        try {
-          const on = iso(new Date());
-          const run = IIF.write(await IIF.read(client, { id: tripId }), on);
-          const [skip] = run.skipped, [held] = run.held, [made] = run.written;
-          if (skip) { toast('warning', 'Not exported', `The trip is ${skip.why}.`); return; }
-          if (held) { toast('warning', 'Not exported', `It is held back because ${held.why}.`); return; }
-          IIF.download(run.text, `quickbooks-invoice_${made.trip.trip_ref}.iif`);
-          toast('success', 'Saved the invoice for QuickBooks', 'Import it into QuickBooks, then mark it imported.', {
-            label: 'Mark imported',
-            onClick: () => {
-              invPending = [...invPending, { number: null, amount: made.total, date: on }];
-              redrawInvoices();
-              refreshDirty();
-              toast('success', 'Marked imported', 'Save the trip to keep it.');
-            },
-          });
-        } catch (err) {
-          toast('error', 'Could not export the trip', err.message);
-        }
-      };
       quoteMenu.addEventListener('click', () => openItemsMenu(quoteMenu, [
         { label: 'Calculator', run: () => openCalculator(null) },
         { label: 'Copy for QuickBooks', run: copyForQuickBooks },
-        { label: 'Export to QuickBooks', run: exportToQuickBooks },
       ], 'Quote options'));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
       linesBody.append(deadBox, lineLayer, lineList.list, linesParted, quotedRow);

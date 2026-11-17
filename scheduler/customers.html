@@ -395,6 +395,16 @@
                     <div class="rux--form-requirement" id="scheduler-cu-name-error"></div>
                   </div>
                 </div>
+                <!-- Its name in QuickBooks, which may differ from this one, as
+                     UTRGV does from UTRGV Edinburg. Export writes it on the
+                     invoice so QuickBooks finds its own customer. -->
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-cu-qbname">QuickBooks name</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-cu-qbname" class="rux--text-input" type="text" autocomplete="off" aria-describedby="scheduler-cu-qbname-help"></div>
+                    <div class="rux--form__helper-text" id="scheduler-cu-qbname-help">Exactly as QuickBooks spells it. Empty holds its trips back from the QuickBooks export.</div>
+                  </div>
+                </div>
                 <!-- The usual pickup, a combo box over the saved locations,
                      drawn by customers.js. -->
                 <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-cu-pickup-slot"></div>

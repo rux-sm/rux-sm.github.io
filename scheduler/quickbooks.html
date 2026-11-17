@@ -21,9 +21,10 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- QuickBooks and the trips, both ways. Export writes a week's trips that
-     have no invoice as one IIF file QuickBooks imports, and Mark imported
-     records that it was. Match reads the report QuickBooks saved:
+<!-- QuickBooks and the trips, both ways. Match reads the report QuickBooks
+     saved, which Export waits for; Export writes a week's trips that have
+     no invoice as one IIF file QuickBooks imports, numbered after
+     QuickBooks' last invoice, and Mark imported records each number. Match:
      quickbooks-match.js scores it against the trips, here in the browser,
      and quickbooks.js lists what the scores did not settle, each with the
      trips it could be and that customer's past invoices, for a pick that
@@ -252,8 +253,38 @@
           </div>
         </div>
 
+        <!-- The report: in QuickBooks, Reports > Custom Reports > Transaction
+             Detail, every estimate and invoice, saved as Excel or CSV. It is
+             read here and never sent anywhere. -->
+        <div class="rux--stack-vertical rux--stack-scale-3" id="scheduler-quickbooks-choose">
+          <h2 class="rux--type-productive-heading-03">QuickBooks' report</h2>
+          <p class="rux--type-body-01">Choose the Transaction Detail report QuickBooks saved today, as Excel or CSV. Export waits for it, so no trip QuickBooks has invoiced goes again and each invoice is numbered after QuickBooks' last. It is read in this browser and never uploaded.</p>
+          <div class="rux--form-item">
+            <div class="rux--file">
+              <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="scheduler-quickbooks-drop">Drag and drop the report here or click to choose it</button>
+              <label class="rux--visually-hidden" for="scheduler-quickbooks-file">Report</label>
+              <input id="scheduler-quickbooks-file" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept=".xlsx,.csv,text/csv">
+            </div>
+          </div>
+          <p class="rux--type-body-01" id="scheduler-quickbooks-summary" hidden></p>
+        </div>
+
         <!-- Export: the week's confirmed trips with no invoice, each to be
-             written or held back with why, and the file's two steps. -->
+             written or held back with why, and the file's two steps. The
+             first invoice's number, which the report fills in from
+             QuickBooks' last, numbers the file, since an import leaves Num
+             empty. Nothing is exported until the report is chosen. -->
+        <div class="scheduler-pair-grid">
+          <div class="rux--form-item">
+            <div class="rux--number rux--number--nosteppers">
+              <label class="rux--label" for="scheduler-quickbooks-next">Next invoice number</label>
+              <div class="rux--number__input-wrapper">
+                <input id="scheduler-quickbooks-next" type="number" min="1" step="1" disabled aria-describedby="scheduler-quickbooks-next-help">
+              </div>
+              <div class="rux--form__helper-text" id="scheduler-quickbooks-next-help">The report fills it in from QuickBooks' last invoice. Check it against QuickBooks before you export.</div>
+            </div>
+          </div>
+        </div>
         <section class="rux--data-table-container" id="scheduler-quickbooks-export" aria-labelledby="scheduler-quickbooks-export-h" hidden>
           <div class="rux--data-table-header">
             <h2 class="rux--data-table-header__title" id="scheduler-quickbooks-export-h">Invoices to import</h2>
@@ -276,28 +307,13 @@
                   <th scope="col"><div class="rux--table-header-label">Customer in QuickBooks</div></th>
                   <th scope="col"><div class="rux--table-header-label">Amount</div></th>
                   <th scope="col"><div class="rux--table-header-label">In the file</div></th>
+                  <th scope="col"><div class="rux--table-header-label"><span class="rux--visually-hidden">Export one</span></div></th>
                 </tr>
               </thead>
               <tbody id="scheduler-quickbooks-export-rows"></tbody>
             </table>
           </div>
         </section>
-
-        <!-- The report: in QuickBooks, Reports > Custom Reports > Transaction
-             Detail, every estimate and invoice, saved as Excel or CSV. It is
-             read here and never sent anywhere. -->
-        <div class="rux--stack-vertical rux--stack-scale-3" id="scheduler-quickbooks-choose">
-          <h2 class="rux--type-productive-heading-03">Match QuickBooks' report</h2>
-          <p class="rux--type-body-01">Choose the Transaction Detail report QuickBooks saved, as Excel or CSV. It is read in this browser and never uploaded.</p>
-          <div class="rux--form-item">
-            <div class="rux--file">
-              <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="scheduler-quickbooks-drop">Drag and drop the report here or click to choose it</button>
-              <label class="rux--visually-hidden" for="scheduler-quickbooks-file">Report</label>
-              <input id="scheduler-quickbooks-file" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept=".xlsx,.csv,text/csv">
-            </div>
-          </div>
-          <p class="rux--type-body-01" id="scheduler-quickbooks-summary" hidden></p>
-        </div>
 
         <!-- Each customer's name in QuickBooks, from its matched invoices, the
              most-used where they carry several, which Export writes. -->

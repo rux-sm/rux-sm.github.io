@@ -34,7 +34,7 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-customers-h').hidden = true;
 
-  const COLUMNS = 'id,name,usual_location_id,part_of_id,bill_to,notes,usual_reqs,usual_vehicle_type,updated_at';
+  const COLUMNS = 'id,name,qb_name,usual_location_id,part_of_id,bill_to,notes,usual_reqs,usual_vehicle_type,updated_at';
   const Facts = window.SchedulerLegFacts;
   const Vehicles = window.SchedulerVehicles;
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -178,6 +178,7 @@
   const form = $('scheduler-customer-form');
   const nameField = $('scheduler-cu-name');
   const billField = $('scheduler-cu-bill');
+  const qbNameField = $('scheduler-cu-qbname');
   const notesField = $('scheduler-cu-notes');
   const vehicleField = $('scheduler-cu-vehicle');
 
@@ -193,6 +194,7 @@
 
   const readForm = () => ({
     name: nameField.value.trim() || null,
+    qb_name: qbNameField.value.trim() || null,
     usual_location_id: pickupId,
     part_of_id: partOfId,
     bill_to: billField.value.trim() || null,
@@ -408,6 +410,7 @@
 
   function fillForm(c) {
     nameField.value = c.name ?? '';
+    qbNameField.value = c.qb_name ?? '';
     pickupId = c.usual_location_id ?? null;
     pickupText = places.get(pickupId)?.name ?? '';
     partOfId = c.part_of_id ?? null;

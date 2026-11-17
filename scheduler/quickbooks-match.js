@@ -115,7 +115,9 @@
   /* The report's rows grouped by Trans #: the amount from the Accounts
      Receivable or Estimates row, and a line for each item but the zero
      Sales Tax one. Columns are found by their headings, which move when the
-     report is customised. */
+     report is customised. A report with Debit and Credit columns leaves
+     that row's Amount at 0 and puts the total in Debit, and a total still
+     missing is the lines' sum. */
   async function read(file) {
     const rows = /\.xlsx$/i.test(file.name) ? await xlsxRows(await file.arrayBuffer()) : csvRows(await file.text());
     const head = rows.find(r => r.includes('Trans #'));
@@ -135,12 +137,15 @@
       }
       const t = tx.get(key);
       const account = g(r, 'Account');
-      if (account === 'Accounts Receivable' || account === 'Estimates') t.amount = Number(g(r, 'Amount')) || 0;
+      if (account === 'Accounts Receivable' || account === 'Estimates') {
+        t.amount = Number(g(r, 'Debit')) || Number(g(r, 'Amount')) || 0;
+      }
       else if (g(r, 'Item') && g(r, 'Item') !== 'no tax') {
         t.lines.push({ item: g(r, 'Item'), memo: g(r, 'Memo'), amount: -(Number(g(r, 'Amount')) || 0) || 0 });
       }
     }
     const list = [...tx.values()].filter(t => t.date);
+    for (const t of list) if (!t.amount) t.amount = Math.round(t.lines.reduce((sum, l) => sum + l.amount, 0) * 100) / 100;
     if (!list.length) throw new Error('The report holds no estimates or invoices.');
     return list;
   }
@@ -208,13 +213,15 @@
     const days = memoDays(memo, +t.start.slice(0, 4));
     const onDay = days.has(t.start) || days.has(t.end);
     const amt = Math.round(x.amount || 0);
+    const samePo = !!x.po && !!t.po && alnum(x.po) === alnum(t.po);
     /* A trip saved with no customer, or a customer QuickBooks names otherwise,
-       is still its transaction's when a line names its day and the price is its price. */
-    if (ns < 0.5 && !(onDay && t.prices.has(amt))) return null;
+       is still its transaction's when its P.O. is the trip's, or a line names
+       its day and the price is its price. */
+    if (ns < 0.5 && !samePo && !(onDay && t.prices.has(amt))) return null;
     let s = 4 * ns;
     const why = [];
     if (ns >= 0.5) why.push('name');
-    if (x.po && t.po && alnum(x.po) === alnum(t.po)) { s += 6; why.push('P.O.'); }
+    if (samePo) { s += 6; why.push('P.O.'); }
     if (amt && t.prices.has(amt)) { s += 3; why.push('amount'); }
     else if (amt && [...t.prices].some(p => Math.abs(amt - p) <= 0.03 * p)) { s += 1; why.push('near amount'); }
     if (onDay) { s += 4; why.push('day in memo'); }

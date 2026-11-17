@@ -210,6 +210,9 @@
                   <p class="emu-tv__name" id="emu-tv-name"></p>
                   <p class="emu-tv__sub"><span id="emu-room-space"></span> <a class="rux--link" href="status.html" id="emu-room-health" hidden></a></p>
                 </div>
+                <!-- A playing game's cover, and the mark that drifts as the screensaver. -->
+                <div class="emu-tv__art" id="emu-tv-art"></div>
+                <div class="emu-tv__saver" aria-hidden="true"><img src="/brand/logo.svg" alt=""></div>
                 <p class="emu-tv__said" role="status" id="emu-room-said"></p>
                 <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-tv__undo" id="emu-room-undo" hidden>Undo</button>
               </div>
@@ -250,10 +253,12 @@
     </div>
   </div>
 </main>
-<!-- The buttons that open the room's drawers, on Design's bar at the foot; shown where the helper answers. -->
+<!-- The buttons that open the room's drawers, and Tidy up, on Design's bar at the foot; shown where the helper answers. -->
 <div class="frame-bar emu-bar" id="emu-bar" hidden>
-  <button type="button" class="rux--btn rux--btn--secondary rux--layout--size-lg emu-bar__btn" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection">Server</button>
-  <button type="button" class="rux--btn rux--btn--secondary rux--layout--size-lg emu-bar__btn" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff">My Stuff</button>
+  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-server-open" aria-expanded="false" aria-controls="emu-collection">Server</button>
+  <button type="button" class="rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md emu-bar__btn" id="emu-stuff-open" aria-expanded="false" aria-controls="emu-stuff">My Stuff</button>
+  <!-- Lays the TV and the consoles back out in rows, from room.js. -->
+  <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md emu-bar__tidy" id="emu-tidy">Tidy up</button>
 </div>
 <!-- Search, from the header's button: any game by its title, from search.js. -->
 <div class="rux--layer-one rux--modal" id="emu-search-modal" role="presentation">

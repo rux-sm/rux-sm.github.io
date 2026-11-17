@@ -128,8 +128,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-side[hidden] { display: none; }
 .emu-side__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); margin-block-end: var(--rux-spacing-05); }
 .emu-side__close { display: none; }
-body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-bottom)); }
-.emu-wall--mac .emu-side { position: fixed; z-index: 3; inset-block: 3rem calc(4.75rem + var(--frame-safe-bottom)); inline-size: min(22rem, 100vw); display: flex; flex-direction: column; padding: var(--rux-spacing-05); background: var(--rux-background); visibility: hidden; transition: transform 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
+body.emu-has-bar .emu-main { padding-block-end: calc(4.25rem + var(--frame-safe-bottom)); }
+.emu-wall--mac .emu-side { position: fixed; z-index: 3; inset-block: 3rem calc(4.25rem + var(--frame-safe-bottom)); inline-size: min(22rem, 100vw); display: flex; flex-direction: column; padding: var(--rux-spacing-05); background: var(--rux-background); visibility: hidden; transition: transform 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
 .emu-wall--mac .emu-side[hidden] { display: none; }
 .emu-wall--mac .emu-side--server { inset-inline-start: 0; border-inline-end: 1px solid var(--rux-border-subtle-01); transform: translateX(-100%); }
 .emu-wall--mac .emu-side--stuff { inset-inline-end: 0; border-inline-start: 1px solid var(--rux-border-subtle-01); transform: translateX(100%); }
@@ -142,16 +142,18 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-pane[hidden] { display: none; }
 /* A drawer's covers are smaller, so three stand in a row. */
 .emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
-/* The bar at the foot: its two buttons side by side in the middle. */
+/* The bar at the foot: the drawers' two buttons side by side in the middle, outlined while closed and filled while open. */
 .emu-bar { display: flex; justify-content: center; gap: var(--rux-spacing-03); padding-inline: var(--rux-spacing-05); }
 .emu-bar[hidden] { display: none; }
-.emu-bar__btn { flex: 0 1 10rem; justify-content: center; padding-inline: var(--rux-spacing-05); }
+.emu-bar__btn { flex: 0 1 8rem; justify-content: center; padding-inline: var(--rux-spacing-05); }
+/* Tidy up keeps the bar's end, clear of the two in the middle. */
+.emu-bar__tidy { position: absolute; inset-inline-end: var(--rux-spacing-05); }
 
 /* YOUR MAC: the page's own background, where the TV and the consoles each
    stand where they were left. Inside it every size is a whole number of art
    pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
    pixel art lands on whole pixels. */
-.emu-room { --emu-px: 3px; position: relative; block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
+.emu-room { --emu-px: 3px; position: relative; block-size: calc(100dvh - 3rem - 2rem - 4.25rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
 /* The TV: a CRT drawn as brand/consoles/tv.png, 80 by 60 art pixels, placed
    by room.js as a console is, --emu-left and --emu-top in art pixels, and
@@ -162,6 +164,31 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(60 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
 .emu-tv__screen { position: absolute; inset-inline-start: calc(6 * var(--emu-px)); inset-block-start: calc(16 * var(--emu-px)); inline-size: calc(54 * var(--emu-px)); block-size: calc(36 * var(--emu-px)); border-radius: calc(2 * var(--emu-px)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--rux-spacing-02); padding: var(--rux-spacing-03); overflow: hidden; text-align: center; background: transparent; color: var(--rux-text-primary); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-tv__rest[hidden] { display: none; }
+/* The glass has a CRT's scanlines, an art pixel dark in every two. Its
+   picture opens from a line as the TV speaks and closes to a dot as it goes
+   quiet; Carbon has no motion for a tube, so these take its moderate-01 and
+   moderate-02 on the productive curves, and none plays where motion is reduced. */
+.emu-tv__screen::before { content: ""; position: absolute; inset: 0; z-index: 2; background: repeating-linear-gradient(to bottom, transparent 0 var(--emu-px), var(--rux-shadow) var(--emu-px) calc(2 * var(--emu-px))); opacity: .2; pointer-events: none; }
+.emu-tv__screen > * { position: relative; z-index: 1; }
+.emu-tv--lit .emu-tv__screen, .emu-tv--no .emu-tv__screen { animation: emu-crt-on 150ms cubic-bezier(0, 0, 0.38, 0.9); }
+@keyframes emu-crt-on { from { clip-path: inset(48% 0); } to { clip-path: inset(0); } }
+.emu-tv--off .emu-tv__screen::after { content: ""; position: absolute; inset: 0; z-index: 3; background: var(--rux-text-primary); pointer-events: none; animation: emu-crt-off 240ms cubic-bezier(0.2, 0, 1, 0.9) both; }
+@keyframes emu-crt-off { 0% { transform: scale(1, 1); opacity: .6; } 50% { transform: scale(1, .02); opacity: 1; } 100% { transform: scale(0, .02); opacity: 0; } }
+/* A playing game's cover fills the glass. */
+.emu-tv__art:empty { display: none; }
+.emu-tv__art { position: absolute; inset: 0; display: grid; place-items: center; }
+.emu-tv__cover { block-size: 100%; display: grid; place-items: center; }
+.emu-tv__cover img { max-inline-size: 100%; max-block-size: 100%; object-fit: contain; }
+/* The screensaver: the mark drifts across the glass and back, and down and
+   up at another pace, so it wanders. Carbon has no idle motion; this is slow
+   and linear, and never runs where motion is reduced. */
+.emu-tv__saver { display: none; position: absolute; inset: calc(2 * var(--emu-px)); animation: emu-drift-x 7s linear infinite alternate; }
+.emu-tv__saver img { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); animation: emu-drift-y 4.3s linear infinite alternate; }
+.emu-tv--saver .emu-tv__saver { display: block; }
+.emu-tv--saver .emu-tv__rest { visibility: hidden; }
+@keyframes emu-drift-x { from { transform: translateX(0); } to { transform: translateX(calc(100% - 8 * var(--emu-px))); } }
+@keyframes emu-drift-y { from { transform: translateY(0); } to { transform: translateY(calc(28 * var(--emu-px) - 8 * var(--emu-px))); } }
+@media (prefers-reduced-motion: reduce) { .emu-tv--lit .emu-tv__screen, .emu-tv--no .emu-tv__screen, .emu-tv--off .emu-tv__screen::after, .emu-tv__saver, .emu-tv__saver img { animation: none; } .emu-tv--off .emu-tv__screen::after { display: none; } }
 .emu-tv__name { font-size: .875rem; line-height: 1.125rem; font-weight: 600; }
 .emu-tv__sub, .emu-tv__said { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 .emu-tv__sub { opacity: .7; }
@@ -180,37 +207,40 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
 .emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); pointer-events: auto; display: grid; justify-items: center; }
 
-/* A console: its drawing over its socket and its light. A home console's
-   box is 36 by 24 art pixels; a handheld is as tall, cut to its width. */
+/* A console: its drawing over its power button. A home console's box is 36
+   by 24 art pixels; a handheld is as tall, cut to its width. Each thing on
+   the floor, the TV too, throws a hard shadow two art pixels down, and
+   slides to a new spot on Carbon's moderate-02, productive. */
 .emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; touch-action: none; }
-.emu-unit__console:focus-visible, .emu-plug:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.emu-unit__console:focus-visible, .emu-power:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-unit .emu-console { inline-size: calc(36 * var(--emu-px)); block-size: calc(24 * var(--emu-px)); }
 .emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
-.emu-unit__under { display: flex; align-items: center; justify-content: center; gap: calc(2 * var(--emu-px)); inline-size: 100%; min-inline-size: 0; block-size: max(24px, calc(8 * var(--emu-px))); padding-inline: calc(2 * var(--emu-px)); }
-/* The plug: the whole socket is the button, at least 24px. */
-.emu-plug { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; flex: none; display: grid; place-items: center; inline-size: max(24px, calc(8 * var(--emu-px))); block-size: 100%; }
-.emu-plug__drawing { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); overflow: visible; }
-.emu-plug:hover .emu-plug__body { fill: var(--rux-icon-primary); }
-.emu-plug__socket { fill: var(--rux-background); }
-.emu-plug__cord { fill: none; stroke: var(--rux-border-strong-01); stroke-width: 1.5; stroke-linecap: round; }
-.emu-plug__body { fill: var(--rux-icon-secondary); transform-box: fill-box; transform-origin: center; }
-.emu-plug__prong { opacity: 0; }
-.emu-unit--off .emu-plug__body { transform: translate(-4px, 2px) rotate(-28deg); }
-.emu-unit--off .emu-plug__prong { opacity: 1; }
+.emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
+.emu-units > li, .emu-tv { transition: inset-inline-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+/* A thing put down lands: a short drop on Carbon's fast-02. Carbon has no landing. */
+.emu-lands { animation: emu-land 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+@keyframes emu-land { from { translate: 0 calc(-2 * var(--emu-px)); } to { translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .emu-units > li, .emu-tv { transition: none; } .emu-lands { animation: none; } }
+/* The power button, 8 art pixels in a target of at least 24px: green on,
+   grey off with the drawing dimmed, amber and blinking while the emulator
+   is set up, the only sign the helper gives of an install. Carbon has no
+   motion for waiting on a light. */
+.emu-power { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; display: grid; place-items: center; inline-size: max(24px, calc(8 * var(--emu-px))); block-size: max(24px, calc(8 * var(--emu-px))); margin-block-start: calc(2 * var(--emu-px)); color: var(--rux-support-success); }
+.emu-power__drawing { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); fill: currentColor; shape-rendering: crispEdges; }
+.emu-power:hover { color: var(--rux-icon-primary); }
+.emu-unit--off .emu-power { color: var(--rux-icon-secondary); }
+.emu-unit--off .emu-power:hover { color: var(--rux-support-success); }
 .emu-unit--off .emu-console { opacity: .45; }
-.emu-unit--off .emu-led { background: var(--rux-border-strong-01); }
-.emu-unit--off .emu-plug__socket { stroke: var(--rux-support-warning); stroke-width: 1.5; animation: emu-blink 800ms steps(2) infinite; }
-/* While its emulator is set up the light blinks, the only sign the helper
-   gives of an install, and an unplugged socket blinks to be plugged in.
-   Carbon has no motion for waiting on a light. */
-.emu-unit--setting .emu-led { background: var(--rux-support-warning); animation: emu-blink 800ms steps(2) infinite; }
+.emu-unit--setting .emu-power { color: var(--rux-support-warning); animation: emu-blink 800ms steps(2) infinite; }
 @keyframes emu-blink { 50% { opacity: .3; } }
-@media (prefers-reduced-motion: reduce) { .emu-unit--setting .emu-led, .emu-unit--off .emu-plug__socket { animation: none; } }
-.emu-unit__name { display: flex; align-items: center; gap: calc(2 * var(--emu-px)); min-inline-size: 0; font-size: .6875rem; line-height: 1rem; letter-spacing: .32px; color: var(--rux-text-secondary); }
-.emu-unit__name > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.emu-unit__name .emu-led { margin: 0; }
-.emu-unit--hand .emu-unit__name > span { display: none; }
-.emu-unit--hand .emu-unit__under { padding-inline: 0; }
+@media (prefers-reduced-motion: reduce) { .emu-unit--setting .emu-power { animation: none; } }
+/* A console's name is a tag under it that shows under the pointer or the
+   keyboard, and while it is set up, on Carbon's fast-02 fade, so the room
+   at rest is only its drawings. */
+.emu-unit__name { position: absolute; inset-block-start: 100%; inset-inline-start: 50%; transform: translateX(-50%); z-index: 2; padding: var(--rux-spacing-01) var(--rux-spacing-02); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-unit:focus-within .emu-unit__name, .emu-unit--setting .emu-unit__name, .emu-unit--fit .emu-unit__name { opacity: 1; }
+@media (hover: hover) { .emu-unit:hover .emu-unit__name { opacity: 1; } }
+.emu-units > li:is(:hover, :focus-within) { z-index: 2; }
 /* In Rux's Server the light keeps one corner of every console, whatever its name's length. */
 .emu-cabinet__console { position: relative; }
 .emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
@@ -223,6 +253,10 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
    moderate-02, both on the productive standard curve. */
 .emu-ghost { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9000; pointer-events: none; filter: drop-shadow(0 .75rem 1.5rem var(--rux-shadow)); }
 .emu-ghost .emu-cover-name { display: none; }
+/* A console or the TV picked up lifts: a little larger over a longer shadow, on Carbon's fast-02. Its name and power button stay behind. */
+.emu-ghost--thing > * { animation: emu-lift 110ms cubic-bezier(0.2, 0, 0.38, 0.9) both; }
+@keyframes emu-lift { from { scale: 1; } to { scale: 1.08; } }
+@media (prefers-reduced-motion: reduce) { .emu-ghost--thing > * { animation: none; scale: 1.08; } }
 .emu-ghost--gone { opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-ghost--back { transition: transform 240ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-held { opacity: .25; }
@@ -232,10 +266,8 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 #emu-collection.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
-.emu-unit { transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-unit--dim { opacity: .3; }
 .emu-unit--fit .emu-console { filter: drop-shadow(0 0 .5rem var(--rux-border-interactive)); }
-.emu-unit--fit .emu-unit__name { color: var(--rux-text-primary); }
 .emu-cover--home .emu-cover-art { opacity: 1; outline: 2px dashed var(--rux-border-interactive); outline-offset: 2px; }
 
 /* A console's place in Rux's Server while it stands in the room: outlined

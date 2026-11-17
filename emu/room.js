@@ -13,13 +13,14 @@
    runs it names it, and after one it says what it did, with Undo where it
    can be taken back.
 
-   Which consoles stand in the room, which of them are plugged in, and where
+   Which consoles stand in the room, which of them are on, and where
    each stands, is this Mac's room, kept on its row in Supabase; until
    something is moved, the console of each game this Mac holds stands there.
-   A console is plugged in only where this Mac has its emulator too. Its plug
-   is a button: plugging in sets its emulator up on this Mac, and unplugging
-   takes the emulator off, its saves and settings kept, once no other
-   plugged-in console uses it.
+   A console is on only where this Mac has its emulator too. Its power
+   button turns it on, which sets its emulator up on this Mac, and off,
+   which takes the emulator off, its saves and settings kept, once no other
+   console that is on uses it. A console's name shows under the pointer or
+   the keyboard.
 
    Rux's Server is every console with games, each its drawing from
    brand/consoles/ over its name and count; one in
@@ -40,7 +41,7 @@
    answers. A word follows it and says what letting go will do, and a place
    it would land lights where that place is one thing, such as a console or
    Rux's Server, never the room as a whole. A console onto the room comes in where it is
-   let go, one in the room moves where it is let go, and an unplugged one
+   let go, one in the room moves where it is let go, and one turned off
    dragged back onto Rux's Server goes back. A game onto the room or My
    Stuff downloads it, onto its console or the TV plays it, downloading it
    first if it must, and from My Stuff back onto Rux's Server takes it off
@@ -169,6 +170,7 @@
     drop: () => tone(330, 0.08, 'triangle', 0.08),
     plug: () => { tone(90, 0.12, 'square', 0.1); later(140, () => tone(520, 0.15, 'sine', 0.08, 880)); },
     unplug: () => tone(400, 0.2, 'sine', 0.08, 120),
+    bump: () => tone(140, 0.05, 'square', 0.05),
     insert: () => { tone(180, 0.04, 'square', 0.1); later(50, () => tone(240, 0.05, 'square', 0.08)); },
     start: () => [523, 659, 784].forEach((f, i) => later(i * 90, () => tone(f, 0.14, 'triangle', 0.07))),
     no: () => tone(110, 0.28, 'sawtooth', 0.07, 80),
@@ -218,13 +220,14 @@
   }
 
   // YOUR MAC -----------------------------------------------------------------
-  // A console over its socket, standing where it was left in the room. Its
-  // drawing is a button that picks it and is dragged; its plug is a button
-  // too. Plugged in, the plug is pushed into the socket and its light is on;
-  // unplugged, the plug hangs loose, the socket blinks and it says "Plug in";
-  // while its emulator is set up, the light blinks. A handheld shows only its
-  // light, its name on the plug's and the drawing's labels.
+  // A console standing where it was left in the room, over its power button.
+  // Its drawing is a button that picks it and is dragged. The power button
+  // is green while it is on, grey while it is off, with the drawing dimmed,
+  // and blinks amber while its emulator is set up. Its name is a tag that
+  // shows under the pointer or the keyboard, and while it is set up.
   const UNIT = { on: 'emu-unit', off: 'emu-unit emu-unit--off', setting: 'emu-unit emu-unit--setting' };
+  const POWER = '<rect x="3" y="0" width="2" height="4"/><rect x="1" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/>'
+    + '<rect x="0" y="2" width="1" height="4"/><rect x="7" y="2" width="1" height="4"/><rect x="1" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="2" y="7" width="4" height="1"/>';
   function unit(system, state) {
     const called = R.systemName(system);
     const hand = HANDHELD.has(system);
@@ -233,26 +236,19 @@
     const body = el('button', 'emu-unit__console');
     body.type = 'button';
     body.dataset.console = system;
-    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'plugged in' : state === 'setting' ? 'being set up' : 'unplugged'}`);
+    body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'on' : state === 'setting' ? 'being set up' : 'off'}`);
     body.append(consoleOf(system, hand));
     body.addEventListener('click', () => choose(system));
-    const plug = el('button', 'emu-plug');
-    plug.type = 'button';
-    plug.disabled = state === 'setting';
-    plug.title = state === 'on' ? `Unplug the ${called}` : `Plug in the ${called}`;
-    plug.setAttribute('aria-label', plug.title);
-    const drawing = svgOf('emu-plug__drawing', '0 0 16 16');
-    drawing.innerHTML = '<rect class="emu-plug__socket" x="2" y="12" width="12" height="4" rx="1"/>'
-      + `<path class="emu-plug__cord" d="${state === 'on' ? 'M8 0 V6' : 'M8 0 C 8 4, 4 3, 4 8'}"/>`
-      + '<g class="emu-plug__body"><rect class="emu-plug__prong" x="5" y="12" width="1.5" height="3"/><rect class="emu-plug__prong" x="9.5" y="12" width="1.5" height="3"/><rect x="4" y="6" width="8" height="6" rx="1"/></g>';
-    plug.append(drawing);
-    plug.addEventListener('click', () => (state === 'on' ? unplug : plugIn)(system));
-    const name = el('span', 'emu-unit__name');
-    name.title = state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called;
-    name.append(el('i', 'emu-led'), el('span', null, state === 'setting' ? `Setting up ${emulatorOf(system)}…` : state === 'off' ? 'Plug in' : called));
-    const under = el('span', 'emu-unit__under');
-    under.append(plug, name);
-    li.append(body, under);
+    const power = el('button', 'emu-power');
+    power.type = 'button';
+    power.disabled = state === 'setting';
+    power.title = state === 'on' ? `Turn off the ${called}` : `Turn on the ${called}`;
+    power.setAttribute('aria-label', power.title);
+    const drawing = svgOf('emu-power__drawing', '0 0 8 8');
+    drawing.innerHTML = POWER;
+    power.append(drawing);
+    power.addEventListener('click', () => (state === 'on' ? unplug : plugIn)(system));
+    li.append(body, power, el('span', 'emu-unit__name', state === 'setting' ? `Setting up ${emulatorOf(system)}…` : called));
     return li;
   }
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
@@ -278,7 +274,16 @@
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderTv();
     stand = consolesNow();
-    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => unit(system, state)));
+    // Each console starts where it was last drawn, so a move slides from there.
+    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => {
+      const li = unit(system, state);
+      if (drawn[system]) { li.style.setProperty('--emu-left', drawn[system][0]); li.style.setProperty('--emu-top', drawn[system][1]); }
+      return li;
+    }));
+    // The thing just put down lands.
+    const landing = landed === 'tv' ? $('emu-tv') : landed && unitOf(landed);
+    landed = null;
+    if (landing) { landing.classList.remove('emu-lands'); void landing.offsetWidth; landing.classList.add('emu-lands'); }
     $('emu-floor-empty').hidden = stand.size > 0;
     settle();
     showSound();
@@ -294,6 +299,11 @@
   // when the window grows: things are put back by hand. A room never kept
   // is laid out afresh each time and not kept by a sweep.
   let held = null;
+  // The thing just put down, which lands as the room is next drawn.
+  let landed = null;
+  // Whether this sweep is the window's, which is when things that bump say so.
+  let windowSweep = false;
+  let bumped = 0;
   // Where each thing is drawn, in art pixels, after the last sweep.
   let drawn = {};
   let sweptFor = 0;
@@ -325,7 +335,7 @@
     // nothing placed covers it, else takes the nearest free spot beside what
     // is placed, so a pile packs edge to edge. Where none is free it stays
     // where the edge left it.
-    for (const n of items) { n.want = [n.x, n.y]; inside(n); n.shove = Math.hypot(n.x - n.want[0], n.y - n.want[1]); }
+    for (const n of items) { n.want = [n.x, n.y]; inside(n); n.shove = Math.hypot(n.x - n.want[0], n.y - n.want[1]); n.edge = [n.x, n.y]; }
     const order = [...items].sort((a, b) => Number(b.still) - Number(a.still) || a.shove - b.shove || a.y - b.y || a.x - b.x);
     const done = [];
     const fits = n => n.x >= 0 && n.y >= 0 && n.x + n.w <= W + 0.01 && n.y + n.h <= H + 0.01 && done.every(m => over(n, m).some(o => o <= 0.01));
@@ -345,11 +355,18 @@
       Object.assign(n, best ? { x: best[0], y: best[1] } : { x: x0, y: y0 });
       done.push(n);
     }
+    // Things the window pushed into one another clack, at most five times a second.
+    if (windowSweep && Date.now() - bumped > 200 && items.some(n => n.shove > 0.5 && items.some(m => m !== n && (m.x !== m.edge[0] || m.y !== m.edge[1])))) { bumped = Date.now(); sfx.bump(); }
+    windowSweep = false;
     drawn = {};
     for (const n of items) {
       drawn[n.key] = [Math.round(n.x * 10) / 10, Math.round(n.y * 10) / 10];
+      // A thing drawn for the first time appears in its place; any other slides to it.
+      const fresh = !n.node.style.getPropertyValue('--emu-left');
+      if (fresh) n.node.style.transition = 'none';
       n.node.style.setProperty('--emu-left', drawn[n.key][0]);
       n.node.style.setProperty('--emu-top', drawn[n.key][1]);
+      if (fresh) { void n.node.offsetWidth; n.node.style.transition = ''; }
     }
     const swept = items.some(n => String(kept[n.key]) !== String(drawn[n.key]));
     clearTimeout(sweptFor);
@@ -376,7 +393,7 @@
         b.querySelector('.emu-cover-art').append(veil);
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
-        b.title = stand.has(g.system) ? `${g.title}. Plug in the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
+        b.title = stand.has(g.system) ? `${g.title}. Turn on the ${R.systemName(g.system)} to play.` : `${g.title}. Needs the ${R.systemName(g.system)}.`;
       }
       return li;
     }));
@@ -394,7 +411,7 @@
     const st = stand.get(pick);
     const state = !pick || !emulator ? '' : !helper ? `Plays in ${emulator}`
       : st === 'on' ? 'In your room, ready to play' : st === 'setting' ? `Setting up ${emulator}`
-      : st === 'off' ? 'In your room, unplugged' : plays(pick) ? `${emulator} is already set up` : `Plays in ${emulator}`;
+      : st === 'off' ? 'In your room, off' : plays(pick) ? `${emulator} is already set up` : `Plays in ${emulator}`;
     $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
     const move = $('emu-picked-move');
     const [label, run] = !pick || !helper ? [] : !st ? ['Bring to Your Mac', () => bring(pick)] : st === 'off' ? ['Put back', () => putBack(pick)] : [];
@@ -568,7 +585,7 @@
         $(id).classList.toggle('emu-side--open', shown);
         $(opener).setAttribute('aria-expanded', String(shown));
         $(opener).classList.toggle('rux--btn--primary', shown);
-        $(opener).classList.toggle('rux--btn--secondary', !shown);
+        $(opener).classList.toggle('rux--btn--tertiary', !shown);
       };
       const set = to => {
         shown = to;
@@ -605,6 +622,7 @@
     if (!helper) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     held = null;
+    windowSweep = true;
     settle();
   }).observe($('emu-room'));
 
@@ -646,14 +664,44 @@
   let saidFor = 0;
   function say(text = '', undo = null, ms = 4000, bad = false) {
     clearTimeout(saidFor);
+    const tv = $('emu-tv');
+    const was = tv.classList.contains('emu-tv--lit') || tv.classList.contains('emu-tv--no');
     $('emu-room-said').textContent = text;
+    $('emu-tv-art').replaceChildren();
     $('emu-tv-rest').hidden = Boolean(text);
-    $('emu-tv').classList.toggle('emu-tv--lit', Boolean(text) && !bad);
-    $('emu-tv').classList.toggle('emu-tv--no', Boolean(text) && bad);
+    tv.classList.toggle('emu-tv--lit', Boolean(text) && !bad);
+    tv.classList.toggle('emu-tv--no', Boolean(text) && bad);
+    // Its picture collapses as it goes quiet, as a CRT's does.
+    tv.classList.toggle('emu-tv--off', was && !text);
     $('emu-room-undo').hidden = !undo;
     $('emu-room-undo').onclick = undo && (() => { say(); undo(); });
     if (text) saidFor = setTimeout(say, ms);
+    wake();
   }
+  // A home console's game shows its cover on the glass once it has started,
+  // until the page is looked at again or the TV next speaks. The helper does
+  // not say when a game ends, so the page coming back is taken as its end.
+  let showing = 0;
+  function showOn(g) {
+    say();
+    $('emu-tv').classList.remove('emu-tv--off');
+    $('emu-tv-art').replaceChildren(cover(g, 'emu-tv__cover'));
+    $('emu-tv-rest').hidden = true;
+    showing = Date.now();
+  }
+  window.addEventListener('focus', () => { if (showing && Date.now() - showing > 3000) { showing = 0; say(); } });
+  // THE SCREENSAVER. A minute after the TV went quiet with nothing touched,
+  // the mark drifts around its glass, until the pointer or a key moves.
+  let idle = 0;
+  function wake() {
+    clearTimeout(idle);
+    const tv = $('emu-tv');
+    tv.classList.remove('emu-tv--saver');
+    if (calm()) return;
+    idle = setTimeout(() => { if (!$('emu-room-said').textContent && !$('emu-tv-art').firstChild) tv.classList.add('emu-tv--saver'); }, 60000);
+  }
+  let woke = 0;
+  for (const type of ['pointermove', 'pointerdown', 'keydown']) document.addEventListener(type, () => { if (Date.now() - woke > 1000) { woke = Date.now(); wake(); } }, { passive: true });
   const sayNo = text => say(text, null, 6000, true);
   async function download(g, thenPlay = false) {
     const key = keyOf(g);
@@ -704,7 +752,7 @@
   async function play(g) {
     if (stand.get(g.system) === 'on') await insert(g);
     say('Starting…');
-    try { await R.thisMac.play(g, say); sfx.start(); }
+    try { await R.thisMac.play(g, say); sfx.start(); if (!HANDHELD.has(g.system)) showOn(g); }
     catch (error) { sayNo(error.message); }
   }
   // The console that will not have it shakes its head, buzzes and says why.
@@ -764,6 +812,7 @@
   // A console in the room, or the TV as `tv`, moved to a spot.
   function moveTo(system, spot) {
     held = system;
+    landed = system;
     sfx.drop();
     return keep(wishes(), { [system]: spot });
   }
@@ -772,13 +821,44 @@
   async function bring(system, spot = null) {
     if (stand.has(system)) return;
     held = system;
+    landed = system;
     const ready = plays(system);
     sfx.drop();
     await keep({ ...wishes(), [system]: ready }, spot ? { [system]: spot } : {});
     if (ready) say(`${emulatorOf(system)} is already set up. The ${R.systemName(system)} is ready.`);
   }
+  // TIDY UP: the TV at the top in the middle and the consoles in rows under
+  // it, each row centred, in the collection's order; Undo puts everything
+  // back where it was.
+  function tidy() {
+    const px = pxOf();
+    const box = $('emu-units');
+    const W = box.clientWidth / px;
+    const gap = 6;
+    const before = { ...drawn };
+    const tv = $('emu-tv');
+    const next = { tv: [Math.round((W - tv.offsetWidth / px) / 2), 0] };
+    const rows = [[]];
+    for (const li of [...stand.keys()].map(unitOf)) {
+      const w = li.offsetWidth / px;
+      const row = rows.at(-1);
+      if (row.length && row.reduce((sum, n) => sum + n.w + gap, 0) + w > W) rows.push([{ li, w }]);
+      else row.push({ li, w });
+    }
+    let y = tv.offsetHeight / px + 2 * gap;
+    for (const row of rows) {
+      let x = Math.round((W - row.reduce((sum, n) => sum + n.w, 0) - gap * (row.length - 1)) / 2);
+      for (const { li, w } of row) { next[li.dataset.system] = [x, y]; x += w + gap; }
+      y += Math.max(0, ...row.map(n => n.li.offsetHeight / px)) + gap;
+    }
+    held = null;
+    sfx.drop();
+    keep(wishes(), next);
+    say('Tidied up.', () => keep(wishes(), before), UNDO);
+  }
+  $('emu-tidy').addEventListener('click', tidy);
   function putBack(system) {
-    if (stand.get(system) !== 'off') { refuse(system, 'Unplug me first.'); return; }
+    if (stand.get(system) !== 'off') { refuse(system, 'Turn me off first.'); return; }
     sfx.drop();
     const next = wishes();
     delete next[system];
@@ -839,7 +919,7 @@
       const system = unit.dataset.system;
       if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
       if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
-      if (stand.get(system) !== 'on') return no('Plug it in first', unit, [system, 'Plug me in first.']);
+      if (stand.get(system) !== 'on') return no('Turn it on first', unit, [system, 'Turn me on first.']);
       if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
       if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
       if (keeps) return yes('Download and play', unit, () => download(g, true));
@@ -867,7 +947,7 @@
     if (from === 'room' && under.closest('#emu-collection')) {
       const st = stand.get(system);
       return st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
-        : no(st === 'setting' ? 'Still setting up' : 'Unplug it first', $('emu-collection'), [system, st === 'setting' ? 'Hang on, still setting up.' : 'Unplug me first.'], true);
+        : no(st === 'setting' ? 'Still setting up' : 'Turn it off first', $('emu-collection'), [system, st === 'setting' ? 'Hang on, still setting up.' : 'Turn me off first.'], true);
     }
     return null;
   }
@@ -920,7 +1000,7 @@
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
       // The copy is drawn where the ghost is, at the room's art pixel, with
       // no ids or live region of its own.
-      const ghost = el('div', 'emu-ghost');
+      const ghost = el('div', drag.g ? 'emu-ghost' : 'emu-ghost emu-ghost--thing');
       ghost.style.setProperty('--emu-px', $('emu-room').style.getPropertyValue('--emu-px'));
       const copy = drag.src.cloneNode(true);
       for (const n of [copy, ...copy.querySelectorAll('[id], [role]')]) { n.removeAttribute('id'); n.removeAttribute('role'); }
@@ -940,7 +1020,8 @@
         if (own) row.scrollLeft = own.offsetLeft - row.offsetLeft - (row.clientWidth - own.offsetWidth) / 2;
       }
     }
-    drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) rotate(-3deg)`;
+    // A cover tilts in the hand; pixel art stays square, so its edges stay sharp.
+    drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px)${drag.g ? ' rotate(-3deg)' : ''}`;
     const it = intentOf(drag, document.elementFromPoint(e.clientX, e.clientY), { x: e.clientX, y: e.clientY });
     unlight();
     word.hidden = !it?.word;

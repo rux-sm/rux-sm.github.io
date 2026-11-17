@@ -53,7 +53,7 @@ A handheld is 24 high and as wide as it needs, up to 36: 16 for a Game Boy.
 It lies face up on the table, drawn larger than the home consoles' scale:
 its whole face, screen and buttons, over three rows a tone darker for the
 edge nearest you. One that folds stands its top screen up behind the half
-lying flat. A Game Boy Advance is drawn at the Game Boy's scale, 26 wide
+lying flat. A Game Boy Advance is drawn at the Game Boy's scale, 28 wide
 and 14 high, on the bottom rows of its 24-high canvas.
 
 ## Steps

@@ -21,7 +21,9 @@
    The TV is the room's one screen. At rest it shows this Mac's name and how
    much room is free, and links Status when no games are found; while a move
    runs it names it, after one it says what it did, with Undo where it can
-   be taken back, and it asks before an emulator is removed. A home
+   be taken back, and it asks before an emulator is removed. Its knobs, or
+   a press on its case, open its menu: the other pages, Search and Sound,
+   which the header holds only where there is no room. A home
    console's game shows its cover there once it starts, a wire running to
    the TV from its console.
 
@@ -166,7 +168,7 @@
   const useOf = (svg, id) => { const use = document.createElementNS(SVG, 'use'); use.setAttribute('href', `#${id}`); svg.append(use); return svg; };
   // SOUND, made in the browser: a click to pick up, a thud to put down, a
   // thunk and a rising tone to plug in, a chime when something is done, a
-  // jingle to play and a buzz for no. The header's button turns it off.
+  // jingle to play and a buzz for no. The TV's menu turns it off.
   const KEPT = 'emu-sound';
   let loud = true;
   try { loud = localStorage.getItem(KEPT) !== 'off'; } catch { /* a browser that keeps nothing starts with sound */ }
@@ -200,19 +202,57 @@
     no: () => tone(110, 0.28, 'sawtooth', 0.07, 80),
     done: () => [784, 1047].forEach((f, i) => later(i * 80, () => tone(f, 0.12, 'sine', 0.06))),
   };
-  function showSound() {
-    const b = $('emu-sound');
-    b.hidden = !helper;
-    b.setAttribute('aria-pressed', String(loud));
-    b.title = loud ? 'Sound is on' : 'Sound is off';
-    b.querySelector('use').setAttribute('href', loud ? '#m-volume_up' : '#m-volume_off');
-  }
-  $('emu-sound').addEventListener('click', () => {
+  function toggleSound() {
     loud = !loud;
     try { localStorage.setItem(KEPT, loud ? 'on' : 'off'); } catch { /* it lasts until the page closes */ }
-    showSound();
     sfx.pick();
-  });
+  }
+
+  // A MENU ITEM, Design's, for the console's menu and the TV's alike: its
+  // label, and an icon where the menu has them.
+  function menuItem(menu, label, run, { off = false, danger = false, icon = null, role = 'menuitem', checked = null, shortcut = null } = {}) {
+    const li = el('li', `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}${off ? ' rux--menu-item--disabled' : ''}`);
+    li.setAttribute('role', role);
+    li.setAttribute('aria-haspopup', 'false');
+    if (checked != null) li.setAttribute('aria-checked', String(checked));
+    li.tabIndex = off ? -1 : 0;
+    if (off) li.setAttribute('aria-disabled', 'true');
+    const at = el('div', 'rux--menu-item__icon');
+    if (icon) at.append(icon);
+    li.append(el('div', 'rux--menu-item__selection-icon'), at, el('div', 'rux--menu-item__label', label));
+    if (shortcut) li.append(el('div', 'rux--menu-item__shortcut', shortcut));
+    if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
+    return li;
+  }
+  // An icon by its whole name, `#m-…`, so the sprite's scan finds it.
+  const iconOf = href => {
+    const svg = useOf(svgOf('', '0 0 32 32'), href.slice(1));
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    return svg;
+  };
+  // THE TV'S MENU, under its knobs: the other pages, as the header's menu
+  // lists them, then Search and Sound. So the room's header holds only the
+  // account, and the TV is how the room goes anywhere else.
+  function openTvMenu() {
+    const menu = $('emu-tv-menu');
+    const knobs = $('emu-tv-knobs');
+    if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
+    const pages = [...document.querySelectorAll('.rux--side-nav__link')].filter(a => !a.hasAttribute('aria-current')).map(a => {
+      const icon = a.querySelector('svg').cloneNode(true);
+      return menuItem(menu, a.textContent.trim(), () => { location.href = a.href; }, { icon });
+    });
+    const divider = el('li', 'rux--menu-item-divider');
+    divider.setAttribute('role', 'separator');
+    menu.replaceChildren(...pages, divider,
+      menuItem(menu, 'Search games', () => window.Rux.modal.open('emu-search-modal', knobs), { icon: iconOf('#i-search'), shortcut: '⌘K' }),
+      menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }));
+    window.Rux.menu.open(menu, knobs);
+  }
+  $('emu-tv-knobs').addEventListener('click', openTvMenu);
+  // A press on the TV's case opens it too, but not one on its link or Undo, or one that carried it.
+  $('emu-tv').addEventListener('click', e => { if (!e.target.closest('a, button')) openTvMenu(); });
+  $('emu-tv').addEventListener('contextmenu', e => { e.preventDefault(); openTvMenu(); });
 
   // A console's drawing: its PNG in brand/consoles/, shown pixel for pixel
   // in its own colours, the same in every theme. app.css sizes it by its
@@ -292,16 +332,7 @@
     window.Rux.menu.close(menu);
     const state = stand.get(system);
     const emulator = emulatorOf(system);
-    const item = (label, run, { off = false, danger = false } = {}) => {
-      const li = el('li', `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}${off ? ' rux--menu-item--disabled' : ''}`);
-      li.setAttribute('role', 'menuitem');
-      li.setAttribute('aria-haspopup', 'false');
-      li.tabIndex = off ? -1 : 0;
-      if (off) li.setAttribute('aria-disabled', 'true');
-      li.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'), el('div', 'rux--menu-item__label', label));
-      if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
-      return li;
-    };
+    const item = (label, run, opts) => menuItem(menu, label, run, opts);
     menu.setAttribute('aria-label', R.systemName(system));
     menu.replaceChildren(...(BUSY[state] ? [item(BUSY[state](system), null, { off: true })]
       : state === 'on' ? [item('Put away', () => putAway(system)), item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]
@@ -346,6 +377,9 @@
     $('emu-stuff').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
     document.body.classList.toggle('emu-has-bar', mac);
+    // Where the room is, the TV's menu holds the pages and Search, so the header does not.
+    $('emu-menu-open').hidden = mac;
+    $('emu-search-open').hidden = mac || !R.data;
     if (!mac) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderTv();
@@ -360,7 +394,6 @@
     if (landing) { landing.classList.remove('emu-lands'); void landing.offsetWidth; landing.classList.add('emu-lands'); }
     $('emu-floor-empty').hidden = stand.size > 0;
     settle();
-    showSound();
     renderStuff();
   }
   // THE WIRE, from the console that is playing to the TV, while its game's

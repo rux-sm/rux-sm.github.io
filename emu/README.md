@@ -19,9 +19,9 @@ how much room is free. A game's status is its worst problem, as Problems lists t
 or Good. A game opens in a side panel, `game-panel.js`: what this Mac can do with
 it, `this-mac.js`, which is Play, Download to this Mac with its progress and Remove
 from this Mac; then its region, version and format, each file's header and
-fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, in every
-page's header, `search.js`, finds any game by its title and opens it on the Library;
-⌘K opens it too.
+fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, `search.js`,
+finds any game by title and opens it on the Library, ⌘K too; it sits in each page's
+header with the pages' menu, but in the room the TV's knobs or case open both, and Sound.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad
@@ -138,7 +138,7 @@ public.
 | `update.js` | Update, on the Status page |
 | `game-panel.js`, `this-mac.js`, `carry.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; its emulator's saves carried between this Mac and Supabase around Play; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
 | `room.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
-| `search.js` | Search, in every page's header |
+| `search.js` | Search, in every page's header or the TV's menu |
 | `app.css` | the filters, rows, the side panel's facts and its part for this Mac, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone; a search result as a row, not a link |
 

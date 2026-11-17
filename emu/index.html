@@ -59,12 +59,11 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Rux Emu">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <!-- The menu and Search are the header's only where the room is not; where it is, the TV's menu holds them, from room.js. -->
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" id="emu-menu-open" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
-    <!-- The room's sounds, on or off, from room.js; shown where Your Mac is. -->
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="emu-sound" aria-pressed="true" aria-label="Sound" title="Sound is on" hidden><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" id="emu-search-open" data-rux-open="emu-search-modal" aria-label="Search games" title="Search games (⌘K)"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
   </div>
@@ -219,6 +218,8 @@
                   <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost emu-tv__undo" id="emu-room-keep" hidden>Keep</button>
                 </span>
               </div>
+              <!-- The TV's knobs, the button that opens its menu; a press anywhere on its case opens it too. -->
+              <button type="button" class="emu-tv__knobs" id="emu-tv-knobs" aria-haspopup="menu" aria-label="TV menu" title="Menu"></button>
             </div>
             <!-- The wire from the console that is playing to the TV, drawn by room.js. -->
             <svg class="emu-wire" id="emu-wire" aria-hidden="true"><path/></svg>
@@ -273,6 +274,8 @@
     <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="emu-tidy">Tidy up</button>
   </div>
 </div>
+<!-- The TV's menu, filled and opened under its knobs by room.js: the other pages, Search and Sound. -->
+<ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
 <!-- A console's menu, filled and opened under the console by room.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>
 <!-- Search, from the header's button: any game by its title, from search.js. -->

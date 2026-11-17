@@ -198,6 +198,9 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.25rem + var(--frame-safe-
 .emu-tv__said:empty { display: none; }
 .emu-tv--lit .emu-tv__screen { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
 .emu-tv--no .emu-tv__screen { background: var(--rux-support-error); color: var(--rux-text-on-color); }
+/* The TV's knobs, in art pixels on its drawing: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
+.emu-tv__knobs { position: absolute; inset-inline-start: calc(64 * var(--emu-px)); inset-block-start: calc(15 * var(--emu-px)); inline-size: calc(10 * var(--emu-px)); block-size: calc(14 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
+.emu-tv__knobs:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 .emu-tv__undo[hidden] { display: none; }
 .emu-tv__answers { display: flex; justify-content: center; }
 .emu-tv__undo, .emu-tv__undo:hover { color: inherit; }

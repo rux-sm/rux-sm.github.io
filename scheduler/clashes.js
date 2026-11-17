@@ -4,7 +4,8 @@
    The one reading of what a trip collides with, loaded by every page that
    picks a bus or a driver or says a trip is short of one, so a picker, a bar
    and Departures give one answer. `fitFor` says what stands in each bus's and
-   driver's way on one leg; `rankDrivers` puts drivers in the order to ask
+   driver's way on one leg, and `driversInTheWay` in each driver's on a whole
+   trip; `rankDrivers` puts drivers in the order to ask
    them and `autoPicks` in the order an automatic pick takes them;
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
    licence or medical card that runs out before a leg ends, and
@@ -282,6 +283,26 @@
       .join(' · ');
   }
 
+  /* What stands in each driver's way on a whole trip, by driver id, in
+     words: another trip on any of its routes' days, time off, Inactive, or a
+     licence or medical card that runs out first, as a pick on its Buses tab
+     is warned of. A driver with nothing in the way is free for it. `trip` is
+     read as `readNearby` reads trips, and `drivers` are rows with `status`,
+     `license_exp` and `med_card_expiry`. */
+  function driversInTheWay(trip, nearby, drivers) {
+    const out = new Map();
+    const add = (id, what) => { if (!out.has(id)) out.set(id, []); if (!out.get(id).includes(what)) out.get(id).push(what); };
+    for (const range of rangesOf(trip)) {
+      for (const [id, whats] of fitFor(nearby, range, { tripId: trip.id }).drivers) for (const what of whats) add(id, what);
+      for (const d of drivers) {
+        if (d.status && d.status !== 'active') add(d.id, 'Inactive');
+        const lapse = cardLapse(d, range);
+        if (lapse) add(d.id, lapse);
+      }
+    }
+    return out;
+  }
+
   /* What a partner lacks or what runs out before the leg ends, among the
      papers every partner must hold, in words, or '' when each is held and
      lasts the trip. A partner read without its papers says nothing, since
@@ -394,6 +415,6 @@
 
   window.SchedulerClashes = {
     REST_HOURS, RECENT_DAYS, RELIEF_HOURS, APART_COLUMNS, datesOverlap, seatRange, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, paperLapse,
-    apartPairs, pairWords, apartWords, tripCrew, standing, readNearby,
+    apartPairs, pairWords, apartWords, tripCrew, standing, readNearby, driversInTheWay,
   };
 })();

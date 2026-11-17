@@ -3943,38 +3943,38 @@
 
     /* THE DRIVERS' OWN FORMS, where the trip's customer asks for a kind of
        driver form, such as a background check. Each is a file the Documents
-       page keeps, not a form this page draws: a row for each driver and kind
-       opens the driver's current one in a new tab, and a driver with none
-       says so and links to the upload. The file prints from the browser's
-       own viewer, which nothing here hears, so Printed under a driver's rows
-       is ticked by hand, on the seat, where the checklist reads it. A trip
-       with no driver seated yet, as a school asking before it books, lists
-       every active driver's form instead, so any can go with the request.
-       Each opens with the trip's campus and days written on. */
+       page keeps, not a form this page draws. A kind is one row, opening the
+       Documents page's view of the trip's copies, where the office writes
+       the trip's lines and picks whose copies go: the seated drivers, or on
+       a trip with nobody seated yet, as a school asking before it books,
+       every driver free on its days, as leg-facts.js's readFormCopies
+       counts them. Under it, a seated driver with none on file, or one
+       that has ended, says so and links to the upload. The file prints from
+       the browser's own viewer, which nothing here hears, so Printed under a
+       driver is ticked by hand, on the seat, where the checklist reads it. */
     const Facts = window.SchedulerLegFacts;
     const client = window.Rux?.account?.client;
-    if (found?.trip && client && Facts?.readDriverForms && await Facts.readDriverForms(client).catch(() => false)
-      && Facts.formKindsOf(found.trip).length) {
+    const offered = found?.trip && client && Facts?.readFormCopies
+      ? await Facts.readFormCopies(client, found.trip.id).catch(() => null) : null;
+    if (offered?.kinds.length) {
       const tripId = encodeURIComponent(found.trip.id);
-      if (!found.buses.length) {
-        const { data: drivers } = await client.from('drivers').select('id,name').eq('status', 'active');
-        const nameById = new Map((drivers ?? []).map(d => [d.id, d.name]));
-        const onFile = Facts.formsOnFile(found.trip).filter(f => nameById.has(f.driverId))
-          .sort((a, b) => a.kind.localeCompare(b.kind) || nameById.get(a.driverId).localeCompare(nameById.get(b.driverId)));
-        for (const f of onFile) {
-          const item = el('a', 'scheduler-print__row');
-          item.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
-          item.target = '_blank';
-          item.rel = 'noopener';
-          item.append(...face({ icon: '#m-description', short: `${f.kind}, ${nameById.get(f.driverId)}` }));
-          rows.appendChild(item);
-        }
-        if (!onFile.length) {
+      for (const { kindId, kind, copies } of offered.kinds) {
+        if (!copies.length) {
           const item = el('div', 'scheduler-print__row');
-          item.append(...face({ icon: '#m-description', short: 'Driver forms' },
+          item.append(...face({ icon: '#m-description', short: kind },
             el('p', 'scheduler-print__row-need', 'No active driver has a current one on file.')));
           rows.appendChild(item);
+          continue;
         }
+        const picked = copies.filter(c => c.picked).length;
+        const item = el('a', 'scheduler-print__row');
+        item.href = `documents.html?trip=${tripId}&kind=${encodeURIComponent(kindId)}`;
+        item.target = '_blank';
+        item.rel = 'noopener';
+        item.append(...face({ icon: '#m-description', short: picked
+          ? `${kind}, ${picked} ${offered.seated ? 'seated' : 'available'} driver${picked === 1 ? '' : 's'}`
+          : `${kind}, ${copies.length} on file` }));
+        rows.appendChild(item);
       }
       const split = found.legs.length > 1;
       for (const bus of found.buses) {
@@ -3982,17 +3982,7 @@
         for (const seat of seatsOf(bus)) {
           const who = split ? `${nameOf(seat)}, ${isReturn(found.trip, leg) ? 'pickup leg' : 'drop-off leg'}` : nameOf(seat);
           const forms = Facts.driverFormsOf(found.trip, leg, seat.driver_id);
-          for (const f of forms) {
-            const row = { icon: '#m-description', short: `${f.kind}, ${who}` };
-            if (f.ok) {
-              const item = el('a', 'scheduler-print__row');
-              item.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
-              item.target = '_blank';
-              item.rel = 'noopener';
-              item.append(...face(row));
-              rows.appendChild(item);
-              continue;
-            }
+          for (const f of forms.filter(f => !f.ok)) {
             const item = el('div', 'scheduler-print__row');
             const need = el('p', 'scheduler-print__row-need');
             const upload = el('a', 'rux--link', f.form ? 'It has ended. Upload a new one' : 'None on file. Upload it');
@@ -4000,7 +3990,7 @@
             upload.target = '_blank';
             upload.rel = 'noopener';
             need.appendChild(upload);
-            item.append(...face(row, need));
+            item.append(...face({ icon: '#m-description', short: `${f.kind}, ${who}` }, need));
             rows.appendChild(item);
           }
           if (!forms.length || !forms.every(f => f.ok)) continue;

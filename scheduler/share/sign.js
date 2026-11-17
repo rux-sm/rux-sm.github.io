@@ -100,7 +100,7 @@
 
   // -- drawing the form -------------------------------------------------------
   // Fields the form writes or the office fills in, never shown to the driver.
-  const OFFICE = ['fixed', 'licence_copy', 'trip_customer', 'trip_dates'];
+  const OFFICE = ['fixed', 'licence_copy', 'trip'];
   let form = null;
   const inputs = new Map();     // field id -> { read(), mark(bad), node }
   const whens = [];             // [node, field] shown while its `when` holds

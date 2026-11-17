@@ -17,8 +17,9 @@
    it to `setRequirementList`, and `factsOf` is handed the buses, the drivers
    and the driver statuses by whoever read them. Two reads take the page's
    client, so every page and the connector ask the same questions:
-   `readDriverForms`, `readPartners`, the partners with the papers each must
-   hold, and `readBasics`, the buses, the drivers, the partners and the
+   `readDriverForms`, `readFormCopies`, the copies of each driver form a trip
+   offers, `readPartners`, the partners with the papers each must hold, and
+   `readBasics`, the buses, the drivers, the partners and the
    office's settings every rule needs set first. Needs requirements.js and
    trip-shape.js loaded first.
    ========================================================================== */
@@ -396,11 +397,49 @@
       return { kindId, kind: formKinds.get(kindId), form, ended, ok: !!form && !ended };
     });
   }
-  /* Every driver's form the trip could send, for a school that asks before
-     a driver is seated: each driver with a form of a kind the customer asks
-     for that lasts until the first leg leaves, a row a driver and kind. */
-  const formsOnFile = trip => [...new Set(driverForms.map(f => f.driver_id))]
-    .flatMap(driverId => driverFormsOf(trip, null, driverId).filter(f => f.ok).map(f => ({ ...f, driverId })));
+  /* The copies of one kind of driver form a trip offers: a row for each
+     active driver with one that lasts until the trip leaves, `picked` for
+     those it sends, its seated drivers once any is seated and otherwise
+     every driver nothing stands in the way of by `way`, clashes.js's
+     driversInTheWay, where `why` says what stands in an unpicked one's way.
+     Picked first, then by name. */
+  function formCopiesOf(trip, kindId, { seated, way, drivers }) {
+    return drivers.filter(d => !d.status || d.status === 'active').flatMap(d => {
+      const f = driverFormsOf(trip, null, d.id).find(x => x.kindId === kindId && x.ok);
+      if (!f) return [];
+      const why = seated.size ? '' : (way.get(d.id) ?? []).join(' · ');
+      return [{ driver: d, form: f.form, picked: seated.size ? seated.has(d.id) : !why, why }];
+    }).sort((a, b) => (b.picked - a.picked) || a.driver.name.localeCompare(b.driver.name));
+  }
+  /* THE COPIES A TRIP OFFERS, for each kind of driver form its customer
+     asks for: `formCopiesOf` for each, with `seated` saying whether anyone
+     is seated on the trip, or null for a trip not on the schedule. It reads
+     the trip, the driver forms and the drivers, and the trips around it
+     through clashes.js, which the page loads with week.js; one rule for the
+     Forms list's count and the Documents page's picks. */
+  async function readFormCopies(client, tripId) {
+    const Clashes = window.SchedulerClashes;
+    const [base, read, people] = await Promise.all([
+      client.from('trips').select('id,customer_id,start_date,return_start_date,trip_legs(id,leg,kind,start_date,end_date,created_at)')
+        .eq('id', tripId).maybeSingle(),
+      readDriverForms(client),
+      client.from('drivers').select('id,name,status,license_exp,med_card_expiry').order('name'),
+    ]);
+    if (base.error || people.error || !read) throw new Error(base.error?.message || people.error?.message || 'Driver forms not read');
+    if (!base.data) return null;
+    const days = window.SchedulerTripShape.daysOf(base.data);
+    const nearby = days ? await Clashes.readNearby(client, days.first, days.last) : null;
+    const near = nearby?.trips.find(t => String(t.id) === String(tripId)) ?? null;
+    const trip = near ? { ...near, customer_id: base.data.customer_id } : base.data;
+    const seated = new Set((near?.trip_assignments ?? []).flatMap(a => (a.trip_drivers ?? []).map(d => d.driver_id)).filter(Boolean));
+    const way = near && !seated.size ? Clashes.driversInTheWay(near, nearby, people.data) : new Map();
+    return {
+      trip, seated: seated.size > 0,
+      kinds: formKindsOf(trip).map(kindId => ({
+        kindId, kind: formKinds.get(kindId), copies: formCopiesOf(trip, kindId, { seated, way, drivers: people.data }),
+      })),
+    };
+  }
 
   /* A leg's buses and seats as its checklist reads them: how many buses it
      needs and has, how many fall short of the trip, the seats open and filled,
@@ -486,6 +525,6 @@
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, isCovered, partnerDriverOf, alsoOnOf, ridersOf, busesOfRow, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
-    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf, formsOnFile,
+    setDriverForms, readDriverForms, readPartners, readBasics, formKindsOf, driverFormsOf, formCopiesOf, readFormCopies,
   };
 })();

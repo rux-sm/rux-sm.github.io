@@ -25,11 +25,13 @@
 //   signed_on       the day of signing, written in, nothing asked
 //   licence_copy    the box the driver's Licence copy is centred in, at a
 //                   real card's size, `at` with `w` and `h`
-//   trip_customer   the trip's customer, the campus a school form asks for
-//   trip_dates      the trip's days
-// The last three are the office's: never written at signing, they are
-// filled in by documents.js on the copy the office opens, the licence always
-// and the trip's when it is opened from a trip's Forms list.
+//   trip            a line the office writes for each trip, such as a
+//                   district's section 1: `id` names it, `en` labels its
+//                   field, `from` names what it starts as, as documents.js's
+//                   tripWords lists them, and `at.w` is its line's length
+// The last two are the office's: never written at signing, they are filled
+// in by documents.js on the copy the office opens, the licence always and
+// the trip's lines when it is opened from a trip's Forms list.
 // `flag` on a yes_no or choice flags the signing to the office on that answer.
 // A field with `when: { any: [ids], is: 'yes' }` is shown and asked only while
 // one of those fields is answered that way.
@@ -37,10 +39,11 @@
 export type At = { page: number; x: number; y: number; w?: number; h?: number; size?: number; part?: 'last4' }
 export type Field = {
   id?: string
-  type: 'heading' | 'text' | 'read' | 'yes_no' | 'choice' | 'line' | 'box' | 'date' | 'fixed' | 'signature' | 'signed_on' | 'licence_copy' | 'trip_customer' | 'trip_dates'
+  type: 'heading' | 'text' | 'read' | 'yes_no' | 'choice' | 'line' | 'box' | 'date' | 'fixed' | 'signature' | 'signed_on' | 'licence_copy' | 'trip'
   en?: string
   es?: string
   prefill?: string
+  from?: string
   optional?: boolean
   digits?: number
   flag?: string

@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    documents.html lists the office's own paperwork: insurance certificates,
    the W-9, a driver's background check form, a partner's papers. documents.html?id=<id> edits
-   one, documents.html?new uploads one, and documents.html?open=<id> opens
-   its file. They read and write `company_documents` and `document_kinds`,
+   one, documents.html?new uploads one, documents.html?open=<id> opens
+   its file, and documents.html?trip=<id>&kind=<id> opens a trip's copies of
+   a driver form. They read and write `company_documents` and `document_kinds`,
    and the files live in the private `company-documents` bucket.
 
    A document is a file and seven facts: its kind, the holder named on it, the
@@ -28,8 +29,10 @@
   const documentId = params.get('id');
   const openId = params.get('open');
   const editing = !!documentId || params.has('new');
+  // A trip's copies of a driver form, from its Forms list.
+  const tripForms = !editing && !openId && params.has('trip') && params.has('kind');
   // The record view shows the list's column only for its notice.
-  if (editing || openId) $('scheduler-documents-h').hidden = true;
+  if (editing || openId || tripForms) $('scheduler-documents-h').hidden = true;
 
   const BUCKET = 'company-documents';
   const LINK_SECONDS = 600;
@@ -105,60 +108,200 @@
 
   /* ══ Opening a file ═════════════════════════════════════════════════════
      documents.html?open=<id> is the address a document's row, a customer's
-     page and a trip's Forms list link to. It signs a link and goes there, so
-     the browser's own viewer shows the file with its download and print
-     buttons, and the address stays good after any one link has run out.
-
-     A form signed on a driver's link can keep places for the office, as
-     driver-form/handler.ts describes them: a `licence_copy` box, which opens
-     with the driver's current Licence copy drawn in, and `trip_customer` and
-     `trip_dates`, which are written in when the form is opened from a trip's
-     Forms list, at documents.html?open=<id>&trip=<trip id>. The signed file
-     itself never changes, so a renewed licence or another trip is in the
-     next copy opened. */
+     page and a driver's page link to. It signs a link and goes there, so the
+     browser's own viewer shows the file with its download and print
+     buttons, and the address stays good after any one link has run out. A
+     form signed on a driver's link that keeps a `licence_copy` box, as
+     driver-form/handler.ts describes it, opens with the driver's current
+     Licence copy drawn in. The signed file itself never changes, so a
+     renewed licence is in the next copy opened. */
   async function openDocument() {
     const { data, error } = await client.from('company_documents')
-      .select('id,driver_id,file_name,file_path').eq('id', openId).maybeSingle();
+      .select('id,kind_id,driver_id,file_name,file_path').eq('id', openId).maybeSingle();
     if (error) throw error;
-    const url = data ? await linkTo(data.file_path) : '';
-    if (!url) return cannotOpen(data ? "The file didn't open" : 'That document is not in the list',
-      data ? 'Reload the page to try again.' : 'Pick a document from the list below.');
-    const fields = data.driver_id ? await officeFields(data.id) : [];
-    const box = fields.find(f => f.type === 'licence_copy')?.at ?? null;
-    const tripId = params.get('trip');
-    const trip = tripId && fields.some(f => f.type === 'trip_customer' || f.type === 'trip_dates') ? await tripWords(tripId) : null;
-    if (!box && !trip) { location.replace(url); return; }
-    const licence = box ? await licenceOf(data.driver_id) : null;
-    if (box && !licence) {
-      const name = (await client.from('drivers').select('name').eq('id', data.driver_id).maybeSingle()).data?.name ?? 'This driver';
-      return cannotOpen(`${name} has no licence copy on file`,
-        "This form's last page is a copy of their licence. Upload it on their Documents tab as a Licence copy, then open the form again.");
+    if (!data) return cannotOpen('That document is not in the list', 'Pick a document from the list below.');
+    const office = await officeFields([data]);
+    if (!office.get(data.id).some(f => f.type === 'licence_copy')) {
+      const url = await linkTo(data.file_path);
+      if (!url) return cannotOpen("The file didn't open", 'Reload the page to try again.');
+      location.replace(url);
+      return;
     }
-    const words = !trip ? [] : fields.flatMap(f => {
-      const text = f.type === 'trip_customer' ? trip.customer : f.type === 'trip_dates' ? trip.dates : '';
-      return text ? [].concat(f.at ?? []).map(at => ({ at, text })) : [];
-    });
+    const licences = await licencesOf([data], office);
+    if (!licences) return;
     try {
-      location.replace(await drawnCopy(url, data.file_name, licence && { ...licence, at: box }, words));
+      location.replace(await drawnCopy([{ doc: data, licence: licences.get(data.id), words: [] }]));
     } catch {
       cannotOpen("The form couldn't be filled in", 'Reload the page to try again.');
     }
   }
   async function cannotOpen(title, text) {
+    $('scheduler-documents-fill').hidden = true;
     say('info', title, text);
     history.replaceState(null, '', 'documents.html');
     await loadList();
   }
+  // The licence copy each document's `licence_copy` box takes, by document
+  // id, or null, having said so, when a driver has none on file.
+  async function licencesOf(docs, office) {
+    const out = new Map();
+    for (const doc of docs) {
+      const at = office.get(doc.id).find(f => f.type === 'licence_copy')?.at;
+      if (!at) continue;
+      const licence = await licenceOf(doc.driver_id);
+      if (!licence) {
+        const name = (await client.from('drivers').select('name').eq('id', doc.driver_id).maybeSingle()).data?.name ?? 'This driver';
+        await cannotOpen(`${name} has no licence copy on file`,
+          "This form's last page is a copy of their licence. Upload it on their Documents tab as a Licence copy, then open the form again.");
+        return null;
+      }
+      out.set(doc.id, { ...licence, at });
+    }
+    return out;
+  }
 
-  // The places a signed form keeps for the office, or none for a document
-  // that is not a signed form.
-  const OFFICE = ['licence_copy', 'trip_customer', 'trip_dates'];
-  async function officeFields(documentId) {
-    const { data: signing } = await client.from('driver_form_signings')
-      .select('form_id').eq('document_id', documentId).maybeSingle();
-    if (!signing) return [];
-    const { data: form } = await client.from('driver_forms').select('fields').eq('id', signing.form_id).maybeSingle();
-    return (form?.fields ?? []).filter(f => OFFICE.includes(f.type) && f.at);
+  /* ══ A trip's copies of a driver form ═══════════════════════════════════
+     documents.html?trip=<trip id>&kind=<kind id> is what a trip's Forms list
+     links a kind of driver form to. It lists every active driver with a
+     current copy, as leg-facts.js's readFormCopies offers them, ticked for
+     the trip's seated drivers or, with nobody seated, for every driver free
+     on its days, and those it leaves unticked say why. A form with `trip`
+     lines, such as a district's section 1, adds a field for each, holding
+     what the trip last saved for that kind, or else what the trip says by
+     the line's `from`, where `last` is what was last saved on any trip, such
+     as a district's bid number. Open keeps the lines on the trip in
+     `trip_form_words` and opens the ticked drivers' signed copies as one
+     PDF, each with the lines and its licence copy drawn in. The signed files
+     themselves never change. */
+  async function openTripForms() {
+    const tripId = params.get('trip');
+    const kindId = params.get('kind');
+    const offered = await window.SchedulerLegFacts.readFormCopies(client, tripId);
+    if (!offered) return cannotOpen('That trip is not on the schedule', 'Open its forms again from the board.');
+    const group = offered.kinds.find(k => String(k.kindId) === kindId);
+    if (!group?.copies.length) {
+      return cannotOpen(group ? `No active driver has a current ${group.kind} on file` : "This trip's customer doesn't ask for that form",
+        'Open its forms again from the board.');
+    }
+    const { data: files, error: unread } = await client.from('company_documents')
+      .select('id,kind_id,driver_id,file_name,file_path').in('id', group.copies.map(c => c.form.id));
+    if (unread) throw unread;
+    const copies = group.copies.map(c => ({ ...c, doc: files.find(f => f.id === c.form.id) })).filter(c => c.doc);
+    const office = await officeFields(copies.map(c => c.doc));
+    const lines = [];
+    for (const f of copies.flatMap(c => office.get(c.doc.id))) {
+      if (f.type === 'trip' && f.id && !lines.some(g => g.id === f.id)) lines.push(f);
+    }
+    const [trip, saved, last] = await Promise.all([
+      tripWords(tripId),
+      lines.length ? client.from('trip_form_words').select('words').eq('trip_id', tripId).eq('kind_id', kindId).maybeSingle() : null,
+      lines.some(f => f.from === 'last') ? lastWords(kindId, tripId) : {},
+    ]);
+    if (saved?.error) throw saved.error;
+    const words = saved?.data?.words ?? null;
+
+    // The drivers, a box each, with why one is left unticked under its name.
+    const drivers = el('fieldset', 'scheduler-pair-group');
+    drivers.appendChild(el('legend', 'rux--type-heading-compact-02', 'Drivers'));
+    const boxes = el('div', 'rux--stack-vertical rux--stack-scale-3');
+    const ticks = copies.map(c => {
+      const item = el('div', 'rux--form-item rux--checkbox-wrapper');
+      const input = el('input', 'rux--checkbox');
+      input.type = 'checkbox';
+      input.id = `scheduler-fill-driver-${c.doc.id}`;
+      input.checked = c.picked;
+      const label = el('label', 'rux--checkbox-label');
+      label.htmlFor = input.id;
+      label.appendChild(el('div', 'rux--checkbox-label-text', c.driver.name));
+      item.append(input, label);
+      if (c.why) item.appendChild(el('div', 'rux--form__helper-text', c.why));
+      boxes.appendChild(item);
+      return { copy: c, input };
+    });
+    drivers.appendChild(boxes);
+    const groups = [drivers];
+    const fieldId = f => `scheduler-fill-line-${f.id}`;
+    if (lines.length) {
+      const set = el('fieldset', 'scheduler-pair-group');
+      set.appendChild(el('legend', 'rux--type-heading-compact-02', 'Written on every copy'));
+      const grid = el('div', 'scheduler-pair-grid');
+      for (const f of lines) {
+        const value = words ? words[f.id] : f.from === 'last' ? last[f.id] : trip?.[f.from];
+        const item = window.SchedulerPair.textField(fieldId(f), f.en || f.id, value ?? '');
+        // A line as long as a third of the page takes its row alone, so the
+        // short ones, as From and To, stand in pairs as on the paper.
+        if ((f.at?.w ?? 0) >= 200) item.classList.add('scheduler-pair-grid__row');
+        grid.appendChild(item);
+      }
+      set.appendChild(grid);
+      groups.push(set);
+    }
+    $('scheduler-documents-fill-groups').replaceChildren(...groups);
+    const picked = copies.filter(c => c.picked).length;
+    $('scheduler-documents-fill-h').textContent = group.kind;
+    $('scheduler-documents-fill-who').textContent = `Trip ${trip?.ref ?? ''}, ${trip?.dates ?? ''}. `
+      + (offered.seated ? `${picked} of ${copies.length} on file are seated on it.` : `${picked} of ${copies.length} on file are free on its days.`);
+    const button = $('scheduler-documents-fill-open');
+    button.textContent = lines.length ? 'Save and open' : 'Open';
+    document.title = `${group.kind} — Scheduler`;
+    $('scheduler-documents-fill').hidden = false;
+
+    const error = $('scheduler-documents-fill-error');
+    const fail = text => { error.textContent = text; error.hidden = false; button.disabled = false; };
+    $('scheduler-documents-fill-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      error.hidden = true;
+      const chosen = ticks.filter(t => t.input.checked).map(t => t.copy);
+      if (!chosen.length) return fail('Tick at least one driver.');
+      button.disabled = true;
+      const typed = Object.fromEntries(lines.map(f => [f.id, clean($(fieldId(f)).value) ?? '']));
+      try {
+        const licences = await licencesOf(chosen.map(c => c.doc), office);
+        if (!licences) return;
+        if (lines.length) {
+          const { error: failed } = await client.from('trip_form_words').upsert({
+            trip_id: tripId, kind_id: kindId, words: typed, updated_at: new Date().toISOString(),
+          });
+          if (failed) throw failed;
+        }
+        location.replace(await drawnCopy(chosen.map(c => ({
+          doc: c.doc,
+          licence: licences.get(c.doc.id) ?? null,
+          words: office.get(c.doc.id).filter(f => f.type === 'trip').flatMap(f =>
+            (typed[f.id] ? [].concat(f.at).map(at => ({ at, text: typed[f.id] })) : [])),
+        }))));
+      } catch {
+        fail("The forms didn't open. Try again.");
+      }
+    });
+  }
+
+  // The words most recently saved for a kind on another trip, a line at a
+  // time, so a line that trip left empty takes the one before it.
+  async function lastWords(kindId, tripId) {
+    const found = {};
+    const { data } = await client.from('trip_form_words').select('words')
+      .eq('kind_id', kindId).neq('trip_id', tripId).order('updated_at', { ascending: false }).limit(50);
+    for (const row of data ?? []) {
+      for (const [id, text] of Object.entries(row.words ?? {})) if (text && !(id in found)) found[id] = text;
+    }
+    return found;
+  }
+
+  // The places each signed form keeps for the office, by document id, none
+  // for a document that is not a signed form.
+  const OFFICE = ['licence_copy', 'trip'];
+  async function officeFields(docs) {
+    const out = new Map(docs.map(d => [d.id, []]));
+    const { data: signings } = await client.from('driver_form_signings')
+      .select('document_id,form_id').in('document_id', docs.map(d => d.id));
+    if (!signings?.length) return out;
+    const { data: forms } = await client.from('driver_forms').select('id,fields').in('id', [...new Set(signings.map(s => s.form_id))]);
+    for (const s of signings) {
+      const fields = forms?.find(f => f.id === s.form_id)?.fields ?? [];
+      out.set(s.document_id, fields.filter(f => OFFICE.includes(f.type) && f.at));
+    }
+    return out;
   }
   // The driver's current Licence copy, the kind that sets their licence's
   // end day, with a link to its file; null when there is none.
@@ -171,23 +314,38 @@
     const url = doc ? await linkTo(doc.file_path) : '';
     return url ? { ...doc, url } : null;
   }
-  /* A trip as a form names it: its customer, the campus a school form asks
-     for, and its days from the first leg's start to the last leg's end, as
-     May 27, 2027, May 27-29, 2027 or May 30 - Jun 2, 2027. */
+  /* A trip as a form's lines name it, by a `trip` line's `from`: its
+     customer, the campus a school form asks for; `vendor`, the customer and
+     the booking contact, as a district's section 1 names who it hires;
+     `dates`, its days from the first leg's start to the last leg's end, as
+     May 27, 2027, May 27-29, 2027 or May 30 - Jun 2, 2027; `first_day` and
+     `last_day`, each as January 14, 2027; and the booking contact's
+     `contact_name`, `contact_email` and `contact_phone`. */
   async function tripWords(tripId) {
     const { data: trip } = await client.from('trips')
-      .select('customer,customer_id,trip_legs(id,leg,kind,start_date,end_date,created_at)').eq('id', tripId).maybeSingle();
+      .select('trip_ref,customer,customer_id,booking_contact_name,booking_contact_phone,booking_contact_email,trip_legs(id,leg,kind,start_date,end_date,created_at)')
+      .eq('id', tripId).maybeSingle();
     if (!trip) return null;
     const named = trip.customer_id
       ? (await client.from('customers').select('name').eq('id', trip.customer_id).maybeSingle()).data?.name : null;
     const days = window.SchedulerTripShape.daysOf(trip);
     const md = d => parseISO(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const y = d => d.slice(0, 4);
+    const fullDay = d => (d ? parseISO(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '');
     const dates = !days ? '' : days.first === days.last ? longDay(days.first)
       : y(days.first) !== y(days.last) ? `${longDay(days.first)} - ${longDay(days.last)}`
       : days.first.slice(0, 7) === days.last.slice(0, 7) ? `${md(days.first)}-${days.last.slice(8, 10).replace(/^0/, '')}, ${y(days.last)}`
       : `${md(days.first)} - ${md(days.last)}, ${y(days.last)}`;
-    return { customer: named || clean(trip.customer) || '', dates };
+    const customer = named || clean(trip.customer) || '';
+    const contact = clean(trip.booking_contact_name) || '';
+    return {
+      ref: trip.trip_ref ?? '', customer, dates,
+      vendor: [customer, contact].filter(Boolean).join(' - '),
+      first_day: fullDay(days?.first), last_day: fullDay(days?.last),
+      contact_name: contact,
+      contact_email: clean(trip.booking_contact_email) || '',
+      contact_phone: trip.booking_contact_phone ? window.SchedulerPhone.format(trip.booking_contact_phone) : '',
+    };
   }
 
   // pdf-lib, loaded only when a copy is drawn on, as the page loads
@@ -214,31 +372,45 @@
     return [art.width * scale, art.height * scale];
   };
 
-  /* The signed PDF with the office's part written in: the licence copy drawn
-     at a real card's size, centred in its box, a photo as it is and a PDF by
-     its first page; and each of `words` on its line, in the ink the driver's
-     answers are written in. */
-  async function drawnCopy(url, fileName, licence, words) {
+  /* The signed PDFs, one after another in one file, each with the office's
+     part written in: its licence copy drawn at a real card's size, centred
+     in its box, a photo as it is and a PDF by its first page; and each of its
+     `words` on its line, in the ink the driver's answers are written in,
+     made smaller where a place's `w` says how long its line is. */
+  async function drawnCopy(copies) {
     const bytes = u => fetch(u).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
-    const [{ PDFDocument, StandardFonts, rgb }, signed, copy] = await Promise.all([pdfLib(), bytes(url), licence ? bytes(licence.url) : null]);
-    const pdf = await PDFDocument.load(signed);
-    if (licence) {
-      const at = licence.at;
-      const page = pdf.getPage(at.page);
-      const ext = licence.file_name.split('.').pop().toLowerCase();
-      const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
-      const [width, height] = cardSize(art, at);
-      const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
-      if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
+    const { PDFDocument, StandardFonts, rgb } = await pdfLib();
+    const out = await PDFDocument.create();
+    for (const { doc, licence, words } of copies) {
+      const url = await linkTo(doc.file_path);
+      if (!url) throw new Error('No link');
+      const [signed, copy] = await Promise.all([bytes(url), licence ? bytes(licence.url) : null]);
+      const pdf = await PDFDocument.load(signed);
+      if (licence) {
+        const at = licence.at;
+        const page = pdf.getPage(at.page);
+        const ext = licence.file_name.split('.').pop().toLowerCase();
+        const art = ext === 'pdf' ? (await pdf.embedPdf(copy, [0]))[0] : ext === 'png' ? await pdf.embedPng(copy) : await pdf.embedJpg(copy);
+        const [width, height] = cardSize(art, at);
+        const place = { x: at.x + (at.w - width) / 2, y: at.y + (at.h - height) / 2, width, height };
+        if (ext === 'pdf') page.drawPage(art, place); else page.drawImage(art, place);
+      }
+      if (words.length) {
+        const font = await pdf.embedFont(StandardFonts.Helvetica);
+        for (const { at, text } of words) {
+          const wanted = at.size ?? 11;
+          const size = at.w ? Math.min(wanted, wanted * at.w / font.widthOfTextAtSize(text, wanted)) : wanted;
+          // driver-form/pdf.ts's ink, the colour of a pen.
+          pdf.getPage(at.page).drawText(text, { x: at.x, y: at.y, size, font, color: rgb(0.04, 0.12, 0.4) });
+        }
+      }
+      for (const page of await out.copyPages(pdf, pdf.getPageIndices())) out.addPage(page);
     }
-    if (words.length) {
-      const font = await pdf.embedFont(StandardFonts.Helvetica);
-      // driver-form/pdf.ts's ink, the colour of a pen.
-      for (const { at, text } of words) pdf.getPage(at.page).drawText(text, { x: at.x, y: at.y, size: at.size ?? 11, font, color: rgb(0.04, 0.12, 0.4) });
-    }
-    // A drawn copy's address names nothing, so its title names the file.
-    pdf.setTitle(fileName.replace(/\.pdf$/i, ''), { showInWindowTitleBar: true });
-    return URL.createObjectURL(new Blob([await pdf.save()], { type: 'application/pdf' }));
+    // A drawn copy's address names nothing, so its title names the file, or
+    // how many forms it joins.
+    const title = copies.length === 1 ? copies[0].doc.file_name.replace(/\.pdf$/i, '') : `${copies.length} driver forms`;
+    out.setTitle(title, { showInWindowTitleBar: true });
+    return URL.createObjectURL(new Blob([await out.save()], { type: 'application/pdf' }));
   }
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
@@ -1024,6 +1196,7 @@
   pair.start(async signedIn => {
     client = signedIn;
     if (openId) { await openDocument(); return; }
+    if (tripForms) { await openTripForms(); return; }
     if (!editing) { await loadList(); return; }
     if (!(await loadDocument())) {
       say('info', 'That document is not in the list', 'Pick a document from the list below.');

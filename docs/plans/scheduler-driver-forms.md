@@ -77,13 +77,17 @@ code.
   service, office phone and email, Yes to school grounds and Yes to
   fingerprinted under Senate Bill 9, written at signing, so the driver is
   asked only for their own. Its last page is a `licence_copy` box, and its
-  campus and event dates are `trip_customer` and `trip_dates`, which the
-  office's copy fills in when it opens.
-- **The background check form's campus and trip date are left blank,**
-  because it goes to many schools. Opened from a trip's Forms
-  list, at `documents.html?open=<document id>&trip=<trip id>`, the campus and
-  the trip date are written onto a copy shown in the browser's viewer, the
-  campus being the trip's customer's name; the stored file never changes.
+  campus and event dates are `trip` lines, which the office's copy fills in
+  when it opens from a trip.
+- **A form's lines for a trip are left blank at signing,** as PSJA's campus
+  and event dates and McAllen ISD's section 1, because a form goes to many
+  schools. A trip's Forms list has one row a form, opening
+  `documents.html?trip=<trip id>&kind=<kind id>`: every active driver with a
+  current copy, ticked for the seated drivers or, with nobody seated, for
+  every driver free on the trip's days by `clashes.js`, and the lines as
+  fields filled from the trip or what it last saved, which the office edits;
+  Save and open keeps them on the trip in `trip_form_words` and writes them
+  on the ticked drivers' copies in one PDF. The stored files never change.
 - **The driver's link lists what waits for them,** in a card at the top of
   `share/driver.html`, and each opens `share/sign.html?s=<token>&form=<id>`,
   drawn from the form's fields. A driver with no trips sent still has a link,

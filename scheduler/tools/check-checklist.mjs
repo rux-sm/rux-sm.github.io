@@ -127,8 +127,14 @@ Facts.setDriverForms({
 expect('a campus asks for what its district asks for, each kind once',
   [Facts.formKindsOf(tripFor('school', [])), Facts.formKindsOf(tripFor('campus', [])), Facts.formKindsOf(tripFor('west', []))],
   [['bg'], ['bg', 'tb'], []]);
-expect('a trip with no driver seated has every driver\'s form that lasts until it leaves',
-  Facts.formsOnFile(tripFor('school', [])).map(f => [f.driverId, f.form.id]), [['d1', 'f1']]);
+const people = [{ id: 'd1', name: 'Ana', status: 'active' }, { id: 'd2', name: 'Ben Ortiz', status: 'active' }, { id: 'd3', name: 'Cy', status: 'inactive' }];
+const offered = (seated, way) => Facts.formCopiesOf(tripFor('school', []), 'bg', { seated: new Set(seated), way: new Map(way), drivers: people })
+  .map(c => [c.driver.id, c.form.id, c.picked, c.why]);
+expect('a trip offers every active driver\'s form that lasts until it leaves, picked while nothing stands in the way',
+  [offered([], []), offered([], [['d1', ['On trip Laredo, TX', 'Time off']]])],
+  [[['d1', 'f1', true, '']], [['d1', 'f1', false, 'On trip Laredo, TX · Time off']]]);
+expect('once anyone is seated, a trip picks only its seated drivers\' forms',
+  [offered(['d2'], [['d1', ['Time off']]]), offered(['d1'], [])], [[['d1', 'f1', false, '']], [['d1', 'f1', true, '']]]);
 
 const part = f => ids(checklist(ready, () => ({ ...full, ...f }), true)).filter(i => /^(partners|partner-prices|itinerary-printed):/.test(i));
 expect('a bus a partner covers asks for the partner confirmed and its price, and a leg with none asks neither',

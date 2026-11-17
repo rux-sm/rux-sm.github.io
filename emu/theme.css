@@ -4,3 +4,18 @@
    (theme.css), or component rules at Carbon's own specificity with no
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
+
+/* THE LIBRARY'S TILES, the room's and each drawer's, are rounded as the
+   scheduler's board is: 12px in the themes that round Design's largest box,
+   Ant Design Pro's, Geist's and Apple's, and square in the rest, as Carbon
+   draws them. Geist and Rux dark tell a tile from the page by a line
+   rather than a fill, so it has one there. */
+[data-theme="ant-dark"],
+[data-theme="geist-dark"],
+[data-theme^="apple-"] {
+  --emu-tile-radius: 12px;
+}
+[data-theme="geist-dark"],
+[data-theme="rux-dark"] {
+  --emu-tile-edge: 1px solid var(--rux-border-subtle-01);
+}

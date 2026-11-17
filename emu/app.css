@@ -112,86 +112,108 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* A cover's marks. One this Mac holds is dimmed under a tick in Rux's
    Server; one this Mac lacks, or whose console it cannot play, is dimmed
-   in My Stuff; one arriving sits under a veil that lifts from the foot. */
+   in My Room; one arriving sits under a veil that lifts from the foot. */
 .emu-cover--here .emu-cover-art, .emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover__tick { position: absolute; inset-block-start: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--rux-background); fill: var(--rux-support-success); }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
-/* THE WALL. Where the helper answers, room.js marks it --mac: the room fills
-   the page between the header and the window's foot, with a thin rail at
-   each side, and each side panel is a drawer over its side of the room,
-   22rem or what a phone leaves beside the rail, opened from its rail. Without the helper Rux's Server is the page.
-   Carbon's side panel is a dialog for one thing, and these stay open beside
-   the room while things are dragged out of them, so they are Emu's own.
-   Each unfolds from its rail's edge, as Carbon's side-nav rail widens, on
-   Carbon's moderate-02, entering and leaving on its productive curves; the
-   clip stops a rem past the far edge so its shadow shows. Open, a drawer is raised: layer-01 with Carbon's raised shadow,
-   and its contents a layer up, as Carbon's layering steps them. */
+/* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
+   the room's, fills the page under the header, as the scheduler's board
+   does: its head, then the stage, the room with a drawer tile over each side
+   of it. A drawer floats over the room rather than beside it, so opening one
+   never narrows the room and sweeps its things. Without the helper Rux's
+   Server is the page, with no tile around it. Carbon's side panel is a
+   dialog for one thing, and these stay open beside the room while things
+   are dragged out of them, so they are Emu's own. */
+.emu-wall--mac { display: flex; flex-direction: column; block-size: calc(100dvh - 3rem - 2rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 28rem; }
+.emu-stage { position: relative; }
+.emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
+/* A TILE, the room's or a drawer's: a surface a layer up from the page,
+   square or rounded and lined as the theme's tiles are (theme.css), its head
+   on that surface over a rule, as the scheduler's board and roster are. */
+.emu-wall--mac, .emu-wall--mac .emu-side { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
+.emu-wall--mac .emu-stage { border-end-start-radius: inherit; border-end-end-radius: inherit; overflow: clip; }
+/* A tile's head: its title 16px in, Carbon's side panel inset, in
+   heading-compact-02, the scheduler's week name and roster title; its
+   controls edge to edge to its end, as Carbon's table toolbar sets them,
+   on the md size token's height. */
+.emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
+.emu-tile__head[hidden] { display: none; }
+.emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
+.emu-side__head { justify-content: space-between; padding-inline-start: var(--rux-spacing-05); }
+/* The room's head: Rux's Server at its start, the room's name, the strip
+   taking what is left, then My Room and the room's menu at its end. Its
+   name gives way first in a narrow window. */
+.emu-head { gap: 0; }
+.emu-head .emu-tile__title { padding-inline: var(--rux-spacing-05); }
+@media (max-width: 41.98rem) { .emu-head .emu-tile__title { display: none; } }
+/* THE STRIP: the room's one place for words, on one line. At rest it is
+   this Mac's facts as Carbon's icon indicators; while a move runs or after
+   one it is what that move says in their place, with Undo or an answer
+   beside it. It gives up its width before the buttons do, and in a narrow
+   window the facts give way to one, the worst, or Ready. */
+.emu-strip { flex: 1 1 auto; min-inline-size: 0; display: flex; align-items: center; overflow: hidden; white-space: nowrap; contain: inline-size; padding-inline-end: var(--rux-spacing-05); }
+.emu-strip__facts { list-style: none; display: flex; align-items: center; gap: var(--rux-spacing-06); min-inline-size: 0; overflow: hidden; }
+.emu-strip svg { flex: none; }
+.emu-strip__facts .rux--link { white-space: nowrap; }
+.emu-strip__sum { min-inline-size: 0; }
+.emu-strip__sum .rux--link { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.emu-strip__said { display: none; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.emu-strip__words { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.emu-strip--said .emu-strip__facts { display: none; }
+.emu-strip--said .emu-strip__said { display: flex; }
+@media (max-width: 65.98rem) {
+  .emu-strip__facts > :not(.emu-strip__sum) { display: none; }
+  .emu-strip__facts > .emu-strip__sum { display: flex; }
+}
+@media (min-width: 66rem) { .emu-strip__sum { display: none; } }
+/* THE DRAWERS: a tile each, 22rem or the whole stage on a phone, floating
+   over its side of the stage 8px in, raised with Carbon's raised shadow, and
+   what it holds a layer up, as Carbon's layering steps it. Each unfolds
+   from its side on Carbon's moderate-02, entering and leaving on its
+   productive curves; the clip stops a rem past the far edge so its shadow
+   shows. */
 .emu-side[hidden] { display: none; }
-.emu-side__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); margin-block-end: var(--rux-spacing-05); }
 .emu-side__close { display: none; }
-body.emu-has-rails .emu-main { padding-inline: calc(var(--emu-rail) + var(--rux-spacing-05)); padding-block-end: var(--frame-safe-bottom); }
-.emu-wall--mac .emu-side { position: fixed; z-index: 3; inset-block: 3rem var(--frame-safe-bottom); inline-size: min(22rem, 100vw - var(--emu-rail)); display: flex; flex-direction: column; padding: var(--rux-spacing-05); background: var(--rux-layer-01); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
+.emu-wall--mac .emu-side { position: absolute; z-index: 3; inset-block: var(--rux-spacing-03); inline-size: min(22rem, 100% - 2 * var(--rux-spacing-03)); display: flex; flex-direction: column; box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
 .emu-wall--mac .emu-side[hidden] { display: none; }
-.emu-wall--mac .emu-side--server { inset-inline-start: var(--emu-rail); clip-path: inset(0 100% 0 0); }
-.emu-wall--mac .emu-side--stuff { inset-inline-end: var(--emu-rail); clip-path: inset(0 0 0 100%); }
-.emu-wall--mac .emu-side--server.emu-side--open { clip-path: inset(0 -1rem 0 0); }
-.emu-wall--mac .emu-side--stuff.emu-side--open { clip-path: inset(0 0 0 -1rem); }
+.emu-wall--mac .emu-side--server { inset-inline-start: var(--rux-spacing-03); clip-path: inset(0 100% 0 0); }
+.emu-wall--mac .emu-side--mine { inset-inline-end: var(--rux-spacing-03); clip-path: inset(0 0 0 100%); }
+.emu-wall--mac .emu-side--server.emu-side--open { clip-path: inset(-1rem -1rem -1rem 0); }
+.emu-wall--mac .emu-side--mine.emu-side--open { clip-path: inset(-1rem 0 -1rem -1rem); }
 .emu-wall--mac .emu-side--open { visibility: visible; transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
 .emu-wall--mac .emu-side__close { display: inline-flex; }
+.emu-wall--mac .emu-side > .rux--content-switcher { margin: var(--rux-spacing-05) var(--rux-spacing-05) 0; inline-size: auto; }
 .emu-side__body { margin-block-start: var(--rux-spacing-05); }
-.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; }
+.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; padding: 0 var(--rux-spacing-05) var(--rux-spacing-05); }
 @media (prefers-reduced-motion: reduce) { .emu-wall--mac .emu-side, .emu-wall--mac .emu-side--open { transition: none; } }
-/* A tab of My Stuff not chosen is gone, where a stack would show it. */
+/* Without the room, Rux's Server is the page and its head only a heading. */
+.emu-wall:not(.emu-wall--mac) .emu-side__head { border-block-end: 0; padding-inline-start: 0; }
+/* A drawer's tab not chosen is gone, where a stack would show it. */
 .emu-pane[hidden] { display: none; }
 /* A drawer's covers are smaller, so three stand in a row. */
 .emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
-/* THE RAILS: a thin column down each side of the window, under the
-   header, on layer-01 as its drawer is, so a drawer open is one surface
-   with its rail. Each holds one tab drawn as Carbon's vertical tab: its
-   name running along it, read upward on the left and downward on the
-   right, the layer's hover colour under the pointer, and while its drawer
-   is open its text primary and semibold with the interactive bar on the
-   window's edge. The line between rail and room goes while the drawer is
-   open, so the two read as joined. */
-:root { --emu-rail: 2.5rem; }
-.emu-rail { position: fixed; z-index: 4; inset-block: 3rem 0; inline-size: var(--emu-rail); padding-block-end: var(--frame-safe-bottom); background: var(--rux-layer-01); }
-.emu-rail[hidden] { display: none; }
-.emu-rail--server { inset-inline-start: 0; border-inline-end: 1px solid var(--rux-border-subtle-01); }
-.emu-rail--stuff { inset-inline-end: 0; border-inline-start: 1px solid var(--rux-border-subtle-01); }
-.emu-rail--open { border-color: transparent; }
-.emu-rail__tab { display: flex; justify-content: center; inline-size: 100%; padding: var(--rux-spacing-05) 0; border: 0; border-inline: 3px solid transparent; background: transparent; color: var(--rux-text-secondary); font: inherit; cursor: pointer; transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-rail__label { writing-mode: vertical-rl; white-space: nowrap; }
-.emu-rail--server .emu-rail__label { rotate: 180deg; }
-@media (hover: hover) { .emu-rail__tab:hover { background: var(--rux-layer-hover-01); color: var(--rux-text-primary); } }
-.emu-rail__tab[aria-expanded="true"] { color: var(--rux-text-primary); font-weight: 600; }
-.emu-rail--server .emu-rail__tab[aria-expanded="true"] { border-inline-start-color: var(--rux-border-interactive); }
-.emu-rail--stuff .emu-rail__tab[aria-expanded="true"] { border-inline-end-color: var(--rux-border-interactive); }
-.emu-rail__tab:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-@media (prefers-reduced-motion: reduce) { .emu-rail__tab { transition: none; } }
 
 /* YOUR MAC: the page's own background, where the TV and the consoles each
    stand where they were left. Inside it every size is a whole number of art
    pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
    pixel art lands on whole pixels. */
-.emu-room { --emu-px: 3px; position: relative; block-size: calc(100dvh - 3rem - 2rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
+.emu-room { --emu-px: 3px; position: relative; block-size: 100%; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
 /* The TV: a CRT drawn as brand/consoles/tv.png, 80 by 60 art pixels, placed
    by room.js as a console is, --emu-left and --emu-top in art pixels, and
-   dragged the same way. What it says sits on
-   its glass, 54 by 36 art pixels from 6 across and 16 down. The glass is
-   dark in every theme, so the screen reads Gray 100's tokens: quiet at rest,
-   lit while it says what a move does, red when a move is refused or failed. */
+   dragged the same way. Its glass, 54 by 36 art pixels from 6 across and 16
+   down, shows only a playing home console's game; it is dark in every theme,
+   so it reads Gray 100's tokens. */
 .emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(60 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
-.emu-tv__screen { position: absolute; inset-inline-start: calc(6 * var(--emu-px)); inset-block-start: calc(16 * var(--emu-px)); inline-size: calc(54 * var(--emu-px)); block-size: calc(36 * var(--emu-px)); border-radius: calc(2 * var(--emu-px)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--rux-spacing-02); padding: var(--rux-spacing-03); overflow: hidden; text-align: center; background: transparent; color: var(--rux-text-primary); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-tv__rest[hidden] { display: none; }
+.emu-tv__screen { position: absolute; inset-inline-start: calc(6 * var(--emu-px)); inset-block-start: calc(16 * var(--emu-px)); inline-size: calc(54 * var(--emu-px)); block-size: calc(36 * var(--emu-px)); border-radius: calc(2 * var(--emu-px)); overflow: hidden; }
 /* The glass has a CRT's scanlines, an art pixel dark in every two. Its
-   picture opens from a line as the TV speaks and closes to a dot as it goes
-   quiet; Carbon has no motion for a tube, so these take its moderate-01 and
+   picture opens from a line as a game's cover comes on and closes to a dot
+   as it goes; Carbon has no motion for a tube, so these take its moderate-01 and
    moderate-02 on the productive curves, and none plays where motion is reduced. */
 .emu-tv__screen::before { content: ""; position: absolute; inset: 0; z-index: 2; background: repeating-linear-gradient(to bottom, transparent 0 var(--emu-px), var(--rux-shadow) var(--emu-px) calc(2 * var(--emu-px))); opacity: .2; pointer-events: none; }
 .emu-tv__screen > * { position: relative; z-index: 1; }
-.emu-tv--lit .emu-tv__screen, .emu-tv--no .emu-tv__screen { animation: emu-crt-on 150ms cubic-bezier(0, 0, 0.38, 0.9); }
+.emu-tv--on .emu-tv__screen { animation: emu-crt-on 150ms cubic-bezier(0, 0, 0.38, 0.9); }
 @keyframes emu-crt-on { from { clip-path: inset(48% 0); } to { clip-path: inset(0); } }
 .emu-tv--off .emu-tv__screen::after { content: ""; position: absolute; inset: 0; z-index: 3; background: var(--rux-text-primary); pointer-events: none; animation: emu-crt-off 240ms cubic-bezier(0.2, 0, 1, 0.9) both; }
 @keyframes emu-crt-off { 0% { transform: scale(1, 1); opacity: .6; } 50% { transform: scale(1, .02); opacity: 1; } 100% { transform: scale(0, .02); opacity: 0; } }
@@ -206,23 +228,12 @@ body.emu-has-rails .emu-main { padding-inline: calc(var(--emu-rail) + var(--rux-
 .emu-tv__saver { display: none; position: absolute; inset: calc(2 * var(--emu-px)); animation: emu-drift-x 7s linear infinite alternate; }
 .emu-tv__saver img { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); animation: emu-drift-y 4.3s linear infinite alternate; }
 .emu-tv--saver .emu-tv__saver { display: block; }
-.emu-tv--saver .emu-tv__rest { visibility: hidden; }
 @keyframes emu-drift-x { from { transform: translateX(0); } to { transform: translateX(calc(100% - 8 * var(--emu-px))); } }
 @keyframes emu-drift-y { from { transform: translateY(0); } to { transform: translateY(calc(28 * var(--emu-px) - 8 * var(--emu-px))); } }
-@media (prefers-reduced-motion: reduce) { .emu-tv--lit .emu-tv__screen, .emu-tv--no .emu-tv__screen, .emu-tv--off .emu-tv__screen::after, .emu-tv__saver, .emu-tv__saver img { animation: none; } .emu-tv--off .emu-tv__screen::after { display: none; } }
-.emu-tv__name { font-size: .875rem; line-height: 1.125rem; font-weight: 600; }
-.emu-tv__sub, .emu-tv__said { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
-.emu-tv__sub { opacity: .7; }
-.emu-tv__sub .rux--link { color: inherit; text-decoration: underline; }
-.emu-tv__said:empty { display: none; }
-.emu-tv--lit .emu-tv__screen { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
-.emu-tv--no .emu-tv__screen { background: var(--rux-support-error); color: var(--rux-text-on-color); }
+@media (prefers-reduced-motion: reduce) { .emu-tv--on .emu-tv__screen, .emu-tv--off .emu-tv__screen::after, .emu-tv__saver, .emu-tv__saver img { animation: none; } .emu-tv--off .emu-tv__screen::after { display: none; } }
 /* The TV's knobs, in art pixels on its drawing: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
 .emu-tv__knobs { position: absolute; inset-inline-start: calc(64 * var(--emu-px)); inset-block-start: calc(15 * var(--emu-px)); inline-size: calc(10 * var(--emu-px)); block-size: calc(14 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
 .emu-tv__knobs:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
-.emu-tv__undo[hidden] { display: none; }
-.emu-tv__answers { display: flex; justify-content: center; }
-.emu-tv__undo, .emu-tv__undo:hover { color: inherit; }
 /* The space the consoles stand in, the whole room under the TV: each placed
    by room.js, --emu-left and --emu-top its top-left corner in art pixels. The
    list takes no press itself, so a drop between consoles lands on the room. */
@@ -311,8 +322,8 @@ body.emu-has-rails .emu-main { padding-inline: calc(var(--emu-rail) + var(--rux-
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-#emu-collection.emu-lit, #emu-collection.emu-no, #emu-stuff.emu-lit, #emu-stuff.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
-#emu-collection.emu-no, #emu-stuff.emu-no { outline-color: var(--rux-support-error); }
+#emu-collection.emu-lit, #emu-collection.emu-no, #emu-mine.emu-lit, #emu-mine.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
+#emu-collection.emu-no, #emu-mine.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
 .emu-unit--dim { opacity: .3; }

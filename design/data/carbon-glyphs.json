@@ -550,6 +550,38 @@
         "path|d=M16.54,2A14,14,0,0,0,2,16a4.82,4.82,0,0,0,6.09,4.65l1.12-.31A3,3,0,0,1,13,23.24V27a3,3,0,0,0,3,3A14,14,0,0,0,30,15.46,14.05,14.05,0,0,0,16.54,2Zm8.11,22.31A11.93,11.93,0,0,1,16,28a1,1,0,0,1-1-1V23.24a5,5,0,0,0-5-5,5.07,5.07,0,0,0-1.33.18l-1.12.31A2.82,2.82,0,0,1,4,16,12,12,0,0,1,16.47,4,12.18,12.18,0,0,1,28,15.53,11.89,11.89,0,0,1,24.65,24.32Z"
       ]
     },
+    "open-panel--left@32": {
+      "name": "open-panel--left",
+      "size": "32",
+      "source": "node_modules/@carbon/icons/svg/32/open-panel--left.svg",
+      "geometry": [
+        "path|d=M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6h6V26H4ZM28,26H12V6H28Z"
+      ]
+    },
+    "open-panel--filled--left@32": {
+      "name": "open-panel--filled--left",
+      "size": "32",
+      "source": "node_modules/@carbon/icons/svg/32/open-panel--filled--left.svg",
+      "geometry": [
+        "path|d=M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4Zm0,22H12V6H28Z"
+      ]
+    },
+    "open-panel--right@32": {
+      "name": "open-panel--right",
+      "size": "32",
+      "source": "node_modules/@carbon/icons/svg/32/open-panel--right.svg",
+      "geometry": [
+        "path|d=M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"
+      ]
+    },
+    "open-panel--filled--right@32": {
+      "name": "open-panel--filled--right",
+      "size": "32",
+      "source": "node_modules/@carbon/icons/svg/32/open-panel--filled--right.svg",
+      "geometry": [
+        "path|d=M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4Z"
+      ]
+    },
     "user--multiple@32": {
       "name": "user--multiple",
       "size": "32",

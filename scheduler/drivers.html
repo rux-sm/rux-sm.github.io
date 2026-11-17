@@ -58,6 +58,7 @@
 <symbol id="m-content_copy" viewBox="0 -960 960 960"><path d="M240-200v-680h560v680H240Zm60-60h440v-560H300v560ZM120-80v-680h60v620h500v60H120Zm180-180v-560 560Z"/></symbol>
 <symbol id="m-local_shipping-fill" viewBox="0 -960 960 960"><path d="M140.5-195.5Q106-230 106-279H40v-521h639v167h105l136 181v173h-71q0 49-34.5 83.5T731-161q-49 0-83.5-34.5T613-279H342q0 49-34.5 83.5T224-161q-49 0-83.5-34.5ZM265-238q17-17 17-41t-17-41q-17-17-41-17t-41 17q-17 17-17 41t17 41q17 17 41 17t41-17Zm507 0q17-17 17-41t-17-41q-17-17-41-17t-41 17q-17 17-17 41t17 41q17 17 41 17t41-17Zm-93-187h186L754-573h-75v148Z"/></symbol>
 <symbol id="m-description" viewBox="0 -960 960 960"><path d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM160-80v-800h421l219 219v581H160Zm391-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></symbol>
+<symbol id="m-download" viewBox="0 -960 960 960"><path d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM160-160v-203h60v143h520v-143h60v203H160Z"/></symbol>
 <symbol id="m-edit" viewBox="0 -960 960 960"><path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l617-616 128 128-617 616H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
 <symbol id="m-mail" viewBox="0 -960 960 960"><path d="M80-160v-640h800v640H80Zm400-302L140-685v465h680v-465L480-462Zm0-60 336-218H145l335 218ZM140-685v-55 520-465Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -939,9 +940,16 @@
             <div id="scheduler-form-everyone"></div>
             <p class="rux--form__helper-text" id="scheduler-form-everyone-help" hidden>Every driver is asked, new ones too. Turn this off to choose drivers.</p>
           </div>
-          <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="scheduler-form-send" hidden>Send
-            <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-send"/></svg>
-          </button>
+          <!-- Every signed copy as one PDF, through the Documents page, and
+               Send to every driver who owes the form. -->
+          <div class="rux--btn-set">
+            <a class="rux--btn rux--btn--secondary rux--layout--size-md" id="scheduler-form-download" target="_blank" rel="noopener" hidden>Download all signed
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-download"/></svg>
+            </a>
+            <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="scheduler-form-send" hidden>Send
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-send"/></svg>
+            </button>
+          </div>
         </div>
         <div class="rux--stack-vertical rux--stack-scale-7" id="scheduler-form-groups"></div>
       </div>

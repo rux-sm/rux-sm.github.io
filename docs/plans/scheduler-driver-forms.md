@@ -113,7 +113,9 @@ code.
   and a bar, and how many have it to sign. A flagged signing heads the tab
   until Mark as read, so it is read before the PDF goes to a school.
 - **A form opens on its own view, `drivers.html?form=<id>`:** Ask every
-  driver, Send to all who owe it, and its drivers in four groups, To sign
+  driver, Download all signed, which opens every active driver's current
+  copy as one PDF through `documents.html?kind=<kind id>`, Send to all who
+  owe it, and its drivers in four groups, To sign
   with the day it was sent or Not sent yet, Ends soon, Signed
   with Open, and Not asked. Every driver's row has the switch that puts the
   form on their link, saved as it is flipped. Send writes the text through

@@ -4,8 +4,8 @@
    documents.html lists the office's own paperwork: insurance certificates,
    the W-9, a driver's background check form, a partner's papers. documents.html?id=<id> edits
    one, documents.html?new uploads one, documents.html?open=<id> opens
-   its file, and documents.html?trip=<id>&kind=<id> opens a trip's copies of
-   a driver form. They read and write `company_documents` and `document_kinds`,
+   its file, and documents.html?kind=<id>, with &trip=<id> or without, opens
+   the drivers' copies of a form, a trip's or all of them. They read and write `company_documents` and `document_kinds`,
    and the files live in the private `company-documents` bucket.
 
    A document is a file and seven facts: its kind, the holder named on it, the
@@ -29,10 +29,10 @@
   const documentId = params.get('id');
   const openId = params.get('open');
   const editing = !!documentId || params.has('new');
-  // A trip's copies of a driver form, from its Forms list.
-  const tripForms = !editing && !openId && params.has('trip') && params.has('kind');
+  // Drivers' copies of a form, from a trip's Forms list or a form's view.
+  const formCopies = !editing && !openId && params.has('kind');
   // The record view shows the list's column only for its notice.
-  if (editing || openId || tripForms) $('scheduler-documents-h').hidden = true;
+  if (editing || openId || formCopies) $('scheduler-documents-h').hidden = true;
 
   const BUCKET = 'company-documents';
   const LINK_SECONDS = 600;
@@ -160,28 +160,30 @@
     return out;
   }
 
-  /* ══ A trip's copies of a driver form ═══════════════════════════════════
-     documents.html?trip=<trip id>&kind=<kind id> is what a trip's Forms list
-     links a kind of driver form to. It lists every active driver with a
-     current copy, as leg-facts.js's readFormCopies offers them, ticked for
-     the trip's seated drivers or, with nobody seated, for every driver free
-     on its days, and those it leaves unticked say why. A form with `trip`
+  /* ══ Drivers' copies of a form ══════════════════════════════════════════
+     documents.html?kind=<kind id> is what a form's view on the Drivers page
+     links Download all signed to: every active driver's current copy of the
+     kind, all ticked. documents.html?trip=<trip id>&kind=<kind id> is what a
+     trip's Forms list links a kind of driver form to. It lists every active
+     driver with a current copy, as leg-facts.js's readFormCopies offers
+     them, ticked for the trip's seated drivers or, with nobody seated, for
+     every driver free on its days, and those it leaves unticked say why. A form with `trip`
      lines, such as a district's section 1, adds a field for each, holding
      what the trip last saved for that kind, or else what the trip says by
      the line's `from`, where `last` is what was last saved on any trip, such
-     as a district's bid number. Open keeps the lines on the trip in
+     as a district's bid number. Open keeps a trip's lines on it in
      `trip_form_words` and opens the ticked drivers' signed copies as one
      PDF, each with the lines and its licence copy drawn in. The signed files
      themselves never change. */
-  async function openTripForms() {
+  async function openFormCopies() {
     const tripId = params.get('trip');
     const kindId = params.get('kind');
-    const offered = await window.SchedulerLegFacts.readFormCopies(client, tripId);
+    const offered = tripId ? await window.SchedulerLegFacts.readFormCopies(client, tripId) : await copiesOnFile(kindId);
     if (!offered) return cannotOpen('That trip is not on the schedule', 'Open its forms again from the board.');
     const group = offered.kinds.find(k => String(k.kindId) === kindId);
     if (!group?.copies.length) {
       return cannotOpen(group ? `No active driver has a current ${group.kind} on file` : "This trip's customer doesn't ask for that form",
-        'Open its forms again from the board.');
+        tripId ? 'Open its forms again from the board.' : 'Pick a document from the list below.');
     }
     const { data: files, error: unread } = await client.from('company_documents')
       .select('id,kind_id,driver_id,file_name,file_path').in('id', group.copies.map(c => c.form.id));
@@ -189,11 +191,11 @@
     const copies = group.copies.map(c => ({ ...c, doc: files.find(f => f.id === c.form.id) })).filter(c => c.doc);
     const office = await officeFields(copies.map(c => c.doc));
     const lines = [];
-    for (const f of copies.flatMap(c => office.get(c.doc.id))) {
+    for (const f of tripId ? copies.flatMap(c => office.get(c.doc.id)) : []) {
       if (f.type === 'trip' && f.id && !lines.some(g => g.id === f.id)) lines.push(f);
     }
     const [trip, saved, last] = await Promise.all([
-      tripWords(tripId),
+      tripId ? tripWords(tripId) : null,
       lines.length ? client.from('trip_form_words').select('words').eq('trip_id', tripId).eq('kind_id', kindId).maybeSingle() : null,
       lines.some(f => f.from === 'last') ? lastWords(kindId, tripId) : {},
     ]);
@@ -239,8 +241,9 @@
     $('scheduler-documents-fill-groups').replaceChildren(...groups);
     const picked = copies.filter(c => c.picked).length;
     $('scheduler-documents-fill-h').textContent = group.kind;
-    $('scheduler-documents-fill-who').textContent = `Trip ${trip?.ref ?? ''}, ${trip?.dates ?? ''}. `
-      + (offered.seated ? `${picked} of ${copies.length} on file are seated on it.` : `${picked} of ${copies.length} on file are free on its days.`);
+    $('scheduler-documents-fill-who').textContent = !trip ? `Every active driver's signed copy on file, ${copies.length} in all.`
+      : `Trip ${trip.ref}, ${trip.dates}. `
+        + (offered.seated ? `${picked} of ${copies.length} on file are seated on it.` : `${picked} of ${copies.length} on file are free on its days.`);
     const button = $('scheduler-documents-fill-open');
     button.textContent = lines.length ? 'Save and open' : 'Open';
     document.title = `${group.kind} — Scheduler`;
@@ -274,6 +277,21 @@
         fail("The forms didn't open. Try again.");
       }
     });
+  }
+
+  // Every active driver's current copy of a kind, all picked, in the shape
+  // readFormCopies hands a trip's.
+  async function copiesOnFile(kindId) {
+    const [kind, docs, people] = await Promise.all([
+      client.from('document_kinds').select('id,name').eq('id', kindId).maybeSingle(),
+      client.from('company_documents').select('id,driver_id').eq('kind_id', kindId).is('replaced_at', null).not('driver_id', 'is', null),
+      client.from('drivers').select('id,name,status').eq('status', 'active').order('name'),
+    ]);
+    if (kind.error || docs.error || people.error) throw kind.error || docs.error || people.error;
+    if (!kind.data) return { kinds: [] };
+    const copies = (people.data ?? []).flatMap(d => (docs.data ?? []).filter(f => f.driver_id === d.id)
+      .map(f => ({ driver: d, form: f, picked: true, why: '' })));
+    return { seated: false, kinds: [{ kindId: kind.data.id, kind: kind.data.name, copies }] };
   }
 
   // The words most recently saved for a kind on another trip, a line at a
@@ -381,10 +399,15 @@
     const bytes = u => fetch(u).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
     const { PDFDocument, StandardFonts, rgb } = await pdfLib();
     const out = await PDFDocument.create();
-    for (const { doc, licence, words } of copies) {
+    // Every file fetched at once, since twenty copies one after another
+    // keep the office waiting; they are drawn in order after.
+    const fetched = await Promise.all(copies.map(async ({ doc, licence }) => {
       const url = await linkTo(doc.file_path);
       if (!url) throw new Error('No link');
-      const [signed, copy] = await Promise.all([bytes(url), licence ? bytes(licence.url) : null]);
+      return Promise.all([bytes(url), licence ? bytes(licence.url) : null]);
+    }));
+    for (const [i, { licence, words }] of copies.entries()) {
+      const [signed, copy] = fetched[i];
       const pdf = await PDFDocument.load(signed);
       if (licence) {
         const at = licence.at;
@@ -1196,7 +1219,7 @@
   pair.start(async signedIn => {
     client = signedIn;
     if (openId) { await openDocument(); return; }
-    if (tripForms) { await openTripForms(); return; }
+    if (formCopies) { await openFormCopies(); return; }
     if (!editing) { await loadList(); return; }
     if (!(await loadDocument())) {
       say('info', 'That document is not in the list', 'Pick a document from the list below.');

@@ -9,9 +9,10 @@
      drivers.html, the Forms tab   one row a form: how many drivers are
                                    asked, how many of those signed, and how
                                    many still have it to sign
-     drivers.html?form=<id>        one form: Ask every driver, and its
-                                   drivers under To sign, Ends soon, Signed
-                                   and Not asked, each with their switch
+     drivers.html?form=<id>        one form: Ask every driver, Download all
+                                   signed, and its drivers under To sign,
+                                   Ends soon, Signed and Not asked, each with
+                                   their switch
      drivers.html?id=<id>          a driver's Documents tab: every form with
                                    its switch, for an active driver
 
@@ -226,6 +227,10 @@
     send.hidden = !owing.length;
     send.firstChild.textContent = `Send to all ${owing.length}`;
     send.onclick = () => openSend(owing, [f]);
+    // Every active driver's current signed copy, picked on the Documents page and opened as one PDF.
+    const download = $('scheduler-form-download');
+    download.hidden = !drivers.some(d => cells.get(`${d.id}:${f.id}`)?.signedAt);
+    download.href = `documents.html?kind=${encodeURIComponent(f.kind_id)}`;
     $('scheduler-form-groups').replaceChildren(...GROUPS.map(([group, title]) => {
       const mine = drivers.filter(d => standing(d, f).group === group);
       if (!mine.length) return null;
@@ -327,7 +332,7 @@
     const [overview, people, current, flagged] = await Promise.all([
       client.rpc('get_driver_forms_overview'),
       client.from('drivers').select('id,name,short_name,language,texting_url').eq('status', 'active').order('name'),
-      client.from('driver_forms').select('id,title,title_es,yearly,ask_everyone').is('retired_at', null).order('title'),
+      client.from('driver_forms').select('id,kind_id,title,title_es,yearly,ask_everyone').is('retired_at', null).order('title'),
       client.from('driver_form_signings').select('id,driver_id,form_id,document_id,signed_at')
         .eq('flagged', true).is('flag_read_at', null).order('signed_at', { ascending: false }),
     ]);

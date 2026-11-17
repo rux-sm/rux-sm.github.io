@@ -14711,6 +14711,14 @@
       return;
     }
 
+    // The QuickBooks page at the trip's row, once unsaved work is settled.
+    if (item.id === 'scheduler-bar-menu-invoice') {
+      const trip = panelIndex.trips.get(bar.dataset.tripId);
+      const href = `quickbooks.html?trip=${encodeURIComponent(bar.dataset.tripId)}&date=${encodeURIComponent(trip?.start_date || '')}`;
+      whenSafe(() => { window.location.href = href; });
+      return;
+    }
+
     if (await pickDriverItem(item, bar)) return;
 
     if (item.dataset.driverStatus) {
@@ -14801,6 +14809,7 @@
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
     drawQuickBooksItem(bar);
+    drawInvoiceItem(bar);
     // Call or text rings the card's Needs bell while a driver on this bus is to be told of a change.
     const tells = barFacts.get(bar)?.tells ?? [];
     const due = document.getElementById('scheduler-bar-menu-contacts-due');
@@ -14982,6 +14991,14 @@
     item.querySelector('.rux--menu-item__label').textContent = invoice || 'Estimate in QuickBooks';
     item.querySelector('.rux--menu-item__selection-icon')
       .replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
+  }
+  /* Export invoice, on a confirmed trip with no invoice: the QuickBooks page
+     writes the invoice, since only its report knows whether QuickBooks has
+     one and the number it takes. */
+  function drawInvoiceItem(bar) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    document.getElementById('scheduler-bar-menu-invoice').hidden = !client || !trip || !trip.confirmed
+      || !!trip.cancelled_at || window.SchedulerBilling.placeholder(trip) || !!qbInvoiceOf(trip);
   }
   async function markEstimate(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);

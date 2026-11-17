@@ -49,7 +49,8 @@ backup, and marked as soon as it is in.
 10. Switch QuickBooks back to multi-user mode.
 
 A customer who wants an invoice before the weekly run gets one from its row's
-Export under Invoices to import, then steps 6 to 10.
+Export under Invoices to import, then steps 6 to 10. The trip's bar menu on the
+board, Export invoice…, opens the page at that row.
 
 ## The report
 

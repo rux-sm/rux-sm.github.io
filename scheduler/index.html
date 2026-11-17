@@ -1308,6 +1308,14 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
       <div class="rux--menu-item__label">Estimate in QuickBooks</div>
     </li>
+    <!-- Opens the QuickBooks page at the trip's row, whose Export writes its
+         invoice once today's report is chosen there; shown by data.js on a
+         confirmed trip with no invoice. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-invoice" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
+      <div class="rux--menu-item__label">Export invoice…</div>
+    </li>
     <!-- Shown by data.js on a trip that needs a hotel, and hidden for the trip
          open in the editor, as Color is. Its label says which way it marks the
          bar's leg. -->

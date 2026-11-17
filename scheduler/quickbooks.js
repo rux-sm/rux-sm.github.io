@@ -11,7 +11,8 @@
    which trips QuickBooks has invoiced already, which it holds back until
    that match is saved, and QuickBooks' last invoice number, which fills in
    the next one the file is numbered from. Export week saves the IIF file,
-   a row's Export saves that trip's alone, and Mark imported, once
+   a row's Export saves that trip's alone, the board's Export invoice opening
+   the page at that row, and Mark imported, once
    QuickBooks has taken the file, saves each trip's invoice with its number
    so no export takes it again.
 
@@ -357,7 +358,14 @@
      invoices, and `saved` the file saved last, which Mark imported records. */
   const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-  let weekFirst = WEEK.firstDayOf(new Date(), WEEK.savedWeekStart());
+  /* The board's Export invoice opens the page at a trip, `?trip=` and its
+     first day `&date=`: on that day's week, with the trip's row selected and
+     scrolled to. */
+  const asked = new URLSearchParams(location.search);
+  const focusTrip = asked.get('trip');
+  const focusDay = /^\d{4}-\d{2}-\d{2}$/.test(asked.get('date') || '') ? new Date(`${asked.get('date')}T00:00:00`) : null;
+  let focusShown = false;
+  let weekFirst = WEEK.firstDayOf(focusDay || new Date(), WEEK.savedWeekStart());
   let weekTrips = [];
   let run = null;
   let saved = null;
@@ -409,6 +417,7 @@
     const link = el('a', 'rux--link', String(trip.trip_ref ?? ''));
     link.href = `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(trip.start_date || '')}`;
     ref.append(link);
+    if (trip.id === focusTrip) tr.classList.add('rux--data-table--selected');
     const one = el('td');
     if (inFile && run.text) {
       const button = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Export');
@@ -447,6 +456,8 @@
     $('scheduler-quickbooks-export-btn').disabled = !run.text || !run.written.length;
     $('scheduler-quickbooks-mark').disabled = !saved || marked;
     $('scheduler-quickbooks-export').hidden = false;
+    const focused = $('scheduler-quickbooks-export-rows').querySelector('.rux--data-table--selected');
+    if (focused && !focusShown) { focusShown = true; focused.scrollIntoView({ block: 'center' }); }
   }
 
   function writeRun() {

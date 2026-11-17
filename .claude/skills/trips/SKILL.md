@@ -279,6 +279,7 @@ reads only the ones before it. Nothing is written until step 10.
 - An editor tab left open while waiting on rux's yes can be gone when he answers, with every unsaved change: check with `get_trip` that nothing was saved, then draft the change again and rebuild it.
 - Save on a trip someone saved after the editor opened asks "This trip changed since you opened it", and Save anyway writes back the editor's older copy over theirs, such as a contract just marked signed: read what they changed with `get_trip`, press Reload trip, then draft the change again and rebuild it.
 - Quote sent, from the Billing tile's Quote sent row, records today's date, not the day the quote went out.
+- Marking the contract signed, or adding a Contract file, also marks an unsent quote sent at the quoted price, dated the day signed; check that price is the one they signed.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
 - The "Saved" notice sits over the lists prompt's buttons, and a click on it closes the prompt with nothing saved: press Save to lists from the page's script, then check the place is on the Locations page.

@@ -6345,6 +6345,19 @@
      note, such as who signed. Adding it is what marks the contract signed,
      so Done adds a new one filled in or not, and Cancel adds nothing. */
   let redrawContract = () => {};
+  /* Marks the contract signed, from its window, an upload or a draft. A
+     contract newly signed on a trip whose quote is not marked sent marks it
+     sent at the quoted price on the day signed, because a signed contract is
+     proof the customer had the quote. */
+  function signContract(contract) {
+    if (!editing.contract && !editing.quoteSent) {
+      const price = money(document.getElementById('scheduler-f-quoted')?.value ?? '');
+      if (price != null) editing.quoteSent = { price: round2(price), on: contract.on ?? null };
+    }
+    editing.contract = contract;
+    redrawQuoteSent();
+    redrawContract();
+  }
   function openContractDialog() {
     const host = document.getElementById('scheduler-contract-fields');
     if (!host || !editing) return;
@@ -6377,9 +6390,8 @@
 
   document.getElementById('scheduler-contract-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
-    editing.contract = { on: isoOrNull(val('scheduler-f-signedon')), note: val('scheduler-f-signednote') || null };
     window.Rux?.modal?.close?.('scheduler-contract-modal');
-    redrawContract();
+    signContract({ on: isoOrNull(val('scheduler-f-signedon')), note: val('scheduler-f-signednote') || null });
     refreshDirty();
   });
 
@@ -17416,7 +17428,8 @@
 
   /* A purchase order or a signed contract added in the editor fills its
      Billing row, dated today, while the row is still empty: a PO adds one
-     PO, and a contract marks it signed, which may confirm the trip. Save
+     PO, and a contract marks it signed, which may confirm the trip and
+     marks an unsent quote sent. Save
      writes the row as it writes one filled by hand. */
   function fileFillsBilling(label) {
     if (!editing || panelEl.hidden) return;
@@ -17425,8 +17438,7 @@
       poPending.push({ ref: null, amount: null, date: today });
       redrawPos();
     } else if (label === 'Contract' && stepOn('contractSigned') && !editing.contract) {
-      editing.contract = { on: today, note: null };
-      redrawContract();
+      signContract({ on: today, note: null });
     } else return;
     refreshDirty();
   }
@@ -20085,9 +20097,8 @@
       if (key === 'contract') {
         if (!editing || !stepOn('contractSigned')) { missed.push([key, JSON.stringify(value)]); continue; }
         const was = editing.contract;
-        editing.contract = { on: value.signed_on ?? was?.on ?? null,
-          note: value.signed_by ? `Signed by ${String(value.signed_by).trim()}` : was?.note ?? null, drafted: true };
-        redrawContract();
+        signContract({ on: value.signed_on ?? was?.on ?? null,
+          note: value.signed_by ? `Signed by ${String(value.signed_by).trim()}` : was?.note ?? null, drafted: true });
         continue;
       }
       /* The trip contacts, after the type, so a split trip's pickup ones go to

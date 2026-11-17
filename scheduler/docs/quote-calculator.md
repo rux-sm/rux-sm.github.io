@@ -89,7 +89,10 @@ two differ.
 
 The Billing tab's Quote sent keeps the quoted price and the day it is marked,
 for Save. The Customer quote form, opened beside the trip with nothing
-unsaved, offers to mark it sent at the price it prints. When the lines move
+unsaved, offers to mark it sent at the price it prints. A contract newly
+signed, from its window, a Contract upload or a draft, marks a quote not yet
+marked sent at the quoted price on the day signed, because the customer had
+it to sign. When the lines move
 past it, the section says by how much, and once the contract is signed it
 names the price as the one they signed. Marking it fills the Updates box with
 Quote sent and the price, and the calculator's replace check names it.

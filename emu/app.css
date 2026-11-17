@@ -147,11 +147,11 @@ body.emu-has-bar .emu-main { padding-block-end: calc(4.75rem + var(--frame-safe-
 .emu-bar[hidden] { display: none; }
 .emu-bar__btn { flex: 0 1 10rem; justify-content: center; padding-inline: var(--rux-spacing-05); }
 
-/* YOUR MAC: one solid space, the TV near its top and the open space below it
+/* YOUR MAC: the page's own background, the TV near its top and the open space below it
    where the consoles stand. Inside it every size is a whole number of art
    pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
    pixel art lands on whole pixels. */
-.emu-room { --emu-px: 3px; display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--emu-px)); block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); background: var(--rux-layer-01); }
+.emu-room { --emu-px: 3px; display: flex; flex-direction: column; align-items: center; gap: calc(6 * var(--emu-px)); block-size: calc(100dvh - 3rem - 2rem - 4.75rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 24rem; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
 /* The TV, 112 by 72 art pixels: quiet at rest, lit while it says what a move
    does, red when a move is refused or failed. */

@@ -5,7 +5,7 @@
    space with the TV near its top and the consoles this Mac has set up
    standing below it, each where it was left. Two buttons at the page's foot
    open a drawer on each side, Rux's Server on the left and My Stuff on the
-   right, each as it was last left in this browser. Without the helper Rux's
+   right, both closed each time the page loads. Without the helper Rux's
    Server is the whole page.
 
    The TV is the room's one screen. At rest it shows this Mac's name and how
@@ -501,11 +501,10 @@
 
   // THE DRAWERS. Each button at the page's foot opens its drawer over that
   // side of the room and closes it again, as does the drawer's own close and
-  // Escape, and each is left as it was in this browser. Both start closed.
-  const drawers = [['emu-collection', 'emu-server-open', 'emu-server-close', 'emu-server-panel'], ['emu-stuff', 'emu-stuff-open', 'emu-stuff-close', 'emu-stuff-panel']]
-    .map(([id, opener, closer, key]) => {
+  // Escape. Both start closed each time the page loads, so the room shows whole.
+  const drawers = [['emu-collection', 'emu-server-open', 'emu-server-close'], ['emu-stuff', 'emu-stuff-open', 'emu-stuff-close']]
+    .map(([id, opener, closer]) => {
       let shown = false;
-      try { shown = localStorage.getItem(key) === 'open'; } catch { /* a browser that keeps nothing starts closed */ }
       const show = () => {
         $(id).classList.toggle('emu-side--open', shown);
         $(opener).setAttribute('aria-expanded', String(shown));
@@ -514,7 +513,6 @@
       };
       const set = to => {
         shown = to;
-        try { localStorage.setItem(key, shown ? 'open' : 'closed'); } catch { /* it lasts until the page closes */ }
         show();
       };
       $(opener).addEventListener('click', () => set(!shown));

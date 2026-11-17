@@ -7,7 +7,7 @@ type: plan
 ## Goal
 
 The Library is a room that fills the page: Your Mac, holding the consoles
-this Mac has set up. It is one solid colour with a single TV near the top,
+this Mac has set up. It is the page itself with a single TV near the top,
 and the rest of it is open space where the consoles stand wherever they are
 left. Two buttons at the foot open a drawer on each side: Server on the left
 is every console and game the server holds, borrowed by dragging it into the
@@ -19,8 +19,8 @@ Emu is unchanged.
 
 ## Decisions
 
-- **The room holds only the TV and the consoles.** It is one solid colour
-  token, with no wall, floor, furniture, shelves or heading drawn on it, so
+- **The room holds only the TV and the consoles.** It is the page's own
+  background, with no fill, wall, floor, furniture, shelves or heading, so
   there is nothing to read but what this Mac has.
 - **The TV is a single small screen near the top of the room, and the room's
   one communication surface,** not a pretend game screen or a notification
@@ -46,8 +46,8 @@ Emu is unchanged.
   `design/css/rux-frame.css`. A drawer slides over its side of the room and
   the rest stays in view, so a drag out of it lands a short move away.
   Pressing its button again, or Escape, closes it, and a closed drawer leaves
-  nothing behind. Both start closed, and each stays as it was last left,
-  remembered in the browser. The menu is behind the header's button at every
+  nothing behind. Both start closed each time the page loads, so the room
+  shows whole. The menu is behind the header's button at every
   width, and the account is the header's round button, so nothing else
   stands around the room.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
@@ -209,8 +209,7 @@ Emu is unchanged.
   three CSS pixels to an art pixel where the TV takes at most half the
   room's width, else two, never scaled in between, so their edges stay
   sharp. Colour is kept for state: green ready, amber busy or saves not safe
-  yet, red no, blue where a drop lands. The room's colour is a token, light
-  by day and dark in the evening, with the TV lighting only while it has
+  yet, red no, blue where a drop lands. The TV lights only while it has
   something to say.
 - **Carbon lays out everything around the room, and the art pixel
   everything inside it.** The frame, the foot bar, the drawers, type,

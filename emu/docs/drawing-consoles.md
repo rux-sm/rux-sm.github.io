@@ -56,6 +56,14 @@ edge nearest you. One that folds stands its top screen up behind the half
 lying flat. A Game Boy Advance is drawn at the Game Boy's scale, 28 wide
 and 14 high, on the bottom rows of its 24-high canvas.
 
+## The TV
+
+The room's TV is `tv.png` in the same folder, a CRT 80 by 60, drawn the
+same way: its top over its front, the feet cut, the outline in black. Its
+glass is the dark rectangle 54 wide and 36 high, 6 across and 16 down; the
+room writes on it there, so a redrawn TV keeps its glass in that place, or
+`.emu-tv__screen` in `app.css` moves with it.
+
 ## Steps
 
 1. Open Sprites and pick the console from the gallery, or start a new

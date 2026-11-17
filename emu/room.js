@@ -108,12 +108,17 @@
   // The places a console never placed takes, in order: in a row under the
   // TV from the middle outward, then along the room's foot, then beside the TV.
   const SLOTS = [0.62, 0.95].flatMap(y => [0.5, 0.3, 0.7, 0.1, 0.9].map(x => [x, y])).concat([[0.05, 0.1], [0.95, 0.1], [0.05, 0.35], [0.95, 0.35]]);
+  // Where the TV stands, kept under `places` as `tv`: at the top in the middle until it is moved.
+  const tvAt = () => spots().tv ?? [0.5, 0];
   // Where each of these consoles stands: its kept spot, else the first place
-  // no other console is near, else one from its name, so it is the same each time.
+  // no other console and not the TV is near, else one from its name, so it
+  // is the same each time.
   function spotsOf(list) {
     const kept = spots();
     const out = new Map(list.filter(sys => kept[sys]).map(sys => [sys, kept[sys]]));
-    const near = ([x, y]) => [...out.values()].some(([a, b]) => Math.abs(a - x) < 0.15 && Math.abs(b - y) < 0.3);
+    const tv = tvAt();
+    const near = ([x, y]) => (Math.abs(tv[0] - x) < 0.25 && Math.abs(tv[1] - y) < 0.4)
+      || [...out.values()].some(([a, b]) => Math.abs(a - x) < 0.15 && Math.abs(b - y) < 0.3);
     for (const sys of list) {
       if (out.has(sys)) continue;
       const n = [...sys].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
@@ -263,9 +268,9 @@
     li.append(body, under);
     return li;
   }
-  // The art pixel: three CSS pixels where the TV, 112 art pixels wide, takes
+  // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
-  const pxOf = () => (112 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
+  const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
   // The TV at rest: this Mac's name and how much room is free, and Status
   // linked when no games are found.
   function renderTv() {
@@ -285,6 +290,9 @@
     if (!mac) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderTv();
+    const [tx, ty] = tvAt();
+    $('emu-tv').style.setProperty('--emu-x', tx);
+    $('emu-tv').style.setProperty('--emu-y', ty);
     stand = consolesNow();
     // Each console where it stands, the ones nearer the foot drawn over those behind.
     const at = spotsOf([...stand.keys()]);
@@ -681,10 +689,10 @@
   window.addEventListener('pagehide', () => { for (const { timer, go } of leaving.values()) { clearTimeout(timer); go(); } });
   // A CONSOLE'S MOVES. The room is kept whole each time one moves; a Mac
   // Status has not saved yet has no row to keep it on, and is told so.
-  // Every console keeps the spot it is drawn at, so moving one moves no other.
+  // Every console and the TV keep the spot they are drawn at, so moving one moves no other.
   async function keep(wish, at = spots()) {
-    const drawn = Object.fromEntries(spotsOf([...stand.keys()]));
-    room = { ...wish, places: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([sys]) => sys in wish)) };
+    const drawn = { ...Object.fromEntries(spotsOf([...stand.keys()])), tv: tvAt() };
+    room = { ...wish, places: Object.fromEntries(Object.entries({ ...drawn, ...at }).filter(([sys]) => sys in wish || sys === 'tv')) };
     render();
     if (!macName) return;
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }
@@ -697,7 +705,7 @@
     const share = (at, from, size, own) => Math.round(Math.min(1, Math.max(0, (at - from - own / 2) / Math.max(1, size - own))) * 1000) / 1000;
     return [share(point.x, f.left, f.width, w), share(point.y, f.top, f.height, h)];
   }
-  // A console in the room moved to a spot.
+  // A console in the room, or the TV as `tv`, moved to a spot.
   function moveTo(system, spot) {
     sfx.drop();
     return keep(wishes(), { ...spots(), [system]: spot });
@@ -805,13 +813,16 @@
     }
     return null;
   }
-  // A console held keeps the size it has in the room, so where it lands is where it is drawn.
+  // A console or the TV held keeps the size it has in the room, so where it lands is where it is drawn.
   const sizeOf = d => {
-    const r = d.from === 'room' ? d.src.closest('.emu-unit').getBoundingClientRect() : null;
+    const r = d.from === 'room' ? d.src.closest('.emu-unit, .emu-tv').getBoundingClientRect() : null;
     const px = parseFloat($('emu-room').style.getPropertyValue('--emu-px')) || 3;
     return r ? [r.width, r.height] : [36 * px, 32 * px];
   };
-  const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point) : consoleIntent(d.system, d.from, under, point, sizeOf(d)));
+  // The TV moves anywhere in the room, with no word, as a console does.
+  const tvIntent = (under, point, size) => (under?.closest('#emu-room') ? yes(null, null, () => moveTo('tv', spotAt(point, size))) : null);
+  const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point)
+    : d.tv ? tvIntent(under, point, sizeOf(d)) : consoleIntent(d.system, d.from, under, point, sizeOf(d)));
 
   // THE DRAG, with the pointer, where the helper answers. A press that does
   // not move is the cover's or the console's own click.
@@ -831,9 +842,11 @@
   // A cover's picture is not dragged away as a file.
   document.addEventListener('dragstart', e => { if (e.target.closest?.('.emu-cover')) e.preventDefault(); });
   document.addEventListener('pointerdown', e => {
-    const src = e.target.closest?.('.emu-cover[data-game], [data-console]');
+    const src = e.target.closest?.('.emu-cover[data-game], [data-console], .emu-tv');
     if (!src || e.button > 0 || !helper) return;
     const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
+    // The TV is carried by its case; its link and Undo stay presses.
+    if (src.id === 'emu-tv') { if (!e.target.closest('a, button')) drag = { ...at, tv: true, from: 'room' }; return; }
     if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : 'collection' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
@@ -847,9 +860,13 @@
       sfx.pick();
       const r = drag.src.getBoundingClientRect();
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
+      // The copy is drawn where the ghost is, at the room's art pixel, with
+      // no ids or live region of its own.
       const ghost = el('div', 'emu-ghost');
+      ghost.style.setProperty('--emu-px', $('emu-room').style.getPropertyValue('--emu-px'));
       const copy = drag.src.cloneNode(true);
-      copy.style.inlineSize = `${r.width}px`;
+      for (const n of [copy, ...copy.querySelectorAll('[id], [role]')]) { n.removeAttribute('id'); n.removeAttribute('role'); }
+      Object.assign(copy.style, { position: 'static', transform: 'none', inlineSize: `${r.width}px`, blockSize: `${r.height}px` });
       ghost.append(copy);
       document.body.append(ghost);
       drag.ghost = ghost;

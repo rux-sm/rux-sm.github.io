@@ -7,9 +7,8 @@ type: plan
 ## Goal
 
 The Library is a room that fills the page: Your Mac, holding the consoles
-this Mac has set up. It is the page itself with a single TV near the top,
-and the rest of it is open space where the consoles stand wherever they are
-left. Two buttons at the foot open a drawer on each side: Server on the left
+this Mac has set up. It is the page itself with a single CRT TV, and the
+TV and the consoles stand wherever they are left. Two buttons at the foot open a drawer on each side: Server on the left
 is every console and game the server holds, borrowed by dragging it into the
 room; My Stuff on the right is what is yours, the games on this Mac and the
 saves the account keeps. Getting a game, setting up its console and playing
@@ -22,8 +21,9 @@ Emu is unchanged.
 - **The room holds only the TV and the consoles.** It is the page's own
   background, with no fill, wall, floor, furniture, shelves or heading, so
   there is nothing to read but what this Mac has.
-- **The TV is a single small screen near the top of the room, and the room's
-  one communication surface,** not a pretend game screen or a notification
+- **The TV is a CRT in pixel art, `emu/brand/consoles/tv.png`, which starts
+  at the top in the middle and is dragged anywhere like a console, and it is
+  the room's one communication surface,** its words on its glass, not a pretend game screen or a notification
   log. At rest it shows only this Mac's name and its free space, and says so
   when the helper or the server does not answer, opening Status. While a room
   action is underway it names that one action: setting up an emulator,
@@ -35,10 +35,10 @@ Emu is unchanged.
   announces the same change to assistive technology. Errors that say where to
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
-- **The whole room around the TV is for the consoles in the room,** each
+- **The whole room is for the TV and the consoles in the room,** each
   standing where it was last left and dragged to move it, and moving one
   moves no other. One brought in stands where it was let go, and one brought
-  without a drag in the first clear spot. Each console's spot is kept with this Mac's
+  without a drag in the first clear spot clear of the TV. Each one's spot is kept with this Mac's
   room, in the `room` column of its `emu_macs` row. An empty room says
   faintly "Drag a console here from Server."
 - **Two solid buttons at the foot of the page, Server and My Stuff, each open
@@ -248,7 +248,7 @@ None open.
       light.
 - [ ] List a console's controls in Saves, one for each controller, once
       `docs/plans/emu-emulator-profiles.md` carries them.
-- [ ] Draw the TV, a card and a plug or power button in pixel art.
+- [ ] Draw a card and a plug or power button in pixel art.
 - [ ] Move the emulator's removal from unplugging to putting the console
       back, the held word naming the emulator that goes, and have the plug
       refuse while the console's game runs, once the helper says which does.

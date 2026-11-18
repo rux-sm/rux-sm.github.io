@@ -47,6 +47,10 @@
      for Mac has no default template and an import otherwise takes its
      plain Standard Service Invoice. */
   const TEMPLATE = 'Standard Service Invoice 1';
+  /* The trip's estimate number rides in QuickBooks' FOB field, which the
+     office's template titles Estimate #: of an invoice's header fields only
+     FOB, P.O. and Bill To take an import, the template's Contact, Phone and
+     Email being the customer's. */
 
   /* What a trip is read with: its quote lines and everything their words
      come from, and its customer's QuickBooks name and bill-to. */
@@ -130,7 +134,7 @@
     if (!total) return { held: 'it has no price' };
     const date = iifDay(on);
     const rows = [['TRNS', '', 'INVOICE', date, 'Accounts Receivable', qbName, amount(total), String(number ?? ''),
-      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t), TEMPLATE]];
+      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t), TEMPLATE, field(t.trip_ref)]];
     for (const l of lines) {
       const { item, account } = ITEMS[l.kind];
       const qty = l.qty ?? 1;
@@ -147,7 +151,7 @@
 
   const HEAD = [
     ['!TRNS', 'TRNSID', 'TRNSTYPE', 'DATE', 'ACCNT', 'NAME', 'AMOUNT', 'DOCNUM', 'MEMO', 'CLEAR', 'TOPRINT', 'PONUM',
-      'ADDR1', 'ADDR2', 'ADDR3', 'ADDR4', 'ADDR5', 'TEMPLATE'],
+      'ADDR1', 'ADDR2', 'ADDR3', 'ADDR4', 'ADDR5', 'TEMPLATE', 'FOB'],
     ['!SPL', 'SPLID', 'TRNSTYPE', 'DATE', 'ACCNT', 'NAME', 'AMOUNT', 'DOCNUM', 'MEMO', 'CLEAR', 'QNTY', 'PRICE', 'INVITEM', 'TAXABLE', 'EXTRA'],
     ['!ENDTRNS'],
   ];

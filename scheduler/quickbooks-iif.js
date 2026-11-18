@@ -21,8 +21,9 @@
    is the QuickBooks name over the address the printed quote names, its
    Ship To the trip's booking contact, its FOB the trip's buses, its template
    the office's, and its
-   description is one line, run on to more SPL lines only past the 99
-   characters the import keeps of it. An import only adds, so a
+   description the quote's in the invoice's shorter wording, run on to more
+   SPL lines only past the 99 characters the import keeps of it. An import
+   only adds, so a
    file is imported once: `markImported` saves each trip's invoice with its
    number, which keeps every export after it from taking the trip again.
    ========================================================================== */

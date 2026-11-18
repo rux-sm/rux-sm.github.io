@@ -24,7 +24,7 @@ backup, and marked as soon as it is in.
 ## Each week
 
 1. Save QuickBooks' Transaction Detail report today and choose it on the
-   QuickBooks page. Export waits for it.
+   QuickBooks page. Export week waits for it.
 2. Save the matches it lists under Invoices to pick. A trip QuickBooks has an
    invoice for, not saved on the trip, is held back until it is; Skip an
    invoice only when it is none of the trips listed, which lets them go.
@@ -52,8 +52,11 @@ backup, and marked as soon as it is in.
 10. Switch QuickBooks back to multi-user mode.
 
 A customer who wants an invoice before the weekly run gets one from its row's
-Export under Invoices to import, then steps 6 to 10. The trip's bar menu on the
-board, Export invoice…, opens the page at that row.
+Export under Invoices to import, then steps 6 to 10. It needs no report: type
+QuickBooks' next number from Customers, Create Invoices in Next invoice
+number, which this browser keeps and moves on at each Mark imported, and make
+sure QuickBooks has no invoice for the trip already. The trip's bar menu on
+the board, Export invoice…, opens the page at that row.
 
 ## The report
 

@@ -7,12 +7,13 @@
    EXPORT lists the week's confirmed trips with no invoice, the week
    starting on the board's own first day and opening on this one, each
    written or held back with why by quickbooks-iif.js, its number opening
-   it on the board. It waits for the report, because only the report knows
-   which trips QuickBooks has invoiced already, which it holds back until
-   that match is saved, and QuickBooks' last invoice number, which fills in
-   the next one the file is numbered from. Export week saves the IIF file,
-   a row's Export saves that trip's alone, the board's Export invoice opening
-   the page at that row, and Mark imported, once
+   it on the board. Export week waits for the report, because only the
+   report knows which trips QuickBooks has invoiced already, which it holds
+   back until that match is saved; a row's Export saves that trip's file
+   alone with no report, numbered from the next invoice number the office
+   types, which this browser keeps and the report fills in from QuickBooks'
+   last. The board's Export invoice opens the page at that row, and Mark
+   imported, once
    QuickBooks has taken the file, saves each trip's invoice with its number
    so no export takes it again.
 
@@ -40,6 +41,7 @@
   const WEEK = window.SchedulerWeek;
 
   const SKIPPED_KEY = 'scheduler-quickbooks-skipped';
+  const NEXT_KEY = 'scheduler-quickbooks-next';
   const PAST_SHOWN = 5;
   const HISTORY_META = { source: 'QuickBooks match' };
 
@@ -378,14 +380,21 @@
     const numbered = (matched?.Invoice || []).filter(x => /^\d+$/.test(x.num));
     return numbered.reduce((a, x) => (!a || Number(x.num) > Number(a.num) ? x : a), null);
   }
-  // The next number, filled in from the report's last, which the office checks against QuickBooks.
+  /* The next number, as the office typed it or this browser kept it from
+     the last file marked imported, and raised to the report's last invoice
+     after it when the report is chosen. The office checks it against
+     QuickBooks either way. */
+  const nextNumber = () => (/^\d+$/.test(nextInput.value.trim()) ? Number(nextInput.value.trim()) : null);
+  function keepNext() {
+    try { localStorage.setItem(NEXT_KEY, nextInput.value.trim()); } catch { /* kept for this visit only */ }
+  }
+  try { nextInput.value = localStorage.getItem(NEXT_KEY) || ''; } catch { /* nothing kept */ }
   function fillNext() {
     const last = lastInvoice();
-    nextInput.disabled = !last;
-    nextInput.value = last ? String(Number(last.num) + 1) : '';
+    if (last && Number(last.num) + 1 > (nextNumber() ?? 0)) nextInput.value = String(Number(last.num) + 1);
+    keepNext();
   }
-  const nextNumber = () => (/^\d+$/.test(nextInput.value.trim()) ? Number(nextInput.value.trim()) : null);
-  nextInput.addEventListener('input', () => { saved = null; writeRun(); });
+  nextInput.addEventListener('input', () => { saved = null; keepNext(); writeRun(); });
 
   /* The trips the report's invoices fit and no save has put the invoice on
      yet, each with that invoice's number: QuickBooks has billed them. An
@@ -397,7 +406,7 @@
     }
     return out;
   }
-  const options = () => ({ on: isoDay(new Date()), first: matched ? nextNumber() : null, billed: billed() });
+  const options = () => ({ on: isoDay(new Date()), first: nextNumber(), billed: billed() });
 
   const SKIP_WORDS = { invoiced: 'Already invoiced', 'not confirmed': 'Not confirmed' };
   // A file saved: the week's, or one trip's from its row, numbered from the next number.
@@ -446,14 +455,14 @@
     const last = lastInvoice();
     let text = `${days(from, to)}: ${run.written.length} to import`
       + (run.held.length ? `, ${run.held.length} held back until what holds them is fixed.` : '.');
-    if (!matched) text += " Choose QuickBooks' report above to export them.";
-    else if (!run.text) text += ' Fill in the next invoice number to export them.';
+    if (!run.text) text += ' Type the next invoice number to export them.';
+    else if (!matched) text += " A row's Export saves that trip alone. Export week waits for QuickBooks' report above, which holds back what QuickBooks has invoiced already.";
     else if (last) text += ` QuickBooks' last invoice in the report is ${last.num}, of ${day(last.date)}.`;
     const invoices = n => `${n} invoice${n === 1 ? '' : 's'}`;
     if (saved && !marked) text = `Saved ${saved.name} with ${invoices(saved.written.length)}. Import it into QuickBooks, then Mark imported.`;
     if (marked) text = `Marked ${invoices(saved.written.length)} imported. Each trip has its invoice number now, so no export takes it again.`;
     $('scheduler-quickbooks-export-text').textContent = text;
-    $('scheduler-quickbooks-export-btn').disabled = !run.text || !run.written.length;
+    $('scheduler-quickbooks-export-btn').disabled = !matched || !run.text || !run.written.length;
     $('scheduler-quickbooks-mark').disabled = !saved || marked;
     $('scheduler-quickbooks-export').hidden = false;
     const focused = $('scheduler-quickbooks-export-rows').querySelector('.rux--data-table--selected');
@@ -492,6 +501,7 @@
       pair.result('success', `Marked ${saved.written.length === 1 ? 'the trip' : `${saved.written.length} trips`} imported into QuickBooks.`);
       // The numbers the file used are QuickBooks' now, so the next is after them.
       nextInput.value = String(Math.max(...saved.written.map(w => w.number)) + 1);
+      keepNext();
       const kept = saved;
       await drawExport();
       saved = kept;

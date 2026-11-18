@@ -271,17 +271,18 @@
 
         <!-- Export: the week's confirmed trips with no invoice, each to be
              written or held back with why, and the file's two steps. The
-             first invoice's number, which the report fills in from
+             first invoice's number, typed or filled in by the report from
              QuickBooks' last, numbers the file, since an import leaves Num
-             empty. Nothing is exported until the report is chosen. -->
+             empty. Export week waits for the report; a row's Export does
+             not. -->
         <div class="scheduler-pair-grid">
           <div class="rux--form-item">
             <div class="rux--number rux--number--nosteppers">
               <label class="rux--label" for="scheduler-quickbooks-next">Next invoice number</label>
               <div class="rux--number__input-wrapper">
-                <input id="scheduler-quickbooks-next" type="number" min="1" step="1" disabled aria-describedby="scheduler-quickbooks-next-help">
+                <input id="scheduler-quickbooks-next" type="number" min="1" step="1" aria-describedby="scheduler-quickbooks-next-help">
               </div>
-              <div class="rux--form__helper-text" id="scheduler-quickbooks-next-help">The report fills it in from QuickBooks' last invoice. Check it against QuickBooks before you export.</div>
+              <div class="rux--form__helper-text" id="scheduler-quickbooks-next-help">QuickBooks' next number, from Customers, Create Invoices. The report fills it in from its last invoice. Check it before you export.</div>
             </div>
           </div>
         </div>

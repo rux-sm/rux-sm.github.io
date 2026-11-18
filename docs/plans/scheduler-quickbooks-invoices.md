@@ -38,10 +38,11 @@ file the office imports, so no invoice is typed by hand and none is made twice.
   on lines a quoted IIF cell carries, and as many of them as fit on one
   invoice line, since a description-only line prints 0.00 and QuickBooks
   keeps only the first 99 characters of an imported line's description.
-- **What QuickBooks holds is matched first, before anything is exported.**
+- **What QuickBooks holds is matched first, before a week is exported.**
   Most trips that have run have no invoice recorded, so an export before matching would make duplicates of invoices
   QuickBooks already has: an IIF import only adds, and never finds or changes
-  a transaction QuickBooks holds.
+  a transaction QuickBooks holds. One trip's file needs no report, because
+  the office checks that one trip in QuickBooks and types the next number.
 - **QuickBooks' list comes in as one report,** the Transaction Detail report
   of every estimate and invoice, saved as Excel or CSV, with Trans #, Type,
   Date, Num, Name, P.O. #, Memo, Item, Account and Amount. It is read in the

@@ -18,8 +18,8 @@
    THE FILE CARRIES WHAT QUICKBOOKS WILL NOT FILL IN ITSELF. An import
    leaves Num, Bill To and every field the file does not name empty, so
    each invoice is numbered from the first number handed in, its Bill To
-   is the QuickBooks name over the address the printed quote names and the
-   trip's booking contact, its template
+   is the QuickBooks name over the address the printed quote names, its
+   Ship To the trip's booking contact, its FOB the trip's buses, its template
    the office's, and its
    description is one line, run on to more SPL lines only past the 99
    characters the import keeps of it. An import only adds, so a
@@ -47,20 +47,17 @@
      for Mac has no default template and an import otherwise takes its
      plain Standard Service Invoice. */
   const TEMPLATE = 'Standard Service Invoice 1';
-  /* The trip's estimate number rides in QuickBooks' FOB field, which the
-     office's template titles Estimate #: of an invoice's header fields only
-     FOB, P.O. and Bill To take an import, the template's Contact, Phone and
-     Email being the customer's. */
 
   /* What a trip is read with: its quote lines and everything their words
-     come from, and its customer's QuickBooks name and bill-to. */
+     come from, its customer's QuickBooks name and bill-to, its booking
+     contact and its buses. */
   const COLUMNS = 'id,trip_ref,customer,customer_id,destination,trip_type,start_date,end_date,'
     + 'return_start_date,return_end_date,bus_count,return_bus_count,pickup_address,trip_reqs,'
     + 'quoted_price,po_ref,booking_contact_name,booking_contact_phone,booking_contact_email,confirmed,cancelled_at,invoiced,invoice_number,'
     + 'customers(name,qb_name,bill_to,usual:usual_location_id(address)),trip_invoices(id,number,position),'
     + 'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount),'
     + 'trip_legs(*,trip_routes(*)),trip_stops(route_id,leg,position,type,address,depart_prev,arrive),'
-    + 'trip_assignments(route_id,leg,needs)';
+    + 'trip_assignments(route_id,leg,needs,position,buses:bus_id(number))';
 
   /* The trips that go to QuickBooks: confirmed, not cancelled and not
      invoiced. `scope` narrows the read, as `{ id }` for one trip or
@@ -102,21 +99,29 @@
   }
 
   /* Bill To: the QuickBooks name over the customer's address as the printed
-     quote has it, then the trip's booking contact, five lines at most. The
-     contact rides here because the template's Contact, Phone and Email are
-     the customer's own in QuickBooks, one for every invoice, where a Bill To
-     is the invoice's. With room for one line only, the contact is one. */
-  function billTo(qbName, t) {
-    const lines = window.SchedulerSavedQuote.billTo(t.customers).map(field).filter(Boolean);
+     quote has it, five lines at most. */
+  function billTo(qbName, customer) {
+    const lines = window.SchedulerSavedQuote.billTo(customer).map(field).filter(Boolean);
     if (lines[0]?.toLowerCase() === qbName.toLowerCase()) lines.shift();
-    const address = lines.slice(0, 4);
-    const name = field(t.booking_contact_name), phone = field(t.booking_contact_phone), email = field(t.booking_contact_email);
-    const attn = [name, phone].filter(Boolean).join(', ');
-    const contact = [attn && `Attn: ${attn}`, email].filter(Boolean);
-    const room = 4 - address.length;
-    const under = contact.length <= room ? contact
-      : room === 1 ? [`Attn: ${[name, phone, email].filter(Boolean).join(', ')}`] : [];
-    return [qbName, ...address, ...under, '', '', '', ''].slice(0, 5);
+    return [qbName, ...lines, '', '', '', ''].slice(0, 5);
+  }
+
+  /* The trip's booking contact, its name, phone and email a line each, in
+     QuickBooks' Ship To, which the office's template titles Contact: the
+     template's own Contact, Phone and Email are the customer's and take no
+     import, and a Ship To is the invoice's. */
+  const contact = t => [t.booking_contact_name, t.booking_contact_phone, t.booking_contact_email]
+    .map(field).filter(Boolean).concat('', '', '', '', '').slice(0, 5);
+
+  /* The trip's buses by number, in QuickBooks' FOB field, which the office's
+     template titles Bus #: 13 characters, so a long list drops its spaces. */
+  const FOB_MAX = 13;
+  function busNumbers(t) {
+    const numbers = [...new Set((t.trip_assignments || [])
+      .slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+      .map(a => field(a.buses?.number)).filter(Boolean))];
+    const spaced = numbers.join(', ');
+    return spaced.length <= FOB_MAX ? spaced : numbers.join(',');
   }
 
   /* One trip as invoice `number`, or why it is held back. A line's quantity
@@ -134,7 +139,7 @@
     if (!total) return { held: 'it has no price' };
     const date = iifDay(on);
     const rows = [['TRNS', '', 'INVOICE', date, 'Accounts Receivable', qbName, amount(total), String(number ?? ''),
-      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t), TEMPLATE, field(t.trip_ref)]];
+      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t.customers), TEMPLATE, busNumbers(t), ...contact(t)]];
     for (const l of lines) {
       const { item, account } = ITEMS[l.kind];
       const qty = l.qty ?? 1;
@@ -151,7 +156,8 @@
 
   const HEAD = [
     ['!TRNS', 'TRNSID', 'TRNSTYPE', 'DATE', 'ACCNT', 'NAME', 'AMOUNT', 'DOCNUM', 'MEMO', 'CLEAR', 'TOPRINT', 'PONUM',
-      'ADDR1', 'ADDR2', 'ADDR3', 'ADDR4', 'ADDR5', 'TEMPLATE', 'FOB'],
+      'ADDR1', 'ADDR2', 'ADDR3', 'ADDR4', 'ADDR5', 'TEMPLATE', 'FOB',
+      'SADDR1', 'SADDR2', 'SADDR3', 'SADDR4', 'SADDR5'],
     ['!SPL', 'SPLID', 'TRNSTYPE', 'DATE', 'ACCNT', 'NAME', 'AMOUNT', 'DOCNUM', 'MEMO', 'CLEAR', 'QNTY', 'PRICE', 'INVITEM', 'TAXABLE', 'EXTRA'],
     ['!ENDTRNS'],
   ];

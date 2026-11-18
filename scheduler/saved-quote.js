@@ -57,8 +57,9 @@
   const pickupOf = trip => stopsOfKey(trip, firstLegOf(trip)).find(s => s.type === 'pickup')?.address
     || trip.pickup_address || '';
 
-  // The whole trip's description, in the wording the Billing tab copies.
-  function description(trip) {
+  /* The whole trip's description, in the wording the Billing tab copies, or
+     with `invoice` in the shorter wording a QuickBooks invoice line takes. */
+  function description(trip, invoice = false) {
     const t = times(trip);
     const first = firstLegOf(trip);
     return TEXT.description({
@@ -71,6 +72,7 @@
       to: lastDay(trip),
       leave: t.leave,
       back: t.back,
+      invoice,
     });
   }
 
@@ -81,7 +83,7 @@
      and destination, and quote-text.js names the leg and runs the way back
      from the destination, so the two lines read as one journey there and
      back. */
-  function legDescription(trip, leg) {
+  function legDescription(trip, leg, invoice = false) {
     const out = SHAPE.wordOfKey(trip, leg);
     const shaped = legOfKey(trip, leg);
     const stops = stopsOfKey(trip, leg ?? out);
@@ -95,6 +97,7 @@
       to: shaped ? shaped.end : out === 'return' ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
       leave: stops.find(s => s.type === 'stop')?.depart_prev || null,
       leg: out,
+      invoice,
     });
   }
 
@@ -103,17 +106,23 @@
      figures as numbers or null. A rental line left without words takes the
      trip's own, a leg's on a drop-off and pickup trip. A trip with no lines
      is its quoted price as the rental, and a drop-off and pickup is two
-     rentals, one per leg, the price shared between them to the cent. */
-  function lines(trip) {
+     rentals, one per leg, the price shared between them to the cent.
+
+     With `invoice`, a rental line takes the invoice's shorter wording where
+     its words are the trip's own, left empty or copied unchanged; words the
+     office typed are kept. */
+  function lines(trip, { invoice = false } = {}) {
     const split = trip.trip_type === 'dropoff_pickup';
+    const own = (leg, short) => (split ? legDescription(trip, leg, short) : description(trip, short));
     const saved = (trip.trip_quote_lines || []).slice()
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     if (saved.length) {
       return saved.map(l => ({
         kind: l.kind || 'other',
         item: l.item || '',
-        desc: l.description
-          || (l.kind === 'rental' ? (split ? legDescription(trip, l.leg) : description(trip)) : ''),
+        desc: l.kind !== 'rental' ? l.description || ''
+          : !l.description || (invoice && l.description.trim() === own(l.leg, false)) ? own(l.leg, invoice)
+            : l.description,
         qty: number(l.quantity),
         cost: number(l.cost),
         total: number(l.amount),
@@ -132,7 +141,7 @@
       return {
         kind: 'rental',
         item: 'Bus Rental',
-        desc: split ? legDescription(trip, leg) : description(trip),
+        desc: own(leg, invoice),
         qty: buses ? n : null,
         cost: priced ? round2(legTotal / n) : null,
         total: legTotal,

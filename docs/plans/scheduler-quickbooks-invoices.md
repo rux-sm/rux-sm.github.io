@@ -33,10 +33,11 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **Export writes a Bus Rental line from the quoted price where a trip has no
   quote lines,** one per leg on a split trip, as the printed quote does,
   because only 5 of the 312 trips that have run with no invoice have lines.
-  Its description is the quote's lines joined into one, which the printed
-  invoice wraps, since an IIF field holds no line break, a description-only
-  line prints 0.00, and QuickBooks keeps only the first 99 characters of an
-  imported line's description.
+  Its description is the quote's in the invoice's shorter wording, "(52
+  pass) round trip", the places, "Nov 20, 2026", "DEP 1:00 PM - ARR 1:00 AM",
+  on lines a quoted IIF cell carries, and as many of them as fit on one
+  invoice line, since a description-only line prints 0.00 and QuickBooks
+  keeps only the first 99 characters of an imported line's description.
 - **What QuickBooks holds is matched first, before anything is exported.**
   Most trips that have run have no invoice recorded, so an export before matching would make duplicates of invoices
   QuickBooks already has: an IIF import only adds, and never finds or changes

@@ -5,7 +5,8 @@
    and owned by neither: the trip editor's Billing tab copies this block into
    a QuickBooks estimate, and the customer quote prints it on paper. One
    wording, two destinations, so a pasted estimate and a printed quote can
-   never disagree.
+   never disagree. The QuickBooks invoice export asks for the same facts in
+   its shorter form.
 
    IT TAKES A TRIP, NOT A PAGE. The board reads the editor's controls, so a
    quote can be copied while it is still being written; the forms page reads
@@ -46,12 +47,13 @@
   }
 
   /* A range as the office writes one: "December 11-13, 2026", the month named
-     once inside a month and twice across two, and a single day left alone. */
-  function dates(from, to) {
+     once inside a month and twice across two, and a single day left alone.
+     `short` names the month as an invoice does, "Dec 11-13, 2026". */
+  function dates(from, to, short = false) {
     if (!from) return '';
     const a = parseDay(from);
     const b = to ? parseDay(to) : a;
-    const month = d => d.toLocaleDateString('en-US', { month: 'long' });
+    const month = d => d.toLocaleDateString('en-US', { month: short ? 'short' : 'long' });
     if (a.getTime() === b.getTime()) return `${month(a)} ${a.getDate()}, ${a.getFullYear()}`;
     if (a.getFullYear() !== b.getFullYear()) {
       return `${month(a)} ${a.getDate()}, ${a.getFullYear()} to ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
@@ -74,8 +76,8 @@
      line's Quantity carries it. A quote names the seats the customer asked
      for, never the assigned bus's: 52, and 56 only where a vehicle of the
      line carries the 56 passengers need on the Buses tab. */
-  function vehicle(pax56) {
-    return `(${pax56 ? 56 : 52} passengers)`;
+  function vehicle(pax56, short = false) {
+    return `(${pax56 ? 56 : 52} ${short ? 'pass' : 'passengers'})`;
   }
 
   /* A one-day trip that is back at an earlier hour than it left is back the
@@ -97,16 +99,33 @@
      destination, and the way back is the pickup, from the destination to
      where the group was picked up, so the two lines tell the legs apart by
      more than their dates. Each says only when it departs, because to the
-     customer each leg is a departure. */
+     customer each leg is a departure.
+
+     AN INVOICE LINE (`invoice`) SAYS THE SAME IN FEWER WORDS, because
+     QuickBooks keeps only 99 characters of an imported line's description:
+     "(52 pass) round trip", the places, "Nov 20, 2026", and the times on one
+     line, "DEP 1:00 PM - ARR 1:00 AM", with no day after a time past
+     midnight, which the quote already named. */
   function description(trip) {
     const leg = !trip.leg ? null : trip.leg === 'return' ? 'return' : 'outbound';
     const from = trip.from || null;
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
     const [start, end] = leg === 'return' ? [drop, pickup] : [pickup, drop];
+    const route = [start ? `from ${start}` : null, end ? `to ${end}` : null].filter(Boolean).join(' ');
+    const kind = (leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip';
+    if (trip.invoice) {
+      return [
+        `${vehicle(trip.pax56, true)} ${kind}`,
+        route,
+        from ? dates(from, trip.to || from, true) : null,
+        [`DEP ${clock(trip.leave) || 'TBD'}`, leg ? null : `ARR ${clock(trip.back) || 'TBD'}`]
+          .filter(Boolean).join(' - '),
+      ].filter(Boolean).join('\n');
+    }
     return [
-      `${vehicle(trip.pax56)} ${(leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip'}`,
-      [start ? `from ${start}` : null, end ? `to ${end}` : null].filter(Boolean).join(' '),
+      `${vehicle(trip.pax56)} ${kind}`,
+      route,
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,
       leg ? null : `arriving at ${clock(trip.back) || 'TBD'}${backDay(trip) ? ` on ${backDay(trip)}` : ''}`,

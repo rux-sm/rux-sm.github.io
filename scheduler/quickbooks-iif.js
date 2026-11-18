@@ -82,21 +82,35 @@
 
   // The longest description QuickBooks keeps of an imported line.
   const MEMO_MAX = 99;
-  /* A description as the lines it runs to: its own lines joined into one,
-     which the printed invoice wraps in its column, and cut by words only
-     where it runs past what the import keeps, so a quote line is one
-     invoice line unless its words will not fit. */
+  /* A description as the invoice lines it runs to. Each keeps the quote's
+     own line breaks, and holds as many of its lines as fit in what the
+     import keeps; a line too long alone is cut by words. So a quote line is
+     one invoice line unless its words will not fit, and the rest goes on a
+     line with no item. */
   function memoLines(desc) {
+    const parts = String(desc ?? '').split(/\r?\n/).map(field).filter(Boolean).flatMap(line => {
+      const cut = [];
+      while (line.length > MEMO_MAX) {
+        const at = line.lastIndexOf(' ', MEMO_MAX) > 0 ? line.lastIndexOf(' ', MEMO_MAX) : MEMO_MAX;
+        cut.push(line.slice(0, at).trim());
+        line = line.slice(at).trim();
+      }
+      return line ? [...cut, line] : cut;
+    });
     const out = [];
-    let line = String(desc ?? '').split(/\r?\n/).map(field).filter(Boolean).join(' ');
-    while (line.length > MEMO_MAX) {
-      const cut = line.lastIndexOf(' ', MEMO_MAX) > 0 ? line.lastIndexOf(' ', MEMO_MAX) : MEMO_MAX;
-      out.push(line.slice(0, cut).trim());
-      line = line.slice(cut).trim();
+    for (const part of parts) {
+      const last = out.length - 1;
+      if (last >= 0 && out[last].length + 1 + part.length <= MEMO_MAX) out[last] += `\n${part}`;
+      else out.push(part);
     }
-    if (line) out.push(line);
     return out.length ? out : [''];
   }
+
+  /* A cell as the file writes it. QuickBooks reads a line break inside a
+     quoted cell as one, and a quote mark inside would end the cell, so a
+     description of several lines is quoted with its quote marks made
+     apostrophes. */
+  const cell = v => (String(v).includes('\n') ? `"${String(v).replace(/"/g, "'")}"` : v);
 
   /* Bill To: the QuickBooks name over the customer's address as the printed
      quote has it, five lines at most. */
@@ -131,7 +145,7 @@
   function invoice(t, on, number) {
     const qbName = field(t.customers?.qb_name);
     if (!qbName) return { held: `${t.customers?.name || t.customer || 'Its customer'} has no QuickBooks name` };
-    const lines = window.SchedulerSavedQuote.lines(t);
+    const lines = window.SchedulerSavedQuote.lines(t, { invoice: true });
     const other = lines.find(l => !ITEMS[l.kind]);
     if (other) return { held: `its line "${other.item || 'Other'}" has no QuickBooks item` };
     if (lines.some(l => l.total == null)) return { held: 'it has no price' };
@@ -182,7 +196,7 @@
       rows.push(...inv.rows);
       written.push({ trip: t, total: inv.total, number });
     }
-    return { text: numbered ? `${rows.map(r => r.join('\t')).join('\r\n')}\r\n` : null, written, held, skipped };
+    return { text: numbered ? `${rows.map(r => r.map(cell).join('\t')).join('\r\n')}\r\n` : null, written, held, skipped };
   }
 
   /* The file's bytes in Mac Roman, the code page QuickBooks Desktop for Mac

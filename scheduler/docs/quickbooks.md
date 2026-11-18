@@ -43,7 +43,9 @@ backup, and marked as soon as it is in.
 8. Import the IIF file from QuickBooks' File menu, and look over the new
    invoices. Each names the office's template, Standard Service Invoice 1;
    one that opens on another, choose it in its Template menu before it is
-   sent.
+   sent. Its Bill To ends on the trip's booking contact, an
+   Attn line and the email, because the template's Contact, Phone and Email
+   are the customer's in QuickBooks, the same on every invoice.
 9. Back on the QuickBooks page, press Mark imported. Each trip gets its
    invoice with its number, so no export takes it again.
 10. Switch QuickBooks back to multi-user mode.

@@ -1261,6 +1261,22 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
       <div class="rux--menu-item__label">Upload itinerary</div>
     </li>
+    <!-- The trip's invoice, shown by data.js once the Billing tab or the
+         QuickBooks page records one, with the check a confirmed driver
+         wears: it opens the trip on Billing. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-invoiced" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="rux--icon-indicator--succeeded scheduler-status-icon"><use href="#i-checkmark--filled"/></svg></div>
+      <div class="rux--menu-item__label">Invoiced in QuickBooks</div>
+    </li>
+    <!-- Shown by data.js in place of the invoice, on a confirmed trip with
+         none: it opens the QuickBooks page at the trip's row, whose Export
+         writes its invoice. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-invoice" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
+      <div class="rux--menu-item__label">Export invoice…</div>
+    </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- Opens the Contacts window: everyone to call or text about this bar.
          The bell shows while a driver on the bus is to be told of a change. -->
@@ -1300,21 +1316,13 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
       <div class="rux--menu-item__label">Quote calculator</div>
     </li>
-    <!-- Whether the trip is in QuickBooks, checked by data.js: the estimate,
-         which a press marks or unmarks, or once the Billing tab records an
-         invoice, that invoice, which nothing here takes off. -->
+    <!-- Whether the trip's estimate is in QuickBooks, checked by data.js and
+         marked or unmarked by a press; hidden once the trip has an invoice,
+         which the first group names. -->
     <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="-1" id="scheduler-bar-menu-quickbooks" hidden>
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
       <div class="rux--menu-item__label">Estimate in QuickBooks</div>
-    </li>
-    <!-- Opens the QuickBooks page at the trip's row, whose Export writes its
-         invoice once today's report is chosen there; shown by data.js on a
-         confirmed trip with no invoice. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-invoice" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
-      <div class="rux--menu-item__label">Export invoice…</div>
     </li>
     <!-- Shown by data.js on a trip that needs a hotel, and hidden for the trip
          open in the editor, as Color is. Its label says which way it marks the

@@ -14637,6 +14637,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-invoiced') {
+      openOnTab(bar, 'billing');
+      return;
+    }
+
     // The trip's tracking link, to text its customer on the day.
     if (item.id === 'scheduler-bar-menu-track') {
       const trip = panelIndex.trips.get(bar.dataset.tripId);
@@ -14978,27 +14983,28 @@
     if (number) return `Invoice ${number} in QuickBooks`;
     return trip?.invoiced || trip?.trip_invoices?.length ? 'Invoiced in QuickBooks' : null;
   }
+  // The estimate's mark, on a trip with no invoice yet.
   function drawQuickBooksItem(bar) {
     const item = document.getElementById('scheduler-bar-menu-quickbooks');
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    item.hidden = !client || !trip || window.SchedulerBilling.placeholder(trip);
+    item.hidden = !client || !trip || window.SchedulerBilling.placeholder(trip) || !!qbInvoiceOf(trip);
     if (item.hidden) return;
-    const invoice = qbInvoiceOf(trip);
-    const on = !!invoice || !!prepOf(trip)?.qb_estimate;
+    const on = !!prepOf(trip)?.qb_estimate;
     item.setAttribute('aria-checked', String(on));
-    item.classList.toggle('rux--menu-item--disabled', !!invoice);
-    if (invoice) item.setAttribute('aria-disabled', 'true'); else item.removeAttribute('aria-disabled');
-    item.querySelector('.rux--menu-item__label').textContent = invoice || 'Estimate in QuickBooks';
     item.querySelector('.rux--menu-item__selection-icon')
       .replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
   }
-  /* Export invoice, on a confirmed trip with no invoice: the QuickBooks page
-     writes the invoice, since only its report knows whether QuickBooks has
-     one and the number it takes. */
+  /* The invoice beside the itinerary: its number with a check once the trip
+     has one, or else Export invoice on a confirmed trip, which the
+     QuickBooks page writes. */
   function drawInvoiceItem(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    document.getElementById('scheduler-bar-menu-invoice').hidden = !client || !trip || !trip.confirmed
-      || !!trip.cancelled_at || window.SchedulerBilling.placeholder(trip) || !!qbInvoiceOf(trip);
+    const usable = !!client && !!trip && !window.SchedulerBilling.placeholder(trip);
+    const invoice = usable ? qbInvoiceOf(trip) : null;
+    const done = document.getElementById('scheduler-bar-menu-invoiced');
+    done.hidden = !invoice;
+    if (invoice) done.querySelector('.rux--menu-item__label').textContent = invoice;
+    document.getElementById('scheduler-bar-menu-invoice').hidden = !usable || !!invoice || !trip.confirmed || !!trip.cancelled_at;
   }
   async function markEstimate(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
@@ -15897,15 +15903,20 @@
   // Opens the bar's trip on Details with the Email thread box asking, whose
   // Done fills the field for the trip's Save to write.
   function openOnThread(bar) {
-    const askOnDetails = () => {
-      const tab = document.getElementById('scheduler-tab-details');
+    openOnTab(bar, 'details', () => document.querySelector('#scheduler-panel-details .scheduler-thread-add:not([hidden])')?.click());
+  }
+
+  // A bar's trip open in the editor on one tab, then `then` run there.
+  function openOnTab(bar, name, then = () => {}) {
+    const onTab = () => {
+      const tab = document.getElementById(`scheduler-tab-${name}`);
       if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-      document.querySelector('#scheduler-panel-details .scheduler-thread-add:not([hidden])')?.click();
+      then();
     };
-    if (isEditorBar(bar)) { askOnDetails(); return; }
+    if (isEditorBar(bar)) { onTab(); return; }
     const ref = barRef(bar);
     selectBar(bar);
-    whenSafe(() => { openRef(ref); requestAnimationFrame(askOnDetails); });
+    whenSafe(() => { openRef(ref); requestAnimationFrame(onTab); });
   }
 
   // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.

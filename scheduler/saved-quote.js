@@ -4,7 +4,8 @@
    The line items a saved trip is quoted with, read from its row: the
    customer quote on the Forms page prints them, and the QuickBooks export
    writes them on the invoice, so the paper the customer signed and the
-   invoice they are billed name the same lines in the same words.
+   invoice they are billed name the same lines in the same words, under the
+   same bill-to.
 
    A trip is read with its `trip_quote_lines`, `trip_legs(*, trip_routes(*))`,
    `trip_stops` and `trip_assignments`. The words are `quote-text.js`'s and
@@ -139,5 +140,27 @@
     });
   }
 
-  window.SchedulerSavedQuote = { lines, description, legDescription, lastDay };
+  /* THE BILL-TO UNDER A CUSTOMER'S NAME, which the printed quote and the
+     QuickBooks invoice both write: its bill-to address as typed, or else its
+     usual pickup's address, the street over the city. The customer is read
+     as `customers(bill_to, usual:usual_location_id(address))`. */
+  function billTo(customer) {
+    const typed = String(customer?.bill_to || '').split('\n').map(s => s.trim()).filter(Boolean);
+    if (typed.length) return typed;
+    const parts = String(customer?.usual?.address || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (/^(united states( of america)?|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
+    if (!parts.length) return [];
+    /* The city line is the last "City, ST 12345" in it, so a suite or a
+       second street line stays with the street; an address that has none
+       splits at its first comma. */
+    const state = /^([A-Za-z]{2}\s+\d{5}(-\d{4})?|[A-Z]{2})$/;
+    let city = -1;
+    for (let i = parts.length - 1; i >= 1 && city < 0; i -= 1) {
+      if (state.test(parts[i])) city = i - 1;
+    }
+    if (city < 1) return [parts[0], parts.slice(1).join(', ')].filter(Boolean);
+    return [parts.slice(0, city).join(', '), parts.slice(city).join(', ')];
+  }
+
+  window.SchedulerSavedQuote = { lines, description, legDescription, lastDay, billTo };
 })();

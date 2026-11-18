@@ -18,7 +18,7 @@
    THE FILE CARRIES WHAT QUICKBOOKS WILL NOT FILL IN ITSELF. An import
    leaves Num, Bill To and every field the file does not name empty, so
    each invoice is numbered from the first number handed in, its Bill To
-   is the QuickBooks name over the customer's bill-to lines, its template
+   is the QuickBooks name over the address the printed quote names, its template
    the office's, and its
    description is one line, run on to more SPL lines only past the 99
    characters the import keeps of it. An import only adds, so a
@@ -52,7 +52,7 @@
   const COLUMNS = 'id,trip_ref,customer,customer_id,destination,trip_type,start_date,end_date,'
     + 'return_start_date,return_end_date,bus_count,return_bus_count,pickup_address,trip_reqs,'
     + 'quoted_price,po_ref,confirmed,cancelled_at,invoiced,invoice_number,'
-    + 'customers(name,qb_name,bill_to),trip_invoices(id,number,position),'
+    + 'customers(name,qb_name,bill_to,usual:usual_location_id(address)),trip_invoices(id,number,position),'
     + 'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount),'
     + 'trip_legs(*,trip_routes(*)),trip_stops(route_id,leg,position,type,address,depart_prev,arrive),'
     + 'trip_assignments(route_id,leg,needs)';
@@ -96,9 +96,10 @@
     return out.length ? out : [''];
   }
 
-  // Bill To: the QuickBooks name, then the customer's bill-to lines, five at most.
-  function billTo(qbName, billToText) {
-    const lines = String(billToText ?? '').split(/\r?\n/).map(field).filter(Boolean);
+  /* Bill To: the QuickBooks name over the customer's address as the printed
+     quote has it, five lines at most. */
+  function billTo(qbName, customer) {
+    const lines = window.SchedulerSavedQuote.billTo(customer).map(field).filter(Boolean);
     if (lines[0]?.toLowerCase() === qbName.toLowerCase()) lines.shift();
     return [qbName, ...lines, '', '', '', ''].slice(0, 5);
   }
@@ -118,7 +119,7 @@
     if (!total) return { held: 'it has no price' };
     const date = iifDay(on);
     const rows = [['TRNS', '', 'INVOICE', date, 'Accounts Receivable', qbName, amount(total), String(number ?? ''),
-      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t.customers?.bill_to), TEMPLATE]];
+      `Trip ${t.trip_ref}`, 'N', 'N', field(t.po_ref), ...billTo(qbName, t.customers), TEMPLATE]];
     for (const l of lines) {
       const { item, account } = ITEMS[l.kind];
       const qty = l.qty ?? 1;

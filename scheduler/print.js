@@ -1694,28 +1694,13 @@
     return rule;
   }
 
-  /* THE BILL-TO, from the trip's customer: its name, then its bill-to address
-     as typed, or else its usual pickup's address, the street over the city.
-     A trip with no customer linked has only the name it was typed with, and
-     the office writes the lines under it. */
+  /* THE BILL-TO, from the trip's customer: its name over the address
+     `saved-quote.js` reads for it. A trip with no customer linked has only
+     the name it was typed with, and the office writes the lines under it. */
   function billToLines(trip) {
     const customer = trip.customers;
     if (!customer) return [trip.customer || ''];
-    const typed = String(customer.bill_to || '').split('\n').map(s => s.trim()).filter(Boolean);
-    if (typed.length) return [customer.name, ...typed];
-    const parts = String(customer.usual?.address || '').split(',').map(s => s.trim()).filter(Boolean);
-    if (/^(united states( of america)?|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
-    if (!parts.length) return [customer.name];
-    /* The city line is the last "City, ST 12345" in it, so a suite or a
-       second street line stays with the street; an address that has none
-       splits at its first comma. */
-    const state = /^([A-Za-z]{2}\s+\d{5}(-\d{4})?|[A-Z]{2})$/;
-    let city = -1;
-    for (let i = parts.length - 1; i >= 1 && city < 0; i -= 1) {
-      if (state.test(parts[i])) city = i - 1;
-    }
-    if (city < 1) return [customer.name, parts[0], parts.slice(1).join(', ')];
-    return [customer.name, parts.slice(0, city).join(', '), parts.slice(city).join(', ')];
+    return [customer.name, ...SAVED().billTo(customer)];
   }
 
   /* THE FIRST SHEET, THE QUOTE. The field stays open, because a quote is

@@ -20,8 +20,8 @@
    each invoice is numbered from the first number handed in, its Bill To
    is the QuickBooks name over the customer's bill-to lines, its template
    the office's, and its
-   description runs one SPL line per line of the quote's, since the import
-   cuts a line's description at 99 characters. An import only adds, so a
+   description is one line, run on to more SPL lines only past the 99
+   characters the import keeps of it. An import only adds, so a
    file is imported once: `markImported` saves each trip's invoice with its
    number, which keeps every export after it from taking the trip again.
    ========================================================================== */
@@ -80,17 +80,19 @@
 
   // The longest description QuickBooks keeps of an imported line.
   const MEMO_MAX = 99;
-  // A description as the lines it runs to, each short enough to be kept whole.
+  /* A description as the lines it runs to: its own lines joined into one,
+     which the printed invoice wraps in its column, and cut by words only
+     where it runs past what the import keeps, so a quote line is one
+     invoice line unless its words will not fit. */
   function memoLines(desc) {
     const out = [];
-    for (let line of String(desc ?? '').split(/\r?\n/).map(field).filter(Boolean)) {
-      while (line.length > MEMO_MAX) {
-        const cut = line.lastIndexOf(' ', MEMO_MAX) > 0 ? line.lastIndexOf(' ', MEMO_MAX) : MEMO_MAX;
-        out.push(line.slice(0, cut).trim());
-        line = line.slice(cut).trim();
-      }
-      if (line) out.push(line);
+    let line = String(desc ?? '').split(/\r?\n/).map(field).filter(Boolean).join(' ');
+    while (line.length > MEMO_MAX) {
+      const cut = line.lastIndexOf(' ', MEMO_MAX) > 0 ? line.lastIndexOf(' ', MEMO_MAX) : MEMO_MAX;
+      out.push(line.slice(0, cut).trim());
+      line = line.slice(cut).trim();
     }
+    if (line) out.push(line);
     return out.length ? out : [''];
   }
 

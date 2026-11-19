@@ -357,19 +357,19 @@
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
   const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
-  // THE STRIP AT REST: this Mac as Carbon's icon indicators. The helper and
-  // its version, a caution opening Status where Supabase holds a newer one;
-  // the collection it found, a drive or the home server's share, or none,
-  // which is only quiet where this Mac keeps a library to play from; the
-  // room this Mac has free for games, a caution under LOW, or a caution
-  // where a current helper keeps no library; and when Update last saved, a
-  // caution after STALE days. In a narrow window only the summary shows: the
-  // worst, or Ready.
+  // THE STRIP AT REST: this Mac as Carbon's icon indicators, only what it is
+  // for. Connected while Rux Emu Helper answers, its version in its tooltip,
+  // or "Update the helper", opening Status, where Supabase holds a newer
+  // one; the room this Mac has free for games, a caution under LOW, or a
+  // failure where a current helper keeps no library; and "Needs sync",
+  // opening Status, only once Update has not saved for STALE days. In a
+  // narrow window only the summary shows: the worst, or Ready.
   const LOW = 10e9;
   const STALE = 30;
-  const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], off: ['rux--icon-indicator--not-started', '#i-circle-dash'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
-  function indicator(kind, text, href = null, cls = '') {
+  const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
+  function indicator(kind, text, href = null, cls = '', title = '') {
     const li = el('li', `rux--icon-indicator ${cls}`.trim());
+    if (title) li.title = title;
     const [status, icon] = INDICATOR[kind];
     const svg = iconOf(icon);
     svg.setAttribute('class', status);
@@ -378,15 +378,14 @@
     return li;
   }
   function renderStrip() {
-    const found = helper.collection;
     const library = Boolean(helper.library);
     const behind = newestHelper != null && Number(helper.version) < Number(newestHelper);
     const days = driveRow?.scanned_at ? (Date.now() - new Date(driveRow.scanned_at)) / 864e5 : null;
     const facts = [
-      behind ? ['warn', `Helper ${helper.version}, update to ${newestHelper}`, 'status.html'] : ['ok', `Helper ${helper.version ?? ''}`.trim()],
-      found ? ['ok', found.network ? 'Server share' : `Drive ${found.drive}`] : library ? ['off', 'No drive'] : ['bad', 'No games on this Mac', 'status.html'],
-      !library ? (behind ? null : ['warn', 'No library on this Mac', 'status.html']) : free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
-      days == null ? ['warn', 'Never updated', 'status.html'] : [days > STALE ? 'warn' : 'ok', `Updated ${R.when(driveRow.scanned_at)}`, 'status.html'],
+      behind ? ['warn', 'Update the helper', 'status.html', '', `Rux Emu Helper ${helper.version}, ${newestHelper} is out`]
+        : ['ok', 'Connected', null, '', `Rux Emu Helper ${helper.version ?? ''}`.trim()],
+      !library ? (behind ? null : ['bad', 'No library on this Mac', 'status.html']) : free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
+      days == null || days > STALE ? ['warn', 'Needs sync', 'status.html', '', days == null ? 'Update has never run' : `Last updated ${R.when(driveRow.scanned_at)}`] : null,
     ].filter(Boolean);
     const worst = facts.find(f => f[0] === 'bad') ?? facts.find(f => f[0] === 'warn');
     $('emu-strip-facts').replaceChildren(...facts.map(f => indicator(...f)),

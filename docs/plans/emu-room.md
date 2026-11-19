@@ -44,13 +44,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the other pages, Search and Sound, then Tidy up and Put everything away,
   so the head holds no menu.
 - **The strip is the room's one communication surface.** At rest it is
-  Carbon's icon indicators: the helper and its version, a caution opening
-  Status where Supabase holds a newer one; the collection it found, a drive
-  or the home server's share, quiet as "No drive" where this Mac keeps a
-  library, and a caution where it has neither; this Mac's free space, a
-  caution under 10 GB, or a caution where a current helper keeps no
-  library; and when Update last saved, opening Status, a caution after 30
-  days, read again when the page comes back. In a window under 66rem it is
+  Carbon's icon indicators, only what it is for: Connected while Rux Emu
+  Helper answers, its version in its tooltip, or "Update the helper",
+  opening Status, where Supabase holds a newer one; this Mac's free space,
+  a caution under 10 GB, or a failure where a current helper keeps no
+  library; and "Needs sync", opening Status, only once Update has not saved
+  for 30 days, read again when the page comes back. No drive is named,
+  since games come from this Mac's library or the server. In a window under 66rem it is
   one indicator, the first caution, or Ready. While a room action is
   underway it names that one action in their place: setting up an emulator,
   downloading a game, getting a game ready to play or playing a

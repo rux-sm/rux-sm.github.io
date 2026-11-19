@@ -1470,9 +1470,9 @@
      spells each out in full. */
   const QUOTE_TERMS = [
     'Quotes are based on the itinerary provided. Prices are subject to change if the itinerary is updated.',
-    'A fuel surcharge may be added to your final invoice at our discretion if fuel prices change between the quote date and the trip date.',
+    'A fuel surcharge may be added if fuel prices rise between the quote date and the trip date.',
     `A signed quote and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
-    'On overnight trips, the customer provides the driver’s hotel room. With two drivers, the room must have two separate beds (sofa beds are not acceptable).',
+    'On overnight trips, the customer provides the driver’s hotel room, with two separate beds for two drivers (no sofa beds).',
     'Cancellation fees: 20% within a month of departure, 50% within 48 hours, and 100% within 24 hours.',
     'Customers pay parking fees and tolls where they apply. Damage caused by passengers is added to the invoice.',
     'Escamilla Tour Buses may stop or delay service when acts of God, accidents, bad weather or other conditions beyond its control make it unsafe to operate.',

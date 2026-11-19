@@ -1383,8 +1383,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__named { min-inline-size: 200pt; }
 
+/* The tracking leaves its space after the last letter too, so the name is
+   drawn back by it to end on the references' edge. */
 .scheduler-customer-quote__title {
-  margin: 0;
+  margin: 0 -0.08em 0 0;
   text-align: end;
   white-space: nowrap;
   font-size: 20pt;

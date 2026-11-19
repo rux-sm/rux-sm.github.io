@@ -65,9 +65,7 @@ None open.
 
 ## Tasks
 
-- [ ] Build Rux Emu Helper 36, which no longer reads a drive, into the
-      server's `emulators/` folder with `emu/tools/build-helper.mjs`, once
-      its share is open on a Mac with the certificate.
 - [ ] Run `emu/tools/organize-roms.mjs` on the server where the scan's
       `scan-cache` volume is, as `emu/docs/home-server.md` should then say.
-- [ ] Update each Mac to the new helper and play a downloaded game on each.
+- [ ] Once the nightly scan has put Rux Emu Helper 36 in Supabase, update
+      each Mac to it from Status and play a downloaded game on each.

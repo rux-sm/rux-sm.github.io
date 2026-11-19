@@ -98,7 +98,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    A console's drawing is its PNG in brand/consoles/, shown pixel for pixel
    in its own colours, the same in every theme. A home console's is 36 by 24. */
 .emu-console { display: block; block-size: 3rem; aspect-ratio: 3 / 2; object-fit: contain; image-rendering: pixelated; }
-/* My Stuff's consoles: each its drawing over its name and count from the
+/* The drawer's consoles: each its drawing over its name and count from the
    top, so a name on two lines moves no drawing, on Carbon's fast-02 fade. */
 .emu-cabinet { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: var(--rux-spacing-03); }
 .emu-cabinet__console { appearance: none; border: 0; border-block-end: 3px solid transparent; background: var(--rux-layer); color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: center; align-content: start; gap: var(--rux-spacing-01); padding: var(--rux-spacing-04) var(--rux-spacing-02) var(--rux-spacing-03); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -107,14 +107,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cabinet__name, .emu-cabinet__count { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; }
 .emu-cabinet__count { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 
-/* A cover's marks in My Stuff: one this Mac lacks, or whose console it
+/* A cover's marks in the drawer: one this Mac lacks, or whose console it
    cannot play, is dimmed; one arriving sits under a veil that lifts from the foot. */
 .emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, a square under the header: its head, then the stage, the
-   room, with My Stuff at its foot. Its side is the page's width or the
+   room, then its foot. Its side is the page's width or the
    window's height less the header and the page's 2rem above and below,
    whichever is less, but never under 28rem; it starts at the top of the page, as every page's content does,
    and stands centred across it. Without the helper the store is the page,
@@ -184,25 +184,20 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-store__name { font-size: .875rem; line-height: 1.125rem; }
 .emu-store__action.rux--btn { margin-block-start: auto; inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: var(--rux-spacing-04); }
 
-/* MY STUFF: its button 16px in from the room's bottom-left corner, and its
-   panel a tile floating over the room's foot 8px in, raised with Carbon's
-   raised shadow, what it holds a layer up as Carbon's layering steps it. It
-   floats rather than pushing the room up, so opening it never sweeps the
-   room's things. It unfolds from the foot on Carbon's moderate-02, entering
-   and leaving on its productive curves; the clip stops a rem past the top
-   so its shadow shows. Its toolbar is its name, then its icon buttons at
-   the end; its body two rows, each one line that scrolls sideways, or the
-   saves in their place. */
-.emu-stuff-open { position: absolute; z-index: 3; inset-block-end: var(--rux-spacing-05); inset-inline-start: var(--rux-spacing-05); }
-.emu-stuff-open[hidden] { display: none; }
-.emu-mine { position: absolute; z-index: 3; inset-inline: var(--rux-spacing-03); inset-block-end: var(--rux-spacing-03); max-block-size: calc(100% - 2 * var(--rux-spacing-03)); display: flex; flex-direction: column; background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
-.emu-mine[hidden] { display: none; }
+/* THE TILE'S FOOT mirrors its head: the md size token's height over a
+   rule, in by the theme's inset, its buttons from its start. */
+.emu-tile__foot { display: flex; align-items: center; gap: var(--emu-head-gap, 0); min-block-size: var(--rux-layout-size-height-md); padding: var(--emu-head-inset, 0); border-block-start: 1px solid var(--rux-border-subtle-01); }
+.emu-tile__foot[hidden] { display: none; }
+/* THE DRAWER: a tile floating over the room's foot 8px in, raised with
+   Carbon's raised shadow, what it holds a layer up as Carbon's layering
+   steps it. It floats rather than pushing the room up, so opening it never
+   sweeps the room's things. It unfolds up from the foot on Carbon's
+   moderate-02, entering and leaving on its productive curves; the clip
+   stops a rem past the top so its shadow shows. Each of its rows is one
+   line that scrolls sideways. */
+.emu-mine { position: absolute; z-index: 3; inset-inline: var(--rux-spacing-03); inset-block-end: var(--rux-spacing-03); max-block-size: calc(100% - 2 * var(--rux-spacing-03)); overflow-y: auto; padding: var(--rux-spacing-05); background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
+.emu-mine[hidden], .emu-mine__pane[hidden] { display: none; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
-.emu-mine__head { padding: var(--emu-head-inset, 0); padding-inline-start: var(--rux-spacing-05); }
-.emu-mine__tools { display: flex; margin-inline-start: auto; }
-.emu-mine__body { flex: 1; min-block-size: 0; overflow-y: auto; padding: var(--rux-spacing-05); }
-.emu-mine__rows { display: grid; gap: var(--rux-spacing-05); }
-.emu-mine__rows[hidden], #emu-storage[hidden] { display: none; }
 .emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 .emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: 4px 4px var(--rux-spacing-03); }
 .emu-mine__row.emu-cabinet { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 6rem; justify-content: start; }
@@ -332,14 +327,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-#emu-mine.emu-lit, #emu-mine.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
-#emu-mine.emu-no { outline-color: var(--rux-support-error); }
+:is(#emu-mine, #emu-foot).emu-lit, :is(#emu-mine, #emu-foot).emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
+:is(#emu-mine, #emu-foot).emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
 .emu-unit--dim { opacity: .3; }
 .emu-unit--fit .emu-console { filter: drop-shadow(0 0 .5rem var(--rux-border-interactive)); }
 
-/* A console in My Stuff is carried up into the room; one out in the room is faint. */
+/* A console in the drawer is carried up into the room; one out in the room is faint. */
 .emu-cabinet__console--out, .emu-cabinet__console--out:hover { background: none; outline: 2px dashed var(--rux-border-subtle-01); outline-offset: -2px; cursor: default; }
 .emu-cabinet__console--out .emu-console { opacity: .25; }
 .emu-cabinet__console[data-console] { cursor: grab; }

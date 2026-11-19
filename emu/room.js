@@ -3,8 +3,8 @@
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is one tile, the room's: its head,
    then the room, Your Mac: the TV, up to three consoles and the favourite
-   games they bring out, each standing where it was left, with My Stuff's
-   button at its foot. The head's one button opens Rux's Server, the store,
+   games they bring out, each standing where it was left, then its foot, a
+   button for each drawer. The head's one button opens Rux's Server, the store,
    as Carbon's medium modal. Without the helper the store is the whole page.
 
    A console has three places. In Rux's Server it is not on this Mac; in My
@@ -47,20 +47,20 @@
    the panel closes. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
-   My Stuff is a button at the room's foot that opens a panel up over it,
-   closed each time the page loads. Its toolbar is its name, then Saves and
-   Close. Its body is two rows that scroll sideways: every console set up on
-   this Mac, one out in the room faint, any other dragged or pressed to
-   bring it out; then this Mac's games, favourites first, one still arriving
-   under a veil that lifts as it comes. Saves shows in their place the
-   picked console's saves as cards: each game's, the one in it and those
-   out, with Take out, Put in and a name to change, then the console's own.
+   The tile's foot has a button for each drawer, which opens up over the
+   room's foot, one at a time, all closed each time the page loads.
+   Consoles is a row that scrolls sideways of every console set up on this
+   Mac, one out in the room faint, any other dragged or pressed to bring it
+   out. Games is a row of this Mac's games, favourites first, one still
+   arriving under a veil that lifts as it comes. Saves is the picked
+   console's saves as cards: each game's, the one in it and those out, with
+   Take out, Put in and a name to change, then the console's own.
 
    A thing in the room is itself carried with the pointer, and anything
-   from My Stuff is held as a copy. A word follows it and says what letting
+   from the drawer is held as a copy. A word follows it and says what letting
    go will do, and a place it would land lights where that place is one
    thing, never the room as a whole. A console onto the room comes out where
-   it is let go, a fourth refused, and onto My Stuff it is put away. A game
+   it is let go, a fourth refused, and onto the drawer it is put away. A game
    onto its console or the TV plays it. A console it does not fit says so
    in red and nothing happens. A game is taken off this Mac from its side
    panel.
@@ -413,7 +413,7 @@
     $('emu-room').hidden = !mac;
     $('emu-head').hidden = !mac;
     $('emu-mine').hidden = !mac;
-    $('emu-mine-open').hidden = !mac || stuffOpen;
+    $('emu-foot').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
     // The store is the modal's where the room is, and the page where it is not.
     const home = mac ? $('emu-store-body') : $('emu-wall');
@@ -818,33 +818,31 @@
   // console it was left on.
   const openStore = () => window.Rux.modal.open('emu-store', $('emu-store-open'));
   $('emu-store-open').addEventListener('click', openStore);
-  // MY STUFF opens from its button at the room's foot, taking the focus on
-  // its name, and closes by its Close or Escape, its button taking the focus
-  // back. It starts closed each time the page loads, so the room shows whole.
-  // Saves, a toggle in its toolbar, shows the picked console's saves in
-  // place of the rows.
-  let stuffOpen = false;
-  function openStuff(to) {
-    stuffOpen = to;
-    $('emu-mine').classList.toggle('emu-mine--open', stuffOpen);
-    $('emu-mine-open').setAttribute('aria-expanded', String(stuffOpen));
-    $('emu-mine-open').hidden = !helper || stuffOpen;
-    if (stuffOpen) $('emu-mine-h').focus({ preventScroll: true });
-    else if (helper) $('emu-mine-open').focus({ preventScroll: true });
+  // THE DRAWER opens up from the foot's buttons, each its own: Consoles,
+  // Games or Saves. Pressing the open one, or Escape, closes it, and its
+  // button takes the focus back; pressing another turns the drawer to that
+  // one. Its button's chevron turns down while its drawer is open. It starts
+  // closed each time the page loads, so the room shows whole.
+  const drawerButtons = [...$('emu-foot').querySelectorAll('[data-drawer]')];
+  let drawer = null;
+  function openDrawer(pane) {
+    drawer = pane;
+    $('emu-mine').classList.toggle('emu-mine--open', Boolean(pane));
+    for (const b of drawerButtons) {
+      const on = b.dataset.drawer === pane;
+      b.setAttribute('aria-expanded', String(on));
+      b.querySelector('use').setAttribute('href', on ? '#i-chevron--down' : '#i-chevron--up');
+      $(b.dataset.drawer).hidden = !on;
+      if (on) $('emu-mine').setAttribute('aria-label', b.textContent.trim());
+    }
+    if (pane === 'emu-storage') renderStorage();
   }
-  $('emu-mine-open').addEventListener('click', () => openStuff(true));
-  $('emu-mine-close').addEventListener('click', () => openStuff(false));
+  for (const b of drawerButtons) b.addEventListener('click', () => openDrawer(drawer === b.dataset.drawer ? null : b.dataset.drawer));
   document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape' || !stuffOpen || panelOpen() || document.querySelector('.rux--modal.is-visible')) return;
-    openStuff(false);
-  });
-  $('emu-mine-saves').addEventListener('click', () => {
-    const on = $('emu-mine-saves').getAttribute('aria-pressed') !== 'true';
-    $('emu-mine-saves').setAttribute('aria-pressed', String(on));
-    $('emu-mine-saves').classList.toggle('rux--btn--selected', on);
-    $('emu-mine-rows').hidden = on;
-    $('emu-storage').hidden = !on;
-    if (on) renderStorage();
+    if (e.key !== 'Escape' || !drawer || panelOpen() || document.querySelector('.rux--modal.is-visible')) return;
+    const b = drawerButtons.find(x => x.dataset.drawer === drawer);
+    openDrawer(null);
+    b.focus({ preventScroll: true });
   });
 
   // A console pressed, in the room or the collection, is the one whose games show.
@@ -977,7 +975,7 @@
     render();
   }
   // DOWNLOAD FROM THE STORE. A console comes into the room unlit while fewer
-  // than three are out, else it waits in My Stuff, and its emulator is set up
+  // than three are out, else it waits in Consoles, and its emulator is set up
   // where it stands. A game whose console is not set up sets that up first.
   async function getConsole(system) {
     if (plays(system) || settingUp.has(system)) return;
@@ -1129,7 +1127,7 @@
     keep({});
     say('Everything is put away.', () => keep(...before), UNDO);
   }
-  // Put away into My Stuff: out of the room, its emulator still on this Mac.
+  // Put away into Consoles: out of the room, its emulator still on this Mac.
   function putAway(system) {
     if (stand.get(system) !== 'on') { refuse(system, BUSY[stand.get(system)]?.(system) ?? 'Set me up first.'); return; }
     const before = [wishes(), { ...drawn }];
@@ -1185,7 +1183,7 @@
         part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, null, 600000));
       const also = Object.keys(R.SYSTEMS).filter(sys => sys !== system && emulatorOf(sys) === emulator && !stand.has(sys) && gamesOf(sys).length);
       sfx.done();
-      say(also.length ? `${emulator} is set up. ${also.map(R.systemName).join(' and ')} ${also.length > 1 ? 'are' : 'is'} in My Stuff too.` : `${emulator} is set up.`);
+      say(also.length ? `${emulator} is set up. ${also.map(R.systemName).join(' and ')} ${also.length > 1 ? 'are' : 'is'} in Consoles too.` : `${emulator} is set up.`);
     } catch (error) { console.error(error); sayNo(error.message); }
     settingUp.delete(system);
     await readMac();
@@ -1195,7 +1193,7 @@
   // WHAT LETTING GO HERE WILL DO: the word shown while a game is held, the
   // place that lights, and the move itself, or null where nothing would
   // happen. A move the drag already shows, such as a console moved in the
-  // room, has no word, and a drop anywhere in the room or My Stuff lights
+  // room, has no word, and a drop anywhere in the room or the drawer lights
   // nothing, since the whole of it would. One answer, so the word never disagrees with the drop.
   const yes = (word, light, run) => ({ word, light, run });
   // A move refused: `says` is the console and its line, said when the game is let go.
@@ -1221,8 +1219,8 @@
     return null;
   }
 
-  // The same for a console: out into the room from My Stuff, moved in the
-  // room, and put away onto My Stuff.
+  // The same for a console: out into the room from the drawer, moved in the
+  // room, and put away onto the drawer or the foot.
   function consoleIntent(system, from, under, point, size) {
     if (!under) return null;
     const inRoom = under.closest('#emu-room');
@@ -1234,8 +1232,10 @@
     if (inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
     const st = stand.get(system);
     const busy = BUSY[st] && no(st === 'setting' ? 'Still setting up' : 'Being removed', null, [system, BUSY[st](system)]);
-    if (under.closest('#emu-mine')) {
-      return busy || (st === 'on' ? yes('Put away', $('emu-mine'), () => putAway(system)) : no('Not set up yet', $('emu-mine'), [system, 'Set me up first.']));
+    // The open drawer or the foot under it, so the drawer need not be open.
+    const to = under.closest('#emu-mine') ?? under.closest('#emu-foot');
+    if (to) {
+      return busy || (st === 'on' ? yes('Put away', to, () => putAway(system)) : no('Not set up yet', to, [system, 'Set me up first.']));
     }
     return null;
   }

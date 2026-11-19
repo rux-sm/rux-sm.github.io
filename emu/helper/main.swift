@@ -3,12 +3,11 @@
 // A menu bar app with no window. It answers the site on 127.0.0.1 only,
 // and only requests whose Origin is the site's:
 //
-//   GET    /status         what the helper sees: the collection it found and
-//                          whether it is a network share, this Mac's library
-//                          folder, and each system whose emulator is installed
+//   GET    /status         this Mac's library folder, and each system whose
+//                          emulator is installed
 //   POST   /play           { "system": "n64", "file": "<file in roms/n64/>" }
-//                          opens that one game in its system's emulator, from
-//                          this Mac's library, else from a drive plugged in
+//                          opens that one game from this Mac's library in its
+//                          system's emulator
 //   GET    /mac            how this Mac stands, read now: each app and its
 //                          version, and each place an emulator saves to
 //   POST   /update         { "url", "name", "size", "sha1", "version" }, a
@@ -45,15 +44,9 @@
 //                          emulator holds in the folders Supabase fills
 //   PUT    /mac/given      ?emulator=&path=<its path in Supabase>, the body
 //                          written as that file
-//   GET    /mac/saves      each save this Mac keeps itself, neither on the
-//                          drive nor carried to Supabase
+//   GET    /mac/saves      each save this Mac keeps itself, not carried to
+//                          Supabase
 //   GET    /mac/save       ?stored=<emulator>/<place>/<file>, one of those
-//   GET    /drive/list     ?path=, a folder of the collection, for the scan
-//   GET    /drive/stat     ?path=, a file's size and last-changed time
-//   GET    /drive/file     ?path=&at=&n=, a file's bytes, or n of them from at
-//   GET    /drive/fingerprint  ?path=, a file's CRC32, MD5 and SHA-1, in hex
-//   PUT    /drive/file     ?path=, the body written there, folders made
-//   DELETE /drive/file     ?path=, that one file removed
 //   POST   /download       { "system", "files": [{ "name", "size", "sha1" }],
 //                          "token" }, a game's files fetched from the home
 //                          server into this Mac's library, one after another
@@ -72,16 +65,13 @@
 // helper keeps only until that download ends. A file arrives beside its place
 // as a hidden part, resumes from where it stopped, is checked against the
 // SHA-1 the site sends, and only then takes its name. The library is
-// `~/Emulation/roms/<system>/`, laid out as the collection's roms folder. A
-// game plays from the library, or from a drive plugged into this Mac, and
-// never from a network share, where a dropped connection stops the game.
+// `~/Emulation/roms/<system>/`, laid out as the server's roms folder. A game
+// plays only from the library, so a dropped connection never stops one, and
+// the helper reads no drive or share.
 //
-// The collection is the first folder holding a `roms` folder that is either
-// a drive's `emulation` folder, as on the T7, or a drive itself, as the home
-// server's `games` share mounts, and every /drive path is inside it once links are followed. What
-// the helper knows of each emulator, how it opens a game and where it keeps
-// saves on a Mac, is the site's `emulators.json`, which build-helper.mjs puts
-// inside the app, so it reads a Mac with no drive plugged in. A game must
+// What the helper knows of each emulator, how it opens a game and where it
+// keeps saves on a Mac, is the site's `emulators.json`, which
+// build-helper.mjs puts inside the app. A game must
 // sit inside `roms/<system>/`, and a Mac's save must be one /mac/saves
 // lists, so nothing the site sends can open or read anything else. The one
 // thing it asks of the internet is each project's feed, at the addresses
@@ -108,7 +98,7 @@
 // A given file is a BIOS, key or firmware file Supabase holds for every Mac.
 // It sits in a folder inside its emulator's own, which emulators.json names
 // beside that folder's path in Supabase, and the settings Emu manages point
-// the emulator there, so it starts with no drive plugged in.
+// the emulator there, so it starts with everything it needs.
 //
 // An installer comes only from the collection's bucket in Supabase, is
 // checked against the size and SHA-1 the site sends, and puts in Applications
@@ -127,31 +117,19 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "35"
+let version = "36"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
 // Where a signed link to a file of the collection starts; the project's address is not a secret.
 let collectionLinks = "https://udnmqhayzhrbltxzzhjw.supabase.co/storage/v1/object/sign/emu-collection/"
 
-// MARK: The collection
+// MARK: Emulators
 
 // How a system's emulator starts a game: its app and arguments, or, for an
 // emulator in Apple's sandbox, by opening the game with the app as the
 // Finder does, since the sandbox refuses a game handed to it as an argument.
 struct Launch { let app: String; let args: [String]; let open: Bool }
-
-func collection() -> URL? {
-  let volumes = (try? FileManager.default.contentsOfDirectory(atPath: "/Volumes")) ?? []
-  for name in volumes.sorted() {
-    let drive = URL(fileURLWithPath: "/Volumes").appendingPathComponent(name)
-    for root in [drive.appendingPathComponent("emulation"), drive] {
-      var dir: ObjCBool = false
-      if FileManager.default.fileExists(atPath: root.appendingPathComponent("roms").path, isDirectory: &dir), dir.boolValue { return root }
-    }
-  }
-  return nil
-}
 
 // The site's emulators.json, inside the app.
 let rules: [String: Any] = {
@@ -182,19 +160,9 @@ func program(_ app: String) -> URL? {
 
 // MARK: Answers
 
-// The drive a collection is on, by its name in /Volumes.
-func driveOf(_ root: URL) -> String { root.pathComponents.count > 2 ? root.pathComponents[2] : root.lastPathComponent }
-
-// Whether a folder is on a network share, as the home server's is.
-func onNetwork(_ p: String) -> Bool {
-  var s = statfs()
-  return statfs(p, &s) == 0 && s.f_flags & UInt32(MNT_LOCAL) == 0
-}
-
 func status() -> [String: Any] {
   let playable = launches.filter { program($0.value.app) != nil }.keys.sorted()
-  let found = collection().map { ["path": $0.path, "drive": driveOf($0), "network": onNetwork($0.path)] as [String: Any] }
-  return ["app": "Rux Emu Helper", "version": version, "collection": orNull(found), "library": tilde(library), "systems": playable]
+  return ["app": "Rux Emu Helper", "version": version, "library": tilde(library), "systems": playable]
 }
 
 // A game's file inside a roms folder, links followed, or nil where it is not there.
@@ -212,22 +180,16 @@ func play(_ body: Data) -> (Int, [String: Any]) {
         let system = req["system"] as? String, let file = req["file"] as? String else { return (400, ["error": "Send a system and a file."]) }
   guard let launch = launches[system] else { return (404, ["error": "No emulator is set for \(system)."]) }
   guard let exe = program(launch.app) else { return (409, ["error": "\(launch.app) is not installed."]) }
-  // This Mac's own copy first, then a drive plugged in.
-  let found = collection()
-  let shared = found.map { onNetwork($0.path) } ?? false
-  var from = "library"
-  var held = gameFile(URL(fileURLWithPath: library), system, file)
-  if held == nil, let found, !shared { held = gameFile(found.appendingPathComponent("roms"), system, file); from = "drive" }
-  guard let target = held else {
-    if shared { return (409, ["error": "Download it to this Mac to play: a game does not play over the network."]) }
-    return (404, ["error": found == nil ? "That game is not on this Mac. Download it, or plug in the drive." : "That game is not in the collection."])
+  // A game plays only from this Mac's library.
+  guard let target = gameFile(URL(fileURLWithPath: library), system, file) else {
+    return (404, ["error": "That game is not on this Mac. Download it first."])
   }
   if launch.open {
     let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     let config = NSWorkspace.OpenConfiguration()
     config.activates = true
     NSWorkspace.shared.open([target], withApplicationAt: app, configuration: config) { _, _ in }
-    return (200, ["playing": target.lastPathComponent, "with": launch.app, "from": from])
+    return (200, ["playing": target.lastPathComponent, "with": launch.app])
   }
   let p = Process()
   p.executableURL = exe
@@ -241,7 +203,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
     NSRunningApplication(processIdentifier: p.processIdentifier)?.activate()
   }
-  return (200, ["playing": target.lastPathComponent, "with": launch.app, "from": from])
+  return (200, ["playing": target.lastPathComponent, "with": launch.app])
 }
 
 // MARK: This Mac
@@ -249,7 +211,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
 // How this Mac stands: its macOS, ES-DE's and each emulator's app and
 // version, the folder ES-DE reads games from, each place an emulator saves
 // to with how many files it holds, and how many files each retired app still
-// holds; and each save it keeps itself rather than on the drive. Where each
+// holds; and each save it keeps itself rather than carrying it. Where each
 // emulator keeps saves is `macSaves` in emulators.json: its folder in
 // ~/Library, and for each place it saves to, the default and the setting in
 // its own settings file that moves it, which wins.
@@ -438,7 +400,7 @@ func macReport() -> [String: Any] {
     for place in e.places {
       if let dir = place.dir { gathered.append(dir) }
       let found = place.dir.map(exists) ?? false
-      // A folder linked to the drive, as Ryujinx's is, is said where the link leads.
+      // A linked folder, as Ryujinx's may be, is said where the link leads.
       let shown = place.dir.map { found ? real($0) : $0 }
       let held = saves(in: place)
       count += held.count
@@ -486,18 +448,16 @@ func macReport() -> [String: Any] {
   ]
 }
 
-// Each save this Mac keeps itself, neither on the drive nor carried to
-// Supabase, which holds a carried save already: its emulator and the
+// Each save this Mac keeps itself, not carried to Supabase, which holds a
+// carried save already: its emulator and the
 // systems it plays, its path within its place for matching it to its game,
 // `stored` naming it for /mac/save, the folder it came from for restoring
 // it, its size, and when it was made and last saved.
 func macSaves() -> [[String: Any]] {
-  let drive = collection().map { real($0.path) + "/" }
   var out: [[String: Any]] = []
   for e in savers() {
     for place in e.places where place.rule["stored"] == nil {
       for f in saves(in: place) {
-        if let drive, real(f.path).hasPrefix(drive) { continue }
         let a = try? files.attributesOfItem(atPath: f.path)
         out.append(["emulator": e.name, "systems": e.plays, "rel": f.rel, "stored": "\(e.name)/\(place.index)/\(f.rel)",
                     "from": (f.path as NSString).deletingLastPathComponent, "size": f.size,
@@ -1261,34 +1221,11 @@ func removeEmulator(_ body: Data) -> (Int, [String: Any]) {
   return (200, ["moved": moved])
 }
 
-// MARK: The drive, for the site's scan
-
-// A path inside the collection, links followed, or nil for one outside it.
-func drivePath(_ rel: String) -> String? {
-  guard let root = collection() else { return nil }
-  let base = real(root.path)
-  let p = URL(fileURLWithPath: base).appendingPathComponent(rel).standardizedFileURL.path
-  let parent = (p as NSString).deletingLastPathComponent
-  let resolved = exists(p) ? real(p) : (exists(parent) ? real(parent) : parent) + "/" + (p as NSString).lastPathComponent
-  return resolved == base || resolved.hasPrefix(base + "/") ? resolved : nil
-}
+// MARK: Files
 
 func isFolder(_ p: String) -> Bool {
   var dir: ObjCBool = false
   return files.fileExists(atPath: p, isDirectory: &dir) && dir.boolValue
-}
-
-let ms = { (d: Any?) in ((d as? Date)?.timeIntervalSince1970 ?? 0) * 1000 }
-
-// A folder's visible entries, sorted by name, as the scan reads them.
-func driveList(_ p: String) -> [[String: Any]] {
-  let names = ((try? files.contentsOfDirectory(atPath: p)) ?? []).filter { !$0.hasPrefix(".") }
-  return names.sorted { Array($0.utf16).lexicographicallyPrecedes(Array($1.utf16)) }.compactMap { name in
-    guard let a = try? files.attributesOfItem(atPath: real(p + "/" + name)) else { return nil }
-    let dir = a[.type] as? FileAttributeType == .typeDirectory
-    return ["name": name, "dir": dir, "size": dir ? 0 : (a[.size] as? NSNumber)?.intValue ?? 0,
-            "mtimeMs": dir ? 0 : ms(a[.modificationDate]), "birthtimeMs": dir ? 0 : ms(a[.creationDate])]
-  }
 }
 
 // n bytes of a file from `at`, or the whole file.
@@ -1608,7 +1545,7 @@ func removeFromLibrary(_ path: String) -> (Int, [String: Any]) {
   return (200, ["removed": path])
 }
 
-// How many bytes the library's drive has free, as Finder counts them.
+// How many bytes the disk under the library has free, as Finder counts them.
 func librarySpace() -> [String: Any] {
   let at = URL(fileURLWithPath: real(exists(library) ? library : home))
   let v = try? at.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
@@ -1638,7 +1575,7 @@ enum Reply { case json(Int, [String: Any]), list(Int, [[String: Any]]), bytes(Da
 
 final class Server {
   let listener: NWListener
-  // The drive and save folders are read off the menu bar's thread.
+  // The library and save folders are read off the menu bar's thread.
   let work = DispatchQueue(label: "rux-emu-helper.work", qos: .userInitiated, attributes: .concurrent)
 
   init() throws {
@@ -1681,7 +1618,6 @@ final class Server {
     let off = { (reply: @escaping () -> Reply) in
       self.work.async { let r = reply(); DispatchQueue.main.async { self.send(c, r, origin: origin) } }
     }
-    let missing = Reply.json(404, ["error": "That is not in the collection."])
     switch (req.method, req.path) {
     case ("GET", "/status"): send(c, .json(200, status()), origin: origin)
     case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
@@ -1710,34 +1646,18 @@ final class Server {
     case ("GET", "/mac/save"):
       off { macSavePath(q["stored"] ?? "").flatMap { bytes($0, at: nil, n: nil) }.map(Reply.bytes)
         ?? .json(404, ["error": "That is not a save this Mac keeps."]) }
-    case ("GET", "/drive/list"):
-      off { drivePath(q["path"] ?? "").map { .list(200, isFolder($0) ? driveList($0) : []) } ?? missing }
-    case ("GET", "/drive/stat"):
-      off {
-        guard let p = drivePath(q["path"] ?? ""), !isFolder(p), let a = try? files.attributesOfItem(atPath: p) else { return missing }
-        return .json(200, ["size": (a[.size] as? NSNumber)?.intValue ?? 0, "mtimeMs": ms(a[.modificationDate])])
-      }
-    case ("GET", "/drive/file"):
-      off { drivePath(q["path"] ?? "").flatMap { bytes($0, at: q["at"].flatMap { UInt64($0) }, n: q["n"].flatMap { Int($0) }) }.map(Reply.bytes) ?? missing }
-    case ("GET", "/drive/fingerprint"):
-      off { drivePath(q["path"] ?? "").flatMap(fingerprint).map { .json(200, $0) } ?? missing }
-    case ("DELETE", "/drive/file"):
-      guard let p = drivePath(q["path"] ?? ""), exists(p), !isFolder(p), (try? files.removeItem(atPath: p)) != nil else { return send(c, missing, origin: origin) }
-      send(c, .json(200, ["removed": q["path"] ?? ""]), origin: origin)
     default: send(c, .json(404, ["error": "No such call."]), origin: origin)
     }
   }
 
-  // A PUT of a file on the drive or of a carried save: the body written
-  // beside its file as it arrives, then put in its place, so a write cut
-  // short leaves the file as it was.
+  // A PUT of a carried save or a given file: the body written beside its
+  // file as it arrives, then put in its place, so a write cut short leaves
+  // the file as it was.
   func upload(_ c: NWConnection, _ req: Request, _ first: Data, _ origin: String) {
     let path = req.query["path"] ?? ""
     var target: String? = nil
     var written: () -> Void = {}
     switch req.path {
-    case "/drive/file":
-      target = drivePath(path).flatMap { isFolder($0) ? nil : $0 }
     case "/mac/carried":
       guard let found = carriedAt(path) else { return send(c, .json(404, ["error": "That is not a save Emu carries."]), origin: origin) }
       let app = (appsOf(found.e.rule).first as NSString?)?.deletingPathExtension ?? found.e.name
@@ -1753,7 +1673,7 @@ final class Server {
       target = found.at
     default: break
     }
-    guard let target else { return send(c, .json(404, ["error": "That is not in the collection."]), origin: origin) }
+    guard let target else { return send(c, .json(404, ["error": "No such call."]), origin: origin) }
     let dir = (target as NSString).deletingLastPathComponent
     let part = dir + "/." + (target as NSString).lastPathComponent + ".part"
     guard (try? files.createDirectory(atPath: dir, withIntermediateDirectories: true)) != nil,
@@ -1917,8 +1837,7 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
   func menuWillOpen(_ menu: NSMenu) {
     showWaiting()
     if server == nil { return }
-    if let root = collection() { state.title = "Games on \(driveOf(root))" }
-    else { state.title = exists(library) && !libraryFiles().isEmpty ? "Games on this Mac" : "No games plugged in" }
+    state.title = exists(library) && !libraryFiles().isEmpty ? "Games on this Mac" : "No games on this Mac yet"
   }
 
   // Opened by a rux-emu:// link from the site: running is all it asks.

@@ -4,8 +4,8 @@
    Every game with a problem, under one heading per kind of problem, worst
    kind first; a game with two problems is under both. Each row says what is
    wrong and opens the game in the Library. Two kinds belong to no game: a
-   file an emulator needs that the drive lacks, which opens Emulators, and a
-   save whose game is not on the drive, which opens Saves.
+   file an emulator needs that Supabase lacks, which opens Emulators, and a
+   save whose game is not on the server, which opens Saves.
    ========================================================================== */
 (() => {
   'use strict';
@@ -39,7 +39,7 @@
       }
     }
     for (const s of saves.filter(x => !x.game)) {
-      groups.get('orphan').push({ title: s.name, system: s.system, words: 'No game on the drive by this name', href: `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}` });
+      groups.get('orphan').push({ title: s.name, system: s.system, words: 'No game on the server by this name', href: `saves.html?save=${encodeURIComponent(`${s.system}/${s.name}`)}` });
     }
     $('emu-sum').textContent = withProblems.size
       ? `${withProblems.size} of ${games.length} games need a look.`

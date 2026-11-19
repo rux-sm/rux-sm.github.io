@@ -22,8 +22,8 @@
 
    The strip, in the head after the room's name, is the room's one place for
    words. At rest it shows this Mac as Carbon's icon indicators: the helper,
-   the collection it found, the room this Mac has free and when Update last
-   saved, each opening Status where it is wrong; while a move runs it names
+   the room this Mac has free and, once it is late, the server's nightly
+   scan, each opening Status where it is wrong; while a move runs it names
    it, after one it says what it did, with Undo where it can be taken back,
    and it asks before an emulator is removed. The TV's glass shows only a
    home console's game, its cover once it starts, a wire running to the TV
@@ -91,12 +91,12 @@
   let free = null;
   // The console whose games show.
   let pick = null;
-  // This Mac's name on its row in Supabase, and its room as kept there: each
-  // console standing in it, true while plugged in; null until one is moved.
+  // This Mac's name on its row in Supabase, and its room as kept there:
+  // where each thing in it stands; null until one is moved.
   let macName = null;
   let room = null;
-  // The drive's row from the last Update saved, for when that was, and the
-  // version of Rux Emu Helper Supabase holds, the one a Mac should run.
+  // The last scan's row, for when the server last scanned, and the version
+  // of Rux Emu Helper Supabase holds, the one a Mac should run.
   let driveRow = null;
   let newestHelper = null;
   // Consoles whose emulator is being set up now.
@@ -112,8 +112,6 @@
   const gamesOf = system => games.filter(g => g.system === system);
   // Whether this Mac has a system's emulator, where a helper answers.
   const plays = system => Boolean(helper?.systems?.includes(system));
-  // A drive with the games plugged into this Mac, which a game plays from unheld.
-  const drive = () => Boolean(helper?.collection) && (!keeps || !helper.collection.network);
   // The handhelds, which light their own screens; every other console plays on the TV.
   const HANDHELD = new Set(['gb', 'gbc', 'gba', 'nds', 'n3ds']);
   // Games to play as soon as they have arrived, by key.
@@ -362,10 +360,11 @@
   // or "Update the helper", opening Status, where Supabase holds a newer
   // one; the room this Mac has free for games, a caution under LOW, or a
   // failure where a current helper keeps no library; and "Needs sync",
-  // opening Status, only once Update has not saved for STALE days. In a
-  // narrow window only the summary shows: the worst, or Ready.
+  // opening Status, only once the server's nightly scan is more than STALE
+  // days old, one missed night's grace. In a narrow window only the summary
+  // shows: the worst, or Ready.
   const LOW = 10e9;
-  const STALE = 30;
+  const STALE = 2;
   const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
   function indicator(kind, text, href = null, cls = '', title = '') {
     const li = el('li', `rux--icon-indicator ${cls}`.trim());
@@ -385,7 +384,7 @@
       behind ? ['warn', 'Update the helper', 'status.html', '', `Rux Emu Helper ${helper.version}, ${newestHelper} is out`]
         : ['ok', 'Connected', null, '', `Rux Emu Helper ${helper.version ?? ''}`.trim()],
       !library ? (behind ? null : ['bad', 'No library on this Mac', 'status.html']) : free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
-      days == null || days > STALE ? ['warn', 'Needs sync', 'status.html', '', days == null ? 'Update has never run' : `Last updated ${R.when(driveRow.scanned_at)}`] : null,
+      days == null || days > STALE ? ['warn', 'Needs sync', 'status.html', '', days == null ? 'The server has never scanned' : `The server's scan is late: last scanned ${R.when(driveRow.scanned_at)}`] : null,
     ].filter(Boolean);
     const worst = facts.find(f => f[0] === 'bad') ?? facts.find(f => f[0] === 'warn');
     $('emu-strip-facts').replaceChildren(...facts.map(f => indicator(...f)),
@@ -1156,9 +1155,9 @@
       if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
       if (stand.get(system) === 'keeping') return no('Being removed', unit, [system, 'I am being removed.']);
       if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
-      if (s.state === 'held' || drive()) return yes('Play', unit, () => play(g));
+      if (s.state === 'held') return yes('Play', unit, () => play(g));
       if (keeps) return yes('Download and play', unit, () => download(g, true));
-      return no('Plug in the drive to play', unit, [system, 'Plug in the drive to play.']);
+      return no('Update the helper to download', unit, [system, 'Update the helper to download.']);
     }
     // A cover on the floor moves where it is let go.
     if (from === 'floor' && under.closest('#emu-room')) return { ...yes(null, null, () => {}), move: true };
@@ -1390,8 +1389,8 @@
   // The helper may be started or quit, an emulator installed or a download
   // ended, while the page is away: it is read again when the page is back.
   window.addEventListener('focus', () => { if (games.length) look(); });
-  // Update may have saved from another tab while the page was away, so when
-  // it last did is read again too, and the strip redrawn.
+  // The nightly scan may have saved while the page was away, so when it
+  // last did is read again too, and the strip redrawn.
   window.addEventListener('focus', async () => {
     const row = await R.data.drive().catch(() => driveRow);
     if (row?.scanned_at === driveRow?.scanned_at) return;

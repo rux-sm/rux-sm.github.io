@@ -5,7 +5,7 @@
    side panel that acts on it. `read` is the helper's status, the library's
    files and the downloads, each null where no helper answers or it is too
    old to say. `area` is the part, shown only on a Mac: Play where this Mac
-   holds the game or a drive with it is plugged in, Download to this Mac
+   holds the game, Download to this Mac
    with its progress and Cancel while it comes, and Remove from this Mac,
    which takes the game's files and leaves its saves. Where the helper is
    not running it offers to start it. A game played is marked with when,
@@ -113,7 +113,7 @@
           start.disabled = true;
           said.textContent = 'Starting…';
           if (await H.wake()) { onChanged(); draw(); }
-          else draw('It did not start. Install it from the drive: Install Rux Emu Helper.command.');
+          else draw('It did not start. Status has Rux Emu Helper to download.');
         });
         return show([row(start), said], start);
       }
@@ -138,15 +138,14 @@
       if (bar) { bar = null; onChanged(); }
 
       // A helper that names its library downloads to it and plays from it;
-      // an older one plays only from a drive.
+      // a game plays only from there.
       const keeps = Boolean(helper.library) && library != null;
-      const drive = Boolean(helper.collection) && (!keeps || !helper.collection.network);
       const here = keeps && s.state === 'held';
       const emulator = helper.systems.includes(g.system);
       const name = R.systemName(g.system);
 
       const buttons = [];
-      if ((here || drive) && emulator) {
+      if (here && emulator) {
         // Play tries again where the saves could not be brought, and Play
         // anyway, shown only then, plays this Mac's own.
         const start = anyway => async () => {
@@ -187,9 +186,8 @@
         s.state === 'failed' ? s.error : '',
         here ? `On this Mac, ${R.size(s.total)}.` : '',
         keeps && !here && s.state !== 'failed' ? (s.done ? `${R.size(s.done)} of ${R.size(s.total)} is on this Mac.` : `${R.size(s.total)} to download.`) : '',
-        !keeps && !drive ? 'Plug in the drive to play.' : '',
         !keeps && !helper.library ? 'Rux Emu Helper on this Mac is too old to download a game: Status has the newest.' : '',
-        (here || drive) && !emulator ? `This Mac has no emulator installed for ${name}.` : '',
+        here && !emulator ? `This Mac has no emulator installed for ${name}.` : '',
       ].filter(Boolean);
       said.textContent = words ?? facts.join(' ');
       // Play or Download leads where there is one; Remove is always last.

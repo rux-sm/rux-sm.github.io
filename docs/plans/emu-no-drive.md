@@ -45,21 +45,41 @@ stays, since that is the server reading its own disk.
 - **The T7 is only the server's backup,** never a travel copy, as
   `docs/plans/emu-server.md` now says.
 
+- **`location: 'drive'` in `emu_saves` stays as data,** marking a save in
+  the server's `saves/` folder; only the words shown change.
+
 ## Questions
 
-None open.
+- Update also saves each Mac's report to `emu_macs` and the saves a Mac
+  keeps itself, which Status's other Macs, Emulators and the room's kept
+  spots need. Proposed: Status saves this Mac each time it opens, with no
+  button.
+- `emu/tools/organize-roms.mjs` reads the scan file and fingerprints the
+  drive mode wrote beside the games, which the server mounts read-only.
+  Proposed: the nightly scan keeps its scan file beside its fingerprints in
+  `$CACHE`, and the organize tool reads and writes them there.
+- `emu/tools/build-helper.mjs` writes the helper beside the games, and the
+  scan puts it in Supabase. Proposed: it writes the zip into the server's
+  `emulators/` folder over its share, and the nightly scan puts it in
+  Supabase.
+- The scan container fetches its code before each nightly run and the
+  Supabase copy every 24 hours, both naming `emu_drive`. Proposed: apply the
+  rename and push in one go during the day, accepting that the Supabase copy
+  may fail once before its next fetch.
+- The old backups, `emu/tools/backup-saves.mjs`, `backups.json` and the
+  drive's zip on Saves, are written by nothing once Update goes. Proposed:
+  remove them, so Saves shows only what Supabase keeps until the backup
+  built from Supabase lands.
 
 ## Tasks
 
-- [ ] Drop the collection, `/drive` and play-from-collection from
-      `emu/helper/main.swift`, bump its version, build it with
-      `emu/tools/build-helper.mjs` and put it in Supabase.
-- [ ] Remove Update from Status with `emu/update.js` and `emu/drive.js`, and
-      Status's drive sections.
-- [ ] Remove play-from-drive from `emu/this-mac.js` and `emu/room.js`, so a
-      game not here says to download it.
-- [ ] Point "Needs sync" at the nightly scan's age.
-- [ ] Remove the drive's words from every Emu page and `emu/README.md`.
+- [ ] Build Rux Emu Helper 36, which no longer reads a drive, and put it in
+      Supabase, by the build question above.
+- [ ] Remove Update from Status with `emu/update.js`, `emu/drive.js` and
+      `emu/zip.js`, Status's drive sections and `emu/scan.js`'s `packed`,
+      saving this Mac by the answer above.
+- [ ] Remove the drive's words left on Status, in `emu/scan.js`'s and
+      `emu/scan-save.js`'s comments, in `emu/README.md` and in `emu/docs/`.
 - [ ] Point `emu/tools/organize-roms.mjs` at the server's `games` folder and
       drop `scan-roms.mjs`'s drive mode.
 - [ ] Rename `emu_drive` to `emu_scan` by a migration, with `emu/data.js`,

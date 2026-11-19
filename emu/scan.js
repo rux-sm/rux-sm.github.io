@@ -1,5 +1,5 @@
 /* ==========================================================================
-   scan.js — reading the collection on the drive
+   scan.js — reading the collection on the server
    --------------------------------------------------------------------------
    One scan, run by emu/tools/scan-roms.mjs on a Mac and by the Status page
    through Rux Emu Helper, so the two never read a game differently. It
@@ -453,7 +453,7 @@
 
   // A Switch game against blawar's titledb versions list, `switch-versions.json`
   // in the lists folder: a game the list knows is listed, and an update newer
-  // than the one beside it on the drive is a newer version.
+  // than the one beside it on the server is a newer version.
   async function loadSwitchVersions(drive) {
     const text = await drive.text('lists/switch-versions.json', 'utf8');
     return text == null ? null : JSON.parse(text);
@@ -471,7 +471,7 @@
       serials: [],
       unmatched: known ? [] : game.files.map(f => f.name),
       renames: [],
-      better: latest > have ? [`Update v${latest} (${known[latest]}), the drive has ${have ? `v${have}` : 'no update'}`] : [],
+      better: latest > have ? [`Update v${latest} (${known[latest]}), the server has ${have ? `v${have}` : 'no update'}`] : [],
       missingDiscs: [],
     };
   }
@@ -759,7 +759,7 @@
     const readJson = async (rel, fallback) => { const t = await drive.text(rel, 'utf8'); return t == null ? fallback : JSON.parse(t); };
     const renames = await readJson('scans/renames.json', []);
     const backups = await readJson('backups.json', []);
-    // Each emulator's installer, kept on the drive in case its download goes.
+    // Each emulator's installer, kept on the server in case its download goes.
     const installers = (await listOf('emulators')).map(it => ({ name: it.name, size: it.size }));
 
     const bios = [];
@@ -778,7 +778,7 @@
 
     // The saves, those beside their games too, and the BIOS and keys, which
     // the backup zip packs; a file of 50 MB or more, like the Switch
-    // firmware's zip, stays on the drive and the Macs, and so does a folder
+    // firmware's zip, stays on the server and the Macs, and so does a folder
     // a system needs whole, which is firmware as its emulator installed it,
     // hundreds of files Supabase holds one by one.
     const installed = f => {

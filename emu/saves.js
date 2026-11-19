@@ -22,7 +22,7 @@
   const KIND = { save: 'Save', state: 'Save state', card: 'Memory card' };
   const DRIVE = 'drive';
   const SUPABASE = 'Supabase';
-  const where = s => (s.location === DRIVE ? 'the drive' : s.location);
+  const where = s => (s.location === DRIVE ? 'the server' : s.location);
 
   // The saves Emu carries, from the files Supabase lists under saves/: each
   // system's folder read as the scan reads the drive's, less what a system
@@ -115,7 +115,7 @@
         b.type = 'button';
         const main = el('span', 'emu-row__main');
         main.append(el('span', '', s.name), el('span', 'emu-row__sub',
-          [KIND[s.kind], s.location === SUPABASE ? 'in Supabase' : `on ${where(s)}`, `last saved ${R.date(s.saved_at)}`, s.game ? '' : 'no game on the drive', s.note].filter(Boolean).join(' · ')));
+          [KIND[s.kind], s.location === SUPABASE ? 'in Supabase' : `on ${where(s)}`, `last saved ${R.date(s.saved_at)}`, s.game ? '' : 'no game on the server', s.note].filter(Boolean).join(' · ')));
         b.append(main);
         b.addEventListener('click', () => openSave(s));
         li.append(b);
@@ -133,7 +133,7 @@
     body.replaceChildren();
     const dl = el('dl', 'emu-facts');
     const kept = s.location === SUPABASE;
-    for (const [k, v] of [['Game', s.game ?? 'None on the drive by this name'],
+    for (const [k, v] of [['Game', s.game ?? 'None on the server by this name'],
       ['Lives on', kept ? `Supabase, and each Mac that plays it${s.mac ? `; last carried from ${s.mac}` : ''}` : where(s)],
       ...(kept ? [] : [['Created', R.when(s.created_at)]]), ['Last saved', R.when(s.saved_at)],
       ...(kept ? [] : [['Backed up', s.location === DRIVE ? (driveZip ? `In ${driveZip.name}` : 'Not yet') : R.when(s.backed_up_at)]]),

@@ -2,14 +2,14 @@
    app.js — what every Emu page shares
    --------------------------------------------------------------------------
    The systems by name, each one's preferred format, the emulator table and
-   whether the drive holds what each emulator needs, a game's problems and
+   whether Supabase holds what each emulator needs, a game's problems and
    status worked out from what the scan read and rux's notes, sizes and
    dates as text, the shared element helpers and the error notice.
    ========================================================================== */
 (() => {
   'use strict';
 
-  // Each folder on the drive by its name, in the order the filter lists them.
+  // Each system folder on the server by its name, in the order the filter lists them.
   const SYSTEMS = {
     nes: 'NES', snes: 'SNES', n64: 'N64', gc: 'GameCube', wii: 'Wii', wiiu: 'Wii U', switch: 'Switch',
     gb: 'Game Boy', gbc: 'Game Boy Color', gba: 'Game Boy Advance', nds: 'DS', n3ds: '3DS',
@@ -49,7 +49,7 @@
   const emulators = () => (emulatorsRead ??= fetch('emulators.json')
     .then(r => { if (!r.ok) throw new Error(`emulators.json: ${r.status}`); return r.json(); }));
 
-  // Each file a system's emulator needs, and the BIOS file on the drive that
+  // Each file a system's emulator needs, and the BIOS file on the server that
   // is it: by name in the system's bios folder, and by MD5 where it is known.
   // A key is found by name only, as the scan never reads one.
   const needsOf = (system, emulator, bios) => (emulator?.needs ?? []).map(need => {
@@ -90,7 +90,7 @@
     if (headers.some(h => h.readError)) out.push(['header', 'Could not be read']);
     for (const r of m?.renames ?? []) out.push(['rename', `List name: ${r.to.split('/').pop()}`]);
     for (const n of m?.better ?? []) out.push(['newer', `Newer: ${n}`]);
-    for (const n of m?.copies ?? []) out.push(['extra', `Also on the drive: ${n}`]);
+    for (const n of m?.copies ?? []) out.push(['extra', `Also on the server: ${n}`]);
     // A converted game's originals wait until rux says the new file plays.
     const originals = game.originals ?? [];
     if (originals.length && !game.notes?.plays) {

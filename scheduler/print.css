@@ -1535,10 +1535,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin-block-start: 8pt;
 }
 
+/* The totals boxed in the table's border, so the last row needs no rule of
+   its own. */
 .scheduler-customer-quote__sums {
   inline-size: 200pt;
   margin-inline-start: auto;
+  border: 1px solid var(--rux-border-subtle-01);
 }
+
+.scheduler-customer-quote__sum:last-child { border-block-end: 0; }
 
 .scheduler-customer-quote__sum {
   display: flex;
@@ -1620,22 +1625,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* ── The agreement ────────────────────────────────────────────────────────
    The second sheet, the terms the customer signs with the quote: the quote's
    head with the form's name, the trip in one band, and the policies in small
-   type with their headings underlined into the text. Its head, band and
-   labels are the quote's; only the policies' size is this sheet's own. */
+   type with their headings underlined into the text. Its head, band,
+   labels and lines to sign are the quote's; only the policies' size is this
+   sheet's own. Its name takes two lines in the quote's title column. */
 .scheduler-customer-quote--agreement {
   font-size: 8.5pt;
   line-height: 1.3;
-}
-
-/* The agreement's head has the logo alone on its leading edge, so its name
-   takes the rest of the line, a size down from QUOTE to sit on one line. */
-.scheduler-customer-quote--agreement .scheduler-customer-quote__head {
-  grid-template-columns: auto minmax(0, 1fr);
-}
-
-.scheduler-customer-quote--agreement .scheduler-customer-quote__title {
-  font-size: 18pt;
-  line-height: 28pt;
 }
 
 /* The trip, as one ruled band: a label and its answer, twice, each label
@@ -1643,7 +1638,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    date is as wide as it is, and never less than a date's width, so a blank
    one has room to be typed into; the destination takes what is left. */
 .scheduler-customer-quote__trip {
-  margin-block-start: 16pt;
+  margin-block-start: 12pt;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content);
   border: 1px solid var(--rux-border-subtle-01);
@@ -1681,14 +1676,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* THE SHEET IS FULL. Sixteen paragraphs and the line to sign have to stay on
    one sheet, so the line over the policies and the gap between them are a
-   little closer than the quote's terms are set. */
+   little closer than the quote's terms are set, and the trip stands the
+   quote's 12pt under the head. */
 .scheduler-customer-quote__agreement-intro {
-  margin: var(--rux-spacing-04) 0;
+  margin: 8pt 0;
   text-align: center;
 }
 
 .scheduler-customer-quote__policy {
-  margin: 0 0 0.5em;
+  margin: 0 0 4pt;
 }
 
 .scheduler-customer-quote__policy-heading {
@@ -1703,28 +1699,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__policy--warn .scheduler-customer-quote__policy-heading {
   text-decoration: none;
 }
-
-/* The signature and the date, far apart on one line, each over its label,
-   which is regular as every label on both sheets is. */
-.scheduler-customer-quote__agreement-sign {
-  display: flex;
-  justify-content: space-between;
-  margin-block-start: var(--rux-spacing-06);
-  font-size: 10.5pt;
-}
-
-.scheduler-customer-quote__agreement-rule {
-  display: block;
-  inline-size: 2.6in;
-  border-block-end: 1px solid var(--rux-text-primary);
-  margin-block-end: var(--rux-spacing-02);
-}
-
-.scheduler-customer-quote__agreement-cell:last-child .scheduler-customer-quote__agreement-rule {
-  inline-size: 2in;
-}
-
-.scheduler-customer-quote__agreement-label { margin: 0; }
 
 @media screen {
   /* A BOX SAYS WHERE THE PEN GOES BY BEING EMPTY, not by a second rule inside

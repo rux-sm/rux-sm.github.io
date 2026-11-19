@@ -1773,13 +1773,8 @@
     fine.appendChild(terms);
     card.appendChild(fine);
 
-    // Who accepts it, with rules to print a name on, sign and date, and the
-    // way back under them.
-    const accept = el('section', 'scheduler-customer-quote__accept');
-    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
-    const marks = el('div', 'scheduler-customer-quote__marks');
-    for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
-    accept.appendChild(marks);
+    // Who accepts it, and the way back under the lines.
+    const accept = acceptSection();
     const foot = el('p', 'scheduler-customer-quote__foot', `Sign and email to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
     foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
     accept.appendChild(foot);
@@ -1788,9 +1783,20 @@
     return card;
   }
 
+  /* WHO ACCEPTS IT, the same on both sheets: rules to print a name on, sign
+     and date, under one heading. */
+  function acceptSection() {
+    const accept = el('section', 'scheduler-customer-quote__accept');
+    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
+    const marks = el('div', 'scheduler-customer-quote__marks');
+    for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
+    accept.appendChild(marks);
+    return accept;
+  }
+
   /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
      trip's destination and dates in the two boxes at its head, the policies,
-     and a line to sign and date. */
+     and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
     card.appendChild(quoteHead('TERMS AND CONDITIONS'));
@@ -1819,14 +1825,7 @@
     }
     card.appendChild(policies);
 
-    const sign = el('div', 'scheduler-customer-quote__agreement-sign');
-    for (const label of ['Customer signature', 'Date']) {
-      const cell = el('div', 'scheduler-customer-quote__agreement-cell');
-      cell.appendChild(el('span', 'scheduler-customer-quote__agreement-rule'));
-      cell.appendChild(el('p', 'scheduler-customer-quote__agreement-label', label));
-      sign.appendChild(cell);
-    }
-    card.appendChild(sign);
+    card.appendChild(acceptSection());
     return card;
   }
 

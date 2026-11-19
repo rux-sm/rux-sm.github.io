@@ -1475,7 +1475,7 @@
   const QUOTE_TERMS = [
     'Quotes are based on the itinerary provided. Prices are subject to change if the itinerary is updated.',
     'A fuel surcharge may be added to your final invoice at our discretion if fuel prices change between the quote date and the trip date.',
-    `A signed quote and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
+    `The signed Terms and Conditions and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
     'On overnight trips, the customer provides the driver’s hotel room. With two drivers, the room must have two separate beds (sofa beds are not acceptable).',
     'Cancellation fees: 20% within a month of departure, 50% within 48 hours, and 100% within 24 hours.',
     'Customers pay parking fees and tolls where they apply. Damage caused by passengers is added to the invoice.',
@@ -1780,17 +1780,11 @@
     fine.appendChild(terms);
     card.appendChild(fine);
 
-    // Who accepts it, with rules to print a name on, sign and date, and the
-    // way back under them.
-    const accept = el('section', 'scheduler-customer-quote__accept');
-    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
-    const marks = el('div', 'scheduler-customer-quote__marks');
-    for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
-    accept.appendChild(marks);
-    const foot = el('p', 'scheduler-customer-quote__foot', `Sign and email to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
+    // The way back, under the terms: the customer signs the agreement on the
+    // next sheet, not this one, and sends it here.
+    const foot = el('p', 'scheduler-customer-quote__foot', `Sign the Terms and Conditions and email them to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
     foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
-    accept.appendChild(foot);
-    card.appendChild(accept);
+    card.appendChild(foot);
     showSums(card);
     return card;
   }

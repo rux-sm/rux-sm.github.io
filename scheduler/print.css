@@ -1312,16 +1312,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    The QUOTE, set as the office's invoice template is, so a customer holding
    the quote and the invoice after it sees one hand: the logo and letterhead
    on the leading edge, the sheet's name, its references and the total on
-   the trailing one, the two parties side by side, the line items under a
-   grey band with no rules between them, the totals under the amounts, the
-   terms in two columns and a line to accept it; and behind it the Terms
-   and Conditions Agreement.
+   the trailing one, the two parties side by side, the line items in a box
+   under a grey band with no rules between them, the totals under the
+   amounts and the terms in two columns; and behind it the Terms and
+   Conditions Agreement, which is what the customer signs.
 
    ITS SIZES ARE IN POINTS, on the invoice's 8-point rhythm, because the
    invoice it matches is laid out in points in QuickBooks' Layout Designer;
-   the parts stand 12pt apart and the terms and acceptance 8pt, rather than
-   the invoice's 16, because the quote carries eight terms and a line to
-   accept on the same sheet's 738pt.
+   the parts stand 12pt apart rather than the invoice's 16, because the
+   quote carries eight terms on the same sheet's 738pt.
 
    AND IT IS THE ONE FORM THAT FILLS. The grey bands and the blue total are
    what a customer reads as the document, and `print-color-adjust: exact` is
@@ -1479,13 +1478,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* THE ITEMS ARE BANDED, NOT RULED: the column names on the grey band, the
    lines under it with no rule between them, so a deduction reads as part of
-   the rental above it, and one rule closing the box. */
+   the rental above it, framed in the parties' border so it reads as the
+   third box on the sheet. */
 .scheduler-customer-quote__table {
   inline-size: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   margin-block-start: 12pt;
-  border-block-end: 1px solid var(--rux-border-strong-01);
+  border: 1px solid var(--rux-border-subtle-01);
 }
 
 .scheduler-customer-quote__table th,
@@ -1562,11 +1562,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__sum--total .scheduler-customer-quote__total-value { font-size: 14pt; }
 
-/* The terms and the acceptance each stay whole, so a quote whose items fill
-   the sheet sends them over to the next one together. */
-.scheduler-customer-quote__fine,
-.scheduler-customer-quote__accept {
-  margin-block-start: 8pt;
+/* The terms stay whole, so a quote whose items fill the sheet sends them
+   over to the next one together. */
+.scheduler-customer-quote__fine {
+  margin-block-start: 12pt;
   break-inside: avoid;
 }
 
@@ -1577,8 +1576,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-secondary);
 }
 
-/* Small and in two columns: eight terms have to leave the line to accept on
-   the same sheet as the price. A term never breaks across the columns. */
+/* Small and in two columns, so eight terms stay on the same sheet as the
+   price. A term never breaks across the columns. */
 .scheduler-customer-quote__terms {
   margin: 4pt 0 0;
   padding-inline-start: 14pt;
@@ -1594,28 +1593,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   break-inside: avoid;
 }
 
-/* THE LINES TO ACCEPT IT ARE RULES, NOT UNDERSCORES: a name, a signature and
-   a date, each a rule with its label under it, a signature's depth over
-   them. A typed underscore run is a different length in every font; a
-   border is the length it is told to be. */
-.scheduler-customer-quote__marks {
-  display: grid;
-  grid-template-columns: 3fr 2.5fr 1.5fr;
-  gap: 16pt;
-  margin-block-start: 24pt;
-}
-
-.scheduler-customer-quote__mark {
-  margin: 0;
-  padding-block-start: 2pt;
-  border-block-start: 1px solid var(--rux-text-primary);
-  font-size: 9pt;
-  line-height: 12pt;
-  color: var(--rux-text-secondary);
-}
-
 .scheduler-customer-quote__foot {
-  margin: 8pt 0 0;
+  margin: 16pt 0 0;
   text-align: center;
   font-size: 9pt;
   line-height: 12pt;
@@ -1749,7 +1728,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* NOTHING IS CUT IN HALF BY A FOLD: the table goes over whole, and the terms
    and the policies break between paragraphs, never inside one; the terms
-   and the acceptance go over whole, above. It holds on
+   go over whole, above. It holds on
    screen too, where it moves nothing, because the preview reads it to put its
    folds where the printer's are. */
 .scheduler-customer-quote__policy,

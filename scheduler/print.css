@@ -1633,14 +1633,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   line-height: 1.3;
 }
 
-/* The trip, as one ruled band: a label and its answer, twice, each label
+/* The trip, as one ruled band: a label and its answer, three times, each label
    grey and regular as the quote's are and in the quote's type and rules. The
-   date is as wide as it is, and never less than a date's width, so a blank
-   one has room to be typed into; the destination takes what is left. */
+   date and the estimate number are as wide as they are, and never less than
+   their widths, so a blank one has room to be typed into; the destination
+   takes what is left. */
 .scheduler-customer-quote__trip {
   margin-block-start: 12pt;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content);
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content) auto minmax(0.8in, max-content);
   border: 1px solid var(--rux-border-subtle-01);
 }
 
@@ -1667,10 +1668,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-inline-end: 1px solid var(--rux-border-subtle-01);
 }
 
-/* The date keeps to one line and is always whole. A destination longer than
-   its box wraps onto a second line, and a word longer than the box breaks,
-   because the customer signs under it and every word of it is printed. */
-.scheduler-customer-quote__trip-value:last-child { white-space: nowrap; }
+/* The date and the number keep to one line and are always whole. A
+   destination longer than its box wraps onto a second line, and a word
+   longer than the box breaks, because the customer signs under it and every
+   word of it is printed. */
+.scheduler-customer-quote__trip-value:not(:nth-child(2)) { white-space: nowrap; }
 
 .scheduler-customer-quote__trip-value { overflow-wrap: anywhere; }
 

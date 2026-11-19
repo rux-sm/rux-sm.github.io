@@ -147,9 +147,11 @@
      read from Settings because there is no Settings page yet to hold the yard. */
   const COMPANY = {
     address: '2801 Zinnia Avenue, McAllen, TX 78504',
-    phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
+    phones: '(956) 994-1169 / Fax 994-9491 / Cell (956) 648-9691',
     // The office's main line, which the quote's letterhead and foot name.
     phone: '(956) 994-1169',
+    // The cell, with its area code, which a caller from outside the valley needs.
+    cell: '(956) 648-9691',
     // Where the card authorization goes back, which is never by email.
     fax: '(956) 994-9491',
     // The quote's letterhead carries it, and its signature line asks for the
@@ -1452,7 +1454,7 @@
      goes back by. */
   const LETTERHEAD = [
     '2801 Zinnia Ave. McAllen, TX 78504',
-    'Ph. (956) 994-1169 / Ph./Fax 994-9491 / Cell 648-9691',
+    `Ph. (956) 994-1169 / Ph./Fax 994-9491 / Cell ${COMPANY.cell}`,
     `E-mail: ${COMPANY.email}`,
   ];
 
@@ -1460,7 +1462,7 @@
      template sets them, so a quote and the invoice after it are one hand. */
   const QUOTE_LETTERHEAD = [
     '2801 Zinnia Ave., McAllen, TX 78504',
-    `${COMPANY.phone} · Cell 648-9691 · ${COMPANY.email}`,
+    `${COMPANY.phone} · Cell ${COMPANY.cell} · ${COMPANY.email}`,
   ];
 
   // The share of the price a booking puts down, which the terms name and the
@@ -1518,7 +1520,14 @@
     return `${two(now.getMonth() + 1)}/${two(now.getDate())}/${now.getFullYear()}`;
   };
   // Today as the quote names it, Nov 19, 2026, as its trip's days are named.
-  const todayWords = () => new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const todayWords = (days = 0) => {
+    const day = new Date();
+    day.setDate(day.getDate() + days);
+    return day.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  // How long a quote's price holds, counted from the day it is written.
+  const QUOTE_VALID_DAYS = 30;
 
   // Money as a quote prints it, cents and all, and negative for a deduction:
   // the office's own sheet carries two places in every column.
@@ -1749,7 +1758,11 @@
        once, under the items. */
     card.appendChild(quoteHead('QUOTE', {
       lines: QUOTE_LETTERHEAD,
-      refs: [['Estimate #', blank ? '' : trip.trip_ref || ''], ['Date', todayWords()]],
+      refs: [
+        ['Estimate #', blank ? '' : trip.trip_ref || ''],
+        ['Date', todayWords()],
+        ['Valid until', todayWords(QUOTE_VALID_DAYS)],
+      ],
     }));
 
     // Who it is for and who to answer, side by side, each three lines.
@@ -1775,7 +1788,7 @@
 
     // Who accepts it, and the way back under the lines.
     const accept = acceptSection();
-    const foot = el('p', 'scheduler-customer-quote__foot', `Sign and email to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
+    const foot = el('p', 'scheduler-customer-quote__foot', `Sign both pages and email them to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
     foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
     accept.appendChild(foot);
     card.appendChild(accept);
@@ -1795,7 +1808,8 @@
   }
 
   /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
-     trip's destination and dates in the two boxes at its head, the policies,
+     trip's destination, dates and estimate number in the band at its head, so
+     a signed copy sent back alone still names its quote, the policies,
      and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
@@ -1808,6 +1822,7 @@
     };
     pair('Destination', blank ? '' : trip.destination || '');
     pair('Date', blank ? '' : dayRange(trip.start_date, lastDay(trip)));
+    pair('Estimate #', blank ? '' : trip.trip_ref || '');
     card.appendChild(tripBox);
 
     card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',

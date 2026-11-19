@@ -98,14 +98,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    A console's drawing is its PNG in brand/consoles/, shown pixel for pixel
    in its own colours, the same in every theme. A home console's is 36 by 24. */
 .emu-console { display: block; block-size: 3rem; aspect-ratio: 3 / 2; object-fit: contain; image-rendering: pixelated; }
-/* The drawer's consoles: each its drawing over its name and count from the
-   top, so a name on two lines moves no drawing, on Carbon's fast-02 fade. */
-.emu-cabinet { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: var(--rux-spacing-03); }
-.emu-cabinet__console { appearance: none; border: 0; border-block-end: 3px solid transparent; background: var(--rux-layer); color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: center; align-content: start; gap: var(--rux-spacing-01); padding: var(--rux-spacing-04) var(--rux-spacing-02) var(--rux-spacing-03); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-cabinet__console:hover { background: var(--rux-layer-hover); }
-.emu-cabinet__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-cabinet__name, .emu-cabinet__count { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; }
-.emu-cabinet__count { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 
 /* A cover's marks in the drawer: one this Mac lacks, or whose console it
    cannot play, is dimmed; one arriving sits under a veil that lifts from the foot. */
@@ -200,7 +192,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
 .emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 .emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: 4px 4px var(--rux-spacing-03); }
-.emu-mine__row.emu-cabinet { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 6rem; justify-content: start; }
 @media (prefers-reduced-motion: reduce) { .emu-mine, .emu-mine--open { transition: none; } }
 
 /* YOUR MAC: the page's own background, where the TV and the consoles each
@@ -291,17 +282,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    drawing's own light, --emu-lx and --emu-ly its place and --emu-lw and
    --emu-lh its size in art pixels, in the real console's colour: shown and
    softly glowing while the console is on, flashing on and off while its emulator is
-   set up, the only sign the helper gives of an install, and away while it
-   is off, so the drawing's unlit pixel shows. Carbon has no motion for a
+   set up, the only sign the helper gives of an install. Carbon has no motion for a
    light; the glow breathes slowly, and neither moves where motion is reduced. */
-.emu-unit--off .emu-console { opacity: .45; }
 .emu-light { position: absolute; inset-inline-start: calc(var(--emu-lx) * var(--emu-px)); inset-block-start: calc(var(--emu-ly) * var(--emu-px)); inline-size: calc(var(--emu-lw) * var(--emu-px)); block-size: calc(var(--emu-lh) * var(--emu-px)); background: var(--emu-light); pointer-events: none; }
 .emu-light::after { content: ""; position: absolute; inset: 0; box-shadow: 0 0 calc(2 * var(--emu-px)) var(--emu-px) var(--emu-light); opacity: .7; animation: emu-glow 2400ms ease-in-out infinite alternate; }
 .emu-light--error { --emu-light: var(--rux-support-error); }
 .emu-light--success { --emu-light: var(--rux-support-success); }
 .emu-light--warning { --emu-light: var(--rux-support-warning); }
 .emu-light--info { --emu-light: var(--rux-support-info); }
-.emu-unit--off .emu-light { display: none; }
 .emu-unit--setting .emu-light { animation: emu-blink 800ms steps(2) infinite; }
 .emu-unit--setting .emu-light::after { animation: none; }
 @keyframes emu-glow { from { opacity: .25; } to { opacity: .8; } }
@@ -327,17 +315,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-:is(#emu-mine, #emu-foot).emu-lit, :is(#emu-mine, #emu-foot).emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
-:is(#emu-mine, #emu-foot).emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
 .emu-unit--dim { opacity: .3; }
 .emu-unit--fit .emu-console { filter: drop-shadow(0 0 .5rem var(--rux-border-interactive)); }
 
-/* A console in the drawer is carried up into the room; one out in the room is faint. */
-.emu-cabinet__console--out, .emu-cabinet__console--out:hover { background: none; outline: 2px dashed var(--rux-border-subtle-01); outline-offset: -2px; cursor: default; }
-.emu-cabinet__console--out .emu-console { opacity: .25; }
-.emu-cabinet__console[data-console] { cursor: grab; }
 
 /* THE REFUSAL AND THE GAME GOING IN. The wrong console shakes its head and
    says a line; a cartridge drops into its slot and a disc slides onto a tray

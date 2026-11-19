@@ -12,8 +12,8 @@ with a single CRT TV, every console set up on this Mac and their favourite games
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
 holds, each with Download. The tile's foot, mirroring its head, has a
-button for each drawer of what this Mac and the account keep: Games and
-Saves, each opening up over the room's foot. Getting a game, setting up its console and playing it are
+button for each drawer of what this Mac and the account keep: Games,
+Saves and Controllers, each opening up over the room's foot. Getting a game, setting up its console and playing it are
 one press or one drag each, and the page is fun to use
 while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 `emu/room.js`; the rest of Emu is unchanged.
@@ -92,8 +92,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the header's round button, so nothing else stands around the room.
 - **The tile's foot mirrors its head:** the md size token's height over a
   rule, in by the theme's inset, with a ghost button for each drawer from
-  its start, Games and Saves, each with a chevron that turns down while its
-  drawer is open. Any other view of what this Mac or the account keeps joins
+  its start, Games, Saves and Controllers, each with a chevron that turns
+  down while its drawer is open. Any other view of what this Mac or the account keeps joins
   them as a button.
 - **A drawer opens up from its button, floating over the room's foot,** 8px
   in from its edges, raised with Carbon's raised shadow, unfolding on
@@ -208,11 +208,16 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   and in its console's slot while the game is in. A game can have several,
   each with a name; only one is in at a time, since an emulator finds a save
   by a fixed name. A game's other cards are in Saves.
-- **Controllers, a drawer from the foot, lists a console's controls for each
-  controller,** named for the controller, such as "Pro Controller", since an emulator keeps a
+- **Controllers, a drawer from the foot, is each controller this Mac sees,**
+  a card with Carbon's game-console glyph, its name as its maker gives it and
+  whether it is connected, read from Chrome's Gamepad API, which shows a
+  controller only once a button on it is pressed, so an empty drawer says to
+  press one. Until the profiles carry them it says its button layouts stay
+  on each Mac. Each controller's layouts for each console then show on its
+  card, named for the controller, such as "Pro Controller", since an emulator keeps a
   layout for each controller it has seen. They travel with the account, as
   `docs/plans/emu-emulator-profiles.md` carries them, so a layout set on one
-  Mac is there on the next, and putting a console away carries them with its
+  Mac is there on the next, and removing a console carries them with its
   saves.
 - **Saves calls a save what its console does:** a memory card, a
   cartridge's save or save data, a word each system has in
@@ -294,7 +299,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Questions
 
-- Besides Saves and Controllers, what else should the foot open,
+- Besides Games, Saves and Controllers, what else should the foot open,
   such as favourites or time played?
 
 ## Tasks
@@ -311,8 +316,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - [ ] Draw a game's card on its cover and in its console's slot, with
       pulling one out, dropping one in from Saves and the console's card
       light.
-- [ ] Add Controllers to the foot as a drawer, each controller's layouts for
-      each console, once `docs/plans/emu-emulator-profiles.md` carries them.
+- [ ] Show each controller's layouts for each console on its card in
+      Controllers, once `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Draw a card in pixel art.
 - [ ] Have removing a console stop its game first, once the helper says
       which runs.

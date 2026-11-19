@@ -48,11 +48,13 @@
    game's console and opens its panel.
 
    The tile's foot has a button for each drawer, which opens up over the
-   room's foot, one at a time, both closed each time the page loads. Games
+   room's foot, one at a time, all closed each time the page loads. Games
    is a row that scrolls sideways of this Mac's games, favourites first, one
    still arriving under a veil that lifts as it comes. Saves is the picked
    console's saves as cards: each game's, the one in it and those out, with
    Take out, Put in and a name to change, then the console's own.
+   Controllers is each controller this Mac sees, and says its button
+   layouts stay on each Mac for now.
 
    A thing in the room is itself carried with the pointer, and a game from
    Games is held as a copy. A word follows it and says what letting go will
@@ -780,8 +782,8 @@
   // console it was left on.
   const openStore = () => window.Rux.modal.open('emu-store', $('emu-store-open'));
   $('emu-store-open').addEventListener('click', openStore);
-  // THE DRAWER opens up from the foot's buttons, each its own: Games or
-  // Saves. Pressing the open one, or Escape, closes it, and its
+  // THE DRAWER opens up from the foot's buttons, each its own: Games, Saves
+  // or Controllers. Pressing the open one, or Escape, closes it, and its
   // button takes the focus back; pressing another turns the drawer to that
   // one. Its button's chevron turns down while its drawer is open. It starts
   // closed each time the page loads, so the room shows whole.
@@ -798,7 +800,25 @@
       if (on) $('emu-mine').setAttribute('aria-label', b.textContent.trim());
     }
     if (pane === 'emu-storage') renderStorage();
+    if (pane === 'emu-pads-pane') renderPads();
   }
+  // CONTROLLERS, the drawer: each controller this Mac sees through Chrome's
+  // Gamepad API, named as its maker names it, its maker's numbers left off.
+  // Chrome shows a controller to a page only once one of its buttons is
+  // pressed, so an empty drawer says to press one. Its button layouts are
+  // each emulator's own on each Mac until docs/plans/emu-emulator-profiles.md
+  // carries them, and the drawer says so.
+  function renderPads() {
+    const pads = [...(navigator.getGamepads?.() ?? [])].filter(Boolean);
+    $('emu-pads-none').hidden = pads.length > 0;
+    $('emu-pads').replaceChildren(...pads.map(pad => {
+      const li = el('li', 'emu-pad');
+      const name = pad.id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller';
+      li.append(useOf(svgOf('emu-pad__icon', '0 0 32 32'), '#i-game--console'.slice(1)), el('span', 'emu-store__name', name), el('span', 'emu-row__sub', 'Connected'));
+      return li;
+    }));
+  }
+  for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { if (drawer === 'emu-pads-pane') renderPads(); });
   for (const b of drawerButtons) b.addEventListener('click', () => openDrawer(drawer === b.dataset.drawer ? null : b.dataset.drawer));
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !drawer || panelOpen() || document.querySelector('.rux--modal.is-visible')) return;

@@ -108,6 +108,8 @@ const ICONS = [
   // THE UPDATES BUTTON on a scheduler trip bar, leading the row that opens
   // them, in the family of the crew's marks under it.
   'chat',
+  // A GAME CONTROLLER, the Controllers button in the foot of Emu's room.
+  'game--console',
 ];
 
 /* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.

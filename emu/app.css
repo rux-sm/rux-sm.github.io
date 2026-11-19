@@ -193,6 +193,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 .emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: 4px 4px var(--rux-spacing-03); }
 @media (prefers-reduced-motion: reduce) { .emu-mine, .emu-mine--open { transition: none; } }
+/* A controller in its drawer: Carbon's game-console glyph over its name and
+   whether it is connected, in a row as the store's cards are. */
+.emu-pads { list-style: none; display: flex; gap: var(--rux-spacing-03); }
+.emu-pad { flex: none; inline-size: 10rem; display: grid; gap: var(--rux-spacing-02); padding: var(--rux-spacing-05); background: var(--rux-layer); }
+.emu-pad__icon { inline-size: 2rem; block-size: 2rem; fill: currentColor; margin-block-end: var(--rux-spacing-03); }
 
 /* YOUR MAC: the page's own background, where the TV and the consoles each
    stand where they were left. Inside it every size is a whole number of art

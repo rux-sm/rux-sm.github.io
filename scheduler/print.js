@@ -1802,25 +1802,20 @@
   }
 
   /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
-     estimate number under its name, as the quote sets it, so a signed copy
-     sent back alone still names its quote; the trip's destination and dates
-     in the band under the head; the policies,
+     estimate number, the trip's destination and its dates under its name, as
+     the quote sets its references, so a signed copy sent back alone still
+     names its quote and trip; the policies,
      and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
-    card.appendChild(quoteHead('TERMS AND CONDITIONS', {
-      refs: [['Estimate #', blank ? '' : trip.trip_ref || '']],
-    }));
-
-    const tripBox = el('div', 'scheduler-customer-quote__trip');
-    const pair = (label, value) => {
-      tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-label', label));
-      tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-value scheduler-customer-quote__typed', value));
-    };
-    pair('Destination', blank ? '' : trip.destination || '');
     // The dates in the quote's own words, so the two sheets say them alike.
-    pair('Date', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
-    card.appendChild(tripBox);
+    card.appendChild(quoteHead('TERMS AND CONDITIONS', {
+      refs: [
+        ['Estimate #', blank ? '' : trip.trip_ref || ''],
+        ['Destination', blank ? '' : trip.destination || ''],
+        ['Trip date', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip))],
+      ],
+    }));
 
     card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',
       'I acknowledge that by signing this form I confirm that I have read and agree with the following Escamilla Tour Buses Policies:'));

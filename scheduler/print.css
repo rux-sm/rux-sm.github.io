@@ -1396,12 +1396,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* Each reference a label and its value on one line, the value to the
    trailing edge, as the invoice's header sets them, in the quote's text on
-   both sheets, which the agreement's small policies would otherwise shrink. */
+   both sheets, which the agreement's small policies would otherwise shrink.
+   They are 200pt wide on both, on the trailing edge of a name that may be
+   wider, and a destination longer than its line wraps, every word printed. */
 .scheduler-customer-quote__refs {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 8pt;
-  margin: 4pt 0 0;
+  inline-size: 200pt;
+  margin: 4pt 0 0 auto;
   font-size: 11pt;
   line-height: 16pt;
 }
@@ -1416,6 +1419,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__refs dd {
   margin: 0;
   text-align: end;
+  overflow-wrap: anywhere;
 }
 
 /* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on and in their
@@ -1447,13 +1451,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   min-inline-size: 0;
 }
 
-/* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box, the column
-   names, and the agreement's Destination and Date. Gray 20 is Carbon's own,
+/* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box and the
+   column names. Gray 20 is Carbon's own,
    the token the paper's g10 theme resolves, and the label keeps the primary
    ink, which reads on it where the secondary would not. */
 .scheduler-customer-quote__label,
-.scheduler-customer-quote__table th,
-.scheduler-customer-quote__trip-label {
+.scheduler-customer-quote__table th {
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   /* The prefix is for the Chrome the office runs, which took it before the
@@ -1634,63 +1637,21 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* ── The agreement ────────────────────────────────────────────────────────
    The second sheet, the terms the customer signs with the quote: the quote's
-   head with the form's name, the trip in one band, and the policies in small
-   type with their headings underlined into the text. Its head, band,
-   labels and lines to sign are the quote's; only the policies' size is this
+   head with the form's name and the trip in its references, and the
+   policies in small type with their headings underlined into the text. Its
+   head and lines to sign are the quote's; only the policies' size is this
    sheet's own. */
 .scheduler-customer-quote--agreement {
   font-size: 8.5pt;
   line-height: 1.3;
 }
 
-/* The trip, as one ruled band: a label and its answer, twice, each label
-   grey and regular as the quote's are and in the quote's type and rules. The
-   date is as wide as it is, and never less than a date's width, so a blank
-   one has room to be typed into; the destination takes what is left. */
-.scheduler-customer-quote__trip {
-  margin-block-start: 12pt;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto minmax(1.4in, max-content);
-  border: 1px solid var(--rux-border-subtle-01);
-}
-
-/* Each label in the quote's own band type, and its value in the quote's
-   text, on the band's 24pt line. */
-.scheduler-customer-quote__trip-label,
-.scheduler-customer-quote__trip-value {
-  margin: 0;
-  padding: 0 8pt;
-  line-height: 24pt;
-}
-
-.scheduler-customer-quote__trip-label {
-  font-size: 10pt;
-  font-weight: 600;
-}
-
-.scheduler-customer-quote__trip-value {
-  font-size: 11pt;
-  border-inline-start: 1px solid var(--rux-border-subtle-01);
-}
-
-.scheduler-customer-quote__trip-value:not(:last-child) {
-  border-inline-end: 1px solid var(--rux-border-subtle-01);
-}
-
-/* The date keeps to one line and is always whole. A destination longer
-   than its box wraps onto a second line, and a word longer than the box
-   breaks, because the customer signs under it and every word of it is
-   printed. */
-.scheduler-customer-quote__trip-value:last-child { white-space: nowrap; }
-
-.scheduler-customer-quote__trip-value { overflow-wrap: anywhere; }
-
 /* THE SHEET IS FULL. Sixteen paragraphs and the line to sign have to stay on
    one sheet, so the line over the policies and the gap between them are a
-   little closer than the quote's terms are set, and the trip stands the
+   little closer than the quote's terms are set, and the intro stands the
    quote's 12pt under the head. */
 .scheduler-customer-quote__agreement-intro {
-  margin: 8pt 0;
+  margin: 12pt 0 8pt;
   text-align: center;
 }
 
@@ -1716,8 +1677,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   /* A BOX SAYS WHERE THE PEN GOES BY BEING EMPTY, not by a second rule inside
      a border it already has. Filled, it is a quote; empty, it is a question.
      The page's blanket dotted rule is what these undo. */
-  .scheduler-customer-quote__value[data-typed],
-  .scheduler-customer-quote__trip-value[data-typed] { border-block-end: 0; }
+  .scheduler-customer-quote__value[data-typed] { border-block-end: 0; }
 
   .scheduler-customer-quote__total-value[data-typed] { border-block-end: 0; }
 

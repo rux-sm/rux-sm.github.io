@@ -1028,7 +1028,7 @@
     const body = el('tbody');
     const rows = fig.days ? [['Total', ...fig.total]] : [[...fig.total]];
     rows.forEach(cells => {
-      const tr = el('tr', fig.days ? 'scheduler-driver-itinerary__total' : null);
+      const tr = el('tr');
       for (const c of cells) tr.appendChild(el('td', null, c));
       body.appendChild(tr);
     });
@@ -1045,7 +1045,13 @@
      makes it, where the two differ, as Billing does. A rental priced on
      other miles than the route has now says so, since the price moves with
      the itinerary. Dead miles taken off as a discount are that line's to
-     say, so the rental above it says nothing of them. */
+     say, so the rental above it says nothing of them.
+
+     A LINE IS NAMED AND FIGURED AS THE QUOTE PRINTS IT, the item the Billing
+     tab saved and the amount in the quote's two places, so the sheet filed
+     behind the quote reads Bus Rental and -560.00 where the quote does; a
+     line saved with no item takes its kind's name. The totals stand under
+     the lines in the quote's box, this sheet's on the grey. */
   const LINE_NAMES = { rental: 'Bus rental', second_driver: 'Second driver', relief: 'Relief driver',
     discount: 'Discount', hotel: 'Hotel', other: 'Other' };
   const isDeadDiscount = l => l.kind === 'discount' && /dead miles/i.test(l.description || '');
@@ -1082,8 +1088,8 @@
       if (under) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', under));
       return td;
     };
-    const priceRow = (name, note, basis, count, amount, cls) => {
-      const tr = el('tr', cls || null);
+    const priceRow = (name, note, basis, count, amount) => {
+      const tr = el('tr');
       tr.append(twoLines(name, note), twoLines(basis, count), el('td', null, amount));
       body.appendChild(tr);
     };
@@ -1116,7 +1122,7 @@
       const cost = num(l.cost);
       const amount = num(l.amount) ?? (cost === null ? null : (qty ?? 1) * cost);
       const kind = LINE_NAMES[l.kind] ? l.kind : 'other';
-      const name = isDeadDiscount(l) ? 'Dead miles discount' : kind === 'other' ? (l.item || LINE_NAMES.other) : LINE_NAMES[kind];
+      const name = isDeadDiscount(l) ? 'Dead miles discount' : l.item || LINE_NAMES[kind];
       const note = split && !l.leg ? 'Whole trip' : kind === 'other' ? l.description || '' : '';
       let basis = '';
       if (kind === 'rental') {
@@ -1142,17 +1148,31 @@
       const count = [cost === null ? 'No cost yet'
         : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null,
       calc !== null && calc !== cost ? `calculator ${usd(calc)}` : null].filter(Boolean).join(' · ') || null;
-      priceRow(name, note, basis || count, basis ? count : null, amount === null ? '—' : usd(amount));
+      // A line priced on nothing the sheet can name, a discount or a hotel at
+      // one price, says what the quote's Description says of it.
+      const said = kind === 'rental' || kind === 'other' || isDeadDiscount(l) ? '' : l.description || '';
+      priceRow(name, note, basis || count || said, basis ? count : null, amount === null ? '—' : money(amount) || '0.00');
     }
-    if (!lines.length) priceRow('Quoted price', 'No quote lines', '', null, usd(quoted));
+    if (!lines.length) priceRow('Quoted price', 'No quote lines', '', null, money(quoted));
 
     // The total of the lines printed; on a split leg, the trip's too.
     const sum = lines.reduce((n, l) => n + (num(l.amount) ?? (num(l.cost) ?? 0) * (num(l.quantity) ?? 1)), 0);
     const total = lines.length ? Math.round(sum * 100) / 100 : quoted;
-    priceRow(split ? `${legName(trip, leg)} total` : 'Total', '', '', null, usd(total), 'scheduler-driver-itinerary__total');
-    if (split && quoted !== null && quoted !== total) priceRow('Trip total', '', '', null, usd(quoted), 'scheduler-driver-itinerary__total');
     t.append(head, body);
-    return t;
+    const sums = el('div', 'scheduler-customer-quote__sums');
+    const sumRow = (label, amount, own) => {
+      const row = el('p', `scheduler-customer-quote__sum${own ? ' scheduler-customer-quote__sum--total' : ''}`);
+      row.append(el('span', null, label), el('span', own ? 'scheduler-customer-quote__total-value' : null, usd(amount)));
+      sums.appendChild(row);
+    };
+    sumRow(split ? `${legName(trip, leg)} total` : 'Total', total, true);
+    if (split && quoted !== null && quoted !== total) sumRow('Trip total', quoted, false);
+    const under = el('div', 'scheduler-customer-quote__under');
+    under.appendChild(sums);
+    // The lines and their total are one block, which a fold never parts.
+    const priced = el('div', 'scheduler-driver-itinerary__priced');
+    priced.append(t, under);
+    return priced;
   }
 
   /* A row with nothing in it, for the Add a row button and for a blank form.
@@ -1160,13 +1180,14 @@
      naming what the row would have been. */
   const blankRow = () => itineraryRow({}, null);
 
-  /* THE APP BAR ON PAPER: the logo's one-line wordmark and the form's name
-     past a rule on the left, the days the trip runs on the right, at the
-     screen header's height and type. Under it, across the full width so a
-     long one keeps to one line, where the group is going. Both trip lines can
-     be typed over like any other line of the form. No address or phones:
-     the sheet goes to the company's own driver, who has both. */
-  function itineraryHead(subject, name = 'Trip itinerary', detailed = false) {
+  /* THE APP BAR ON PAPER, the driver's sheet's head: the logo's one-line
+     wordmark and the form's name past a rule on the left, the days the trip
+     runs on the right, at the screen header's height and type. Under it,
+     across the full width so a long one keeps to one line, where the group
+     is going. Both trip lines can be typed over like any other line of the
+     form. No address or phones: the sheet goes to the company's own driver,
+     who has both. */
+  function itineraryHead(subject) {
     const { trip, leg } = subject;
     const start = legStart(trip, leg);
     const end = legEnd(trip, leg);
@@ -1184,11 +1205,9 @@
     logo.alt = 'Escamilla Tour Buses';
     mark.appendChild(logo);
     brand.appendChild(mark);
-    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', name));
+    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
     head.appendChild(brand);
     head.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
-    // The Detailed layout names the destination beside the client instead.
-    if (detailed) return head;
 
     const where = el('div', 'scheduler-driver-itinerary__where');
     where.appendChild(destinationWords(typed('destination', 'Destination', ''), trip));
@@ -1218,33 +1237,66 @@
     return node;
   };
 
+  // A partner's coach and its driver, as a covered bus's sheet names them.
+  const partnerWords = covered => [covered.partner?.name, covered.partner_vehicle,
+    covered.partner_driver ? [covered.partner_driver.name, covered.partner_driver.phone].filter(Boolean).join(', ') : null]
+    .filter(Boolean).join(' · ');
+
   /* WHO: the client and who to call on the day. No crew, no bus and no leg,
      because the envelope this sheet goes in names all three, and naming them
-     twice is one fact with two homes. The Detailed layout, read at a desk,
-     puts where the group is going on the same line, in the same type. A bus a
-     partner covers has no envelope of ours, so its sheet, which goes to the
-     partner, leads with the partner, its coach and its driver. */
-  function itineraryMeta(subject, detailed = false) {
+     twice is one fact with two homes. A bus a partner covers has no envelope
+     of ours, so its sheet, which goes to the partner, leads with the
+     partner, its coach and its driver. */
+  function itineraryMeta(subject) {
     const { trip, leg } = subject;
     const [contact, backup] = contactsOf(trip, leg);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
     const covered = subject.assignment?.partner_id ? subject.assignment : null;
-    if (covered) {
-      const driver = covered.partner_driver;
-      meta.appendChild(headField('Partner', [covered.partner?.name, covered.partner_vehicle,
-        driver ? [driver.name, driver.phone].filter(Boolean).join(', ') : null].filter(Boolean).join(' · ')));
-    }
-    if (detailed) {
-      meta.classList.add('scheduler-driver-itinerary__meta--three');
-      const where = headField('Destination', '');
-      destinationWords(where.querySelector('dd'), trip);
-      meta.appendChild(where);
-    }
+    if (covered) meta.appendChild(headField('Partner', partnerWords(covered)));
     meta.appendChild(headField('Client', trip.customer || ''));
     meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
     if (backup) meta.appendChild(headField('Backup', [backup.name, backup.phone].filter(Boolean).join(' · ')));
     return meta;
+  }
+
+  /* THE DETAILED SHEET IS SET AS THE QUOTE IS, by the quote's own parts,
+     because the office prints the two together as the Office copy and files
+     them together: the quote's head, with the sheet's name over the trip's
+     estimate number, where the group is going and the leg's days, so a sheet
+     out of the binder alone still names its quote; and the quote's two
+     boxes, the client and who to call on the day. The days are the quote's
+     words, and a one-day leg's carries its weekday, which a longer leg's day
+     headings carry instead. A bus a partner covers leads with the partner,
+     in a box across both. */
+  function detailedHead(subject) {
+    const { trip, leg } = subject;
+    const start = legStart(trip, leg);
+    const end = legEnd(trip, leg);
+    return quoteHead('ITINERARY', {
+      lines: QUOTE_LETTERHEAD,
+      refs: [
+        ['Estimate #', trip.trip_ref || ''],
+        ['Destination', trip.destination || ''],
+        ['Trip date', !start ? '' : end && end !== start ? window.SchedulerQuoteText.dates(start, end) : dateWords(start)],
+      ],
+    });
+  }
+
+  function detailedParties(subject) {
+    const { trip, leg } = subject;
+    const [contact, backup] = contactsOf(trip, leg);
+    const covered = subject.assignment?.partner_id ? subject.assignment : null;
+    const parties = el('div', 'scheduler-customer-quote__parties');
+    if (covered) {
+      const partner = quoteBox('Partner', [partnerWords(covered)]);
+      partner.classList.add('scheduler-driver-itinerary__partner');
+      parties.appendChild(partner);
+    }
+    parties.appendChild(quoteBox('Client', [trip.customer || '']));
+    parties.appendChild(quoteBox('Contact', [contact.name, contact.phone,
+      backup ? `Backup: ${[backup.name, backup.phone].filter(Boolean).join(' · ')}` : '']));
+    return parties;
   }
 
   const COLUMNS = ['Time', 'Location', 'Address'];
@@ -1259,9 +1311,10 @@
      adds its rows once the sheet is drawn and can be measured. */
   function itinerary(subject, layout) {
     const { trip, leg } = subject;
-    /* THE DETAILED LAYOUT IS THE OFFICE'S: the Simple sheet with the yard at
-       both ends, each wait and what it counts as, and the leg's figures. It is
-       drawn only for a trip, since every figure comes from its route. */
+    /* THE DETAILED LAYOUT IS THE OFFICE'S: the Simple sheet's stops with the
+       yard at both ends, each wait and what it counts as, and the leg's
+       figures and price, set as the quote is. It is drawn only for a trip,
+       since every figure comes from its route. */
     const detailed = layout === 'detailed' && !!trip?.id;
     const model = detailed
       ? window.SchedulerRouteFigures.fromStops(trip, legKey(trip, leg), trip.trip_stops, routeTimes, routeOfKey(trip, leg)?.id ?? null) : null;
@@ -1275,9 +1328,12 @@
        row's own Arr and Dep. */
     const restFor = stop => (stop.dwell_status === 'sleeper' ? 'Rest in sleeper' : null);
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
-    if (detailed) card.dataset.layout = 'detailed';
-    card.appendChild(itineraryHead(subject, detailed ? 'Detailed itinerary' : undefined, detailed));
-    card.appendChild(itineraryMeta(subject, detailed));
+    if (detailed) {
+      card.dataset.layout = 'detailed';
+      card.append(detailedHead(subject), detailedParties(subject));
+    } else {
+      card.append(itineraryHead(subject), itineraryMeta(subject));
+    }
 
     /* The run of stops alone: a day row is the old format, never a stop. The
        yard is not printed at either end: the sheet runs from the pickup's
@@ -1395,9 +1451,10 @@
       row.querySelector('[contenteditable]')?.focus();
     });
     card.appendChild(add);
-    /* THE SUMMARY IS ONE BLOCK, the miles and hours and the price, kept
-       whole: a fold through it would leave its total on another sheet from
-       its lines, so it moves to the next sheet entire. */
+    /* THE SUMMARY, the miles and hours and then the price, each kept whole:
+       a fold through either would leave a total on another sheet from its
+       lines. A fold may fall between them, so the hours stay under the stops
+       they sum where only the price needs the next sheet. */
     if (detailed) {
       const summary = el('div', 'scheduler-driver-itinerary__summary');
       summary.appendChild(detailedTotals(fig));
@@ -2720,8 +2777,10 @@
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is
          the paper's rather than a limit -- a short itinerary still draws a
-         whole page of it, because that is what comes out of the printer. */
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
+         whole page of it, because that is what comes out of the printer. It
+         is punched and takes the quote's margin, since the office files the
+         two together. */
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.75in' },
       copies: subject => copiesOf(subject.trip).map(leg => ({
         ...subject,
         leg,
@@ -2731,7 +2790,8 @@
         assignment: subject.assignment && onLeg(subject.trip, leg, subject.assignment) ? subject.assignment : null,
       })),
       copyName: subject => copyDays(subject.trip, subject.leg),
-      typed: { always: true, fields: ITINERARY_FIELDS },
+      // The Detailed layout's head and boxes are the quote's, typed as the quote's are.
+      typed: { always: true, fields: [...ITINERARY_FIELDS, ...QUOTE_FIELDS] },
       render: itinerary,
       fileName: itineraryFileName,
       drawn: (card, blank) => { if (blank) ruleToFoot(card); },

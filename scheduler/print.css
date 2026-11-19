@@ -939,9 +939,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
    AND IT IS NOT THE ENVELOPE. That form is a grid of boxes because a box is
    what tells a driver where to write on a 6 by 9 envelope held in one hand.
-   This one is read down, at a desk or on a seat, so it is ruled rather than
-   boxed: a line under the column names, a hairline between the stops, and
-   nothing else. Two forms drawn the same way are one form printed twice. */
+   This one is read down, at a desk or on a seat, so the driver's sheet is
+   ruled rather than boxed: a line under the column names, a hairline between
+   the stops, and nothing else. Two forms drawn the same way are one form
+   printed twice. The office's sheet, the Detailed layout below, is set as
+   the quote it is filed behind. */
 
 .scheduler-driver-itinerary__head {
   display: flex;
@@ -1275,14 +1277,81 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* ── The Detailed layout ─────────────────────────────────────────────────
-   The office's copy of the itinerary: the Simple sheet with the yard at both
-   ends, each wait and what it counts as, and the leg's figures from the
-   Route tab. Rules and weight only, as the rest of the form. */
+   The office's copy of the itinerary: the stops with the yard at both ends,
+   each wait and what it counts as, and the leg's figures and price.
 
-/* Destination, Client and Contact on one line under the bar, Contact still
-   over the Address column. */
-.scheduler-driver-itinerary__meta--three { grid-template-columns: 30% 28% 42%; }
-.scheduler-driver-itinerary__meta--three .scheduler-driver-itinerary__field { padding-inline-end: var(--rux-spacing-05); }
+   IT IS SET AS THE QUOTE IS, because the office prints it behind the quote
+   as the Office copy and files the two together, and two sheets of one file
+   read as one hand. Its head and its two boxes are the quote's own, drawn by
+   the quote's parts and styled by the quote's rules below; its stops, its
+   hours and its price are each a box in the quote's border under the
+   quote's grey band, in the quote's type and on its points, the parts 12pt
+   apart; and its totals stand in the quote's box under the price. The
+   quote's rules name this layout where they set the type and the grey. */
+
+/* The boxes hold a name over a phone, two lines where the quote's hold
+   three, and a partner's, across both, holds one. */
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-customer-quote__value { min-block-size: 32pt; }
+
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__partner { grid-column: 1 / -1; }
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__partner .scheduler-customer-quote__value { min-block-size: 16pt; }
+
+/* A TABLE IS A BOX: the quote's border about it and its column names on the
+   grey band, which the quote's own rule lays. The hairline between the
+   stops stays, because a stop is three columns of two or three lines and
+   the eye needs the row; the last row's goes, since the box closes it. */
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table {
+  margin-block-start: 12pt;
+  border: 1px solid var(--rux-border-strong-01);
+  font-size: 11pt;
+  line-height: 16pt;
+  letter-spacing: 0;
+}
+
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table th,
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table td { padding: 4pt 8pt; }
+
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table th {
+  padding-block: 0;
+  border-block-end: 0;
+  font-size: 10pt;
+  font-weight: 600;
+  line-height: 24pt;
+  letter-spacing: 0;
+}
+
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table tbody > tr:last-child td { border-block-end: 0; }
+
+/* A day's table joins the one before it into one box: the box's own rule
+   closes a day, and the next day's name stands under it on white, in the
+   sheet's type and weight, over a rule of its own. The days are the sheet's
+   own children; the hours and the price, inside the summary, stay apart. */
+.scheduler-driver-itinerary[data-layout="detailed"] > .scheduler-driver-itinerary__table + .scheduler-driver-itinerary__table {
+  margin-block-start: 0;
+  border-block-start: 0;
+}
+
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table .scheduler-driver-itinerary__day th {
+  padding-block: 4pt;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  background: none;
+  font-size: 11pt;
+  line-height: 16pt;
+}
+
+/* Time holds a label, a time and the day of one past midnight, "DEP 10:00
+   AM SUN", inside the box's padding. Location holds a hotel's whole name on
+   one line, "Best Western Plus Roland Inn & Suites", and Address, whose
+   street and city are a line each already, takes the rest. */
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table:not(.scheduler-driver-itinerary__price) col:nth-child(1) { inline-size: 124pt; }
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table:not(.scheduler-driver-itinerary__price) col:nth-child(2) { inline-size: 42%; }
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table:not(.scheduler-driver-itinerary__price) col:nth-child(3) { inline-size: auto; }
+
+/* A TIME STANDS ON THE SHEET'S 16pt LINE, as an address does, so a row's
+   second time is level with its city. The label is a box of its own type's
+   height, which leaves the line its depth; at the line's own it stood below
+   the time's baseline and pushed each line down. */
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__at-label { line-height: 1; }
 
 /* The yard is where the bus is, not the group, so its rows read quieter than
    the stops between them. */
@@ -1292,42 +1361,39 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    and quieter than the day's name. */
 .scheduler-driver-itinerary__day-figures {
   float: inline-end;
-  font-weight: var(--rux-body-compact-01-font-weight);
-  font-variant-numeric: tabular-nums;
+  font-weight: 400;
   color: var(--rux-text-secondary);
 }
 
-/* The summary after the stops, the miles and hours and the price, with room
-   above it to stand apart. It moves to the next sheet whole rather than be
-   cut, on screen too, where the preview reads it to place its folds. */
-.scheduler-driver-itinerary__summary {
-  margin-block-start: var(--rux-spacing-07);
-  break-inside: avoid;
-}
+/* The summary after the stops, the miles and hours and then the price, the
+   parts' 12pt under them and between them. Each is kept whole, on screen
+   too, where the preview reads it to place its folds, and a fold may fall
+   between the two: the hours stay under the stops they sum, and the price
+   goes over with its total. */
+.scheduler-driver-itinerary__summary { margin-block-start: 12pt; }
 
-.scheduler-driver-itinerary__summary > .scheduler-driver-itinerary__totals { margin-block-start: 0; }
+.scheduler-driver-itinerary__totals,
+.scheduler-driver-itinerary__priced { break-inside: avoid; }
 
-/* The Total closes the days with a strong rule and weight, since a fill
-   would print as nothing. */
-.scheduler-driver-itinerary__totals .scheduler-driver-itinerary__total td,
-.scheduler-driver-itinerary__price .scheduler-driver-itinerary__total td {
-  border-block-start: 1px solid var(--rux-border-strong-01);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-}
+.scheduler-driver-itinerary__priced { margin-block-start: 12pt; }
 
-/* The price after the miles and hours, with room above to part it from them.
-   What it was priced on takes the width, so a rental's line keeps to one,
-   and the amounts read to the trailing edge, as money on a bill does. */
-.scheduler-driver-itinerary__table.scheduler-driver-itinerary__price { margin-block-start: var(--rux-spacing-07); }
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__summary > .scheduler-driver-itinerary__totals,
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__priced > .scheduler-driver-itinerary__price { margin-block-start: 0; }
+
+/* The miles and hours are one row under their names, in the sheet's weight
+   for a figure that is a total. */
+.scheduler-driver-itinerary__totals td { font-weight: 600; }
+
+/* The price after the miles and hours. Its first column is the hours'
+   first, a fifth, so the two boxes share an edge; Amount is the quote's
+   76pt; and what a line was priced on takes the rest, so a rental's keeps
+   to one line. The amounts read to the trailing edge, as money on a bill
+   does. */
 .scheduler-driver-itinerary__price col:nth-child(1) { inline-size: 20%; }
-.scheduler-driver-itinerary__price col:nth-child(2) { inline-size: 60%; }
-.scheduler-driver-itinerary__price col:nth-child(3) { inline-size: 20%; }
+.scheduler-driver-itinerary__price col:nth-child(2) { inline-size: auto; }
+.scheduler-driver-itinerary__price col:nth-child(3) { inline-size: 76pt; }
 .scheduler-driver-itinerary__price th:last-child,
-.scheduler-driver-itinerary__price td:last-child {
-  padding-inline-end: 0;
-  text-align: end;
-  font-variant-numeric: tabular-nums;
-}
+.scheduler-driver-itinerary__price td:last-child { text-align: end; }
 
 /* ── The customer quote ──────────────────────────────────────────────────
    The QUOTE, set as the office's invoice template is, so a customer holding
@@ -1349,19 +1415,24 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    the strong border, Gray 50, because the subtle one is lost on an office
    printer.
 
-   AND IT IS THE ONE FORM THAT FILLS. The grey bands and the grey total are
+   AND IT IS THE ONE DESIGN THAT FILLS. The grey bands and the grey total are
    what a customer reads as the document, and `print-color-adjust: exact` is
    what carries them past Chrome's Background graphics box, which is off and
    which nobody ticks -- the property exists for a page whose fills are the
    content rather than decoration, and this is one.
 
-   IT IS NOT A LICENCE FOR THE OTHER TWO. The envelope and the itinerary are
-   read, not recognised, and a fill on either buys nothing for a driver; the
-   page's rule still stands everywhere else. What is filled here is named
-   below, and every fill sits behind text that reads on white, so a printer
-   that drops it anyway leaves the form whole. */
+   THE OFFICE'S ITINERARY SHARES IT, the Detailed layout, which is filed
+   behind the quote and set as it is: its type, its paragraphs and its grey
+   are named in the rules below beside the quote's own.
 
-.scheduler-customer-quote {
+   IT IS NOT A LICENCE FOR THE DRIVERS' FORMS. The envelope and the driver's
+   itinerary are read, not recognised, and a fill on either buys nothing for
+   a driver; the page's rule still stands everywhere else. What is filled
+   here is named below, and every fill sits behind text that reads on white,
+   so a printer that drops it anyway leaves the form whole. */
+
+.scheduler-customer-quote,
+.scheduler-driver-itinerary[data-layout="detailed"] {
   font-size: 11pt;
   line-height: 16pt;
   letter-spacing: 0;
@@ -1370,8 +1441,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* Carbon sets every paragraph to its own body size, which would undo the
    sheet's; here a paragraph takes the type of the block it is in, and a class
-   below that names a size still wins, being written after. */
-.scheduler-customer-quote :where(p, h1, h2, dl, dt, dd, ol, li) {
+   below that names a size still wins, being written after. The itinerary's
+   layout is named inside `:where`, so both selectors weigh one class. */
+.scheduler-customer-quote :where(p, h1, h2, dl, dt, dd, ol, li),
+.scheduler-driver-itinerary:where([data-layout="detailed"]) :where(p, h1, h2, dl, dt, dd) {
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
@@ -1475,11 +1548,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* THE GREY, AND EVERY CELL THAT TAKES IT: the label over each box and the
-   column names. Gray 20 is Carbon's own,
-   the token the paper's g10 theme resolves, and the label keeps the primary
-   ink, which reads on it where the secondary would not. */
+   column names, the quote's and the Detailed itinerary's. Gray 20 is
+   Carbon's own, the token the paper's g10 theme resolves, and the label
+   keeps the primary ink, which reads on it where the secondary would not. */
 .scheduler-customer-quote__label,
-.scheduler-customer-quote__table th {
+.scheduler-customer-quote__table th,
+.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__table th {
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   /* The prefix is for the Chrome the office runs, which took it before the

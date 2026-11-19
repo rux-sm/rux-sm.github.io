@@ -1319,8 +1319,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
    ITS SIZES ARE IN POINTS, on the invoice's 8-point rhythm, because the
    invoice it matches is laid out in points in QuickBooks' Layout Designer;
-   the parts stand 12pt apart rather than the invoice's 16, because the
-   quote carries eight terms and a line to accept on the same sheet.
+   the parts stand 12pt apart and the terms and acceptance 8pt, rather than
+   the invoice's 16, because the quote carries eight terms and a line to
+   accept on the same sheet's 738pt.
 
    AND IT IS THE ONE FORM THAT FILLS. The grey bands and the blue total are
    what a customer reads as the document, and `print-color-adjust: exact` is
@@ -1391,7 +1392,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 8pt;
-  margin: 8pt 0 0;
+  margin: 4pt 0 0;
 }
 
 .scheduler-customer-quote__refs dt {
@@ -1422,7 +1423,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 .scheduler-customer-quote__lead {
-  margin: 8pt 0 0;
+  margin: 4pt 0 0;
   padding: 4pt 8pt;
 }
 
@@ -1565,7 +1566,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    the sheet sends them over to the next one together. */
 .scheduler-customer-quote__fine,
 .scheduler-customer-quote__accept {
-  margin-block-start: 12pt;
+  margin-block-start: 8pt;
   break-inside: avoid;
 }
 
@@ -1589,7 +1590,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 .scheduler-customer-quote__term {
-  margin: 0 0 3pt;
+  margin: 0 0 2pt;
   break-inside: avoid;
 }
 
@@ -1601,7 +1602,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: grid;
   grid-template-columns: 3fr 2.5fr 1.5fr;
   gap: 16pt;
-  margin-block-start: 28pt;
+  margin-block-start: 24pt;
 }
 
 .scheduler-customer-quote__mark {

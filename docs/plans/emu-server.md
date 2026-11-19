@@ -25,9 +25,10 @@ The home server, so the drive is not carried between Macs:
   about 3.6 TB usable for a collection of 800 GB, using the drive rux
   already has; hard drives cost a third of SSDs per terabyte, and the
   network, not the drive, sets the speed.
-- **The 2 TB T7 becomes the server's backup and the travel copy,**
-  refreshed from it, since one drive alone loses everything when it fails;
-  Supabase keeps the saves' copy.
+- **The 2 TB T7 becomes the server's backup,** refreshed from it, since one
+  drive alone loses everything when it fails; Supabase keeps the saves'
+  copy. No Mac plays from it, as `docs/plans/emu-no-drive.md` has Emu read
+  no drive.
 - **A matching drive added later turns the pool into a mirror,** which
   TrueNAS does without starting over.
 - **Every drive is CMR, never SMR,** since an SMR drive slows to a crawl
@@ -77,7 +78,7 @@ The home server, so the drive is not carried between Macs:
   `docs/plans/emu-emulator-profiles.md` says, since an emulator writing a
   save over the network loses it if the connection drops.
 - **The server scans itself every night and saves the scan to Supabase,**
-  with a key kept only on the server, so Update is needed only for the T7.
+  with a key kept only on the server, and is the only scan.
 - **The server copies Supabase to itself after each night's scan:** every
   file the `emu-collection` bucket holds and the rows that name them, into
   a `backups` dataset of the `storage` pool, so every Mac's settings and
@@ -104,8 +105,7 @@ The home server, so the drive is not carried between Macs:
   Mac's own library folder, `~/Emulation/roms/<system>/` as on the server,
   with a multi-disc game's playlist and a Switch game's update and add-ons;
   Cancel stops one arriving, and Remove from this Mac frees the space. Play
-  opens a game from there, else from a drive plugged in, and never from the
-  server's share.
+  opens a game only from there.
 - **Rux Emu Helper does every download,** given the page's access token:
   from the server's home address when it answers, since the gateway loops
   the public name back slowly, stalling 5 to 19 seconds or failing, and
@@ -136,9 +136,7 @@ The setup kit, so any Mac is set up in one step:
 
 ## Questions
 
-- Does Update still write the T7's dated zip, as
-  `docs/plans/emu-emulator-profiles.md` has it, once the T7's refresh brings
-  the server's `backups` with the games?
+None open.
 
 ## Tasks
 

@@ -32,23 +32,22 @@ stays, since that is the server reading its own disk.
   `docs/plans/emu-emulator-profiles.md`.
 - **The strip's "Needs sync" follows the server's nightly scan,** since no
   Mac can scan any more: it shows when the last scan saved is older than
-  two days, and says the server's scan is late.
+  two days, one missed night's grace, and says the server's scan is late.
 - **Every page's words for a drive go:** Status, Saves, Problems, Collection
   and Emulators say "the server" or "this Mac" where they said "the drive".
+- **`emu/tools/organize-roms.mjs` runs against the server's `games` folder,**
+  renaming and converting there before the nightly scan.
+- **`emu/tools/scan-roms.mjs` keeps only its `--save` mode,** the server's
+  nightly scan; its run from a Mac against a drive goes.
+- **The `emu_drive` table becomes `emu_scan`,** by a migration shown to rux
+  and applied on a yes, since it holds the last scan's time and the newest
+  emulator versions, not a drive.
+- **The T7 is only the server's backup,** never a travel copy, as
+  `docs/plans/emu-server.md` now says.
 
 ## Questions
 
-- `emu/tools/organize-roms.mjs` renames and converts games on a drive before
-  a scan. Should it run against the server's `games` folder instead, or go?
-- `emu/tools/scan-roms.mjs` also scans a drive from a Mac without `--save`.
-  Should that mode go, keeping only the server's nightly `--save`?
-- The `emu_drive` table holds the last scan's time, its backup and the
-  newest emulator versions. Rename it `emu_scan` by a migration, or keep the
-  name?
-- `docs/plans/emu-server.md` keeps the T7 as the server's backup and a
-  travel copy. Does the travel copy go, leaving the T7 only as the server's
-  backup?
-- Is two days right for "Needs sync", given the scan runs nightly?
+None open.
 
 ## Tasks
 
@@ -61,5 +60,8 @@ stays, since that is the server reading its own disk.
       game not here says to download it.
 - [ ] Point "Needs sync" at the nightly scan's age.
 - [ ] Remove the drive's words from every Emu page and `emu/README.md`.
-- [ ] Settle the tools and the table by the answers above.
+- [ ] Point `emu/tools/organize-roms.mjs` at the server's `games` folder and
+      drop `scan-roms.mjs`'s drive mode.
+- [ ] Rename `emu_drive` to `emu_scan` by a migration, with `emu/data.js`,
+      `emu/scan-save.js`, `emu/tools/copy-supabase.mjs` and their tests.
 - [ ] Update each Mac to the new helper and play a downloaded game on each.

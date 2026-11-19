@@ -1368,9 +1368,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__logo {
   display: block;
-  block-size: 48pt;
+  block-size: 40pt;
   inline-size: auto;
-  max-inline-size: 224pt;
+  max-inline-size: 192pt;
   margin-block-end: 8pt;
 }
 
@@ -1650,10 +1650,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* THE SHEET IS FULL. Sixteen paragraphs and the line to sign have to stay on
    one sheet, so the line over the policies and the gap between them are a
-   little closer than the quote's terms are set, and the intro stands the
-   quote's 12pt under the head. */
+   little closer than the quote's terms are set. */
 .scheduler-customer-quote__agreement-intro {
-  margin: 12pt 0 8pt;
+  margin: 8pt 0;
   text-align: center;
 }
 

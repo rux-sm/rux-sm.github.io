@@ -1452,11 +1452,13 @@
     `E-mail: ${COMPANY.email}`,
   ];
 
-  /* THE QUOTE'S LETTERHEAD, two lines under the logo, as the office's invoice
-     template sets them, so a quote and the invoice after it are one hand. */
+  /* THE QUOTE'S LETTERHEAD, three lines under the logo on both sheets: the
+     address, the phones and the email, each short enough to stay whole
+     beside the agreement's long name. */
   const QUOTE_LETTERHEAD = [
     '2801 Zinnia Ave., McAllen, TX 78504',
-    `${COMPANY.phone} · Cell ${COMPANY.cell} · ${COMPANY.email}`,
+    `${COMPANY.phone} · Cell ${COMPANY.cell}`,
+    COMPANY.email,
   ];
 
   // The share of the price a booking puts down, which the terms name and the
@@ -1569,8 +1571,8 @@
 
   /* THE HEAD OF BOTH SHEETS, as the office's invoice sets it: the logo over
      the letterhead on the leading edge, and the sheet's name on the trailing
-     one, over its references, each a label and a typed value. The agreement
-     carries the logo and its name. */
+     one, over its references, each a label and a typed value. Both sheets
+     carry the same head, so a page sent back alone still says whose it is. */
   function quoteHead(title, { lines = [], refs = [] } = {}) {
     const head = el('header', 'scheduler-customer-quote__head');
     const brand = el('div', 'scheduler-customer-quote__brand');
@@ -1810,6 +1812,7 @@
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
     // The dates in the quote's own words, so the two sheets say them alike.
     card.appendChild(quoteHead('TERMS AND CONDITIONS', {
+      lines: QUOTE_LETTERHEAD,
       refs: [
         ['Estimate #', blank ? '' : trip.trip_ref || ''],
         ['Destination', blank ? '' : trip.destination || ''],

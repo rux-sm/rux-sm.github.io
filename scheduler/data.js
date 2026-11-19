@@ -14624,6 +14624,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-quote') {
+      openTripForm({ form: 'customer-quote', trip: bar.dataset.tripId }, bar);
+      return;
+    }
+
     // One named window, as the editor's Email thread link opens it, so each
     // thread reuses the tab.
     if (item.id === 'scheduler-bar-menu-thread') {

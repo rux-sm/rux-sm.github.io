@@ -1324,7 +1324,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    accept on the same sheet's 738pt.
 
    IT IS MONOCHROME: the logo is the only colour on it, and the sheet is
-   ink and Carbon's greys, as a professional form is.
+   ink and Carbon's greys, as a professional form is. Its boxes are ruled in
+   the strong border, Gray 50, because the subtle one is lost on an office
+   printer.
 
    AND IT IS THE ONE FORM THAT FILLS. The grey bands and the grey total are
    what a customer reads as the document, and `print-color-adjust: exact` is
@@ -1449,7 +1451,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__box {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--rux-border-subtle-01);
+  border: 1px solid var(--rux-border-strong-01);
   min-inline-size: 0;
 }
 
@@ -1495,7 +1497,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-collapse: collapse;
   table-layout: fixed;
   margin-block-start: 12pt;
-  border: 1px solid var(--rux-border-subtle-01);
+  border: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-customer-quote__table th,
@@ -1555,7 +1557,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__sums {
   inline-size: 200pt;
   margin-inline-start: auto;
-  border: 1px solid var(--rux-border-subtle-01);
+  border: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-customer-quote__sum:last-child { border-block-end: 0; }
@@ -1567,7 +1569,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin: 0;
   padding: 0 8pt;
   line-height: 24pt;
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-customer-quote__sum--total {

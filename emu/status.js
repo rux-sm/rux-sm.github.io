@@ -222,7 +222,7 @@
   async function load() {
     try {
       const [emulators, held, drive, games, saves, macs] = await Promise.all([
-        R.emulators(), R.data.files(), R.data.drive(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
+        R.emulators(), R.data.files(), R.data.lastScan(), R.data.gameKeys(), R.data.saves(), R.data.macs()]);
       // The BIOS, keys and firmware among the files, each by its name under bios/.
       const bios = held.filter(f => f.path.startsWith('bios/')).map(f => ({ name: f.path.slice('bios/'.length), sha1: f.sha1 }));
       read = { emulators, held, bios, drive, games, saves, macs };

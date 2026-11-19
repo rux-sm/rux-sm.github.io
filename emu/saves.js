@@ -246,7 +246,7 @@
     let drive, backups;
     try {
       let files, games, emulators;
-      [saves, drive, backups, files, games, emulators] = await Promise.all([R.data.saves(), R.data.drive(), R.data.backups(),
+      [saves, drive, backups, files, games, emulators] = await Promise.all([R.data.saves(), R.data.lastScan(), R.data.backups(),
         R.data.files('saves/'), R.data.games(), R.emulators()]);
       saves = [...saves, ...carried(files, games, emulators.systems)];
     } catch (error) { console.error(error); R.notice('Emu could not read the saves. Try again.'); return; }

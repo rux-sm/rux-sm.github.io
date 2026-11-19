@@ -19,7 +19,7 @@
     let games, notes, bios, saves, drive, emulators;
     try {
       [games, notes, bios, saves, drive, emulators] = await Promise.all([
-        R.data.games(), R.data.notes(), R.data.bios(), R.data.saves(), R.data.drive(), R.emulators()]);
+        R.data.games(), R.data.notes(), R.data.bios(), R.data.saves(), R.data.lastScan(), R.emulators()]);
     } catch (error) { console.error(error); R.notice('Emu could not read the collection. Try again.'); return; }
     $('emu-empty').hidden = games.length > 0;
     if (!games.length) return;

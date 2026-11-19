@@ -36,7 +36,7 @@ const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
 const BUCKET = 'emu-collection';
 // Each Emu table and the columns that order its rows, so a page never repeats one.
 const TABLES = { emu_files: 'path,carried_at', emu_games: 'system,title', emu_saves: 'system,name,kind,location',
-  emu_notes: 'system,title', emu_macs: 'name', emu_drive: 'id', emu_cards: 'id' };
+  emu_notes: 'system,title', emu_macs: 'name', emu_scan: 'id', emu_cards: 'id' };
 const ACCOUNT = 'owner';
 
 // A file's path as Supabase lists it, made a path inside the copy, or null

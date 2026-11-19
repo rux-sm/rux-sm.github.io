@@ -347,7 +347,7 @@
   async function load() {
     let emulators, files, drive, games, saved, live;
     try {
-      [emulators, files, drive, games, saved, live, kept] = await Promise.all([R.emulators(), R.data.files(), R.data.drive(),
+      [emulators, files, drive, games, saved, live, kept] = await Promise.all([R.emulators(), R.data.files(), R.data.lastScan(),
         R.data.gameKeys(), R.data.macs(), R.helper.onMac ? R.helper.mac() : null, R.data.settings()]);
     } catch (error) { console.error(error); R.notice('Emu could not read the emulators. Try again.'); return; }
     $('emu-empty').hidden = Boolean(drive);

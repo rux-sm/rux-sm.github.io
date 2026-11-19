@@ -1360,7 +1360,7 @@
         R.thisMac.read(), R.emulators(), R.helper.onMac ? R.helper.mac() : null]);
       macName = live?.mac ?? null;
       let files;
-      [room, driveRow, files] = await Promise.all([macName ? R.data.room(macName) : null, R.data.drive(), R.data.files()]);
+      [room, driveRow, files] = await Promise.all([macName ? R.data.room(macName) : null, R.data.lastScan(), R.data.files()]);
       newestHelper = R.installerOf(files, 'Rux Emu Helper')?.name.match(/-(\d+)-macOS/)?.[1] ?? null;
     } catch (error) {
       console.error(error);
@@ -1392,7 +1392,7 @@
   // The nightly scan may have saved while the page was away, so when it
   // last did is read again too, and the strip redrawn.
   window.addEventListener('focus', async () => {
-    const row = await R.data.drive().catch(() => driveRow);
+    const row = await R.data.lastScan().catch(() => driveRow);
     if (row?.scanned_at === driveRow?.scanned_at) return;
     driveRow = row;
     if (helper) renderStrip();

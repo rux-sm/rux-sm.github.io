@@ -82,12 +82,12 @@ const scan = {
     emu_notes: [{ system: 'gb', title: 'Renamed', note: 'rux wrote this' }],
     emu_saves: [{ system: 'gb', name: 'Renamed', kind: 'save', location: 'a Mac', game: 'Renamed' },
       { system: 'gb', name: 'Old', kind: 'save', location: 'drive' }],
-    emu_drive: [{ id: 1, newest: { mGBA: '0.10.5' } }],
+    emu_scan: [{ id: 1, newest: { mGBA: '0.10.5' } }],
   });
   const db = scanSave.restDb({ url, key: KEY, fetch: w.fetch });
   const games = await db.rows('emu_games', 'system,title,size');
   const saves = await db.rows('emu_saves', 'system,name,kind,location');
-  const [row] = await db.rows('emu_drive', 'newest');
+  const [row] = await db.rows('emu_scan', 'newest');
   const change = scanSave.changes(scan, games, saves);
   await scanSave.save(db, scanSave.rowsOf(scan, change, { newest: row.newest }));
   const t = w.tables;
@@ -101,8 +101,8 @@ const scan = {
   check('a game gone is deleted', !t.emu_games.some(g => g.title === 'Gone'), t.emu_games.map(g => g.title));
   check('a server save gone is deleted', !t.emu_saves.some(s => s.name === 'Old'), t.emu_saves);
   check('the scanned save is written as the server\'s', t.emu_saves.some(s => s.name === 'Kept' && s.location === 'drive'), t.emu_saves);
-  check('the scan\'s row keeps its newest versions', t.emu_drive[0].newest?.mGBA === '0.10.5', t.emu_drive[0]);
-  check('the scan\'s row takes the scan\'s time', t.emu_drive[0].scanned_at === scan.scanned, t.emu_drive[0]);
+  check('the scan\'s row keeps its newest versions', t.emu_scan[0].newest?.mGBA === '0.10.5', t.emu_scan[0]);
+  check('the scan\'s row takes the scan\'s time', t.emu_scan[0].scanned_at === scan.scanned, t.emu_scan[0]);
   const upserts = w.asked.filter(a => a.method === 'POST');
   check('a write merges over the row with the same key', upserts.every(a => a.prefer?.includes('resolution=merge-duplicates')), upserts);
   const del = w.asked.find(a => a.method === 'DELETE' && a.table === 'emu_games');

@@ -175,8 +175,10 @@
       fail(error);
       return rows.length > 0;
     },
-    async drive() {
-      const { data: row, error } = await client.from('emu_drive').select('*').maybeSingle();
+    // The last scan's row: when the server last scanned, what it found to
+    // delete or unsorted, and each emulator's newest version out.
+    async lastScan() {
+      const { data: row, error } = await client.from('emu_scan').select('*').maybeSingle();
       fail(error);
       return row;
     },

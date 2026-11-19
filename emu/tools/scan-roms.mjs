@@ -152,7 +152,7 @@ const newestOf = async (feed) => {
 
 const db = scanSave.restDb({ url: SUPABASE_URL, key: process.env.SUPABASE_KEY });
 const [games, saves, [row], held] = await Promise.all([
-  db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'newest'),
+  db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_scan', 'newest'),
   db.rows('emu_files_now', 'path,size,saved_at,sha1')]);
 
 const feeds = [...Object.entries(rules.macSaves), [rules.frontend.name, rules.frontend]].filter(([, r]) => r.feed);

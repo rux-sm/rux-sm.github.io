@@ -39,9 +39,8 @@ stays, since that is the server reading its own disk.
   renaming and converting there before the nightly scan.
 - **`emu/tools/scan-roms.mjs` keeps only its `--save` mode,** the server's
   nightly scan; its run from a Mac against a drive goes.
-- **The `emu_drive` table becomes `emu_scan`,** by a migration shown to rux
-  and applied on a yes, since it holds the last scan's time and the newest
-  emulator versions, not a drive.
+- **The last scan's row is `emu_scan`,** since it holds the last scan's time
+  and the newest emulator versions, not a drive.
 - **The T7 is only the server's backup,** never a travel copy, as
   `docs/plans/emu-server.md` now says.
 
@@ -56,8 +55,6 @@ stays, since that is the server reading its own disk.
 - **`emu/tools/build-helper.mjs` writes the helper's zip into the server's
   `emulators/` folder over its share,** and the nightly scan puts it in
   Supabase.
-- **The rename and its push go in one go during the day,** and the Supabase
-  copy may fail once before its next fetch.
 - **The old backups go:** `emu/tools/backup-saves.mjs`, `backups.json` and
   the drive's zip on Saves, so Saves shows what Supabase keeps until the
   backup built from Supabase lands.
@@ -73,8 +70,4 @@ None open.
       its share is open on a Mac with the certificate.
 - [ ] Run `emu/tools/organize-roms.mjs` on the server where the scan's
       `scan-cache` volume is, as `emu/docs/home-server.md` should then say.
-- [ ] Rename `emu_drive` to `emu_scan` by a migration, dropping its
-      `backup` and `backups` columns, with `emu/data.js`,
-      `emu/scan-save.js`, `emu/tools/scan-roms.mjs`,
-      `emu/tools/copy-supabase.mjs` and their tests.
 - [ ] Update each Mac to the new helper and play a downloaded game on each.

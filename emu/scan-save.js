@@ -103,7 +103,7 @@
     for (const g of gone) await db.remove('emu_games', { system: g.system, title: g.title });
     for (let i = 0; i < saves.length; i += 100) await db.upsert('emu_saves', saves.slice(i, i + 100), 'system,name,kind,location');
     for (const s of savesGone) await db.remove('emu_saves', { system: s.system, name: s.name, kind: s.kind, location: s.location });
-    await db.upsert('emu_drive', [{ id: 1, ...drive }], 'id');
+    await db.upsert('emu_scan', [{ id: 1, ...drive }], 'id');
   }
 
   // A file put in Supabase: its bytes under their fingerprint, read by

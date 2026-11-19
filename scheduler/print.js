@@ -77,12 +77,6 @@
     return m ? `${m[2]}/${m[3]}/${m[1]}` : (d || '');
   };
 
-  /* One day, or the first and the last, in the one short form every box on
-     every form takes. A sentence, like the quote's description, keeps the
-     long form. */
-  const dayRange = (from, to) => [mdy(from), to && to !== from ? mdy(to) : '']
-    .filter(Boolean).join(' – ');
-
   /* THE ITINERARY'S DATES, in words, because a sheet read down a column of
      days reads "Wednesday, Aug 26" faster than a row of numbers. The year is
      printed once, in the head, and each end names its own month so neither
@@ -1821,7 +1815,8 @@
       tripBox.appendChild(el('p', 'scheduler-customer-quote__trip-value scheduler-customer-quote__typed', value));
     };
     pair('Destination', blank ? '' : trip.destination || '');
-    pair('Date', blank ? '' : dayRange(trip.start_date, lastDay(trip)));
+    // The dates in the quote's own words, so the two sheets say them alike.
+    pair('Date', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
     pair('Estimate #', blank ? '' : trip.trip_ref || '');
     card.appendChild(tripBox);
 

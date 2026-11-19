@@ -1648,7 +1648,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__trip {
   margin-block-start: 12pt;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto minmax(1.8in, max-content) auto minmax(0.8in, max-content);
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(1.4in, max-content) auto minmax(0.8in, max-content);
   border: 1px solid var(--rux-border-subtle-01);
 }
 

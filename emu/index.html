@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="white" data-frame="wide">
+<html lang="en" data-theme="white" data-frame="wide" data-emu-room>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -309,10 +309,11 @@
 <ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
 <!-- A console's menu, filled and opened under the console by room.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>
-<!-- Rux's Server, from the head's button: Carbon's large modal, which
-     room.js fills with the store's section while the helper answers. -->
+<!-- Rux's Server, from the head's button: Carbon's default modal, its medium, about as
+     wide as the room's 1056px frame on a large window, which room.js fills
+     with the store's section while the helper answers. -->
 <div class="rux--layer-one rux--modal" id="emu-store" role="presentation">
-  <div role="dialog" aria-modal="true" aria-labelledby="emu-store-h" tabindex="-1" class="rux--modal-container rux--modal-container--lg">
+  <div role="dialog" aria-modal="true" aria-labelledby="emu-store-h" tabindex="-1" class="rux--modal-container">
     <div class="rux--modal-header">
       <h2 class="rux--modal-header__heading" id="emu-store-h">Rux's Server</h2>
       <div class="rux--modal-close-button">

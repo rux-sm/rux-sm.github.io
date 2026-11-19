@@ -5,7 +5,7 @@
    then the room, Your Mac: the TV, up to three consoles and the favourite
    games they bring out, each standing where it was left, with My Stuff's
    button at its foot. The head's one button opens Rux's Server, the store,
-   as Carbon's large modal. Without the helper the store is the whole page.
+   as Carbon's medium modal. Without the helper the store is the whole page.
 
    A console has three places. In Rux's Server it is not on this Mac; in My
    Room it is set up and put away; in the room it is out. Which consoles

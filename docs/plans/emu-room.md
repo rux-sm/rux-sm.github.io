@@ -6,11 +6,11 @@ type: plan
 
 ## Goal
 
-The Library is one tile that fills the page, as the scheduler's board does:
-its head, then the room, Your Mac, the play surface for what is in use now,
+The Library is one square tile at the top of the page, centred in a frame
+1056px wide: its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, up to three consoles and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
-Server, opens the store: a large modal of every console and game the server
+Server, opens the store: a modal of every console and game the server
 holds, each with Download. A My Stuff button at the room's foot opens a
 panel of everything on this Mac: a row of its consoles, a row of its games,
 and what the account keeps behind a button in its toolbar. Getting a game, setting up its console and playing it are
@@ -28,6 +28,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
+- **The room's page is a wide frame 1056px across, Carbon's lg breakpoint,**
+  so the room and the store sit calm in the middle of a large window, with
+  even margins either side.
+- **The room's tile is a square,** its side the frame's width or the
+  window's height under the header and the page's padding, whichever is
+  less, but never under 28rem. It starts at the top of the page, as every
+  page's content does, and stands centred across it.
 - **The room tile's head is the room's name, the strip and Rux's Server,**
   a primary button at its end, on the md size token's height over a rule,
   in by the theme's toolbar inset as the scheduler's heads are, its name in
@@ -83,7 +90,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   overlapping while the room can hold them; the thing just dropped holds
   still and the others make room. The swept spots are kept, so a larger
   window leaves the pile as it is, and things are put back by hand.
-- **Rux's Server is Carbon's large modal, a store,** so browsing the whole
+- **Rux's Server is Carbon's medium modal, a store,** about as wide as the
+  room on a large window, so browsing the whole
   server never squeezes the room. Its close, Escape or the scrim closes it,
   and it opens again on the tab and console it was left on. The account is
   the header's round button, so nothing else stands around the room.

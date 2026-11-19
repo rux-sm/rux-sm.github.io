@@ -1330,9 +1330,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
    ITS SIZES ARE IN POINTS, on the invoice's 8-point rhythm, because the
    invoice it matches is laid out in points in QuickBooks' Layout Designer;
-   the parts stand 12pt apart and the terms and acceptance 8pt, rather than
-   the invoice's 16, because the quote carries eight terms and a line to
-   accept on the same sheet's 738pt.
+   the parts stand 12pt apart, down the sheet and across it, rather than the
+   invoice's 16, because the quote carries eight terms and a line to accept
+   on the same sheet's 738pt.
 
    IT IS MONOCHROME: the logo is the only colour on it, and the sheet is
    ink and Carbon's greys, as a professional form is. Its boxes are ruled in
@@ -1379,11 +1379,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: start;
 }
 
+/* The logo hangs from the sheet's top edge, where the name beside it starts,
+   in a box as deep as the head's rhythm, so the letterhead under it stands
+   on the references' lines. */
 .scheduler-customer-quote__logo {
   display: block;
+  inline-size: 192pt;
   block-size: 40pt;
-  inline-size: auto;
-  max-inline-size: 192pt;
+  object-fit: contain;
+  object-position: left top;
   margin-block-end: 8pt;
 }
 
@@ -1397,13 +1401,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__named { min-inline-size: 200pt; }
 
 /* The tracking leaves its space after the last letter too, so the name is
-   drawn back by it to end on the references' edge. */
+   drawn back by it to end on the references' edge. Its capitals start on
+   the sheet's top edge, as the logo does, in the 28pt the references stand
+   under. */
 .scheduler-customer-quote__title {
   margin: 0 -0.08em 0 0;
+  block-size: 28pt;
   text-align: end;
   white-space: nowrap;
   font-size: 20pt;
-  line-height: 28pt;
+  line-height: 20pt;
+  text-box: trim-start cap alphabetic;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--rux-text-primary);
@@ -1411,12 +1419,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* Each reference a label and its value on one line, the value to the
    trailing edge, as the invoice's header sets them, in the quote's text on
-   both sheets, which the agreement's small policies would otherwise shrink.
-   They are 200pt wide on both, on the trailing edge of a name that may be
-   wider, and a destination longer than its line wraps, every word printed. */
+   both sheets. They are 200pt wide on both, on the trailing edge of a name that may be
+   wider, and a destination longer than its line wraps, every word printed.
+   A label stands on its value's baseline, in a line of its own size, so the
+   value's 16pt line is the row's. */
 .scheduler-customer-quote__refs {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
   column-gap: 8pt;
   inline-size: 200pt;
   margin: 4pt 0 0 auto;
@@ -1427,6 +1437,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__refs dt {
   margin: 0;
   font-size: 10pt;
+  line-height: 10pt;
   font-weight: 600;
   color: var(--rux-text-secondary);
 }
@@ -1437,25 +1448,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow-wrap: anywhere;
 }
 
-/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on and in their
-   ink, bold, so the price is what the eye finds without a colour. */
-.scheduler-customer-quote__sum--total {
-  display: flex;
-  justify-content: space-between;
-  gap: 8pt;
-  background: var(--rux-layer-accent-01);
-  color: var(--rux-text-primary);
-  font-weight: 600;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
 /* Who it is for and who to answer: two boxes of one width and one depth,
-   the 16pt every part of the sheet stands apart by between them. */
+   the 12pt every part of the sheet stands apart by between them. */
 .scheduler-customer-quote__parties {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16pt;
+  gap: 12pt;
   margin-block-start: 12pt;
 }
 
@@ -1553,14 +1551,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__table { block-size: 200pt; }
 .scheduler-customer-quote__room { block-size: 100%; }
 
-/* Under the items, the button on the leading edge on screen and the totals
-   on the trailing one, as wide as the head's column. */
+/* Under the items, the thanks on the leading edge, with the button over it
+   on screen, and the totals on the trailing one, as wide as the head's
+   column. */
 .scheduler-customer-quote__under {
   display: flex;
   justify-content: space-between;
   align-items: start;
-  gap: 16pt;
-  margin-block-start: 8pt;
+  gap: 12pt;
+  margin-block-start: 12pt;
 }
 
 /* The totals boxed in the table's border, so the last row needs no rule of
@@ -1571,21 +1570,34 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border: 1px solid var(--rux-border-strong-01);
 }
 
-.scheduler-customer-quote__sum:last-child { border-block-end: 0; }
-
+/* A label and its figure stand on one baseline, whatever their sizes, in
+   the middle of the row's depth. */
 .scheduler-customer-quote__sum {
-  display: flex;
-  justify-content: space-between;
-  gap: 8pt;
+  box-sizing: content-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  align-content: center;
+  column-gap: 8pt;
   margin: 0;
   padding: 0 8pt;
-  line-height: 24pt;
+  min-block-size: 24pt;
+  line-height: 16pt;
   border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
+.scheduler-customer-quote__sum:last-child { border-block-end: 0; }
+
+/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on and in their
+   ink, bold, so the price is what the eye finds without a colour. */
 .scheduler-customer-quote__sum--total {
-  line-height: 32pt;
+  min-block-size: 32pt;
   border-block-end: 0;
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-primary);
+  font-weight: 600;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .scheduler-customer-quote__sum--total .scheduler-customer-quote__total-value { font-size: 14pt; }
@@ -1593,80 +1605,140 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* The terms and the acceptance each stay whole, so a quote whose items fill
    the sheet sends them over to the next one together. */
 .scheduler-customer-quote__fine,
+.scheduler-customer-quote__accept { break-inside: avoid; }
+
+.scheduler-customer-quote__fine { margin-block-start: 12pt; }
+
+/* THE LINES TO SIGN END THE SHEET, on both sheets at one height: the
+   acceptance takes whatever room the sheet has left above it, and keeps the
+   parts' 12pt where there is none. */
 .scheduler-customer-quote__accept {
-  margin-block-start: 8pt;
-  break-inside: avoid;
+  margin-block-start: auto;
+  padding-block-start: 12pt;
+}
+
+/* A sheet is as deep as the page, less the pixel that keeps an exact fit
+   from rounding onto a blank page and the lines to sign on whole pixels, so
+   the acceptance has a foot to stand on. On screen the margin is the
+   sheet's padding and inside that depth; on paper it is the page's, and
+   comes off. */
+.scheduler-print__sheet[data-sheet="flows"] .scheduler-customer-quote {
+  min-block-size: calc(var(--scheduler-paper-height) - 1px);
+}
+
+@media print {
+  .scheduler-print__sheet[data-sheet="flows"] .scheduler-customer-quote {
+    min-block-size: calc(var(--scheduler-paper-height) - 2 * var(--scheduler-paper-margin) - 1px);
+  }
 }
 
 .scheduler-customer-quote__heading {
   margin: 0;
   font-size: 10pt;
+  line-height: 16pt;
   font-weight: 600;
   color: var(--rux-text-secondary);
 }
 
-/* Small and in two columns: eight terms have to leave the line to accept on
-   the same sheet as the price. A term never breaks across the columns. */
-.scheduler-customer-quote__terms {
-  margin: 4pt 0 0;
-  padding-inline-start: 14pt;
+/* THE FINE PRINT IS ONE SIZE ON BOTH SHEETS, the quote's terms and the
+   agreement's policies: small and in two columns, the two boxes' columns, so
+   eight terms leave the line to accept on the same sheet as the price and a
+   policy's line is short enough to read. A term or a policy never breaks
+   across the columns. */
+.scheduler-customer-quote__terms,
+.scheduler-customer-quote__policies {
   columns: 2;
-  column-gap: 24pt;
-  list-style: decimal;
+  column-gap: 12pt;
   font-size: 9pt;
   line-height: 11pt;
 }
 
+/* Each number stands on its column's leading edge, the sheet's and the
+   Contact box's, which a list's own marker cannot be told to do. */
+.scheduler-customer-quote__terms {
+  margin: 4pt 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: scheduler-term;
+}
+
 .scheduler-customer-quote__term {
+  display: grid;
+  grid-template-columns: 11pt minmax(0, 1fr);
   margin: 0 0 2pt;
   break-inside: avoid;
+  counter-increment: scheduler-term;
 }
+
+.scheduler-customer-quote__term::before { content: counter(scheduler-term) "."; }
 
 /* THE LINES TO ACCEPT IT ARE RULES, NOT UNDERSCORES: a name, a signature and
    a date, each a rule with its label under it, a signature's depth over
    them. A typed underscore run is a different length in every font; a
-   border is the length it is told to be. */
+   border is the length it is told to be. The name takes the leading box's
+   width, and the signature and the date share the trailing one's. */
 .scheduler-customer-quote__marks {
   display: grid;
-  grid-template-columns: 3fr 2.5fr 1.5fr;
-  gap: 16pt;
+  grid-template-columns: calc((100% - 12pt) / 2) 2fr 1fr;
+  gap: 12pt;
   margin-block-start: 24pt;
 }
 
 .scheduler-customer-quote__mark {
   margin: 0;
-  padding-block-start: 2pt;
+  /* Whole pixels from the rule to the sheet's foot, so the rule prints at
+     one weight. */
+  padding-block-start: 3pt;
   border-block-start: 1px solid var(--rux-text-primary);
   font-size: 9pt;
   line-height: 12pt;
   color: var(--rux-text-secondary);
 }
 
-.scheduler-customer-quote__foot {
-  margin: 8pt 0 0;
-  text-align: center;
+/* The heading over the lines, and on its baseline, to the trailing edge,
+   how the signed sheets come back. */
+.scheduler-customer-quote__accept-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12pt;
+}
+
+/* What the sheet says to its reader rather than about the trip: the way
+   back, and the thanks beside the totals, in a line as deep as the totals'
+   last row and so on its baseline, under the button on screen. */
+.scheduler-customer-quote__lead {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  align-self: stretch;
+}
+
+.scheduler-customer-quote__how,
+.scheduler-customer-quote__thanks {
+  margin: 0;
   font-size: 9pt;
   line-height: 12pt;
   color: var(--rux-text-secondary);
 }
 
+.scheduler-customer-quote__thanks {
+  margin-block-start: auto;
+  line-height: 24pt;
+}
+
 /* ── The agreement ────────────────────────────────────────────────────────
    The second sheet, the terms the customer signs with the quote: the quote's
    head with the form's name and the trip in its references, and the
-   policies in small type with their headings underlined into the text. Its
-   head and lines to sign are the quote's; only the policies' size is this
-   sheet's own. */
-.scheduler-customer-quote--agreement {
-  font-size: 8.5pt;
-  line-height: 1.3;
-}
+   policies in the terms' type and columns with their headings underlined
+   into the text. Its head and lines to sign are the quote's. */
 
-/* THE SHEET IS FULL. Sixteen paragraphs and the line to sign have to stay on
-   one sheet, so the line over the policies and the gap between them are a
-   little closer than the quote's terms are set. */
+/* The line over the policies, in their type, the parts' 12pt under the
+   head. */
 .scheduler-customer-quote__agreement-intro {
-  margin: 8pt 0;
-  text-align: center;
+  margin: 12pt 0 8pt;
+  font-size: 9pt;
+  line-height: 11pt;
 }
 
 .scheduler-customer-quote__policy {

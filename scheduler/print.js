@@ -1706,7 +1706,8 @@
   }
 
   /* UNDER THE ITEMS, the Total and the deposit on the trailing edge, as the
-     invoice sets its totals, and on screen the button that adds a line, which
+     invoice sets its totals, the thanks on the leading one, where the invoice
+     keeps its message, and on screen the button that adds a line, which
      print.css takes off the paper. The Total is the lines' sum, held on a
      quote drawn from a trip and typed on a blank one, and the deposit follows
      it. */
@@ -1731,7 +1732,9 @@
     deposit.append(el('span', null, `Deposit (${DEPOSIT_WORDS}) or PO`), el('span', 'scheduler-customer-quote__deposit'));
     sums.append(total, deposit);
     sums.addEventListener('input', () => showSums(sums.closest('.scheduler-customer-quote')));
-    under.append(add, sums);
+    const lead = el('div', 'scheduler-customer-quote__lead');
+    lead.append(add, el('p', 'scheduler-customer-quote__thanks', 'Thank you for choosing Escamilla Tour Buses'));
+    under.append(lead, sums);
     return under;
   }
 
@@ -1782,21 +1785,21 @@
     fine.appendChild(terms);
     card.appendChild(fine);
 
-    // Who accepts it, and the way back under the lines.
-    const accept = acceptSection();
-    const foot = el('p', 'scheduler-customer-quote__foot', `Sign both pages and email them to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
-    foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
-    accept.appendChild(foot);
-    card.appendChild(accept);
+    card.appendChild(acceptSection());
     showSums(card);
     return card;
   }
 
   /* WHO ACCEPTS IT, the same on both sheets: rules to print a name on, sign
-     and date, under one heading. */
+     and date, under one heading, and beside the heading the way back, so a
+     sheet signed alone still says where it goes. */
   function acceptSection() {
     const accept = el('section', 'scheduler-customer-quote__accept');
-    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
+    const head = el('div', 'scheduler-customer-quote__accept-head');
+    head.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
+    head.appendChild(el('p', 'scheduler-customer-quote__how',
+      `Sign both pages and email them to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`));
+    accept.appendChild(head);
     const marks = el('div', 'scheduler-customer-quote__marks');
     for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
     accept.appendChild(marks);
@@ -1809,7 +1812,7 @@
      names its quote and trip; the policies,
      and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
-    const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
+    const card = el('article', 'scheduler-form scheduler-customer-quote');
     // The dates in the quote's own words, so the two sheets say them alike.
     card.appendChild(quoteHead('TERMS AND CONDITIONS', {
       lines: QUOTE_LETTERHEAD,
@@ -3284,7 +3287,8 @@
      margin, which is the page's and not the form's, so it moves nothing on
      the sheet; a form of one sheet has nothing to number, and one held to its
      stock has no margin to print it in. It sits at the top of the margin,
-     against the text, and clear of the edge a printer cannot reach. */
+     under the sheet's trailing edge, clear of a label that ends the sheet
+     and of the sixth of an inch at the paper's edge a printer cannot reach. */
   function numberPages(sheets) {
     let style = document.getElementById('scheduler-print-folio');
     if (!style) {
@@ -3295,8 +3299,8 @@
     // The paper's face, as print.css names it for every form.
     const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
     style.textContent = sheets > 1 && sheet.dataset.sheet === 'flows'
-      ? `@page { @bottom-center { content: "Page " counter(page) " of " counter(pages);
-          vertical-align: top; padding-top: 0.08in; font-family: ${font}; font-size: 8pt; color: #525252; } }`
+      ? `@page { @bottom-right { content: "Page " counter(page) " of " counter(pages);
+          vertical-align: top; padding-top: 2pt; font-family: ${font}; font-size: 8pt; color: #525252; } }`
       : '';
   }
 

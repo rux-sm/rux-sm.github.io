@@ -1,13 +1,12 @@
 /* ==========================================================================
    saves.js — the Saves page
    --------------------------------------------------------------------------
-   Where each of the three copies stands: the drive, Supabase and each Mac,
-   with every backup in Supabase to download; Update on the Status page
-   saves them.
-   Then every save, the drive's, each Mac's and the ones Emu carries, which
+   Where the copies stand: the server's last scan, the backup zips Supabase
+   keeps to download, and each Mac whose own saves were uploaded.
+   Then every save, the server's, each Mac's and the ones Emu carries, which
    Supabase holds, under one heading per system, each opening in the side
    panel with its files, dates, where it lives and how to restore it. A
-   drive's or a Mac's save has rux's note, which is saved from there. A
+   server's or a Mac's save has rux's note, which is saved from there. A
    carried save is read from the files Supabase lists and matched to its
    game by the rules the scan uses.
    ========================================================================== */
@@ -25,7 +24,7 @@
   const where = s => (s.location === DRIVE ? 'the server' : s.location);
 
   // The saves Emu carries, from the files Supabase lists under saves/: each
-  // system's folder read as the scan reads the drive's, less what a system
+  // system's folder read as the scan reads the server's, less what a system
   // says is not a save.
   function carried(files, games, emulators) {
     const found = [];
@@ -58,15 +57,9 @@
   function copies(drive, backups) {
     const out = $('emu-copies');
     out.replaceChildren();
-    out.append(tile('Drive', drive?.scanned_at ? R.date(drive.scanned_at) : 'Not scanned',
-      drive?.backup ? `${drive.backup.file}, ${R.size(drive.backup.size)}` : 'The last scan packed no backup'));
+    out.append(tile('Server', drive?.scanned_at ? R.date(drive.scanned_at) : 'Not scanned', 'Its last nightly scan'));
     out.append(tile('Supabase', backups[0] ? R.date(backups[0].created_at) : 'None yet',
-      backups[0] ? `${backups.length} kept` : 'Update on Status uploads one'));
-    // Each Mac's newest copy, from the drive's backups.json.
-    const macs = new Map();
-    for (const b of drive?.backups ?? []) if (!macs.has(b.host) || macs.get(b.host).at < b.at) macs.set(b.host, b);
-    if (!macs.size) out.append(tile('Each Mac', 'None yet', 'Run emu/tools/backup-saves.mjs'));
-    for (const [host, b] of macs) out.append(tile(host, R.date(b.at), b.folder));
+      backups[0] ? `${backups.length} backup zips kept` : 'No backup zip yet'));
     // Each Mac whose own saves were uploaded, and when last.
     const uploaded = new Map();
     for (const s of saves.filter(x => x.location !== DRIVE && x.location !== SUPABASE)) {
@@ -192,7 +185,7 @@
     $('emu-panel-close').focus();
   }
   // Restoring a save: a Mac's files one by one, each with the folder it goes
-  // back into; a drive save from the drive's newest backup zip.
+  // back into; a server's save from the newest backup zip Supabase keeps.
   function restoreOf(s) {
     const box = el('div', 'rux--stack-vertical rux--stack-scale-3');
     box.append(el('h3', 'rux--type-heading-02', 'Restore'));
@@ -202,8 +195,8 @@
     };
     if (s.location === DRIVE) {
       box.append(el('p', 'rux--type-body-01', driveZip
-        ? `Its files are in ${driveZip.name}, under the paths above; put them back under the drive's saves folder.`
-        : 'No backup of the drive holds it yet: import a scan with its zip.'));
+        ? `Its files are in ${driveZip.name}, under the paths above; put them back under the server's saves folder.`
+        : 'No backup holds it yet.'));
       if (driveZip) {
         const b = el('button', 'rux--btn rux--btn--tertiary', 'Download the backup zip');
         b.type = 'button';

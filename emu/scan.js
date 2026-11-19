@@ -1,15 +1,14 @@
 /* ==========================================================================
    scan.js — reading the collection on the server
    --------------------------------------------------------------------------
-   One scan, run by emu/tools/scan-roms.mjs on a Mac and by the Status page
-   through Rux Emu Helper, so the two never read a game differently. It
-   reads every game under the drive's `roms/`, its headers and
+   One scan, run each night by emu/tools/scan-roms.mjs on the home server.
+   It reads every game under the server's `roms/`, its headers and
    fingerprints, matches each against the lists of known good copies in
    `lists/`, and matches each save under `saves/` to its game by
    saves-rules.js.
 
-   It reads the drive only through `drive`, which each side supplies, every
-   path relative to the drive's emulation folder and joined by `/`:
+   It reads the games only through `drive`, which the caller supplies, every
+   path relative to the games folder and joined by `/`:
      list(rel)           the visible entries of a folder, sorted, as
                          { name, dir, size, mtimeMs, birthtimeMs }, or []
      read(rel, at, n)    n bytes from offset `at`, as a Uint8Array
@@ -19,8 +18,8 @@
      inside(rel)         a CHD's track fingerprints, or null where it cannot
      progress(read, all) told after each file how many new bytes are hashed
 
-   It returns the scan, the fingerprints to keep, and the files the backup
-   zip packs; writing them is the caller's.
+   It returns the scan and the fingerprints to keep; writing them is the
+   caller's, as are the organize tool's renames, which it is handed.
 
    Fingerprints are kept by path, size and time, so a scan hashes only new
    or changed files. A CHD's content fingerprints, which the lists match,
@@ -516,7 +515,7 @@
 
   // `cache` is the fingerprints kept from the last scan, by path, size and
   // date; `emulators` is emulators.json's systems; `headersOnly` skips hashing.
-  async function scan(drive, { cache = {}, emulators, saveRules, headersOnly = false }) {
+  async function scan(drive, { cache = {}, emulators, saveRules, headersOnly = false, renames = [] }) {
     bySecond(cache);
     const stats = new Map();
     const listOf = async dir => {
@@ -689,8 +688,7 @@
       return { name, size: st.size, created: new Date(st.birthtimeMs).toISOString(), saved: new Date(st.mtimeMs).toISOString() };
     };
     // A system whose emulator keeps its whole data folder here says by
-    // `savesIn` which of its files are saves; the rest are not saves and stay
-    // out of the backup zip.
+    // `savesIn` which of its files are saves; the rest are not saves.
     const notSave = f => {
       const [, sys, ...rest] = f.split('/');
       const only = emulators[sys]?.savesIn;
@@ -753,12 +751,6 @@
       unknown: trashFiles.filter(t => !t.game).map(({ name, size }) => ({ name, size })),
     };
 
-    // ---- the record of renames and backups
-    // The organize tool keeps every rename it made, so a save moves a renamed
-    // game's notes; the Mac backup tool keeps each copy it made on a Mac.
-    const readJson = async (rel, fallback) => { const t = await drive.text(rel, 'utf8'); return t == null ? fallback : JSON.parse(t); };
-    const renames = await readJson('scans/renames.json', []);
-    const backups = await readJson('backups.json', []);
     // Each emulator's installer, kept on the server in case its download goes.
     const installers = (await listOf('emulators')).map(it => ({ name: it.name, size: it.size }));
 
@@ -776,18 +768,6 @@
       b.listedAs = hit && folder?.test(hit) ? hit : null;
     }
 
-    // The saves, those beside their games too, and the BIOS and keys, which
-    // the backup zip packs; a file of 50 MB or more, like the Switch
-    // firmware's zip, stays on the server and the Macs, and so does a folder
-    // a system needs whole, which is firmware as its emulator installed it,
-    // hundreds of files Supabase holds one by one.
-    const installed = f => {
-      const [, sys, ...rest] = f.split('/');
-      return (emulators[sys]?.needs ?? []).some(n => n.folder && rest.join('/').startsWith(`${n.folder}/`));
-    };
-    const packed = [...(await walk('saves')).filter(f => !notSave(f)), ...besideGames.map(b => b.path), ...biosFiles.filter(f => !installed(f))]
-      .filter(f => stats.get(f).size < 50e6);
-
     return {
       scan: {
         scanned: new Date().toISOString(),
@@ -800,12 +780,9 @@
         unsortedSaves: unsorted,
         toDelete,
         renames,
-        backups,
-        backup: null,
         installers,
       },
       cache,
-      packed,
       newBytes: bytesTotal,
       gamesWithoutLists: !Object.keys(lists).length,
     };

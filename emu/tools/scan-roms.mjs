@@ -1,35 +1,23 @@
 #!/usr/bin/env node
-// Reads the collection on the drive and writes one scan file beside it.
-//
-//   node emu/tools/scan-roms.mjs "/Volumes/<drive>/emulation"
-//
-// The scan itself is emu/scan.js, which the Status page runs too; this
-// gives it the drive through Node and writes what it returns. It only reads
-// the games. It writes two folders: `<emulation>/scans/`, the scan as
-// `scan_<date>.json` and `fingerprints.json`, which keeps every file's
-// fingerprints by path, size and date so the next scan reads only new or
-// changed files; and `<emulation>/backups/`, the saves, BIOS and keys packed
-// as `emu-backup_<date>.zip`, the newest five kept. Nothing it writes
-// belongs in this repository, which is public. `--headers-only` skips the
-// fingerprints, for a quick look.
-//
-// `--save` is the home server's nightly scan: it writes nothing beside the
-// games, which it mounts read-only, and saves the scan to Supabase as Update
-// does, with scan-save.js: the games and saves, each BIOS, key, firmware and
-// installer Supabase lacks, and each emulator's newest version out, asked of
-// its project, keeping the last answer of any that does not answer. It keeps
-// the backup the drive's row holds, since the server packs no zip. It keeps
-// its fingerprints in CACHE, starting from the ones beside the games, and
-// says what changed in one line.
+// The home server's nightly scan: reads the collection in its games folder,
+// which it mounts read-only, and saves the scan to Supabase with
+// scan-save.js: the games and saves, each BIOS, key, firmware and installer
+// Supabase lacks, and each emulator's newest version out, asked of its
+// project, keeping the last answer of any that does not answer. The scan
+// itself is emu/scan.js. It writes nothing beside the games: in CACHE it
+// keeps `fingerprints.json`, every file's fingerprints by path, size and
+// date so the next scan reads only new or changed files, and `scan.json`,
+// the scan for the organize tool, and it takes the organize tool's
+// `renames.json` from there. It says what changed in one line.
 //
 //   CACHE=/cache SUPABASE_KEY=<secret key> node scan-roms.mjs /games --save
 //
-// CACHE         the folder its fingerprints are kept in
+// CACHE         the folder its fingerprints and scan are kept in
 // SUPABASE_KEY  a secret key of the project, kept only on the server
 //
 // A CHD the organize tool did not make is looked inside here with chdman,
 // which extracts it once to a temporary folder, so the lists can match the
-// tracks it holds; the page cannot, and leaves it for this.
+// tracks it holds.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -42,26 +30,18 @@ import saveRules from '../saves-rules.js';
 import scanSave from '../scan-save.js';
 
 const root = process.argv[2];
-const headersOnly = process.argv.includes('--headers-only');
-const saving = process.argv.includes('--save');
 // The project's address, as /account.js has it.
 const SUPABASE_URL = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
-if (saving && (!process.env.SUPABASE_KEY || !process.env.CACHE)) {
-  console.error('--save needs CACHE and SUPABASE_KEY');
+if (!root || !fs.existsSync(path.join(root, 'roms')) || !process.argv.includes('--save') || !process.env.SUPABASE_KEY || !process.env.CACHE) {
+  console.error('usage: CACHE=<folder> SUPABASE_KEY=<secret key> scan-roms.mjs <games folder holding roms/> --save');
   process.exit(1);
 }
-if (!root || !fs.existsSync(path.join(root, 'roms'))) {
-  console.error('usage: scan-roms.mjs <emulation folder holding roms/>');
-  process.exit(1);
-}
-const scansDir = path.join(root, 'scans');
-const backupsDir = path.join(root, 'backups');
 const rules = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8'));
 const emulators = rules.systems;
-const cacheDir = saving ? process.env.CACHE : scansDir;
+const cacheDir = process.env.CACHE;
 const cachePath = path.join(cacheDir, 'fingerprints.json');
-const seed = [cachePath, path.join(scansDir, 'fingerprints.json')].find((f) => fs.existsSync(f));
-const cache = seed ? JSON.parse(fs.readFileSync(seed, 'utf8')) : {};
+const readJson = (file, fallback) => (fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : fallback);
+const cache = readJson(cachePath, {});
 
 const abs = (rel) => path.join(root, rel);
 const sha1Of = async (file) => {
@@ -131,13 +111,14 @@ const drive = {
   },
 };
 
-const { scan, packed, newBytes, gamesWithoutLists } = await scanner.scan(drive, { cache, emulators, saveRules, headersOnly });
-console.error(`${(newBytes / 1e9).toFixed(1)} GB new to fingerprint${headersOnly ? ' (skipped)' : ''}`);
-if (gamesWithoutLists) console.error('no lists in <emulation>/lists/, so no game is matched');
+const renames = readJson(path.join(cacheDir, 'renames.json'), []);
+const { scan, newBytes, gamesWithoutLists } = await scanner.scan(drive, { cache, emulators, saveRules, renames });
+console.error(`${(newBytes / 1e9).toFixed(1)} GB new to fingerprint`);
+if (gamesWithoutLists) console.error('no lists in <games>/lists/, so no game is matched');
 
 fs.mkdirSync(cacheDir, { recursive: true });
 fs.writeFileSync(cachePath, JSON.stringify(cache));
-const date = new Date().toISOString().slice(0, 10);
+fs.writeFileSync(path.join(cacheDir, 'scan.json'), JSON.stringify(scan, null, 1));
 
 // A feed's answer as JSON, or null when it does not answer in 15 seconds.
 const asked = async (address) => {
@@ -169,52 +150,31 @@ const newestOf = async (feed) => {
   return typeof v === 'string' ? v : null;
 };
 
-if (saving) {
-  const db = scanSave.restDb({ url: SUPABASE_URL, key: process.env.SUPABASE_KEY });
-  const [games, saves, [row], held] = await Promise.all([
-    db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'backup,newest'),
-    db.rows('emu_files_now', 'path,size,saved_at,sha1')]);
+const db = scanSave.restDb({ url: SUPABASE_URL, key: process.env.SUPABASE_KEY });
+const [games, saves, [row], held] = await Promise.all([
+  db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_drive', 'newest'),
+  db.rows('emu_files_now', 'path,size,saved_at,sha1')]);
 
-  const feeds = [...Object.entries(rules.macSaves), [rules.frontend.name, rules.frontend]].filter(([, r]) => r.feed);
-  const answers = await Promise.all(feeds.map(async ([name, r]) => [name, await newestOf(r.feed)]));
-  // Each emulator still followed, by its answer now, else its last; a retired one drops out.
-  const newest = Object.fromEntries(answers.map(([name, v]) => [name, v ?? row?.newest?.[name]]).filter(([, v]) => v));
-  const unanswered = answers.filter(([, v]) => !v).map(([name]) => name);
+const feeds = [...Object.entries(rules.macSaves), [rules.frontend.name, rules.frontend]].filter(([, r]) => r.feed);
+const answers = await Promise.all(feeds.map(async ([name, r]) => [name, await newestOf(r.feed)]));
+// Each emulator still followed, by its answer now, else its last; a retired one drops out.
+const newest = Object.fromEntries(answers.map(([name, v]) => [name, v ?? row?.newest?.[name]]).filter(([, v]) => v));
+const unanswered = answers.filter(([, v]) => !v).map(([name]) => name);
 
-  const given = await scanSave.givenChanged(scan, async (rel) => {
-    const st = fs.existsSync(abs(rel)) && fs.statSync(abs(rel));
-    return st ? { size: st.size, mtimeMs: st.mtimeMs } : null;
-  }, held.filter((f) => f.sha1));
-  await scanSave.putGiven(db, given, {
-    sha1Of: (rel) => sha1Of(abs(rel)),
-    bytesOf: async (rel) => fs.readFileSync(abs(rel)),
-    mac: 'home server',
-    names: [...Object.keys(rules.macSaves), rules.frontend.name, 'Rux Emu Helper'],
-  });
+const given = await scanSave.givenChanged(scan, async (rel) => {
+  const st = fs.existsSync(abs(rel)) && fs.statSync(abs(rel));
+  return st ? { size: st.size, mtimeMs: st.mtimeMs } : null;
+}, held.filter((f) => f.sha1));
+await scanSave.putGiven(db, given, {
+  sha1Of: (rel) => sha1Of(abs(rel)),
+  bytesOf: async (rel) => fs.readFileSync(abs(rel)),
+  mac: 'home server',
+  names: [...Object.keys(rules.macSaves), rules.frontend.name, 'Rux Emu Helper'],
+});
 
-  const change = scanSave.changes(scan, games, saves);
-  await scanSave.save(db, scanSave.rowsOf(scan, change, { backup: row?.backup, newest }));
-  const counts = [...Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`),
-    ...(given.length ? [`${given.length} files every Mac is given put in Supabase`] : [])];
-  console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the drive; ${counts.join(', ') || 'nothing changed'}`
-    + (unanswered.length ? `; no newest version from ${unanswered.join(', ')}` : ''));
-  process.exit(0);
-}
-
-// The backup zip, which the Status page uploads to Supabase. macOS's own zip packs it.
-const list = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((n) => !n.startsWith('.')).sort() : []);
-if (packed.length && !spawnSync('zip', ['-v'], { stdio: 'ignore' }).error) {
-  fs.mkdirSync(backupsDir, { recursive: true });
-  const file = `emu-backup_${date}.zip`;
-  const zipPath = path.join(backupsDir, file);
-  fs.rmSync(zipPath, { force: true });
-  execFileSync('zip', ['-q', '-X', zipPath, '-@'], { cwd: root, input: packed.join('\n') });
-  scan.backup = { file, size: fs.statSync(zipPath).size, sha1: await sha1Of(zipPath), files: packed.length };
-  for (const old of list(backupsDir).filter((f) => /^emu-backup_.*\.zip$/.test(f)).sort().slice(0, -5)) {
-    fs.rmSync(path.join(backupsDir, old));
-  }
-}
-
-const scanPath = path.join(scansDir, `scan_${date}.json`);
-fs.writeFileSync(scanPath, JSON.stringify(scan, null, 1));
-console.error(`${scan.games.length} games written to ${scanPath}`);
+const change = scanSave.changes(scan, games, saves);
+await scanSave.save(db, scanSave.rowsOf(scan, change, { newest }));
+const counts = [...Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`),
+  ...(given.length ? [`${given.length} files every Mac is given put in Supabase`] : [])];
+console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the server; ${counts.join(', ') || 'nothing changed'}`
+  + (unanswered.length ? `; no newest version from ${unanswered.join(', ')}` : ''));

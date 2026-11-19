@@ -16,7 +16,7 @@ server's `games` share, such as `/Volumes/games`.
    unzip it, drag it into Applications and open it. Its game controller
    appears in the menu bar, and it starts at each log-in.
 2. Allow it once: macOS asks to open it, Chrome asks whether the site may
-   reach this Mac, and macOS asks once whether it may read the share.
+   reach this Mac.
 3. Give it Full Disk Access, which Gopher64's sandboxed folder needs: System
    Settings, Privacy & Security, Full Disk Access, **+**, Rux Emu Helper from
    Applications, turned on.
@@ -42,12 +42,11 @@ as a `.p12` file and import it there.
    into `<share>/bios/<system>/`, and an emulator's installer into
    `<share>/emulators/` with its version in its name, as `Dolphin-2609b.dmg`.
    Download an installer only from the emulator's own site or releases page.
-2. For PlayStation and PlayStation 2 discs, run the organize tool, which
-   `emu/README.md` describes, so each disc is one CHD and each file has its
-   list name.
+2. For PlayStation and PlayStation 2 discs, run the organize tool on the
+   server, which `emu/README.md` describes, so each disc is one CHD and each
+   file has its list name.
 3. The server's nightly scan, which `emu/docs/home-server.md` sets up, puts
-   them in Supabase by the next morning. For sooner, press **Update** on
-   Status, then **Save**.
+   them in Supabase by the next morning.
 
 Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
 
@@ -56,7 +55,7 @@ Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
 - **Ryujinx's firmware** goes in as Ryujinx installed it: on one Mac, Tools,
   Install Firmware from the zip in `<share>/bios/switch/`, then copy that
   Mac's `~/Library/Application Support/Ryujinx/bis/system/Contents/registered`
-  to `<share>/bios/switch/Contents/` and Update. Its keys go in
+  to `<share>/bios/switch/Contents/`; the nightly scan takes it. Its keys go in
   `<share>/bios/switch/` as `prod.keys` and `title.keys`.
 - **A Wii U game** plays as one `.wua` file: make it from the game's folder
   in Cemu's Tools, Title Manager.
@@ -79,7 +78,7 @@ the emulator quits; the Saves page lists every save by its game.
 
 A save on the share that the Saves page says matches no game sits in a
 folder not named for a system. Move it into `<share>/saves/<system>/`, the
-folder of its emulator's first system, and Update.
+folder of its emulator's first system; the nightly scan takes it.
 
 ## Removing an emulator from a Mac
 
@@ -94,8 +93,9 @@ settings, its BIOS and its saves back as they were.
 
 With the helper running, Status shows this Mac live: what is installed,
 where each emulator saves, and each retired app still there or still holding
-files. Update saves it for every other Mac to see. Where an emulator's
-folder is not found, correct its `macSaves` entry in `emu/emulators.json`,
-then build the helper onto the share and install it:
+files, and saves it each time it opens for every other Mac to see. Where an
+emulator's folder is not found, correct its `macSaves` entry in
+`emu/emulators.json`, then build the helper into the server's emulators
+folder; after the nightly scan, **Update the helper** on Status installs it:
 
     node emu/tools/build-helper.mjs <share>

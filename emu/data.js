@@ -198,8 +198,6 @@
 
     // The signed-in account's reads and writes, as scan-save.js makes them.
     db: () => window.Emu.scanSave.clientDb(client),
-    // A scan saved, as scan-save.js saves one.
-    saveScan: rows => window.Emu.scanSave.save(data.db(), rows),
 
     // The backups in Supabase, newest first.
     async backups() {
@@ -256,14 +254,6 @@
       const { data: link, error } = await client.storage.from(BUCKET).createSignedUrl(object, 60, { download: name });
       fail(error);
       return link.signedUrl;
-    },
-    // A backup zip uploaded, then the ones past keeping removed.
-    async uploadBackup(file) {
-      fail((await client.storage.from(BUCKET).upload(file.name, file, { upsert: true, contentType: 'application/zip' })).error);
-      const names = (await data.backups()).map(f => f.name);
-      const kept = keep(names);
-      const drop = names.filter(n => !kept.has(n));
-      if (drop.length) fail((await client.storage.from(BUCKET).remove(drop)).error);
     },
     async backupLink(name) {
       const { data: link, error } = await client.storage.from(BUCKET).createSignedUrl(name, 60, { download: true });

@@ -58,7 +58,7 @@ const scan = {
   scanned: '2026-11-13T04:00:00.000Z',
   games: [game('Kept', 100), game('Grown', 300), game('New', 50), game('Renamed (Rev 1)', 70)],
   saves: [{ system: 'gb', name: 'Kept', kind: 'save', game: 'Kept', files: [], size: 8 }],
-  toDelete: [], unsortedSaves: [], backups: [],
+  toDelete: [], unsortedSaves: [],
   renames: [{ system: 'gb', from: 'Renamed', to: 'Renamed (Rev 1)' }],
 };
 
@@ -70,8 +70,8 @@ const scan = {
   check('a new game is added', c.added.map(g => g.title).join() === 'New,Renamed (Rev 1)', c.added.map(g => g.title));
   check('a game of another size is changed', c.changed.map(g => g.title).join() === 'Grown', c.changed.map(g => g.title));
   check('a game no longer scanned is gone', c.gone.map(g => g.title).join() === 'Gone', c.gone.map(g => g.title));
-  check('a drive save not scanned is gone', c.savesGone.map(s => s.name).join() === 'Old', c.savesGone);
-  check('a Mac\'s save is never the drive\'s', !c.savesGone.some(s => s.location !== 'drive'), c.savesGone);
+  check('a server save not scanned is gone', c.savesGone.map(s => s.name).join() === 'Old', c.savesGone);
+  check('a Mac\'s save is never the server\'s', !c.savesGone.some(s => s.location !== 'drive'), c.savesGone);
   check('a scanned save not saved is new', c.savesNew.map(s => s.name).join() === 'Kept', c.savesNew);
 }
 
@@ -82,14 +82,14 @@ const scan = {
     emu_notes: [{ system: 'gb', title: 'Renamed', note: 'rux wrote this' }],
     emu_saves: [{ system: 'gb', name: 'Renamed', kind: 'save', location: 'a Mac', game: 'Renamed' },
       { system: 'gb', name: 'Old', kind: 'save', location: 'drive' }],
-    emu_drive: [{ id: 1, backup: { file: 'emu-backup_2026-11-12.zip' }, newest: { mGBA: '0.10.5' } }],
+    emu_drive: [{ id: 1, newest: { mGBA: '0.10.5' } }],
   });
   const db = scanSave.restDb({ url, key: KEY, fetch: w.fetch });
   const games = await db.rows('emu_games', 'system,title,size');
   const saves = await db.rows('emu_saves', 'system,name,kind,location');
-  const [row] = await db.rows('emu_drive', 'backup,newest');
+  const [row] = await db.rows('emu_drive', 'newest');
   const change = scanSave.changes(scan, games, saves);
-  await scanSave.save(db, scanSave.rowsOf(scan, change, { backup: row.backup, newest: row.newest }));
+  await scanSave.save(db, scanSave.rowsOf(scan, change, { newest: row.newest }));
   const t = w.tables;
 
   check('every request carries the key', w.asked.length > 0);
@@ -99,11 +99,10 @@ const scan = {
   check('every scanned game is written', ['Kept', 'Grown', 'New', 'Renamed (Rev 1)'].every(n => t.emu_games.some(g => g.title === n)), t.emu_games.map(g => g.title));
   check('a game of another size takes its new size', t.emu_games.find(g => g.title === 'Grown').size === 300);
   check('a game gone is deleted', !t.emu_games.some(g => g.title === 'Gone'), t.emu_games.map(g => g.title));
-  check('a drive save gone is deleted', !t.emu_saves.some(s => s.name === 'Old'), t.emu_saves);
-  check('the scanned save is written as the drive\'s', t.emu_saves.some(s => s.name === 'Kept' && s.location === 'drive'), t.emu_saves);
-  check('the drive\'s row keeps its backup', t.emu_drive[0].backup?.file === 'emu-backup_2026-11-12.zip', t.emu_drive[0]);
-  check('the drive\'s row keeps its newest versions', t.emu_drive[0].newest?.mGBA === '0.10.5', t.emu_drive[0]);
-  check('the drive\'s row takes the scan\'s time', t.emu_drive[0].scanned_at === scan.scanned, t.emu_drive[0]);
+  check('a server save gone is deleted', !t.emu_saves.some(s => s.name === 'Old'), t.emu_saves);
+  check('the scanned save is written as the server\'s', t.emu_saves.some(s => s.name === 'Kept' && s.location === 'drive'), t.emu_saves);
+  check('the scan\'s row keeps its newest versions', t.emu_drive[0].newest?.mGBA === '0.10.5', t.emu_drive[0]);
+  check('the scan\'s row takes the scan\'s time', t.emu_drive[0].scanned_at === scan.scanned, t.emu_drive[0]);
   const upserts = w.asked.filter(a => a.method === 'POST');
   check('a write merges over the row with the same key', upserts.every(a => a.prefer?.includes('resolution=merge-duplicates')), upserts);
   const del = w.asked.find(a => a.method === 'DELETE' && a.table === 'emu_games');
@@ -136,7 +135,7 @@ const scan = {
   const given = await scanSave.givenChanged(found, async p => disk[p] ?? null, held);
   check('a file the same to the second is left', !given.some(f => f.path === 'bios/psx/same.bin'), given.map(f => f.path));
   check('a file of another size and a new one go', ['bios/psx/grown.bin', 'bios/psx/new.bin'].every(p => given.some(f => f.path === p)), given.map(f => f.path));
-  check('a file no longer on the drive is not asked for', !given.some(f => f.path === 'bios/psx/gone.bin'), given.map(f => f.path));
+  check('a file no longer on the server is not asked for', !given.some(f => f.path === 'bios/psx/gone.bin'), given.map(f => f.path));
 
   const w = world({
     emu_files: held.map(({ path, sha1, size }) => ({ path, sha1, size })),

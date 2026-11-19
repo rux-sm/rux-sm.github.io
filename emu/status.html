@@ -21,10 +21,10 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- Status: Update, which scans the drive and saves it, from update.js; then
-     what is done and what is left, for the drive from its last scan, for
-     this Mac live from Rux Emu Helper and for each other Mac from its last
-     report, from status.js. The shell is
+<!-- Status: what is done and what is left, for the server from its last
+     nightly scan, for this Mac live from Rux Emu Helper, saved each time the
+     page opens, and for each other Mac from its last report, from
+     status.js. The shell is
      templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -158,21 +158,6 @@
             </div>
           </div>
         </div>
-        <section class="rux--stack-vertical rux--stack-scale-3" aria-label="Update">
-          <div class="emu-actions">
-            <button type="button" class="rux--btn rux--btn--primary" id="emu-update">Update</button>
-          </div>
-          <p class="rux--type-body-01" id="emu-update-status" role="status"></p>
-          <div id="emu-check" hidden>
-            <div class="rux--stack-vertical rux--stack-scale-3">
-              <p class="rux--type-body-01" id="emu-check-text"></p>
-              <div class="emu-actions">
-                <button type="button" class="rux--btn rux--btn--primary" id="emu-save">Save</button>
-                <button type="button" class="rux--btn rux--btn--ghost" id="emu-cancel">Not now</button>
-              </div>
-            </div>
-          </div>
-        </section>
         <div class="rux--stack-vertical rux--stack-scale-6" id="emu-status"></div>
       </div>
     </div>
@@ -219,12 +204,8 @@
 <script src="data.js"></script>
 <script src="search.js"></script>
 <script src="saves-rules.js"></script>
-<script src="scan.js"></script>
-<script src="drive.js"></script>
-<script src="zip.js"></script>
 <script src="helper.js"></script>
 <script src="carry.js"></script>
 <script src="status.js"></script>
-<script src="update.js"></script>
 </body>
 </html>

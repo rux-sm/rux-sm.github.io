@@ -3,21 +3,22 @@
    --------------------------------------------------------------------------
    What is done and what is left. The collection: each BIOS a system's
    emulator needs and each emulator's installer, which Supabase holds for
-   every Mac, Rux Emu Helper's zip there to download on a Mac away from the
-   collection, whether its project has a newer one out, and from the drive's
-   last scan, saves still in a folder from before each emulator had its own. Then this Mac,
+   every Mac, Rux Emu Helper's zip there to download on a new Mac, whether
+   its project has a newer one out, and from the server's last scan, saves
+   still in a folder from before each emulator had its own. Then this Mac,
    live from Rux Emu Helper, helper.js, when it is running here, and every
-   other Mac as Update last saved it there, folded shut below it so the page
+   other Mac as it was last saved there, folded shut below it so the page
    is about the Mac in hand. Each Mac lists its emulators in
-   emulators.json's order: ES-DE reading the
-   drive's games, each emulator saving into its folder on the drive, and each
-   retired app still there or still holding files. Installing an app is what
+   emulators.json's order: ES-DE reading this Mac's library, each emulator
+   saving into its own folder, and each retired app still there or still
+   holding files. Installing an app is what
    says a Mac plays with it, so one that is not installed is only said, unless
    its old folder still holds saves. An emulator whose systems have no games
    yet is not needed yet. Each emulator's line opens its profile on the
    Emulators page.
-   Update, above them, is update.js, and they are drawn again after it saves;
-   this Mac is read again each time the page comes back into view.
+   This Mac is read again each time the page comes back into view, and
+   saved, its report to emu_macs and the saves it keeps itself, each time
+   the page opens and whenever it differs from what was last saved.
    Set up this Mac, above this Mac's emulators while one is missing, older
    than the installer Supabase holds or never opened here, installs each from
    Supabase and makes it ready as a first Play does, with carry.js: its
@@ -83,7 +84,7 @@
     return wrap;
   }
 
-  // The collection: what Supabase holds for every Mac, and the drive from its last scan.
+  // The collection: what Supabase holds for every Mac, and the server from its last scan.
   function driveRows(emulators, bios, drive, saves, used, held, helperVersion) {
     const rows = [];
     const missing = [];
@@ -92,12 +93,12 @@
       for (const n of R.needsOf(system, emu, bios)) if (!n.ok && !n.optional) missing.push(`${R.systemName(system)}: ${n.label}${n.wrong ? ', not the right file' : ''}`);
     }
     rows.push({ what: 'BIOS and keys', state: missing.length ? TODO : DONE,
-      detail: missing.length ? `Put in the drive's bios folder, and Update:\n${missing.join('\n')}` : 'Every file a system with games needs is in Supabase' });
+      detail: missing.length ? `Put in the server's bios folder; the nightly scan puts it in Supabase:\n${missing.join('\n')}` : 'Every file a system with games needs is in Supabase' });
 
     const names = [...new Set(Object.values(emulators.systems).map(e => e.emulator))].filter(used);
     const noInstaller = names.filter(n => !kept(held, n));
     rows.push({ what: 'Installers kept in Supabase', state: noInstaller.length ? TODO : DONE,
-      detail: noInstaller.length ? `None yet for ${noInstaller.join(', ')}: put it in the drive's emulation/emulators/, and Update` : `One for each of ${names.join(', ')}` });
+      detail: noInstaller.length ? `None yet for ${noInstaller.join(', ')}: put it in the server's emulators folder; the nightly scan takes it` : `One for each of ${names.join(', ')}` });
 
     // Rux Emu Helper, zipped among the installers, for a Mac away from the collection.
     const zip = R.installerOf(held, 'Rux Emu Helper');
@@ -114,18 +115,18 @@
       location.reload();
     };
     rows.push(!zip
-      ? { what: 'Rux Emu Helper', state: TODO, detail: 'Not in Supabase yet: build it with emu/tools/build-helper.mjs, and Update' }
+      ? { what: 'Rux Emu Helper', state: TODO, detail: 'Not in Supabase yet: build it with emu/tools/build-helper.mjs; the nightly scan puts it in Supabase' }
       : here && Number(here) < Number(keptHelper)
         ? { what: 'Rux Emu Helper', state: TODO, button: { label: 'Update', run: update },
           detail: `This Mac runs version ${here}: Update puts version ${keptHelper} in its place` }
         : { what: 'Rux Emu Helper', state: DONE, button: { label: 'Download', run: download },
           detail: `Version ${keptHelper} in Supabase. On a new Mac: download, unzip, drag into Applications, open it, and allow it once in System Settings, Privacy & Security` });
 
-    // Each installer against the newest its project has out, once Update has asked.
+    // Each installer against the newest its project has out, once the nightly scan has asked.
     if (drive.newest) {
       const newer = R.newerOut(emulators, drive, held);
       rows.push({ what: 'The newest versions in Supabase', state: newer.length ? TODO : DONE,
-        detail: newer.length ? `Download into the drive's emulation/emulators/, and Update:\n${newer.map(n => `${n.name} ${n.newest}, in place of ${n.kept}`).join('\n')}`
+        detail: newer.length ? `Download into the server's emulators folder; the nightly scan takes it:\n${newer.map(n => `${n.name} ${n.newest}, in place of ${n.kept}`).join('\n')}`
           : 'Each installer is the newest its project has out' });
     }
 
@@ -140,7 +141,7 @@
     rows.push({ what: 'Saves in their emulator\'s folder', state: old.size ? TODO : DONE,
       detail: old.size
         ? `Move out of ${[...old.keys()].join(', ')}: ${[...old.values()].reduce((a, b) => a + b, 0)} saves${unsorted ? ` and ${files(unsorted)} that match no game` : ''}, as emu/docs/emulator-setup.md says`
-        : 'Every save on the drive sits in its emulator\'s folder' });
+        : 'Every save on the server sits in its emulator\'s folder' });
     return rows;
   }
 
@@ -148,24 +149,22 @@
   function macRows(mac, emulators, used, held) {
     const rows = [];
     const f = mac.frontend ?? {};
-    const reads = f.romDirectory && /\/emulation\/roms\/?$/.test(f.romDirectory);
+    const reads = f.romDirectory && /\/Emulation\/roms\/?$/.test(f.romDirectory);
     rows.push({ what: `${f.name ?? 'ES-DE'}, the library`, href: profile(f.name ?? 'ES-DE'),
       state: !f.app ? ABSENT : reads ? DONE : TODO,
       detail: !f.app ? absent(held, f.name ?? 'ES-DE')
         : reads ? `${f.app.version ?? 'Installed'} · reads ${f.romDirectory}`
-        : f.romDirectory ? `Reads ${f.romDirectory}: point it at the drive's roms folder`
-        : 'Open it once and point its ROM folder at the drive\'s roms folder' });
+        : f.romDirectory ? `Reads ${f.romDirectory}: point it at this Mac's library, ~/Emulation/roms`
+        : 'Open it once and point its ROM folder at this Mac\'s library, ~/Emulation/roms' });
 
-    // An emulator keeps one save folder on the drive, named for the first system it plays.
-    const folderOf = name => Object.keys(emulators.systems).find(s => emulators.systems[s].emulator === name);
     for (const e of (mac.emulators ?? []).filter(x => !x.retired)) {
       const systems = (e.systems ?? []).map(R.systemName).join(', ');
       const what = `${e.emulator}: ${systems}`;
       const href = profile(e.emulator);
       if (!e.app) {
-        const left = (e.places ?? []).filter(p => p.files && !/\/emulation\/saves\//.test(p.dir)).map(p => `${files(p.files)} in ${p.dir}`);
+        const left = (e.places ?? []).filter(p => p.files).map(p => `${files(p.files)} in ${p.dir}`);
         rows.push(left.length
-          ? { what, href, state: TODO, detail: `Not installed, and its old folder holds saves: move them to the drive's saves/${folderOf(e.emulator)}/\n${left.join('\n')}` }
+          ? { what, href, state: TODO, detail: `Not installed, and its old folder holds saves: install it and press Play, and Emu carries them\n${left.join('\n')}` }
           : { what, href, state: ABSENT, detail: absent(held, e.emulator) });
         continue;
       }
@@ -194,25 +193,16 @@
         rows.push({ what, href, state: DONE, detail: `${version} · saves inside its hard disk image` });
         continue;
       }
-      const folder = `saves/${folderOf(e.emulator)}`;
-      const onDrive = new RegExp(`/emulation/${folder}(/|$)`);
-      const places = e.places ?? [];
-      const elsewhere = places.filter(p => p.dir && !onDrive.test(p.dir) && (p.from === 'setting' || p.files));
-      const where = places.filter(p => p.dir).map(p => `${files(p.files ?? 0)} in ${p.dir}`).join('\n');
-      if (!e.data) {
-        rows.push({ what, href, state: TODO, detail: `${version} · open it once and set its saves to the drive's ${folder}/` });
-      } else if (elsewhere.length || !places.some(p => p.dir && onDrive.test(p.dir))) {
-        rows.push({ what, href, state: TODO, detail: `${version} · move its saves and point it at the drive's ${folder}/\n${where}` });
-      } else {
-        rows.push({ what, href, state: DONE, detail: `${version} · saves to the drive\n${where}` });
-      }
+      // One whose saves Emu does not carry yet keeps them on this Mac alone.
+      const where = (e.places ?? []).filter(p => p.dir).map(p => `${files(p.files ?? 0)} in ${p.dir}`).join('\n');
+      rows.push({ what, href, state: TODO, detail: `${version} · Emu does not carry its saves yet, so they stay on this Mac\n${where}` });
     }
 
     for (const e of (mac.emulators ?? []).filter(x => x.retired)) {
       const left = (e.places ?? []).filter(p => p.files).map(p => `${files(p.files)} in ${p.dir}`);
       rows.push({ what: `${e.emulator}, retired`, state: TODO,
         detail: left.length
-          ? `Move what is left to the drive, then remove it:\n${left.join('\n')}`
+          ? `Keep any save worth keeping, then remove it:\n${left.join('\n')}`
           : e.app ? 'Remove the app' : `Remove its folder ${e.data}` });
     }
     return rows;
@@ -249,6 +239,41 @@
     helperVersion = (await R.helper.status())?.version ?? null;
     live = await R.helper.mac();
     if (read) draw();
+    saveThisMac(live);
+  }
+
+  // THIS MAC SAVED: its report and each save it keeps itself, once they
+  // differ from what Supabase holds, each save matched to its game. A
+  // second look while one save runs waits for the next.
+  const canon = v => Array.isArray(v) ? v.map(canon)
+    : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
+  // How a Mac stands, its emulators by name, since the helper lists them in no set order.
+  const standing = m => JSON.stringify(canon({ macos: m.macos ?? null, chip: m.chip ?? null, frontend: m.frontend ?? null,
+    emulators: [...(m.emulators ?? [])].sort((a, b) => a.emulator.localeCompare(b.emulator)) }));
+  const fileKey = f => `${f.from}/${f.rel ?? f.name}|${Number(f.size)}|${f.saved}`;
+  let saving = false;
+  async function saveThisMac(report) {
+    if (!report?.mac || !read || saving) return;
+    saving = true;
+    try {
+      const macFiles = await R.helper.macSaves();
+      if (!macFiles) return;
+      const before = read.macs.find(x => x.name === report.mac);
+      const had = new Set(read.saves.filter(x => x.location === report.mac).flatMap(x => x.files ?? []).map(fileKey));
+      const has = new Set(macFiles.map(fileKey));
+      if (before && standing(before) === standing(report) && had.size === has.size && [...has].every(k => had.has(k))) return;
+      const [games, emulators] = await Promise.all([R.data.games(), R.emulators()]);
+      const uploads = [];
+      const files = [];
+      for (const f of macFiles) {
+        uploads.push({ stored: f.stored, blob: new Blob([await R.helper.macSave(f.stored)]) });
+        files.push({ rel: f.rel, systems: f.systems, file: { name: f.rel, stored: f.stored, from: f.from, size: f.size, created: f.created, saved: f.saved } });
+      }
+      await R.data.saveMacSaves(report, uploads, R.saveRules.group(files, games, emulators.systems));
+      [read.macs, read.saves] = await Promise.all([R.data.macs(), R.data.saves()]);
+      draw();
+    } catch (error) { console.error(error); R.notice('This Mac could not be saved. Open Status again to try.'); }
+    finally { saving = false; }
   }
 
   function draw() {
@@ -260,18 +285,18 @@
     const out = $('emu-status');
     out.replaceChildren();
     if (drive) {
-      out.append(section('The collection', `What Supabase holds for every Mac, and the drive from the scan of ${R.when(drive.scanned_at)}.`,
+      out.append(section('The collection', `What Supabase holds for every Mac, and the server from its scan of ${R.when(drive.scanned_at)}.`,
         driveRows(emulators, bios, drive, saves, used, held, helperVersion)));
     } else {
-      out.append(el('p', 'rux--type-body-01', 'No scan yet. Update scans the drive.'));
+      out.append(el('p', 'rux--type-body-01', 'No scan yet. The server scans every night.'));
     }
     // This Mac, read now, stands in for its last report.
     const here = live && { name: live.mac, macos: live.macos, frontend: live.frontend, emulators: live.emulators, live: true };
     const rowsOf = mac => macRows(ordered(mac, emulators), emulators, used, held);
     const macSection = (mac, rows) => section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
       mac.live
-        ? 'Live from Rux Emu Helper. Update saves it, with any save this Mac keeps itself.'
-        : `As Update last saved it there, ${R.when(mac.gathered_at)}.`,
+        ? 'Live from Rux Emu Helper, saved each time this page opens, with any save this Mac keeps itself.'
+        : `As it was last saved there, ${R.when(mac.gathered_at)}.`,
       rows);
     if (here) {
       const todo = setUpWork(here, emulators, used, held);
@@ -286,7 +311,7 @@
       out.append(otherMacs(here ? 'Other Macs' : 'Macs', left, others.map(o => macSection(o.mac, o.rows))));
     }
     if (!here && !others.length) {
-      out.append(el('p', 'rux--type-body-01', 'No Mac has been saved yet: Update on a Mac with Rux Emu Helper saves it.'));
+      out.append(el('p', 'rux--type-body-01', 'No Mac has been saved yet: open this page on a Mac with Rux Emu Helper.'));
     }
   }
 
@@ -364,14 +389,13 @@
       said.textContent = 'Starting…';
       for (let i = 0; i < 10 && !live; i += 1) { await new Promise(r => setTimeout(r, 1000)); live = await R.helper.mac(); }
       if (live) draw();
-      else { said.textContent = 'It did not start. Install it with Install Rux Emu Helper.command beside the games, or Download it under The collection.'; b.disabled = false; }
+      else { said.textContent = 'It did not start. Download it under The collection, unzip it and drag it into Applications.'; b.disabled = false; }
     });
     box.append(said, b);
     return box;
   }
 
   load();
-  document.addEventListener('emu:saved', load);
   // The helper may be started or quit, or an emulator set up, while the page is away.
   window.addEventListener('focus', readThisMac);
 })();

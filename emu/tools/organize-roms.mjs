@@ -1,26 +1,27 @@
 #!/usr/bin/env node
-// Puts the collection in order, from the newest scan:
+// Puts the collection on the home server in order, from the nightly scan
+// kept in CACHE, run on the server with its games folder writable:
 //
-//   node emu/tools/organize-roms.mjs "/Volumes/<drive>/emulation"          what it would do
-//   node emu/tools/organize-roms.mjs "/Volumes/<drive>/emulation" --yes    do it
+//   CACHE=<the scan's cache> node emu/tools/organize-roms.mjs <games folder>          what it would do
+//   CACHE=<the scan's cache> node emu/tools/organize-roms.mjs <games folder> --yes    do it
 //
 // - A PlayStation game on BIN and CUE becomes one CHD per disc, and a
 //   PlayStation 2 ISO a CHD, each named by the list; a game on more than one
 //   disc gets an .m3u playlist beside its discs.
 // - Every other file the list names differently is renamed to the list's name,
-//   and so is a save under `<emulation>/saves/<system>/` named after it,
+//   and so is a save under `<games>/saves/<system>/` named after it,
 //   since an emulator that finds a save by the game's file name would lose it.
-//   Each rename is kept in `scans/renames.json`, so Import moves the game's
-//   notes with it.
+//   Each rename is kept in CACHE's `renames.json`, so the nightly scan moves
+//   the game's notes with it.
 // - Only a game whose every file is on the list is touched, so a bad copy is
 //   never sealed into a new format or given a name it is not.
-// - Nothing is deleted: a converted original moves to `<emulation>/to-delete/`,
+// - Nothing is deleted: a converted original moves to `<games>/to-delete/`,
 //   for rux to empty once the new file plays. chdman checks each CHD it makes
 //   before its original moves.
-// - What a new CHD holds is written to fingerprints.json from the files it was
-//   made from, so the next scan matches it without extracting it.
+// - What a new CHD holds is written to CACHE's fingerprints.json from the
+//   files it was made from, so the next scan matches it without extracting it.
 //
-// Run scan-roms.mjs after it, so the scan describes the drive as it now is.
+// The next nightly scan describes the collection as it now is.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -30,24 +31,23 @@ import scanner from '../scan.js';
 const root = process.argv[2];
 const yes = process.argv.includes('--yes');
 const romsDir = path.join(root ?? '', 'roms');
-const scansDir = path.join(root ?? '', 'scans');
-if (!root || !fs.existsSync(romsDir) || !fs.existsSync(scansDir)) {
-  console.error('usage: organize-roms.mjs <emulation folder holding roms/ and scans/> [--yes]');
+const cacheDir = process.env.CACHE ?? '';
+if (!root || !fs.existsSync(romsDir) || !fs.existsSync(path.join(cacheDir, 'scan.json'))) {
+  console.error('usage: CACHE=<the scan\'s cache, holding scan.json> organize-roms.mjs <games folder holding roms/> [--yes]');
   process.exit(1);
 }
-const newest = fs.readdirSync(scansDir).filter(f => /^scan_.*\.json$/.test(f)).sort().pop();
-const scan = JSON.parse(fs.readFileSync(path.join(scansDir, newest), 'utf8'));
+const scan = JSON.parse(fs.readFileSync(path.join(cacheDir, 'scan.json'), 'utf8'));
 if (!scan.fingerprints || !Object.keys(scan.lists ?? {}).length) {
-  console.error(`${newest} has no fingerprints or no list matches; run scan-roms.mjs with the lists first`);
+  console.error('The last scan has no fingerprints or no list matches; let the nightly scan run with the lists first');
   process.exit(1);
 }
-const cachePath = path.join(scansDir, 'fingerprints.json');
+const cachePath = path.join(cacheDir, 'fingerprints.json');
 const cache = scanner.bySecond(JSON.parse(fs.readFileSync(cachePath, 'utf8')));
 const trash = path.join(root, 'to-delete');
 
 const abs = rel => path.join(romsDir, rel);
 const EMULATORS = JSON.parse(fs.readFileSync(new URL('../emulators.json', import.meta.url), 'utf8')).systems;
-const renamesPath = path.join(scansDir, 'renames.json');
+const renamesPath = path.join(cacheDir, 'renames.json');
 const renames = fs.existsSync(renamesPath) ? JSON.parse(fs.readFileSync(renamesPath, 'utf8')) : [];
 // A game's title, as the scan gives it: its file name less its track and disc.
 const titleOf = rel => path.basename(rel).replace(/\.[^.]+$/, '').replace(/\s*\((Track|Disc) \d+\)/g, '').trim();
@@ -168,4 +168,4 @@ for (const p of plan) {
   done++;
 }
 saveCache();
-console.log(`${done} of ${plan.length} done. Originals are in ${trash}. Run scan-roms.mjs next.`);
+console.log(`${done} of ${plan.length} done. Originals are in ${trash}. The next nightly scan picks them up.`);

@@ -48,40 +48,33 @@ stays, since that is the server reading its own disk.
 - **`location: 'drive'` in `emu_saves` stays as data,** marking a save in
   the server's `saves/` folder; only the words shown change.
 
+- **Status saves this Mac each time it opens,** with no button: its report
+  to `emu_macs` and the saves it keeps itself, which Update saved before.
+- **The nightly scan keeps its scan file beside its fingerprints in
+  `$CACHE`,** and `emu/tools/organize-roms.mjs` reads and writes them there,
+  since the server mounts the games read-only.
+- **`emu/tools/build-helper.mjs` writes the helper's zip into the server's
+  `emulators/` folder over its share,** and the nightly scan puts it in
+  Supabase.
+- **The rename and its push go in one go during the day,** and the Supabase
+  copy may fail once before its next fetch.
+- **The old backups go:** `emu/tools/backup-saves.mjs`, `backups.json` and
+  the drive's zip on Saves, so Saves shows what Supabase keeps until the
+  backup built from Supabase lands.
+
 ## Questions
 
-- Update also saves each Mac's report to `emu_macs` and the saves a Mac
-  keeps itself, which Status's other Macs, Emulators and the room's kept
-  spots need. Proposed: Status saves this Mac each time it opens, with no
-  button.
-- `emu/tools/organize-roms.mjs` reads the scan file and fingerprints the
-  drive mode wrote beside the games, which the server mounts read-only.
-  Proposed: the nightly scan keeps its scan file beside its fingerprints in
-  `$CACHE`, and the organize tool reads and writes them there.
-- `emu/tools/build-helper.mjs` writes the helper beside the games, and the
-  scan puts it in Supabase. Proposed: it writes the zip into the server's
-  `emulators/` folder over its share, and the nightly scan puts it in
-  Supabase.
-- The scan container fetches its code before each nightly run and the
-  Supabase copy every 24 hours, both naming `emu_drive`. Proposed: apply the
-  rename and push in one go during the day, accepting that the Supabase copy
-  may fail once before its next fetch.
-- The old backups, `emu/tools/backup-saves.mjs`, `backups.json` and the
-  drive's zip on Saves, are written by nothing once Update goes. Proposed:
-  remove them, so Saves shows only what Supabase keeps until the backup
-  built from Supabase lands.
+None open.
 
 ## Tasks
 
-- [ ] Build Rux Emu Helper 36, which no longer reads a drive, and put it in
-      Supabase, by the build question above.
-- [ ] Remove Update from Status with `emu/update.js`, `emu/drive.js` and
-      `emu/zip.js`, Status's drive sections and `emu/scan.js`'s `packed`,
-      saving this Mac by the answer above.
-- [ ] Remove the drive's words left on Status, in `emu/scan.js`'s and
-      `emu/scan-save.js`'s comments, in `emu/README.md` and in `emu/docs/`.
-- [ ] Point `emu/tools/organize-roms.mjs` at the server's `games` folder and
-      drop `scan-roms.mjs`'s drive mode.
-- [ ] Rename `emu_drive` to `emu_scan` by a migration, with `emu/data.js`,
-      `emu/scan-save.js`, `emu/tools/copy-supabase.mjs` and their tests.
+- [ ] Build Rux Emu Helper 36, which no longer reads a drive, into the
+      server's `emulators/` folder with `emu/tools/build-helper.mjs`, once
+      its share is open on a Mac with the certificate.
+- [ ] Run `emu/tools/organize-roms.mjs` on the server where the scan's
+      `scan-cache` volume is, as `emu/docs/home-server.md` should then say.
+- [ ] Rename `emu_drive` to `emu_scan` by a migration, dropping its
+      `backup` and `backups` columns, with `emu/data.js`,
+      `emu/scan-save.js`, `emu/tools/scan-roms.mjs`,
+      `emu/tools/copy-supabase.mjs` and their tests.
 - [ ] Update each Mac to the new helper and play a downloaded game on each.

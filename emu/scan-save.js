@@ -1,12 +1,11 @@
 /* ==========================================================================
    scan-save.js — a scan saved to Supabase
    --------------------------------------------------------------------------
-   One set of steps, run by Update on the Status page and each night by
-   emu/tools/scan-roms.mjs on the home server, so the two save a scan the
-   same way. `rowsOf` makes a scan's games and the drive's saves into rows,
+   The steps the home server's nightly scan, emu/tools/scan-roms.mjs, saves
+   a scan by. `rowsOf` makes a scan's games and the server's saves into rows,
    `changes` says what differs from the rows saved, and `save` writes them.
    `givenChanged` says which BIOS, key, firmware and installer files the
-   drive holds that Supabase lacks or holds another copy of, and `putGiven`
+   server holds that Supabase lacks or holds another copy of, and `putGiven`
    puts them there, an installer in place of its emulator's older one;
    `putFile` and `dropFile` are one file in and out of Supabase.
 
@@ -24,7 +23,7 @@
 (root => {
   'use strict';
 
-  // Where a save in the drive's saves folder is, as its row says.
+  // Where a save in the server's saves folder is, as its row says.
   const DRIVE = 'drive';
   // The bucket of everything but the games, each file's bytes under their SHA-1; `emu_files` lists them.
   const COLLECTION = 'emu-collection';
@@ -47,7 +46,7 @@
   });
 
   // What a scan changes against the games and saves saved: games new, of
-  // another size and gone, and the drive's saves new and gone.
+  // another size and gone, and the server's saves new and gone.
   function changes(scan, savedGames, savedSaves) {
     const before = new Map(savedGames.map(g => [key(g), g]));
     const now = new Set(scan.games.map(key));
@@ -63,23 +62,22 @@
     };
   }
 
-  // What `save` writes for a scan: its rows, the rows gone, the drive's row
-  // and the organize tool's renames. `drive` is what the drive's row keeps
-  // beyond the scan: the backup and the newest versions out.
+  // What `save` writes for a scan: its rows, the rows gone, the scan's row
+  // and the organize tool's renames. `drive` is what the scan's row keeps
+  // beyond the scan: the newest versions out.
   const rowsOf = (scan, { gone, savesGone }, drive) => ({
     games: scan.games.map(g => rowOf(g, scan.scanned)),
     gone,
     saves: scan.saves.map(s => saveRowOf(s, scan.scanned)),
     savesGone,
-    drive: { to_delete: scan.toDelete, unsorted_saves: scan.unsortedSaves, backups: scan.backups,
-      backup: drive.backup ?? null, newest: drive.newest ?? {}, scanned_at: scan.scanned },
+    drive: { to_delete: scan.toDelete, unsorted_saves: scan.unsortedSaves, newest: drive.newest ?? {}, scanned_at: scan.scanned },
     renames: scan.renames ?? [],
   });
 
   // A scan saved. A rename the organize tool made moves the game's notes
   // and its saves' notes first, so the scan's rows land on them. Then every
   // game and save in the scan is written, leaving each note as it is, the
-  // ones no longer on the drive are deleted, and the drive's row is
+  // ones no longer on the server are deleted, and the scan's row is
   // replaced. Rows go 100 at a time.
   async function save(db, { games, gone, saves, savesGone, drive, renames }) {
     const notes = await db.rows('emu_notes', 'system,title');
@@ -125,7 +123,7 @@
   }
 
   // The files every Mac is given that a scan found, each BIOS, key, firmware
-  // and installer, which the drive holds that Supabase lacks or holds another
+  // and installer, which the server holds that Supabase lacks or holds another
   // copy of: told by its size and the second it was last changed, since the
   // home server's share keeps a file's time no finer. `stat(path)` is the
   // file's { size, mtimeMs }, or null; `held` is emu_files_now's rows.
@@ -146,7 +144,7 @@
   const slug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
   const installs = (file, name) => slug(file).startsWith(slug(name));
 
-  // Each of `files` put in Supabase from the drive, `sha1Of(path)` and
+  // Each of `files` put in Supabase from the server, `sha1Of(path)` and
   // `bytesOf(path)` reading it, as `mac` put it. A newer installer takes the
   // place of its emulator's older one; `names` are the apps installers are of.
   async function putGiven(db, files, { sha1Of, bytesOf, mac, names, told = () => {} }) {

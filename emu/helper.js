@@ -2,9 +2,8 @@
    helper.js — talking to Rux Emu Helper
    --------------------------------------------------------------------------
    The menu bar app on the Mac, emu/helper/main.swift, answers this site on
-   127.0.0.1:47647: `status` is the collection it found, this Mac's library
-   folder and each system it can play, or null when no helper answers; a
-   helper that names no library plays only from a drive. `mac` is how this Mac stands,
+   127.0.0.1:47647: `status` is this Mac's library folder and each system it
+   can play, or null when no helper answers. `mac` is how this Mac stands,
    read now, or null; `install` has it put an emulator's installer from
    Supabase in Applications, by a link signed here, or is null from a helper
    too old to; `settings` is each settings file an emulator keeps here, as
@@ -16,7 +15,7 @@
    `removeCarried` a carried save moved to the Trash, as a card pulled out
    of its game is, or null from a helper too old to;
    and `play` opens one game. `call` is any of its
-   calls, drive.js's too: a missing thing is null, and any other refusal,
+   calls: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
    its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
    Wii U game's own file, else its only file. `start` opens the helper
@@ -163,7 +162,7 @@
   // its files in the library at its size; `arriving` while one waits, comes
   // or is checked; `failed`, with why, where one stopped; else `away`. Each
   // carries the game's bytes and how many are here. A name is matched in one
-  // Unicode form, since a drive and a Mac may spell an accent differently.
+  // Unicode form, since the server and a Mac may spell an accent differently.
   const ACTIVE = ['waiting', 'downloading', 'checking'];
   const standings = (library, downloads) => {
     const key = (system, name) => `${system}/${name}`.normalize('NFC');

@@ -88,10 +88,16 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   and it opens again on the tab and console it was left on. The account is
   the header's round button, so nothing else stands around the room.
 - **My Room is a footer panel under the room, inside the tile,** its head
-  its name and a content switcher for its tabs, its body one row of tiles
-  or covers that scrolls sideways, so a drag from it into the room is a
-  short move up. The room's height gives way to it, and the sweep keeps the
-  room's things inside what is left.
+  its name, a content switcher for its tabs and a chevron that folds it to
+  its head, remembered in the browser; its body one row of tiles or covers
+  that scrolls sideways, so a drag from it into the room is a short move up.
+  It shows whenever the helper answers, with one faint line while it is
+  empty, so the room never jumps when the first download lands. The room's
+  height gives way to it, and the sweep keeps the room's things inside what
+  is left.
+- **A console downloaded from the store comes into the room unlit while
+  fewer than three are out, and is set up where it stands;** with three
+  out it waits in My consoles.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
 - **The store is headed Rux's Server,** so it is not mistaken for the
@@ -104,12 +110,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   that console chosen.
 - **Download on a console sets up its emulator; on a game it downloads the
   game,** the same `this-mac.js` and helper calls a drag makes today, and
-  the button shows its progress while the strip names it. A game whose
-  console is not set up says "Downloads the SNES too" under its button and
-  sets that up first.
+  a game's button shows its progress while the strip names it. Where the
+  chosen console is not set up, the count beside the selects adds
+  "Download sets up the SNES too", and a game's Download sets it up first.
 - **Games has a Console select and a Sort select over the grid:** Console
-  starts on the first console with games, and Sort is A to Z or Newest
-  added. The count of games shown sits beside them.
+  starts on the first console with games, and Sort is A to Z or Favourites
+  first, since a game row keeps no date it was added. The count of games
+  shown sits beside them.
 - **My Room has three tabs, My consoles, My games and My saves.** My
   consoles is each console set up on this Mac and put away, as a tile that
   is dragged into the room or pressed to bring it out.
@@ -133,7 +140,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **A room never kept is empty,** its set-up consoles in My Room.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room. One that is set up
-  has Put away and "Remove mGBA from this Mac".
+  has Put away and "Remove mGBA from this Mac"; one that is not, such as one
+  whose setup failed, has "Set up Game Boy Advance" and Put back.
 - **A console's power light is on its drawing,** over the drawing's own
   light pixel, in the real console's colour: glowing softly while it is set
   up, flashing on and off while its emulator is set up or removed, with no
@@ -283,22 +291,11 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Questions
 
-- Does a downloaded console go straight into the room, or into My
-  consoles? Proposed: into the room while fewer than three are out.
-- Does My Room show before anything is downloaded? Proposed: always, with
-  one faint line, so the room never jumps when the first download lands.
-- Can My Room fold down to its head to give the room more space? Proposed:
-  yes, by a chevron in its head, remembered in the browser.
 - Besides saves and each controller's controls, what else does the account
   keep that My saves should show, such as favourites or time played?
 
 ## Tasks
 
-- [ ] Build the store: the head's primary button, the large modal, Consoles
-      and Games tabs, the Console and Sort selects, and Download on each card.
-- [ ] Move My Room into the footer panel with My consoles, My games and My
-      saves, and drop the head's toggles, ⋮ menu and both drawers.
-- [ ] Add Tidy up and Put everything away to the TV's menu.
 
 - [ ] Give Rux Emu Helper a call that says whether the home server answers,
       and show it on the strip beside the collection.

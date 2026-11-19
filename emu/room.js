@@ -3,11 +3,9 @@
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is one tile, the room's: its head,
    then the room, Your Mac: the TV, up to three consoles and the favourite
-   games they bring out, each standing where it was left. The head's buttons
-   open a drawer tile over each side of the room, Rux's Server on the left
-   and My Room on the right, both closed each time the page loads, and its
-   menu holds Tidy up and Put everything away. Without the helper Rux's
-   Server is the whole page.
+   games they bring out, each standing where it was left, then My Room along
+   its foot. The head's one button opens Rux's Server, the store, as
+   Carbon's large modal. Without the helper the store is the whole page.
 
    A console has three places. In Rux's Server it is not on this Mac; in My
    Room it is set up and put away; in the room it is out. Which consoles
@@ -31,40 +29,40 @@
    home console's game, its cover once it starts, a wire running to the TV
    from its console. The TV's knobs, or a press on its case, open its menu:
    the other pages, Search and Sound, which the header holds only where
-   there is no room.
+   there is no room, then Tidy up and Put everything away.
 
    A console that is out and set up brings its favourites out: the
    favourites of its system this Mac holds, fewer each as more consoles are
    out. They hop out of it and land around it, and each stays where it
    landed or was left until its console is put away.
 
-   Rux's Server is every console with games, each its drawing from
-   brand/consoles/ over its name and count; one in
-   the room is outlined and faint, the place it goes back to, and one whose
-   emulator this Mac has shows a green light. Pressing a console, there or in
-   the room, picks it: its name, count and how it stands show beneath, with
-   Bring to Your Mac, Put away or Put back, over its games as covers, A to
-   Z, one this Mac holds dimmed with a tick. A game opens in the side panel,
-   game-panel.js. ?game=<system>/<title>, from Search or Problems, picks
+   Rux's Server has two tabs of cards. Consoles is every console with
+   games, its drawing from brand/consoles/ over its name and count; Games is
+   the chosen console's games as covers, A to Z or favourites first. Each
+   card has Download, or "On this Mac" where it is: on a console it sets up
+   its emulator and brings it into the room while fewer than three are out,
+   on a game it downloads it, setting up its console first where it must. A
+   console's card, pressed off its button, turns to its games; a game's
+   cover opens its side panel, game-panel.js, and the store comes back when
+   the panel closes. ?game=<system>/<title>, from Search or Problems, picks
    that game's console and opens its panel.
 
-   My Room has three tabs. Consoles is each console set up and put away,
-   dragged or pressed to bring it out. Games is this Mac's games, favourites
-   first, one still arriving under a veil that lifts as it comes. Saves is
-   the picked console's saves as cards: each game's, the one in it and those
-   out, with Take out, Put in and a name to change, then the console's own.
+   My Room has three tabs, in one row that scrolls sideways, and folds to
+   its head by its chevron, remembered in this browser. My consoles is each
+   console set up and put away, dragged or pressed to bring it out. My games
+   is this Mac's games, favourites first, one still arriving under a veil
+   that lifts as it comes. My saves is the picked console's saves as cards:
+   each game's, the one in it and those out, with Take out, Put in and a
+   name to change, then the console's own.
 
    A thing in the room is itself carried with the pointer, and anything
-   from a drawer is held as a copy. A word follows it and says what letting
+   from My Room is held as a copy. A word follows it and says what letting
    go will do, and a place it would land lights where that place is one
    thing, never the room as a whole. A console onto the room comes out where
-   it is let go, a fourth refused; onto My Room it is put away; onto Rux's
-   Server it is put back, or asked about where that would remove its
-   emulator. A game onto the room or My Room downloads it, onto its console
-   or the TV plays it, downloading it first if it must, and back onto Rux's
-   Server takes it off this Mac. A console it does not fit says so in red
-   and nothing happens. A game taken off this Mac leaves at once and its
-   files go a few seconds later, so Undo is only putting it back.
+   it is let go, a fourth refused, and onto My Room it is put away. A game
+   onto its console or the TV plays it. A console it does not fit says so
+   in red and nothing happens. A game is taken off this Mac from its side
+   panel.
 
    A smaller window sweeps the room's things into a pile, which stays. The
    wrong console shakes its head and says a line. A game played goes in
@@ -118,12 +116,10 @@
   const drive = () => Boolean(helper?.collection) && (!keeps || !helper.collection.network);
   // The handhelds, which light their own screens; every other console plays on the TV.
   const HANDHELD = new Set(['gb', 'gbc', 'gba', 'nds', 'n3ds']);
-  // Games taken off this Mac whose files go once Undo's time has passed, by key.
-  const leaving = new Map();
   // Games to play as soon as they have arrived, by key.
   const wanted = new Set();
-  // How a game stands on this Mac; one leaving it is away already.
-  const standing = g => (leaving.has(keyOf(g)) ? { state: 'away', total: 0, done: 0 } : stands(g));
+  // How a game stands on this Mac, as the helper last said.
+  const standing = g => stands(g);
   const emulatorOf = system => emulators?.systems?.[system]?.emulator ?? null;
   // The games this Mac holds or is being sent, each with how it stands.
   const mineNow = () => games.map(g => [g, standing(g)]).filter(([, st]) => st.state === 'held' || st.state === 'arriving');
@@ -242,9 +238,9 @@
     return svg;
   };
   // THE TV'S MENU, under its knobs: the other pages, as the header's menu
-  // lists them, then Search and Sound.
+  // lists them, then Search and Sound, then Tidy up and Put everything away.
   // So the room's header holds only the account, and the TV is how the room
-  // goes anywhere else.
+  // goes anywhere else and tidies itself.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
     const knobs = $('emu-tv-knobs');
@@ -260,20 +256,11 @@
     };
     menu.replaceChildren(...pages, divider(),
       menuItem(menu, 'Search games', () => window.Rux.modal.open('emu-search-modal', knobs), { icon: iconOf('#i-search'), shortcut: '⌘K' }),
-      menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }));
+      menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }),
+      divider(), menuItem(menu, 'Tidy up', tidy), menuItem(menu, 'Put everything away', putAllAway, { off: !stand.size }));
     window.Rux.menu.open(menu, knobs);
   }
   $('emu-tv-knobs').addEventListener('click', openTvMenu);
-  // THE ROOM'S MENU, under the head's ⋮: Tidy up and Put everything away.
-  function openRoomMenu() {
-    const menu = $('emu-room-menu');
-    const more = $('emu-room-more');
-    if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
-    menu.replaceChildren(menuItem(menu, 'Tidy up', tidy),
-      menuItem(menu, 'Put everything away', putAllAway, { off: !stand.size }));
-    window.Rux.menu.open(menu, more);
-  }
-  $('emu-room-more').addEventListener('click', openRoomMenu);
   // A press on the TV's case opens it too, but not one on its knobs, which open it themselves, or one that carried it.
   $('emu-tv').addEventListener('click', e => { if (!e.target.closest('a, button')) openTvMenu(); });
   $('emu-tv').addEventListener('contextmenu', e => { e.preventDefault(); openTvMenu(); });
@@ -426,8 +413,10 @@
     $('emu-head').hidden = !mac;
     $('emu-mine').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
-    // A drawer is a tile on layer-01, so what is in it steps a layer up.
-    for (const id of ['emu-collection', 'emu-mine']) $(id).classList.toggle('rux--layer-two', mac);
+    // The store is the modal's where the room is, and the page where it is not.
+    const home = mac ? $('emu-store-body') : $('emu-wall');
+    if ($('emu-collection').parentElement !== home) home.prepend($('emu-collection'));
+    if (!mac) window.Rux.modal.close('emu-store');
     // Where the room is, the TV's menu holds the pages and Search, so the header does not.
     $('emu-menu-open').hidden = mac;
     $('emu-search-open').hidden = mac || !R.data;
@@ -619,57 +608,79 @@
   }
 
   // RUX'S SERVER -------------------------------------------------------------
-  // The picked console is pressed and named, with its count, how it stands
-  // on this Mac and the move it can make without being dragged, over its games.
+  // A card's one button: Download, or why not, disabled. Without the helper
+  // there is none, since the store is only browsed.
+  function action(label, run = null, primary = true) {
+    const b = el('button', `rux--btn ${primary && run ? 'rux--btn--primary' : 'rux--btn--tertiary'} rux--layout--size-sm emu-store__action`, label);
+    b.type = 'button';
+    if (run) b.addEventListener('click', run); else b.disabled = true;
+    return b;
+  }
+  function consoleAction(system) {
+    if (!helper) return null;
+    if (settingUp.has(system)) return action(`Setting up ${emulatorOf(system)}…`);
+    if (keeping.has(system)) return action(`Removing ${emulatorOf(system)}…`);
+    if (plays(system)) return action('On this Mac');
+    return action('Download', () => getConsole(system));
+  }
+  function gameAction(g) {
+    if (!helper) return null;
+    const s = standing(g);
+    if (s.state === 'held') return action('On this Mac');
+    if (s.state === 'arriving') return action(s.total ? `Downloading ${Math.round(s.done / s.total * 100)}%` : 'Downloading…');
+    if (!keeps) return null;
+    return action('Download', () => getGame(g));
+  }
+  // The chosen console's games as cards, in the order Sort asks, with the
+  // count beside the selects, which says too where Download sets up the console first.
   function showPick() {
-    for (const b of $('emu-cabinet').children) b.setAttribute('aria-pressed', String(b.dataset.system === pick));
+    const select = $('emu-store-console');
+    if (select.value !== pick) select.value = pick ?? '';
     const list = pick ? gamesOf(pick) : [];
-    $('emu-picked').textContent = pick ? R.systemName(pick) : '';
-    const emulator = pick && emulatorOf(pick);
-    const st = stand.get(pick);
-    const state = !pick || !emulator ? '' : !helper ? `Plays in ${emulator}`
-      : st === 'on' ? 'Out in your room' : st === 'setting' ? `Setting up ${emulator}` : st === 'keeping' ? `Removing ${emulator}`
-      : st === 'off' ? 'In your room, not set up' : plays(pick) ? 'On this Mac, put away' : `Plays in ${emulator}`;
-    $('emu-picked-sub').textContent = [pick ? countOf(list.length) : '', state].filter(Boolean).join(' · ');
-    const move = $('emu-picked-move');
-    const [label, run] = !pick || !helper ? [] : !st ? ['Bring to Your Mac', () => bring(pick)] : st === 'off' ? ['Put back', () => putBack(pick)] : st === 'on' ? ['Put away', () => putAway(pick)] : [];
-    move.hidden = !label;
-    move.textContent = label ?? '';
-    move.onclick = run ?? null;
+    if ($('emu-store-sort').value === 'favourites') list.sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
+    const needs = pick && helper && keeps && !plays(pick) && !settingUp.has(pick) ? `Download sets up the ${R.systemName(pick)} too` : null;
+    $('emu-store-count').textContent = [pick ? countOf(list.length) : '', needs].filter(Boolean).join(' · ');
     $('emu-games').replaceChildren(...list.map(g => {
-      const li = coverItem(g);
-      if (standing(g).state === 'held') {
-        li.firstChild.classList.add('emu-cover--here');
-        li.firstChild.append(useOf(svgOf('emu-cover__tick', '0 0 32 32'), 'i-checkmark--filled'));
-        li.firstChild.title = `${g.title}, on this Mac`;
-      }
+      const li = el('li', 'emu-store__card');
+      const b = coverItem(g).firstChild;
+      b.title = `${g.title}, its details`;
+      li.append(b);
+      const button = gameAction(g);
+      if (button) li.append(button);
       return li;
     }));
-    $('emu-server-body').scrollTop = 0;
     renderStorage();
   }
 
   function renderServer() {
     const systems = Object.keys(R.SYSTEMS).filter(s => gamesOf(s).length);
     if (!systems.includes(pick)) pick = systems[0] ?? null;
+    const select = $('emu-store-console');
+    if (select.options.length !== systems.length) {
+      select.replaceChildren(...systems.map(system => { const o = el('option', '', R.systemName(system)); o.value = system; return o; }));
+    }
     $('emu-cabinet').replaceChildren(...systems.map(system => {
-      // One in the room leaves its place outlined; any other can be dragged up.
-      const away = stand.has(system);
-      const b = el('button', away ? 'emu-cabinet__console emu-cabinet__console--away' : 'emu-cabinet__console');
+      const li = el('li', 'emu-store__card');
+      const b = el('button', 'emu-store__console');
       b.type = 'button';
-      b.dataset.system = system;
-      if (!away) b.dataset.console = system;
-      const name = el('span', 'emu-cabinet__name', R.systemName(system));
-      if (!away && plays(system)) {
-        b.append(el('i', 'emu-led'));
-        b.title = `${emulatorOf(system)} is set up on this Mac`;
-      }
-      b.append(consoleOf(system), name, el('span', 'emu-cabinet__count', away ? 'In your room' : countOf(gamesOf(system).length)));
-      b.addEventListener('click', () => { choose(system); showPane('emu-server-games-pane'); });
-      return b;
+      b.title = `The ${R.systemName(system)}'s games`;
+      b.append(consoleOf(system), el('span', 'emu-store__name', R.systemName(system)), el('span', 'emu-row__sub', stand.has(system) ? 'In your room' : countOf(gamesOf(system).length)));
+      b.addEventListener('click', () => { choose(system); showStoreGames(); });
+      li.append(b);
+      const button = consoleAction(system);
+      if (button) li.append(button);
+      return li;
     }));
     showPick();
   }
+  // The store's content scrolls back to its tabs when it turns to another console.
+  const toTop = () => { $('emu-collection').closest('.rux--modal-content')?.scrollTo(0, 0); };
+  const showStoreGames = () => {
+    window.Rux.tabs.select($('emu-store-tabs'), $('emu-store-games-tab'), { focus: false });
+    toTop();
+  };
+  $('emu-store-console').addEventListener('change', e => { choose(e.target.value); toTop(); });
+  $('emu-store-sort').addEventListener('change', showPick);
   // STORAGE ------------------------------------------------------------------
   // A card, 8 by 10 art pixels: its body with a corner cut, a label and contacts.
   function cardOf() {
@@ -793,48 +804,31 @@
     }));
   }
 
-  // THE DRAWERS. Each of the head's toggles opens its drawer over that side
-  // of the room, its icon filled and the button selected while it is open,
-  // and closes it again, as does the drawer's own close and
-  // Escape. Both start closed each time the page loads, so the room shows whole.
-  const ICON = { 'emu-collection': ['#i-open-panel--left', '#i-open-panel--filled--left'], 'emu-mine': ['#i-open-panel--right', '#i-open-panel--filled--right'] };
-  const drawers = [['emu-collection', 'emu-server-open', 'emu-server-close'], ['emu-mine', 'emu-mine-open', 'emu-mine-close']]
-    .map(([id, opener, closer]) => {
-      let shown = false;
-      const show = () => {
-        $(id).classList.toggle('emu-side--open', shown);
-        $(opener).setAttribute('aria-expanded', String(shown));
-        $(opener).classList.toggle('rux--btn--selected', shown);
-        $(opener).querySelector('use').setAttribute('href', ICON[id][Number(shown)]);
-      };
-      const set = to => {
-        shown = to;
-        show();
-      };
-      // Opened, a drawer takes the focus on its title, as Carbon's side panel does.
-      $(opener).addEventListener('click', () => { set(!shown); if (shown) $(`${id}-h`).focus({ preventScroll: true }); });
-      $(closer).addEventListener('click', () => { set(false); $(opener).focus(); });
-      show();
-      return { id, opener, set, open: () => shown };
-    });
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape' || !helper || document.querySelector('.rux--modal.is-visible')) return;
-    const open = drawers.filter(d => d.open());
-    if (!open.length) return;
-    const inside = open.find(d => $(d.id).contains(document.activeElement));
-    for (const d of open) d.set(false);
-    if (inside) $(inside.opener).focus();
-  });
-  // Each drawer's tabs show one pane: Rux's Server its Consoles or the
-  // picked console's Games, My Room its Consoles, Games or the picked
-  // console's Saves. A console pressed in Rux's Server turns it to its games.
-  for (const id of ['emu-server-tabs', 'emu-mine-tabs']) $(id).addEventListener('rux:content-switcher-selected', () => {
-    for (const b of $(id).querySelectorAll('[data-pane]')) $(b.dataset.pane).hidden = b.getAttribute('aria-selected') !== 'true';
-  });
-  function showPane(pane) {
-    const tab = document.querySelector(`[data-pane="${pane}"]`);
-    if (tab.getAttribute('aria-selected') !== 'true') window.Rux.contentSwitcher.select(tab.closest('[role="tablist"]'), tab, { focus: false });
+  // THE STORE opens from the head's button as Carbon's modal, which closes
+  // itself on its close, Escape or the scrim, and opens again on the tab and
+  // console it was left on.
+  const openStore = () => window.Rux.modal.open('emu-store', $('emu-store-open'));
+  $('emu-store-open').addEventListener('click', openStore);
+  // MY ROOM folds to its head by its chevron, and stays as it was left in this browser.
+  const FOLDED = 'emu-mine-folded';
+  let folded = false;
+  try { folded = localStorage.getItem(FOLDED) === '1'; } catch { /* no storage: it starts open */ }
+  function fold(to) {
+    folded = to;
+    $('emu-mine').classList.toggle('emu-mine--folded', folded);
+    $('emu-mine-fold').setAttribute('aria-expanded', String(!folded));
+    $('emu-mine-fold').setAttribute('aria-label', folded ? 'Open My Room' : 'Fold My Room');
+    $('emu-mine-fold').title = folded ? 'Open' : 'Fold';
+    try { localStorage.setItem(FOLDED, folded ? '1' : '0'); } catch { /* kept for this visit only */ }
   }
+  fold(folded);
+  $('emu-mine-fold').addEventListener('click', () => fold(!folded));
+  // My Room's tabs show one pane each: My consoles, My games or the picked
+  // console's saves. A tab pressed while it is folded opens it.
+  $('emu-mine-tabs').addEventListener('rux:content-switcher-selected', () => {
+    for (const b of $('emu-mine-tabs').querySelectorAll('[data-pane]')) $(b.dataset.pane).hidden = b.getAttribute('aria-selected') !== 'true';
+    if (folded) fold(false);
+  });
 
   // A console pressed, in the room or the collection, is the one whose games show.
   function choose(system) {
@@ -956,8 +950,6 @@
   const sayNo = text => say(text, null, 6000, true);
   async function download(g, thenPlay = false) {
     const key = keyOf(g);
-    // A game brought back while it was leaving only stays.
-    if (leaving.has(key)) { clearTimeout(leaving.get(key).timer); leaving.delete(key); }
     if (stands(g).state !== 'held') {
       try { await R.helper.download(g); }
       catch (error) { sayNo(error.message); return; }
@@ -966,6 +958,22 @@
     sfx.drop();
     await look();
     render();
+  }
+  // DOWNLOAD FROM THE STORE. A console comes into the room unlit while fewer
+  // than three are out, else it waits in My Room, and its emulator is set up
+  // where it stands. A game whose console is not set up sets that up first.
+  async function getConsole(system) {
+    if (plays(system) || settingUp.has(system)) return;
+    if (!stand.has(system) && stand.size < CAP) {
+      held = system;
+      landed = system;
+      await keep({ ...wishes(), [system]: true });
+    }
+    await setUp(system);
+  }
+  async function getGame(g) {
+    if (!plays(g.system)) await getConsole(g.system);
+    if (plays(g.system)) await download(g);
   }
   // The slot a game goes into, as a part of its console's drawing from the
   // top, and the consoles that take a disc.
@@ -1022,25 +1030,8 @@
     u.append(bubble);
     setTimeout(() => { bubble.remove(); u.classList.remove('emu-unit--shakes'); }, 1800);
   }
-  // Its cover leaves the shelf now and its files go when Undo's time has
-  // passed, or as the page closes, so Undo downloads nothing.
+  // How long a move's Undo stays on the strip.
   const UNDO = 6000;
-  function takeOff(g) {
-    const key = keyOf(g);
-    wanted.delete(key);
-    const go = async () => {
-      leaving.delete(key);
-      try { await R.helper.remove(g); }
-      catch (error) { sayNo(error.message); }
-      await readMac();
-      if (!panelOpen() && !drag?.on) render();
-    };
-    leaving.set(key, { timer: setTimeout(go, UNDO), go });
-    sfx.drop();
-    render();
-    say(`${nameOf(g)} is off this Mac. Its saves stay.`, () => { clearTimeout(leaving.get(key)?.timer); leaving.delete(key); render(); }, UNDO);
-  }
-  window.addEventListener('pagehide', () => { for (const { timer, go } of leaving.values()) { clearTimeout(timer); go(); } });
   // A CONSOLE'S MOVES. The room is kept whole each time one moves; a Mac
   // Status has not saved yet has no row to keep it on, and is told so.
   // Every thing keeps the spot it is drawn at, so moving one moves no
@@ -1188,11 +1179,10 @@
   // place that lights, and the move itself, or null where nothing would
   // happen. A move the drag already shows, such as a console moved in the
   // room, has no word, and a drop anywhere in the room or My Room lights
-  // nothing, since the whole of it would. One answer, so the word never disagrees with the drop. `home`
-  // lights the game's own cover in Rux's Server too.
-  const yes = (word, light, run, home = false) => ({ word, light, run, home });
+  // nothing, since the whole of it would. One answer, so the word never disagrees with the drop.
+  const yes = (word, light, run) => ({ word, light, run });
   // A move refused: `says` is the console and its line, said when the game is let go.
-  const no = (word, light, says = null, home = false) => ({ word, light, no: true, says, home });
+  const no = (word, light, says = null) => ({ word, light, no: true, says });
   function intent(g, from, under, point) {
     if (!under) return null;
     const s = standing(g);
@@ -1209,21 +1199,13 @@
       if (keeps) return yes('Download and play', unit, () => download(g, true));
       return no('Plug in the drive to play', unit, [system, 'Plug in the drive to play.']);
     }
-    // On the room or My Room a game this Mac lacks is downloaded.
-    const to = under.closest('#emu-mine.emu-side--open') ?? under.closest('.emu-floor, .emu-tv');
-    if (to && from === 'collection') {
-      if (!keeps || (s.state !== 'away' && s.state !== 'failed')) return null;
-      return yes('Download', null, () => download(g));
-    }
-    if (under.closest('#emu-collection') && (from === 'shelf' || from === 'floor')) return yes('Take off this Mac', $('emu-collection'), () => takeOff(g), true);
     // A cover on the floor moves where it is let go.
     if (from === 'floor' && under.closest('#emu-room')) return { ...yes(null, null, () => {}), move: true };
     return null;
   }
 
-  // The same for a console: out into the room from either drawer, moved in
-  // the room, put away onto My Room, and onto Rux's Server put back where
-  // it is not set up, or asked about on the strip where it is.
+  // The same for a console: out into the room from My Room, moved in the
+  // room, and put away onto My Room.
   function consoleIntent(system, from, under, point, size) {
     if (!under) return null;
     const inRoom = under.closest('#emu-room');
@@ -1235,12 +1217,8 @@
     if (inRoom) return { ...yes(null, null, () => moveTo(system, spotAt(point, size))), move: true };
     const st = stand.get(system);
     const busy = BUSY[st] && no(st === 'setting' ? 'Still setting up' : 'Being removed', null, [system, BUSY[st](system)]);
-    if (under.closest('#emu-mine.emu-side--open')) {
+    if (under.closest('#emu-mine')) {
       return busy || (st === 'on' ? yes('Put away', $('emu-mine'), () => putAway(system)) : no('Not set up yet', $('emu-mine'), [system, 'Set me up first.']));
-    }
-    if (under.closest('#emu-collection')) {
-      return busy || (st === 'off' ? yes('Put back', $('emu-collection'), () => putBack(system), true)
-        : yes(`Remove ${emulatorOf(system)} from this Mac`, $('emu-collection'), () => askRemove(system), true));
     }
     return null;
   }
@@ -1303,9 +1281,9 @@
   const word = el('div', 'emu-word');
   word.hidden = true;
   document.body.append(word);
-  const FROM = [['#emu-units', 'floor'], ['#emu-mine-games', 'shelf'], ['#emu-games', 'collection']];
+  const FROM = [['#emu-units', 'floor'], ['#emu-mine-games', 'shelf']];
   const unlight = () => {
-    for (const cls of ['emu-lit', 'emu-no', 'emu-cover--home', 'emu-cabinet__console--home']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
+    for (const cls of ['emu-lit', 'emu-no']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
   };
   function drop() {
     word.hidden = true;
@@ -1320,7 +1298,7 @@
     const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
     // The TV is carried by its case; its link and Undo stay presses.
     if (src.id === 'emu-tv') { if (!e.target.closest('a, button')) drag = { ...at, tv: true, from: 'room' }; return; }
-    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : src.closest('#emu-mine') ? 'mine' : 'collection' }; return; }
+    if (src.dataset.console) { drag = { ...at, system: src.dataset.console, from: src.closest('#emu-room') ? 'room' : 'mine' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
     if (g && from) drag = { ...at, g, from };
@@ -1348,14 +1326,6 @@
       if (!drag.live) drag.src.classList.add('emu-held');
       // A game's console lights and the rest dim, so where it goes shows.
       if (drag.g) for (const u of units()) u.classList.add(u.dataset.system === drag.g.system ? 'emu-unit--fit' : 'emu-unit--dim');
-      // Coming back from the room, the collection turns to its console and
-      // its row to the game, so its own cover is there to light.
-      if (drag.g && drag.from !== 'collection') {
-        if (pick !== drag.g.system) { pick = drag.g.system; showPick(); }
-        const row = $('emu-games');
-        const own = row.querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`);
-        if (own) row.scrollLeft = own.offsetLeft - row.offsetLeft - (row.clientWidth - own.offsetWidth) / 2;
-      }
     }
     if (drag.live) drag.to = [drag.stood[0] + (e.clientX - drag.x) / drag.px, drag.stood[1] + (e.clientY - drag.y) / drag.px];
     // A cover tilts in the hand; a console's copy stays square, so its edges stay sharp.
@@ -1370,9 +1340,6 @@
       word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
     }
     it.light?.classList.add(it.no ? 'emu-no' : 'emu-lit');
-    if (it.home) showPane(drag.g ? 'emu-server-games-pane' : 'emu-server-consoles-pane');
-    if (it.home && drag.g) $('emu-games').querySelector(`[data-game="${CSS.escape(keyOf(drag.g))}"]`)?.classList.add('emu-cover--home');
-    if (it.home && !drag.g) $('emu-cabinet').querySelector(`[data-system="${drag.system}"]`)?.classList.add('emu-cabinet__console--home');
   });
   // A drag that ended on its own cover would press it; that one click is swallowed.
   let dragged = false;
@@ -1393,7 +1360,7 @@
       else if (it?.says) refuse(...it.says);
     };
     // A thing carried is put down where it is, or goes back and then does
-    // what its drop asks, such as going back to Rux's Server.
+    // what its drop asks, such as being put away.
     if (d.live) {
       setDown(d, Boolean(it?.move));
       if (it?.move) d.ghost.remove();
@@ -1416,10 +1383,15 @@
     drag = null;
   });
 
-  // The cover a game was opened from, to come back to when its panel closes.
+  // The cover a game was opened from, to come back to when its panel closes,
+  // and whether that was in the store, which closes under the panel and opens
+  // again after it, since a modal holds the focus.
   let opener = null;
+  let fromStore = false;
   const openGame = g => {
     opener = keyOf(g);
+    fromStore = Boolean(helper) && $('emu-store').classList.contains('is-visible');
+    if (fromStore) window.Rux.modal.close('emu-store');
     R.gamePanel.open(g, { saves, onSaved: render, top: [cover(g, 'emu-panel-art')], mac: { focus: true, onChanged: readMac } });
   };
   // The panel's own close and Escape, heard first, so the page shows what the
@@ -1427,7 +1399,9 @@
   function closeGame() {
     R.gamePanel.close();
     render();
-    document.querySelector(`.emu-side .emu-cover[data-game="${CSS.escape(opener ?? '')}"]`)?.focus();
+    if (fromStore) openStore();
+    document.querySelector(`${fromStore ? '#emu-games' : '#emu-mine, #emu-collection'} .emu-cover[data-game="${CSS.escape(opener ?? '')}"]`)?.focus();
+    fromStore = false;
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && panelOpen()) { e.stopImmediatePropagation(); closeGame(); } }, true);
   $('emu-panel-close').addEventListener('click', e => { e.stopImmediatePropagation(); closeGame(); }, true);

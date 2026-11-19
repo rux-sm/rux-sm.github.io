@@ -98,41 +98,33 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    A console's drawing is its PNG in brand/consoles/, shown pixel for pixel
    in its own colours, the same in every theme. A home console's is 36 by 24. */
 .emu-console { display: block; block-size: 3rem; aspect-ratio: 3 / 2; object-fit: contain; image-rendering: pixelated; }
-/* Rux's Server: its consoles wrap, each at least 4.5rem wide, the picked one
-   marked as Carbon marks a selected tab, on its fast-02 fade. Each is its
-   drawing over its name and count from the top, so a name on two lines moves
-   no drawing. */
+/* My Room's consoles: each its drawing over its name and count from the
+   top, so a name on two lines moves no drawing, on Carbon's fast-02 fade. */
 .emu-cabinet { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: var(--rux-spacing-03); }
 .emu-cabinet__console { appearance: none; border: 0; border-block-end: 3px solid transparent; background: var(--rux-layer); color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: center; align-content: start; gap: var(--rux-spacing-01); padding: var(--rux-spacing-04) var(--rux-spacing-02) var(--rux-spacing-03); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), border-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cabinet__console:hover { background: var(--rux-layer-hover); }
-.emu-cabinet__console[aria-pressed="true"] { background: var(--rux-layer-selected); border-block-end-color: var(--rux-border-interactive); }
 .emu-cabinet__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-cabinet__name, .emu-cabinet__count { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-align: center; }
 .emu-cabinet__count { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 
-/* A cover's marks. One this Mac holds is dimmed under a tick in Rux's
-   Server; one this Mac lacks, or whose console it cannot play, is dimmed
-   in My Room; one arriving sits under a veil that lifts from the foot. */
-.emu-cover--here .emu-cover-art, .emu-cover--away .emu-cover-art { opacity: .45; }
-.emu-cover__tick { position: absolute; inset-block-start: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--rux-background); fill: var(--rux-support-success); }
+/* A cover's marks in My Room: one this Mac lacks, or whose console it
+   cannot play, is dimmed; one arriving sits under a veil that lifts from the foot. */
+.emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, fills the page under the header, as the scheduler's board
-   does: its head, then the stage, the room with a drawer tile over each side
-   of it. A drawer floats over the room rather than beside it, so opening one
-   never narrows the room and sweeps its things. Without the helper Rux's
-   Server is the page, with no tile around it. Carbon's side panel is a
-   dialog for one thing, and these stay open beside the room while things
-   are dragged out of them, so they are Emu's own. */
+   does: its head, then the stage, the room, then My Room along its foot,
+   which the room gives way to. Without the helper the store is the page,
+   with no tile around it. */
 .emu-wall--mac { display: flex; flex-direction: column; block-size: calc(100dvh - 3rem - 2rem - var(--rux-spacing-05) - var(--frame-safe-bottom)); min-block-size: 28rem; }
 .emu-stage { position: relative; }
 .emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
-/* A TILE, the room's or a drawer's: a surface a layer up from the page,
+/* A TILE, the room's: a surface a layer up from the page,
    square or rounded and lined as the theme's tiles are (theme.css), its head
    on that surface over a rule, as the scheduler's board and roster are. */
-.emu-wall--mac, .emu-wall--mac .emu-side { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
-.emu-wall--mac .emu-stage { border-end-start-radius: inherit; border-end-end-radius: inherit; overflow: clip; }
+.emu-wall--mac { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
+.emu-wall--mac .emu-stage { overflow: clip; }
 /* A tile's head: its title 16px in, Carbon's side panel inset, in
    heading-compact-02, the scheduler's week name and roster title; its
    controls edge to edge to its end, as Carbon's table toolbar sets them,
@@ -140,11 +132,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__head[hidden] { display: none; }
 .emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
-.emu-side__head { justify-content: space-between; padding-block: var(--emu-head-inset, 0); padding-inline: var(--rux-spacing-05) var(--emu-head-inset, 0); }
-/* The room's head: Rux's Server's toggle at its start, the room's name, the
-   strip taking what is left, then My Room's toggle and the room's menu at
-   its end, in by the theme's inset (theme.css). Its name gives way first in
-   a narrow window. */
+/* The room's head: the room's name, the strip taking what is left, then
+   Rux's Server's primary button at its end, in by the theme's inset
+   (theme.css). Its name gives way first in a narrow window. */
 .emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); }
 .emu-head .emu-tile__title { padding-inline: var(--rux-spacing-05); }
 .emu-tile__title:focus { outline: none; }
@@ -170,32 +160,47 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-strip__facts > .emu-strip__sum { display: flex; }
 }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
-/* THE DRAWERS: a tile each, 22rem or the whole stage on a phone, floating
-   over its side of the stage 8px in, raised with Carbon's raised shadow, and
-   what it holds a layer up, as Carbon's layering steps it. Each unfolds
-   from its side on Carbon's moderate-02, entering and leaving on its
-   productive curves; the clip stops a rem past the far edge so its shadow
-   shows. */
-.emu-side[hidden] { display: none; }
-.emu-side__close { display: none; }
-.emu-wall--mac .emu-side { position: absolute; z-index: 3; inset-block: var(--rux-spacing-03); inline-size: min(22rem, 100% - 2 * var(--rux-spacing-03)); display: flex; flex-direction: column; box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
-.emu-wall--mac .emu-side[hidden] { display: none; }
-.emu-wall--mac .emu-side--server { inset-inline-start: var(--rux-spacing-03); clip-path: inset(0 100% 0 0); }
-.emu-wall--mac .emu-side--mine { inset-inline-end: var(--rux-spacing-03); clip-path: inset(0 0 0 100%); }
-.emu-wall--mac .emu-side--server.emu-side--open { clip-path: inset(-1rem -1rem -1rem 0); }
-.emu-wall--mac .emu-side--mine.emu-side--open { clip-path: inset(-1rem 0 -1rem -1rem); }
-.emu-wall--mac .emu-side--open { visibility: visible; transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
-.emu-wall--mac .emu-side__close { display: inline-flex; }
-.emu-wall--mac .emu-side > .rux--content-switcher { margin: var(--rux-spacing-05) var(--rux-spacing-05) 0; inline-size: auto; }
-.emu-side__body { margin-block-start: var(--rux-spacing-05); }
-.emu-wall--mac .emu-side__body { flex: 1; min-block-size: 0; overflow-y: auto; padding: 0 var(--rux-spacing-05) var(--rux-spacing-05); }
-@media (prefers-reduced-motion: reduce) { .emu-wall--mac .emu-side, .emu-wall--mac .emu-side--open { transition: none; } }
-/* Without the room, Rux's Server is the page and its head only a heading. */
-.emu-wall:not(.emu-wall--mac) .emu-side__head { border-block-end: 0; padding-inline-start: 0; }
-/* A drawer's tab not chosen is gone, where a stack would show it. */
+/* RUX'S SERVER, the store: Carbon's contained tabs over a grid of cards,
+   each at least 11rem wide, ruled apart by the subtle border as Carbon's
+   tile grid is. A card is its picture, name and
+   count from the top, then its one button along its foot, full width. In
+   the modal its heading is the modal's; as the page it keeps its own. */
+.emu-store[hidden] { display: none; }
+.emu-store-modal .emu-store__title { display: none; }
+.emu-store__title { margin-block-end: var(--rux-spacing-05); }
+.emu-store__pane { margin-block-start: var(--rux-spacing-05); }
+.emu-store__pane[hidden] { display: none; }
+.emu-store__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--rux-spacing-05); margin-block-end: var(--rux-spacing-05); }
+.emu-store__select { flex: 0 1 14rem; }
+.emu-store__count { padding-block-end: var(--rux-spacing-04); }
+.emu-store__grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); border-block-start: 1px solid var(--rux-border-subtle); border-inline-start: 1px solid var(--rux-border-subtle); }
+.emu-store__card { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; padding: var(--rux-spacing-05); background: var(--rux-layer); border-block-end: 1px solid var(--rux-border-subtle); border-inline-end: 1px solid var(--rux-border-subtle); }
+.emu-store__card > .emu-cover { --emu-cover-height: 9rem; justify-self: center; align-self: center; }
+.emu-store__console { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: start; gap: var(--rux-spacing-02); padding: 0; text-align: start; }
+.emu-store__console .emu-console { justify-self: center; block-size: 4.5rem; margin-block: var(--rux-spacing-03); }
+.emu-store__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.emu-store__name { font-size: .875rem; line-height: 1.125rem; }
+.emu-store__action.rux--btn { margin-block-start: auto; inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: var(--rux-spacing-04); }
+
+/* MY ROOM, along the room's foot inside its tile: its head its name, the
+   content switcher for its tabs and the chevron that folds it, then one
+   row that scrolls sideways, 12.5rem tall, a layer up from the tile as
+   Carbon's layering steps it. Folded, only its head shows and the room
+   takes the rest. */
+.emu-mine { flex: none; border-block-start: 1px solid var(--rux-border-subtle-01); }
+.emu-mine[hidden] { display: none; }
+.emu-mine__head { padding: var(--emu-head-inset, 0); padding-inline-start: var(--rux-spacing-05); border-block-end: 0; }
+.emu-mine__tabs { flex: 0 1 24rem; margin-inline-start: auto; }
+.emu-mine__fold .rux--btn__icon { transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-mine--folded .emu-mine__fold .rux--btn__icon { transform: rotate(180deg); }
+.emu-mine__body { block-size: 12.5rem; overflow: auto; padding: 0 var(--rux-spacing-05) var(--rux-spacing-05); }
+.emu-mine--folded .emu-mine__body { display: none; }
+.emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; }
+.emu-mine__row.emu-cabinet { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 6rem; justify-content: start; }
+@media (max-width: 41.98rem) { .emu-mine__head .emu-tile__title { display: none; } .emu-mine__tabs { flex: 1 1 auto; margin-inline-start: 0; } }
+@media (prefers-reduced-motion: reduce) { .emu-mine__fold .rux--btn__icon { transition: none; } }
+/* A tab not chosen is gone, where a stack would show it. */
 .emu-pane[hidden] { display: none; }
-/* A drawer's covers are smaller, so three stand in a row. */
-.emu-wall--mac .emu-shelf { --emu-cover-height: 7.5rem; }
 
 /* YOUR MAC: the page's own background, where the TV and the consoles each
    stand where they were left. Inside it every size is a whole number of art
@@ -308,10 +313,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit:focus-within .emu-unit__name, .emu-unit--fit .emu-unit__name { opacity: 1; }
 @media (hover: hover) { .emu-unit:hover .emu-unit__name { opacity: 1; } }
 .emu-units > li:is(:hover, :focus-within) { z-index: 2; }
-/* In Rux's Server the light keeps one corner of every console, whatever its name's length. */
-.emu-cabinet__console { position: relative; }
-.emu-cabinet__console .emu-led { position: absolute; inset-block-start: var(--rux-spacing-03); inset-inline-start: var(--rux-spacing-03); margin: 0; }
-.emu-led { flex: none; inline-size: .375rem; block-size: .375rem; margin-block-start: .3125rem; border-radius: 50%; background: var(--rux-support-success); }
 
 /* THE DRAG. A game held is a copy of its cover under the pointer, with a
    word beside it for what letting go will do, red where nothing will. The
@@ -325,23 +326,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-#emu-collection.emu-lit, #emu-collection.emu-no, #emu-mine.emu-lit, #emu-mine.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
-#emu-collection.emu-no, #emu-mine.emu-no { outline-color: var(--rux-support-error); }
+#emu-mine.emu-lit, #emu-mine.emu-no { outline: 2px solid var(--rux-border-interactive); outline-offset: -2px; }
+#emu-mine.emu-no { outline-color: var(--rux-support-error); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
 .emu-unit--dim { opacity: .3; }
 .emu-unit--fit .emu-console { filter: drop-shadow(0 0 .5rem var(--rux-border-interactive)); }
-.emu-cover--home .emu-cover-art { opacity: 1; outline: 2px dashed var(--rux-border-interactive); outline-offset: 2px; }
 
-/* A console's place in Rux's Server while it stands in the room: outlined
-   and faint, and lit as the place it goes back to while it is held. A green
-   light marks one whose emulator this Mac has. The picked console's move
-   sits beside its name. */
+/* A console in My Room is carried up into the room. */
 .emu-cabinet__console[data-console] { cursor: grab; }
-.emu-cabinet__console--away, .emu-cabinet__console--away:hover { background: none; outline: 2px dashed var(--rux-border-subtle-01); outline-offset: -2px; }
-.emu-cabinet__console--away .emu-console { opacity: .25; }
-.emu-cabinet__console--home, .emu-cabinet__console--home:hover { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; background: var(--rux-layer-selected); }
-.emu-picked { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
 
 /* THE REFUSAL AND THE GAME GOING IN. The wrong console shakes its head and
    says a line; a cartridge drops into its slot and a disc slides onto a tray

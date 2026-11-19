@@ -10,9 +10,9 @@ The repository root's `AGENTS.md` is the policy, and
 ## What it is
 
 `index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper answers, a TV and up to three consoles
-with their favourite games, on one tile whose head opens a drawer tile over each side: Rux's Server, every console and game as box
-art from libretro's thumbnails, and My Room, this Mac's consoles, games and saves as cards. The strip in the head says how this Mac
-stands and what a move did. Without the helper Rux's Server is the page. `collection.html` is the
+with their favourite games, on one tile with My Room along its foot, this Mac's consoles, games and saves. The head's one button
+opens Rux's Server, a store of every console and game, with box art from libretro's thumbnails and Download on each. The strip
+in the head says how this Mac stands and what a move did. Without the helper Rux's Server is the page. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks
 each game this Mac holds, and On this Mac lists only those, each with Remove, over
 how much room is free. A game's status is its worst problem, as Problems lists them,

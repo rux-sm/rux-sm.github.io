@@ -341,6 +341,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   flex-direction: column;
 }
 
+/* A form that flows stands a pixel inside its margin on each side, as the
+   paper's rule below sets it, so the preview wraps where the print does. */
+.scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
+  padding-inline: calc(var(--scheduler-paper-margin, 0px) + 1px);
+}
+
 /* A FORM IS ITS PAPER ON SCREEN TOO, and shrinks whole rather than reflowing.
    It keeps the sheet's width and its height, so nothing wraps in the 30rem
    viewer that would not wrap on paper, and `zoom` takes the whole sheet down
@@ -435,9 +441,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
      sheet is the paper with the margin as padding, so the text inside it is
      the same width here and wraps and breaks where the preview shows. Held at
      the paper's own width it was wider than the page, and the printer shrank
-     it and cut the right-hand rule. */
+     it and cut the right-hand rule.
+
+     AND IT STANDS A PIXEL INSIDE THAT WIDTH. Chrome clips a page at its
+     margin, and a border drawn exactly on the trailing one printed a sixth of
+     its width; a pixel in, it prints whole. The screen's sheet is inset the
+     same pixel below, so both wrap alike. */
   .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
-    padding: 0;
+    padding: 0 1px;
     inline-size: auto;
   }
 

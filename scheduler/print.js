@@ -148,6 +148,8 @@
   const COMPANY = {
     address: '2801 Zinnia Avenue, McAllen, TX 78504',
     phones: '(956) 994-1169 / Fax 994-9491 / Cell 648-9691',
+    // The office's main line, which the quote's letterhead and foot name.
+    phone: '(956) 994-1169',
     // Where the card authorization goes back, which is never by email.
     fax: '(956) 994-9491',
     // The quote's letterhead carries it, and its signature line asks for the
@@ -1446,28 +1448,39 @@
      AND THE WORDING IS NOT ITS OWN. The first line item's description is
      `quote-text.js`, which the Billing tab's Copy for QuickBooks reads too. */
 
-  /* THE LETTERHEAD AS THE OFFICE'S SHEET SETS IT, which spells the street and
-     the phones differently from the driver forms' shorter line. */
-  const QUOTE_LETTERHEAD = [
+  /* THE LETTERHEAD THE CARD AUTHORIZATION CARRIES, with the fax the form
+     goes back by. */
+  const LETTERHEAD = [
     '2801 Zinnia Ave. McAllen, TX 78504',
     'Ph. (956) 994-1169 / Ph./Fax 994-9491 / Cell 648-9691',
     `E-mail: ${COMPANY.email}`,
   ];
 
+  /* THE QUOTE'S LETTERHEAD, two lines under the logo, as the office's invoice
+     template sets them, so a quote and the invoice after it are one hand. */
+  const QUOTE_LETTERHEAD = [
+    '2801 Zinnia Ave., McAllen, TX 78504',
+    `${COMPANY.phone} · Cell 648-9691 · ${COMPANY.email}`,
+  ];
+
+  // The share of the price a booking puts down, which the terms name and the
+  // quote's totals work out in dollars.
+  const DEPOSIT_SHARE = 0.2;
+  const DEPOSIT_WORDS = `${Math.round(DEPOSIT_SHARE * 100)}%`;
+
   /* THE TERMS, WRITTEN HERE. rux says they change rarely, so a change to them
      is a commit rather than a settings row nobody would open twice a decade.
-     Each string is a paragraph, and the last is two lines because the sheet
-     sets them tight. */
+     Each string is one numbered term; the agreement on the second sheet
+     spells each out in full. */
   const QUOTE_TERMS = [
-    'Quotes are based on itinerary provided. Prices are subject to change if itinerary is updated.',
-    'A Fuel Surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date.',
-    'A signed quote and 20% down payment are required to reserve/hold buses. School districts may provide a purchase order instead of down payment.',
-    'For overnight trips, the bus driver’s hotel room must be provided by the customer. If 2 drivers are on trip, the hotel room must have two separate beds. (Sofa beds are not acceptable).',
-    'Cancellation Fees: 20% if less than a month; 50% if 48 hrs.; 100% if 24 hrs. before departure.',
-    'Customers are responsible for parking fees and tolls if applicable. Damage caused by passengers will be added to invoice.',
-    'Escamilla Tour Buses reserves the right to stop or delay service if any Act of God, accidents, bad weather or other conditions beyond its control make it inadvisable or unsafe to operate the buses.',
-    'Escamilla Tour Buses is not responsible for any lost, stolen or damaged personal items during the service.',
-    'If you have any questions, please contact us at (956) 994-1169 or at (956) 648-9691.\nThank you for choosing Escamilla Tour Buses, we look forward to hearing from you soon.',
+    'Quotes are based on the itinerary provided. Prices are subject to change if the itinerary is updated.',
+    'A fuel surcharge may be added to your final invoice at our discretion if fuel prices change between the quote date and the trip date.',
+    `A signed quote and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
+    'On overnight trips, the customer provides the driver’s hotel room. With two drivers, the room must have two separate beds (sofa beds are not acceptable).',
+    'Cancellation fees: 20% within a month of departure, 50% within 48 hours, and 100% within 24 hours.',
+    'Customers pay parking fees and tolls where they apply. Damage caused by passengers is added to the invoice.',
+    'Escamilla Tour Buses may stop or delay service when acts of God, accidents, bad weather or other conditions beyond its control make it unsafe to operate.',
+    'Escamilla Tour Buses is not responsible for lost, stolen or damaged personal items during the service.',
   ];
 
   /* THE AGREEMENT'S POLICIES, as the office's Word form words them, but for
@@ -1504,6 +1517,8 @@
     const two = n => String(n).padStart(2, '0');
     return `${two(now.getMonth() + 1)}/${two(now.getDate())}/${now.getFullYear()}`;
   };
+  // Today as the quote names it, Nov 19, 2026, as its trip's days are named.
+  const todayWords = () => new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   // Money as a quote prints it, cents and all, and negative for a deduction:
   // the office's own sheet carries two places in every column.
@@ -1537,11 +1552,11 @@
     cost: l.cost == null ? '' : money(l.cost), total: l.total == null ? '' : money(l.total),
   }));
 
-  /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS, ruled all the way round and
-     divided once, with the label shaded as the office's own sheet shades it.
-     print.css names the fill and what carries it onto paper. */
-  function quoteBox(label, lines, cls) {
-    const box = el('div', `scheduler-customer-quote__box${cls ? ` scheduler-customer-quote__box--${cls}` : ''}`);
+  /* A BOX, WHICH IS A LABEL OVER WHAT IT HOLDS: a grey band over its lines,
+     read down the leading edge. print.css names the fill and what carries it
+     onto paper. */
+  function quoteBox(label, lines) {
+    const box = el('div', 'scheduler-customer-quote__box');
     box.appendChild(el('p', 'scheduler-customer-quote__label', label));
     const body = el('div', 'scheduler-customer-quote__value scheduler-customer-quote__typed');
     for (const line of lines.filter(Boolean)) body.appendChild(el('span', null, line));
@@ -1549,15 +1564,29 @@
     return box;
   }
 
-  // The logo over the letterhead's three lines, at the head of both sheets;
-  // the agreement carries the logo alone, as the office's Word form does.
-  function quoteHead(lines) {
+  /* THE HEAD OF BOTH SHEETS, as the office's invoice sets it: the logo over
+     the letterhead on the leading edge, and the sheet's name on the trailing
+     one, over its references, each a label and a typed value, and anything
+     else handed in under them. The agreement carries the logo and its name. */
+  function quoteHead(title, { lines = [], refs = [], under = [] } = {}) {
     const head = el('header', 'scheduler-customer-quote__head');
+    const brand = el('div', 'scheduler-customer-quote__brand');
     const logo = el('img', 'scheduler-customer-quote__logo');
     logo.src = '/scheduler/brand/logo.svg';
-    logo.alt = '';
-    head.appendChild(logo);
-    for (const line of lines) head.appendChild(el('p', 'scheduler-customer-quote__line', line));
+    logo.alt = 'Escamilla Tour Buses';
+    brand.appendChild(logo);
+    for (const line of lines) brand.appendChild(el('p', 'scheduler-customer-quote__line', line));
+    const named = el('div', 'scheduler-customer-quote__named');
+    named.appendChild(el('h2', 'scheduler-customer-quote__title', title));
+    if (refs.length) {
+      const list = el('dl', 'scheduler-customer-quote__refs');
+      for (const [label, value] of refs) {
+        list.append(el('dt', null, label), el('dd', 'scheduler-customer-quote__typed', value));
+      }
+      named.appendChild(list);
+    }
+    named.append(...under);
+    head.append(brand, named);
     return head;
   }
 
@@ -1577,12 +1606,13 @@
     return td;
   };
 
-  const QUOTE_COLUMNS = ['Item', 'Description', 'Quantity', 'Cost', 'Total'];
+  // The invoice's own column names, so a quote and its invoice read alike.
+  const QUOTE_COLUMNS = ['Item', 'Description', 'Qty', 'Rate', 'Amount'];
 
   const QUOTE_FIELDS = ['.scheduler-customer-quote__typed'];
 
-  // One line item: Item, Description, Quantity, Cost and Total, in that
-  // order, the three figures held on a quote drawn from a trip.
+  // One line item: Item, Description, Qty, Rate and Amount, in that order,
+  // the three figures held on a quote drawn from a trip.
   function lineRow(item, desc, qty, cost, total, held = false) {
     const row = el('tr', 'scheduler-customer-quote__line-item');
     row.appendChild(quoteCell('item', item));
@@ -1600,13 +1630,13 @@
      Total as it was saved, so a price that will not divide evenly still
      totals to what was quoted.
 
-     THE FIGURES OF A QUOTE DRAWN FROM A TRIP ARE NOT TYPED. Its Quantity,
-     Cost and Total cells and its Total are the trip's, so the trip holds
+     THE FIGURES OF A QUOTE DRAWN FROM A TRIP ARE NOT TYPED. Its Qty, Rate
+     and Amount cells and its Total are the trip's, so the trip holds
      what the customer signs: a price agreed on the phone or a discount is a
      line on the Billing tab, and the sheet is drawn again. A line added on
      the sheet is words alone, a reference number or a requirement. On a
-     blank quote every cell is typed: a Quantity or Cost makes its line's
-     Total their product, and the Total follows the lines. */
+     blank quote every cell is typed: a Qty or Rate makes its line's Amount
+     their product, and the Total follows the lines. */
   const lineSum = totals => {
     const typed = totals.map(typedNumber).filter(Number.isFinite);
     return typed.length ? `$${money(typed.reduce((a, b) => a + b, 0)) || '0.00'}` : '';
@@ -1615,6 +1645,17 @@
     const rows = [...card.querySelectorAll('.scheduler-customer-quote__line-item')];
     const total = card.querySelector('.scheduler-customer-quote__total-value');
     if (total && document.activeElement !== total) total.textContent = lineSum(rows.map(row => row.cells[4].textContent));
+    showSums(card);
+  }
+
+  /* The Total as the sheet's other figures repeat it: the same sum at the
+     head, and the deposit a booking puts down, worked out from it. */
+  function showSums(card) {
+    const n = typedNumber(card.querySelector('.scheduler-customer-quote__total-value')?.textContent);
+    const total = Number.isFinite(n) ? `$${money(n) || '0.00'}` : '';
+    for (const lead of card.querySelectorAll('.scheduler-customer-quote__lead-value')) lead.textContent = total;
+    const deposit = card.querySelector('.scheduler-customer-quote__deposit');
+    if (deposit) deposit.textContent = Number.isFinite(n) && n > 0 ? `$${money(n * DEPOSIT_SHARE)}` : '';
   }
 
   function onLineTyped(event) {
@@ -1644,35 +1685,13 @@
     if (blank) body.appendChild(lineRow('', '', '', '', ''));
     else for (const l of lines) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total, held));
     /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
-       office's sheet leaves room under its items and rules only the columns
-       down through it. It is the last row before the Total's, so an added line
-       goes above it. */
+       items box keeps room under its items, so a line added on the sheet
+       takes the room's space rather than pushing the terms down. It is the
+       last row, so an added line goes above it. */
     const room = el('tr', 'scheduler-customer-quote__room');
     for (let i = 0; i < QUOTE_COLUMNS.length; i += 1) room.appendChild(el('td'));
     body.appendChild(room);
     table.appendChild(body);
-
-    /* THE TOTAL IS THE TABLE'S LAST ROW, under Cost and Total, so the two
-       share the table's rules rather than drawing a second set against them.
-       The cell under the first three columns has no rules of its own and holds
-       the button that adds a line, which print.css takes off the paper. */
-    const sum = el('tr', 'scheduler-customer-quote__total-row');
-    const gap = el('td', 'scheduler-customer-quote__total-gap');
-    gap.colSpan = 3;
-    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
-    add.type = 'button';
-    add.addEventListener('click', () => {
-      const row = lineRow('', '', '', '', '', held);
-      body.insertBefore(row, room);
-      letThemType(row, QUOTE_FIELDS);
-      row.cells[0].focus();
-    });
-    gap.appendChild(add);
-    const totalValue = el('td', `scheduler-customer-quote__total-value scheduler-customer-quote__num${held ? '' : ' scheduler-customer-quote__typed'}`,
-      lineSum(lines.map(l => l.total)));
-    if (held) totalValue.title = HELD;
-    sum.append(gap, el('td', 'scheduler-customer-quote__total-label', 'Total'), totalValue);
-    body.appendChild(sum);
     table.addEventListener('input', onLineTyped);
     /* A price typed as "1900" is set as "1,900.00" once the cell is left, so
        a typed line reads like a computed one. */
@@ -1685,13 +1704,34 @@
     return table;
   }
 
-  // A line to sign on and a shorter one to date, as rules and not underscores.
-  function signLine(cls) {
-    const rule = el('p', `scheduler-customer-quote__rule${cls ? ` ${cls}` : ''}`);
-    rule.appendChild(el('span', 'scheduler-customer-quote__rule-line'));
-    rule.appendChild(document.createTextNode(' Date '));
-    rule.appendChild(el('span', 'scheduler-customer-quote__rule-date'));
-    return rule;
+  /* UNDER THE ITEMS, the Total and the deposit on the trailing edge, as the
+     invoice sets its totals, and on screen the button that adds a line, which
+     print.css takes off the paper. The Total is the lines' sum, held on a
+     quote drawn from a trip and typed on a blank one, and the deposit follows
+     it. */
+  function quoteSums(table, lines, blank) {
+    const under = el('div', 'scheduler-customer-quote__under');
+    const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
+    add.type = 'button';
+    add.addEventListener('click', () => {
+      const body = table.tBodies[0];
+      const row = lineRow('', '', '', '', '', !blank);
+      body.insertBefore(row, body.querySelector('.scheduler-customer-quote__room'));
+      letThemType(row, QUOTE_FIELDS);
+      row.cells[0].focus();
+    });
+    const sums = el('div', 'scheduler-customer-quote__sums');
+    const total = el('p', 'scheduler-customer-quote__sum scheduler-customer-quote__sum--total');
+    const value = el('span', `scheduler-customer-quote__total-value${blank ? ' scheduler-customer-quote__typed' : ''}`,
+      lineSum(lines.map(l => l.total)));
+    if (!blank) value.title = HELD;
+    total.append(el('span', null, 'Quote total'), value);
+    const deposit = el('p', 'scheduler-customer-quote__sum');
+    deposit.append(el('span', null, `Deposit (${DEPOSIT_WORDS}) or PO`), el('span', 'scheduler-customer-quote__deposit'));
+    sums.append(total, deposit);
+    sums.addEventListener('input', () => showSums(sums.closest('.scheduler-customer-quote')));
+    under.append(add, sums);
+    return under;
   }
 
   /* THE BILL-TO, from the trip's customer: its name over the address
@@ -1707,45 +1747,51 @@
      corrected before it is sent. */
   function quoteSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote');
-    card.appendChild(quoteHead(QUOTE_LETTERHEAD));
+    /* The head names the sheet over its estimate number and date, the date
+       today's, because a quote is dated the day it is written, and typed into
+       like every other field for one sent a day later; and under them the
+       total, so the price is the first figure the customer reads. */
+    const lead = el('p', 'scheduler-customer-quote__lead');
+    lead.append(el('span', null, 'Quote total'), el('span', 'scheduler-customer-quote__lead-value'));
+    card.appendChild(quoteHead('QUOTE', {
+      lines: QUOTE_LETTERHEAD,
+      refs: [['Estimate #', blank ? '' : trip.trip_ref || ''], ['Date', todayWords()]],
+      under: [lead],
+    }));
 
-    /* The date and the estimate number on the leading edge and the document's
-       name on the trailing one, on one line, as the office's sheet sets them.
-       The date is today's, because a quote is dated the day it is written, and
-       it is typed into like every other field for one sent a day later. */
-    const meta = el('div', 'scheduler-customer-quote__meta');
-    const dated = el('div', 'scheduler-customer-quote__meta-boxes');
-    dated.append(quoteBox('Date', [today()]), quoteBox('Estimate no.', [blank ? '' : trip.trip_ref || '']));
-    meta.append(dated, el('h2', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
-    card.appendChild(meta);
-
+    // Who it is for and who to answer, side by side, each three lines.
     const parties = el('div', 'scheduler-customer-quote__parties');
-    parties.appendChild(quoteBox('Name/address', blank ? [''] : billToLines(trip), 'bill-to'));
-    const who = el('div', 'scheduler-customer-quote__who');
-    who.appendChild(quoteBox('Contact', [blank ? '' : trip.booking_contact_name || '']));
-    who.appendChild(quoteBox('Phone', [blank ? '' : showPhone(trip.booking_contact_phone)]));
-    who.appendChild(quoteBox('Email', [blank ? '' : trip.booking_contact_email || '']));
-    parties.appendChild(who);
+    parties.appendChild(quoteBox('Prepared for', blank ? [''] : billToLines(trip)));
+    parties.appendChild(quoteBox('Contact', blank ? [''] : [
+      trip.booking_contact_name || '', showPhone(trip.booking_contact_phone), trip.booking_contact_email || '',
+    ]));
     card.appendChild(parties);
 
-    card.appendChild(quoteTable(trip, blank));
+    const table = quoteTable(trip, blank);
+    card.appendChild(table);
+    card.appendChild(quoteSums(table, blank ? [] : quoteLines(trip), blank));
 
-    const terms = el('div', 'scheduler-customer-quote__terms');
-    for (const text of QUOTE_TERMS) {
-      const p = el('p', 'scheduler-customer-quote__term');
-      for (const [i, line] of text.split('\n').entries()) {
-        if (i) p.appendChild(el('br'));
-        p.appendChild(document.createTextNode(line));
-      }
-      terms.appendChild(p);
-    }
-    card.appendChild(terms);
+    /* The terms, numbered in two columns, kept whole: where the items leave
+       no room for them on this sheet they go over to the next together. */
+    const fine = el('section', 'scheduler-customer-quote__fine');
+    fine.appendChild(el('p', 'scheduler-customer-quote__heading', 'Terms'));
+    const terms = el('ol', 'scheduler-customer-quote__terms');
+    for (const text of QUOTE_TERMS) terms.appendChild(el('li', 'scheduler-customer-quote__term', text));
+    fine.appendChild(terms);
+    card.appendChild(fine);
 
-    const sign = el('div', 'scheduler-customer-quote__sign');
-    sign.appendChild(signLine());
-    sign.appendChild(el('p', 'scheduler-customer-quote__sign-note',
-      `Please sign to confirm and email back to ${COMPANY.email}`));
-    card.appendChild(sign);
+    // Who accepts it, with rules to print a name on, sign and date, and the
+    // way back under them.
+    const accept = el('section', 'scheduler-customer-quote__accept');
+    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
+    const marks = el('div', 'scheduler-customer-quote__marks');
+    for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
+    accept.appendChild(marks);
+    const foot = el('p', 'scheduler-customer-quote__foot', `Sign and email to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
+    foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
+    accept.appendChild(foot);
+    card.appendChild(accept);
+    showSums(card);
     return card;
   }
 
@@ -1754,8 +1800,7 @@
      and a line to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
-    card.appendChild(quoteHead([]));
-    card.appendChild(el('h2', 'scheduler-customer-quote__agreement-title', 'TERMS AND CONDITIONS AGREEMENT FORM'));
+    card.appendChild(quoteHead('TERMS AND CONDITIONS'));
 
     const tripBox = el('div', 'scheduler-customer-quote__trip');
     const pair = (label, value) => {
@@ -1930,7 +1975,7 @@
     logo.alt = 'Escamilla Tour Buses';
     const company = el('div', `${CCA}__company`);
     company.appendChild(el('p', `${CCA}__company-name`, 'Escamilla Tour Buses, LLC'));
-    for (const text of QUOTE_LETTERHEAD) company.appendChild(el('p', null, text));
+    for (const text of LETTERHEAD) company.appendChild(el('p', null, text));
     head.append(logo, company);
     card.appendChild(head);
 

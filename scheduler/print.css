@@ -1323,7 +1323,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    the invoice's 16, because the quote carries eight terms and a line to
    accept on the same sheet's 738pt.
 
-   AND IT IS THE ONE FORM THAT FILLS. The grey bands and the blue total are
+   IT IS MONOCHROME: the logo is the only colour on it, and the sheet is
+   ink and Carbon's greys, as a professional form is.
+
+   AND IT IS THE ONE FORM THAT FILLS. The grey bands and the grey total are
    what a customer reads as the document, and `print-color-adjust: exact` is
    what carries them past Chrome's Background graphics box, which is off and
    which nobody ticks -- the property exists for a page whose fills are the
@@ -1354,9 +1357,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* The logo and letterhead take the width; the name and references keep to a
    column as wide as the totals under the amounts. */
+/* The name's column is never narrower than the totals under the items, and
+   wider when a name needs it, so TERMS AND CONDITIONS stands on one line. */
 .scheduler-customer-quote__head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 200pt;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 16pt;
   align-items: start;
 }
@@ -1376,14 +1381,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-secondary);
 }
 
+.scheduler-customer-quote__named { min-inline-size: 200pt; }
+
 .scheduler-customer-quote__title {
   margin: 0;
   text-align: end;
-  font-size: 24pt;
+  white-space: nowrap;
+  font-size: 20pt;
   line-height: 28pt;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--rux-support-info);
+  color: var(--rux-text-primary);
 }
 
 /* Each reference a label and its value on one line, the value to the
@@ -1407,15 +1415,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   text-align: end;
 }
 
-/* THE TOTAL UNDER THE ITEMS, blue on the palest blue, the one colour on the
-   sheet, so the price is what the eye finds. Blue 70 on Blue 20 reads at
-   well over 4.5:1. */
+/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on and in their
+   ink, bold, so the price is what the eye finds without a colour. */
 .scheduler-customer-quote__sum--total {
   display: flex;
   justify-content: space-between;
   gap: 8pt;
-  background: var(--rux-highlight);
-  color: var(--rux-support-info);
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-primary);
   font-weight: 600;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -1627,7 +1634,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    head with the form's name, the trip in one band, and the policies in small
    type with their headings underlined into the text. Its head, band,
    labels and lines to sign are the quote's; only the policies' size is this
-   sheet's own. Its name takes two lines in the quote's title column. */
+   sheet's own. */
 .scheduler-customer-quote--agreement {
   font-size: 8.5pt;
   line-height: 1.3;
@@ -1694,9 +1701,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   text-decoration: underline;
 }
 
-/* The one paragraph the Word form prints in red: the hours a driver may work,
-   which a group that keeps calling is costing them. */
-.scheduler-customer-quote__policy--warn { color: var(--rux-support-error); }
+/* The one paragraph the Word form prints in red, here in italic so the
+   sheet stays monochrome and the paragraph keeps its lines: the hours a
+   driver may work, which a group that keeps calling is costing them. */
+.scheduler-customer-quote__policy--warn { font-style: italic; }
 
 .scheduler-customer-quote__policy--warn .scheduler-customer-quote__policy-heading {
   text-decoration: none;

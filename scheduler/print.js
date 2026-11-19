@@ -1802,12 +1802,15 @@
   }
 
   /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
-     trip's destination, dates and estimate number in the band at its head, so
-     a signed copy sent back alone still names its quote, the policies,
+     estimate number under its name, as the quote sets it, so a signed copy
+     sent back alone still names its quote; the trip's destination and dates
+     in the band under the head; the policies,
      and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote scheduler-customer-quote--agreement');
-    card.appendChild(quoteHead('TERMS AND CONDITIONS'));
+    card.appendChild(quoteHead('TERMS AND CONDITIONS', {
+      refs: [['Estimate #', blank ? '' : trip.trip_ref || '']],
+    }));
 
     const tripBox = el('div', 'scheduler-customer-quote__trip');
     const pair = (label, value) => {
@@ -1817,7 +1820,6 @@
     pair('Destination', blank ? '' : trip.destination || '');
     // The dates in the quote's own words, so the two sheets say them alike.
     pair('Date', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip)));
-    pair('Estimate #', blank ? '' : trip.trip_ref || '');
     card.appendChild(tripBox);
 
     card.appendChild(el('p', 'scheduler-customer-quote__agreement-intro',

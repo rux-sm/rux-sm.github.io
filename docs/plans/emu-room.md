@@ -11,9 +11,9 @@ its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, up to three consoles and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a large modal of every console and game the server
-holds, each with Download. Under the room, My Room is a footer panel of
-everything on this Mac: its consoles put away, its games and what the
-account keeps. Getting a game, setting up its console and playing it are
+holds, each with Download. A My Stuff button at the room's foot opens a
+panel of everything on this Mac: a row of its consoles, a row of its games,
+and what the account keeps behind a button in its toolbar. Getting a game, setting up its console and playing it are
 one press or one drag each, and the page is fun to use
 while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 `emu/room.js`; the rest of Emu is unchanged.
@@ -56,7 +56,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
 - **A console has three places.** In Rux's Server it is not on this Mac. In
-  My Room it is set up on this Mac and put away. In the room it is out,
+  My Stuff it is set up on this Mac and put away. In the room it is out,
   ready to play. Putting one away is harmless, and only Remove in its menu
   takes its emulator off.
 - **At most three consoles are out at once,** so the floor never fills. A
@@ -68,15 +68,15 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   out, 6 each for two and 4 each for three, so the floor holds about twelve.
   A cover is a thing on the floor like any other: it stays where it landed
   or was left, is carried with weight, and is dropped on its console to
-  play. It goes back into My Room when its console is put away. Any other
-  game is dragged from My Room.
+  play. It goes back into My Stuff when its console is put away. Any other
+  game is dragged from My Stuff.
 - **The whole room is for the TV, the consoles and the covers,** each a
   thing on the floor standing where it was last left, its top-left corner in
   art pixels from the room's, dragged to move it. One brought in stands
   where it was let go, and one brought without a drag in the first clear
   spot clear of the TV. Each one's spot is kept with this Mac's room, in the
   `room` column of its `emu_macs` row. An empty room says faintly "Drag a
-  console up from My Room."
+  console up from My Stuff."
 - **A smaller window sweeps the room's things into a pile, and they stay
   there.** Its edges push in whatever is past them, and whatever then
   overlaps takes the nearest free spot, so things end up touching but not
@@ -87,17 +87,24 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   server never squeezes the room. Its close, Escape or the scrim closes it,
   and it opens again on the tab and console it was left on. The account is
   the header's round button, so nothing else stands around the room.
-- **My Room is a footer panel under the room, inside the tile,** its head
-  its name, a content switcher for its tabs and a chevron that folds it to
-  its head, remembered in the browser; its body one row of tiles or covers
-  that scrolls sideways, so a drag from it into the room is a short move up.
-  It shows whenever the helper answers, with one faint line while it is
-  empty, so the room never jumps when the first download lands. The room's
-  height gives way to it, and the sweep keeps the room's things inside what
-  is left.
+- **My Stuff is one secondary button at the room's bottom-left, which opens
+  a panel floating over the room's foot,** 8px in from its edges, raised
+  with Carbon's raised shadow, unfolding up from the foot on Carbon's
+  moderate-02. It floats rather than pushing the room up, so opening it
+  never sweeps the room's things, and a drag from it into the room is a
+  short move up. It starts closed each time the page loads, so the room
+  shows whole; Close or Escape closes it.
+- **My Stuff's toolbar is its name, then icon buttons at its end:** Saves,
+  a toggle that shows the saves in place of the rows, then Close. Any other
+  view of what this Mac or the account keeps joins them as an icon button.
+- **My Stuff's body is two rows that scroll sideways, so it fits any width:**
+  every console set up on this Mac, then this Mac's games. A console out in
+  the room stands faint in its row, outlined and saying "In your room";
+  any other is dragged into the room or pressed to bring it out. An empty
+  row says faintly where to get one.
 - **A console downloaded from the store comes into the room unlit while
   fewer than three are out, and is set up where it stands;** with three
-  out it waits in My consoles.
+  out it waits in My Stuff.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
 - **The store is headed Rux's Server,** so it is not mistaken for the
@@ -117,27 +124,25 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   starts on the first console with games, and Sort is A to Z or Favourites
   first, since a game row keeps no date it was added. The count of games
   shown sits beside them.
-- **My Room has three tabs, My consoles, My games and My saves.** My
-  consoles is each console set up on this Mac and put away, as a tile that
-  is dragged into the room or pressed to bring it out.
-- **Games lists every game on this Mac,** favourites first, then the rest A to
+- **The games row lists every game on this Mac,** favourites first, then the rest A to
   Z, as covers that are dragged onto a console to play. A favourite is
   `emu_notes`' favourite mark, and one this Mac lacks is dimmed. A game whose
   console is not out is dimmed, its title naming the console it needs.
   There is no Recently played, because a Mac holds only a handful of games.
-- **Saves follows the picked console and the game in it,** under a heading
+- **Saves follows the picked console and the game in it,** or the first
+  console out in the room where this Mac does not play the picked one, under a heading
   for each kind: that game's cards, and the console's own, such as a PS2's
-  whole cards and its controls. It is headed with the console and its game,
+  whole cards. It is headed with the console and its game,
   such as "SNES, Moon Tower", and with no console picked it lists each
   console in the room with what it keeps. A thing is dragged from it onto its
   game or console to swap it in, and the one swapped out goes back to Saves.
 - **A game's side panel opens on the right,** over the room, and closing it
   shows the room as it was. Pressing a game opens its side panel and leaves
-  My Room as it is, so one press does one thing.
-- **The room draws Your Mac, My Room and Rux's Server from the real games
+  My Stuff as it is, so one press does one thing.
+- **The room draws Your Mac, My Stuff and Rux's Server from the real games
   and this Mac;** a game or a console is dragged between the room and My
   Room, and a game opens its side panel when pressed.
-- **A room never kept is empty,** its set-up consoles in My Room.
+- **A room never kept is empty,** its set-up consoles in My Stuff.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room. One that is set up
   has Put away and "Remove mGBA from this Mac"; one that is not, such as one
@@ -177,7 +182,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   Remove and Keep. Remove keeps its saves and settings in Supabase,
   `R.carry.remove`, checks both are held, and only then has the helper move
   the emulator to the Trash; the console goes back to Rux's Server, and
-  every console that played in it leaves My Room. Where keeping fails
+  every console that played in it leaves My Stuff. Where keeping fails
   nothing is removed and the strip says why.
 - **Setting up is the helper's install,** made ready with the settings this
   Mac kept, so an emulator comes back as it was; the light blinks while the
@@ -190,23 +195,23 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   it; until then the strip says its room is not kept.
 - **An emulator that plays several consoles readies them all.** Setting up
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance
-  appear in My Room's Consoles, and removing mGBA takes all three.
-- **A game on this Mac is played by dragging it from My Room onto its
+  appear in My Stuff's consoles row, and removing mGBA takes all three.
+- **A game on this Mac is played by dragging it from My Stuff onto its
   console,** the helper's Play; a home console's game dropped on the TV
   counts as dropped on its console. Remove from this Mac, in its side
-  panel, takes it off at once with Undo on the strip, and its files go a
-  few seconds later, so Undo downloads nothing; its saves stay.
+  panel, takes it off; its saves stay.
 - **A place means the same for everything:** in Rux's Server a thing is
-  kept on the server and not on this Mac, in My Room's Games it is on this
-  Mac, in its Saves it is the account's own, kept in Supabase, in its Consoles it is set up and put away, in the
+  kept on the server and not on this Mac, in My Stuff's games row it is on
+  this Mac, in its Saves it is the account's own, kept in Supabase, in its
+  consoles row it is set up on this Mac, in the
   room a thing is out to play with, and in a console a thing is the one the
   next Play uses.
 - **A memory card is one game's save,** drawn tucked into its game's cover
   and in its console's slot while the game is in. A game can have several,
   each with a name; only one is in at a time, since an emulator finds a save
   by a fixed name. A game's other cards are in Saves.
-- **A console's controls are an item in Saves for each controller,** named
-  for the controller, such as "Pro Controller", since an emulator keeps a
+- **Controllers, in My Stuff's toolbar, lists a console's controls for each
+  controller,** named for the controller, such as "Pro Controller", since an emulator keeps a
   layout for each controller it has seen. They travel with the account, as
   `docs/plans/emu-emulator-profiles.md` carries them, so a layout set on one
   Mac is there on the next, and putting a console away carries them with its
@@ -239,7 +244,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   Play, Add to Favourites, Bring out, Put away, or in red why not, such as
   "Doesn't fit the Game Boy". A console moved in the room has no word,
   since the drag shows it. The place it will land lights up where it is one
-  thing, such as a console, never the whole room or My Room. The word and
+  thing, such as a console, never the whole room or My Stuff. The word and
   the move come from one function, so they never disagree.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
   where it goes shows before it is dropped.
@@ -258,7 +263,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   button in the header turns them off, remembered in the browser.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
-  moves as buttons; pressing a console in My Room brings it out; a console's menu opens
+  moves as buttons; pressing a console in My Stuff brings it out; a console's menu opens
   from the keyboard as from the pointer, Tidy up is a menu item, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
@@ -273,12 +278,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   yet, red no, blue where a drop lands. The TV lights only while it has
   something to say.
 - **Carbon lays out everything around the room, and the art pixel
-  everything inside it.** The frame, the tiles' heads, the strip, the store, My Room, type,
+  everything inside it.** The frame, the tiles' heads, the strip, the store, My Stuff, type,
   tokens, motion curves and target sizes follow Carbon; inside the room
   sizes, gaps and moves are whole art pixels, since Carbon's 8px steps do not
   divide by three and a sprite between pixels blurs.
 - **Covers keep one height and their own art's width,** as now.
-- **Without the helper, such as on the phone, the room's tile and My Room
+- **Without the helper, such as on the phone, the room's tile and My Stuff
   are not shown,** and the store fills the page as the library to browse,
   with no Download buttons.
 - **The room, the TV, the store's cards and the drag are Emu's own,** under
@@ -287,12 +292,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The earlier prototypes show a furnished room and are superseded:**
   claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, a room seen from above with a
   stand of cubbies, and claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv, seen side
-  on. Neither shows the room's tile, the store or My Room.
+  on. Neither shows the room's tile, the store or My Stuff.
 
 ## Questions
 
-- Besides saves and each controller's controls, what else does the account
-  keep that My saves should show, such as favourites or time played?
+- Besides Saves and Controllers, what else should My Stuff's toolbar open,
+  such as favourites or time played?
 
 ## Tasks
 
@@ -309,8 +314,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - [ ] Draw a game's card on its cover and in its console's slot, with
       pulling one out, dropping one in from Saves and the console's card
       light.
-- [ ] List a console's controls in Saves, one for each controller, once
-      `docs/plans/emu-emulator-profiles.md` carries them.
+- [ ] Add Controllers to My Stuff's toolbar, each controller's layouts for
+      each console, once `docs/plans/emu-emulator-profiles.md` carries them.
 - [ ] Draw a card in pixel art.
 - [ ] Have putting a console away stop its game first, once the helper says
       which runs.

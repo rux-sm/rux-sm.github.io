@@ -423,8 +423,12 @@
     const name = await emulatorOf(system);
     if (!name || !foldersOf((await R.emulators()).macSaves[name]).length) return false;
     say('Bringing its saves…');
+    // Saves that cannot be brought stop the game, so a new save is never
+    // made over an older one by accident; the page offers to try again or to
+    // play this Mac's own.
     let c;
-    try { await start(name); await give(name); c = await run(name); } catch (error) { console.error(error); say('Its saves could not be brought, so this Mac\'s play.'); c = { running: false }; }
+    try { await start(name); await give(name); c = await run(name); }
+    catch (error) { console.error(error); throw Object.assign(new Error('Your saves could not be brought to this Mac.'), { notBrought: true }); }
     if (!c) return false;
     if (c.running) throw new Error(`Quit ${name} first, so its saves can be brought.`);
     await H.manage(name);

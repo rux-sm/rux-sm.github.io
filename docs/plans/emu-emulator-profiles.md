@@ -51,6 +51,10 @@ One rule for every emulator:
   what is newer, the helper checks the app is the version Supabase holds,
   writes the settings Emu manages and starts the game, and when the emulator
   quits the page takes up what changed.
+- **A game does not start until its saves are brought down and checked.**
+  Where they cannot be, Play stops and offers Try again or Play anyway, the
+  second on this Mac's own saves, carried up as usual when it quits, so a
+  game never starts on an older save unasked.
 - **A save changed with the site closed, or with no internet, waits on the
   Mac:** the helper notes it, its menu bar icon says saves are waiting, and
   the site carries it when next open there; opening the site on a Mac also
@@ -65,8 +69,8 @@ One rule for every emulator:
   fingerprint at its last carry; changed on one side, it is copied; changed
   on both, the newest plays and the other is kept; and Supabase keeps the
   last five copies of each save.
-- **Play never waits on a question:** the game's panel says when two copies
-  were found and which is playing, with one press to use the other.
+- **Two copies found never stop Play:** the game's panel says when two
+  copies were found and which is playing, with one press to use the other.
 - **Emu manages a short list of settings per emulator,** written before each
   Play and shown on its profile: its save folders inside its own home where
   the default is beside the game, as mGBA's, ares's and melonDS's is; its own

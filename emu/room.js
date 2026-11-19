@@ -881,7 +881,8 @@
   // failed says so with Carbon's failed indicator, and a question with its
   // caution.
   let saidFor = 0;
-  function say(text = '', undo = null, ms = 4000, bad = false, label = 'Undo') {
+  // `other` is a second answer, [label, run], in place of Keep.
+  function say(text = '', undo = null, ms = 4000, bad = false, label = 'Undo', other = null) {
     clearTimeout(saidFor);
     const words = $('emu-room-said');
     const asks = Boolean(undo) && label !== 'Undo';
@@ -898,7 +899,9 @@
     $('emu-room-undo').hidden = !undo;
     $('emu-room-undo').textContent = label;
     $('emu-room-undo').onclick = undo && (() => { say(); undo(); });
-    $('emu-room-keep').hidden = !asks;
+    $('emu-room-keep').hidden = !asks && !other;
+    $('emu-room-keep').textContent = other ? other[0] : 'Keep';
+    $('emu-room-keep').onclick = () => { say(); other?.[1](); };
     if (text) saidFor = setTimeout(say, ms);
   }
   // A home console's game shows its cover on the glass once it has started,
@@ -942,7 +945,6 @@
   }
   let woke = 0;
   for (const type of ['pointermove', 'pointerdown', 'keydown']) document.addEventListener(type, () => { if (Date.now() - woke > 1000) { woke = Date.now(); wake(); } }, { passive: true });
-  $('emu-room-keep').addEventListener('click', () => say());
   const sayNo = text => say(text, null, 6000, true);
   async function download(g, thenPlay = false) {
     const key = keyOf(g);
@@ -1000,11 +1002,17 @@
     }
     sfx.insert();
   }
-  async function play(g) {
+  // Saves that cannot be brought stop the game, and the strip asks: Try
+  // again, or Play anyway on this Mac's own saves.
+  async function play(g, anyway = false) {
     if (stand.get(g.system) === 'on') await insert(g);
     say('Starting…');
-    try { await R.thisMac.play(g, say); sfx.start(); say(`Playing ${nameOf(g)}.`); if (!HANDHELD.has(g.system)) showOn(g); }
-    catch (error) { sayNo(error.message); }
+    try { await R.thisMac.play(g, say, { anyway }); sfx.start(); say(`Playing ${nameOf(g)}.`); if (!HANDHELD.has(g.system)) showOn(g); }
+    catch (error) {
+      if (!error.notBrought) { sayNo(error.message); return; }
+      sfx.no();
+      say(`${error.message}`, () => play(g), 30000, true, 'Try again', ['Play anyway', () => play(g, true)]);
+    }
   }
   // The console that will not have it shakes its head, buzzes and says why.
   const NO = [name => `Nope. That's a ${name} game.`, name => `Doesn't fit. Try the ${name}.`, name => `*blows on it* Still a ${name} game.`, name => `Wrong slot! It wants a ${name}.`];

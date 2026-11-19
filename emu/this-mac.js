@@ -31,9 +31,11 @@
 
   // Plays a game: its saves carried to this Mac first, the helper's Play, the
   // saves carried back when its emulator quits, and the game marked with
-  // when. `say` is told each step in words; a refusal is thrown.
-  async function play(g, say = () => {}) {
-    const carried = await R.carry?.before(g.system, say);
+  // when. `say` is told each step in words; a refusal is thrown, one whose
+  // saves could not be brought marked `notBrought`. `anyway` plays this Mac's
+  // own saves without bringing them, and still carries them back after.
+  async function play(g, say = () => {}, { anyway = false } = {}) {
+    const carried = anyway ? Boolean(R.carry) : await R.carry?.before(g.system, say);
     await H.play(g);
     say('Playing.');
     if (carried) R.carry.after(g.system, say);
@@ -145,14 +147,23 @@
 
       const buttons = [];
       if ((here || drive) && emulator) {
-        const play = button('Play', 'rux--btn--primary', async () => {
-          play.disabled = true;
+        // Play tries again where the saves could not be brought, and Play
+        // anyway, shown only then, plays this Mac's own.
+        const start = anyway => async () => {
+          go.disabled = true;
+          lone.hidden = true;
           said.textContent = 'Starting…';
-          try { await play(g, text => { if (!closed()) said.textContent = text; }); }
-          catch (error) { said.textContent = error.message; }
-          play.disabled = false;
-        });
-        buttons.push(play);
+          try { await play(g, text => { if (!closed()) said.textContent = text; }, { anyway }); }
+          catch (error) {
+            said.textContent = error.notBrought ? `${error.message} Play tries again; Play anyway uses this Mac's saves, which may be older.` : error.message;
+            lone.hidden = !error.notBrought;
+          }
+          go.disabled = false;
+        };
+        const go = button('Play', 'rux--btn--primary', start(false));
+        const lone = button('Play anyway', 'rux--btn--tertiary', start(true));
+        lone.hidden = true;
+        buttons.push(go, lone);
       }
       if (keeps && !here) {
         const get = button(s.state === 'failed' ? 'Try again' : s.done ? 'Resume download' : 'Download to this Mac', buttons.length ? 'rux--btn--tertiary' : 'rux--btn--primary', async () => {

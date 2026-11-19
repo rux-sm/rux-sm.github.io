@@ -96,7 +96,9 @@
      by; the places, "Mission, TX to San Antonio, TX"; and the times, "6:00 AM
      – 8:42 PM" from leaving to getting back. A line the trip cannot answer
      yet is dropped, except the times, which the office writes as TBD and
-     settles with the customer.
+     settles with the customer: one of the two unknown is TBD in its place,
+     "6:00 AM – TBD", and both unknown are "Times TBD", because two TBDs
+     about a dash say nothing of what is to be decided.
 
      ONE LEG OF A DROP-OFF AND PICKUP TRIP (`leg`) IS A LINE OF ITS OWN, and
      says which it is: the way out is the drop-off, from the pickup to the
@@ -115,7 +117,9 @@
       `${vehicle(trip.pax56)} ${kind}`,
       from ? dates(from, leg ? trip.to || from : backOn(trip)) : null,
       start && end ? `${start} to ${end}` : start ? `from ${start}` : end ? `to ${end}` : null,
-      leg ? `Departs ${clock(trip.leave) || 'TBD'}` : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`,
+      leg ? `Departs ${clock(trip.leave) || 'TBD'}`
+        : !trip.leave && !trip.back ? 'Times TBD'
+          : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`,
     ].filter(Boolean).join('\n');
   }
 

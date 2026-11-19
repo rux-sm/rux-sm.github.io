@@ -1483,7 +1483,8 @@
 
   /* THE AGREEMENT'S POLICIES, as the office's Word form words them, but for
      the cancellation fee, which charges in full within 24 hours of departure
-     as the quote's terms do, because that is the rule the office keeps. A
+     as the quote's terms do, because that is the rule the office keeps, and
+     the deposit, which is the share the quote's terms and totals name. A
      paragraph is [heading, text]: a heading is underlined and bold and runs
      into its text, a paragraph with none is the text alone, and `warn` sets
      the one the form prints in red. The payment policy's is worked out as
@@ -1491,7 +1492,7 @@
      the driver's share page, loading this file too, does not load. */
   const AGREEMENT_POLICIES = [
     { heading: 'Pricing Policy:', text: 'Quotes are based on the itinerary provided at the time. Prices are subject to change if itinerary is updated. Any changes to the itinerary resulting in additional mileage or affecting driver hours will result in price changes. A Fuel surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date. The amount will be calculated based on the gallons of fuel used on the trip and the fuel price difference.' },
-    { heading: 'Trip Booking and Cancellation Policy:', text: 'Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and 20% deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.' },
+    { heading: 'Trip Booking and Cancellation Policy:', text: `Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and ${DEPOSIT_WORDS} deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.` },
     { text: 'Cancellations one month prior to departure will incur a 20% cancellation fee. Cancellations 48 hours prior to departure will incur a 50% cancellation fee. Cancellations within 24 hours of departure, on the day of or during the trip will incur a 100% cancellation fee. All cancellations must be sent by email.' },
     { heading: 'Payment Policy:', text: () => `Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. A credit card payment carries a ${window.SchedulerBilling.cardFeeWords} processing fee. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.` },
     { heading: 'Driver Lodging Policy:', text: 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).' },
@@ -1524,6 +1525,19 @@
 
   // How long a quote's price holds, counted from the day it is written.
   const QUOTE_VALID_DAYS = 30;
+
+  /* THE DAYS A TRIP'S QUOTE HOLDS: the office's 30, or up to the day before
+     the trip leaves where that is sooner, because a price does not hold past
+     the trip it is for, and never fewer than none, so a quote written on the
+     eve or the day of its trip holds through today. A blank quote names no
+     trip and holds the 30. */
+  const validDays = trip => {
+    if (!trip.start_date) return QUOTE_VALID_DAYS;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const left = Math.round((dayOf(trip.start_date) - today) / 86400000);
+    return Math.min(QUOTE_VALID_DAYS, Math.max(0, left - 1));
+  };
 
   // Money as a quote prints it, cents and all, and negative for a deduction:
   // the office's own sheet carries two places in every column.
@@ -1760,7 +1774,7 @@
       refs: [
         ['Estimate #', blank ? '' : trip.trip_ref || ''],
         ['Date', todayWords()],
-        ['Valid until', todayWords(QUOTE_VALID_DAYS)],
+        ['Valid until', todayWords(validDays(trip))],
       ],
     }));
 

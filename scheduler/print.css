@@ -424,6 +424,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
     padding: 0;
   }
 
+  /* PAPER IS LIGHT WHATEVER THE THEME. A dark theme sets the root's colour
+     scheme dark, and the browser lays that scheme's own canvas in the page
+     margins, which no background on the page reaches, so a sheet printed with
+     Background graphics on would be framed in black. */
+  :root { color-scheme: light; }
+
   .scheduler-print,
   .scheduler-print__sheet,
   .scheduler-form { background: #fff; }

@@ -1475,7 +1475,7 @@
   const QUOTE_TERMS = [
     'Quotes are based on the itinerary provided. Prices are subject to change if the itinerary is updated.',
     'A fuel surcharge may be added to your final invoice at our discretion if fuel prices change between the quote date and the trip date.',
-    `The signed Terms and Conditions and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
+    `A signed quote and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
     'On overnight trips, the customer provides the driver’s hotel room. With two drivers, the room must have two separate beds (sofa beds are not acceptable).',
     'Cancellation fees: 20% within a month of departure, 50% within 48 hours, and 100% within 24 hours.',
     'Customers pay parking fees and tolls where they apply. Damage caused by passengers is added to the invoice.',
@@ -1566,9 +1566,9 @@
 
   /* THE HEAD OF BOTH SHEETS, as the office's invoice sets it: the logo over
      the letterhead on the leading edge, and the sheet's name on the trailing
-     one, over its references, each a label and a typed value, and anything
-     else handed in under them. The agreement carries the logo and its name. */
-  function quoteHead(title, { lines = [], refs = [], under = [] } = {}) {
+     one, over its references, each a label and a typed value. The agreement
+     carries the logo and its name. */
+  function quoteHead(title, { lines = [], refs = [] } = {}) {
     const head = el('header', 'scheduler-customer-quote__head');
     const brand = el('div', 'scheduler-customer-quote__brand');
     const logo = el('img', 'scheduler-customer-quote__logo');
@@ -1585,7 +1585,6 @@
       }
       named.appendChild(list);
     }
-    named.append(...under);
     head.append(brand, named);
     return head;
   }
@@ -1648,12 +1647,9 @@
     showSums(card);
   }
 
-  /* The Total as the sheet's other figures repeat it: the same sum at the
-     head, and the deposit a booking puts down, worked out from it. */
+  /* The deposit a booking puts down, worked out from the Total. */
   function showSums(card) {
     const n = typedNumber(card.querySelector('.scheduler-customer-quote__total-value')?.textContent);
-    const total = Number.isFinite(n) ? `$${money(n) || '0.00'}` : '';
-    for (const lead of card.querySelectorAll('.scheduler-customer-quote__lead-value')) lead.textContent = total;
     const deposit = card.querySelector('.scheduler-customer-quote__deposit');
     if (deposit) deposit.textContent = Number.isFinite(n) && n > 0 ? `$${money(n * DEPOSIT_SHARE)}` : '';
   }
@@ -1749,14 +1745,11 @@
     const card = el('article', 'scheduler-form scheduler-customer-quote');
     /* The head names the sheet over its estimate number and date, the date
        today's, because a quote is dated the day it is written, and typed into
-       like every other field for one sent a day later; and under them the
-       total, so the price is the first figure the customer reads. */
-    const lead = el('p', 'scheduler-customer-quote__lead');
-    lead.append(el('span', null, 'Quote total'), el('span', 'scheduler-customer-quote__lead-value'));
+       like every other field for one sent a day later. The price is said
+       once, under the items. */
     card.appendChild(quoteHead('QUOTE', {
       lines: QUOTE_LETTERHEAD,
       refs: [['Estimate #', blank ? '' : trip.trip_ref || ''], ['Date', todayWords()]],
-      under: [lead],
     }));
 
     // Who it is for and who to answer, side by side, each three lines.
@@ -1780,11 +1773,17 @@
     fine.appendChild(terms);
     card.appendChild(fine);
 
-    // The way back, under the terms: the customer signs the agreement on the
-    // next sheet, not this one, and sends it here.
-    const foot = el('p', 'scheduler-customer-quote__foot', `Sign the Terms and Conditions and email them to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
+    // Who accepts it, with rules to print a name on, sign and date, and the
+    // way back under them.
+    const accept = el('section', 'scheduler-customer-quote__accept');
+    accept.appendChild(el('p', 'scheduler-customer-quote__heading', 'Accepted by'));
+    const marks = el('div', 'scheduler-customer-quote__marks');
+    for (const label of ['Name and title', 'Signature', 'Date']) marks.appendChild(el('p', 'scheduler-customer-quote__mark', label));
+    accept.appendChild(marks);
+    const foot = el('p', 'scheduler-customer-quote__foot', `Sign and email to ${COMPANY.email} · Questions? Call ${COMPANY.phone}`);
     foot.append(el('br'), document.createTextNode('Thank you for choosing Escamilla Tour Buses'));
-    card.appendChild(foot);
+    accept.appendChild(foot);
+    card.appendChild(accept);
     showSums(card);
     return card;
   }

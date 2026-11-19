@@ -21,7 +21,7 @@
    is the QuickBooks name over the address the printed quote names, its
    Ship To the trip's booking contact, its FOB the trip's buses, its template
    the office's, and its
-   description the quote's in the invoice's shorter wording, run on to more
+   description the quote's own, run on to more
    SPL lines only past the 99 characters the import keeps of it. An import
    only adds, so a
    file is imported once: `markImported` saves each trip's invoice with its
@@ -146,7 +146,7 @@
   function invoice(t, on, number) {
     const qbName = field(t.customers?.qb_name);
     if (!qbName) return { held: `${t.customers?.name || t.customer || 'Its customer'} has no QuickBooks name` };
-    const lines = window.SchedulerSavedQuote.lines(t, { invoice: true });
+    const lines = window.SchedulerSavedQuote.lines(t);
     const other = lines.find(l => !ITEMS[l.kind]);
     if (other) return { held: `its line "${other.item || 'Other'}" has no QuickBooks item` };
     if (lines.some(l => l.total == null)) return { held: 'it has no price' };

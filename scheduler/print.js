@@ -1910,13 +1910,13 @@
     return { box, ticked: now ? (owed.paid > 0 ? 'Balance due' : 'Payment in full') : null };
   }
 
-  // The trip in the quote's own words, one line a rental, so the customer
-  // signs for the journey their quote named.
+  // The trip in the quote's own words, one line a rental, its lines parted
+  // by dots, so the customer signs for the journey their quote named.
   function ccaTrip(trip) {
     const words = trip.trip_type === 'dropoff_pickup'
       ? legsOf(trip).map(leg => legDescription(trip, leg))
       : [quoteDescription(trip)];
-    return words.map(w => String(w || '').replace(/\s*\n\s*/g, ' ').trim()).join('\n');
+    return words.map(w => String(w || '').split(/\s*\n\s*/).filter(Boolean).join(' · ')).join('\n');
   }
 
   function cardAuthorization(subject) {

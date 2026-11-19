@@ -3,10 +3,11 @@
    --------------------------------------------------------------------------
    The one line item's description, loaded by the board and by the forms page
    and owned by neither: the trip editor's Billing tab copies this block into
-   a QuickBooks estimate, and the customer quote prints it on paper. One
-   wording, two destinations, so a pasted estimate and a printed quote can
-   never disagree. The QuickBooks invoice export asks for the same facts in
-   its shorter form.
+   a QuickBooks estimate, the customer quote prints it on paper, and the
+   QuickBooks invoice export writes it on the invoice. One wording, three
+   destinations, so an estimate, a quote and an invoice never disagree. It
+   is short enough for the invoice, whose import keeps only 99 characters of
+   a line's description.
 
    IT TAKES A TRIP, NOT A PAGE. The board reads the editor's controls, so a
    quote can be copied while it is still being written; the forms page reads
@@ -46,21 +47,21 @@
     return at > 0 ? `${parts[at - 1]}, ${stateOf(parts[at])}` : parts.join(', ');
   }
 
-  /* A range as the office writes one: "December 11-13, 2026", the month named
-     once inside a month and twice across two, and a single day left alone.
-     `short` names the month as an invoice does, "Dec 11-13, 2026". */
-  function dates(from, to, short = false) {
+  /* A range as the office writes one: "Dec 11–13, 2026", the month named
+     once inside a month, "Nov 30 – Dec 2, 2026" across two, and a single day
+     left alone, the month abbreviated and the days joined by an en dash. */
+  function dates(from, to) {
     if (!from) return '';
     const a = parseDay(from);
     const b = to ? parseDay(to) : a;
-    const month = d => d.toLocaleDateString('en-US', { month: short ? 'short' : 'long' });
+    const month = d => d.toLocaleDateString('en-US', { month: 'short' });
     if (a.getTime() === b.getTime()) return `${month(a)} ${a.getDate()}, ${a.getFullYear()}`;
     if (a.getFullYear() !== b.getFullYear()) {
-      return `${month(a)} ${a.getDate()}, ${a.getFullYear()} to ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
+      return `${month(a)} ${a.getDate()}, ${a.getFullYear()} – ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
     }
     return a.getMonth() === b.getMonth()
-      ? `${month(a)} ${a.getDate()}-${b.getDate()}, ${b.getFullYear()}`
-      : `${month(a)} ${a.getDate()} to ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
+      ? `${month(a)} ${a.getDate()}–${b.getDate()}, ${b.getFullYear()}`
+      : `${month(a)} ${a.getDate()} – ${month(b)} ${b.getDate()}, ${b.getFullYear()}`;
   }
 
   // "7:00 AM", the long form a quote takes, from a stored "07:00:00".
@@ -72,63 +73,49 @@
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
 
-  /* The vehicle line, "(52 passengers)", with no count of buses because the
-     line's Quantity carries it. A quote names the seats the customer asked
-     for, never the assigned bus's: 52, and 56 only where a vehicle of the
-     line carries the 56 passengers need on the Buses tab. */
-  function vehicle(pax56, short = false) {
-    return `(${pax56 ? 56 : 52} ${short ? 'pass' : 'passengers'})`;
-  }
+  /* The vehicle, "52-seat", as the coach trade sizes a bus, with no count of
+     buses because the line's Quantity carries it. A quote names the seats
+     the customer asked for, never the assigned bus's: 52, and 56 only where
+     a vehicle of the line carries the 56 passengers need on the Buses tab. */
+  const vehicle = pax56 => `${pax56 ? 56 : 52}-seat`;
 
-  /* A one-day trip that is back at an earlier hour than it left is back the
-     next day, past midnight, by past-midnight.js's rule, and the quote says
-     which day, so 1:00 AM is not read as the morning the trip starts. */
-  function backDay(trip) {
+  /* The day a trip is back: its own last day, or the next on a one-day trip
+     back at an earlier hour than it left, past midnight by past-midnight.js's
+     rule, so 1:00 AM is not read as the morning the trip starts. */
+  function backOn(trip) {
     const from = trip.from || null;
-    if (!from || (trip.to || from) !== from || !window.SchedulerPastMidnight.after(trip.leave, trip.back)) return null;
+    const to = trip.to || from;
+    if (!from || to !== from || !window.SchedulerPastMidnight.after(trip.leave, trip.back)) return to;
     const next = parseDay(from);
     next.setDate(next.getDate() + 1);
-    return next.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`;
   }
 
-  /* The block itself. A line the trip cannot answer yet is dropped, except the
-     two times, which the office writes as TBD and settles with the customer.
+  /* The block itself, a line each: what it is, "52-seat round trip"; the
+     days, "Nov 16–17, 2026", which a customer's office matches an invoice
+     by; the places, "Mission, TX to San Antonio, TX"; and the times, "6:00 AM
+     – 8:42 PM" from leaving to getting back. A line the trip cannot answer
+     yet is dropped, except the times, which the office writes as TBD and
+     settles with the customer.
 
      ONE LEG OF A DROP-OFF AND PICKUP TRIP (`leg`) IS A LINE OF ITS OWN, and
      says which it is: the way out is the drop-off, from the pickup to the
      destination, and the way back is the pickup, from the destination to
      where the group was picked up, so the two lines tell the legs apart by
-     more than their dates. Each says only when it departs, because to the
-     customer each leg is a departure.
-
-     AN INVOICE LINE (`invoice`) SAYS THE SAME IN FEWER WORDS, because
-     QuickBooks keeps only 99 characters of an imported line's description:
-     "(52 pass) round trip", the places, "Nov 20, 2026", and the times on one
-     line, "DEP 1:00 PM - ARR 1:00 AM", with no day after a time past
-     midnight, which the quote already named. */
+     more than their dates. Each says only when it departs, "Departs 9:00
+     AM", because to the customer each leg is a departure. */
   function description(trip) {
     const leg = !trip.leg ? null : trip.leg === 'return' ? 'return' : 'outbound';
     const from = trip.from || null;
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
     const [start, end] = leg === 'return' ? [drop, pickup] : [pickup, drop];
-    const route = [start ? `from ${start}` : null, end ? `to ${end}` : null].filter(Boolean).join(' ');
     const kind = (leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip';
-    if (trip.invoice) {
-      return [
-        `${vehicle(trip.pax56, true)} ${kind}`,
-        route,
-        from ? dates(from, trip.to || from, true) : null,
-        [`DEP ${clock(trip.leave) || 'TBD'}`, leg ? null : `ARR ${clock(trip.back) || 'TBD'}`]
-          .filter(Boolean).join(' - '),
-      ].filter(Boolean).join('\n');
-    }
     return [
       `${vehicle(trip.pax56)} ${kind}`,
-      route,
-      from ? `on ${dates(from, trip.to || from)}` : null,
-      `departing at ${clock(trip.leave) || 'TBD'}`,
-      leg ? null : `arriving at ${clock(trip.back) || 'TBD'}${backDay(trip) ? ` on ${backDay(trip)}` : ''}`,
+      from ? dates(from, leg ? trip.to || from : backOn(trip)) : null,
+      start && end ? `${start} to ${end}` : start ? `from ${start}` : end ? `to ${end}` : null,
+      leg ? `Departs ${clock(trip.leave) || 'TBD'}` : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`,
     ].filter(Boolean).join('\n');
   }
 

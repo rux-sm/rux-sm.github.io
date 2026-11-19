@@ -9,12 +9,12 @@ type: plan
 The Library is one tile that fills the page, as the scheduler's board does:
 its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, up to three consoles and their favourite games, each
-standing wherever it is left. A button at each end of the head opens a
-drawer tile over that side of the room: Rux's Server on the left is every
-console and game the server holds, borrowed by dragging it into the room; My
-Room on the right is everything on this Mac, its consoles put away, its
-games and the saves the account keeps. Getting a game, setting up its
-console and playing it are one gesture each, and the page is fun to use
+standing wherever it is left. One primary button in the head, Rux's
+Server, opens the store: a large modal of every console and game the server
+holds, each with Download. Under the room, My Room is a footer panel of
+everything on this Mac: its consoles put away, its games and what the
+account keeps. Getting a game, setting up its console and playing it are
+one press or one drag each, and the page is fun to use
 while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 `emu/room.js`; the rest of Emu is unchanged.
 
@@ -28,14 +28,14 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
-- **The room tile's head is Rux's Server's toggle, the room's name, the
-  strip, My Room's toggle and the room's ⋮ menu,** on the md size token's
-  height over a rule, in by the theme's toolbar inset as the scheduler's
-  heads are, its name in heading-compact-02, as the scheduler's week name
-  is. Each toggle is Carbon's open-panel icon for its side, named by its
-  tooltip, filled and selected while its drawer is open, and the menu holds
-  Tidy up and Put everything away. In a narrow window the room's name gives
-  way first.
+- **The room tile's head is the room's name, the strip and Rux's Server,**
+  a primary button at its end, on the md size token's height over a rule,
+  in by the theme's toolbar inset as the scheduler's heads are, its name in
+  heading-compact-02, as the scheduler's week name is. In a narrow window
+  the room's name gives way first.
+- **The TV's menu holds everything the room does besides moving things:**
+  the other pages, Search and Sound, then Tidy up and Put everything away,
+  so the head holds no menu.
 - **The strip is the room's one communication surface.** At rest it is
   Carbon's icon indicators: the helper and its version, a caution opening
   Status where Supabase holds a newer one; the collection it found, a drive
@@ -57,8 +57,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   game-panel action stays in its panel and Update stays on Status.
 - **A console has three places.** In Rux's Server it is not on this Mac. In
   My Room it is set up on this Mac and put away. In the room it is out,
-  ready to play. Putting one away is harmless, and only taking it back to
-  Rux's Server removes its emulator.
+  ready to play. Putting one away is harmless, and only Remove in its menu
+  takes its emulator off.
 - **At most three consoles are out at once,** so the floor never fills. A
   fourth is refused as a wrong game is: it goes back and the strip says "Three
   is plenty. Put one away first."
@@ -76,44 +76,43 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   where it was let go, and one brought without a drag in the first clear
   spot clear of the TV. Each one's spot is kept with this Mac's room, in the
   `room` column of its `emu_macs` row. An empty room says faintly "Drag a
-  console here from Rux's Server or My Room."
+  console up from My Room."
 - **A smaller window sweeps the room's things into a pile, and they stay
   there.** Its edges push in whatever is past them, and whatever then
   overlaps takes the nearest free spot, so things end up touching but not
   overlapping while the room can hold them; the thing just dropped holds
   still and the others make room. The swept spots are kept, so a larger
   window leaves the pile as it is, and things are put back by hand.
-- **Each drawer is a tile floating over its side of the room, under the
-  head,** 22rem wide and 8px in from the room's edges, raised with Carbon's
-  raised shadow, its own head its title and close, its title taking the
-  focus as it opens, as Carbon's side panel's does, and the rest stays in
-  view, so a drag out of it lands a short move away. It floats rather than
-  standing beside the room, so opening one never narrows the room and
-  sweeps its things. It unfolds from its side on Carbon's moderate-02.
-  Pressing its button again, its close, or Escape closes it, and a closed
-  drawer leaves nothing behind. Both start closed each time the page loads, so the room
-  shows whole. The menu is behind the header's button at every
-  width, and the account is the header's round button, so nothing else
-  stands around the room.
+- **Rux's Server is Carbon's large modal, a store,** so browsing the whole
+  server never squeezes the room. Its close, Escape or the scrim closes it,
+  and it opens again on the tab and console it was left on. The account is
+  the header's round button, so nothing else stands around the room.
+- **My Room is a footer panel under the room, inside the tile,** its head
+  its name and a content switcher for its tabs, its body one row of tiles
+  or covers that scrolls sideways, so a drag from it into the room is a
+  short move up. The room's height gives way to it, and the sweep keeps the
+  room's things inside what is left.
 - **Collection, Problems, Status, Saves and Emulators stay plain pages** in
   the menu, as now; only the Library is drawn as a room.
-- **The left drawer is headed Rux's Server,** so it is not mistaken for the
+- **The store is headed Rux's Server,** so it is not mistaken for the
   Collection page in the menu.
-- **Rux's Server has two tabs, Consoles and the picked console's Games,**
-  as My Room has its own. Each console is a tile with its drawing, name and
-  count; pressing it turns to its games and dragging it brings it into the
-  room, and a thing dragged back turns Rux's Server to its own tab. While a console
-  is in the room its tile stands outlined and faint, as the place it goes back
-  to, and still shows its games when pressed. One whose emulator this Mac has
-  shows a green light.
-- **The picked console's games have a heading:** its name, its count, where
-  it stands, such as "In your room, off", and Bring to Your Mac while
-  it is not in the room. The games are covers that wrap down the panel, A
-  to Z; one this Mac has is dimmed with a tick, and can still be
-  picked up. There is no All, because one console at a time is neater.
-- **My Room has three tabs, Consoles, Games and Saves.** Consoles is each
-  console set up on this Mac and put away, as a tile that is dragged into
-  the room or pressed to bring it out.
+- **The store has two tabs, Consoles and Games,** Carbon's contained tabs
+  at full width. Each item is a card in a grid: a console's drawing, name
+  and count, or a game's cover, name and console, then one button. Download
+  where this Mac lacks it; a disabled "On this Mac" with a tick where it
+  has it. Pressing a console's card, off its button, turns to Games with
+  that console chosen.
+- **Download on a console sets up its emulator; on a game it downloads the
+  game,** the same `this-mac.js` and helper calls a drag makes today, and
+  the button shows its progress while the strip names it. A game whose
+  console is not set up says "Downloads the SNES too" under its button and
+  sets that up first.
+- **Games has a Console select and a Sort select over the grid:** Console
+  starts on the first console with games, and Sort is A to Z or Newest
+  added. The count of games shown sits beside them.
+- **My Room has three tabs, My consoles, My games and My saves.** My
+  consoles is each console set up on this Mac and put away, as a tile that
+  is dragged into the room or pressed to bring it out.
 - **Games lists every game on this Mac,** favourites first, then the rest A to
   Z, as covers that are dragged onto a console to play. A favourite is
   `emu_notes`' favourite mark, and one this Mac lacks is dimmed. A game whose
@@ -125,17 +124,16 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   such as "SNES, Moon Tower", and with no console picked it lists each
   console in the room with what it keeps. A thing is dragged from it onto its
   game or console to swap it in, and the one swapped out goes back to Saves.
-- **A game's side panel opens over My Room,** on the right, and closing it
-  shows My Room as it was. Pressing a game opens its side panel and leaves
+- **A game's side panel opens on the right,** over the room, and closing it
+  shows the room as it was. Pressing a game opens its side panel and leaves
   My Room as it is, so one press does one thing.
-- **The room draws Your Mac and Rux's Server from the real games and
-  this Mac;** a game or a console is dragged between them, and a game opens
-  its side panel when pressed.
+- **The room draws Your Mac, My Room and Rux's Server from the real games
+  and this Mac;** a game or a console is dragged between the room and My
+  Room, and a game opens its side panel when pressed.
 - **A room never kept is empty,** its set-up consoles in My Room.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room. One that is set up
-  has Put away and "Remove mGBA from this Mac"; one that is not has "Set up
-  Game Boy Advance", named for the console, and Put back.
+  has Put away and "Remove mGBA from this Mac".
 - **A console's power light is on its drawing,** over the drawing's own
   light pixel, in the real console's colour: glowing softly while it is set
   up, flashing on and off while its emulator is set up or removed, with no
@@ -161,17 +159,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   until the page is looked at again, since the helper does not say when a
   game ends. A minute with the glass dark and nothing touched, the mark
   drifts around it until the pointer or a key moves.
-- **Tidy up, in the room's menu, lays the TV in the middle of the
+- **Tidy up, in the TV's menu, lays the TV in the middle of the
   room and the consoles in rows under it,** with Undo on the strip, since a
   swept pile stays until it is put back.
-- **Put everything away, under Tidy up in the room's menu, puts every console that is out
+- **Put everything away, under Tidy up in the TV's menu, puts every console that is out
   away,** with Undo on the strip.
-- **A console from Rux's Server that is not set up comes in unlit, and Set
-  up in its menu installs its emulator.** One this Mac has comes out lit
-  from either drawer.
 - **Removing an emulator is three steps, and the strip asks before it goes.**
-  Remove in the console's menu, or dragging the console onto Rux's Server,
-  has the strip ask "Remove mGBA from this Mac? Your saves are kept." with
+  Remove in the console's menu has the strip ask "Remove mGBA from this Mac? Your saves are kept." with
   Remove and Keep. Remove keeps its saves and settings in Supabase,
   `R.carry.remove`, checks both are held, and only then has the helper move
   the emulator to the Trash; the console goes back to Rux's Server, and
@@ -189,15 +183,11 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **An emulator that plays several consoles readies them all.** Setting up
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance
   appear in My Room's Consoles, and removing mGBA takes all three.
-- **A game moves the same way:** onto My Room or the room's open space
-  downloads it, `this-mac.js`'s Download, and it shows in Games; onto its
-  console plays it, the helper's Play; straight from Rux's Server onto its
-  console downloads and then plays. A home console's game dropped on the TV
-  counts as dropped on its console. Dragged back anywhere on Rux's Server it
-  leaves this Mac at once, with Undo, and its files go a few seconds later,
-  so Undo downloads nothing; its saves stay, and there is no separate return
-  area. Picking it up turns the collection to its console, so its own cover
-  is there to light up.
+- **A game on this Mac is played by dragging it from My Room onto its
+  console,** the helper's Play; a home console's game dropped on the TV
+  counts as dropped on its console. Remove from this Mac, in its side
+  panel, takes it off at once with Undo on the strip, and its files go a
+  few seconds later, so Undo downloads nothing; its saves stay.
 - **A place means the same for everything:** in Rux's Server a thing is
   kept on the server and not on this Mac, in My Room's Games it is on this
   Mac, in its Saves it is the account's own, kept in Supabase, in its Consoles it is set up and put away, in the
@@ -238,14 +228,11 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   real card holds many games' saves, as on the PS2 and the GameCube, the
   card is that whole card and belongs to its console.
 - **A word follows what is held and says what letting go will do:**
-  Download, Play, Download and play, Add to Favourites, Take off this Mac,
-  Bring in, Put back, which names the emulator that will go, such as "Put
-  back, and take mGBA off this Mac", or in red why not, such as "Doesn't fit
-  the Game Boy" and "Set it up first". A console moved in the room has no
-  word, since the drag shows it. The place it will land lights up where it is
-  one thing, such as a console or Rux's Server, never the whole room or My
-  Room. The
-  word and the move come from one function, so they never disagree.
+  Play, Add to Favourites, Bring out, Put away, or in red why not, such as
+  "Doesn't fit the Game Boy". A console moved in the room has no word,
+  since the drag shows it. The place it will land lights up where it is one
+  thing, such as a console, never the whole room or My Room. The word and
+  the move come from one function, so they never disagree.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
   where it goes shows before it is dropped.
 - **A game goes in as it would on the real console:** a cartridge drops into
@@ -256,15 +243,14 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   page needs a quit request from it.
 - **The wrong console says no and does nothing:** it shakes its head, buzzes
   and says a short line, such as "Doesn't fit. Try the SNES.", and the game
-  goes back. A console not set up says "Set me up first."
+  goes back.
 - **Every move makes a small sound,** made in the browser with no sound
   files: a click to pick up, a thunk and rising tone to set up, a chime
   when a download finishes, a start-up jingle to play, a buzz for no. A
   button in the header turns them off, remembered in the browser.
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
-  moves as buttons; pressing a console, in the room or Rux's Server, picks
-  it, and its heading has Bring to Your Mac, Put away or Put back; a console's menu opens
+  moves as buttons; pressing a console in My Room brings it out; a console's menu opens
   from the keyboard as from the pointer, Tidy up is a menu item, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
@@ -279,26 +265,40 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   yet, red no, blue where a drop lands. The TV lights only while it has
   something to say.
 - **Carbon lays out everything around the room, and the art pixel
-  everything inside it.** The frame, the tiles' heads, the strip, the drawers, type,
+  everything inside it.** The frame, the tiles' heads, the strip, the store, My Room, type,
   tokens, motion curves and target sizes follow Carbon; inside the room
   sizes, gaps and moves are whole art pixels, since Carbon's 8px steps do not
   divide by three and a sprite between pixels blurs.
 - **Covers keep one height and their own art's width,** as now.
 - **Without the helper, such as on the phone, the room's tile and My Room
-  are not shown,** and Rux's Server fills the page as the library to browse.
-- **The room, the TV, the drawers and the drag are Emu's own,** under
+  are not shown,** and the store fills the page as the library to browse,
+  with no Download buttons.
+- **The room, the TV, the store's cards and the drag are Emu's own,** under
   `emu-`, every colour a `--rux-*` token; motion follows Carbon's, and the
   head shake, which Carbon has no answer for, says so beside it.
 - **The earlier prototypes show a furnished room and are superseded:**
   claude.ai/artifact/929Ubm6MhbfpgRuFbaTphS, a room seen from above with a
   stand of cubbies, and claude.ai/artifact/FfeSnK1ff9Bg2x3Ap73CTv, seen side
-  on. Neither shows the room's tile or the drawers.
+  on. Neither shows the room's tile, the store or My Room.
 
 ## Questions
 
-None open.
+- Does a downloaded console go straight into the room, or into My
+  consoles? Proposed: into the room while fewer than three are out.
+- Does My Room show before anything is downloaded? Proposed: always, with
+  one faint line, so the room never jumps when the first download lands.
+- Can My Room fold down to its head to give the room more space? Proposed:
+  yes, by a chevron in its head, remembered in the browser.
+- Besides saves and each controller's controls, what else does the account
+  keep that My saves should show, such as favourites or time played?
 
 ## Tasks
+
+- [ ] Build the store: the head's primary button, the large modal, Consoles
+      and Games tabs, the Console and Sort selects, and Download on each card.
+- [ ] Move My Room into the footer panel with My consoles, My games and My
+      saves, and drop the head's toggles, ⋮ menu and both drawers.
+- [ ] Add Tidy up and Put everything away to the TV's menu.
 
 - [ ] Give Rux Emu Helper a call that says whether the home server answers,
       and show it on the strip beside the collection.

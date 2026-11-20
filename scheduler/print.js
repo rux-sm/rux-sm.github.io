@@ -1016,7 +1016,7 @@
   function detailedTotals(fig) {
     const t = el('table', 'scheduler-driver-itinerary__table scheduler-driver-itinerary__totals');
     t.appendChild(el('caption', 'rux--visually-hidden', 'Miles and hours'));
-    const heads = [...(fig.days ? [''] : []), 'Miles', 'Drive', 'On duty', 'Less rest'];
+    const heads = ['', 'Miles', 'Drive', 'On duty', 'Less rest'];
     const head = el('thead');
     const hr = el('tr');
     for (const label of heads) {
@@ -1026,12 +1026,9 @@
     }
     head.appendChild(hr);
     const body = el('tbody');
-    const rows = fig.days ? [['Total', ...fig.total]] : [[...fig.total]];
-    rows.forEach(cells => {
-      const tr = el('tr');
-      for (const c of cells) tr.appendChild(el('td', null, c));
-      body.appendChild(tr);
-    });
+    const tr = el('tr');
+    for (const c of ['Total', ...fig.total]) tr.appendChild(el('td', null, c));
+    body.appendChild(tr);
     t.append(head, body);
     return t;
   }
@@ -1265,20 +1262,22 @@
      them together: the quote's head, with the sheet's name over the trip's
      estimate number, where the group is going and the leg's days, so a sheet
      out of the binder alone still names its quote; and the quote's two
-     boxes, the client and who to call on the day. The days are the quote's
-     words, and a one-day leg's carries its weekday, which a longer leg's day
-     headings carry instead. A bus a partner covers leads with the partner,
-     in a box across both. */
+     boxes, the client under its bill-to as the quote names it and who to
+     call on the day. The days are the quote line's own words: the whole
+     trip's where this leg is the trip, back past midnight and all, and the
+     leg's on a trip of more than one. A bus a partner covers leads with the
+     partner, in a box across both. */
   function detailedHead(subject) {
     const { trip, leg } = subject;
     const start = legStart(trip, leg);
     const end = legEnd(trip, leg);
+    const whole = trip.trip_type !== 'dropoff_pickup' && legsOf(trip).length < 2;
     return quoteHead('ITINERARY', {
       lines: QUOTE_LETTERHEAD,
       refs: [
         ['Estimate #', trip.trip_ref || ''],
         ['Destination', trip.destination || ''],
-        ['Trip date', !start ? '' : end && end !== start ? window.SchedulerQuoteText.dates(start, end) : dateWords(start)],
+        ['Trip date', whole ? SAVED().dates(trip) : start ? window.SchedulerQuoteText.dates(start, end || start) : ''],
       ],
     });
   }
@@ -1293,7 +1292,7 @@
       partner.classList.add('scheduler-driver-itinerary__partner');
       parties.appendChild(partner);
     }
-    parties.appendChild(quoteBox('Client', [trip.customer || '']));
+    parties.appendChild(quoteBox('Client', billToLines(trip)));
     parties.appendChild(quoteBox('Contact', [contact.name, contact.phone,
       backup ? `Backup: ${[backup.name, backup.phone].filter(Boolean).join(' · ')}` : '']));
     return parties;
@@ -1884,13 +1883,13 @@
      and the quote's lines to sign and date. */
   function agreementSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote');
-    // The dates in the quote's own words, so the two sheets say them alike.
+    // The days as the quote's line says them, so the two sheets say them alike.
     card.appendChild(quoteHead('TERMS AND CONDITIONS', {
       lines: QUOTE_LETTERHEAD,
       refs: [
         ['Estimate #', blank ? '' : trip.trip_ref || ''],
         ['Destination', blank ? '' : trip.destination || ''],
-        ['Trip date', blank ? '' : window.SchedulerQuoteText.dates(trip.start_date, lastDay(trip))],
+        ['Trip date', blank ? '' : SAVED().dates(trip)],
       ],
     }));
 
@@ -2768,11 +2767,13 @@
       // The Detailed layout's price: the Billing tab's lines as saved, and
       // the estimated miles a typed price's calculator figure falls back on
       // where the route has none. The trip's files say whether the customer
-      // sent the leg an itinerary.
+      // sent the leg an itinerary, and its customer is the Detailed layout's
+      // bill-to, as the quote's.
       columns: [
         'quoted_price', 'est_miles',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
         'trip_documents(label,leg,leg_id,created_at)',
+        'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
       ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is

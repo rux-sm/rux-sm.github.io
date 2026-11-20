@@ -74,6 +74,12 @@
     });
   }
 
+  // The whole trip's days, in the words its description's second line says them.
+  function dates(trip) {
+    const t = times(trip);
+    return TEXT.days({ from: trip.start_date, to: lastDay(trip), leave: t.leave, back: t.back });
+  }
+
   /* ONE LEG'S DESCRIPTION, for a drop-off and pickup trip, which is quoted
      as two rentals. Each names its own buses, seats, days and the time the
      group leaves on that leg, and neither says when it arrives: to the
@@ -162,5 +168,5 @@
     return [parts.slice(0, city).join(', '), parts.slice(city).join(', ')];
   }
 
-  window.SchedulerSavedQuote = { lines, description, legDescription, lastDay, billTo };
+  window.SchedulerSavedQuote = { lines, description, legDescription, dates, lastDay, billTo };
 })();

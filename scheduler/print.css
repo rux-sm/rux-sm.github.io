@@ -341,10 +341,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   flex-direction: column;
 }
 
-/* A form that flows stands a pixel inside its margin on each side, as the
-   paper's rule below sets it, so the preview wraps where the print does. */
+/* A form that flows stands a pixel inside its margin on each side and at
+   its head, as the paper's rule below sets it, so the preview wraps and
+   folds where the print does. */
 .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
   padding-inline: calc(var(--scheduler-paper-margin, 0px) + 1px);
+  padding-block-start: calc(var(--scheduler-paper-margin, 0px) + 1px);
 }
 
 /* A FORM IS ITS PAPER ON SCREEN TOO, and shrinks whole rather than reflowing.
@@ -456,9 +458,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
      AND IT STANDS A PIXEL INSIDE THAT WIDTH. Chrome clips a page at its
      margin, and a border drawn exactly on the trailing one printed a sixth of
      its width; a pixel in, it prints whole. The screen's sheet is inset the
-     same pixel below, so both wrap alike. */
+     same pixel below, so both wrap alike.
+
+     AND A PIXEL UNDER ITS OWN TOP. A capital's round top rises a hair above
+     the line a title is trimmed to, and on a sheet that starts a page that
+     hair printed at the foot of the page before, as a row of arcs under the
+     quote's lines to sign. A pixel of the sheet's own above its first line
+     keeps the ink on its page. */
   .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
-    padding: 0 1px;
+    padding: 1px 1px 0;
     inline-size: auto;
   }
 
@@ -1289,10 +1297,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    apart; and its totals stand in the quote's box under the price. The
    quote's rules name this layout where they set the type and the grey. */
 
-/* The boxes hold a name over a phone, two lines where the quote's hold
-   three, and a partner's, across both, holds one. */
-.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-customer-quote__value { min-block-size: 32pt; }
-
+/* The two boxes are the quote's depth, so the stops start down the sheet
+   where the quote's items do; a partner's, across both, holds one line. */
 .scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__partner { grid-column: 1 / -1; }
 .scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__partner .scheduler-customer-quote__value { min-block-size: 16pt; }
 

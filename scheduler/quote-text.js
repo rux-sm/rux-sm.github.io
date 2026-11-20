@@ -91,6 +91,16 @@
     return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`;
   }
 
+  /* THE DAYS THE BLOCK NAMES, its second line, which the agreement and the
+     office's itinerary print under their names too, so every sheet of a
+     quote says the trip's days in the same words: a whole trip's run to the
+     day it is back, the next where it is back past midnight, and a leg's
+     are its own. */
+  function days(trip) {
+    const from = trip.from || null;
+    return from ? dates(from, trip.leg ? trip.to || from : backOn(trip)) : '';
+  }
+
   /* The block itself, a line each: what it is, "52-seat round trip"; the
      days, "Nov 16–17, 2026", which a customer's office matches an invoice
      by; the places, "Mission, TX to San Antonio, TX"; and the times, "6:00 AM
@@ -108,14 +118,13 @@
      AM", because to the customer each leg is a departure. */
   function description(trip) {
     const leg = !trip.leg ? null : trip.leg === 'return' ? 'return' : 'outbound';
-    const from = trip.from || null;
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
     const [start, end] = leg === 'return' ? [drop, pickup] : [pickup, drop];
     const kind = (leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip';
     return [
       `${vehicle(trip.pax56)} ${kind}`,
-      from ? dates(from, leg ? trip.to || from : backOn(trip)) : null,
+      days(trip) || null,
       start && end ? `${start} to ${end}` : start ? `from ${start}` : end ? `to ${end}` : null,
       leg ? `Departs ${clock(trip.leave) || 'TBD'}`
         : !trip.leave && !trip.back ? 'Times TBD'
@@ -123,5 +132,5 @@
     ].filter(Boolean).join('\n');
   }
 
-  window.SchedulerQuoteText = { place, dates, clock, vehicle, description };
+  window.SchedulerQuoteText = { place, dates, days, clock, vehicle, description };
 })();

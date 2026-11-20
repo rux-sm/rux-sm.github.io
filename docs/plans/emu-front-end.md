@@ -21,7 +21,8 @@ front page is `docs/plans/emu-room.md`, and the rest of Emu
   open a Mac app itself; the helper is `docs/plans/emu-helper.md`.
 - **Box art comes from libretro's thumbnails by each game's list name,**
   which is the name the drive's files carry; it is loaded from
-  thumbnails.libretro.com and cached by the browser, and nothing is stored.
+  libretro's thumbnail repositories on GitHub and cached by the browser, and
+  nothing is stored.
   A game the lists do not name shows its title on a plain tile.
 - **Play shows only where it can work:** where the helper answers and has
   the collection. Elsewhere, such as the phone, the page is the collection to

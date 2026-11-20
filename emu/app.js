@@ -25,7 +25,8 @@
     switch: ['xci', 'nsp'], xbox: ['iso'],
   };
 
-  // Box art, from libretro's thumbnails, which name each picture after the
+  // Box art, from libretro's thumbnails on GitHub, one repository a system,
+  // named as the system with _ for each space. Each picture is named after the
   // game's name on No-Intro's or Redump's list with &*/:`<>?\\| as _. A
   // game's candidates are its list names, then its title, then its title
   // less the disc, so a multi-disc game finds one cover. Switch has none.
@@ -40,7 +41,7 @@
     const set = ART[game.system];
     if (!set) return [];
     const names = [...(game.match?.names ?? []), game.title, game.title.replace(/ \(Disc \d+\)/, '')];
-    return [...new Set(names)].map(n => `https://thumbnails.libretro.com/${encodeURIComponent(set)}/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`);
+    return [...new Set(names)].map(n => `https://raw.githubusercontent.com/libretro-thumbnails/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`);
   };
 
   // Each system's emulator, why, how it names a save and what it needs, from

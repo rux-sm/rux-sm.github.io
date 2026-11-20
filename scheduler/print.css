@@ -1471,8 +1471,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* The logo hangs from the sheet's top edge, where the name beside it starts,
-   in a box as deep as the head's rhythm, so the letterhead under it stands
-   on the references' lines. */
+   in a box 48pt deep with its margin, three of the head's 16pt lines, and
+   the letterhead under it stands on the references' lines. */
 .scheduler-customer-quote__logo {
   display: block;
   inline-size: 192pt;
@@ -1513,14 +1513,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    both sheets. They are 200pt wide on both, on the trailing edge of a name that may be
    wider, and a destination longer than its line wraps, every word printed.
    A label stands on its value's baseline, in a line of its own size, so the
-   value's 16pt line is the row's. */
+   value's 16pt line is the row's.
+
+   THE THREE REFERENCES STAND BESIDE THE THREE LINES OF THE LETTERHEAD, row
+   for row: the name is 28pt and the logo's box 48, so the references start
+   20pt under the name, where the address starts under the logo, and both
+   columns end on one line. */
 .scheduler-customer-quote__refs {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
   column-gap: 8pt;
   inline-size: 200pt;
-  margin: 4pt 0 0 auto;
+  margin: 20pt 0 0 auto;
   font-size: 11pt;
   line-height: 16pt;
 }

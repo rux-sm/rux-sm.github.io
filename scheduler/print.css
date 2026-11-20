@@ -1001,6 +1001,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-primary);
 }
 
+/* The trip's number after the form's name, quieter than it. */
+.scheduler-driver-itinerary__ref {
+  white-space: nowrap;
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: 1.25rem;
+  color: var(--rux-text-secondary);
+}
+
 .scheduler-driver-itinerary__dates {
   white-space: nowrap;
   font-size: var(--rux-body-compact-01-font-size);
@@ -1853,19 +1861,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin: 0 0 4pt;
 }
 
-.scheduler-customer-quote__policy-heading {
-  font-weight: 700;
-  text-decoration: underline;
-}
+/* A policy's name is bold and nothing more, as every heading on the set
+   is: no line under it. */
+.scheduler-customer-quote__policy-heading { font-weight: 700; }
 
 /* The one paragraph the Word form prints in red, here in italic so the
    sheet stays monochrome and the paragraph keeps its lines: the hours a
    driver may work, which a group that keeps calling is costing them. */
 .scheduler-customer-quote__policy--warn { font-style: italic; }
-
-.scheduler-customer-quote__policy--warn .scheduler-customer-quote__policy-heading {
-  text-decoration: none;
-}
 
 @media screen {
   /* A BOX SAYS WHERE THE PEN GOES BY BEING EMPTY, not by a second rule inside

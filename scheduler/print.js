@@ -197,13 +197,16 @@
   /* The contacts the envelope carries are the leg's day-of contacts: the
      first as Contact and the second as Backup, the room a 6 by 9 envelope
      has. The booking contact is the office's and is used only where the leg
-     has no day-of contact, because this sheet travels with the driver. */
+     has no day-of contact, because this sheet travels with the driver. The
+     booking contact carries its email, which a day-of contact has none of:
+     the trip keeps a name and a phone for someone called on the day. */
   function contactsOf(trip, leg) {
     const day = legContacts(trip, leg).slice(0, 2)
       .map(c => ({ name: c.name, phone: showPhone(c.phone) }));
     return day.length ? day : [{
       name: trip.booking_contact_name || trip.contacts?.name || '',
       phone: showPhone(trip.booking_contact_phone || trip.contacts?.phone),
+      email: trip.booking_contact_email || '',
     }];
   }
   const contactOf = (trip, leg) => contactsOf(trip, leg)[0];
@@ -1173,6 +1176,8 @@
     mark.appendChild(logo);
     brand.appendChild(mark);
     brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
+    // The trip's number, under the label the quote and the office's sheet give it.
+    if (trip.trip_ref) brand.appendChild(el('span', 'scheduler-driver-itinerary__ref', `${QUOTE_REF} ${trip.trip_ref}`));
     head.appendChild(brand);
     head.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
 
@@ -1263,7 +1268,7 @@
       parties.appendChild(partner);
     }
     parties.appendChild(quoteBox('Client', billToLines(trip)));
-    parties.appendChild(quoteBox('Contact', [contact.name, contact.phone,
+    parties.appendChild(quoteBox('Contact', [contact.name, contact.phone, contact.email,
       backup ? `Backup: ${[backup.name, backup.phone].filter(Boolean).join(' · ')}` : '']));
     return parties;
   }
@@ -2751,7 +2756,7 @@
       // sent the leg an itinerary, and its customer is the Detailed layout's
       // bill-to, as the quote's.
       columns: [
-        'quoted_price', 'est_miles',
+        'quoted_price', 'est_miles', 'booking_contact_email',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
         'trip_documents(label,leg,leg_id,created_at)',
         'customers:customer_id(name,bill_to,usual:usual_location_id(address))',

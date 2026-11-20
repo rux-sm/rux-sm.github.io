@@ -1684,39 +1684,40 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin-block-start: 12pt;
 }
 
-/* THE TOTALS ARE ONE ROW, boxed in the table's border: each a cell as wide
-   as the head's column, side by side, a rule between them, so a deposit
-   beside its total costs the sheet one row where two stacked cost two. */
+/* THE TOTALS ARE ONE ROW on the trailing edge: the total in a box, and what
+   stands beside it, a deposit or a trip's total, plain text on its
+   baseline before it, so one box is the price and a deposit beside its
+   total costs the sheet one row where two stacked cost two. */
 .scheduler-customer-quote__sums {
   display: flex;
   margin-inline-start: auto;
-  border: 1px solid var(--rux-border-strong-01);
 }
 
 /* A label and its figure stand on one baseline, whatever their sizes, in
-   the middle of the row's depth. */
+   the middle of the row's depth, a gap between them and before the box. */
 .scheduler-customer-quote__sum {
-  box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto auto;
   align-items: baseline;
   align-content: center;
-  column-gap: 8pt;
-  inline-size: 200pt;
+  column-gap: 16pt;
   margin: 0;
-  padding: 0 8pt;
-  min-block-size: 24pt;
+  padding-inline-end: 16pt;
   line-height: 16pt;
 }
 
-.scheduler-customer-quote__sum + .scheduler-customer-quote__sum {
-  border-inline-start: 1px solid var(--rux-border-strong-01);
-}
-
-/* THE TOTAL UNDER THE ITEMS, the last cell, under the amounts it adds up,
-   on the grey the labels stand on, at their depth and in their ink, bold,
-   so the price is what the eye finds without a colour. */
+/* THE TOTAL UNDER THE ITEMS, the last of the row, under the amounts it adds
+   up: boxed in the table's border, as wide as the head's column, on the
+   grey the labels stand on, at their depth and in their ink, bold, so the
+   price is what the eye finds without a colour. */
 .scheduler-customer-quote__sum--total {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 8pt;
+  inline-size: 200pt;
+  min-block-size: calc(24pt + 2px);
+  padding: 0 8pt;
+  border: 1px solid var(--rux-border-strong-01);
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   font-weight: 600;

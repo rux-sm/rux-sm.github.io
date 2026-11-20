@@ -16,7 +16,7 @@
   "updated": "2026-11-02",
   "status": "approved",
   "summary": "give one item more demand than its stock covers, run planning on it, and read the orders LN suggests.",
-  "order": 3,
+  "order": 12,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",
@@ -907,20 +907,16 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Change the order-quantity rules in "
-                },
-                {
-                  "t": "session",
-                  "code": "tcibd2100m000",
-                  "name": "Items - Ordering"
+                  "t": "link",
+                  "v": "Change an item's order quantity",
+                  "href": "change-an-items-order-quantity.md"
                 },
                 {
                   "t": "text",
                   "v": ", then run planning again"
                 }
               ],
-              "text": "Change the order-quantity rules in Items - Ordering (tcibd2100m000), then run planning again"
+              "text": "Change an item's order quantity, then run planning again"
             },
             {
               "tokens": [
@@ -930,11 +926,11 @@
                 },
                 {
                   "t": "link",
-                  "v": "Run planning",
-                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                  "v": "Set the item's order quantities",
+                  "href": "set-the-items-order-quantities.md"
                 }
               ],
-              "text": "step 1 of Run planning"
+              "text": "step 1 of Set the item's order quantities"
             }
           ]
         }

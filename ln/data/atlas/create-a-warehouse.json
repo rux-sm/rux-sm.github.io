@@ -12,7 +12,7 @@
   "updated": "2026-11-02",
   "status": "draft",
   "summary": "make a warehouse at your site that keeps its stock on locations, ready to receive, store and ship.",
-  "order": 4,
+  "order": 3,
   "sources": [
     "whwmd2500m000",
     "whwmd3500m000",

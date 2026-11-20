@@ -1,0 +1,379 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "process",
+  "id": "change-an-items-order-quantity",
+  "title": "Change an item's order quantity",
+  "module": "Common · Enterprise Planning",
+  "modules": [
+    "Common",
+    "Enterprise Planning"
+  ],
+  "codes": [],
+  "updated": "2026-11-19",
+  "status": "draft",
+  "summary": "change one ordering rule on an item, so the next planning run sizes its planned orders by it.",
+  "order": 11,
+  "sources": [
+    "tcibd2100m000",
+    "tcibd2150m000",
+    "tcibd2600m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need an item that planning already makes a planned order for. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " gets you there."
+        }
+      ],
+      "text": "You need an item that planning already makes a planned order for. Run order planning gets you there."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "set-the-items-order-quantities",
+      "n": 0,
+      "title": "Set the item's order quantities",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it."
+          }
+        ],
+        "text": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it."
+      },
+      "steps": 8,
+      "walked": "2026-11-19"
+    }
+  ],
+  "values": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              }
+            ],
+            "text": "BAM-ROD"
+          }
+        ],
+        "task": "set-the-items-order-quantities"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Increment"
+              }
+            ],
+            "text": "Order Increment"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "100"
+              },
+              {
+                "t": "text",
+                "v": ", from "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              }
+            ],
+            "text": "100, from 1"
+          }
+        ],
+        "task": "set-the-items-order-quantities"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " change one ordering rule on an item, so the next planning run sizes its planned orders by it."
+        }
+      ],
+      "text": "Objective: change one ordering rule on an item, so the next planning run sizes its planned orders by it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need an item that planning already makes a planned order for. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " gets you there."
+        }
+      ],
+      "text": "> Prerequisite > You need an item that planning already makes a planned order for. Run order planning gets you there."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide changes an item's ordering data."
+        },
+        {
+          "t": "text",
+          "v": " Write the old value down, and put it back when you have seen the result."
+        }
+      ],
+      "text": "> Warning > This guide changes an item's ordering data. Write the old value down, and put it back when you have seen the result."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Task",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Set the item's order quantities",
+                  "href": "set-the-items-order-quantities.md"
+                }
+              ],
+              "text": "Set the item's order quantities"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Items - Ordering; Item - Ordering"
+                }
+              ],
+              "text": "Items - Ordering; Item - Ordering"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it"
+                }
+              ],
+              "text": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it"
+            }
+          ]
+        }
+      ],
+      "under": "At a glance"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The planned order's quantity shows whether it worked."
+        },
+        {
+          "t": "text",
+          "v": " Read it in "
+        },
+        {
+          "t": "strong",
+          "v": "Item Order Plan"
+        },
+        {
+          "t": "text",
+          "v": " before you start and again after the next planning run. If it didn't move, the rule you changed is not the one planning used."
+        }
+      ],
+      "text": "The planned order's quantity shows whether it worked. Read it in Item Order Plan before you start and again after the next planning run. If it didn't move, the rule you changed is not the one planning used.",
+      "under": "At a glance"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "A different rule"
+                }
+              ],
+              "text": "A different rule"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " holds the method, the interval and the safety stock. Change one of those at step 7 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Set the item's order quantities",
+                  "href": "set-the-items-order-quantities.md"
+                },
+                {
+                  "t": "text",
+                  "v": " instead of a quantity"
+                }
+              ],
+              "text": "The General tab of Item - Ordering holds the method, the interval and the safety stock. Change one of those at step 7 of Set the item's order quantities instead of a quantity"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next walkthrough",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new value is saved"
+                }
+              ],
+              "text": "The new value is saved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", to plan the item again and read the new quantity"
+                }
+              ],
+              "text": "Run order planning, to plan the item again and read the new quantity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Run planning",
+                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                }
+              ],
+              "text": "step 1 of Run planning"
+            }
+          ]
+        }
+      ],
+      "under": "Downstream actions"
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 0
+}

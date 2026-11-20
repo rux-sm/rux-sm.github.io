@@ -1,0 +1,882 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-the-items-order-quantities",
+  "title": "Set the item's order quantities",
+  "process": {
+    "id": "change-an-items-order-quantity",
+    "title": "Change an item's order quantity",
+    "n": 0,
+    "of": 1
+  },
+  "previous": null,
+  "next": null,
+  "module": "Common · Enterprise Planning",
+  "modules": [
+    "Common",
+    "Enterprise Planning"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": "draft",
+  "updated": "2026-11-19",
+  "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Items - Ordering",
+  "session": "Items - Ordering",
+  "sessionCode": "tcibd2100m000",
+  "walked": "2026-11-19",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it."
+      }
+    ],
+    "text": "The item's ordering data holds the quantity rule you want, and the next planning run sizes its planned orders by it."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planning first works out how much is short. Then it shapes that number with the item's ordering rules: a minimum raises a small order, a maximum splits a large one, and an increment rounds it up to a multiple. The rules are kept for the item and again for each site, and the site uses the item's only while it is set to follow them."
+      }
+    ],
+    "text": "Planning first works out how much is short. Then it shapes that number with the item's ordering rules: a minimum raises a small order, a maximum splits a large one, and an increment rounds it up to a multiple. The rules are kept for the item and again for each site, and the site uses the item's only while it is set to follow them."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Items - Ordering"
+                }
+              ],
+              "text": "Open Items - Ordering"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A list of items, each with its "
+                },
+                {
+                  "t": "field",
+                  "v": "Method"
+                }
+              ],
+              "text": "A list of items, each with its Method"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Above the "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " column are three filter boxes. Type the item in the second and press Enter"
+                }
+              ],
+              "text": "Above the Item column are three filter boxes. Type the item in the second and press Enter"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Your item's row"
+                }
+              ],
+              "text": "Your item's row"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                },
+                {
+                  "t": "text",
+                  "v": " at the left of the row"
+                }
+              ],
+              "text": "Click Drill In at the left of the row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Item - Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the item, with the tabs "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Lot Sizes"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Details"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": " below them"
+                }
+              ],
+              "text": "Item - Ordering opens for the item, with the tabs General, Lot Sizes and Details, and Sites below them"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                },
+                {
+                  "t": "text",
+                  "v": ", read your site's row"
+                }
+              ],
+              "text": "Under Sites, read your site's row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Use Global Item Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected, so the site follows the item"
+                }
+              ],
+              "text": "Use Global Item Ordering is selected, so the site follows the item"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Lot Sizes"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Click the Lot Sizes tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Increment"
+                },
+                {
+                  "t": "text",
+                  "v": " under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Quantities"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "field",
+                  "v": "Minimum"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Maximum"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Fixed Order"
+                },
+                {
+                  "t": "text",
+                  "v": " below it — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "old value"
+                }
+              ],
+              "text": "Order Increment under Quantities, with Minimum, Maximum and Fixed Order below it — old value"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the one field you are changing"
+                }
+              ],
+              "text": "Click the one field you are changing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its whole value is selected"
+                }
+              ],
+              "text": "Its whole value is selected"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the new number and press Tab"
+                }
+              ],
+              "text": "Type the new number and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new number, shown with four decimals"
+                }
+              ],
+              "text": "The new number, shown with four decimals"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new number stays in the field"
+                }
+              ],
+              "text": "The new number stays in the field"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              }
+            ],
+            "text": "BAM-ROD"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Increment"
+              }
+            ],
+            "text": "Order Increment"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "100"
+              },
+              {
+                "t": "text",
+                "v": ", from "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              }
+            ],
+            "text": "100, from 1"
+          }
+        ]
+      }
+    ]
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Planning runs and the planned quantity is the same"
+              }
+            ],
+            "text": "Planning runs and the planned quantity is the same"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Read the site's row under "
+              },
+              {
+                "t": "chip",
+                "v": "Sites"
+              },
+              {
+                "t": "text",
+                "v": ", step 4. If "
+              },
+              {
+                "t": "field",
+                "v": "Use Global Item Ordering"
+              },
+              {
+                "t": "text",
+                "v": " is cleared, the site uses its own numbers and the item's are ignored"
+              }
+            ],
+            "text": "Read the site's row under Sites, step 4. If Use Global Item Ordering is cleared, the site uses its own numbers and the item's are ignored"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Planning still tops up to a safety stock you set to zero"
+              }
+            ],
+            "text": "Planning still tops up to a safety stock you set to zero"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The site's row holds a "
+              },
+              {
+                "t": "field",
+                "v": "Safety Stock"
+              },
+              {
+                "t": "text",
+                "v": " of its own. Read it under "
+              },
+              {
+                "t": "chip",
+                "v": "Sites"
+              }
+            ],
+            "text": "The site's row holds a Safety Stock of its own. Read it under Sites"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The number you typed joined the old one, such as 1001 for 100"
+              }
+            ],
+            "text": "The number you typed joined the old one, such as 1001 for 100"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The field already had the cursor, so the old value was not selected. Clear the field, type the number again and save"
+              }
+            ],
+            "text": "The field already had the cursor, so the old value was not selected. Clear the field, type the number again and save"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Saving gives "
+              },
+              {
+                "t": "literal",
+                "v": "The Inventory Inspection field has an invalid value in Item Data by Warehouse."
+              }
+            ],
+            "text": "Saving gives The Inventory Inspection field has an invalid value in Item Data by Warehouse."
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing is saved. The item's warehouse data disagrees with the warehouse's own settings, and LN keeps no change to the ordering data until that is put right"
+              }
+            ],
+            "text": "Nothing is saved. The item's warehouse data disagrees with the warehouse's own settings, and LN keeps no change to the ordering data until that is put right"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Only "
+              },
+              {
+                "t": "field",
+                "v": "Order Increment"
+              },
+              {
+                "t": "text",
+                "v": " shows on "
+              },
+              {
+                "t": "chip",
+                "v": "Lot Sizes"
+              }
+            ],
+            "text": "Only Order Increment shows on Lot Sizes"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The form is cut short by "
+              },
+              {
+                "t": "chip",
+                "v": "Sites"
+              },
+              {
+                "t": "text",
+                "v": " below it. Scroll the form down for the other quantities"
+              }
+            ],
+            "text": "The form is cut short by Sites below it. Scroll the form down for the other quantities"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The number you typed is gone after a few days"
+              }
+            ],
+            "text": "The number you typed is gone after a few days"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Lot Size Calculation Allowed"
+              },
+              {
+                "t": "text",
+                "v": " is selected on "
+              },
+              {
+                "t": "chip",
+                "v": "Lot Sizes"
+              },
+              {
+                "t": "text",
+                "v": ", so a batch run rewrites these fields"
+              }
+            ],
+            "text": "Lot Size Calculation Allowed is selected on Lot Sizes, so a batch run rewrites these fields"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Join nearby demands into one order"
+              }
+            ],
+            "text": "Join nearby demands into one order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On the "
+              },
+              {
+                "t": "chip",
+                "v": "General"
+              },
+              {
+                "t": "text",
+                "v": " tab, set "
+              },
+              {
+                "t": "field",
+                "v": "Interval"
+              },
+              {
+                "t": "text",
+                "v": " to a number of days. Every demand inside that window is planned as one order"
+              }
+            ],
+            "text": "On the General tab, set Interval to a number of days. Every demand inside that window is planned as one order"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Change how the order is sized"
+              }
+            ],
+            "text": "Change how the order is sized"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On the "
+              },
+              {
+                "t": "chip",
+                "v": "General"
+              },
+              {
+                "t": "text",
+                "v": " tab, "
+              },
+              {
+                "t": "field",
+                "v": "Method"
+              },
+              {
+                "t": "text",
+                "v": " is "
+              },
+              {
+                "t": "literal",
+                "v": "Lot for Lot"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "literal",
+                "v": "Fixed Order Quantity"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "literal",
+                "v": "Economic Order Quantity"
+              },
+              {
+                "t": "text",
+                "v": " or "
+              },
+              {
+                "t": "literal",
+                "v": "Replenish to Maximum Inventory"
+              }
+            ],
+            "text": "On the General tab, Method is Lot for Lot, Fixed Order Quantity, Economic Order Quantity or Replenish to Maximum Inventory"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Keep spare stock"
+              }
+            ],
+            "text": "Keep spare stock"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On the "
+              },
+              {
+                "t": "chip",
+                "v": "General"
+              },
+              {
+                "t": "text",
+                "v": " tab, "
+              },
+              {
+                "t": "field",
+                "v": "Safety Stock"
+              },
+              {
+                "t": "text",
+                "v": " is the amount planning keeps on hand, and it plans an order to reach it"
+              }
+            ],
+            "text": "On the General tab, Safety Stock is the amount planning keeps on hand, and it plans an order to reach it"
+          }
+        ]
+      }
+    ]
+  }
+}

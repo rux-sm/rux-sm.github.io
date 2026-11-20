@@ -17,7 +17,7 @@
   "updated": "2026-11-02",
   "status": "draft",
   "summary": "make a supplier you can buy from, or a customer you can sell to.",
-  "order": 5,
+  "order": 4,
   "sources": [
     "tccom4201m000",
     "tccom4101m000",

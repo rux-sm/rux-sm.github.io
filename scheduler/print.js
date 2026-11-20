@@ -838,6 +838,15 @@
 
   const LEGS = ['outbound', 'return'];
   const legName = (trip, leg) => (isReturn(trip, leg) ? 'Return' : 'Outbound');
+  /* The trip sheet's name in its head: a split of two legs prints both, so
+     each says whose it is, the Drop-off's or the Pickup's, as the Files tab
+     names the two; any other leg's sheet is a Trip sheet, told apart by its
+     date. */
+  const sheetName = (trip, leg) => {
+    const row = legRow(trip, leg);
+    if (!row || !SHAPE.isSplit(trip) || SHAPE.legsOf(trip).length !== 2) return 'Trip sheet';
+    return SHAPE.isPickup(trip, row.id) ? 'Pickup trip sheet' : 'Drop-off trip sheet';
+  };
 
   /* A leg by its days, "Mon, Nov 2" or "Fri, Nov 20 – Sun, Nov 22", which is
      how the list of copies tells legs apart: a trip of many legs has many
@@ -1175,7 +1184,7 @@
     logo.alt = 'Escamilla Tour Buses';
     mark.appendChild(logo);
     brand.appendChild(mark);
-    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
+    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', sheetName(trip, leg)));
     // The trip's number, under the label the quote and the office's sheet give it.
     if (trip.trip_ref) brand.appendChild(el('span', 'scheduler-driver-itinerary__ref', `${QUOTE_REF} ${trip.trip_ref}`));
     head.appendChild(brand);
@@ -1247,7 +1256,7 @@
     const start = legStart(trip, leg);
     const end = legEnd(trip, leg);
     const whole = trip.trip_type !== 'dropoff_pickup' && legsOf(trip).length < 2;
-    return quoteHead('ITINERARY', {
+    return quoteHead(sheetName(trip, leg).toUpperCase(), {
       lines: QUOTE_LETTERHEAD,
       refs: [
         [QUOTE_REF, trip.trip_ref || ''],
@@ -2718,13 +2727,14 @@
   const FORMS = [
     {
       id: 'driver-itinerary',
-      name: 'Driver route',
+      name: 'Trip sheet',
       group: 'Drivers',
-      /* ROUTE, NOT ITINERARY, in the lists: an itinerary is the file the
-         customer sends, on the Files tab, and this is the route the office
-         draws from the Route tab. It stands first of the drivers' forms
-         because the office prints it right after the quote. */
-      short: 'Route',
+      /* A TRIP SHEET, NOT AN ITINERARY: an itinerary is the file the
+         customer sends, on the Files tab, and this is the sheet the office
+         draws from the Route tab's stops, miles and hours. It stands first of
+         the drivers' forms because the office prints it right after the
+         quote. */
+      short: 'Trip sheet',
       icon: '#m-route',
       /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
          because it is personal, one name and one seat; the plan for the day is

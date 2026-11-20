@@ -11,7 +11,7 @@
   ],
   "codes": [],
   "updated": "2026-11-19",
-  "status": "draft",
+  "status": "approved",
   "summary": "change one ordering rule on an item, so the next planning run sizes its planned orders by it.",
   "order": 11,
   "sources": [

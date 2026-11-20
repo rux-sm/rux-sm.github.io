@@ -1492,12 +1492,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__named { min-inline-size: 200pt; }
 
 /* The tracking leaves its space after the last letter too, so the name is
-   drawn back by it to end on the references' edge. Its capitals start on
-   the sheet's top edge, as the logo does, in the 28pt the references stand
-   under. */
+   drawn back by it to end on the references' edge. Its capitals start
+   where the logo's blue letters do, 3pt under the sheet's top edge: the
+   logo's box hangs from that edge, but its drawing keeps the road's arrow
+   over the letters, so they start that far down. The 3pt are inside the
+   28pt the references stand under. */
 .scheduler-customer-quote__title {
+  box-sizing: border-box;
   margin: 0 -0.08em 0 0;
   block-size: 28pt;
+  padding-block-start: 3pt;
   text-align: end;
   white-space: nowrap;
   font-size: 20pt;

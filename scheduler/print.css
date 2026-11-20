@@ -1594,10 +1594,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__value > span { display: block; }
 
-/* THE ITEMS ARE BANDED, NOT RULED: the column names on the grey band, the
-   lines under it with no rule between them, so a deduction reads as part of
-   the rental above it, framed in the parties' border so it reads as the
-   third box on the sheet. */
+/* THE ITEMS ARE BANDED, NOT RULED ACROSS: the column names on the grey
+   band, the lines under it with no rule between them, so a deduction reads
+   as part of the rental above it, framed in the parties' border so it reads
+   as the third box on the sheet. The columns are ruled down, in that
+   border, from the band to the foot through the room under the lines, as
+   the office's QuickBooks invoice rules them, so the quote and the invoice
+   it becomes read as one table. */
 .scheduler-customer-quote__table {
   inline-size: 100%;
   border-collapse: collapse;
@@ -1605,6 +1608,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin-block-start: 12pt;
   border: 1px solid var(--rux-border-strong-01);
 }
+
+.scheduler-customer-quote__table th + th,
+.scheduler-customer-quote__table td + td { border-inline-start: 1px solid var(--rux-border-strong-01); }
 
 .scheduler-customer-quote__table th,
 .scheduler-customer-quote__table td {

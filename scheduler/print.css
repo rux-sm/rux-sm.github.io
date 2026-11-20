@@ -1680,10 +1680,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__sum:last-child { border-block-end: 0; }
 
-/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on and in their
-   ink, bold, so the price is what the eye finds without a colour. */
+/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on, at their
+   depth and in their ink, bold, so the price is what the eye finds without
+   a colour. */
 .scheduler-customer-quote__sum--total {
-  min-block-size: 32pt;
   border-block-end: 0;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);

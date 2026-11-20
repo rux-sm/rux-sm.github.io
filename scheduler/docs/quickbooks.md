@@ -56,7 +56,7 @@ Export under Invoices to import, then steps 6 to 10. It needs no report: type
 QuickBooks' next number from Customers, Create Invoices in Next invoice
 number, which this browser keeps and moves on at each Mark imported, and make
 sure QuickBooks has no invoice for the trip already. The trip's bar menu on
-the board, Export invoice…, opens the page at that row.
+the board, Invoice with Export beside it, opens the page at that row.
 
 ## The report
 

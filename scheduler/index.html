@@ -1216,75 +1216,68 @@
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
-    <!-- Five groups, parted by rules, the most used first: the everyday
-         four (the trip, an update, its email thread and its itinerary),
-         the people on it, what the office marks on it, what opens
-         elsewhere, and taking it away. Every item carries the icon its
-         shortcut carries, so the two read alike. data.js hides what cannot
-         act on the bar, and a rule left with nothing between it and the
-         next. -->
+    <!-- Five groups, parted by rules, the most used first: the trip's own
+         six (the trip, its quote, its invoice, its route, its itinerary and
+         its email thread), the people on it, what the office marks on it,
+         what opens elsewhere, and taking it away. Every item carries the
+         icon its shortcut carries, so the two read alike. data.js hides what
+         cannot act on the bar, and a rule left with nothing between it and
+         the next. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-open">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></div>
       <div class="rux--menu-item__label">Open trip</div>
     </li>
+    <!-- The trip's Customer quote form, straight from its Forms list, whose
+         Back returns to that list. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-quote">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg></div>
+      <div class="rux--menu-item__label">Quote</div>
+    </li>
+    <!-- The trip's invoice, with the check a confirmed driver wears once the
+         Billing tab or the QuickBooks page records one, and its number beside
+         the word: it opens the newest Invoice file, or the trip on Billing
+         without one. On a confirmed trip with none, Export beside the word
+         opens the QuickBooks page at the trip's row, whose Export writes it.
+         data.js swaps the check for the upload icon on Export, and sets the
+         note and whether the item shows. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-invoice">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="rux--icon-indicator--succeeded scheduler-status-icon"><use href="#i-checkmark--filled"/></svg></div>
+      <div class="rux--menu-item__label">Invoice</div>
+      <div class="rux--menu-item__shortcut scheduler-bar-menu__note" id="scheduler-bar-menu-invoice-note" hidden></div>
+    </li>
+    <!-- The leg's stops and times in its card, as the Route shortcut shows them. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-route">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
+      <div class="rux--menu-item__label">Route</div>
+    </li>
+    <!-- Opens the leg's itinerary, or on a trip without one, with Upload
+         beside the word, files a PDF as its itinerary. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-itinerary">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-attachment"/></svg></div>
+      <div class="rux--menu-item__label">Itinerary</div>
+      <div class="rux--menu-item__shortcut scheduler-bar-menu__note" id="scheduler-bar-menu-itinerary-note" hidden></div>
+    </li>
+    <!-- Opens the trip's email thread in Missive, in the window the editor's
+         Email thread link uses, or on a trip without one, with Add beside the
+         word, opens the trip on Details with the Email thread box asking. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-thread">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
+      <div class="rux--menu-item__label">Email</div>
+      <div class="rux--menu-item__shortcut scheduler-bar-menu__note" id="scheduler-bar-menu-thread-note" hidden></div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
     <!-- Opens the trip's Updates window, to read them or add one. -->
     <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-update">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add_comment"/></svg></div>
       <div class="rux--menu-item__label">Add update</div>
     </li>
-    <!-- Shown by data.js on a trip with an email thread linked: it opens the
-         thread in Missive, in the window the editor's Email thread link uses. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-thread" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
-      <div class="rux--menu-item__label">Open email thread</div>
-    </li>
-    <!-- Shown by data.js in place of Open email thread, on a trip without one:
-         it opens the trip on Details with the Email thread box asking. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-thread-add" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
-      <div class="rux--menu-item__label">Add email thread</div>
-    </li>
-    <!-- Hidden by data.js on a trip without an itinerary. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-itinerary">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-attachment"/></svg></div>
-      <div class="rux--menu-item__label">Open itinerary</div>
-    </li>
-    <!-- Shown by data.js in place of Open itinerary, on a trip without one:
-         it opens the file dialog and files the PDF as the trip's itinerary. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-upload" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
-      <div class="rux--menu-item__label">Upload itinerary</div>
-    </li>
-    <!-- The trip's Customer quote form, straight from its Forms list, whose
-         Back returns to that list. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-quote">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg></div>
-      <div class="rux--menu-item__label">Customer quote</div>
-    </li>
-    <!-- The trip's invoice, shown by data.js once the Billing tab or the
-         QuickBooks page records one, with the check a confirmed driver
-         wears: it opens the trip on Billing. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-invoiced" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="rux--icon-indicator--succeeded scheduler-status-icon"><use href="#i-checkmark--filled"/></svg></div>
-      <div class="rux--menu-item__label">Invoiced in QuickBooks</div>
-    </li>
-    <!-- Shown by data.js in place of the invoice, on a confirmed trip with
-         none: it opens the QuickBooks page at the trip's row, whose Export
-         writes its invoice. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-invoice" hidden>
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
-      <div class="rux--menu-item__label">Export invoice…</div>
-    </li>
-    <li class="rux--menu-item-divider" role="separator"></li>
     <!-- Opens the Contacts window: everyone to call or text about this bar.
          The bell shows while a driver on the bus is to be told of a change. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-contacts">

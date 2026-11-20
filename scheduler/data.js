@@ -14615,7 +14615,13 @@
     }
 
     if (item.id === 'scheduler-bar-menu-itinerary') {
-      openItinerary(bar);
+      if (bar.dataset.itineraryId) openItinerary(bar);
+      else pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file, null, barLeg(bar)));
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-route') {
+      askCard(bar, true, 'route:');
       return;
     }
 
@@ -14630,20 +14636,16 @@
     }
 
     // One named window, as the editor's Email thread link opens it, so each
-    // thread reuses the tab.
+    // thread reuses the tab; a trip without one asks for it on Details.
     if (item.id === 'scheduler-bar-menu-thread') {
       const url = barThreadUrl(bar);
       if (url) window.open(url, 'missive', 'noopener');
+      else openOnThread(bar);
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-thread-add') {
-      openOnThread(bar);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-invoiced') {
-      openOnTab(bar, 'billing');
+    if (item.id === 'scheduler-bar-menu-invoice') {
+      openInvoice(bar);
       return;
     }
 
@@ -14681,12 +14683,6 @@
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-upload') {
-      const tripId = bar.dataset.tripId;
-      pickFile(file => uploadFrom(tripId, 'Itinerary', file, null, barLeg(bar)));
-      return;
-    }
-
     if (item.id === 'scheduler-bar-menu-calculator') {
       openCalculator(bar);
       return;
@@ -14718,14 +14714,6 @@
 
     if (item.id === 'scheduler-bar-menu-quickbooks') {
       markEstimate(bar);
-      return;
-    }
-
-    // The QuickBooks page at the trip's row, once unsaved work is settled.
-    if (item.id === 'scheduler-bar-menu-invoice') {
-      const trip = panelIndex.trips.get(bar.dataset.tripId);
-      const href = `quickbooks.html?trip=${encodeURIComponent(bar.dataset.tripId)}&date=${encodeURIComponent(trip?.start_date || '')}`;
-      whenSafe(() => { window.location.href = href; });
       return;
     }
 
@@ -14805,12 +14793,10 @@
     }
     // Only a bus out on its trip is on the map.
     document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId || !bar.dataset.road;
-    document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
-    document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
+    noteItem('itinerary', bar.dataset.itineraryId ? null : 'Upload', !bar.dataset.itineraryId && !client);
     // A customer follows only a bus of the company's.
     document.getElementById('scheduler-bar-menu-track').hidden = !bar.dataset.busId || !client;
-    document.getElementById('scheduler-bar-menu-thread').hidden = !barThreadUrl(bar);
-    document.getElementById('scheduler-bar-menu-thread-add').hidden = !!barThreadUrl(bar) || !client;
+    noteItem('thread', barThreadUrl(bar) ? null : 'Add', !barThreadUrl(bar) && !client);
     document.getElementById('scheduler-bar-menu-chat').hidden = !window.SchedulerTeamChat;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
@@ -14982,11 +14968,12 @@
      mark is on `trip_prep`, so a press never moves `updated_at` under an open
      editor. A placeholder is not a trip yet and has neither. */
   const prepOf = trip => (Array.isArray(trip?.trip_prep) ? trip.trip_prep[0] ?? null : trip?.trip_prep ?? null);
-  // The trip's invoice as the menu names it: its first number, or the old column's.
+  /* The trip's invoice: its first number, or the old column's, as `number`,
+     and its newest Invoice file as `file`; null on a trip with none. */
   function qbInvoiceOf(trip) {
-    const number = (trip?.trip_invoices || []).find(i => i.number)?.number || trip?.invoice_number;
-    if (number) return `Invoice ${number} in QuickBooks`;
-    return trip?.invoiced || trip?.trip_invoices?.length ? 'Invoiced in QuickBooks' : null;
+    const number = (trip?.trip_invoices || []).find(i => i.number)?.number || trip?.invoice_number || null;
+    const file = trip ? documentsOf(trip).find(d => String(d.label || '').toLowerCase() === 'invoice') ?? null : null;
+    return number || file || trip?.invoiced || trip?.trip_invoices?.length ? { number, file } : null;
   }
   // The estimate's mark, on a trip with no invoice yet.
   function drawQuickBooksItem(bar) {
@@ -14999,17 +14986,38 @@
     item.querySelector('.rux--menu-item__selection-icon')
       .replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
   }
-  /* The invoice beside the itinerary: its number with a check once the trip
-     has one, or else Export invoice on a confirmed trip, which the
-     QuickBooks page writes. */
+  /* One of the first group's items with a note beside its word, such as
+     Upload on a trip without an itinerary: `note` null shows none, and
+     `hide` hides the item. */
+  function noteItem(name, note, hide = false) {
+    document.getElementById(`scheduler-bar-menu-${name}`).hidden = hide;
+    const el = document.getElementById(`scheduler-bar-menu-${name}-note`);
+    el.textContent = note ?? '';
+    el.hidden = !note;
+  }
+  /* Invoice: with the check a confirmed driver wears and its number once the
+     trip has one, or else Export beside it on a confirmed trip, which the
+     QuickBooks page writes, with the upload icon. */
+  const invoiceIcon = document.querySelector('#scheduler-bar-menu-invoice .rux--menu-item__icon');
+  const invoiceIcons = { done: invoiceIcon?.firstElementChild, export: svgUse('#m-upload', '16', '0 0 32 32') };
   function drawInvoiceItem(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const usable = !!client && !!trip && !window.SchedulerBilling.placeholder(trip);
     const invoice = usable ? qbInvoiceOf(trip) : null;
-    const done = document.getElementById('scheduler-bar-menu-invoiced');
-    done.hidden = !invoice;
-    if (invoice) done.querySelector('.rux--menu-item__label').textContent = invoice;
-    document.getElementById('scheduler-bar-menu-invoice').hidden = !usable || !!invoice || !trip.confirmed || !!trip.cancelled_at;
+    const exportable = usable && !invoice && trip.confirmed && !trip.cancelled_at;
+    noteItem('invoice', invoice ? invoice.number : exportable ? 'Export' : null, !invoice && !exportable);
+    invoiceIcon?.replaceChildren(invoice ? invoiceIcons.done : invoiceIcons.export);
+  }
+  /* The invoice's file when one is uploaded, or else the trip on Billing,
+     where its number is recorded; with none, the QuickBooks page at the
+     trip's row, once unsaved work is settled. */
+  function openInvoice(bar) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    const invoice = qbInvoiceOf(trip);
+    if (invoice?.file) { openDocument(invoice.file, bar, trip); return; }
+    if (invoice) { openOnTab(bar, 'billing'); return; }
+    const href = `quickbooks.html?trip=${encodeURIComponent(bar.dataset.tripId)}&date=${encodeURIComponent(trip?.start_date || '')}`;
+    whenSafe(() => { window.location.href = href; });
   }
   async function markEstimate(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);

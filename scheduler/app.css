@@ -3085,9 +3085,12 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-crew__mark--normal { color: var(--rux-status-blue); }
 .scheduler-crew__mark--off { color: var(--rux-status-gray); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning
-   colour, while a driver on the bus is to be told of a change. */
+   colour, while a driver on the bus is to be told of a change; its Invoice,
+   Itinerary and Email carry a note beside the word, such as the invoice's
+   number or Upload. */
 .scheduler-bar-menu__due { color: var(--scheduler-mark-warning); }
-.scheduler-bar-menu__due[hidden] { display: none; }
+.scheduler-bar-menu__due[hidden],
+.scheduler-bar-menu__note[hidden] { display: none; }
 
 /* ── Frame and toolbar ──────────────────────────────────────────────────────
    `.scheduler-frame` is the schedule's column: the toolbar sits directly on the

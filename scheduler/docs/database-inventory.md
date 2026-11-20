@@ -196,7 +196,7 @@ as in `screen-inventory.md`.
 | `trip_updates` | Schedule, trip editor | the trip's card; the update prompt from Save; Cancel |
 | `trip_payments`, `trip_pos`, `trip_invoices` | Trip editor Billing | Trip editor |
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
-| `trip_documents` + bucket | Trip editor Files, driver page, `share/document.html` | Trip editor Files, with its Move to another leg, and the bar menu's Upload itinerary, each change with a `trip_history` entry |
+| `trip_documents` + bucket | Trip editor Files, driver page, `share/document.html` | Trip editor Files, with its Move to another leg, and the bar menu's Itinerary with Upload beside it, each change with a `trip_history` entry |
 | `company_documents` + bucket, `document_kinds` | Documents page | Documents page: an upload, a new copy, an edit of the facts, a delete, and the Kinds window |
 | `trip_history` (RPC) | History page | every save in the trip editor |
 | `record_history` (RPC) | History page | the database, on every change to a driver, a bus, a customer, a contact, a location or a partner |

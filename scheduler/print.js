@@ -1672,12 +1672,16 @@
   const HELD = 'Priced on the trip’s Billing tab';
 
   // A cell of a line item's row. The numbers read to the trailing edge, as
-  // money on a bill does; the description is a block of lines. A `held` cell
-  // is not typed into.
+  // money on a bill does; the description is a block of lines, and one of
+  // several lines says so, because its first is set as a heading over the
+  // rest and a sentence that only wraps is not. A `held` cell is not typed
+  // into.
   const quoteCell = (cls, text, held = false) => {
     const td = el('td', `scheduler-customer-quote__${cls}${held ? '' : ' scheduler-customer-quote__typed'}`);
     if (held) td.title = HELD;
-    for (const [i, line] of String(text || '').split('\n').entries()) {
+    const lines = String(text || '').split('\n');
+    if (cls === 'desc' && lines.length > 1) td.classList.add('scheduler-customer-quote__desc--lines');
+    for (const [i, line] of lines.entries()) {
       if (i) td.appendChild(el('br'));
       td.appendChild(document.createTextNode(line));
     }
@@ -1803,7 +1807,7 @@
     if (!blank) value.title = HELD;
     total.append(el('span', null, 'Quote total'), value);
     const deposit = el('p', 'scheduler-customer-quote__sum');
-    deposit.append(el('span', null, `Deposit (${DEPOSIT_WORDS}) or PO`), el('span', 'scheduler-customer-quote__deposit'));
+    deposit.append(el('span', null, `Deposit (${DEPOSIT_WORDS})`), el('span', 'scheduler-customer-quote__deposit'));
     sums.append(total, deposit);
     sums.addEventListener('input', () => showSums(sums.closest('.scheduler-customer-quote')));
     const lead = el('div', 'scheduler-customer-quote__lead');

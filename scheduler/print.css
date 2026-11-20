@@ -1618,6 +1618,27 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__line-item:first-child td { padding-block-start: 8pt; }
 
+/* A DESCRIPTION OF SEVERAL LINES IS A HEADING OVER ITS DETAILS: its first
+   line is what the line is, "52-seat round trip", in the sheet's size and
+   bold, on the Item's and the figures' line, and the days, the places and
+   the times under it are smaller and in the secondary ink. It is the first
+   line as typed, not a part of its own, so a line the office corrects is
+   set the same way. A description that is one sentence, an added driver's
+   or a discount's, stays the sheet's plain text, because the first line of
+   a sentence is only where it happened to wrap. */
+.scheduler-customer-quote__desc--lines {
+  font-size: 10pt;
+  line-height: 14pt;
+  color: var(--rux-text-secondary);
+}
+
+.scheduler-customer-quote__desc--lines::first-line {
+  font-size: 12pt;
+  line-height: 16pt;
+  font-weight: 600;
+  color: var(--rux-text-primary);
+}
+
 /* Item and Description are read, the three money columns are compared, so
    the numbers go to the trailing edge and under one another, and a figure is
    never broken across lines, because 12,500.0 over a 0 is a different price. */

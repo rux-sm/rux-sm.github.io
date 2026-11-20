@@ -1056,6 +1056,10 @@
     { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const num = v => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
   const miles = n => `${Math.round(n).toLocaleString('en-US')} mi`;
+  /* What a line is priced on, fact by fact between dots, each fact held to
+     one line by no-break spaces, so a fold falls after a dot and never
+     between a figure and its unit. */
+  const facts = parts => parts.filter(Boolean).map(part => part.replace(/ /g, '\u00A0')).join(' · ');
 
   function detailedPrice(subject, fig, model) {
     const { trip, leg } = subject;
@@ -1128,7 +1132,7 @@
         const dead = num(l.dead_miles) ?? 0;
         // A typed price came from neither rate, so it names neither.
         const local = m !== null && quoteRules.localUnder !== null && m < quoteRules.localUnder;
-        basis = [
+        basis = facts([
           m === null ? null : miles(m),
           m === null || dayCount === null ? null : `${dayCount} ${dayCount === 1 ? 'day' : 'days'}`,
           l.cost_typed ? null : local ? 'local day rate'
@@ -1137,14 +1141,14 @@
           l.cost_typed ? 'price typed' : null,
           m !== null && routeMiles !== null && oneLeg && Math.round(m) !== Math.round(routeMiles)
             ? `route now ${miles(routeMiles)}` : null,
-        ].filter(Boolean).join(' · ') || 'Price typed';
+        ]) || 'Price typed';
       }
       const unit = kind === 'rental' ? (qty === 1 ? 'bus' : 'buses')
         : kind === 'second_driver' || kind === 'relief' ? (qty === 1 ? 'driver' : 'drivers') : null;
       const calc = calculated(l);
-      const count = [cost === null ? 'No cost yet'
+      const count = facts([cost === null ? 'No cost yet'
         : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null,
-      calc !== null && calc !== cost ? `calculator ${usd(calc)}` : null].filter(Boolean).join(' · ') || null;
+      calc !== null && calc !== cost ? `calculator ${usd(calc)}` : null]) || null;
       // A line priced on nothing the sheet can name, a discount or a hotel at
       // one price, says what the quote's Description says of it.
       const said = kind === 'rental' || kind === 'other' || isDeadDiscount(l) ? '' : l.description || '';

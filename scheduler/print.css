@@ -1140,13 +1140,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* A blank form is written on by hand, so its rows keep a pen's height. */
 .scheduler-form[data-blank] .scheduler-driver-itinerary__table td { padding-block: var(--rux-spacing-03); }
 
-/* Time and Location are what a glance lands on, so they keep a width wide
-   enough for a hotel's whole name on one line; the address takes what is
-   left and wraps beside the leg's line. Every day's table shares them, so
-   the columns stand under one another down the sheet. */
-.scheduler-driver-itinerary__table col:nth-child(1) { inline-size: 20%; }
-.scheduler-driver-itinerary__table col:nth-child(2) { inline-size: 38%; }
-.scheduler-driver-itinerary__table col:nth-child(3) { inline-size: 42%; }
+/* Time and Location are what a glance lands on. Time is as wide as its
+   longest line, a time past midnight with its weekday, "12:00 PM WED", in
+   points because a time is no wider on a wider sheet; Location keeps a
+   width wide enough for a hotel's whole name on one line; the address
+   takes what is left and wraps beside the leg's line. Every day's table
+   shares them, so the columns stand under one another down the sheet. */
+.scheduler-driver-itinerary__table col:nth-child(1) { inline-size: 116pt; }
+.scheduler-driver-itinerary__table col:nth-child(2) { inline-size: 41%; }
+.scheduler-driver-itinerary__table col:nth-child(3) { inline-size: auto; }
 
 /* One time to a line, its label in a column of its own so the times stand
    under one another however the rows are labelled. */

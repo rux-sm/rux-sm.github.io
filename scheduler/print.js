@@ -1250,7 +1250,7 @@
   /* THE DETAILED SHEET IS SET AS THE QUOTE IS, by the quote's own parts,
      because the office prints the two together as the Office copy and files
      them together: the quote's head, with the sheet's name over the trip's
-     estimate number, where the group is going and the leg's days, so a sheet
+     quote number, where the group is going and the leg's days, so a sheet
      out of the binder alone still names its quote; and the quote's two
      boxes, the client under its bill-to as the quote names it and who to
      call on the day. The days are the quote line's own words: the whole
@@ -1265,7 +1265,7 @@
     return quoteHead('ITINERARY', {
       lines: QUOTE_LETTERHEAD,
       refs: [
-        ['Estimate #', trip.trip_ref || ''],
+        [QUOTE_REF, trip.trip_ref || ''],
         ['Destination', trip.destination || ''],
         ['Trip date', whole ? SAVED().dates(trip) : start ? window.SchedulerQuoteText.dates(start, end || start) : ''],
       ],
@@ -1511,6 +1511,11 @@
   // quote's totals work out in dollars.
   const DEPOSIT_SHARE = 0.2;
   const DEPOSIT_WORDS = `${Math.round(DEPOSIT_SHARE * 100)}%`;
+  /* What the trip's six-digit number is called on the quote, its agreement
+     and the itinerary filed behind them: the sheet is a QUOTE, so the number
+     is its quote number on all three, and a page out of the binder alone is
+     matched to the others by one label. */
+  const QUOTE_REF = 'Quote #';
 
   /* THE TERMS, WRITTEN HERE. rux says they change rarely, so a change to them
      is a commit rather than a settings row nobody would open twice a decade.
@@ -1813,14 +1818,14 @@
      corrected before it is sent. */
   function quoteSheet(trip, blank) {
     const card = el('article', 'scheduler-form scheduler-customer-quote');
-    /* The head names the sheet over its estimate number and date, the date
+    /* The head names the sheet over its quote number and date, the date
        today's, because a quote is dated the day it is written, and typed into
        like every other field for one sent a day later. The price is said
        once, under the items. */
     card.appendChild(quoteHead('QUOTE', {
       lines: QUOTE_LETTERHEAD,
       refs: [
-        ['Estimate #', blank ? '' : trip.trip_ref || ''],
+        [QUOTE_REF, blank ? '' : trip.trip_ref || ''],
         ['Date', todayWords()],
         ['Valid until', todayWords(validDays(trip))],
       ],
@@ -1869,7 +1874,7 @@
   }
 
   /* THE SECOND SHEET, THE AGREEMENT the customer signs with the quote: the
-     estimate number, the trip's destination and its dates under its name, as
+     quote number, the trip's destination and its dates under its name, as
      the quote sets its references, so a signed copy sent back alone still
      names its quote and trip; the policies,
      and the quote's lines to sign and date. */
@@ -1879,7 +1884,7 @@
     card.appendChild(quoteHead('TERMS AND CONDITIONS', {
       lines: QUOTE_LETTERHEAD,
       refs: [
-        ['Estimate #', blank ? '' : trip.trip_ref || ''],
+        [QUOTE_REF, blank ? '' : trip.trip_ref || ''],
         ['Destination', blank ? '' : trip.destination || ''],
         ['Trip date', blank ? '' : SAVED().dates(trip)],
       ],

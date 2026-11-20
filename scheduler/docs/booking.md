@@ -43,7 +43,7 @@ both.
 The office's paper copy is the quote form's Office copy, one print of the
 quote's first sheet and each leg's Detailed route.
 
-The quote's Estimate # is the trip's six-digit number. Type the same number
+The quote's Quote # is the trip's six-digit number. Type the same number
 into the QuickBooks estimate's Estimate no., so the customer, the estimate and
 the trip share one number until QuickBooks gives the invoice its own.
 

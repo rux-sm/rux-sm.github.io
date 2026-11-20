@@ -432,7 +432,7 @@
     'trip_assignments(id,bus_id,partner_id,partner_price,partner_confirmed,partner_confirmed_at,partner_vehicle,partner_driver_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,also_on,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks,
     // and the QuickBooks estimate, which the bar menu marks.
-    'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
+    'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate,qb_export)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size,leg,leg_id)',
@@ -14996,8 +14996,9 @@
     el.hidden = !note;
   }
   /* Invoice: with the check a confirmed driver wears and its number once the
-     trip has one, or else Export beside it on a confirmed trip, which the
-     QuickBooks page writes, with the upload icon. */
+     trip has one; on a confirmed trip with none, In list once it is on the
+     QuickBooks page's list, or else Export, which sends it there, with the
+     upload icon. */
   const invoiceIcon = document.querySelector('#scheduler-bar-menu-invoice .rux--menu-item__icon');
   const invoiceIcons = { done: invoiceIcon?.firstElementChild, export: svgUse('#m-upload', '16', '0 0 32 32') };
   function drawInvoiceItem(bar) {
@@ -15005,19 +15006,36 @@
     const usable = !!client && !!trip && !window.SchedulerBilling.placeholder(trip);
     const invoice = usable ? qbInvoiceOf(trip) : null;
     const exportable = usable && !invoice && trip.confirmed && !trip.cancelled_at;
-    noteItem('invoice', invoice ? invoice.number : exportable ? 'Export' : null, !invoice && !exportable);
+    const listed = exportable && !!prepOf(trip)?.qb_export;
+    noteItem('invoice', invoice ? invoice.number : listed ? 'In list' : exportable ? 'Export' : null, !invoice && !exportable);
     invoiceIcon?.replaceChildren(invoice ? invoiceIcons.done : invoiceIcons.export);
   }
   /* The invoice's file when one is uploaded, or else the trip on Billing,
-     where its number is recorded; with none, the QuickBooks page at the
-     trip's row, once unsaved work is settled. */
+     where its number is recorded; with none, the trip sent to the
+     QuickBooks page's list, or on the list already, that page at its row
+     once unsaved work is settled. */
   function openInvoice(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const invoice = qbInvoiceOf(trip);
     if (invoice?.file) { openDocument(invoice.file, bar, trip); return; }
     if (invoice) { openOnTab(bar, 'billing'); return; }
-    const href = `quickbooks.html?trip=${encodeURIComponent(bar.dataset.tripId)}&date=${encodeURIComponent(trip?.start_date || '')}`;
+    if (!prepOf(trip)?.qb_export) { sendToList(trip); return; }
+    const href = `quickbooks.html?trip=${encodeURIComponent(trip.id)}`;
     whenSafe(() => { window.location.href = href; });
+  }
+  // Puts a trip on the QuickBooks page's list, last, which numbers its invoice after those before it.
+  async function sendToList(trip) {
+    toast('working', 'Adding the trip to the QuickBooks list…');
+    try {
+      const { error } = await withTimeout(client.from('trip_prep')
+        .upsert({ trip_id: trip.id, qb_export: true }, { onConflict: 'trip_id' }).then(r => r));
+      if (error) throw new Error(error.message);
+      recordFieldChange(trip.id, 'qb_export', false, true);
+      await show();
+      toast('success', 'On the QuickBooks list', 'Its invoice is numbered in the order it was sent.');
+    } catch (err) {
+      toast('error', `The trip was not added to the list. ${err.message}`);
+    }
   }
   async function markEstimate(bar) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);

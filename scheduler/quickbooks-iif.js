@@ -4,7 +4,8 @@
    QuickBooks Desktop for Mac takes invoices in by one door, an IIF file it
    imports, so this writes one: a TRNS line per invoice and an SPL line per
    quote line, from `saved-quote.js`, the lines the customer's printed quote
-   names. The QuickBooks page writes a week's trips with it, or one trip.
+   names. The QuickBooks page writes the office's list with it, the trips
+   sent to it from the board, numbered in the order they were sent.
 
    A TRIP IS HELD BACK, NEVER GUESSED, when QuickBooks would make something
    of it the office did not mean: a customer with no QuickBooks name, since
@@ -25,7 +26,8 @@
    SPL lines only past the 99 characters the import keeps of it. An import
    only adds, so a
    file is imported once: `markImported` saves each trip's invoice with its
-   number, which keeps every export after it from taking the trip again.
+   number and takes it off the list, which keeps every export after it from
+   taking the trip again.
    ========================================================================== */
 (() => {
   'use strict';
@@ -60,16 +62,24 @@
     + 'trip_legs(*,trip_routes(*)),trip_stops(route_id,leg,position,type,address,depart_prev,arrive),'
     + 'trip_assignments(route_id,leg,needs,position,buses:bus_id(number))';
 
-  /* The trips that go to QuickBooks: confirmed, not cancelled and not
-     invoiced. `scope` narrows the read, as `{ id }` for one trip or
-     `{ from, to }` for the trips whose first day falls in those days. */
-  async function read(db, scope) {
-    let q = db.from('trips').select(COLUMNS).order('start_date').order('trip_ref');
-    if (scope.id) q = q.eq('id', scope.id);
-    else q = q.gte('start_date', scope.from).lte('start_date', scope.to);
-    const { data, error } = await q;
+  /* The office's list for QuickBooks: the trips sent to it from the board,
+     `trip_prep.qb_export`, in the order they were sent, which is the order
+     their invoices are numbered in. */
+  async function read(db) {
+    const { data: sent, error } = await db.from('trip_prep')
+      .select('trip_id').eq('qb_export', true).order('qb_export_at');
     if (error) throw new Error(error.message);
-    return data;
+    if (!sent.length) return [];
+    const { data, error: e2 } = await db.from('trips').select(COLUMNS).in('id', sent.map(r => r.trip_id));
+    if (e2) throw new Error(e2.message);
+    const at = new Map(sent.map((r, i) => [r.trip_id, i]));
+    return data.sort((a, b) => at.get(a.id) - at.get(b.id));
+  }
+
+  // Takes a trip off the list, as Remove does and as its import does.
+  async function unlist(db, trip) {
+    const { error } = await db.from('trip_prep').update({ qb_export: false }).eq('trip_id', trip.id);
+    if (error) throw new Error(`Trip ${trip.trip_ref}: ${error.message}`);
   }
   const isInvoiced = t => !!t.invoiced || !!t.invoice_number || (t.trip_invoices || []).length > 0;
   // Why a trip is not exported at all, or null when it is one to export.
@@ -230,9 +240,9 @@
 
   /* A file imported: each trip it wrote gets its invoice, the number, the
      exported amount and the day, with the trip's invoice columns, as the
-     Billing tab saves a first invoice, and a history entry. A trip in a file
-     has no invoice, so this is always its first. `history(trip, changes)`
-     writes the entry. */
+     Billing tab saves a first invoice, and a history entry, and it leaves
+     the list. A trip in a file has no invoice, so this is always its first.
+     `history(trip, changes)` writes the entry. */
   async function markImported(db, written, on, history) {
     for (const { trip, total, number } of written) {
       const num = String(number);
@@ -247,11 +257,12 @@
         { field: 'invoice_number', label: 'Invoice number', before: null, after: num },
         { field: 'invoices', label: `Invoice: ${num}, imported into QuickBooks`, before: null, after: `Date ${on}` },
       ]);
+      await unlist(db, trip);
       trip.invoiced = true;
       trip.invoice_number = num;
       trip.trip_invoices = [{ number: num, position: 0 }];
     }
   }
 
-  window.SchedulerQuickBooksIif = { read, write, download, markImported, notDue };
+  window.SchedulerQuickBooksIif = { read, unlist, write, download, markImported, notDue };
 })();

@@ -86,6 +86,7 @@
     ['po_received', 'PO received', 'boolean'],
     ['invoiced', 'Invoiced', 'boolean'],
     ['qb_estimate', 'Estimate in QuickBooks', 'boolean'],
+    ['qb_export', 'On the QuickBooks list', 'boolean'],
     ['balance_paid', 'Balance paid', 'boolean'],
     ['vehicle_type', 'Vehicle'],
     ['req_sleeper', 'Sleeper', 'boolean'],

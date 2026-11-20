@@ -336,9 +336,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   padding: var(--scheduler-paper-margin, 0);
-  /* A form punched for a ring binder names a wider margin on its leading
-     edge, and one that names none keeps the ink margin there. */
-  padding-inline-start: var(--scheduler-paper-binding, var(--scheduler-paper-margin, 0));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -348,7 +345,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    paper's rule below sets it, so the preview wraps where the print does. */
 .scheduler-print__sheet[data-sheet="flows"] .scheduler-form {
   padding-inline: calc(var(--scheduler-paper-margin, 0px) + 1px);
-  padding-inline-start: calc(var(--scheduler-paper-binding, var(--scheduler-paper-margin, 0px)) + 1px);
 }
 
 /* A FORM IS ITS PAPER ON SCREEN TOO, and shrinks whole rather than reflowing.
@@ -444,7 +440,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-form {
     margin: 0;
     padding: var(--scheduler-paper-margin, 0.375in);
-    padding-inline-start: var(--scheduler-paper-binding, var(--scheduler-paper-margin, 0.375in));
   }
 
   /* A FORM THAT FLOWS KEEPS NO PADDING ON PAPER. Padding is at a block's start
@@ -1661,16 +1656,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    policy's line is short enough to read. A term or a policy never breaks
    across the columns.
 
-   IT IS 8.5 ON 10.5, the size the binding margin leaves it: the margin takes
-   a twentieth of the sheet's width, and type a twentieth smaller keeps a
-   policy's lines breaking where they did at 9 on 11, so the agreement's
-   sixteen policies and the lines to sign still end on one sheet. */
+   IT IS 8 ON 10, the size the binder's margin leaves it: 0.75in a side
+   takes a tenth of the width a 0.375in margin leaves, and type a tenth
+   smaller than 9 on 11 keeps a policy's lines breaking where they did
+   there, so the agreement's sixteen policies and the lines to sign still
+   end on one sheet. */
 .scheduler-customer-quote__terms,
 .scheduler-customer-quote__policies {
   columns: 2;
   column-gap: 12pt;
-  font-size: 8.5pt;
-  line-height: 10.5pt;
+  font-size: 8pt;
+  line-height: 10pt;
 }
 
 /* Each number stands on its column's leading edge, the sheet's and the

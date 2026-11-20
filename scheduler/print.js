@@ -12,7 +12,6 @@
      binds    'assignment' | 'assignment+seat' | 'trip' | 'trip+leg' | 'week' | null
      marks    the tick a print offers: { table, column, by }, or left out
      page     the paper it is printed on: size, width, height, ink margin,
-              `binding` where its leading edge is punched for a ring binder,
               and `exact` where the form must not run past one sheet of it
      fileName (subject) -> the name Save as PDF offers, or left out
      copies   the subjects this one binding covers, which the toolbar's list
@@ -2834,10 +2833,11 @@
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
       // record that a driver has their paperwork; a quote is sent, and whether
       // it was is the Billing tab's business, not a form's.
-      /* ITS LEADING EDGE IS PUNCHED. The office files a quote in a ring
-         binder, and a three-hole punch reaches about 0.66in into a Letter
-         sheet, so the ink starts 0.75in in on that edge, 54 whole points. */
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in', binding: '0.75in' },
+      /* IT IS PUNCHED. The office files a quote in a ring binder, and a
+         three-hole punch reaches about 0.66in into a Letter sheet, so the ink
+         starts 0.75in in, 54 whole points. Every edge keeps that margin, so
+         the sheet is centred and its back clears the holes as its face does. */
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.75in' },
       copies: subject => [subject],
       /* EVERY FIELD BUT THE FIGURES, ON A FILLED ONE TOO. The office corrects
          a quote before it sends it -- a contact the trip has not caught up
@@ -3099,13 +3099,8 @@
        printable box in whole points and drops the fraction, while the form is
        laid out to the exact width: a 0.4in margin is 28.8pt, and the box
        ended 1.2pt short of the form and cut every rule down its right side.
-       0.375in is 27pt, and 36 CSS pixels, so nothing is rounded.
-
-       A PUNCHED FORM'S LEADING MARGIN IS ITS BINDING, wider than the ink
-       margin the other three edges keep, so the holes clear the ink. */
-    const edges = paper?.binding
-      ? `${paper.margin} ${paper.margin} ${paper.margin} ${paper.binding}` : paper?.margin;
-    const pageMargin = paper && !paper.exact && paper.margin ? edges : '0';
+       0.375in is 27pt, and 36 CSS pixels, so nothing is rounded. */
+    const pageMargin = paper && !paper.exact && paper.margin ? paper.margin : '0';
     style.textContent = `@page { ${paper?.size ? `size: ${paper.size}; ` : ''}margin: ${pageMargin}; }`;
 
     /* AND WHETHER IT IS ONE SHEET OR MANY. The envelope has to come out on one
@@ -3119,7 +3114,6 @@
       ['--scheduler-paper-width', paper?.width],
       ['--scheduler-paper-height', paper?.height],
       ['--scheduler-paper-margin', paper?.margin],
-      ['--scheduler-paper-binding', paper?.binding],
     ]) {
       if (value) root.setProperty(prop, value);
       else root.removeProperty(prop);

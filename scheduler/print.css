@@ -1662,8 +1662,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__table th:nth-child(4),
 .scheduler-customer-quote__table th:nth-child(5) { inline-size: 76pt; }
 
-/* THE ITEMS BOX IS ONE DEPTH, blank or filled, room for two legs of four
-   lines and a deduction: the lines fill it from the top and the room under
+/* THE ITEMS BOX IS ONE DEPTH, blank or filled, room for two legs of three
+   lines, a driver and a deduction: the lines fill it from the top and the room under
    them is empty paper. A table's height is a floor, so lines past its depth
    still grow it. The room is the row a percentage height hands the spare
    to, which keeps the lines together. */

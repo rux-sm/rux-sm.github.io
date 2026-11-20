@@ -117,14 +117,16 @@
     return from ? dates(from, trip.leg ? trip.to || from : backOn(trip)) : '';
   }
 
-  /* The block itself, a line each: what it is, "52-seat round trip"; the
-     days, "Nov 16–17, 2026", which a customer's office matches an invoice
-     by; the places, "Mission, TX to San Antonio, TX"; and the times, "6:00 AM
-     – 8:42 PM" from leaving to getting back. A line the trip cannot answer
-     yet is dropped, except the times, which the office writes as TBD and
-     settles with the customer: one of the two unknown is TBD in its place,
-     "6:00 AM – TBD", and both unknown are "Times TBD", because two TBDs
-     about a dash say nothing of what is to be decided.
+  /* The block itself, three lines: what it is, "52-seat round trip"; when,
+     the days a customer's office matches an invoice by and the times from
+     leaving to getting back, "Nov 16–17, 2026 · 6:00 AM – 8:42 PM"; and the
+     places, "Mission, TX to San Antonio, TX". The days and the times share
+     a line because both answer when, and a rental a line shorter leaves a
+     quote of two rentals, a driver and a discount on one sheet. A line the
+     trip cannot answer yet is dropped, except the times, which the office
+     writes as TBD and settles with the customer: one of the two unknown is
+     TBD in its place, "6:00 AM – TBD", and both unknown are "Times TBD",
+     because two TBDs about a dash say nothing of what is to be decided.
 
      ONE LEG OF A DROP-OFF AND PICKUP TRIP (`leg`) IS A LINE OF ITS OWN, and
      says which it is: the way out is the drop-off, from the pickup to the
@@ -138,13 +140,13 @@
     const drop = String(trip.destination || '').trim();
     const [start, end] = leg === 'return' ? [drop, pickup] : [pickup, drop];
     const kind = (leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip';
+    const times = leg ? `Departs ${clock(trip.leave) || 'TBD'}`
+      : !trip.leave && !trip.back ? 'Times TBD'
+        : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`;
     return [
       `${vehicle(trip.pax56)} ${kind}`,
-      days(trip) || null,
+      [days(trip), times].filter(Boolean).join(' · '),
       start && end ? `${start} to ${end}` : start ? `from ${start}` : end ? `to ${end}` : null,
-      leg ? `Departs ${clock(trip.leave) || 'TBD'}`
-        : !trip.leave && !trip.back ? 'Times TBD'
-          : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`,
     ].filter(Boolean).join('\n');
   }
 

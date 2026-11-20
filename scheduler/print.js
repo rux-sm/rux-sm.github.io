@@ -838,14 +838,19 @@
 
   const LEGS = ['outbound', 'return'];
   const legName = (trip, leg) => (isReturn(trip, leg) ? 'Return' : 'Outbound');
-  /* The trip sheet's name in its head: a split of two legs prints both, so
-     each says whose it is, the Drop-off's or the Pickup's, as the Files tab
-     names the two; any other leg's sheet is a Trip sheet, told apart by its
-     date. */
+  /* The trip sheet's name in its head, saying whose sheet it is where a
+     trip prints more than one on a day or a split: a split of two legs names
+     its Drop-off and Pickup, as the Files tab names the two, and a leg of
+     more than one route names the route, as the list of copies does, so
+     "Route 2 trip sheet" or "Pickup Route 2 trip sheet", the route's name
+     as the office typed it. Any other leg's sheet is a Trip sheet, told
+     apart by its date. */
   const sheetName = (trip, leg) => {
     const row = legRow(trip, leg);
-    if (!row || !SHAPE.isSplit(trip) || SHAPE.legsOf(trip).length !== 2) return 'Trip sheet';
-    return SHAPE.isPickup(trip, row.id) ? 'Pickup trip sheet' : 'Drop-off trip sheet';
+    const split = !!row && SHAPE.isSplit(trip) && SHAPE.legsOf(trip).length === 2
+      ? (SHAPE.isPickup(trip, row.id) ? 'Pickup' : 'Drop-off') : null;
+    const route = routeName(trip, leg);
+    return [split, route, split || route ? 'trip sheet' : 'Trip sheet'].filter(Boolean).join(' ');
   };
 
   /* A leg by its days, "Mon, Nov 2" or "Fri, Nov 20 – Sun, Nov 22", which is

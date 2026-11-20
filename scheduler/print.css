@@ -1773,11 +1773,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* THE LINES TO ACCEPT IT ARE RULES, NOT UNDERSCORES: a name, a signature and
    a date, each a rule with its label under it, a signature's depth over
    them. A typed underscore run is a different length in every font; a
-   border is the length it is told to be. The name takes the leading box's
-   width, and the signature and the date share the trailing one's. */
+   border is the length it is told to be. The name and the signature are one
+   length, since a signature runs as long as the name it signs, and the date
+   is half of it. */
 .scheduler-customer-quote__marks {
   display: grid;
-  grid-template-columns: calc((100% - 12pt) / 2) 2fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr;
   gap: 12pt;
   margin-block-start: 24pt;
 }

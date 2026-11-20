@@ -7,15 +7,16 @@
    EXPORT lists the week's confirmed trips with no invoice, the week
    starting on the board's own first day and opening on this one, each
    written or held back with why by quickbooks-iif.js, its number opening
-   it on the board. Export week waits for the report, because only the
-   report knows which trips QuickBooks has invoiced already, which it holds
-   back until that match is saved; a row's Export saves that trip's file
-   alone with no report, numbered from the next invoice number the office
-   types, which this browser keeps and the report fills in from QuickBooks'
-   last. The board's Export invoice opens the page at that row, and Mark
-   imported, once
-   QuickBooks has taken the file, saves each trip's invoice with its number
-   so no export takes it again.
+   it on the board. Each trip that can be written is ticked, and Export
+   saves the ticked ones in one file, numbered in turn from the next
+   invoice number the office types, which this browser keeps and the
+   report fills in from QuickBooks' last. More than one waits for the
+   report, because only the report knows which trips QuickBooks has
+   invoiced already, which it holds back until that match is saved; one
+   trip goes without it, the office having checked QuickBooks itself. The
+   board's Invoice, with Export beside it, opens the page at that trip with
+   it alone ticked, and Mark imported, once QuickBooks has taken the file,
+   saves each trip's invoice with its number so no export takes it again.
 
    MATCH: the office chooses the Transaction Detail report; quickbooks-match.js
    reads it and scores it against every trip, and this page lists what the
@@ -357,7 +358,9 @@
      One week at a time, never more, so a forgotten earlier trip cannot
      slip into a file. `weekTrips` is the week as read, `run` it as
      quickbooks-iif.js writes it with the next number and the report's
-     invoices, and `saved` the file saved last, which Mark imported records. */
+     invoices, `picked` the ids of the trips ticked and `pick` those alone
+     as the file writes them, numbered in turn, and `saved` the file saved
+     last, which Mark imported records. */
   const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   /* The board's Export invoice opens the page at a trip, `?trip=` and its
@@ -370,6 +373,9 @@
   let weekFirst = WEEK.firstDayOf(focusDay || new Date(), WEEK.savedWeekStart());
   let weekTrips = [];
   let run = null;
+  let pick = null;
+  let picked = new Set();
+  let pickedWeek = null;
   let saved = null;
   const weekDays = () => ({ from: isoDay(weekFirst), to: isoDay(plusDays(weekFirst, 6)) });
   const fileName = () => `quickbooks-invoices_${weekDays().from}.iif`;
@@ -409,70 +415,130 @@
   const options = () => ({ on: isoDay(new Date()), first: nextNumber(), billed: billed() });
 
   const SKIP_WORDS = { invoiced: 'Already invoiced', 'not confirmed': 'Not confirmed' };
-  // A file saved: the week's, or one trip's from its row, numbered from the next number.
-  function saveFile(trips, name) {
-    const out = IIF.write(trips, options());
-    if (!out.text) return;
+  const pickedTrips = () => weekTrips.filter(t => picked.has(t.id));
+  // The ticked trips' file: one trip's by its number, more by the week's first day.
+  const pickName = () => (pick.written.length === 1
+    ? `quickbooks-invoice_${pick.written[0].trip.trip_ref}.iif` : fileName());
+  function saveFile() {
+    const out = IIF.write(pickedTrips(), options());
+    if (!out.text || !out.written.length) return;
+    const name = pickName();
     IIF.download(out.text, name);
     saved = { name, written: out.written, on: options().on, marked: false };
-    drawRun();
+    drawPick();
+  }
+
+  // A row's tick, on a trip that can be written; a held one has none to tick.
+  function pickCell(trip, inFile) {
+    const td = el('td', 'rux--table-column-checkbox');
+    if (!inFile) return td;
+    const wrap = el('div', 'rux--checkbox--inline');
+    const box = el('input', 'rux--checkbox');
+    box.type = 'checkbox';
+    box.id = `scheduler-quickbooks-pick-${trip.id}`;
+    box.dataset.trip = trip.id;
+    box.checked = picked.has(trip.id);
+    const label = el('label', 'rux--checkbox-label');
+    label.htmlFor = box.id;
+    label.append(el('span', 'rux--visually-hidden', `Tick trip ${trip.trip_ref}`));
+    wrap.append(box, label);
+    td.append(wrap);
+    return td;
   }
 
   function exportRow(entry, inFile) {
-    const { trip, total, why, number } = entry;
+    const { trip, total, why } = entry;
     const tr = el('tr');
     const qbName = trip.customers?.qb_name;
     const ref = el('td');
     const link = el('a', 'rux--link', String(trip.trip_ref ?? ''));
     link.href = `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(trip.start_date || '')}`;
     ref.append(link);
-    if (trip.id === focusTrip) tr.classList.add('rux--data-table--selected');
-    const one = el('td');
-    if (inFile && run.text) {
-      const button = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Export');
-      button.type = 'button';
-      button.setAttribute('aria-label', `Export trip ${trip.trip_ref} alone`);
-      button.addEventListener('click', () => saveFile([trip], `quickbooks-invoice_${trip.trip_ref}.iif`));
-      one.append(button);
-    }
+    if (trip.id === focusTrip) tr.dataset.focus = '';
+    const file = el('td', null, inFile ? '' : SKIP_WORDS[why] || `Held back: ${why}`);
+    if (inFile) file.dataset.fileFor = trip.id;
     tr.append(
+      pickCell(trip, inFile),
       ref,
       el('td', null, days(trip.start_date, trip.end_date || trip.start_date)),
       el('td', null, qbName || `${trip.customers?.name || trip.customer || 'No customer'}, no QuickBooks name`),
       el('td', null, money.format(total ?? (Number(trip.quoted_price) || 0))),
-      el('td', null, inFile ? (number ? `Yes, as ${number}` : 'Yes') : SKIP_WORDS[why] || `Held back: ${why}`),
-      one);
+      file);
     return tr;
   }
 
+  const invoices = n => `${n} invoice${n === 1 ? '' : 's'}`;
+
+  // The week's rows, each with its tick; `drawPick` fills in what the ticks put in the file.
   function drawRun() {
-    const { from, to } = weekDays();
-    const marked = saved?.marked;
-    $('scheduler-quickbooks-export-rows').replaceChildren(
+    const rows = $('scheduler-quickbooks-export-rows');
+    rows.replaceChildren(
       ...run.written.map(w => exportRow(w, true)),
       ...run.held.map(h => exportRow(h, false)),
       ...run.skipped.filter(k => k.why !== 'cancelled').map(k => exportRow(k, false)));
-    const last = lastInvoice();
-    let text = `${days(from, to)}: ${run.written.length} to import`
-      + (run.held.length ? `, ${run.held.length} held back until what holds them is fixed.` : '.');
-    if (!run.text) text += ' Type the next invoice number to export them.';
-    else if (!matched) text += " A row's Export saves that trip alone. Export week waits for QuickBooks' report above, which holds back what QuickBooks has invoiced already.";
-    else if (last) text += ` QuickBooks' last invoice in the report is ${last.num}, of ${day(last.date)}.`;
-    const invoices = n => `${n} invoice${n === 1 ? '' : 's'}`;
-    if (saved && !marked) text = `Saved ${saved.name} with ${invoices(saved.written.length)}. Import it into QuickBooks, then Mark imported.`;
-    if (marked) text = `Marked ${invoices(saved.written.length)} imported. Each trip has its invoice number now, so no export takes it again.`;
-    $('scheduler-quickbooks-export-text').textContent = text;
-    $('scheduler-quickbooks-export-btn').disabled = !matched || !run.text || !run.written.length;
-    $('scheduler-quickbooks-mark').disabled = !saved || marked;
+    window.Rux?.dataTable?.sync(rows.closest('table'));
     $('scheduler-quickbooks-export').hidden = false;
-    const focused = $('scheduler-quickbooks-export-rows').querySelector('.rux--data-table--selected');
+    drawPick();
+    const focused = rows.querySelector('[data-focus]');
     if (focused && !focusShown) { focusShown = true; focused.scrollIntoView({ block: 'center' }); }
   }
 
+  /* What the ticks put in the file: each ticked row's number, the button's
+     count, and the line over the table. Drawn without redrawing the rows, so
+     a tick keeps its focus. */
+  function drawPick() {
+    const { from, to } = weekDays();
+    const n = pick.written.length;
+    const numbers = new Map(pick.written.map(w => [w.trip.id, w.number]));
+    for (const cell of $('scheduler-quickbooks-export-rows').querySelectorAll('[data-file-for]')) {
+      const id = cell.dataset.fileFor;
+      cell.textContent = !numbers.has(id) ? 'Not ticked' : numbers.get(id) ? `Yes, as ${numbers.get(id)}` : 'Yes';
+    }
+    const last = lastInvoice();
+    let text = `${days(from, to)}: ${n} of ${run.written.length} ticked to import`
+      + (run.held.length ? `, ${run.held.length} held back until what holds them is fixed.` : '.');
+    if (!run.text) text += ' Type the next invoice number to export them.';
+    else if (!matched) text += " One ticked trip exports alone; more than one waits for QuickBooks' report above, which holds back what QuickBooks has invoiced already.";
+    else if (last) text += ` QuickBooks' last invoice in the report is ${last.num}, of ${day(last.date)}.`;
+    const marked = saved?.marked;
+    if (saved && !marked) text = `Saved ${saved.name} with ${invoices(saved.written.length)}. Import it into QuickBooks, then Mark imported.`;
+    if (marked) text = `Marked ${invoices(saved.written.length)} imported. Each trip has its invoice number now, so no export takes it again.`;
+    $('scheduler-quickbooks-export-text').textContent = text;
+    const button = $('scheduler-quickbooks-export-btn');
+    button.textContent = n ? `Export ${invoices(n)}` : 'Export';
+    button.disabled = !pick.text || !n || (n > 1 && !matched);
+    $('scheduler-quickbooks-mark').disabled = !saved || marked;
+  }
+
+  function writePick() {
+    pick = IIF.write(pickedTrips(), options());
+    drawPick();
+  }
+
+  /* A new week starts with every trip that can be written ticked, or only
+     the trip the board opened the page at; the same week keeps its ticks,
+     less any trip no longer to write. */
   function writeRun() {
     run = IIF.write(weekTrips, options());
+    const writable = new Set(run.written.map(w => w.trip.id));
+    if (pickedWeek !== weekDays().from) {
+      pickedWeek = weekDays().from;
+      picked = focusTrip && writable.has(focusTrip) && !focusShown ? new Set([focusTrip]) : writable;
+    } else picked = new Set([...picked].filter(id => writable.has(id)));
+    pick = IIF.write(pickedTrips(), options());
     drawRun();
   }
+
+  /* A tick changed: the file saved before is not this one. Design's table
+     says so on a redraw of the rows too, where the ticks are the same and
+     the file saved stands. */
+  $('scheduler-quickbooks-export')?.addEventListener('rux:table-selection', () => {
+    const now = new Set([...$('scheduler-quickbooks-export-rows').querySelectorAll('input[data-trip]:checked')].map(b => b.dataset.trip));
+    if (now.size === picked.size && [...now].every(id => picked.has(id))) return;
+    picked = now;
+    saved = null;
+    writePick();
+  });
 
   async function drawExport() {
     if (!db) return;
@@ -491,7 +557,7 @@
   }
   $('scheduler-quickbooks-week-back').addEventListener('click', () => moveWeek(-1));
   $('scheduler-quickbooks-week-next').addEventListener('click', () => moveWeek(1));
-  $('scheduler-quickbooks-export-btn').addEventListener('click', () => saveFile(weekTrips, fileName()));
+  $('scheduler-quickbooks-export-btn').addEventListener('click', saveFile);
   $('scheduler-quickbooks-mark').addEventListener('click', async e => {
     const button = e.currentTarget;
     button.disabled = true;

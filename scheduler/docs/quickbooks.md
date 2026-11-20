@@ -24,7 +24,7 @@ backup, and marked as soon as it is in.
 ## Each week
 
 1. Save QuickBooks' Transaction Detail report today and choose it on the
-   QuickBooks page. Export week waits for it.
+   QuickBooks page. Exporting more than one trip waits for it.
 2. Save the matches it lists under Invoices to pick. A trip QuickBooks has an
    invoice for, not saved on the trip, is held back until it is; Skip an
    invoice only when it is none of the trips listed, which lets them go.
@@ -34,8 +34,10 @@ backup, and marked as soon as it is in.
 4. Check Next invoice number against QuickBooks' next, Customers, Create
    Invoices. The report fills it in from its last invoice, which misses any
    made since it was saved.
-5. Press Export week. The browser saves `quickbooks-invoices_` and the week's
-   first day, `.iif`, each invoice numbered in turn from Next invoice number.
+5. Untick any trip to leave for a later file; every trip that can be written
+   starts ticked. Press Export, which names how many invoices it writes. The
+   browser saves `quickbooks-invoices_` and the week's first day, `.iif`, each
+   invoice numbered in turn from Next invoice number.
 6. In QuickBooks, have everyone else close the company file, sign in as Admin
    and switch to single-user mode. QuickBooks greys out IIF import in a shared
    file.
@@ -51,12 +53,13 @@ backup, and marked as soon as it is in.
    invoice with its number, so no export takes it again.
 10. Switch QuickBooks back to multi-user mode.
 
-A customer who wants an invoice before the weekly run gets one from its row's
-Export under Invoices to import, then steps 6 to 10. It needs no report: type
-QuickBooks' next number from Customers, Create Invoices in Next invoice
+A customer who wants an invoice before the weekly run gets one alone: tick
+only its trip and press Export, then steps 6 to 10. One trip needs no report:
+type QuickBooks' next number from Customers, Create Invoices in Next invoice
 number, which this browser keeps and moves on at each Mark imported, and make
 sure QuickBooks has no invoice for the trip already. The trip's bar menu on
-the board, Invoice with Export beside it, opens the page at that row.
+the board, Invoice with Export beside it, opens the page with that trip alone
+ticked.
 
 ## The report
 

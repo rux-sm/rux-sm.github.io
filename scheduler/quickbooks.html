@@ -289,26 +289,31 @@
         <section class="rux--data-table-container" id="scheduler-quickbooks-export" aria-labelledby="scheduler-quickbooks-export-h" hidden>
           <div class="rux--data-table-header">
             <h2 class="rux--data-table-header__title" id="scheduler-quickbooks-export-h">Invoices to import</h2>
-            <p class="rux--data-table-header__description" id="scheduler-quickbooks-export-text">Every confirmed trip with no invoice whose first day is in this week.</p>
+            <p class="rux--data-table-header__description" id="scheduler-quickbooks-export-text">Every confirmed trip with no invoice whose first day is in this week, each ticked one going into the file.</p>
           </div>
           <div class="rux--table-toolbar">
             <div class="rux--toolbar-content">
               <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-lg" id="scheduler-quickbooks-week-back">Previous week</button>
               <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-lg" id="scheduler-quickbooks-week-next">Next week</button>
               <button type="button" class="rux--btn rux--btn--secondary rux--layout--size-lg" id="scheduler-quickbooks-mark" disabled>Mark imported</button>
-              <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="scheduler-quickbooks-export-btn" disabled>Export week</button>
+              <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="scheduler-quickbooks-export-btn" disabled>Export</button>
             </div>
           </div>
           <div class="rux--data-table-content">
             <table class="rux--data-table rux--data-table--lg rux--data-table--top-aligned-body" aria-labelledby="scheduler-quickbooks-export-h">
               <thead>
                 <tr>
+                  <th scope="col" class="rux--table-column-checkbox">
+                    <div class="rux--checkbox--inline">
+                      <input type="checkbox" id="scheduler-quickbooks-pick-all" class="rux--checkbox">
+                      <label for="scheduler-quickbooks-pick-all" class="rux--checkbox-label"><span class="rux--visually-hidden">Tick every trip</span></label>
+                    </div>
+                  </th>
                   <th scope="col"><div class="rux--table-header-label">Trip</div></th>
                   <th scope="col"><div class="rux--table-header-label">Days</div></th>
                   <th scope="col"><div class="rux--table-header-label">Customer in QuickBooks</div></th>
                   <th scope="col"><div class="rux--table-header-label">Amount</div></th>
                   <th scope="col"><div class="rux--table-header-label">In the file</div></th>
-                  <th scope="col"><div class="rux--table-header-label"><span class="rux--visually-hidden">Export one</span></div></th>
                 </tr>
               </thead>
               <tbody id="scheduler-quickbooks-export-rows"></tbody>
@@ -384,6 +389,7 @@
 
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/form-controls.js"></script>
+<script src="/design/js/data-table.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>

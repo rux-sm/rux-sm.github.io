@@ -126,7 +126,8 @@ On the trip itself:
 - Add a Hotel line on the Billing tab only when the office books the drivers'
   room itself, with its price. It does not mean the trip is overnight. Typing
   the confirmation number in the line's window marks it booked, as the bar
-  menu's Mark hotel booked does.
+  menu's Mark hotel booked does. The printed quote and its agreement then say
+  the office provides the room and the customer is not responsible for it.
 - Add a fuel card from the Route tab's menu, on its first day's line, or
   from the note the Route tab shows when a trip is past the office's miles
   or days.

@@ -1520,19 +1520,35 @@
      matched to the others by one label. */
   const QUOTE_REF = 'Quote #';
 
+  /* WHAT THE WORDING TURNS ON, the one fact of a trip both sheets read:
+     whether the quote carries a Hotel line, which the Billing tab holds only
+     when the office books the drivers' room itself. A blank quote carries
+     none. A term or a policy that turns on it is a function of these facts,
+     and `worded` gives either kind its words. */
+  const quoteFacts = (trip, blank) => ({
+    hotelQuoted: !blank && SAVED().lines(trip).some(l => l.kind === 'hotel'),
+  });
+  const worded = (text, facts) => (typeof text === 'function' ? text(facts) : text);
+
   /* THE TERMS, WRITTEN HERE. rux says they change rarely, so a change to them
      is a commit rather than a settings row nobody would open twice a decade.
-     Each string is one numbered term; the agreement on the second sheet
-     spells each out in full. */
+     Each is one numbered term; the agreement on the second sheet spells each
+     out in full. The drivers' room is the customer's to provide unless the
+     quote charges for it, and then the term says the office provides it, so
+     the sheet never asks for a room it also bills. The last says what every
+     coach has, because a school district needs it in writing on the quote. */
   const QUOTE_TERMS = [
     'Quotes are based on the itinerary provided. Prices are subject to change if the itinerary is updated.',
     'A fuel surcharge may be added if fuel prices rise between the quote date and the trip date.',
     `A signed quote and a ${DEPOSIT_WORDS} deposit are required to reserve buses. School districts may provide a purchase order instead of the deposit.`,
-    'On overnight trips, the customer provides the driver’s hotel room, with two separate beds for two drivers (no sofa beds).',
+    ({ hotelQuoted }) => (hotelQuoted
+      ? 'Escamilla Tour Buses provides the driver’s hotel room, as quoted above. The customer is not responsible for it.'
+      : 'On overnight trips, the customer provides the driver’s hotel room, with two separate beds for two drivers (no sofa beds).'),
     'Cancellation fees: 20% within a month of departure, 50% within 48 hours, and 100% within 24 hours.',
     'Customers pay parking fees and tolls where they apply. Damage caused by passengers is added to the invoice.',
     'Escamilla Tour Buses may stop or delay service when acts of God, accidents, bad weather or other conditions beyond its control make it unsafe to operate.',
     'Escamilla Tour Buses is not responsible for lost, stolen or damaged personal items during the service.',
+    'All buses are equipped with three-point seat belts.',
   ];
 
   /* THE AGREEMENT'S POLICIES, as the office's Word form words them, but for
@@ -1543,13 +1559,17 @@
      into its text, a paragraph with none is the text alone, and `warn` sets
      the one the form prints in red. The payment policy's is worked out as
      the sheet is drawn, because the card fee it names is billing.js's, which
-     the driver's share page, loading this file too, does not load. */
+     the driver's share page, loading this file too, does not load, and the
+     lodging policy's because it follows the quote's Hotel line as the
+     quote's own term does. */
   const AGREEMENT_POLICIES = [
     { heading: 'Pricing Policy:', text: 'Quotes are based on the itinerary provided at the time. Prices are subject to change if itinerary is updated. Any changes to the itinerary resulting in additional mileage or affecting driver hours will result in price changes. A Fuel surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date. The amount will be calculated based on the gallons of fuel used on the trip and the fuel price difference.' },
     { heading: 'Trip Booking and Cancellation Policy:', text: `Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and ${DEPOSIT_WORDS} deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.` },
     { text: 'Cancellations one month prior to departure will incur a 20% cancellation fee. Cancellations 48 hours prior to departure will incur a 50% cancellation fee. Cancellations within 24 hours of departure, on the day of or during the trip will incur a 100% cancellation fee. All cancellations must be sent by email.' },
     { heading: 'Payment Policy:', text: () => `Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. A credit card payment carries a ${window.SchedulerBilling.cardFeeWords} processing fee. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.` },
-    { heading: 'Driver Lodging Policy:', text: 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).' },
+    { heading: 'Driver Lodging Policy:', text: ({ hotelQuoted }) => (hotelQuoted
+      ? 'Escamilla Tour Buses provides the hotel accommodations for its drivers on this trip, as shown on the quote. The customer is not responsible for the drivers’ hotel room. Bus drivers sleep in their own room separate from bus passengers.'
+      : 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).') },
     { heading: 'NOTE:', warn: true, text: 'As per FMCSA regulations, our drivers can drive up to 10 hours and stay on duty for a total of 15hrs, which includes both driving and non-driving duties. Once either the 15 hours on duty or 10 hour driving limits are reached, the driver must have 8 consecutive hours of rest. For your safety, please do not interrupt the driver’s rest period via constant phone calls, etc. The driver cannot move the bus during the rest period.' },
     { heading: 'Passenger Behavior Policy:', text: 'Passengers must always stay seated in the bus when in motion. Minors cannot board the bus without a supervising adult present. Passengers should avoid making excessive noise in the bus or distractions for the drivers. Microphone usage should be limited to trip coordinators or supervising adults. Foul language or inappropriate topics may result in microphone privileges being taken away.' },
     { text: 'Alcohol and drug usage is forbidden on our buses. Drivers can refuse passengers from boarding if they are under the influence of drugs or alcohol.' },
@@ -1558,7 +1578,7 @@
     { heading: 'Bus Cleanliness Policy:', text: 'Please help keep our buses clean! We may assess a $250 fee for excessive amounts of trash left behind on the bus. To reduce the chances of spills, please only bring bottled drinks with caps on board. Avoid bringing sticky, gummy candies on board, as they are very difficult to clean.' },
     { text: 'The restroom in the back of the bus is only to be used for emergencies. We strongly recommend avoiding #2 and keeping all bus restroom usage to a minimum to prevent unpleasant odors. Restroom breaks should be planned into your itinerary.' },
     { heading: 'Other Company Policies:', text: 'Escamilla Tour Buses is not responsible for any lost, stolen or damaged items during provided service. Please double check that no personal belongings are left behind at the end of your trip.' },
-    { text: 'Our buses are equipped with power outlets, seat belts, DVD player, microphone & Wi-Fi as a courtesy to our passengers. However, we cannot guarantee these functions will always be operational.' },
+    { text: 'Our buses are equipped with power outlets, three-point seat belts, DVD player, microphone & Wi-Fi as a courtesy to our passengers. However, we cannot guarantee these functions will always be operational.' },
     { text: 'Escamilla Tour Buses reserves the right to stop or delay service if any Act of God, accidents, bad weather, or other conditions beyond our control make it inadvisable or unsafe to operate the buses. While we strive for all trips to go smoothly and on time, sometimes unexpected delays can occur.' },
     { text: 'All our buses are equipped with modern emissions reduction equipment, as mandated by federal regulations. This can cause unplanned 1 hour trip delays, as occasional stationary exhaust filter regenerations are necessary to keep the buses operational. We have no control over these systems; the pollution control computers decide when a regen must take place.' },
   ];
@@ -1851,7 +1871,8 @@
     const fine = el('section', 'scheduler-customer-quote__fine');
     fine.appendChild(el('p', 'scheduler-customer-quote__heading', 'Terms'));
     const terms = el('ol', 'scheduler-customer-quote__terms');
-    for (const text of QUOTE_TERMS) terms.appendChild(el('li', 'scheduler-customer-quote__term', text));
+    const facts = quoteFacts(trip, blank);
+    for (const text of QUOTE_TERMS) terms.appendChild(el('li', 'scheduler-customer-quote__term', worded(text, facts)));
     fine.appendChild(terms);
     card.appendChild(fine);
 
@@ -1897,13 +1918,14 @@
       'I acknowledge that by signing this form I confirm that I have read and agree with the following Escamilla Tour Buses Policies:'));
 
     const policies = el('div', 'scheduler-customer-quote__policies');
+    const facts = quoteFacts(trip, blank);
     for (const { heading, text, warn } of AGREEMENT_POLICIES) {
       const p = el('p', `scheduler-customer-quote__policy${warn ? ' scheduler-customer-quote__policy--warn' : ''}`);
       if (heading) {
         p.appendChild(el('strong', 'scheduler-customer-quote__policy-heading', heading));
         p.appendChild(document.createTextNode(' '));
       }
-      p.appendChild(document.createTextNode(typeof text === 'function' ? text() : text));
+      p.appendChild(document.createTextNode(worded(text, facts)));
       policies.appendChild(p);
     }
     card.appendChild(policies);

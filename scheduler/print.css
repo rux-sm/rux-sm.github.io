@@ -1411,7 +1411,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    ITS SIZES ARE IN POINTS, on the invoice's 8-point rhythm, because the
    invoice it matches is laid out in points in QuickBooks' Layout Designer;
    the parts stand 12pt apart, down the sheet and across it, rather than the
-   invoice's 16, because the quote carries eight terms and a line to accept
+   invoice's 16, because the quote carries nine terms and a line to accept
    on the same sheet's 738pt.
 
    IT IS MONOCHROME: the logo is the only colour on it, and the sheet is
@@ -1765,7 +1765,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* THE FINE PRINT IS ONE SIZE ON BOTH SHEETS, the quote's terms and the
    agreement's policies: small and in two columns, the two boxes' columns, so
-   eight terms leave the line to accept on the same sheet as the price and a
+   nine terms leave the line to accept on the same sheet as the price and a
    policy's line is short enough to read. A term or a policy never breaks
    across the columns.
 

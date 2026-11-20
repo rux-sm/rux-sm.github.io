@@ -976,18 +976,18 @@
 
   /* THE LEG'S FIGURES, from route-figures.js, the Route tab's own sum: when
      the bus leaves the yard, is spotted and is back, which the yard and
-     pickup rows carry, then Miles, Drive, On duty and Less rest, one row on a
-     one-day leg; on a longer leg each day's
-     on its own heading, and the Total alone after the last day. Nothing on
-     the sheet is added up here. */
+     pickup rows carry, then each day's Miles, Drive, On duty and Less rest
+     on that day's heading, the leg's own on a leg of one day. No total of
+     the days is printed: hours are a day's, and the miles a trip is priced
+     on are in its price. Nothing on the sheet is added up here. */
   function dayWords(fig, day, headed) {
     /* A day after the last with a row is that row's: the bus came back the
        night before, and the morning's rows are the last day's drive home. It
        carries the figures only when the last day had no heading of its own
-       to carry them. */
+       to carry them. A leg of one day has one set of figures, its total. */
     const last = fig?.days ? fig.dates.at(-1) : null;
     const at = !last ? -1 : day > last ? (headed.has(last) ? -1 : fig.dates.length - 1) : fig.dates.indexOf(day);
-    const c = at >= 0 ? fig.each[at] : null;
+    const c = !fig ? null : !fig.days ? fig.total : at >= 0 ? fig.each[at] : null;
     if (!c) return '';
     const [miles, drive, onDuty, lessRest] = c;
     return [
@@ -996,26 +996,6 @@
       c.status ? `on duty ${c.status.toLowerCase()}` : onDuty !== '—' ? `${onDuty} on duty` : null,
       !c.status && lessRest !== '—' && lessRest !== onDuty ? `${lessRest} less rest` : null,
     ].filter(Boolean).join(' · ');
-  }
-
-  function detailedTotals(fig) {
-    const t = el('table', 'scheduler-driver-itinerary__table scheduler-driver-itinerary__totals');
-    t.appendChild(el('caption', 'rux--visually-hidden', 'Miles and hours'));
-    const heads = ['', 'Miles', 'Drive', 'On duty', 'Less rest'];
-    const head = el('thead');
-    const hr = el('tr');
-    for (const label of heads) {
-      const th = el('th', null, label);
-      th.scope = 'col';
-      hr.appendChild(th);
-    }
-    head.appendChild(hr);
-    const body = el('tbody');
-    const tr = el('tr');
-    for (const c of ['Total', ...fig.total]) tr.appendChild(el('td', null, c));
-    body.appendChild(tr);
-    t.append(head, body);
-    return t;
   }
 
   /* THE LEG'S PRICE, the Billing tab's quote lines as they were saved: the
@@ -1404,6 +1384,11 @@
       t.appendChild(body);
       card.appendChild(t);
     };
+    /* THE DETAILED SHEET HEADS A LEG OF ONE DAY WITH ITS DAY TOO, so every
+       leg reads the same way, a day's name over its stops with that day's
+       miles and hours beside it. The driver's sheet names a one-day leg's
+       day in its head and keeps no row for it. */
+    const oneDay = detailed && !manyDays ? legFrom || null : null;
     let shown = null;
     let yardOut = detailed;
     stops.forEach((stop, i) => {
@@ -1411,7 +1396,7 @@
       if (manyDays && dates[i] && dates[i] !== shown) {
         shown = dates[i];
         table(shown);
-      } else if (!body) table(null);
+      } else if (!body) table(oneDay);
       if (yardOut) {
         yardOut = false;
         const pickup = model.rows.pickup;
@@ -1419,7 +1404,7 @@
       }
       body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : restFor(stop), lateDays?.[i]));
     });
-    if (!body) table(null);
+    if (!body) table(oneDay);
     if (detailed && model.rows.back) {
       const back = model.rows.back;
       // A one-day leg back past midnight has the leg's own date on the row, or
@@ -1440,16 +1425,15 @@
       row.querySelector('[contenteditable]')?.focus();
     });
     card.appendChild(add);
-    /* THE SUMMARY, the miles and hours and then the price, each kept whole:
-       a fold through either would leave a total on another sheet from its
-       lines. A fold may fall between them, so the hours stay under the stops
-       they sum where only the price needs the next sheet. */
+    /* THE PRICE AFTER THE STOPS, kept whole: a fold through it would leave
+       the total on another sheet from its lines. */
     if (detailed) {
-      const summary = el('div', 'scheduler-driver-itinerary__summary');
-      summary.appendChild(detailedTotals(fig));
       const price = detailedPrice(subject, fig, model);
-      if (price) summary.appendChild(price);
-      card.appendChild(summary);
+      if (price) {
+        const summary = el('div', 'scheduler-driver-itinerary__summary');
+        summary.appendChild(price);
+        card.appendChild(summary);
+      }
     }
     return card;
   }

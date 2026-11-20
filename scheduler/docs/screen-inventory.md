@@ -242,8 +242,8 @@ Three homes, and one rule for choosing.
   every copy is ticked, and "1 of 2 printed" until then. Where the trip's customer, or the customer it is part of, asks for a kind of driver form, the list ends in Driver forms: one row for each kind, as McAllen ISD criminal waiver, 3 seated drivers, or with nobody seated, 16 available drivers, counted by `leg-facts.js`'s `readFormCopies`, which opens the Documents page's view of the trip's copies in a new tab, or says No active driver has a current one on file; a seated driver with none on file or one that has ended has a row saying so and linking to the upload; and under a driver whose forms are all on file a Printed box, ticked by hand on the seat because a file prints from the browser's own viewer; Departures lists the same under each driver, a form missing by its kind and Driver forms to print. The itinerary's Layout picks Simple, the
   driver's sheet, which says Rest in sleeper on a stop whose wait is sleeper berth and is what a driver's way in opens, or Detailed, the office's and the one it opens on otherwise, with Destination, Client and Contact on one line
   under the bar, the yard at both ends, each wait marked On duty, Off duty or Sleeper berth, and the Route tab's Miles, Drive, On
-  duty and Less rest, each day's on its heading and the total after the
-  stops, then the Billing tab's saved quote lines: the rental's miles, days,
+  duty and Less rest, each day's on its heading, a one-day leg's too,
+  then the Billing tab's saved quote lines: the rental's miles, days,
   mileage rate and dead miles, flagged when the route's miles have moved
   since, beside a typed price what the calculator makes it where the two
   differ, as Billing shows it, each second driver, relief, hotel and discount line and the total,

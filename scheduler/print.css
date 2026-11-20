@@ -1373,27 +1373,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-secondary);
 }
 
-/* The summary after the stops, the miles and hours and then the price, the
-   parts' 12pt under them and between them. Each is kept whole, on screen
-   too, where the preview reads it to place its folds, and a fold may fall
-   between the two: the hours stay under the stops they sum, and the price
-   goes over with its total. */
+/* The price after the stops, the parts' 12pt over it, kept whole, on
+   screen too, where the preview reads it to place its folds. */
 .scheduler-driver-itinerary__summary { margin-block-start: 12pt; }
 
-.scheduler-driver-itinerary__totals,
 .scheduler-driver-itinerary__priced { break-inside: avoid; }
 
-.scheduler-driver-itinerary__priced { margin-block-start: 12pt; }
-
-.scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__summary > .scheduler-driver-itinerary__totals,
 .scheduler-driver-itinerary[data-layout="detailed"] .scheduler-driver-itinerary__priced > .scheduler-driver-itinerary__price { margin-block-start: 0; }
 
-/* The miles and hours are one row under their names, in the sheet's weight
-   for a figure that is a total. */
-.scheduler-driver-itinerary__totals td { font-weight: 600; }
-
-/* The price after the miles and hours. Its first column is the hours'
-   first, a fifth, so the two boxes share an edge; Amount is the quote's
+/* The price's columns: its first is a fifth of the sheet; Amount is the quote's
    76pt; and what a line was priced on takes the rest, so a rental's keeps
    to one line. The amounts read to the trailing edge, as money on a bill
    does. */

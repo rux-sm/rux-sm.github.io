@@ -13,7 +13,7 @@
     "O2C-04",
     "P2D-02"
   ],
-  "updated": "2026-11-02",
+  "updated": "2026-11-19",
   "status": "approved",
   "summary": "give one item more demand than its stock covers, run planning on it, and read the orders LN suggests.",
   "order": 12,
@@ -128,7 +128,7 @@
         "text": "The finished item's Order Horizon date is after your sales order's delivery date."
       },
       "steps": 7,
-      "walked": "2026-11-02"
+      "walked": "2026-11-19"
     },
     {
       "id": "run-mrp_run-order-planning-for-one-item",

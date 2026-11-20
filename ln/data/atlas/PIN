@@ -1,9 +1,9 @@
-commit   1a59345513a01ab9aea7f2a232438d8c174eeaef
-date     2026-11-20T03:01:24Z
-subject  docs(tasks): Stamp order quantities as walked
+commit   ee4f30ed7eb2b801188796184e66c47b49013553
+date     2026-11-20T04:09:54Z
+subject  docs(walkthroughs): Record the planning review
 contract 25 
 tier     export
-sha256   b0f8f567bb789ae8b03840ea151f878d179c98e0e7b02ca040a3ef6d2033dfb2
+sha256   f1033c9e792dcbbc594f8984401158b33574ea1e6269d2598ee33ebdc85c92f6
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

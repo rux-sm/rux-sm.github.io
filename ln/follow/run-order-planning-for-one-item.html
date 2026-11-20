@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Run order planning · LN Notes · Updated 12 Nov 2026"; } }</style>
+<style>@page { @bottom-left { content: "Run order planning · LN Notes · Updated 19 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -109,7 +109,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="1a59345513a01ab9aea7f2a232438d8c174eeaef">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="ee4f30ed7eb2b801188796184e66c47b49013553">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -122,7 +122,7 @@
 <h1 class="rux--type-productive-heading-05">Run order planning</h1>
 <p class="rux--type-body-long-01">Give one item more demand than its stock covers, run planning on it, and read the orders LN suggests.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning, Sales</dd></div><div><dt>Code</dt><dd>O2C-04, P2D-02</dd></div><div><dt>Length</dt><dd>6 tasks, 34 steps</dd></div><div><dt>Updated</dt><dd>12 Nov 2026</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning, Sales</dd></div><div><dt>Code</dt><dd>O2C-04, P2D-02</dd></div><div><dt>Length</dt><dd>6 tasks, 34 steps</dd></div><div><dt>Updated</dt><dd>19 Nov 2026</dd></div></dl>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/make-the-item-visible-to-planning.html?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
@@ -206,7 +206,7 @@
 <section class="ln-proc__task" id="task-3">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">3</span><a class="rux--link" href="../do/put-the-demand-inside-the-horizon.html">Put the order inside the horizon</a></h3>
 <dl class="ln-proc__meta"><div><dt>Result</dt><dd>The finished item's <span class="ln-t-named">Order Horizon</span> date is after your sales order's delivery date.</dd></div><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Order Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Order Plan</span></span> (<span class="ln-t-exact ln-t-word">cprrp0520m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN works out the date by counting working days on the calendar of the item's warehouse, so trust the date it shows.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN counts them as working days on the item's calendar. For an item with a master plan it then moves the date to the end of a plan period, so trust the date it shows.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -216,7 +216,7 @@
 <tr id="step-3-2"><td data-k="Step"><b>3.2</b></td><td data-k="Action">Compare the horizon date with the delivery date from <a class="rux--link" href="#step-2-4">step 2.4</a>. If the horizon is later, this task is done</td><td data-k="You should see"></td></tr>
 <tr id="step-3-3"><td data-k="Step"><b>3.3</b></td><td data-k="Action">At the top, click <span class="ln-t-route"><span class="ln-t-whole">References</span><span class="sep">➔</span><span class="ln-t-whole">Item Details</span><span class="sep">➔</span><span class="dest ln-t-whole">Items - Planning</span></span></td><td data-k="You should see"><span class="ln-t-named">Items - Planning</span> opens for the same item</td></tr>
 <tr id="step-3-4"><td data-k="Step"><b>3.4</b></td><td data-k="Action">Click the <span class="ln-t-named">Horizons</span> tab</td><td data-k="You should see"><span class="ln-t-named">Order Horizon</span> as a number of days, with its date beside it</td></tr>
-<tr id="step-3-5"><td data-k="Step"><b>3.5</b></td><td data-k="Action">Type a larger number of days in <span class="ln-t-named">Order Horizon</span> and press Tab<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Order Horizon</span> <span class="ln-t-exact ln-t-word">30</span> days</span></span></td><td data-k="You should see">The date beside it moves</td></tr>
+<tr id="step-3-5"><td data-k="Step"><b>3.5</b></td><td data-k="Action">Type a larger number of days in <span class="ln-t-named">Order Horizon</span> and press Tab<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Order Horizon</span> <span class="ln-t-exact ln-t-word">30</span> days</span></span></td><td data-k="You should see">The date beside it moves to the end of a plan period</td></tr>
 <tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="put-the-demand-inside-the-horizon.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 3.5 · Items - Planning, Horizons tab</figcaption></figure></td></tr>
 <tr id="step-3-6"><td data-k="Step"><b>3.6</b></td><td data-k="Action">Check the new date is after the delivery date from <a class="rux--link" href="#step-2-4">step 2.4</a></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order horizon</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-3-7"><td data-k="Step"><b>3.7</b></td><td data-k="Action">Click <span class="ln-t-press">OK</span></td><td data-k="You should see"><span class="ln-t-named">Items - Planning</span> closes, and <span class="ln-t-named">Order Horizon</span> in the plan shows the new date</td></tr>
@@ -227,6 +227,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Put the order inside the horizon: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
+<tr><td data-k="Symptom">The date stays the same when you raise the days</td><td data-k="What to do">Both numbers end in the same plan period. Raise the days until the date jumps to the next one</td></tr>
 <tr><td data-k="Symptom">Planning makes nothing for your sales order</td><td data-k="What to do">The delivery date is after the <span class="ln-t-named">Order Horizon</span> date. Raise the days again from <a class="rux--link" href="#step-3-3">step 3.3</a>, and read the date LN shows rather than counting</td></tr>
 </tbody>
 </table></div>

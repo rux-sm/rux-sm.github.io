@@ -27,11 +27,11 @@
   "role": null,
   "roles": [],
   "status": "approved",
-  "updated": "2026-11-02",
+  "updated": "2026-11-19",
   "route": "Planning ➔ Order Planning ➔ Item Order Plan",
   "session": "Item Order Plan",
   "sessionCode": "cprrp0520m000",
-  "walked": "2026-11-02",
+  "walked": "2026-11-19",
   "achieves": {
     "tokens": [
       {
@@ -73,10 +73,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN works out the date by counting working days on the calendar of the item's warehouse, so trust the date it shows."
+        "v": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN counts them as working days on the item's calendar. For an item with a master plan it then moves the date to the end of a plan period, so trust the date it shows."
       }
     ],
-    "text": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN works out the date by counting working days on the calendar of the item's warehouse, so trust the date it shows."
+    "text": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN counts them as working days on the item's calendar. For an item with a master plan it then moves the date to the end of a plan period, so trust the date it shows."
   },
   "blocks": [
     {
@@ -325,10 +325,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The date beside it moves"
+                  "v": "The date beside it moves to the end of a plan period"
                 }
               ],
-              "text": "The date beside it moves"
+              "text": "The date beside it moves to the end of a plan period"
             }
           ],
           "id": "5",
@@ -496,6 +496,28 @@
       "What to check or do"
     ],
     "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The date stays the same when you raise the days"
+              }
+            ],
+            "text": "The date stays the same when you raise the days"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Both numbers end in the same plan period. Raise the days until the date jumps to the next one"
+              }
+            ],
+            "text": "Both numbers end in the same plan period. Raise the days until the date jumps to the next one"
+          }
+        ]
+      },
       {
         "cells": [
           {

@@ -1721,10 +1721,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__sum--total .scheduler-customer-quote__total-value { font-size: 14pt; }
 
-/* The terms and the acceptance each stay whole, so a quote whose items fill
-   the sheet sends them over to the next one together. */
+/* The terms and the acceptance each stay whole, and no page ends between
+   them, so a quote whose items fill the sheet sends both over to the next
+   one together: the lines to sign never stand on a sheet of their own. */
 .scheduler-customer-quote__fine,
 .scheduler-customer-quote__accept { break-inside: avoid; }
+.scheduler-customer-quote__accept { break-before: avoid; }
 
 .scheduler-customer-quote__fine { margin-block-start: 12pt; }
 

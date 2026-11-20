@@ -148,13 +148,13 @@
 
   /* THE BILL-TO UNDER A CUSTOMER'S NAME, which the printed quote and the
      QuickBooks invoice both write: its bill-to address as typed, or else its
-     usual pickup's address, the street over the city. The customer is read
+     usual pickup's address as `quote-text.js` writes one, the street over the
+     city. The customer is read
      as `customers(bill_to, usual:usual_location_id(address))`. */
   function billTo(customer) {
     const typed = String(customer?.bill_to || '').split('\n').map(s => s.trim()).filter(Boolean);
     if (typed.length) return typed;
-    const parts = String(customer?.usual?.address || '').split(',').map(s => s.trim()).filter(Boolean);
-    if (/^(united states( of america)?|usa|us)$/i.test(parts.at(-1) || '')) parts.pop();
+    const parts = TEXT.address(customer?.usual?.address).split(',').map(s => s.trim()).filter(Boolean);
     if (!parts.length) return [];
     /* The city line is the last "City, ST 12345" in it, so a suite or a
        second street line stays with the street; an address that has none

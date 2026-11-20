@@ -208,24 +208,9 @@
   }
   const contactOf = (trip, leg) => contactsOf(trip, leg)[0];
 
-  /* AN ADDRESS AS A FORM CAN CARRY IT. A stop's address is what a map service
-     returned, and its last two parts are noise on paper: the country is
-     understood and the state beside a ZIP is a postal code. On a 6 by 9
-     envelope they were the difference between one line and two. Only what is
-     printed changes; the stored address is untouched. */
-  const STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
-    .split(',').map(pair => pair.split(':')));
-
-  const COUNTRY = /^(united states( of america)?|usa|u\.s\.a\.|us)$/i;
-
-  function shortAddress(text) {
-    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
-    if (COUNTRY.test(parts.at(-1) || '')) parts.pop();
-    const tail = parts.at(-1);
-    const named = tail && tail.match(/^(.+?)\s+(\d{5}(?:-\d{4})?)$/);
-    if (named && STATES[named[1]]) parts[parts.length - 1] = `${STATES[named[1]]} ${named[2]}`;
-    return parts.join(', ');
-  }
+  // An address as a form carries it, the country dropped and the state a
+  // postal code: quote-text.js's rule, the one a customer's bill-to takes.
+  const shortAddress = text => window.SchedulerQuoteText.address(text);
 
   /* ── The envelope ─────────────────────────────────────────────────────── */
 

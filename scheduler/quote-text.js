@@ -47,6 +47,22 @@
     return at > 0 ? `${parts[at - 1]}, ${stateOf(parts[at])}` : parts.join(', ');
   }
 
+  /* AN ADDRESS AS PAPER CARRIES IT, "2101 North Ware Road, McAllen, TX
+     78501". What a map service returned ends in the country, which is
+     understood, and names the state in full beside its ZIP, where a postal
+     code says it shorter; on a 6 by 9 envelope they were the difference
+     between one line and two. Every form's stops and a customer's bill-to
+     are written through it, so one sheet never says Texas and TX. Only what
+     is printed changes; the stored address is untouched. */
+  const COUNTRY = /^(united states( of america)?|usa|u\.s\.a\.|us)$/i;
+  function address(text) {
+    const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
+    if (COUNTRY.test(parts.at(-1) || '')) parts.pop();
+    const named = parts.at(-1)?.match(/^(.+?)\s+(\d{5}(?:-\d{4})?)$/);
+    if (named && STATES[named[1]]) parts[parts.length - 1] = `${STATES[named[1]]} ${named[2]}`;
+    return parts.join(', ');
+  }
+
   /* A range as the office writes one: "Dec 11–13, 2026", the month named
      once inside a month, "Nov 30 – Dec 2, 2026" across two, and a single day
      left alone, the month abbreviated and the days joined by an en dash. */
@@ -132,5 +148,5 @@
     ].filter(Boolean).join('\n');
   }
 
-  window.SchedulerQuoteText = { place, dates, days, clock, vehicle, description };
+  window.SchedulerQuoteText = { place, address, dates, days, clock, vehicle, description };
 })();

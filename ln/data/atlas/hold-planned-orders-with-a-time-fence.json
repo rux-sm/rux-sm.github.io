@@ -1,0 +1,692 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "task",
+  "id": "hold-planned-orders-with-a-time-fence",
+  "title": "Hold planned orders with a time fence",
+  "process": {
+    "id": "freeze-the-near-term-plan",
+    "title": "Freeze the near-term plan",
+    "n": 0,
+    "of": 1
+  },
+  "previous": null,
+  "next": null,
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "codes": [],
+  "role": null,
+  "roles": [],
+  "status": "approved",
+  "updated": "2026-11-19",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": "2026-11-19",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A planning run leaves the item's planned orders before the time fence as they are."
+      }
+    ],
+    "text": "A planning run leaves the item's planned orders before the time fence as they are."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need an item whose plan already has planned orders: step 7 of "
+        },
+        {
+          "t": "link",
+          "v": "Run planning",
+          "href": "run-mrp_run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need an item whose plan already has planned orders: step 7 of Run planning."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A planning run throws away its planned orders and makes them again, so a small change can move orders you were about to act on. The time fence is a date, and before it LN keeps the planned orders it already has. Two boxes decide whether the fence counts, one on the item and one on the run. It holds only when the item's box is selected and the run's is cleared."
+      }
+    ],
+    "text": "A planning run throws away its planned orders and makes them again, so a small change can move orders you were about to act on. The time fence is a date, and before it LN keeps the planned orders it already has. Two boxes decide whether the fence counts, one on the item and one on the run. It holds only when the item's box is selected and the run's is cleared."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the item's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Item Details ➔ Items - Planning"
+                }
+              ],
+              "text": "In the item's Item Order Plan, click References ➔ Item Details ➔ Items - Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the item"
+                }
+              ],
+              "text": "Items - Planning opens for the item"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Horizons"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Click the Horizons tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Use Time Fence"
+                },
+                {
+                  "t": "text",
+                  "v": ", with "
+                },
+                {
+                  "t": "field",
+                  "v": "Time Fence"
+                },
+                {
+                  "t": "text",
+                  "v": " under it"
+                }
+              ],
+              "text": "Use Time Fence, with Time Fence under it"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "field",
+                  "v": "Use Time Fence"
+                }
+              ],
+              "text": "Select Use Time Fence"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Time Fence"
+                },
+                {
+                  "t": "text",
+                  "v": " can be typed in"
+                }
+              ],
+              "text": "Time Fence can be typed in"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the number of days in "
+                },
+                {
+                  "t": "field",
+                  "v": "Time Fence"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
+                }
+              ],
+              "text": "Type the number of days in Time Fence and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The fence's date and time under it — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "time fence"
+                }
+              ],
+              "text": "The fence's date and time under it — time fence"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true,
+          "example": [
+            1
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " closes"
+                }
+              ],
+              "text": "Items - Planning closes"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE ORDERS..."
+                },
+                {
+                  "t": "text",
+                  "v": " at the top"
+                }
+              ],
+              "text": "Click GENERATE ORDERS... at the top"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Generate within"
+                },
+                {
+                  "t": "text",
+                  "v": " selected"
+                }
+              ],
+              "text": "Generate Order Planning (Item) opens, with Generate within selected"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Clear "
+                },
+                {
+                  "t": "field",
+                  "v": "Generate within"
+                }
+              ],
+              "text": "Clear Generate within"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Confirm within"
+                },
+                {
+                  "t": "text",
+                  "v": " goes grey"
+                }
+              ],
+              "text": "Confirm within goes grey"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run it, as in steps 4 to 7 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Run planning",
+                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                }
+              ],
+              "text": "Run it, as in steps 4 to 7 of Run planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The planned orders dated before the fence keep their numbers and quantities"
+                }
+              ],
+              "text": "The planned orders dated before the fence keep their numbers and quantities"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              }
+            ],
+            "text": "BAM-ROD"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Time Fence"
+              }
+            ],
+            "text": "Time Fence"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "5"
+              },
+              {
+                "t": "text",
+                "v": " days"
+              }
+            ],
+            "text": "5 days"
+          }
+        ]
+      }
+    ]
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The run still changes the planned orders"
+              }
+            ],
+            "text": "The run still changes the planned orders"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The fence was not in force. It needs "
+              },
+              {
+                "t": "field",
+                "v": "Use Time Fence"
+              },
+              {
+                "t": "text",
+                "v": " selected on the item and "
+              },
+              {
+                "t": "field",
+                "v": "Generate within"
+              },
+              {
+                "t": "text",
+                "v": " cleared on the run, both"
+              }
+            ],
+            "text": "The fence was not in force. It needs Use Time Fence selected on the item and Generate within cleared on the run, both"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Time Fence"
+              },
+              {
+                "t": "text",
+                "v": " is grey"
+              }
+            ],
+            "text": "Time Fence is grey"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Use Time Fence"
+              },
+              {
+                "t": "text",
+                "v": " is cleared. Select it, as in step 3"
+              }
+            ],
+            "text": "Use Time Fence is cleared. Select it, as in step 3"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "New demand before the fence gets no planned order"
+              }
+            ],
+            "text": "New demand before the fence gets no planned order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "That is the fence working: LN plans only after it. Plan inside it once, as in the first variant"
+              }
+            ],
+            "text": "That is the fence working: LN plans only after it. Plan inside it once, as in the first variant"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Plan inside the fence once"
+              }
+            ],
+            "text": "Plan inside the fence once"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Leave "
+              },
+              {
+                "t": "field",
+                "v": "Generate within"
+              },
+              {
+                "t": "text",
+                "v": " selected at step 7. LN makes every planned order again, fence or not"
+              }
+            ],
+            "text": "Leave Generate within selected at step 7. LN makes every planned order again, fence or not"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Keep single orders, not a period"
+              }
+            ],
+            "text": "Keep single orders, not a period"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Confirm the planned orders you want kept, in "
+              },
+              {
+                "t": "session",
+                "code": "cprrp1200m000",
+                "name": "Confirm Order Planning"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
+              },
+              {
+                "t": "text",
+                "v": ". A run keeps a confirmed order whatever the fence says"
+              }
+            ],
+            "text": "Confirm the planned orders you want kept, in Confirm Order Planning (cprrp1200m000), Planning ➔ Order Planning ➔ Confirm Order Planning. A run keeps a confirmed order whatever the fence says"
+          }
+        ]
+      }
+    ]
+  }
+}

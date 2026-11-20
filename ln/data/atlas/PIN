@@ -1,9 +1,9 @@
-commit   ee4f30ed7eb2b801188796184e66c47b49013553
-date     2026-11-20T04:09:54Z
-subject  docs(walkthroughs): Record the planning review
+commit   4d39c75ffc72ea89f9c30608a44b982d1e185492
+date     2026-11-20T05:03:46Z
+subject  docs(walkthroughs): Record the time fence review
 contract 25 
 tier     export
-sha256   f1033c9e792dcbbc594f8984401158b33574ea1e6269d2598ee33ebdc85c92f6
+sha256   b47d8686665ae813246170f9ab1698cd995c9b1970ef50ca7b1a085a58f28b67
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

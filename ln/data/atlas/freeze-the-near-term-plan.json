@@ -1,0 +1,365 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "process",
+  "id": "freeze-the-near-term-plan",
+  "title": "Freeze the near-term plan",
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "codes": [],
+  "updated": "2026-11-19",
+  "status": "approved",
+  "summary": "stop planning from changing the planned orders closest to today, so what you are about to act on stays put.",
+  "order": 13,
+  "sources": [
+    "cprpd1100m000",
+    "cprrp0520m000",
+    "cprrp1200m000",
+    "cprrp1220m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need an item that planning already makes planned orders for. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " gets you there."
+        }
+      ],
+      "text": "You need an item that planning already makes planned orders for. Run order planning gets you there."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "hold-planned-orders-with-a-time-fence",
+      "n": 0,
+      "title": "Hold planned orders with a time fence",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A planning run leaves the item's planned orders before the time fence as they are."
+          }
+        ],
+        "text": "A planning run leaves the item's planned orders before the time fence as they are."
+      },
+      "steps": 8,
+      "walked": "2026-11-19"
+    }
+  ],
+  "values": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              }
+            ],
+            "text": "BAM-ROD"
+          }
+        ],
+        "task": "hold-planned-orders-with-a-time-fence"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Time Fence"
+              }
+            ],
+            "text": "Time Fence"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "5"
+              },
+              {
+                "t": "text",
+                "v": " days"
+              }
+            ],
+            "text": "5 days"
+          }
+        ],
+        "task": "hold-planned-orders-with-a-time-fence"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " stop planning from changing the planned orders closest to today, so what you are about to act on stays put."
+        }
+      ],
+      "text": "Objective: stop planning from changing the planned orders closest to today, so what you are about to act on stays put."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need an item that planning already makes planned orders for. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " gets you there."
+        }
+      ],
+      "text": "> Prerequisite > You need an item that planning already makes planned orders for. Run order planning gets you there."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide changes an item's planning data."
+        },
+        {
+          "t": "text",
+          "v": " The fence stays on the item after you finish, and it holds only on the runs where "
+        },
+        {
+          "t": "field",
+          "v": "Generate within"
+        },
+        {
+          "t": "text",
+          "v": " is cleared."
+        }
+      ],
+      "text": "> Warning > This guide changes an item's planning data. The fence stays on the item after you finish, and it holds only on the runs where Generate within is cleared."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Task",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Hold planned orders with a time fence",
+                  "href": "hold-planned-orders-with-a-time-fence.md"
+                }
+              ],
+              "text": "Hold planned orders with a time fence"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Item Order Plan; Items - Planning; Generate Order Planning (Item)"
+                }
+              ],
+              "text": "Item Order Plan; Items - Planning; Generate Order Planning (Item)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A planning run leaves the item's planned orders before the time fence as they are"
+                }
+              ],
+              "text": "A planning run leaves the item's planned orders before the time fence as they are"
+            }
+          ]
+        }
+      ],
+      "under": "At a glance"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The planned orders' numbers show whether it worked."
+        },
+        {
+          "t": "text",
+          "v": " Write down the planned orders before the fence date, run planning, and read them again. If their numbers or quantities changed, the fence was not in force."
+        }
+      ],
+      "text": "The planned orders' numbers show whether it worked. Write down the planned orders before the fence date, run planning, and read them again. If their numbers or quantities changed, the fence was not in force.",
+      "under": "At a glance"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Planning every item"
+                }
+              ],
+              "text": "Planning every item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp1210m000",
+                  "name": "Generate Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Generate Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", has the same "
+                },
+                {
+                  "t": "field",
+                  "v": "Generate within"
+                },
+                {
+                  "t": "text",
+                  "v": " box for a range of items. Each item still needs its own "
+                },
+                {
+                  "t": "field",
+                  "v": "Use Time Fence"
+                }
+              ],
+              "text": "Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning, has the same Generate within box for a range of items. Each item still needs its own Use Time Fence"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
+    },
+    {
+      "kind": "downstream",
+      "columns": [
+        "Now that…",
+        "Next walkthrough",
+        "Start at"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The near-term planned orders hold"
+                }
+              ],
+              "text": "The near-term planned orders hold"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ]
+        }
+      ],
+      "under": "Downstream actions"
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 1
+}

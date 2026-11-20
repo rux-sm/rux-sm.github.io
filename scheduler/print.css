@@ -1674,9 +1674,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__table { block-size: 200pt; }
 .scheduler-customer-quote__room { block-size: 100%; }
 
-/* Under the items, the thanks on the leading edge, with the button over it
-   on screen, and the totals on the trailing one, as wide as the head's
-   column. */
+/* Under the items, the totals on the trailing edge, and on screen the
+   button that adds a line on the leading one. */
 .scheduler-customer-quote__under {
   display: flex;
   justify-content: space-between;
@@ -1685,10 +1684,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin-block-start: 12pt;
 }
 
-/* The totals boxed in the table's border, so the last row needs no rule of
-   its own. */
+/* THE TOTALS ARE ONE ROW, boxed in the table's border: each a cell as wide
+   as the head's column, side by side, a rule between them, so a deposit
+   beside its total costs the sheet one row where two stacked cost two. */
 .scheduler-customer-quote__sums {
-  inline-size: 200pt;
+  display: flex;
   margin-inline-start: auto;
   border: 1px solid var(--rux-border-strong-01);
 }
@@ -1696,26 +1696,27 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* A label and its figure stand on one baseline, whatever their sizes, in
    the middle of the row's depth. */
 .scheduler-customer-quote__sum {
-  box-sizing: content-box;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
   align-content: center;
   column-gap: 8pt;
+  inline-size: 200pt;
   margin: 0;
   padding: 0 8pt;
   min-block-size: 24pt;
   line-height: 16pt;
-  border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
-.scheduler-customer-quote__sum:last-child { border-block-end: 0; }
+.scheduler-customer-quote__sum + .scheduler-customer-quote__sum {
+  border-inline-start: 1px solid var(--rux-border-strong-01);
+}
 
-/* THE TOTAL UNDER THE ITEMS, on the grey the labels stand on, at their
-   depth and in their ink, bold, so the price is what the eye finds without
-   a colour. */
+/* THE TOTAL UNDER THE ITEMS, the last cell, under the amounts it adds up,
+   on the grey the labels stand on, at their depth and in their ink, bold,
+   so the price is what the eye finds without a colour. */
 .scheduler-customer-quote__sum--total {
-  border-block-end: 0;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   font-weight: 600;
@@ -1837,26 +1838,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* What the sheet says to its reader rather than about the trip: the way
-   back, and the thanks beside the totals, in a line as deep as the totals'
-   last row and so on its baseline, under the button on screen. */
-.scheduler-customer-quote__lead {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  align-self: stretch;
-}
-
-.scheduler-customer-quote__how,
-.scheduler-customer-quote__thanks {
+   back, beside the heading over the lines to sign. */
+.scheduler-customer-quote__how {
   margin: 0;
   font-size: 9pt;
   line-height: 12pt;
   color: var(--rux-text-secondary);
-}
-
-.scheduler-customer-quote__thanks {
-  margin-block-start: auto;
-  line-height: 24pt;
 }
 
 /* ── The agreement ────────────────────────────────────────────────────────

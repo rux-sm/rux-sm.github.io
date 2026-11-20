@@ -1151,8 +1151,9 @@
       row.append(el('span', null, label), el('span', own ? 'scheduler-customer-quote__total-value' : null, usd(amount)));
       sums.appendChild(row);
     };
-    sumRow(split ? `${legName(trip, leg)} total` : 'Total', total, true);
+    // The lines' own total stands last, under the amounts it adds up.
     if (split && quoted !== null && quoted !== total) sumRow('Trip total', quoted, false);
+    sumRow(split ? `${legName(trip, leg)} total` : 'Total', total, true);
     const under = el('div', 'scheduler-customer-quote__under');
     under.appendChild(sums);
     // The lines and their total are one block, which a fold never parts.
@@ -1768,12 +1769,12 @@
     return table;
   }
 
-  /* UNDER THE ITEMS, the Total and the deposit on the trailing edge, as the
-     invoice sets its totals, the thanks on the leading one, where the invoice
-     keeps its message, and on screen the button that adds a line, which
-     print.css takes off the paper. The Total is the lines' sum, held on a
-     quote drawn from a trip and typed on a blank one, and the deposit follows
-     it. */
+  /* UNDER THE ITEMS, the deposit and the Total side by side on the trailing
+     edge, the Total last, under the amounts it adds up, so the two take one
+     row of the sheet and leave the other to the items; and on screen the
+     button that adds a line, which print.css takes off the paper. The Total
+     is the lines' sum, held on a quote drawn from a trip and typed on a
+     blank one, and the deposit follows it. */
   function quoteSums(table, lines, blank) {
     const under = el('div', 'scheduler-customer-quote__under');
     const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
@@ -1793,11 +1794,9 @@
     total.append(el('span', null, 'Quote total'), value);
     const deposit = el('p', 'scheduler-customer-quote__sum');
     deposit.append(el('span', null, `Deposit (${DEPOSIT_WORDS})`), el('span', 'scheduler-customer-quote__deposit'));
-    sums.append(total, deposit);
+    sums.append(deposit, total);
     sums.addEventListener('input', () => showSums(sums.closest('.scheduler-customer-quote')));
-    const lead = el('div', 'scheduler-customer-quote__lead');
-    lead.append(add, el('p', 'scheduler-customer-quote__thanks', 'Thank you for choosing Escamilla Tour Buses'));
-    under.append(lead, sums);
+    under.append(add, sums);
     return under;
   }
 

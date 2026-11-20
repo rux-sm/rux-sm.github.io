@@ -114,7 +114,12 @@ A container scans the collection at 4 a.m. each night, and once when it
 starts, with `emu/tools/scan-roms.mjs --save`, the only scan of the
 collection, so a game put on the server is in the Library the next morning. It also puts each BIOS, key, firmware and installer put on the
 server into Supabase, a newer installer in place of its emulator's older
-one, and asks each emulator's project for its newest version out. It reads
+one, and asks each emulator's project for its newest version out. It keeps
+each game's cover: rux's own picture in the share's `art` folder, as
+`emu/docs/emulator-setup.md` names it, else one fetched once from libretro's
+thumbnails on GitHub into the `art` folder of `scan-cache`, and puts it in
+Supabase for the pages; a game libretro has no cover for is asked about again
+after a week. It reads
 the games read-only and keeps its fingerprints, its last scan and the
 organize tool's renames in its own `scan-cache` volume, so only a new or
 changed file is read whole.
@@ -159,8 +164,9 @@ changed file is read whole.
 ```
 
 The app's **Logs** print one line a night: how many games and saves
-it found and what changed, such as `2 added, 1 gone`, or `nothing changed`,
-and any project that gave no newest version.
+it found and what changed, such as `2 added, 1 gone, 2 covers fetched`, or
+`nothing changed`, any project that gave no newest version, and how many
+covers wait for tomorrow when GitHub did not answer.
 A night whose scan fails prints why and tries again the next night.
 
 ## The copy of Supabase

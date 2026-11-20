@@ -7,7 +7,10 @@
    `givenChanged` says which BIOS, key, firmware and installer files the
    server holds that Supabase lacks or holds another copy of, and `putGiven`
    puts them there, an installer in place of its emulator's older one;
-   `putFile` and `dropFile` are one file in and out of Supabase.
+   `putFile` and `dropFile` are one file in and out of Supabase. `fetchArt`
+   is a game's cover from libretro's thumbnails, `artChanged` says which
+   covers the server keeps that Supabase lacks or no longer needs, and
+   `putArt` puts and removes them.
 
    `save` writes through a `db` of four calls, which each side makes:
    `clientDb` from the signed-in account's Supabase client in the browser,
@@ -127,15 +130,16 @@
   // copy of: told by its size and the second it was last changed, since the
   // home server's share keeps a file's time no finer. `stat(path)` is the
   // file's { size, mtimeMs }, or null; `held` is emu_files_now's rows.
+  const second = ms => Math.floor(ms / 1000);
+  const same = (have, st) => Boolean(have) && Number(have.size) === st.size && second(Date.parse(have.saved_at)) === second(st.mtimeMs);
+  const savedAt = st => new Date(Math.round(st.mtimeMs)).toISOString();
   async function givenChanged(scan, stat, held) {
-    const second = ms => Math.floor(ms / 1000);
     const heldAt = new Map(held.map(f => [f.path, f]));
     const out = [];
     for (const path of [...scan.bios.map(b => `bios/${b.name}`), ...scan.installers.map(i => `emulators/${i.name}`)]) {
       const st = await stat(path);
-      const have = heldAt.get(path);
-      if (!st || (have && Number(have.size) === st.size && second(Date.parse(have.saved_at)) === second(st.mtimeMs))) continue;
-      out.push({ path, size: st.size, saved: new Date(Math.round(st.mtimeMs)).toISOString() });
+      if (!st || same(heldAt.get(path), st)) continue;
+      out.push({ path, size: st.size, saved: savedAt(st) });
     }
     return out;
   }
@@ -156,6 +160,72 @@
       const others = (await db.rows('emu_files_now', 'path,sha1'))
         .filter(o => o.sha1 && o.path.startsWith('emulators/') && o.path !== f.path && of(o.path) === of(f.path));
       for (const old of others) await dropFile(db, old.path);
+    }
+  }
+
+  // Box art is libretro's thumbnails on GitHub, one repository a system,
+  // named as the system with _ for each space. Switch has none.
+  const ART = {
+    nes: 'Nintendo - Nintendo Entertainment System', snes: 'Nintendo - Super Nintendo Entertainment System',
+    n64: 'Nintendo - Nintendo 64', gb: 'Nintendo - Game Boy', gbc: 'Nintendo - Game Boy Color',
+    gba: 'Nintendo - Game Boy Advance', nds: 'Nintendo - Nintendo DS', n3ds: 'Nintendo - Nintendo 3DS',
+    gc: 'Nintendo - GameCube', wii: 'Nintendo - Wii', wiiu: 'Nintendo - Wii U',
+    psx: 'Sony - PlayStation', ps2: 'Sony - PlayStation 2', xbox: 'Microsoft - Xbox',
+  };
+  const ART_AT = 'https://raw.githubusercontent.com/libretro-thumbnails';
+  // A game's cover in Supabase is `art/<system>/<title>` and its picture's ending.
+  const artKey = g => `art/${g.system}/${g.title}`;
+  const PICTURE = /\.(png|jpe?g|webp)$/i;
+  // The names a game's cover may have there: its list names, then its title,
+  // then its title less the disc, so a multi-disc game finds one cover.
+  const artNames = g => [...new Set([...(g.match?.names ?? []), g.title, g.title.replace(/ \(Disc \d+\)/, '')])];
+  const isPng = b => b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
+
+  // A game's cover from libretro's thumbnails as bytes, or null when they
+  // have none. Each picture is named after the game's list name with
+  // &*/:`<>?\| as _. GitHub sends a picture that is a link to another as the
+  // other's file name in text, so that one is fetched in its place. Anything
+  // but an answer or a 404 is an error, so a night GitHub is down is not
+  // taken for a game with no cover.
+  async function fetchArt(game, fetch = globalThis.fetch) {
+    const set = ART[game.system];
+    if (!set) return null;
+    const get = async file => {
+      const res = await fetch(`${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(file)}`);
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`libretro's thumbnails: ${res.status}`);
+      return new Uint8Array(await res.arrayBuffer());
+    };
+    for (const name of artNames(game)) {
+      let bytes = await get(`${name.replace(/[&*/:`<>?\\|]/g, '_')}.png`);
+      if (bytes && !isPng(bytes)) {
+        const to = bytes.length < 512 ? new TextDecoder().decode(bytes).trim() : '';
+        bytes = /^[^/\\\0\n]+\.png$/.test(to) ? await get(to) : null;
+      }
+      if (bytes && isPng(bytes)) return bytes;
+    }
+    return null;
+  }
+
+  // What the covers the server keeps change in Supabase. `covers` is each
+  // game's, as { path, size, mtimeMs }; `held` is emu_files_now's rows under
+  // art/. One Supabase lacks or holds another copy of is put, and one held
+  // for a game or a picture no longer there is gone.
+  function artChanged(covers, held) {
+    const have = new Map(held.map(f => [f.path, f]));
+    const wanted = new Set(covers.map(c => c.path));
+    return {
+      put: covers.filter(c => !same(have.get(c.path), c)).map(c => ({ path: c.path, size: c.size, saved: savedAt(c), replaces: have.has(c.path) })),
+      gone: held.map(f => f.path).filter(p => !wanted.has(p)),
+    };
+  }
+  // Those changes made: a cover gone is taken out, and one put takes the
+  // place of the copy held, so Supabase keeps one copy of each.
+  async function putArt(db, { put, gone }, { sha1Of, bytesOf, mac }) {
+    for (const path of gone) await dropFile(db, path);
+    for (const { replaces, ...f } of put) {
+      if (replaces) await dropFile(db, f.path);
+      await putFile(db, { ...f, sha1: await sha1Of(f.path), mac }, () => bytesOf(f.path));
     }
   }
 
@@ -217,7 +287,8 @@
     };
   }
 
-  const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven, clientDb, restDb };
+  const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven,
+    ART, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Emu = Object.assign(root.Emu || {}, { scanSave: api });
 })(typeof window === 'object' ? window : globalThis);

@@ -158,6 +158,75 @@ const scan = {
   check('the older installer\'s bytes go with it', !w.objects.has('c'.repeat(40)));
 }
 
+// A game's cover from libretro's thumbnails, by its names, a link followed.
+{
+  const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1]);
+  const text = t => new TextEncoder().encode(t);
+  const at = 'https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy/HEAD/Named_Boxarts/';
+  const shelf = {
+    [`${at}${encodeURIComponent('Plain Game (World).png')}`]: png,
+    [`${at}${encodeURIComponent('Linked Game (USA).png')}`]: text('Linked Game (World).png'),
+    [`${at}${encodeURIComponent('Linked Game (World).png')}`]: png,
+    [`${at}${encodeURIComponent('Odd Link (USA).png')}`]: text('../somewhere/else.png'),
+    [`${at}${encodeURIComponent('Tom _ Jerry (USA).png')}`]: png,
+    [`${at}${encodeURIComponent('Two Discs (USA).png')}`]: png,
+  };
+  const asked = [];
+  const fetch = async to => {
+    asked.push(to);
+    if (to.includes('Broken')) return { ok: false, status: 503 };
+    const body = shelf[to];
+    return body ? { ok: true, status: 200, arrayBuffer: async () => body.buffer } : { ok: false, status: 404 };
+  };
+  const cover = (title, names) => scanSave.fetchArt({ system: 'gb', title, match: names ? { names } : null }, fetch);
+  check('a cover is found by the game\'s list name', (await cover('plain', ['Plain Game (World)']))?.length === png.length);
+  check('a picture that is a link is followed', (await cover('Linked Game (USA)'))?.length === png.length);
+  check('a link that leaves the folder is not', (await cover('Odd Link (USA)')) === null);
+  check('a name\'s & is asked for as _', (await cover('Tom & Jerry (USA)'))?.length === png.length);
+  check('a disc finds its game\'s one cover', (await cover('Two Discs (USA) (Disc 2)'))?.length === png.length);
+  check('a game libretro lacks has none', (await cover('Nobody Has This')) === null);
+  const before = asked.length;
+  check('a system libretro has no art for is not asked', (await scanSave.fetchArt({ system: 'switch', title: 'Any' }, fetch)) === null && asked.length === before);
+  let threw = false;
+  try { await cover('Broken Night'); } catch { threw = true; }
+  check('a night GitHub fails is an error, not a missing cover', threw);
+}
+
+// The covers the server keeps: which differ, and putting them in Supabase.
+{
+  const held = [
+    { path: 'art/gb/Same (World).png', size: 10, saved_at: '2026-11-01T00:00:00.400Z', sha1: 'a'.repeat(40) },
+    { path: 'art/gb/Redrawn (World).png', size: 10, saved_at: '2026-11-01T00:00:00Z', sha1: 'b'.repeat(40) },
+    { path: 'art/gb/Gone (World).png', size: 10, saved_at: '2026-11-01T00:00:00Z', sha1: 'c'.repeat(40) },
+    { path: 'art/gb/Now Own (World).png', size: 10, saved_at: '2026-11-01T00:00:00Z', sha1: 'd'.repeat(40) },
+  ];
+  const covers = [
+    { path: 'art/gb/Same (World).png', size: 10, mtimeMs: Date.parse('2026-11-01T00:00:00.900Z') },
+    { path: 'art/gb/Redrawn (World).png', size: 14, mtimeMs: Date.parse('2026-11-05T00:00:00Z') },
+    { path: 'art/gb/New (World).png', size: 7, mtimeMs: Date.parse('2026-11-06T00:00:00Z') },
+    { path: 'art/gb/Now Own (World).jpg', size: 9, mtimeMs: Date.parse('2026-11-07T00:00:00Z') },
+  ];
+  const change = scanSave.artChanged(covers, held);
+  const puts = change.put.map(f => f.path).sort();
+  check('a cover the same to the second is left', !puts.includes('art/gb/Same (World).png'), puts);
+  check('a redrawn cover and a new one are put', ['art/gb/New (World).png', 'art/gb/Redrawn (World).png'].every(p => puts.includes(p)), puts);
+  check('a cover whose game is gone goes', change.gone.includes('art/gb/Gone (World).png'), change.gone);
+  check('rux\'s own picture takes the place of libretro\'s', puts.includes('art/gb/Now Own (World).jpg') && change.gone.includes('art/gb/Now Own (World).png'), change);
+
+  const w = world({ emu_files: held.map(({ path, sha1, size }) => ({ path, sha1, size })) });
+  for (const f of held) w.objects.set(f.sha1, 'old');
+  const sha = { 'art/gb/Redrawn (World).png': 'e'.repeat(40), 'art/gb/New (World).png': 'f'.repeat(40), 'art/gb/Now Own (World).jpg': '9'.repeat(40) };
+  await scanSave.putArt(scanSave.restDb({ url, key: KEY, fetch: w.fetch }), change, {
+    sha1Of: async p => sha[p], bytesOf: async p => `bytes of ${p}`, mac: 'home server',
+  });
+  const rows = w.tables.emu_files.map(f => f.path).sort();
+  check('Supabase then holds one row a cover the server keeps', JSON.stringify(rows) === JSON.stringify(covers.map(c => c.path).sort()), rows);
+  check('a redrawn cover\'s old bytes go and its new ones arrive', !w.objects.has('b'.repeat(40)) && w.objects.has('e'.repeat(40)), [...w.objects.keys()]);
+  check('a gone cover\'s bytes go with it', !w.objects.has('c'.repeat(40)) && !w.objects.has('d'.repeat(40)), [...w.objects.keys()]);
+  check('an untouched cover keeps its bytes', w.objects.has('a'.repeat(40)));
+  check('each cover put names the server', w.tables.emu_files.filter(f => sha[f.path]).every(f => f.mac === 'home server'), w.tables.emu_files);
+}
+
 // A refusal is an error, never a quiet success.
 {
   const db = scanSave.restDb({ url, key: 'the-wrong-key', fetch: world({}).fetch });

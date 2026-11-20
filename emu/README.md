@@ -64,7 +64,9 @@ runs it. It runs `scan.js`, which reads every game in the server's roms folder
 and the BIOS in its bios folder, and saves the scan to Supabase: every game and
 save, leaving rux's notes, moving the notes of a game the organize tool renamed,
 removing what is no longer there, and each BIOS, key, firmware and installer
-Supabase lacks. It keeps its fingerprints and the scan in its cache folder and
+Supabase lacks. It keeps each game's cover, rux's own picture from the games
+folder's `art` folder or libretro's fetched once, and puts it in Supabase. It
+keeps its fingerprints, the scan and the fetched covers in its cache folder and
 never writes beside the games. Each save is matched to its game the way its
 emulator names it, by file name, title ID, disc ID or serial, as
 `emulators.json` says for each system. The first scan fingerprints every file;
@@ -105,7 +107,7 @@ downloaded into it from the home server or removed. The app carries its own
 stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, and the `emu-backups` bucket the old backup zips.
 `emu_files` lists each copy of each file the `emu-collection` bucket holds, its bytes there
 under its SHA-1 and its newest copy in the view `emu_files_now`: the BIOS, keys, firmware
-and installers every Mac is given, and the last five copies of each Mac's settings for an
+and installers every Mac is given, each game's cover, and the last five copies of each Mac's settings for an
 emulator and of its preferred set. Only the owner reads them, and `docs/database-access.md`
 is the rule. Nothing from the collection is ever written here, because this repository is
 public.

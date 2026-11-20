@@ -46,7 +46,13 @@ as a `.p12` file and import it there.
    server, which `emu/README.md` describes, so each disc is one CHD and each
    file has its list name.
 3. The server's nightly scan, which `emu/docs/home-server.md` sets up, puts
-   them in Supabase by the next morning.
+   them in Supabase by the next morning, with each new game's cover.
+4. The next morning, open Problems for anything the scan found wrong with a
+   new game, and Rux's Server for its cover.
+5. For a game that shows its title in place of a cover, put a picture at
+   `<share>/art/<system>/<title>.png`, or `.jpg` or `.webp`, named as the
+   Collection names the game; the next scan takes it. A picture put there
+   for a game that has a cover takes that cover's place.
 
 Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
 

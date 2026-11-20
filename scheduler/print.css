@@ -1624,9 +1624,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-customer-quote__line-item:first-child td { padding-block-start: 8pt; }
 
 /* A DESCRIPTION OF SEVERAL LINES IS A HEADING OVER ITS DETAILS: its first
-   line is what the line is, "52-seat round trip", in the sheet's size and
-   bold, on the Item's and the figures' line, and the days, the places and
-   the times under it are smaller and in the secondary ink. It is the first
+   line is what the line is, "52 seats · Round trip", in the sheet's own
+   size, weight and ink, as the Item beside it and a sentence under it are,
+   and the days, the times and the places under it are smaller and in the
+   secondary ink, which is what sets the heading apart. It is the first
    line as typed, not a part of its own, so a line the office corrects is
    set the same way. A description that is one sentence, an added driver's
    or a discount's, stays the sheet's plain text, because the first line of
@@ -1638,9 +1639,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 .scheduler-customer-quote__desc--lines::first-line {
-  font-size: 12pt;
+  font-size: 11pt;
   line-height: 16pt;
-  font-weight: 600;
   color: var(--rux-text-primary);
 }
 

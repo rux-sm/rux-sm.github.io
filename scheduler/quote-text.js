@@ -89,11 +89,12 @@
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
 
-  /* The vehicle, "52-seat", as the coach trade sizes a bus, with no count of
-     buses because the line's Quantity carries it. A quote names the seats
-     the customer asked for, never the assigned bus's: 52, and 56 only where
-     a vehicle of the line carries the 56 passengers need on the Buses tab. */
-  const vehicle = pax56 => `${pax56 ? 56 : 52}-seat`;
+  /* The vehicle, "52 seats", as the coach trade sizes a bus, with no count of
+     buses because the line's Quantity carries it and no "bus" because the
+     line's Item says Bus Rental. A quote names the seats the customer asked
+     for, never the assigned bus's: 52, and 56 only where a vehicle of the
+     line carries the 56 passengers need on the Buses tab. */
+  const vehicle = pax56 => `${pax56 ? 56 : 52} seats`;
 
   /* The day a trip is back: its own last day, or the next on a one-day trip
      back at an earlier hour than it left, past midnight by past-midnight.js's
@@ -117,7 +118,9 @@
     return from ? dates(from, trip.leg ? trip.to || from : backOn(trip)) : '';
   }
 
-  /* The block itself, three lines: what it is, "52-seat round trip"; when,
+  /* The block itself, three lines: what it is, "52 seats · Round trip", the
+     bus's size and the kind of trip, two facts a dot apart as the days and
+     the times are; when,
      the days a customer's office matches an invoice by and the times from
      leaving to getting back, "Nov 16–17, 2026 · 6:00 AM – 8:42 PM"; and the
      places, "Mission, TX to San Antonio, TX". The days and the times share
@@ -144,7 +147,7 @@
       : !trip.leave && !trip.back ? 'Times TBD'
         : `${clock(trip.leave) || 'TBD'} – ${clock(trip.back) || 'TBD'}`;
     return [
-      `${vehicle(trip.pax56)} ${kind}`,
+      `${vehicle(trip.pax56)} · ${kind[0].toUpperCase()}${kind.slice(1)}`,
       [days(trip), times].filter(Boolean).join(' · '),
       start && end ? `${start} to ${end}` : start ? `from ${start}` : end ? `to ${end}` : null,
     ].filter(Boolean).join('\n');

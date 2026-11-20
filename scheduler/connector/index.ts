@@ -402,7 +402,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off; a relief driver drives two hours or less at one end of a leg, so is busy only on the day the bus leaves (relief at start) or is back (relief at end). A bus that leaves the yard the day before its leg, to be at a far pickup by its spot, takes that day too. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time: one that is free that day is not promised a departure before it, and the driver\'s rest is counted from it. A bus that leaves the yard the evening before its leg at or after the office\'s night hour (11:00 PM unless the Settings page says otherwise) left for that leg, so its leg does not take that evening\'s day either: leaves_that_night lists the buses and drivers of a leg that starts the day after the last day asked and leave the yard on its evening, with the time: one that is free that day is not promised a return after it, and the driver\'s rest is counted to it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
+              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off; a relief driver drives two hours or less at one end of a leg, so is busy only on the day the bus leaves (relief at start) or is back (relief at end). A bus that leaves the yard the day before its leg, to be at a far pickup by its spot, takes that day too. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time: one that is free that day is not promised a departure before it, and the driver\'s rest is counted from it. A bus that leaves the yard the evening before its leg at or after the office\'s night hour (11:00 PM unless the Settings page says otherwise) left for that leg, so its leg does not take that evening\'s day either: leaves_that_night lists the buses and drivers of a leg that starts the day after the last day asked and leave the yard on its evening, with the time: one that is free that day is not promised a return after it, and the driver\'s rest is counted to it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is, for each vehicle type, the free ones of it left once those are taken, which is the number that can be promised: a trip short of a bus takes one of its own type, or of any type when it names none, so one type\'s spare never stands in for another\'s, as a van is never a coach. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -523,15 +523,19 @@ Deno.serve(
 
             const missingOn = (line: typeof tripLines[number]) => line.legs.reduce((m, l) => m + l.missing, 0)
             const free = buses.filter((b) => !busyBuses.has(b.id))
-            // With one type asked for, only a trip that could take that type claims a free bus of it.
-            const claimed = runningTrips.reduce((n, t, i) =>
-              n + (!vehicle_type || !t.vehicle_type || t.vehicle_type === vehicle_type ? missingOn(tripLines[i]) : 0), 0)
+            // Each type's spare is its free buses less what the trips that could take that type still need:
+            // a trip of that type, or one naming none. One type's spare is never counted toward another's.
+            const spare = Object.fromEntries([...new Set(buses.map((b) => b.type))].map((type) => {
+              const claimed = runningTrips.reduce((n, t, i) =>
+                n + (!t.vehicle_type || t.vehicle_type === type ? missingOn(tripLines[i]) : 0), 0)
+              return [type, Math.max(0, free.filter((b) => b.type === type).length - claimed)]
+            }))
             return answer({
               from, to: until,
               free_buses: free,
               free_drivers: drivers.filter((d) => !busyDrivers.has(d.id)),
               buses_still_needed: tripLines.reduce((n, t) => n + missingOn(t), 0),
-              spare_buses: Math.max(0, free.length - claimed),
+              spare_buses: spare,
               busy: { buses: busyBuses.size, drivers: busyDrivers.size, trips: running.length },
               back_after_midnight: backAfterMidnight,
               leaves_that_night: leavesThatNight,

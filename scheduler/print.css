@@ -1649,9 +1649,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* EACH COLUMN IS WHAT ITS WIDEST CONTENT NEEDS, and Description the rest:
-   Item holds "Driver Hotel", Qty its heading, and Rate and Amount
+   Item holds "Addt'l Driver", the longest item a line carries, 61pt of
+   the 64 its padding leaves, Qty its heading, and Rate and Amount
    $125,000.00 each, at one width so they read as a pair. */
-.scheduler-customer-quote__table th:nth-child(1) { inline-size: 76pt; }
+.scheduler-customer-quote__table th:nth-child(1) { inline-size: 80pt; }
 .scheduler-customer-quote__table th:nth-child(3) { inline-size: 40pt; }
 .scheduler-customer-quote__table th:nth-child(4),
 .scheduler-customer-quote__table th:nth-child(5) { inline-size: 76pt; }

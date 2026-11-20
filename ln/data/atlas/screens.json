@@ -10,6 +10,22 @@
       "route": "Planning ➔ Plan Transfer ➔ Transfer Order Planning"
     },
     {
+      "code": "cprao1110m000",
+      "name": "cprao1110m000"
+    },
+    {
+      "code": "cprao1120m000",
+      "name": "cprao1120m000"
+    },
+    {
+      "code": "cprao1125m000",
+      "name": "cprao1125m000"
+    },
+    {
+      "code": "cprao1126s000",
+      "name": "cprao1126s000"
+    },
+    {
       "code": "cprpd0100m000",
       "name": "Planning Parameters",
       "purpose": "Sets the planning settings for the whole company, among them the CTP check for sales, the pegging horizon and how many plan revisions are kept.",

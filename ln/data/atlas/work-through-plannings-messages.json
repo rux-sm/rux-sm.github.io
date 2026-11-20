@@ -1,0 +1,256 @@
+{
+  "contract": 25,
+  "tier": "export",
+  "kind": "process",
+  "id": "work-through-plannings-messages",
+  "title": "Work through planning's messages",
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "codes": [
+    "P2D-02"
+  ],
+  "updated": "2026-11-20",
+  "status": "approved",
+  "summary": "read what planning says about each item's orders, and mark the messages you have dealt with.",
+  "order": 13,
+  "sources": [
+    "cprao1110m000",
+    "cprao1120m000",
+    "cprao1125m000",
+    "cprao1126s000",
+    "cprrp0520m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need a planning run that saved its messages. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " makes one."
+        }
+      ],
+      "text": "You need a planning run that saved its messages. Run order planning makes one."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "exception-messages",
+      "n": 0,
+      "title": "Exception Messages by Planner",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with."
+          }
+        ],
+        "text": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with."
+      },
+      "steps": 7,
+      "walked": "2026-11-20"
+    }
+  ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "sections": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Objective:"
+        },
+        {
+          "t": "text",
+          "v": " read what planning says about each item's orders, and mark the messages you have dealt with."
+        }
+      ],
+      "text": "Objective: read what planning says about each item's orders, and mark the messages you have dealt with."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need a planning run that saved its messages. "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " makes one."
+        }
+      ],
+      "text": "> Prerequisite > You need a planning run that saved its messages. Run order planning makes one."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "Accepting a message is saved on the message."
+        },
+        {
+          "t": "text",
+          "v": " It is a change to the plan's data, not to your view of it."
+        }
+      ],
+      "text": "> Warning > Accepting a message is saved on the message. It is a change to the plan's data, not to your view of it."
+    },
+    {
+      "kind": "glance",
+      "columns": [
+        "",
+        "Task",
+        "Where",
+        "What it achieves"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Exception Messages by Planner",
+                  "href": "exception-messages.md"
+                }
+              ],
+              "text": "Exception Messages by Planner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Exception Messages by Planner; Exception Messages"
+                }
+              ],
+              "text": "Exception Messages by Planner; Exception Messages"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with"
+                }
+              ],
+              "text": "You see what planning advises about existing and planned orders, such as which receipts to move earlier or later, and mark the ones you have dealt with"
+            }
+          ]
+        }
+      ],
+      "under": "At a glance"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The count of messages shows how far you are."
+        },
+        {
+          "t": "text",
+          "v": " The list gives each item's number of messages, and the number left unaccepted falls as you work through them."
+        }
+      ],
+      "text": "The count of messages shows how far you are. The list gives each item's number of messages, and the number left unaccepted falls as you work through them.",
+      "under": "At a glance"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "One planner's messages"
+                }
+              ],
+              "text": "One planner's messages"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the planner in "
+                },
+                {
+                  "t": "field",
+                  "v": "Planner ID"
+                },
+                {
+                  "t": "text",
+                  "v": " at step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Exception Messages by Planner",
+                  "href": "exception-messages.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". Messages are filed under the planner of each plan item"
+                }
+              ],
+              "text": "Type the planner in Planner ID at step 2 of Exception Messages by Planner. Messages are filed under the planner of each plan item"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
+    }
+  ],
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "openIssues": 0
+}

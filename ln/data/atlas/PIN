@@ -1,9 +1,9 @@
-commit   071d09a1a8c92f4851736dd92b2d4dd7fb167a40
-date     2026-11-20T05:24:07Z
-subject  docs(walkthroughs): Record the quantity review
+commit   7087b74235a865b0f0b804e1b2bc7a8355caadba
+date     2026-11-20T06:42:21Z
+subject  docs(walkthroughs): Record the messages review
 contract 25 
 tier     export
-sha256   ec4866bc3177419ce4c00a5212f6369cba0cf6fd5d7778280498926c0d1687e9
+sha256   bb03dec4efe71f267b01b2d1c5ceaeecdf0747e206a155b246c015837d933e93
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -1075,8 +1075,9 @@ function taskIndex() {
     (groups.find((g) => g.title === key) ?? groups[groups.push({ title: key, rows: [] }) - 1]).rows.push(...tasksOf(s).map((t) => drawing(s, t, () => taskRow(s, t))));
   }
   // A side task with a file is a link to its page; one that only opens a
-  // process's tasks shows them; one with no steps says so.
-  const other = allSide.map((n) => taskById.has(n.id)
+  // process's tasks shows them; one with no steps says so. A tile whose task
+  // a process names is listed above with that process, so it is not repeated.
+  const other = allSide.filter((n) => !taskById.get(n.id)?.process).map((n) => taskById.has(n.id)
     ? `<li id="${esc(n.id)}"><b><a class="rux--link" href="${hrefTask(n.id)}"><span>${esc(n.session)}</span></a></b><p class="ln-quiet">${sentence(tokens(n.does.tokens))}</p>${tag(taskStatus(taskById.get(n.id)))}</li>`
     : side.includes(n)
       ? `<li id="${esc(n.id)}"><b>${esc(n.session)}</b>${accordion([[`side-${esc(n.id)}`, 'Steps', sideBody(n)]])}</li>`

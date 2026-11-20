@@ -4,7 +4,12 @@
   "kind": "task",
   "id": "exception-messages",
   "title": "Exception Messages by Planner",
-  "process": null,
+  "process": {
+    "id": "work-through-plannings-messages",
+    "title": "Work through planning's messages",
+    "n": 0,
+    "of": 1
+  },
   "previous": null,
   "next": null,
   "module": "Enterprise Planning",
@@ -16,12 +21,12 @@
   ],
   "role": null,
   "roles": [],
-  "status": null,
-  "updated": "2026-11-12",
+  "status": "approved",
+  "updated": "2026-11-20",
   "route": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner",
   "session": "Exception Messages by Planner",
   "sessionCode": "cprao1120m000",
-  "walked": null,
+  "walked": "2026-11-20",
   "achieves": {
     "tokens": [
       {
@@ -36,7 +41,32 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Order planning has run with Exception Messages Save ticked on its Options tab. Each planner's message profile is in "
+          "v": "A planning run has saved its messages: "
+        },
+        {
+          "t": "field",
+          "v": "Save"
+        },
+        {
+          "t": "text",
+          "v": " under "
+        },
+        {
+          "t": "strong",
+          "v": "Exception Messages"
+        },
+        {
+          "t": "text",
+          "v": " is selected when you "
+        },
+        {
+          "t": "link",
+          "v": "Run planning",
+          "href": "run-mrp_run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": ". Each planner's message profile is in "
         },
         {
           "t": "session",
@@ -56,7 +86,7 @@
           "v": "."
         }
       ],
-      "text": "Order planning has run with Exception Messages Save ticked on its Options tab. Each planner's message profile is in Exception Message Types (cprao1110m000), Planning ➔ Plan Analysis ➔ Exception Message Types."
+      "text": "A planning run has saved its messages: Save under Exception Messages is selected when you Run planning. Each planner's message profile is in Exception Message Types (cprao1110m000), Planning ➔ Plan Analysis ➔ Exception Message Types."
     }
   ],
   "why": {
@@ -92,19 +122,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Choose the planner and the scenario, leaving the planner blank for items with none"
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Exception Messages by Planner"
                 }
               ],
-              "text": "Choose the planner and the scenario, leaving the planner blank for items with none"
+              "text": "Open Exception Messages by Planner"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Find and Filter Exception Messages"
+                },
+                {
                   "t": "text",
-                  "v": "One row per plan item, with how many messages it has, the highest priority, and the earliest date"
+                  "v": " opens, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " filled in"
                 }
               ],
-              "text": "One row per plan item, with how many messages it has, the highest priority, and the earliest date"
+              "text": "Find and Filter Exception Messages opens, with Scenario filled in"
             }
           ],
           "id": "1",
@@ -126,28 +172,51 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open a plan item's row"
+                  "v": "Leave "
+                },
+                {
+                  "t": "field",
+                  "v": "Planner ID"
+                },
+                {
+                  "t": "text",
+                  "v": " empty for items that have no planner, and click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
                 }
               ],
-              "text": "Open a plan item's row"
+              "text": "Leave Planner ID empty for items that have no planner, and click OK"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "cprao1125m000",
-                  "name": "Exception Messages"
+                  "t": "text",
+                  "v": "One row per plan item, with its "
+                },
+                {
+                  "t": "field",
+                  "v": "Number of Exception Messages"
                 },
                 {
                   "t": "text",
-                  "v": ", one line per message, with the order, its date, and what to do, such as "
+                  "v": ", "
                 },
                 {
-                  "t": "literal",
-                  "v": "Reschedule into 24-06-20 02:31:27."
+                  "t": "field",
+                  "v": "Highest Priority"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Earliest Ref Date"
                 }
               ],
-              "text": "Exception Messages (cprao1125m000), one line per message, with the order, its date, and what to do, such as Reschedule into 24-06-20 02:31:27."
+              "text": "One row per plan item, with its Number of Exception Messages, Highest Priority and Earliest Ref Date"
             }
           ],
           "id": "2",
@@ -169,19 +238,44 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Act on a message on the order it names"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                },
+                {
+                  "t": "text",
+                  "v": " on a plan item's row"
                 }
               ],
-              "text": "Act on a message on the order it names"
+              "text": "Click Drill In on a plan item's row"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Exception Messages"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens, one line per message, with the order it is about, its "
+                },
+                {
+                  "t": "field",
+                  "v": "Reference Date"
+                },
+                {
+                  "t": "text",
+                  "v": " and the "
+                },
+                {
+                  "t": "field",
+                  "v": "Message"
                 }
               ],
-              "text": "—"
+              "text": "Exception Messages opens, one line per message, with the order it is about, its Reference Date and the Message"
             }
           ],
           "id": "3",
@@ -203,19 +297,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "For a message you will not act on, tick Accept"
+                  "v": "To see the orders the messages are about, click "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ Item Order Plan"
                 }
               ],
-              "text": "For a message you will not act on, tick Accept"
+              "text": "To see the orders the messages are about, click References ➔ Item Order Plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The item's plan opens beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Exception Messages"
                 }
               ],
-              "text": "—"
+              "text": "The item's plan opens beside Exception Messages"
             }
           ],
           "id": "4",
@@ -237,14 +339,106 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Choose "
+                  "v": "Back in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Exception Messages"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick "
+                },
+                {
+                  "t": "field",
+                  "v": "Accept"
+                },
+                {
+                  "t": "text",
+                  "v": " on the line of a message you will not act on"
+                }
+              ],
+              "text": "Back in Exception Messages, tick Accept on the line of a message you will not act on"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Accept"
+                },
+                {
+                  "t": "text",
+                  "v": " stays ticked on that line"
+                }
+              ],
+              "text": "Accept stays ticked on that line"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
                 },
                 {
                   "t": "command",
                   "route": "Views ➔ Hide Accepted Exception Messages"
                 }
               ],
-              "text": "Choose Views ➔ Hide Accepted Exception Messages"
+              "text": "Click Views ➔ Hide Accepted Exception Messages"
             },
             {
               "tokens": [
@@ -256,7 +450,7 @@
               "text": "Only the messages still to deal with"
             }
           ],
-          "id": "5",
+          "id": "7",
           "optional": false,
           "produces": false
         }

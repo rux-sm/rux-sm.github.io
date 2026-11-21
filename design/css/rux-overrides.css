@@ -844,10 +844,11 @@ a.rux--header__name,
    either side; Carbon stretched the content to the window, which left a
    page leaning on its left. A header that is a bar of its own colour keeps
    the window's width, so it does not float as a block, and frames only its
-   contents. A header drawn on the page's own black, as geist-dark's and
-   rux-dark's are, is itself the frame's width, so its line ends at the
-   frame's edges as Geist's does; geist-dark's keeps its 16px inset inside,
-   and rux-dark's, Carbon's shell, has none. A fixed box's percentage is of
+   contents. A header drawn on the page's own black, as geist-dark's,
+   rux-dark's, rux-100's and g100's are, is itself the frame's width, so its
+   line ends at the frame's edges as Geist's does; geist-dark's keeps its
+   16px inset inside, and the others, Carbon's shell, have none. A saved
+   theme built on g100 raises its bar off the page, so it keeps the width. A fixed box's percentage is of
    the window without its scroll bar, so the two margins match. An app's own
    bar fixed to the window moves with the frame in that app's own file.
    WIDE IS THE ONE OPT-IN, and Carbon's full-width grid is its switch: a page
@@ -874,8 +875,8 @@ a.rux--header__name,
   :where(:root:not([data-frame="wide"])) .rux--content,
   :where(:root:not([data-frame="wide"])) .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
   :where(:root:not([data-frame="wide"])) .rux--header { padding-inline: max(env(safe-area-inset-left, 0px), calc((100% - 76.25rem) / 2)) max(env(safe-area-inset-right, 0px), calc((100% - 76.25rem) / 2)); }
-  :where(:root:not([data-frame="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  :where(:root:not([data-frame="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { inset-inline: calc((100% - 76.25rem) / 2); padding-inline: 0; }
+  :where(:root:not([data-frame="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
+  :where(:root:not([data-frame="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) { inset-inline: calc((100% - 76.25rem) / 2); padding-inline: 0; }
   :where(:root:not([data-frame="wide"]))[data-theme="geist-dark"] .rux--header,
   :where(:root:not([data-frame="wide"])) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }
   :where(:root:not([data-frame="wide"])) .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
@@ -888,11 +889,10 @@ a.rux--header__name,
   :where(:root[data-frame="wide"]) .rux--content { padding-inline: var(--rux-spacing-05); }
   :where(:root[data-frame="wide"]) .rux--content > .rux--css-grid--full-width { box-sizing: border-box; max-inline-size: var(--frame-wide, 99rem); margin-inline: auto; }
   :where(:root[data-frame="wide"]) .rux--header { padding-inline: max(var(--rux-spacing-05), env(safe-area-inset-left, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)) max(var(--rux-spacing-05), env(safe-area-inset-right, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)); }
-  :where(:root[data-frame="wide"]):is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  :where(:root[data-frame="wide"]) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+  :where(:root[data-frame="wide"]):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
+  :where(:root[data-frame="wide"]) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) {
     inset-inline: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2));
     padding-inline: 0;
-    box-shadow: -1px 0 0 var(--rux-border-subtle-01), 1px 0 0 var(--rux-border-subtle-01);
   }
   :where(:root[data-frame="wide"])[data-theme="geist-dark"] .rux--header,
   :where(:root[data-frame="wide"]) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }

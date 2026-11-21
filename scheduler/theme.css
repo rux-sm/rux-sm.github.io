@@ -954,7 +954,7 @@
   [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--content:has(.scheduler-board) {
     padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
   }
-  [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--content > .rux--css-grid--full-width { --rux-grid-margin: 0; }
+  [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--content:has(.scheduler-board) > .rux--css-grid--full-width { --rux-grid-margin: 0; }
   [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .scheduler-board { margin-inline: -1px; }
 }
 [data-theme="rux-dark"] .scheduler-board { gap: 0; }

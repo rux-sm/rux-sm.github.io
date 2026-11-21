@@ -228,10 +228,11 @@
 
 /* The page grids add no gutter, and each grid on this page holds one column.
    The gap between the board's regions is `.scheduler-board`'s own. Where the
-   frame stands in from the window and Design rules its edges, the page's own
-   grid keeps a 16px margin inside them, as far as the board stands below the
-   header, so the lines never touch it; below that, and in the fill frame,
-   which has no edge, the board's inset is `.rux--content`'s padding. */
+   frame stands in from the window, the page's own grid keeps a 16px margin
+   inside its edges, as far as the board stands below the header, so the lines
+   Design draws there in Geist's themes never touch it; below that, and in the
+   fill frame, which has no edge, the board's inset is `.rux--content`'s
+   padding. */
 .rux--css-grid {
   --rux-grid-margin: 0;
   --rux-grid-gutter: 0;

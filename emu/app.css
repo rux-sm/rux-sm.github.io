@@ -115,10 +115,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its foot. It is as wide as the page's frame, as every Emu page's
    content is, and as tall as the window
    leaves under the header and the page's 2rem above and below, never under
-   28rem, so the page does not scroll; it starts at the top of the page, as
-   every page's content does. Without the helper the store is the page,
+   28rem, so the page does not scroll, and never over 42rem, Carbon's medium
+   breakpoint, so its foot stays near what stands in the room in a tall
+   window; it starts at the top of the page, as every page's content does. Without the helper the store is the page,
    with no tile around it. */
-.emu-wall--mac { display: flex; flex-direction: column; block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
+.emu-wall--mac { display: flex; flex-direction: column; block-size: clamp(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom), 42rem); }
 .emu-stage { position: relative; }
 .emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
 /* A TILE, the room's: a surface a layer up from the page,

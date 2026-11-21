@@ -122,6 +122,7 @@ public.
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `game-panel.js`, `this-mac.js`, `carry.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; its emulator's saves carried between this Mac and Supabase around Play; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
 | `room.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
+| `view.js` | whether the room stood here last time, said before the Library draws so its frame is the room's tile from the first paint |
 | `search.js` | Search, in every page's header or the TV's menu |
 | `app.css` | the filters, rows, the side panel's facts and its part for this Mac, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone; a search result as a row, not a link |

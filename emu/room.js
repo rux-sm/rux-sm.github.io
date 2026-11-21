@@ -397,6 +397,9 @@
     $('emu-mine').hidden = !mac;
     $('emu-foot').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
+    // The page's frame is the room's tile where the room stands, kept for view.js to say before the next first paint.
+    document.documentElement.dataset.emuRoom = mac ? 'mac' : '';
+    try { localStorage.setItem('emu.room', mac ? 'mac' : ''); } catch { /* the frame is set once the helper answers */ }
     // The store is the modal's where the room is, and the page where it is not.
     const home = mac ? $('emu-store-body') : $('emu-wall');
     if ($('emu-collection').parentElement !== home) home.prepend($('emu-collection'));

@@ -10,8 +10,22 @@
   .emu-main:not(.emu-main--whole) { padding-inline-start: 18rem; }
 }
 /* The room's page is a narrower wide frame, Carbon's lg breakpoint, 1056px,
-   so the room and the store sit calm in the middle of a large window. */
+   so the store sits calm in the middle of a large window. Where the room
+   stands, which view.js and room.js say on the root, the frame is the
+   room's tile itself, so the header's contents and its menus stand on the
+   tile's two edges: the tile's side is the window's height less the header
+   and the page's 2rem above and below, never under 28rem, and the frame is
+   that side and the margin Design's shell keeps inside a ruled frame's
+   lines, with the grid's own margin and gutter given up for it. A phone
+   keeps Carbon's grid. */
 :root[data-emu-room] { --frame-wide: 66rem; }
+:root[data-emu-room="mac"] {
+  --emu-side: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom));
+  --frame-wide: calc(var(--emu-side) + 2 * var(--frame-inset, 0px));
+}
+@media (min-width: 42rem) {
+  :root[data-emu-room="mac"] .emu-main > .rux--css-grid { --rux-grid-margin: var(--frame-inset, 0px); --rux-grid-gutter: 0; }
+}
 
 /* The filters, side by side in one row that wraps. */
 .emu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
@@ -106,12 +120,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, a square under the header: its head, then the stage, the
-   room, then its foot. Its side is the page's width or the
-   window's height less the header and the page's 2rem above and below,
-   whichever is less, but never under 28rem; it starts at the top of the page, as every page's content does,
-   and stands centred across it. Without the helper the store is the page,
-   with no tile around it. */
-.emu-wall--mac { display: flex; flex-direction: column; inline-size: min(100%, max(28rem, 100dvh - 3rem - 4rem - var(--frame-safe-bottom))); aspect-ratio: 1; margin-inline: auto; }
+   room, then its foot. It is as wide as the page's frame, which is the
+   tile's side or the window where that is narrower; it starts at the top of
+   the page, as every page's content does. Without the helper the store is
+   the page, with no tile around it. */
+.emu-wall--mac { display: flex; flex-direction: column; inline-size: min(100%, var(--emu-side, 100%)); aspect-ratio: 1; margin-inline: auto; }
 .emu-stage { position: relative; }
 .emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
 /* A TILE, the room's: a surface a layer up from the page,

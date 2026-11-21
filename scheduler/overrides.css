@@ -231,8 +231,8 @@
    Geist's themes, where Design rules the frame's edges, the page's own grid
    keeps a 16px margin inside them, as far as the board stands below the
    header, so the lines never touch it. Elsewhere the board's inset is
-   `.rux--content`'s padding, and its edge lines up with the header's menu
-   button and the menu it opens. */
+   `.rux--content`'s padding alone, the 16px of Carbon's grid margin, beside
+   a header and menus that stand on the window's edges. */
 .rux--css-grid {
   --rux-grid-margin: 0;
   --rux-grid-gutter: 0;

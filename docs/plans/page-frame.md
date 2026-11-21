@@ -25,7 +25,9 @@ first paint is the final layout and nothing moves once the scripts load.
 - **The shell follows the theme.** Carbon's themes, and any whose header is
   a bar of its own colour, keep Carbon's full-width header with its contents
   on the frame's edges, and a page with a nav standing open stands at the
-  window's left with the nav on its edge. Geist dark, Rux dark and Rux 100
+  window's left with the nav on its edge. Where a wide frame is the window
+  less its margin, the header's contents and its menus stand on the window's
+  edges, as Carbon's are. Geist dark, Rux dark and Rux 100
   put the header and the nav inside the frame and rule its edges with two
   hairlines.
 - **Wide is the one opt-in, declared as `data-frame="wide"` on `<html>`** by
@@ -35,7 +37,7 @@ first paint is the final layout and nothing moves once the scripts load.
   `:has()` on `body` costs every change to the page a full style pass.
 - **Wide is 99rem,** Carbon's `max` breakpoint and its grid's widest, centred
   in the window, or the window less a 16px margin either side where it is
-  narrower, the header's contents standing on that margin. It is the
+  narrower, the content standing on that margin. It is the
   narrowest width that keeps the scheduler's seven days at their 160px
   minimum beside any one panel, the 24rem document panel the widest.
 - **A wide frame keeps its width whatever opens in it.** A panel takes its

@@ -98,7 +98,9 @@ no edge of the page moves. It is the choice for a page that is worked in
 rather than read, such as a board or a wide table, and the scheduler's board
 takes it. A wide page that should fill the window declares
 `data-frame="wide fill"`, a frame that is the window itself. The shell
-follows the theme: Carbon's themes keep Carbon's full-width header, and a
+follows the theme: Carbon's themes keep Carbon's full-width header, a wide
+page's header contents and menus stand on the window's edges where its frame
+reaches them, and a
 page with a nav standing open stands at the window's left with the nav on the
 window's edge, as Carbon's product and docs pages do; Geist dark, Rux dark and
 Rux 100 put the header and the nav inside the frame and rule its edges with

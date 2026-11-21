@@ -758,7 +758,7 @@
     for (const b of drawerButtons) {
       const on = b.dataset.drawer === pane;
       b.setAttribute('aria-expanded', String(on));
-      b.querySelector('use').setAttribute('href', on ? '#i-chevron--down' : '#i-chevron--up');
+      b.querySelector('.rux--btn__icon use').setAttribute('href', on ? '#i-chevron--down' : '#i-chevron--up');
       $(b.dataset.drawer).hidden = !on;
       if (on) $('emu-mine').setAttribute('aria-label', b.textContent.trim());
     }

@@ -105,8 +105,9 @@
    the panel takes the kernel's defaults and that nav declines them. Focus does NOT move into
    the panel on open: document.activeElement stayed on the body.
 
-   NOT REIMPLEMENTED: Carbon's HeaderPanel `onHeaderPanelFocus`, which the story does
-   not exercise; nothing here manages focus beyond the tabindex swap.
+   FOCUS LEAVES A PANEL WITH IT: one that closes with focus inside gives it back to
+   its action, the job of Carbon's HeaderPanel `onHeaderPanelFocus`, which the story
+   does not exercise; nothing else here manages focus beyond the tabindex swap.
    ========================================================================== */
 (() => {
   'use strict';
@@ -199,6 +200,8 @@
     // uses `--hidden` for a nav that is not shown at all, which is a
     // different thing from one the reader just collapsed.
     nav.classList.toggle(EXPANDED, open);
+    // A shut nav is out of sight, so focus left in it would be lost with it.
+    if (!open && trigger && nav.contains(document.activeElement)) trigger.focus({ preventScroll: true });
     const floats = nav.classList.contains(FLOATS);   // the collapsible shell, see the header
     if (floats) trigger?.classList.toggle('rux--header__action--active', open);
     trigger?.setAttribute('aria-expanded', String(open));
@@ -244,7 +247,7 @@
      a static specimen on the first press anywhere would make the sink's own
      readings depend on where the pointer went. Its button still closes it. */
   const EXPANDED_PANEL = 'rux--header-panel--expanded';
-  const STOPS = 'a, button, select, input';
+  const STOPS = 'a, button, select, input, textarea';
   const panels = new Map();   // panel -> registration
   const panelFor = trigger => {
     const id = trigger.getAttribute('aria-controls');
@@ -255,6 +258,9 @@
     panel.classList.toggle(EXPANDED_PANEL, open);
     trigger.classList.toggle('rux--header__action--active', open);
     trigger.setAttribute('aria-expanded', String(open));
+    // A shut panel is out of sight, so focus left in it, by Escape say, would
+    // be lost with it: it goes back to the action that opened the panel.
+    if (!open && panel.contains(document.activeElement)) trigger.focus({ preventScroll: true });
     // Carbon's own tabindex swap: a collapsed panel's links are not in the tab
     // order, and nor is a field this system puts in one.
     for (const a of panel.querySelectorAll(STOPS)) a.tabIndex = open ? 0 : -1;

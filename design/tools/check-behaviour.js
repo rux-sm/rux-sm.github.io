@@ -514,6 +514,17 @@
     click(trigger); click(trigger);
     record('ui-shell', 'and a second press',
       !has(panel, EXP), `--expanded=${has(panel, EXP)} after two presses`);
+
+    // FOCUS NEVER STAYS IN A SHUT PANEL. Escape with the cursor on a link in
+    // the panel left it there, out of sight, at zero width.
+    if (link) {
+      const before = document.activeElement;
+      click(trigger); link.focus();
+      key(document, 'Escape');
+      record('ui-shell', 'Escape from inside the panel returns focus to its action',
+        document.activeElement === trigger, `focus on ${document.activeElement?.className || document.activeElement?.tagName}`);
+      before?.focus?.();
+    }
   })();
 
   // ── ui-shell: the account panel, the header's one ────────────────────────

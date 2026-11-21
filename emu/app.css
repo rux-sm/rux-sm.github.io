@@ -268,15 +268,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
 .emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
 .emu-units > li, .emu-tv { transition: inset-inline-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-/* A favourite out on the floor: its cover 20 art pixels tall and as wide as
-   its art, with a console's shadow and name tag and no name beneath. One
-   with no art says its name in label-01, Carbon's smallest type. */
-.emu-floor-cover .emu-cover { --emu-cover-height: calc(20 * var(--emu-px)); cursor: grab; touch-action: none; }
-.emu-floor-cover .emu-cover-name { display: none; }
-.emu-floor-cover .emu-cover-art { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); overflow: visible; }
-.emu-floor-cover .emu-cover-title { padding: var(--rux-spacing-01); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
-.emu-floor-cover:focus-within .emu-unit__name { opacity: 1; }
-@media (hover: hover) { .emu-floor-cover:hover .emu-unit__name { opacity: 1; } }
 /* The wire from the playing console to the TV, an art pixel thick, under the things. */
 .emu-wire { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: none; pointer-events: none; overflow: visible; }
 .emu-wire path { fill: none; stroke: var(--rux-border-strong-01); stroke-width: var(--emu-px); stroke-linecap: square; stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 400ms cubic-bezier(0, 0, 0.3, 1); }
@@ -287,8 +278,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    takes no slide of its own: it stands two art pixels off the floor over a
    longer shadow, above everything, and takes no press, so what is under the
    pointer is where it would land. Its name stays away. */
-.emu-units > li.emu-unit.emu-carried, .emu-units > li.emu-floor-cover.emu-carried, .emu-tv.emu-carried { z-index: 9000; pointer-events: none; transition: none; translate: 0 calc(-2 * var(--emu-px)); }
-.emu-carried .emu-console, .emu-carried .emu-cover-art, .emu-tv.emu-carried { filter: drop-shadow(0 calc(4 * var(--emu-px)) 0 var(--rux-shadow)); }
+.emu-units > li.emu-unit.emu-carried, .emu-tv.emu-carried { z-index: 9000; pointer-events: none; transition: none; translate: 0 calc(-2 * var(--emu-px)); }
+.emu-carried .emu-console, .emu-tv.emu-carried { filter: drop-shadow(0 calc(4 * var(--emu-px)) 0 var(--rux-shadow)); }
 .emu-units > li.emu-carried .emu-unit__name { opacity: 0; }
 /* A thing put down lands from that height: a short drop on Carbon's fast-02. Carbon has no landing. */
 .emu-lands { animation: emu-land 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }

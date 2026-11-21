@@ -8,7 +8,7 @@ type: plan
 
 The Library is one tile at the top of the page, in the shell every Emu
 page has, as wide as the page's frame: its head, then the room, Your Mac, the play surface for what is in use now,
-with a single flat TV, every console set up on this Mac and their favourite games, each
+with a single flat TV and every console set up on this Mac, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
 holds, each with Download. The tile's foot, mirroring its head, has a
@@ -20,8 +20,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Decisions
 
-- **The room holds only the TV, the consoles set up on this Mac and their
-  favourite games.** It is the tile's own surface, layer-01, with no wall,
+- **The room holds only the TV and the consoles set up on this Mac.** It is the tile's own surface, layer-01, with no wall,
   floor, furniture or shelves, so there is nothing to read but what this
   Mac has.
 - **The TV is a flat screen on a centre stand in pixel art,
@@ -69,14 +68,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the room it is set up on this Mac, ready to play, and it stays there until
   Remove in its menu takes its emulator off and sends it back to Rux's
   Server. There is no putting one away.
-- **A console that is set up brings its favourite games out with it.** They
-  hop out of it and land under it, covers 20 art pixels tall: the
-  favourites of its system that this Mac holds, A to Z, twelve shared among
-  the consoles and at most 8 each, so the floor holds about twelve. A cover
-  is a thing on the floor like any other: it stays where it landed or was
-  left, is carried with weight, and is dropped on its console to play. Any
-  other game is dragged from Games.
-- **The whole room is for the TV, the consoles and the covers,** each a
+- **Games stay put away, so the room stays clean.** No cover stands on the
+  floor. A game is played by opening Games, the drawer, and carrying its
+  cover onto its console.
+- **The whole room is for the TV and the consoles,** each a
   thing on the floor standing where it was last left, its top-left corner in
   art pixels from the room's, dragged to move it. A console just set up
   stands at its place in the room's layout, or the first clear spot where

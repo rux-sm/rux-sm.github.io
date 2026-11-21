@@ -2,8 +2,8 @@
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is one tile, the room's: its head,
-   then the room, Your Mac: the TV, every console set up on this Mac and the
-   favourite games they bring out, each standing where it was left, then its
+   then the room, Your Mac: the TV and every console set up on this Mac,
+   each standing where it was left, then its
    foot, a button for each drawer. The head's one button opens Rux's Server,
    the store, as Carbon's medium modal. Without the helper the store is the
    whole page.
@@ -31,10 +31,8 @@
    the room's own two: Sound and Tidy up. The pages' menu and Search are the
    shell's, the same on every page.
 
-   A console that is set up brings its favourites out: the favourites of
-   its system this Mac holds, fewer each as more consoles stand in the
-   room. They hop out of it and land under it, and each stays where it
-   landed or was left.
+   Games stay put away. The room shows only the TV and the consoles, and a
+   game is played by opening Games and carrying it onto its console.
 
    Rux's Server has two tabs of cards. Consoles is every console with
    games, its drawing from brand/consoles/ over its name and count; Games is
@@ -164,13 +162,6 @@
   const consolesNow = () => new Map(Object.keys(R.SYSTEMS)
     .filter(sys => gamesOf(sys).length && (plays(sys) || settingUp.has(sys) || keeping.has(sys)))
     .map(sys => [sys, settingUp.has(sys) ? 'setting' : keeping.has(sys) ? 'keeping' : 'on']));
-  // The games out on the floor: for each console that is set up, the
-  // favourites of its system this Mac holds or is being sent, A to Z, 12
-  // shared among the consoles and at most 8 each, so the floor holds about twelve covers.
-  const floorGames = () => [...stand].filter(([, state]) => state === 'on').flatMap(([system]) => games
-    .filter(g => g.system === system && g.notes?.favourite && ['held', 'arriving'].includes(standing(g).state))
-    .slice(0, Math.min(8, Math.max(1, Math.floor(12 / stand.size)))));
-  const floorKey = g => `game:${keyOf(g)}`;
 
   const SVG = 'http://www.w3.org/2000/svg';
   const svgOf = (cls, box) => {
@@ -346,25 +337,6 @@
       : [item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]));
     window.Rux.menu.open(menu, trigger);
   }
-  // A favourite out on the floor: its cover as the button that opens it and
-  // is carried, its name a tag as a console's is, under a veil while it
-  // arrives. Its width follows its art, so the room settles again as the art loads.
-  function floorCover(g) {
-    const li = coverItem(g);
-    li.className = 'emu-floor-cover';
-    li.dataset.key = floorKey(g);
-    li.dataset.of = g.system;
-    const s = standing(g);
-    if (s.state === 'arriving') {
-      const veil = el('span', 'emu-cover__veil');
-      veil.style.blockSize = `${Math.round(100 - (s.total ? s.done / s.total : 0) * 100)}%`;
-      li.querySelector('.emu-cover-art').append(veil);
-    }
-    li.querySelector('img')?.addEventListener('load', () => requestAnimationFrame(() => { if (li.isConnected && !drag?.on) settle(); }));
-    li.append(el('span', 'emu-unit__name', nameOf(g)));
-    return li;
-  }
-  const thingOf = key => $('emu-units').querySelector(`[data-key="${CSS.escape(key)}"]`);
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
   const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
@@ -420,10 +392,9 @@
     stand = consolesNow();
     // Each thing starts where it was last drawn, so a move slides from there.
     const from = (li, key) => { if (drawn[key]) { li.style.setProperty('--emu-left', drawn[key][0]); li.style.setProperty('--emu-top', drawn[key][1]); } return li; };
-    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => from(unit(system, state), system)),
-      ...floorGames().map(g => from(floorCover(g), floorKey(g))));
+    $('emu-units').replaceChildren(...[...stand].map(([system, state]) => from(unit(system, state), system)));
     // The thing just put down lands.
-    const landing = landed === 'tv' ? $('emu-tv') : landed && (unitOf(landed) ?? thingOf(landed));
+    const landing = landed === 'tv' ? $('emu-tv') : landed && unitOf(landed);
     landed = null;
     if (landing) { landing.classList.remove('emu-lands'); void landing.offsetWidth; landing.classList.add('emu-lands'); }
     $('emu-floor-empty').hidden = stand.size > 0;
@@ -454,7 +425,7 @@
     void svg.getBoundingClientRect();
     svg.classList.remove('emu-wire--plug');
   }
-  // THE SWEEP. The TV, the consoles and the covers are things on the floor. Each starts
+  // THE SWEEP. The TV and the consoles are things on the floor. Each starts
   // where it was kept; the room's edges push whatever is past them back in,
   // and whatever then overlaps moves to the nearest free spot, so a smaller
   // window sweeps them into a pile, touching but not overlapping while the
@@ -478,7 +449,7 @@
     const W = box.clientWidth / px;
     const H = box.clientHeight / px;
     const kept = placed();
-    const items = [['tv', $('emu-tv')], ...[...box.children].map(li => [li.dataset.key ?? li.dataset.system, li])].map(([key, node]) => {
+    const items = [['tv', $('emu-tv')], ...[...box.children].map(li => [li.dataset.system, li])].map(([key, node]) => {
       const at = kept[key];
       return { key, node, w: node.offsetWidth / px, h: node.offsetHeight / px, x: at?.[0] ?? 0, y: at?.[1] ?? 0, loose: !at, still: key === held };
     });
@@ -486,21 +457,9 @@
     const over = (a, b) => [Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y)];
     const clear = n => items.every(m => m === n || m.loose || over(n, m).some(o => o <= 0));
     // A thing with no place takes its place in the room's layout, or the
-    // first slot nothing covers. A cover with none lands under its console,
-    // each a step further along an arc below it, clear of the TV above, and
-    // is drawn hopping out from the console's middle.
+    // first slot nothing covers.
     const laid = arranged(W, Object.fromEntries(items.map(i => [i.key, [i.w, i.h]])));
     for (const n of items.filter(i => i.loose)) {
-      const home = n.node.dataset.of && items.find(m => m.key === n.node.dataset.of);
-      if (home) {
-        const mates = items.filter(m => m.node.dataset.of === home.key);
-        const turn = ((mates.indexOf(n) + 0.5) / mates.length) * Math.PI;
-        n.x = home.x + home.w / 2 + Math.cos(turn) * 46 - n.w / 2;
-        n.y = home.y + home.h / 2 + Math.sin(turn) * 32 - n.h / 2;
-        n.pop = [home.x + home.w / 2 - n.w / 2, home.y + home.h / 2 - n.h / 2];
-        n.loose = false;
-        continue;
-      }
       const share = shareOf(n.key);
       const spots = (share ? [share] : SLOTS).map(([sx, sy]) => [sx * (W - n.w), sy * (H - n.h)]);
       for (const [x, y] of share || !laid[n.key] ? spots : [laid[n.key], ...spots]) {
@@ -541,19 +500,12 @@
     drawn = {};
     for (const n of items) {
       drawn[n.key] = [Math.round(n.x * 10) / 10, Math.round(n.y * 10) / 10];
-      // A thing drawn for the first time appears in its place, or at its
-      // console's middle where it hops out of it; any other slides to its place.
+      // A thing drawn for the first time appears in its place; any other slides to it.
       const fresh = !n.node.style.getPropertyValue('--emu-left');
       if (fresh) n.node.style.transition = 'none';
-      if (fresh && n.pop) {
-        n.node.style.setProperty('--emu-left', n.pop[0]);
-        n.node.style.setProperty('--emu-top', n.pop[1]);
-        void n.node.offsetWidth;
-        n.node.style.transition = '';
-      }
       n.node.style.setProperty('--emu-left', drawn[n.key][0]);
       n.node.style.setProperty('--emu-top', drawn[n.key][1]);
-      if (fresh && !n.pop) { void n.node.offsetWidth; n.node.style.transition = ''; }
+      if (fresh) { void n.node.offsetWidth; n.node.style.transition = ''; }
     }
     drawWire();
     setTimeout(drawWire, 260);
@@ -1047,11 +999,11 @@
   // A THING'S MOVES. Where each thing in the room stands is kept whole each
   // time one moves; a Mac Status has not saved yet has no row to keep it on,
   // and is told so. Every thing keeps the spot it is drawn at, so moving one
-  // moves no other; `at` gives the spots that change. A cover's spot goes
-  // with its console, and a console's goes with it when it is removed.
+  // moves no other; `at` gives the spots that change. A console's spot
+  // goes with it when it is removed.
   async function keep(at = {}) {
     room = { placed: Object.fromEntries(Object.entries({ ...drawn, ...at })
-      .filter(([key]) => stand.has(key) || key === 'tv' || (key.startsWith('game:') && stand.has(key.slice(5).split('/')[0])))) };
+      .filter(([key]) => stand.has(key) || key === 'tv')) };
     render();
     if (!macName) return;
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }
@@ -1080,8 +1032,6 @@
     const before = { ...drawn };
     const sizeOf = node => [node.offsetWidth / px, node.offsetHeight / px];
     const next = arranged(W, Object.fromEntries([['tv', sizeOf($('emu-tv'))], ...[...stand.keys()].map(sys => [sys, sizeOf(unitOf(sys))])]));
-    // The covers land under their consoles again.
-    for (const key of Object.keys(drawn)) if (key.startsWith('game:')) delete drawn[key];
     held = null;
     sfx.drop();
     keep(next);
@@ -1155,8 +1105,6 @@
       if (keeps) return yes('Download and play', unit, () => download(g, true));
       return no('Update the helper to download', unit, [system, 'Update the helper to download.']);
     }
-    // A cover on the floor moves where it is let go.
-    if (from === 'floor' && under.closest('#emu-room')) return { ...yes(null, null, () => {}), move: true };
     return null;
   }
 
@@ -1179,7 +1127,7 @@
   // THE DRAG, with the pointer, where the helper answers. A press that does
   // not move is the cover's or the console's own click.
   let drag = null;
-  // CARRYING. A console in the room, a cover on the floor or the TV is itself moved, never a
+  // CARRYING. A console in the room or the TV is itself moved, never a
   // copy of it. It lifts off the floor and follows the pointer a little
   // behind, closing a share of the gap each frame, the TV a smaller share
   // since it is heavier, and leans the way it is going by how fast it goes.
@@ -1188,8 +1136,8 @@
   // for a carried thing; where motion is reduced it keeps to the pointer
   // and does not lean.
   function carry(d) {
-    const key = d.tv ? 'tv' : d.g ? floorKey(d.g) : d.system;
-    const node = d.tv ? $('emu-tv') : d.g ? thingOf(key) : unitOf(d.system);
+    const key = d.tv ? 'tv' : d.system;
+    const node = d.tv ? $('emu-tv') : unitOf(d.system);
     const share = calm() ? 1 : d.tv ? 0.14 : 0.22;
     Object.assign(d, { live: node, key, stood: [...drawn[key]], cur: [...drawn[key]], to: [...drawn[key]], px: pxOf() });
     node.classList.add('emu-carried');
@@ -1224,7 +1172,7 @@
   const word = el('div', 'emu-word');
   word.hidden = true;
   document.body.append(word);
-  const FROM = [['#emu-units', 'floor'], ['#emu-mine-games', 'shelf']];
+  const FROM = [['#emu-mine-games', 'shelf']];
   const unlight = () => {
     for (const cls of ['emu-lit', 'emu-no']) for (const n of document.querySelectorAll(`.${cls}`)) n.classList.remove(cls);
   };
@@ -1254,7 +1202,7 @@
       sfx.pick();
       const r = drag.src.getBoundingClientRect();
       Object.assign(drag, { dx: drag.x - r.left, dy: drag.y - r.top, home: r });
-      if (drag.from === 'room' || drag.from === 'floor') carry(drag);
+      if (drag.from === 'room') carry(drag);
       // Anything else is held as a copy, drawn where the ghost is, at the
       // room's art pixel, with no ids or live region of its own.
       const ghost = el('div', 'emu-ghost');

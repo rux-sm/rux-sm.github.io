@@ -227,18 +227,18 @@
 :root { --frame-wide: 82rem; }
 
 /* The page grids add no gutter, and each grid on this page holds one column.
-   The gap between the board's regions is `.scheduler-board`'s own. Where the
-   frame stands in from the window, the page's own grid keeps a 16px margin
-   inside its edges, as far as the board stands below the header, so the lines
-   Design draws there in Geist's themes never touch it; below that, and in the
-   fill frame, which has no edge, the board's inset is `.rux--content`'s
-   padding. */
+   The gap between the board's regions is `.scheduler-board`'s own. In
+   Geist's themes, where Design rules the frame's edges, the page's own grid
+   keeps a 16px margin inside them, as far as the board stands below the
+   header, so the lines never touch it. Elsewhere the board's inset is
+   `.rux--content`'s padding, and its edge lines up with the header's menu
+   button and the menu it opens. */
 .rux--css-grid {
   --rux-grid-margin: 0;
   --rux-grid-gutter: 0;
 }
 @media (min-width: 42rem) {
-  :where(:root:not([data-frame~="fill"])) .rux--content > .rux--css-grid--full-width { --rux-grid-margin: var(--rux-spacing-05); }
+  :where(:root:not([data-frame~="fill"]):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"])) .rux--content > .rux--css-grid--full-width { --rux-grid-margin: var(--rux-spacing-05); }
 }
 
 

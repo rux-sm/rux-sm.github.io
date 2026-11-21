@@ -58,11 +58,14 @@ and 14 high, on the bottom rows of its 24-high canvas.
 
 ## The TV
 
-The room's TV is `tv.png` in the same folder, a CRT 80 by 60, drawn the
-same way: its top over its front, the feet cut, the outline in black. Its
-glass is the dark rectangle 54 wide and 36 high, 6 across and 16 down; the
-room writes on it there, so a redrawn TV keeps its glass in that place, or
-`.emu-tv__screen` in `app.css` moves with it.
+The room's TV is `tv.png` in the same folder, a flat screen on a centre
+stand, 80 by 54, with the outline in black: a thin frame with one lighter
+row along its top, a standby light at its foot, then a neck and a low base.
+Its glass is the dark rectangle 74 wide and 40 high, 3 across and 3 down;
+the room writes on it there, so a redrawn TV keeps its glass in that place,
+or `.emu-tv__screen` in `app.css` moves with it. The stand, 32 wide and 8
+high from 24 across and 46 down, is the button that opens the TV's menu,
+`.emu-tv__stand`.
 
 ## Steps
 

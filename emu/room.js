@@ -27,7 +27,7 @@
    it, after one it says what it did, with Undo where it can be taken back,
    and it asks before an emulator is removed. The TV's glass shows only a
    home console's game, its cover once it starts, a wire running to the TV
-   from its console. The TV's knobs, or a press on its case, open its menu,
+   from its console. The TV's stand, or a press anywhere on it, opens its menu,
    the room's own two: Sound and Tidy up. The pages' menu and Search are the
    shell's, the same on every page.
 
@@ -246,20 +246,20 @@
     svg.setAttribute('height', '16');
     return svg;
   };
-  // THE TV'S MENU, under its knobs: what is the room's alone, Sound and
+  // THE TV'S MENU, under its stand: what is the room's alone, Sound and
   // Tidy up. The other pages and Search are the shell's, as Carbon keeps a
   // product's navigation in its shell on every page.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
-    const knobs = $('emu-tv-knobs');
+    const button = $('emu-tv-menu-open');
     if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
     menu.replaceChildren(
       menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }),
       menuItem(menu, 'Tidy up', tidy));
-    window.Rux.menu.open(menu, knobs);
+    window.Rux.menu.open(menu, button);
   }
-  $('emu-tv-knobs').addEventListener('click', openTvMenu);
-  // A press on the TV's case opens it too, but not one on its knobs, which open it themselves, or one that carried it.
+  $('emu-tv-menu-open').addEventListener('click', openTvMenu);
+  // A press on the TV opens it too, but not one on its stand, which opens it itself, or one that carried it.
   $('emu-tv').addEventListener('click', e => { if (!e.target.closest('a, button')) openTvMenu(); });
   $('emu-tv').addEventListener('contextmenu', e => { e.preventDefault(); openTvMenu(); });
 
@@ -931,7 +931,7 @@
     drawWire();
     wake();
   }
-  // The glass goes dark, its picture closing to a dot, as a CRT's does.
+  // The glass goes dark, a last glow fading from it.
   function showOff() {
     showing = 0;
     wire = null;

@@ -8,7 +8,7 @@ type: plan
 
 The Library is one tile at the top of the page, in the shell every Emu
 page has, as wide as the page's frame: its head, then the room, Your Mac, the play surface for what is in use now,
-with a single CRT TV, every console set up on this Mac and their favourite games, each
+with a single flat TV, every console set up on this Mac and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
 holds, each with Download. The tile's foot, mirroring its head, has a
@@ -24,8 +24,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   favourite games.** It is the tile's own surface, layer-01, with no wall,
   floor, furniture or shelves, so there is nothing to read but what this
   Mac has.
-- **The TV is a CRT in pixel art, `emu/brand/consoles/tv.png`, which starts
-  in the middle of the room and is dragged anywhere like a console, and its
+- **The TV is a flat screen on a centre stand in pixel art,
+  `emu/brand/consoles/tv.png`, which starts at the top of the room, centred,
+  and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
 - **Every Emu page stands in the scheduler's frame,** Design's wide frame
@@ -172,8 +173,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   game's cover is on the glass or while it is being set up, so which
   console is on the TV shows; it runs out from the console as it plugs in. A
   handheld lights its own screen and has none.
-- **The TV behaves as a CRT:** scanlines on its glass, its picture opening
-  from a line as a game's cover comes on and closing to a dot as it goes. A
+- **The TV behaves as a flat screen:** its picture fades in as a game's
+  cover comes on, and a last glow fades from the glass as it goes. A
   home console's game shows its cover on the glass once it has started,
   until the page is looked at again, since the helper does not say when a
   game ends. A minute with the glass dark and nothing touched, the mark

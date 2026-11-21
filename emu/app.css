@@ -213,27 +213,29 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    pixel art lands on whole pixels. */
 .emu-room { --emu-px: 3px; position: relative; block-size: 100%; padding: calc(6 * var(--emu-px)); }
 .emu-room[hidden] { display: none; }
-/* The TV: a CRT drawn as brand/consoles/tv.png, 80 by 60 art pixels, placed
-   by room.js as a console is, --emu-left and --emu-top in art pixels, and
-   dragged the same way. Its glass, 54 by 36 art pixels from 6 across and 16
-   down, shows only a playing home console's game; it is dark in every theme,
-   so it reads Gray 100's tokens. */
-.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(60 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
-.emu-tv__screen { position: absolute; inset-inline-start: calc(6 * var(--emu-px)); inset-block-start: calc(16 * var(--emu-px)); inline-size: calc(54 * var(--emu-px)); block-size: calc(36 * var(--emu-px)); border-radius: calc(2 * var(--emu-px)); overflow: hidden; }
-/* The glass has a CRT's scanlines, an art pixel dark in every two. Its
-   picture opens from a line as a game's cover comes on and closes to a dot
-   as it goes; Carbon has no motion for a tube, so these take its moderate-01 and
-   moderate-02 on the productive curves, and none plays where motion is reduced. */
-.emu-tv__screen::before { content: ""; position: absolute; inset: 0; z-index: 2; background: repeating-linear-gradient(to bottom, transparent 0 var(--emu-px), var(--rux-shadow) var(--emu-px) calc(2 * var(--emu-px))); opacity: .2; pointer-events: none; }
+/* The TV: a flat screen on its stand, drawn as brand/consoles/tv.png, 80 by
+   54 art pixels, placed by room.js as a console is, --emu-left and --emu-top
+   in art pixels, and dragged the same way. Its glass, 74 by 40 art pixels
+   from 3 across and 3 down, shows only a playing home console's game; it is
+   dark in every theme, so it reads Gray 100's tokens. */
+.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(54 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+.emu-tv__screen { position: absolute; inset-inline-start: calc(3 * var(--emu-px)); inset-block-start: calc(3 * var(--emu-px)); inline-size: calc(74 * var(--emu-px)); block-size: calc(40 * var(--emu-px)); overflow: hidden; }
+/* Its picture fades in as a game's cover comes on, and a last glow fades
+   from the glass as it goes, as a flat screen's does: Carbon's moderate-01
+   entering and moderate-02 leaving, on the productive curves, and neither
+   plays where motion is reduced. */
 .emu-tv__screen > * { position: relative; z-index: 1; }
-.emu-tv--on .emu-tv__screen { animation: emu-crt-on 150ms cubic-bezier(0, 0, 0.38, 0.9); }
-@keyframes emu-crt-on { from { clip-path: inset(48% 0); } to { clip-path: inset(0); } }
-.emu-tv--off .emu-tv__screen::after { content: ""; position: absolute; inset: 0; z-index: 3; background: var(--rux-text-primary); pointer-events: none; animation: emu-crt-off 240ms cubic-bezier(0.2, 0, 1, 0.9) both; }
-@keyframes emu-crt-off { 0% { transform: scale(1, 1); opacity: .6; } 50% { transform: scale(1, .02); opacity: 1; } 100% { transform: scale(0, .02); opacity: 0; } }
-/* A playing game's cover fills the glass. */
+.emu-tv--on .emu-tv__screen { animation: emu-tv-on 150ms cubic-bezier(0, 0, 0.38, 0.9); }
+@keyframes emu-tv-on { from { opacity: 0; } to { opacity: 1; } }
+.emu-tv--off .emu-tv__screen::after { content: ""; position: absolute; inset: 0; z-index: 3; background: var(--rux-text-primary); pointer-events: none; animation: emu-tv-off 240ms cubic-bezier(0.2, 0, 1, 0.9) both; }
+@keyframes emu-tv-off { from { opacity: .3; } to { opacity: 0; } }
+/* A playing game's whole cover stands on the glass, as tall as it and in
+   its middle. The cover is the glass's own box and its one grid track that
+   box's size, so the picture's limits have something to measure: in an auto
+   track they had none, and a cover as wide as the glass ran past its foot. */
 .emu-tv__art:empty { display: none; }
-.emu-tv__art { position: absolute; inset: 0; display: grid; place-items: center; }
-.emu-tv__cover { block-size: 100%; display: grid; place-items: center; }
+.emu-tv__art { position: absolute; inset: 0; }
+.emu-tv__cover { position: absolute; inset: 0; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; }
 .emu-tv__cover img { max-inline-size: 100%; max-block-size: 100%; object-fit: contain; }
 /* The screensaver: the mark drifts across the glass and back, and down and
    up at another pace, so it wanders. Carbon has no idle motion; this is slow
@@ -242,11 +244,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tv__saver img { display: block; inline-size: calc(8 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); animation: emu-drift-y 4.3s linear infinite alternate; }
 .emu-tv--saver .emu-tv__saver { display: block; }
 @keyframes emu-drift-x { from { transform: translateX(0); } to { transform: translateX(calc(100% - 8 * var(--emu-px))); } }
-@keyframes emu-drift-y { from { transform: translateY(0); } to { transform: translateY(calc(28 * var(--emu-px) - 8 * var(--emu-px))); } }
+@keyframes emu-drift-y { from { transform: translateY(0); } to { transform: translateY(calc(32 * var(--emu-px) - 8 * var(--emu-px))); } }
 @media (prefers-reduced-motion: reduce) { .emu-tv--on .emu-tv__screen, .emu-tv--off .emu-tv__screen::after, .emu-tv__saver, .emu-tv__saver img { animation: none; } .emu-tv--off .emu-tv__screen::after { display: none; } }
-/* The TV's knobs, in art pixels on its drawing: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
-.emu-tv__knobs { position: absolute; inset-inline-start: calc(64 * var(--emu-px)); inset-block-start: calc(15 * var(--emu-px)); inline-size: calc(10 * var(--emu-px)); block-size: calc(14 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
-.emu-tv__knobs:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+/* The TV's stand, in art pixels on its drawing: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
+.emu-tv__stand { position: absolute; inset-inline-start: calc(24 * var(--emu-px)); inset-block-start: calc(46 * var(--emu-px)); inline-size: calc(32 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
+.emu-tv__stand:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 /* The space the consoles stand in, the whole room under the TV: each placed
    by room.js, --emu-left and --emu-top its top-left corner in art pixels. The
    list takes no press itself, so a drop between consoles lands on the room. */

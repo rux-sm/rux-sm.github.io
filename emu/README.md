@@ -21,7 +21,7 @@ it, `this-mac.js`, which is Play, Download to this Mac with its progress and Rem
 from this Mac; then its region, version and format, each file's header and
 fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, `search.js`,
 finds any game by title and opens it on the Library, ⌘K too; it sits in each page's
-header with the pages' menu; in the room the TV's knobs or case open Sound and Tidy up.
+header with the pages' menu; in the room a press on the TV opens Sound and Tidy up.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad

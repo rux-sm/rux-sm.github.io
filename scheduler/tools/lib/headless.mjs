@@ -1,7 +1,12 @@
-// What the scheduler's headless checks share: where Chrome is, a free port,
-// a wait, a DevTools connection, and the stand-in for the account and the
-// database that lets a page draw from invented rows with nobody logged in.
+// What the scheduler's headless checks share: where Chrome is, the site
+// served and Chrome opened on it, a wait, a deadline, a DevTools connection,
+// a page's settling, and the stand-in for the account and the database that
+// lets a page draw from invented rows with nobody logged in.
+import { spawn } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 export const CHROMES = [
   process.env.CHROME,
@@ -47,6 +52,96 @@ export async function waitFor(test, ms, what) {
   throw new Error(`timed out waiting for ${what}`);
 }
 
+/* A promise held to a deadline. The timer is cleared once the promise
+   settles, since a timer left running keeps Node open until it fires and a
+   check would end that much after its work. `said` is the error's words, or
+   a function giving them at the deadline. */
+export function within(promise, ms, said) {
+  let timer;
+  const late = new Promise((_, failed) => { timer = setTimeout(() => failed(new Error(typeof said === 'function' ? said() : said)), ms); });
+  return Promise.race([promise, late]).finally(() => clearTimeout(timer));
+}
+
+/* Chrome says on stderr where its DevTools listen once it is up, and a
+   Chrome that exits first says why there too, so the start is waited on by
+   Chrome's own word and fails at once with it. The minute is only for a
+   Chrome that hangs. */
+function listening(browser) {
+  let said = '';
+  const last = () => said.trim().split('\n').slice(-3).join(' | ') || 'nothing';
+  const up = new Promise((done, failed) => {
+    browser.stderr.setEncoding('utf8');
+    // Read for as long as Chrome runs, so its pipe never fills; the last few thousand characters are kept to say why it stopped.
+    browser.stderr.on('data', s => {
+      said = (said + s).slice(-4000);
+      const m = /DevTools listening on (ws:\/\/\S+)/.exec(said);
+      if (m) done(m[1]);
+    });
+    browser.once('error', failed);
+    browser.once('exit', (code, signal) => failed(new Error(`Chrome stopped (${signal ?? `exit ${code}`}) before it was up; it said: ${last()}`)));
+  });
+  return within(up, 60000, () => `Chrome was not up after a minute; it said: ${last()}`);
+}
+
+/* The site served on a free port and headless Chrome opened on a blank page,
+   with the log-in, the account script and Turnstile stood in and the
+   database answering from `data` by `stub`. `name` names the check, in the
+   stand-in's words and its profile's folder. `close` ends Chrome and the
+   server and clears the profile; a start that fails has closed them. */
+export async function openHeadless({ root, chrome, name, data }) {
+  const port = await freePort();
+  const server = spawn(process.execPath, [join(root, 'design', 'tools', 'serve.mjs')], { cwd: root, stdio: 'ignore', env: { ...process.env, HOST: 'localhost', PORT: String(port) } });
+  const profile = mkdtempSync(join(tmpdir(), `${name}-`));
+  let browser = null, page = null;
+  const close = async () => {
+    if (page) await within(page.close(), 3000, 'the DevTools socket did not close').catch(() => {});
+    if (browser && browser.exitCode === null && browser.signalCode === null) {
+      const gone = new Promise(r => browser.once('exit', r));
+      browser.kill();
+      await within(gone, 3000, 'Chrome did not stop').catch(() => {});
+    }
+    // Chrome's helpers hold its stderr open a while after it stops, and an open pipe holds Node open.
+    browser?.stderr.destroy();
+    server.kill();
+    try { rmSync(profile, { recursive: true, force: true }); } catch { /* Chrome may still be closing its profile; the OS clears its temp folder. */ }
+  };
+  try {
+    await waitFor(() => reachable(`http://localhost:${port}/scheduler/`), 10000, 'the site');
+    browser = spawn(chrome, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check', '--window-size=1400,900', '--hide-scrollbars', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+    const devtools = new URL(await listening(browser)).port;
+    let targets = [];
+    await waitFor(async () => { try { targets = await (await fetch(`http://127.0.0.1:${devtools}/json`)).json(); } catch { return false; } return targets.some(t => t.type === 'page'); }, 10000, 'a page');
+    page = await connect(targets.find(t => t.type === 'page').webSocketDebuggerUrl);
+    // funnel.js shows the page once the log-in lets it; its stand-in shows it at once.
+    const standIn = url => (/\/funnel\.js/.test(url) ? "document.documentElement.setAttribute('data-rux-unlocked', '');" : `/* stood in by ${name} */`);
+    page.on('Fetch.requestPaused', p => page.send('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from(standIn(p.request.url)).toString('base64') }));
+    await page.send('Runtime.enable');
+    await page.send('Page.enable');
+    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*/funnel.js' }, { urlPattern: '*/account.js' }, { urlPattern: '*turnstile*' }] });
+    await page.send('Page.addScriptToEvaluateOnNewDocument', { source: stub(data) });
+    return { port, page, close };
+  } catch (e) {
+    await close();
+    throw e;
+  }
+}
+
+/* In the page, an async function that resolves once what is drawn has
+   settled: two frames on, so a style just changed is computed and its
+   transitions started, the fonts it asked for are in, and no transition or
+   animation that ends is still running, asked again after each has ended,
+   since one may start another. */
+export const SETTLE = `async () => {
+  const frames = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  for (;;) {
+    await frames();
+    await document.fonts.ready;
+    const running = document.getAnimations().filter(a => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity);
+    if (!running.length) return;
+    await Promise.allSettled(running.map(a => a.finished));
+  }
+}`;
+
 /* A DevTools connection: one socket, numbered calls, events by name. */
 export function connect(url) {
   const ws = new WebSocket(url);
@@ -59,5 +154,7 @@ export function connect(url) {
   });
   const send = (method, params = {}) => new Promise((done, failed) => { const id = next++; waiting.set(id, { done, failed }); ws.send(JSON.stringify({ id, method, params })); });
   const on = (method, fn) => { if (!listeners.has(method)) listeners.set(method, []); listeners.get(method).push(fn); };
-  return new Promise((done, failed) => { ws.addEventListener('open', () => done({ send, on, close: () => ws.close() })); ws.addEventListener('error', () => failed(new Error(`could not open ${url}`))); });
+  // Closing answers once the socket has closed, since a socket still closing when Chrome stops holds Node open until it gives up.
+  const close = () => new Promise(done => { if (ws.readyState === WebSocket.CLOSED) return done(); ws.addEventListener('close', () => done(), { once: true }); ws.close(); });
+  return new Promise((done, failed) => { ws.addEventListener('open', () => done({ send, on, close })); ws.addEventListener('error', () => failed(new Error(`could not open ${url}`))); });
 }

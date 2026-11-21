@@ -19,15 +19,12 @@
 // alone when none is named; `--pages=full,trips` names the pages, every one
 // when none is named; `DRAWN_LINES=60` lists more of each fault than eight. Needs Chrome on this Mac, or `CHROME` naming
 // one; says so and passes when there is none.
-import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHROMES, connect, freePort, reachable, stub, waitFor } from './lib/headless.mjs';
+import { CHROMES, SETTLE, openHeadless, waitFor, within } from './lib/headless.mjs';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..', '..');
-const SERVER = join(ROOT, 'design', 'tools', 'serve.mjs');
 const ALL = ['white', 'g10', 'g90', 'g100', 'rux-100', 'rux-dark', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
 const asked = process.argv.find(a => a.startsWith('--themes='))?.slice(9);
 const THEMES = asked === 'all' ? ALL : asked ? asked.split(',') : ['g100'];
@@ -53,8 +50,8 @@ const fail = (name, words) => { console.log(`  FAIL  ${name.padEnd(7)} ${words}`
    once. */
 const DRAWN = `(async theme => {
   document.documentElement.dataset.theme = theme;
-  // A page this long takes a while to restyle, and its colours move over Carbon's fast-01.
-  await new Promise(r => setTimeout(r, 1500));
+  // Its colours move over Carbon's fast-01, so they are read once every move has ended.
+  await (${SETTLE})();
   const SCALE = new Set([0, 1, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96, 160]);
   const cv = document.createElement('canvas'); cv.width = cv.height = 1;
   const cx = cv.getContext('2d', { willReadFrequently: true });
@@ -173,26 +170,10 @@ const SAID = { small: 'text under 12px', tracking: 'a size without its tracking'
 async function main() {
   const chrome = CHROMES.find(p => existsSync(p));
   if (!chrome) { ok('drawn', 'skipped: no Chrome here (set CHROME to one) to draw the components in'); return; }
-  const port = await freePort();
-  const server = spawn(process.execPath, [SERVER], { cwd: ROOT, stdio: 'ignore', env: { ...process.env, HOST: 'localhost', PORT: String(port) } });
-  const profile = mkdtempSync(join(tmpdir(), 'check-drawn-'));
-  let browser = null;
+  let headless = null;
   try {
-    await waitFor(() => reachable(`http://localhost:${port}/scheduler/`), 10000, 'the site');
-    browser = spawn(chrome, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check', '--window-size=1400,900', '--hide-scrollbars', 'about:blank'], { stdio: 'ignore' });
-    const portFile = join(profile, 'DevToolsActivePort');
-    await waitFor(() => existsSync(portFile) && readFileSync(portFile, 'utf8').trim().length > 0, 15000, 'Chrome');
-    const devtools = Number(readFileSync(portFile, 'utf8').split('\n')[0]);
-    let targets = [];
-    await waitFor(async () => { try { targets = await (await fetch(`http://127.0.0.1:${devtools}/json`)).json(); } catch { return false; } return targets.some(t => t.type === 'page'); }, 10000, 'a page');
-    const page = await connect(targets.find(t => t.type === 'page').webSocketDebuggerUrl);
-    // funnel.js shows the page once the log-in lets it; its stand-in shows it at once.
-    const standIn = url => (/\/funnel\.js/.test(url) ? "document.documentElement.setAttribute('data-rux-unlocked', '');" : '/* stood in by check-drawn */');
-    page.on('Fetch.requestPaused', p => page.send('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from(standIn(p.request.url)).toString('base64') }));
-    await page.send('Runtime.enable');
-    await page.send('Page.enable');
-    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*/funnel.js' }, { urlPattern: '*/account.js' }, { urlPattern: '*turnstile*' }] });
-    await page.send('Page.addScriptToEvaluateOnNewDocument', { source: stub({}) });
+    headless = await openHeadless({ root: ROOT, chrome, name: 'check-drawn', data: {} });
+    const { port, page } = headless;
     let landed = () => {};
     page.on('Page.loadEventFired', () => landed());
     const run = async expression => {
@@ -203,11 +184,11 @@ async function main() {
     for (const at of READ) {
       const loaded = new Promise(r => { landed = r; });
       await page.send('Page.navigate', { url: `http://localhost:${port}/scheduler/${at.path}` });
-      await Promise.race([loaded, new Promise((_, f) => setTimeout(() => f(new Error(`${at.path} never loaded`)), 20000))]);
-      // The page has drawn once what it is known by is there.
+      await within(loaded, 20000, `${at.path} never loaded`);
+      // The page has drawn once what it is known by is there, and is read once that has settled.
       await waitFor(() => run(at.ready), 20000, at.name);
       if (at.then) { await run(at.then); await waitFor(() => run(at.after), 10000, at.name); }
-      await new Promise(r => setTimeout(r, 1500));
+      await run(`(${SETTLE})()`);
       for (const theme of THEMES) {
         const { counts, faults } = await run(`${DRAWN}(${JSON.stringify(theme)})`);
         const bad = Object.entries(faults).filter(([, list]) => list.length);
@@ -221,9 +202,7 @@ async function main() {
   } catch (e) {
     fail('drawn', e.message);
   } finally {
-    if (browser) { const gone = new Promise(r => browser.once('exit', r)); browser.kill(); await Promise.race([gone, new Promise(r => setTimeout(r, 3000))]); }
-    server.kill();
-    try { rmSync(profile, { recursive: true, force: true }); } catch { /* Chrome may still be closing its profile; the OS clears its temp folder. */ }
+    await headless?.close();
   }
 }
 

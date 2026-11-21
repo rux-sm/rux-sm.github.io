@@ -14,15 +14,12 @@
 // is 40px, Carbon's md row, its tile 32px and 4px clear.
 // Needs Chrome on this Mac, or `CHROME` naming one; says so and passes
 // when there is none, since the whole check runs where Chrome may not be.
-import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHROMES, connect, freePort, reachable, stub, waitFor } from './lib/headless.mjs';
+import { CHROMES, openHeadless, within } from './lib/headless.mjs';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..', '..');
-const SERVER = join(ROOT, 'design', 'tools', 'serve.mjs');
 
 const ok = (name, words) => console.log(`   ok   ${name.padEnd(7)} ${words}`);
 const fail = (name, words) => { console.log(`  FAIL  ${name.padEnd(7)} ${words}`); process.exitCode = 1; };
@@ -259,34 +256,19 @@ const VIEWS = `(async () => {
 async function main() {
   const chrome = CHROMES.find(p => existsSync(p));
   if (!chrome) { ok('strip', 'skipped: no Chrome here (set CHROME to one) to grow the strip in'); return; }
-  const port = await freePort();
-  const server = spawn(process.execPath, [SERVER], { cwd: ROOT, stdio: 'ignore', env: { ...process.env, HOST: 'localhost', PORT: String(port) } });
-  const profile = mkdtempSync(join(tmpdir(), 'check-strip-'));
-  let browser = null;
+  let headless = null;
   const t0 = Date.now();
   try {
-    await waitFor(() => reachable(`http://localhost:${port}/scheduler/`), 10000, 'the site');
-    browser = spawn(chrome, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check', '--window-size=1400,900', '--hide-scrollbars', 'about:blank'], { stdio: 'ignore' });
-    const portFile = join(profile, 'DevToolsActivePort');
-    await waitFor(() => existsSync(portFile) && readFileSync(portFile, 'utf8').trim().length > 0, 15000, 'Chrome');
-    const devtools = Number(readFileSync(portFile, 'utf8').split('\n')[0]);
-    let targets = [];
-    await waitFor(async () => { try { targets = await (await fetch(`http://127.0.0.1:${devtools}/json`)).json(); } catch { return false; } return targets.some(t => t.type === 'page'); }, 10000, 'a page');
-    const page = await connect(targets.find(t => t.type === 'page').webSocketDebuggerUrl);
+    // The stand-in shows the page at once, so the browser's wheel can reach the board.
+    headless = await openHeadless({ root: ROOT, chrome, name: 'check-strip', data: invented() });
+    const { port, page } = headless;
     const errors = [];
     page.on('Runtime.exceptionThrown', p => errors.push(p.exceptionDetails?.exception?.description?.split('\n')[0] ?? p.exceptionDetails?.text));
     page.on('Runtime.consoleAPICalled', p => { if (p.type === 'error') errors.push(p.args.map(a => a.value ?? a.description).join(' ').slice(0, 160)); });
-    // funnel.js shows the page once the log-in lets it; its stand-in shows it at once, so the browser's wheel can reach the board.
-    const standIn = url => (/\/funnel\.js/.test(url) ? "document.documentElement.setAttribute('data-rux-unlocked', '');" : '/* stood in by check-strip */');
-    page.on('Fetch.requestPaused', p => page.send('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from(standIn(p.request.url)).toString('base64') }));
-    await page.send('Runtime.enable');
-    await page.send('Page.enable');
-    await page.send('Fetch.enable', { patterns: [{ urlPattern: '*/funnel.js' }, { urlPattern: '*/account.js' }, { urlPattern: '*turnstile*' }] });
-    await page.send('Page.addScriptToEvaluateOnNewDocument', { source: stub(invented()) });
     // The scenario must run in the scheduler's own document, not the blank one before it.
     const loaded = new Promise(r => page.on('Page.loadEventFired', r));
     await page.send('Page.navigate', { url: `http://localhost:${port}/scheduler/` });
-    await Promise.race([loaded, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded')), 20000))]);
+    await within(loaded, 20000, 'the page never loaded');
     if (process.env.STRIP_DEBUG) { await new Promise(r => setTimeout(r, 4000)); const d = await page.send('Runtime.evaluate', { expression: 'JSON.stringify({ href: location.href, title: document.title, week: !!document.getElementById(\'scheduler-week\'), account: !!window.Rux?.account?.staffProfile, status: document.getElementById(\'scheduler-status\')?.textContent?.slice(0, 200), bars: document.querySelectorAll(\'.scheduler-bar\').length, weekValue: document.getElementById(\'scheduler-week-date\')?.value, label: document.getElementById(\'scheduler-range\')?.textContent, body: document.body?.textContent?.replace(/\\s+/g, \' \').slice(0, 300) })', returnByValue: true }); console.log('debug', d.result.value); console.log('errors', errors.slice(0, 8)); }
     const run = async expression => {
       const { result, exceptionDetails } = await page.send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true, timeout: 90000 });
@@ -309,7 +291,7 @@ async function main() {
     const first = { ...await run('window.__strip.snap()'), marksBefore: before.marks };
     const again = new Promise(r => page.on('Page.loadEventFired', r));
     await page.send('Page.reload');
-    await Promise.race([again, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded again')), 20000))]);
+    await within(again, 20000, 'the page never loaded again');
     await run(helpers);
     const there = await run('window.__strip.ready()');
     // The week of the day it stood on, then the wheel the rest of the way, to the pixel, should the strip have stood off a day's edge, where the board settles it.
@@ -318,7 +300,6 @@ async function main() {
     if (Math.abs(off) >= 1) await swipe(there, Math.sign(off) * 25, Math.floor(Math.abs(off) / 25), Math.sign(off) * (Math.abs(off) % 25));
     const second = await run('window.__strip.snap()');
     const views = await run(VIEWS);
-    page.close();
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
     const r = compare('on two weeks and back four', first, second);
     let bad = false;
@@ -343,9 +324,7 @@ async function main() {
   } catch (e) {
     fail('strip', e.message);
   } finally {
-    if (browser) { const gone = new Promise(r => browser.once('exit', r)); browser.kill(); await Promise.race([gone, new Promise(r => setTimeout(r, 3000))]); }
-    server.kill();
-    try { rmSync(profile, { recursive: true, force: true }); } catch { /* Chrome may still be closing its profile; the OS clears its temp folder. */ }
+    await headless?.close();
   }
 }
 

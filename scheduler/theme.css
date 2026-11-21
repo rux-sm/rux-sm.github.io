@@ -1239,7 +1239,7 @@
    does, its weekday staying grey, and the roster's letter in a square of the
    same. Its column keeps its day's stripe, so the pattern runs unbroken
    through it. */
-[data-theme="rux-dark"] .scheduler-day--today { color: var(--rux-text-secondary); }
+[data-theme="rux-dark"] .scheduler-day--today { background: var(--scheduler-band-surface); color: var(--rux-text-secondary); }
 [data-theme="rux-dark"] .scheduler-day--today .scheduler-day__num {
   padding-inline: var(--rux-spacing-03);
   border-radius: 0;
@@ -1250,6 +1250,7 @@
 [data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--today {
   display: grid;
   place-items: center;
+  background: var(--scheduler-band-surface);
   color: var(--rux-background);
 }
 [data-theme="rux-dark"] .scheduler-avail__day--today .scheduler-avail__letter {
@@ -1664,7 +1665,7 @@
    and in a phone's week is set in the inverse ink on a capsule of the
    primary text, as a calendar marks today, and the roster's letter on a
    disc of it. */
-[data-theme="rux-100"] .scheduler-day--today { color: var(--rux-text-primary); }
+[data-theme="rux-100"] .scheduler-day--today { background: var(--scheduler-band-surface); color: var(--rux-text-primary); }
 [data-theme="rux-100"] .scheduler-weekstrip__day[data-today] .scheduler-weekstrip__num,
 [data-theme="rux-100"] .scheduler-day--today .scheduler-day__num {
   padding-inline: var(--rux-spacing-03);
@@ -1675,6 +1676,7 @@
 [data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--today {
   display: grid;
   place-items: center;
+  background: var(--scheduler-band-surface);
   color: var(--rux-text-inverse);
 }
 [data-theme="rux-100"] .scheduler-avail__day--today .scheduler-avail__letter {

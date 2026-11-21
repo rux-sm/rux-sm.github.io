@@ -402,12 +402,13 @@
   justify-content: center;
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
-/* Today is the day in `link-primary-hover`, Carbon's stronger step of the
-   link: plain `link-primary` reads 3.3 to 1 on the grey band in g90 and 3.8 in
-   the light themes, and this step is 4.6 or better in all of them. No mark
-   goes under it: the 32px band has no room for Carbon's calendar dot. Every
-   other day is the same, weekends included. data.js also sets `aria-current="date"` on the cell. */
-.scheduler-day--today { color: var(--rux-link-primary-hover); }
+/* Today is the day on the theme's brand fill in its on-colour words, as
+   Carbon's date picker fills its chosen day, so it stands out from the band:
+   Carbon's blue 60 under white at 5 to 1, and every other theme's brand under
+   its own words at 4.5 or more; Rux dark and Rux 100 mark it their own way
+   in theme.css. Every other day is the same, weekends included. data.js
+   also sets `aria-current="date"` on the cell. */
+.scheduler-day--today { background: var(--rux-background-brand); color: var(--rux-text-on-color); }
 
 /* ── Bus column ─────────────────────────────────────────────────────────────
    Each bus's head, sticky on the left: on a phone's board the narrow column
@@ -1654,8 +1655,10 @@ button.scheduler-row-head__num:focus { outline: none; }
    4.5 to 1 or more on Layer 02 in every theme, and in a tip the
    green `.scheduler-tip` mixes for its surface; the warning triangle as the
    alert draws it; and the close-out button, the invoice's number in the
-   link blue at the label size Paid takes, or Carbon's Incomplete in the
-   status blue, a glyph alone as the alert is. */
+   link's stronger step, `link-primary-hover`, 4.5 to 1 or more on Layer 02
+   in every theme where plain `link-primary` is 3.3 in g90, at the label
+   size Paid takes, or Carbon's Incomplete in the status blue, a glyph alone
+   as the alert is. */
 .scheduler-bar__marks { flex: none; display: inline-flex; align-items: center; gap: var(--rux-spacing-02); block-size: var(--scheduler-row-h); overflow: visible; }
 .scheduler-bar__paid {
   color: var(--scheduler-paid, var(--rux-tag-color-green));
@@ -1669,7 +1672,7 @@ button.scheduler-row-head__num:focus { outline: none; }
 .scheduler-bar :is(.scheduler-bar__owed, .scheduler-bar__close) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-bar__close > svg { color: var(--rux-status-blue); }
 .scheduler-bar__invoice {
-  color: var(--rux-link-primary);
+  color: var(--rux-link-primary-hover);
   font-size: var(--rux-label-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -4279,9 +4282,9 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-avail__days > .scheduler-avail__day:last-child { padding-inline-end: var(--scheduler-gap-clear); }
 /* The selected trip's days are shaded in the header, in primary text, with
    the mark's corners at the run's two top ends; today's letter takes the
-   colour the board's own today does. Two classes, to beat the header row's
-   surface and colour; today comes second, so a selected today stays in its
-   colour. The shade lies over the band's surface, because in some themes the
+   fill and words the board's own today does. Two classes, to beat the header
+   row's surface and colour; today comes second, so a selected today stays
+   today's. The shade lies over the band's surface, because in some themes the
    selected token is a wash. */
 .scheduler-avail__days > .scheduler-avail__day--on-day {
   background: linear-gradient(var(--rux-background-selected), var(--rux-background-selected)), var(--scheduler-band-surface);
@@ -4289,7 +4292,7 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-avail__days > :not(.scheduler-avail__day--on-day) + .scheduler-avail__day--on-day { border-start-start-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--on-day:not(:has(+ .scheduler-avail__day--on-day)) { border-start-end-radius: var(--scheduler-mark-radius, 0); }
-.scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
+.scheduler-avail__days > .scheduler-avail__day--today { background: var(--rux-background-brand); color: var(--rux-text-on-color); }
 /* The roster's corner, holding the Sort button flush
    to its edge and the band's full height, as the toolbar's buttons stand,
    so its open menu hangs from the band's foot; the button's own inset puts

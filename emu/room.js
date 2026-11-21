@@ -33,7 +33,7 @@
 
    A console that is set up brings its favourites out: the favourites of
    its system this Mac holds, fewer each as more consoles stand in the
-   room. They hop out of it and land around it, and each stays where it
+   room. They hop out of it and land under it, and each stays where it
    landed or was left.
 
    Rux's Server has two tabs of cards. Consoles is every console with
@@ -126,13 +126,37 @@
   // `placed`. A thing stays where it was left or pushed, whatever the
   // window does after.
   const placed = () => room?.placed ?? {};
-  // Where a thing with no place yet starts, as a share of the room across
-  // and down: the TV in the middle of the room, and a console at the first
-  // of these that nothing covers, in a row under the TV from the middle
-  // outward, then along the room's foot, then beside the TV. A room kept as
-  // shares, under `places`, starts each thing from its share.
+  // THE ROOM AS IT IS LAID OUT, which a room never kept shows and Tidy up
+  // puts back: the TV at the top of the room, centred, two gaps under the
+  // room's head, and the consoles side by side under it, a gap apart and
+  // two gaps below the TV, each row centred under it, in the collection's
+  // order. `sizes` is each thing's width and height in art pixels by its
+  // key, and `W` the room's width in them.
+  const GAP = 6;
+  function arranged(W, sizes) {
+    const at = { tv: [Math.round((W - sizes.tv[0]) / 2), 2 * GAP] };
+    const rows = [[]];
+    for (const key of stand.keys()) {
+      if (!sizes[key]) continue;
+      const row = rows.at(-1);
+      if (row.length && row.reduce((sum, k) => sum + sizes[k][0] + GAP, 0) + sizes[key][0] > W) rows.push([key]);
+      else row.push(key);
+    }
+    let y = at.tv[1] + sizes.tv[1] + 2 * GAP;
+    for (const row of rows) {
+      let x = Math.round((W - row.reduce((sum, k) => sum + sizes[k][0], 0) - GAP * (row.length - 1)) / 2);
+      for (const key of row) { at[key] = [x, y]; x += sizes[key][0] + GAP; }
+      y += Math.max(0, ...row.map(k => sizes[k][1])) + GAP;
+    }
+    return at;
+  }
+  // Where a thing with no place yet starts: its place in that layout, and
+  // where something kept covers it, the first of these shares of the room
+  // across and down that nothing covers, along the room's foot and then its
+  // sides. A room kept as shares, under `places`, starts each thing from
+  // its share.
   const SLOTS = [0.85, 1].flatMap(y => [0.5, 0.3, 0.7, 0.1, 0.9].map(x => [x, y])).concat([[0.05, 0.5], [0.95, 0.5], [0.05, 0.15], [0.95, 0.15]]);
-  const shareOf = key => room?.places?.[key] ?? (key === 'tv' ? [0.5, 0.5] : null);
+  const shareOf = key => room?.places?.[key] ?? null;
   // Every console with games whose emulator this Mac has stands in the
   // room, in the collection's order, until it is removed: 'on' where it is
   // set up, 'setting' while it is set up and 'keeping' while its emulator is
@@ -461,14 +485,16 @@
     const inside = n => { n.x = Math.min(Math.max(0, n.x), Math.max(0, W - n.w)); n.y = Math.min(Math.max(0, n.y), Math.max(0, H - n.h)); };
     const over = (a, b) => [Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y)];
     const clear = n => items.every(m => m === n || m.loose || over(n, m).some(o => o <= 0));
-    // A thing with no place takes its share, or the first slot nothing
-    // covers. A cover with none lands around its console, each a step
-    // further round it, and is drawn hopping out from the console's middle.
+    // A thing with no place takes its place in the room's layout, or the
+    // first slot nothing covers. A cover with none lands under its console,
+    // each a step further along an arc below it, clear of the TV above, and
+    // is drawn hopping out from the console's middle.
+    const laid = arranged(W, Object.fromEntries(items.map(i => [i.key, [i.w, i.h]])));
     for (const n of items.filter(i => i.loose)) {
       const home = n.node.dataset.of && items.find(m => m.key === n.node.dataset.of);
       if (home) {
         const mates = items.filter(m => m.node.dataset.of === home.key);
-        const turn = (mates.indexOf(n) / mates.length) * 2 * Math.PI + 0.5;
+        const turn = ((mates.indexOf(n) + 0.5) / mates.length) * Math.PI;
         n.x = home.x + home.w / 2 + Math.cos(turn) * 46 - n.w / 2;
         n.y = home.y + home.h / 2 + Math.sin(turn) * 32 - n.h / 2;
         n.pop = [home.x + home.w / 2 - n.w / 2, home.y + home.h / 2 - n.h / 2];
@@ -476,9 +502,10 @@
         continue;
       }
       const share = shareOf(n.key);
-      for (const [sx, sy] of share ? [share] : SLOTS) {
-        n.x = sx * (W - n.w);
-        n.y = sy * (H - n.h);
+      const spots = (share ? [share] : SLOTS).map(([sx, sy]) => [sx * (W - n.w), sy * (H - n.h)]);
+      for (const [x, y] of share || !laid[n.key] ? spots : [laid[n.key], ...spots]) {
+        n.x = x;
+        n.y = y;
         if (clear(n)) break;
       }
       n.loose = false;
@@ -1045,33 +1072,16 @@
     sfx.drop();
     return keep({ [system]: spot });
   }
-  // TIDY UP: the TV in the middle of the room and the consoles in rows under
-  // it, each row centred, in the collection's order; Undo puts everything
-  // back where it was.
+  // TIDY UP: the room as it is laid out, the TV at its top and the consoles
+  // in rows under it; Undo puts everything back where it was.
   function tidy() {
     const px = pxOf();
-    const box = $('emu-units');
-    const W = box.clientWidth / px;
-    const H = box.clientHeight / px;
-    const gap = 6;
+    const W = $('emu-units').clientWidth / px;
     const before = { ...drawn };
-    const tv = $('emu-tv');
-    const next = { tv: [Math.round((W - tv.offsetWidth / px) / 2), Math.round((H - tv.offsetHeight / px) / 2)] };
-    const rows = [[]];
-    // The covers land around their consoles again.
+    const sizeOf = node => [node.offsetWidth / px, node.offsetHeight / px];
+    const next = arranged(W, Object.fromEntries([['tv', sizeOf($('emu-tv'))], ...[...stand.keys()].map(sys => [sys, sizeOf(unitOf(sys))])]));
+    // The covers land under their consoles again.
     for (const key of Object.keys(drawn)) if (key.startsWith('game:')) delete drawn[key];
-    for (const li of [...stand.keys()].map(unitOf)) {
-      const w = li.offsetWidth / px;
-      const row = rows.at(-1);
-      if (row.length && row.reduce((sum, n) => sum + n.w + gap, 0) + w > W) rows.push([{ li, w }]);
-      else row.push({ li, w });
-    }
-    let y = next.tv[1] + tv.offsetHeight / px + 2 * gap;
-    for (const row of rows) {
-      let x = Math.round((W - row.reduce((sum, n) => sum + n.w, 0) - gap * (row.length - 1)) / 2);
-      for (const { li, w } of row) { next[li.dataset.system] = [x, y]; x += w + gap; }
-      y += Math.max(0, ...row.map(n => n.li.offsetHeight / px)) + gap;
-    }
     held = null;
     sfx.drop();
     keep(next);

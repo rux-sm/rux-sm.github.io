@@ -69,7 +69,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   Remove in its menu takes its emulator off and sends it back to Rux's
   Server. There is no putting one away.
 - **A console that is set up brings its favourite games out with it.** They
-  hop out of it and land around it, covers 20 art pixels tall: the
+  hop out of it and land under it, covers 20 art pixels tall: the
   favourites of its system that this Mac holds, A to Z, twelve shared among
   the consoles and at most 8 each, so the floor holds about twelve. A cover
   is a thing on the floor like any other: it stays where it landed or was
@@ -78,7 +78,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The whole room is for the TV, the consoles and the covers,** each a
   thing on the floor standing where it was last left, its top-left corner in
   art pixels from the room's, dragged to move it. A console just set up
-  stands in the first clear spot clear of the TV. Each one's spot is kept
+  stands at its place in the room's layout, or the first clear spot where
+  something stands there already. Each one's spot is kept
   with this Mac's room, in the `room` column of its `emu_macs` row. An empty
   room says faintly "Download a console from Rux's Server."
 - **A smaller window sweeps the room's things into a pile, and they stay
@@ -147,7 +148,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The room draws Your Mac, its drawers and Rux's Server from the real games
   and this Mac;** a game is dragged from Games onto its console, and opens
   its side panel when pressed.
-- **A room never kept stands each set-up console in its first clear spot.**
+- **A room never kept is laid out as Tidy up lays it:** the TV at the top
+  of the room, centred, and the consoles side by side under it, each row
+  centred, with a cover under its console.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room: "Remove mGBA from
   this Mac", or what it is busy with.
@@ -175,9 +178,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   until the page is looked at again, since the helper does not say when a
   game ends. A minute with the glass dark and nothing touched, the mark
   drifts around it until the pointer or a key moves.
-- **Tidy up, in the TV's menu, lays the TV in the middle of the
-  room and the consoles in rows under it,** with Undo on the strip, since a
-  swept pile stays until it is put back.
+- **Tidy up, in the TV's menu, lays the room out again:** the TV at the top
+  of the room, centred, two gaps under its head, and the consoles side by
+  side two gaps below it, a gap apart, each row centred under the TV, with
+  Undo on the strip, since a swept pile stays until it is put back.
 - **Removing an emulator is three steps, and the strip asks before it goes.**
   Remove in the console's menu has the strip ask "Remove mGBA from this Mac? Your saves are kept." with
   Remove and Keep. Remove keeps its saves and settings in Supabase,

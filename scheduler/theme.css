@@ -948,6 +948,15 @@
 [data-theme="rux-dark"] .rux--content:has(.scheduler-board) {
   padding: 0 var(--scheduler-safe-right) var(--scheduler-safe-bottom) var(--scheduler-safe-left);
 }
+/* In a frame with edges the sheet fills the frame, its outer sides lying on
+   the frame's two lines, so the page around it is the frame's margin alone. */
+@media (min-width: 42rem) {
+  [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--content:has(.scheduler-board) {
+    padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
+  }
+  [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--content > .rux--css-grid--full-width { --rux-grid-margin: 0; }
+  [data-theme="rux-dark"]:where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .scheduler-board { margin-inline: -1px; }
+}
 [data-theme="rux-dark"] .scheduler-board { gap: 0; }
 [data-theme="rux-dark"] .scheduler-frame {
   border-block: 0;

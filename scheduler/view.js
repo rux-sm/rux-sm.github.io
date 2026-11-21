@@ -26,7 +26,7 @@
   let saved = {};
   try {
     saved = JSON.parse(localStorage.getItem('scheduler.view') || '{}') || {};
-    if (saved.fill) document.documentElement.dataset.schedulerFill = '';
+    if (saved.fill) document.documentElement.dataset.frame = 'wide fill';
   } catch { /* A view that cannot be read draws the default week. */ }
 
   /* Dresses the week in the bar's rows: each row the view turns off hidden,

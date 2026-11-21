@@ -13812,8 +13812,8 @@
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
     // Fill the window, set on the root as view.js sets it before the first
-    // paint: the frame widens to the window, and app.js counts the days that fit.
-    document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
+    // paint: Design's fill frame is the window, and app.js counts the days that fit.
+    document.documentElement.dataset.frame = view.fill ? 'wide fill' : 'wide';
     // One for the destination, which never goes, plus whatever is left on;
     // the bus heads lay out their parts by the count, from app.css.
     dressRows(schEl, rowShown);

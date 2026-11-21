@@ -183,10 +183,9 @@
 /* The board is the Scheduler's frame, overrides.css's 82rem, which seven of
    the strip's days fill, so a panel opening beside the week leaves fewer of
    them in view and no edge of the page moves. Fill the window, in the view
-   menu, widens the frame to the window, which shows more days, and
-   Maintenance's pages declare it on `<html>`, since their two weeks always
-   fill it. */
-:root[data-scheduler-fill] { --frame-wide: 100vw; }
+   menu, takes Design's fill frame, the window itself, which shows more days,
+   and Maintenance's pages declare it on `<html>`, since their two weeks
+   always fill it. */
 /* THE STRIP is a row of days far wider than the pane, which the browser
    scrolls both ways, a trackpad's gesture and data.js's smooth scroll alike.
    An arrow, Today or a picked day scrolls it to a day's edge, clear of the

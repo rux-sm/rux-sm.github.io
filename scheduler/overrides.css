@@ -230,14 +230,14 @@
    The gap between the board's regions is `.scheduler-board`'s own. Where the
    frame stands in from the window and Design rules its edges, the page's own
    grid keeps a 16px margin inside them, as far as the board stands below the
-   header, so the lines never touch it; below that the board's inset is
-   `.rux--content`'s padding. */
+   header, so the lines never touch it; below that, and in the fill frame,
+   which has no edge, the board's inset is `.rux--content`'s padding. */
 .rux--css-grid {
   --rux-grid-margin: 0;
   --rux-grid-gutter: 0;
 }
 @media (min-width: 42rem) {
-  .rux--content > .rux--css-grid--full-width { --rux-grid-margin: var(--rux-spacing-05); }
+  :where(:root:not([data-frame~="fill"])) .rux--content > .rux--css-grid--full-width { --rux-grid-margin: var(--rux-spacing-05); }
 }
 
 

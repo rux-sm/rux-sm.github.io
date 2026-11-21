@@ -29,11 +29,15 @@
    them the drawings this browser saved or opened anywhere else in the
    checkout, whose paths are kept here.
 
-   EMU'S SETS are three folders that each hold one picture for each of
-   Emu's systems, named for the system: its console, which Emu's room shows
-   as it is drawn, its logo and its controller. The systems are the ones
-   emu/emulators.json names. The gallery shows each set whole, with an empty
-   tile where a system's picture is yet to be drawn.
+   ELEMENTS are the places in an app that show a drawing, each a file the
+   app reads. Emu has three sets of them, a folder each, holding one picture
+   for each of Emu's systems, named for the system: its console, which
+   Emu's room shows as it is drawn, its logo and its controller; the
+   consoles' set holds the room's TV too. The systems are the ones
+   emu/emulators.json names. A drawing is assigned to an element, which
+   files.js records and carries out, and the gallery shows each set whole,
+   with an empty tile where an element has no drawing yet. `art` is the
+   name a drawing started from that tile is given.
    ========================================================================== */
 (() => {
   'use strict';
@@ -144,9 +148,9 @@
   // The folders the gallery looks in, and the paths of drawings kept outside them,
   // the newest first.
   const SETS = [
-    { name: 'Consoles', folder: 'emu/brand/consoles/' },
-    { name: 'Logos', folder: 'emu/brand/logos/' },
-    { name: 'Controllers', folder: 'emu/brand/controllers/' },
+    { name: 'Consoles', folder: 'emu/brand/consoles/', word: 'console', others: ['tv'] },
+    { name: 'Logos', folder: 'emu/brand/logos/', word: 'logo', others: [] },
+    { name: 'Controllers', folder: 'emu/brand/controllers/', word: 'controller', others: [] },
   ];
   const FOLDERS = [...new Set(PALETTES.map(p => p.folder)), ...SETS.map(s => s.folder)];
   // Emu's systems as its emulators file names them, fetched once.
@@ -155,6 +159,14 @@
     if (!r.ok) throw new Error(`/emu/emulators.json: ${r.status}`);
     return r.json();
   }).then(json => Object.keys(json.systems)));
+  // Every element, set by set: each system's, then the set's others.
+  const elements = async () => {
+    const all = await systems();
+    return SETS.flatMap(set => [
+      ...all.map(name => ({ set: set.name, name, path: `${set.folder}${name}.png`, art: `${name}-${set.word}.png` })),
+      ...set.others.map(name => ({ set: set.name, name, path: `${set.folder}${name}.png`, art: `${name}.png` })),
+    ]);
+  };
   const KNOWN = 'sprites-known', MOST = 60;
   const known = {
     get() {
@@ -167,5 +179,5 @@
     add(path) { known.set([path, ...known.get().filter(p => p !== path)]); },
   };
 
-  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, SETS, FOLDERS, systems, palette, draft, folder, known, hexOf, numOf, convert, cssOf });
+  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, SETS, FOLDERS, elements, palette, draft, folder, known, hexOf, numOf, convert, cssOf });
 })();

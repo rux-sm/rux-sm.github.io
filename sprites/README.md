@@ -10,7 +10,8 @@ lists what is unfinished here.
 ## What it is
 
 `index.html` is the whole app, in two views. It opens on the gallery: a
-New drawing tile, then a tile for every saved drawing. A tile opens the
+New drawing tile, then a tile for every saved drawing, then the elements
+of an app that show one. A tile opens the
 editor: the drawing on a stage at a whole zoom, the tools above it and the
 colours beside it, with Gallery to go back.
 
@@ -26,23 +27,30 @@ colours beside it, with Gallery to go back.
   one of the same name, so a drawing moves between Sprites and Sprites P3
   and back unchanged.
 - **Saving:** a path in the checkout and a format: PNG at 1×, 2×, 4× or
-  8×, or SVG. A new drawing's path starts in `sprites/art/`, the home of a
-  drawing no app has claimed yet; one an app uses is saved where that app
-  reads it. A Sprites P3 PNG carries a Display P3 profile, which Open
-  reads to open it in Sprites P3 again; its SVG paints each colour in P3
-  over an sRGB fill. Emu's room shows a console's 1× PNG as it is drawn,
-  and `emu/docs/drawing-consoles.md` is how one is drawn.
+  8×, or SVG. A new drawing's path starts in `sprites/art/`, the home of
+  every drawing, under any name. A Sprites P3 PNG carries a Display P3
+  profile, which Open reads to open it in Sprites P3 again; its SVG paints
+  each colour in P3 over an sRGB fill.
+- **Assigning:** an element is a place in an app that shows a drawing, a
+  file the app reads. A right click on a drawing's tile opens Assign to,
+  which picks the element; Sprites writes the element's file from the
+  drawing as a 1× PNG and records the pair in `assigned.json`. Saving the
+  drawing writes its elements' files again. A drawing can be several
+  elements', and one assigned to none is only a drawing. Unassign, on an
+  element's tile, takes the element's file away and keeps the drawing.
 - **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
   the drawing it was saved from. Any other SVG is turned away. In Chrome,
   the gallery shows every picture in `sprites/art/` and each drawing this
   browser saved or opened elsewhere in the checkout, with Browse for any
   other file.
-- **Emu's sets:** under those, the gallery shows three folders whole, each
-  holding one picture for each of Emu's systems, named for the system:
-  `emu/brand/consoles/`, `emu/brand/logos/` and `emu/brand/controllers/`.
-  A system with no picture yet has an empty tile, which starts a new
-  drawing at that system's path. The systems are the ones
-  `emu/emulators.json` names.
+- **Emu's elements:** under the drawings no element shows, the gallery
+  lists Emu's three sets, one element for each of Emu's systems, its file
+  named for the system: `emu/brand/consoles/`, which holds the room's TV
+  too and which `emu/docs/drawing-consoles.md` says how to draw,
+  `emu/brand/logos/` and `emu/brand/controllers/`. Each tile is the
+  element's drawing, or an empty tile that starts a new drawing assigned to
+  it on its first save. The systems are the ones `emu/emulators.json`
+  names.
 
 The drawing as it stands is kept in this browser, so a reload loses
 nothing, and it stands in the gallery as Not saved until a file holds it. A
@@ -62,9 +70,11 @@ file and says the path it belongs at.
 | :--- | :--- |
 | `index.html` | the page, from Design's header-only shell |
 | `app.js` | the gallery and the editor: the tiles, the canvas, the tools, undo, the colours, Size and Save |
-| `data.js` | the palettes and presets, the colour spaces, the draft kept in this browser, the paths the gallery remembers, and Emu's sets |
-| `files.js` | opening a PNG or an SVG Sprites saved, listing the pictures the gallery shows, the PNG and SVG writers, and the checkout's folder |
+| `data.js` | the palettes and presets, the colour spaces, the draft kept in this browser, the paths the gallery remembers, and the elements |
+| `files.js` | opening a PNG or an SVG Sprites saved, listing the pictures the gallery shows, the PNG and SVG writers, reading and writing the assignments, and the checkout's folder |
 | `palette.json` | Sprites' 122 colours, in ramps |
+| `assigned.json` | each element's drawing, by the element's path; Sprites writes it |
+| `art/` | every drawing |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |
 | `brand/` | `icon.svg` for the tile and `favicon.svg` for the tab |
 

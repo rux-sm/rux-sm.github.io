@@ -26,6 +26,12 @@
    that can be done without asking. browse() is the file picker, for
    a picture anywhere else.
 
+   ASSIGNED. sprites/assigned.json holds, for each element that has a
+   drawing, the path of the drawing it shows. assigned() reads it, assign()
+   sets or clears one element's drawing there, and remove() takes a file
+   out of the checkout, which is how an element is left with no drawing.
+   The element's own file is a 1× PNG written from the drawing.
+
    OPENING. A PNG is read pixel by pixel. An SVG is read only as the writer
    here writes one, rect by rect, so it comes back as the drawing it was
    saved from; any other SVG is turned away, since a picture of curves has
@@ -131,6 +137,25 @@
     }
     const all = await Promise.all([...found].map(async ([path, handle]) => ({ path, file: await handle.getFile() })));
     return all.sort((a, b) => b.file.lastModified - a.file.lastModified);
+  }
+
+  // Each element's drawing, by the element's path. No file yet is no drawing assigned.
+  const ASSIGNED = 'sprites/assigned.json';
+  async function assigned() {
+    const handle = await reach(await checkout(), ASSIGNED, 'file');
+    return handle ? JSON.parse(await (await handle.getFile()).text()) : {};
+  }
+  // Gives an element a drawing, or none, and keeps the file in the elements' order by path.
+  async function assign(element, art) {
+    const map = await assigned();
+    if (art) map[element] = art; else delete map[element];
+    const sorted = Object.fromEntries(Object.keys(map).sort().map(k => [k, map[k]]));
+    await write(ASSIGNED, new Blob([`${JSON.stringify(sorted, null, 2)}\n`], { type: 'application/json' }));
+  }
+  // Takes a file out of the checkout; one that is not there is already out.
+  async function remove(path) {
+    const dir = await reach(await checkout(), path.replace(/[^/]*$/, ''), 'folder');
+    try { await dir?.removeEntry(path.split('/').at(-1)); } catch (err) { if (err.name !== 'NotFoundError') throw err; }
   }
 
   // A PNG or an SVG picked from the checkout, or from the file picker elsewhere, with
@@ -257,5 +282,5 @@
     return new Blob([text], { type: 'image/svg+xml' });
   }
 
-  S.files = { canWrite, allowed, checkout, checkPath, write, download, gallery, browse, read, png, svg };
+  S.files = { canWrite, allowed, checkout, checkPath, write, download, gallery, assigned, assign, remove, browse, read, png, svg };
 })();

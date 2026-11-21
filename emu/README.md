@@ -55,7 +55,7 @@ with backups to put back and a preferred set; and what is worth knowing. `docs/e
 is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
 `docs/drawing-consoles.md` how a console is drawn in pixels for the room. `brand/logos/`
 and `brand/controllers/` hold each system's logo and controller, named as its console is; no
-page shows them.
+page shows them. Sprites writes all three folders from the drawings in `sprites/art/`.
 
 ## The scan
 

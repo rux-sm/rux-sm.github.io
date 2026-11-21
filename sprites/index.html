@@ -112,7 +112,8 @@
 
         <!-- THE GALLERY. app.js adds a tile for the drawing not yet saved and
              one for each picture in the checkout after the first, then each
-             of Emu's sets under its name. -->
+             of Emu's sets under its name. A right click on a drawing's tile
+             opens the menu below the modals. -->
         <div class="sprites-view" id="sprites-gallery-view">
           <div class="sprites-gallery" id="sprites-gallery">
             <button type="button" class="rux--tile rux--tile--clickable sprites-tile" id="sprites-new-tile">
@@ -317,6 +318,39 @@
     </div>
   </div>
 </div>
+
+<!-- Assign, from a tile's menu: the element that shows this drawing. app.js
+     fills the list. -->
+<div class="rux--layer-one rux--modal" id="sprites-assign-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="sprites-assign-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="sprites-assign-h">Assign <span id="sprites-assign-what"></span></h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+          <div class="rux--form-item">
+            <div class="rux--select rux--layout--size-md">
+              <label class="rux--label" for="sprites-assign-to">Shown as</label>
+              <div class="rux--select-input__wrapper">
+                <select id="sprites-assign-to" class="rux--select-input"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary" id="sprites-assign-go">Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- A drawing's menu, from a right click on its tile. app.js fills it. -->
+<ul id="sprites-tile-menu" class="rux--menu" role="menu" aria-label="Drawing" tabindex="-1"></ul>
 
 <!-- Save, from the bar or Cmd S: a path in the checkout and a format.
      files.js writes it there in Chrome and downloads it elsewhere. -->

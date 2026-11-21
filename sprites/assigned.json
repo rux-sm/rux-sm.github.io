@@ -1,0 +1,20 @@
+{
+  "emu/brand/consoles/gb.png": "sprites/art/gb-console.png",
+  "emu/brand/consoles/gba.png": "sprites/art/gba-console.png",
+  "emu/brand/consoles/gbc.png": "sprites/art/gbc-console.png",
+  "emu/brand/consoles/gc.png": "sprites/art/gc-console.png",
+  "emu/brand/consoles/n3ds.png": "sprites/art/n3ds-console.png",
+  "emu/brand/consoles/n64.png": "sprites/art/n64-console.png",
+  "emu/brand/consoles/nds.png": "sprites/art/nds-console.png",
+  "emu/brand/consoles/nes.png": "sprites/art/nes-console.png",
+  "emu/brand/consoles/ps2.png": "sprites/art/ps2-console.png",
+  "emu/brand/consoles/psx.png": "sprites/art/psx-console.png",
+  "emu/brand/consoles/snes.png": "sprites/art/snes-console.png",
+  "emu/brand/consoles/switch.png": "sprites/art/switch-console.png",
+  "emu/brand/consoles/tv.png": "sprites/art/tv.png",
+  "emu/brand/consoles/wii.png": "sprites/art/wii-console.png",
+  "emu/brand/consoles/wiiu.png": "sprites/art/wiiu-console.png",
+  "emu/brand/consoles/xbox.png": "sprites/art/xbox-console.png",
+  "emu/brand/controllers/snes.png": "sprites/art/snes-controller.png",
+  "emu/brand/logos/nes.png": "sprites/art/nes-logo.png"
+}

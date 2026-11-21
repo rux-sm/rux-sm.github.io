@@ -8,7 +8,9 @@ A console in the room is a pixel drawing, a PNG in `brand/consoles/` named
 for its system as `R.SYSTEMS` in `app.js` names it: `snes.png`, `gba.png`,
 `psx.png`. The room shows it pixel for pixel in its own colours, the same in
 every theme. You draw it in Sprites, the site's pixel editor at `/sprites/`,
-in Sprites' palette, `sprites/palette.json`.
+in Sprites' palette, `sprites/palette.json`. The drawing itself is kept in
+`sprites/art/`, and Sprites writes the console's PNG from it, as
+`sprites/README.md` describes under Assigning.
 
 ## The view
 
@@ -69,16 +71,17 @@ high from 24 across and 46 down, is the button that opens the TV's menu,
 
 ## Steps
 
-1. Open Sprites and pick the console from the gallery, or start a new
-   drawing at the Home console or Handheld size.
+1. Open Sprites and pick the console from the gallery under Consoles, or
+   its empty tile for a new drawing at the Home console or Handheld size.
 2. Draw it on its shape from the table, in the Sprites palette.
-3. Save it as `emu/brand/consoles/<system>.png`, a 1× PNG. Sprites writes
-   it straight into the checkout in Chrome.
+3. Save it, as a 1× PNG. Sprites writes the drawing into `sprites/art/` and
+   the console's PNG into `emu/brand/consoles/`, straight into the checkout
+   in Chrome.
 4. Where the slot or tray moved, set the console's place in `SLOT` in
    `room.js`: how far down the drawing a game goes in, from 0 to 1. Where
    its power light moved, set `LIGHT` there too: the light's left, top,
    width and height in pixels and its colour. Draw the light unlit or dim;
    the room lights it while the console is on.
 5. Load the room on :8641 again and look at the console in a dark theme and
-   a light one, then commit the PNG. The published site shows it after the
-   push.
+   a light one, then commit the drawing, the PNG and
+   `sprites/assigned.json`. The published site shows it after the push.

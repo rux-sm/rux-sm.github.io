@@ -34,10 +34,10 @@
    a reload stays where it was and Back leaves the editor. The gallery's
    tiles are New drawing, then the drawing with changes no file holds, then
    in Chrome every picture in the palettes' folders and every drawing this
-   browser saved or opened elsewhere, the last changed first. Under them
-   stands each of Emu's sets beneath its name, a tile for each system in
-   Emu's order: its picture, or an empty tile that starts a new drawing at
-   that system's path. Chrome reads
+   browser saved or opened elsewhere, the last changed first, less the
+   drawings an element shows. Under them stands each of Emu's sets beneath
+   its name, a tile for each element in Emu's order: the drawing assigned
+   to it, or an empty tile that starts a new drawing for it. Chrome reads
    the checkout only once it is allowed, which takes a click on each visit
    unless it was allowed for good, so until then a button stands where the
    saved tiles will. Browse is the file picker, for any other file.
@@ -46,6 +46,13 @@
    files.js writes it in the palette's colour space. A 1× PNG or an SVG
    holds the drawing as drawn, so its path becomes the drawing's; a larger
    PNG is a copy.
+
+   ASSIGNING. A right click on a drawing's tile opens its menu. Assign to
+   picks an element, whose file is then written from the drawing; a drawing
+   can be several elements'. Unassign, on an element's tile, leaves it with
+   no drawing and takes its file away. Saving a drawing writes each of its
+   elements' files again, and a drawing started from an empty tile is
+   assigned to that element on its first save.
    The draft, data.js's, is kept on every step.
 
    CHANGES NOT SAVED. Leaving the page asks first, and so do a tile, Browse
@@ -67,7 +74,8 @@
   // The state. `dirty` is whether the drawing has changed since it was last
   // saved or opened.
   let drawing = { w: 16, h: 16, px: new Int32Array(256).fill(-1) };
-  let path = null, dirty = false;
+  // The drawing's file, and the element its first save assigns it to.
+  let path = null, assignTo = null, dirty = false;
   let pal = null, colour = 0xe81013, recent = [];
   let tool = 'pencil', mirror = false, zoom = 1, fitted = true;
   let past = [], ahead = [];
@@ -178,7 +186,7 @@
   }
 
   // ---- steps ----
-  const snapshot = () => ({ w: drawing.w, h: drawing.h, px: drawing.px.slice(), path, palette: pal?.id });
+  const snapshot = () => ({ w: drawing.w, h: drawing.h, px: drawing.px.slice(), path, assignTo, palette: pal?.id });
   let pending = null;
   const begin = () => { pending = snapshot(); };
   function commit(changed = true) {
@@ -198,6 +206,7 @@
     const s = from.pop();
     drawing = { w: s.w, h: s.h, px: s.px };
     path = s.path;
+    assignTo = s.assignTo ?? null;
     // A step taken in another palette brings it back, already loaded.
     if (s.palette && s.palette !== pal.id) setPal(palettes.get(s.palette));
     dirty = true;
@@ -206,7 +215,7 @@
     show();
   }
 
-  const keep = () => S.draft.save({ ...drawing, path, dirty, palette: pal?.id, colour, recent });
+  const keep = () => S.draft.save({ ...drawing, path, assignTo, dirty, palette: pal?.id, colour, recent });
 
   // ---- the tools ----
   let changed = false;
@@ -453,7 +462,7 @@
   heightField.addEventListener('input', syncPreset);
   widthField.addEventListener('change', syncPreset);
   heightField.addEventListener('change', syncPreset);
-  // The path a new drawing starts with: an empty tile's, or none.
+  // What a new drawing starts with: an empty tile's path and element, or none.
   let start = null;
   function sizeFor(resizing, at = null) {
     start = at;
@@ -503,7 +512,7 @@
           if (ny >= 0 && ny < h) px[ny * w + x] = drawing.px[y * drawing.w + x];
         }
       }
-    } else path = start;
+    } else { path = start?.path ?? null; assignTo = start?.element ?? null; }
     drawing = { w, h, px };
     view('draw');
     fit();
@@ -526,6 +535,7 @@
     begin();
     drawing = { w: read.w, h: read.h, px: read.px };
     path = got.path;
+    assignTo = null;
     if (path) S.known.add(path);
     setPal(await S.palette(want));
     view('draw');
@@ -550,9 +560,10 @@
 
   // ---- the gallery ----
   const editor = $('sprites-editor'), galleryView = $('sprites-gallery-view'), gallery = $('sprites-gallery');
-  // A tile: a picture and a name, the whole path in its title. An empty
-  // one, with no picture yet, is drawn as the New drawing tile is.
-  function tile(blob, name, title, act) {
+  // A tile: a picture and a name, the whole path in its title, and the menu
+  // a right click opens. An empty one, with no picture yet, is drawn as the
+  // New drawing tile is.
+  function tile(blob, name, title, act, menu = null) {
     const b = blob ? document.createElement('button') : $('sprites-new-tile').cloneNode(true);
     b.removeAttribute('id');
     b.type = 'button';
@@ -565,7 +576,25 @@
     }
     b.lastElementChild.textContent = name;
     b.addEventListener('click', () => act(b));
+    if (menu) b.addEventListener('contextmenu', e => { e.preventDefault(); openMenu(menu, b); });
     return b;
+  }
+  // A TILE'S MENU, Design's, under the tile: each item a label and what it runs.
+  const tileMenu = $('sprites-tile-menu');
+  const part = (cls, text = '') => Object.assign(document.createElement('div'), { className: cls, textContent: text });
+  function openMenu(items, trigger) {
+    window.Rux.menu.close(tileMenu);
+    tileMenu.replaceChildren(...items.map(({ label, run, danger }) => {
+      const li = document.createElement('li');
+      li.className = `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}`;
+      li.setAttribute('role', 'menuitem');
+      li.setAttribute('aria-haspopup', 'false');
+      li.tabIndex = 0;
+      li.append(part('rux--menu-item__selection-icon'), part('rux--menu-item__icon'), part('rux--menu-item__label', label));
+      li.addEventListener('click', () => { window.Rux.menu.close(tileMenu); run(trigger); });
+      return li;
+    }));
+    window.Rux.menu.open(tileMenu, trigger);
   }
   const fileOf = p => p.split('/').at(-1);
   const forget = within => { for (const img of within.querySelectorAll('img')) URL.revokeObjectURL(img.src); };
@@ -579,29 +608,41 @@
     let allowed = false;
     if (S.files.canWrite && (ask || await S.files.allowed())) {
       const kept = S.known.get();
-      const found = await S.files.gallery(S.FOLDERS, kept);
+      const map = await S.files.assigned();
+      const elements = await S.elements();
+      const found = await S.files.gallery(S.FOLDERS, [...kept, ...Object.values(map)]);
       allowed = true;
       // A drawing whose file has gone is no longer kept.
       const there = new Set(found.map(g => g.path));
       if (kept.some(p => !there.has(p))) S.known.set(kept.filter(p => there.has(p)));
-      const saved = got => tile(got.file, fileOf(got.path), got.path, b => sure(opening(() => load(got)), b));
-      const inSet = got => S.SETS.some(set => got.path.startsWith(set.folder));
-      tiles.append(...found.filter(got => !inSet(got)).map(saved));
-      // Each of Emu's sets: a tile for each system, then any other picture in its folder.
-      const systems = await S.systems();
+      const byPath = new Map(found.map(got => [got.path, got]));
+      const open = got => b => sure(opening(() => load(got)), b);
+      const toAssign = got => ({ label: 'Assign to…', run: b => askAssign(got, elements, map, b) });
+      // The drawings no element shows: neither an element's own file nor one assigned.
+      const theirs = new Set(elements.flatMap(e => [e.path, map[e.path]]));
+      tiles.append(...found.filter(got => !theirs.has(got.path)).map(got => tile(got.file, fileOf(got.path), got.path, open(got), [toAssign(got)])));
+      // Each set under its name: an element's drawing, or its own file where
+      // none is assigned, or an empty tile that starts its drawing.
+      const folder = S.PALETTES[0].folder;
       for (const set of S.SETS) {
-        const mine = found.filter(got => got.path.startsWith(set.folder));
-        const systemOf = got => fileOf(got.path).replace(/\.(png|svg)$/i, '');
         tiles.append(Object.assign(document.createElement('h2'), { className: 'rux--type-heading-compact-01 sprites-gallery__heading', textContent: set.name }));
-        for (const system of systems) {
-          const got = mine.find(g => systemOf(g) === system);
-          const at = `${set.folder}${system}.png`;
-          tiles.append(got ? saved(got) : tile(null, fileOf(at), at, b => {
-            sizeFor(false, at);
+        for (const e of elements.filter(x => x.set === set.name)) {
+          const art = byPath.get(map[e.path]);
+          const got = art ?? byPath.get(e.path);
+          if (got) {
+            tiles.append(tile(got.file, fileOf(e.path), art ? `${e.path}, from ${art.path}` : e.path, open(got),
+              art ? [toAssign(art), { label: 'Unassign', danger: true, run: () => unassign(e) }] : null));
+            continue;
+          }
+          // The new drawing's name: the element's, or the next one free.
+          const free = n => `${folder}${e.art.replace(/\.png$/, n ? `-${n + 1}.png` : '.png')}`;
+          let n = 0;
+          while (byPath.has(free(n))) n++;
+          tiles.append(tile(null, fileOf(e.path), e.path, b => {
+            sizeFor(false, { path: free(n), element: e.path });
             window.Rux?.modal?.open('sprites-size-modal', b);
           }));
         }
-        tiles.append(...mine.filter(g => !systems.includes(systemOf(g))).map(saved));
       }
     }
     if (turn !== drawn) { forget(tiles); return; }
@@ -610,6 +651,55 @@
     $('sprites-allow').hidden = !S.files.canWrite || allowed;
   }
   $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));
+
+  // ---- assign ----
+  // The Assign window: every element, set by set, saying which have a drawing.
+  const assignField = $('sprites-assign-to');
+  let assigning = null;
+  function askAssign(got, elements, map, trigger) {
+    assigning = got;
+    assignField.replaceChildren(...S.SETS.map(set => {
+      const group = Object.assign(document.createElement('optgroup'), { label: `Emu ${set.name.toLowerCase()}` });
+      group.append(...elements.filter(e => e.set === set.name).map(e => Object.assign(document.createElement('option'), {
+        className: 'rux--select-option', value: e.path,
+        textContent: map[e.path] ? `${e.name}, now ${fileOf(map[e.path])}` : e.name,
+        selected: map[e.path] === got.path,
+      })));
+      return group;
+    }));
+    $('sprites-assign-what').textContent = fileOf(got.path);
+    window.Rux?.modal?.open('sprites-assign-modal', trigger);
+  }
+  // An element's file, written from a drawing as a 1× PNG.
+  const writeTo = async (element, d, space) => S.files.write(element, await S.files.png(d, 1, space));
+  const assigningTo = act => async (...args) => {
+    try { await act(...args); } catch (err) {
+      if (err.name !== 'AbortError') note('error', 'Could not assign it.', err.message);
+    }
+    opening(showGallery)();
+  };
+  $('sprites-assign-go').addEventListener('click', assigningTo(async () => {
+    const got = assigning, element = assignField.value;
+    window.Rux?.modal?.close('sprites-assign-modal');
+    const read = await S.files.read(got.file);
+    await writeTo(element, read, read.space);
+    await S.files.assign(element, got.path);
+    note('success', `Assigned ${fileOf(got.path)}.`, `${element} shows it.`);
+  }));
+  const unassign = assigningTo(async e => {
+    await S.files.assign(e.path, null);
+    await S.files.remove(e.path);
+    note('success', `Unassigned ${fileOf(e.path)}.`, `${e.path} is gone, and the drawing is kept.`);
+  });
+  // A saved drawing's elements, each written again; a drawing started for an
+  // element is assigned to it first.
+  async function spread(art) {
+    if (assignTo) { await S.files.assign(assignTo, art); assignTo = null; }
+    const map = await S.files.assigned();
+    const mine = Object.keys(map).filter(e => map[e] === art);
+    for (const element of mine) await writeTo(element, drawing, pal.space);
+    return mine;
+  }
   $('sprites-browse').addEventListener('click', () => sure(opening(async () => load(await S.files.browse())), $('sprites-browse')));
   $('sprites-to-gallery').addEventListener('click', () => view('gallery'));
 
@@ -672,16 +762,17 @@
       if (S.files.canWrite) await S.files.write(target, blob);
       else S.files.download(target, blob);
       // The path is the drawing's only when the file holds it as drawn.
+      let shown = [];
       if (format === 'png1' || format === 'svg') {
         path = target;
-        if (S.files.canWrite) S.known.add(target);
+        if (S.files.canWrite) { S.known.add(target); shown = await spread(target); }
       }
       dirty = false;
       S.folder.set(target.replace(/[^/]*$/, ''));
       keep();
       show();
       window.Rux?.modal?.close('sprites-save-modal');
-      note('success', S.files.canWrite ? `Saved ${target}.` : `Downloaded ${target.split('/').at(-1)}.`);
+      note('success', S.files.canWrite ? `Saved ${target}.` : `Downloaded ${target.split('/').at(-1)}.`, shown.length ? `Written to ${shown.join(' and ')} too.` : '');
     } catch (err) {
       if (err.name !== 'AbortError') pathError(err.message);
     }
@@ -716,6 +807,7 @@
     if (d) {
       drawing = { w: d.w, h: d.h, px: d.px };
       path = d.path ?? null;
+      assignTo = d.assignTo ?? null;
       dirty = !!d.dirty;
       colour = Number.isInteger(d.colour) ? d.colour : colour;
       recent = Array.isArray(d.recent) ? d.recent.filter(Number.isInteger).slice(0, RECENT) : [];

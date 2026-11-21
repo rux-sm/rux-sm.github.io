@@ -39,9 +39,12 @@ colours beside it, with Gallery to go back.
   the drawing's own changes not saved. A Sprites P3 PNG carries a Display P3
   profile, which Open reads to open it in Sprites P3 again; its SVG paints
   each colour in P3 over an sRGB fill.
+- **A drawing's menu:** a right click on its tile offers Rename, which
+  keeps its folder and its apps; Duplicate, a copy beside it; Assign to;
+  and Delete, which asks first. A drawing an app shows offers Unassign in
+  Delete's place.
 - **Assigning:** an element is a place in an app that shows a drawing, a
-  file the app reads. A right click on a drawing's tile opens Assign to,
-  which picks the element; Sprites writes the element's file from the
+  file the app reads. Assign to picks the element; Sprites writes the element's file from the
   drawing as a 1× PNG and records the pair in `assigned.json`. Saving the
   drawing writes its elements' files again. A drawing can be several
   elements', and one assigned to none is only a drawing. Unassign, on an

@@ -62,8 +62,15 @@
    written over only on a second Save. The draft, data.js's, is kept on
    every step.
 
-   ASSIGNING. A right click on a drawing's tile opens its menu. Assign to
-   picks an element, whose file is then written from the drawing; a drawing
+   A DRAWING'S MENU, from a right click on its tile: Rename, Duplicate,
+   Assign to and Delete. Rename keeps the drawing's folder and kind and
+   carries its elements with it. Duplicate copies it beside itself under a
+   free name, shown by no element. Delete asks first and takes the file
+   away; it is not offered on a drawing an element shows, which is
+   unassigned first. The drawing in hand follows a rename, and a deleted
+   one stays in hand as changes not saved.
+
+   ASSIGNING. Assign to, in a drawing's menu, picks an element, whose file is then written from the drawing; a drawing
    can be several elements'. Unassign, on an element's tile, leaves it with
    no drawing and takes its file away. Saving a drawing writes each of its
    elements' files again, and a drawing started from an empty tile is
@@ -755,6 +762,18 @@
     window.Rux.menu.open(tileMenu, trigger);
   }
   const fileOf = p => p.split('/').at(-1);
+  // A text field's error under it, Carbon's way: the field id's -wrap,
+  // -icon and -error beside it. No words clears it.
+  function fieldError(id, msg) {
+    const field = $(id), wrap = $(`${id}-wrap`);
+    for (const el of [wrap, field]) {
+      if (msg) el.setAttribute('data-invalid', ''); else el.removeAttribute('data-invalid');
+    }
+    $(`${id}-icon`).hidden = !msg;
+    field.classList.toggle('rux--text-input--invalid', !!msg);
+    field.setAttribute('aria-invalid', String(!!msg));
+    $(`${id}-error`).textContent = msg;
+  }
   const forget = within => { for (const img of within.querySelectorAll('img')) URL.revokeObjectURL(img.src); };
   // The drawing in hand, where it has pixels no file holds.
   const unsaved = () => dirty && drawing.px.some(v => v !== -1);
@@ -775,10 +794,18 @@
       if (kept.some(p => !there.has(p))) S.known.set(kept.filter(p => there.has(p)));
       const byPath = new Map(found.map(got => [got.path, got]));
       const open = got => b => sure(opening(() => load(got)), b);
-      const toAssign = got => ({ label: 'Assign to…', run: b => askAssign(got, elements, map, b) });
+      // A drawing's menu; one an element shows, from that element's tile,
+      // ends with Unassign where another ends with Delete.
+      const menuOf = (got, element = null) => [
+        { label: 'Rename…', run: b => askRename(got, b) },
+        { label: 'Duplicate', run: () => duplicate(got) },
+        { label: 'Assign to…', run: b => askAssign(got, elements, map, b) },
+        element ? { label: 'Unassign', danger: true, run: () => unassign(element) }
+          : { label: 'Delete…', danger: true, run: b => askDelete(got, b) },
+      ];
       // The drawings no element shows: neither an element's own file nor one assigned.
       const theirs = new Set(elements.flatMap(e => [e.path, map[e.path]]));
-      tiles.append(...found.filter(got => !theirs.has(got.path)).map(got => tile(got.file, fileOf(got.path), got.path, open(got), [toAssign(got)])));
+      tiles.append(...found.filter(got => !theirs.has(got.path)).map(got => tile(got.file, fileOf(got.path), got.path, open(got), menuOf(got))));
       // Each set under its name: an element's drawing, or its own file where
       // none is assigned, or an empty tile that starts its drawing.
       const folder = S.PALETTES[0].folder;
@@ -789,7 +816,7 @@
           const got = art ?? byPath.get(e.path);
           if (got) {
             tiles.append(tile(got.file, fileOf(e.path), art ? `${e.path}, from ${art.path}` : e.path, open(got),
-              art ? [toAssign(art), { label: 'Unassign', danger: true, run: () => unassign(e) }] : null));
+              art ? menuOf(art, e) : null));
             continue;
           }
           // The new drawing's name: the element's, or the next one free.
@@ -849,6 +876,78 @@
     await S.files.remove(e.path);
     note('success', `Unassigned ${fileOf(e.path)}.`, `${e.path} is gone, and the drawing is kept.`);
   });
+  // ---- a drawing's file ----
+  const folderOf = p => p.replace(/[^/]*$/, '');
+  const extOf = p => p.match(/\.(png|svg)$/i)[0];
+  // A path in a folder no file has: the name, else it with -2, -3 and on.
+  async function freePath(folder, name, ext) {
+    for (let n = 1; ; n++) {
+      const at = `${folder}${name}${n === 1 ? '' : `-${n}`}${ext}`;
+      if (!await S.files.exists(at)) return at;
+    }
+  }
+  const filing = (what, act) => async (...args) => {
+    try { await act(...args); } catch (err) {
+      if (err.name !== 'AbortError') note('error', `Could not ${what} it.`, err.message);
+    }
+    opening(showGallery)();
+  };
+
+  // Rename: a new name in the same folder, the kind kept.
+  const renameField = $('sprites-rename-name');
+  let renaming = null;
+  function askRename(got, trigger) {
+    renaming = got;
+    renameField.value = fileOf(got.path).replace(/\.(png|svg)$/i, '');
+    $('sprites-rename-ext').textContent = extOf(got.path);
+    fieldError('sprites-rename-name', '');
+    window.Rux?.modal?.open('sprites-rename-modal', trigger);
+    renameField.select();
+  }
+  renameField.addEventListener('input', () => fieldError('sprites-rename-name', ''));
+  renameField.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('sprites-rename-go').click(); } });
+  $('sprites-rename-go').addEventListener('click', async () => {
+    const from = renaming.path, name = renameField.value.trim();
+    const to = `${folderOf(from)}${name}${extOf(from)}`;
+    if (to === from) { window.Rux?.modal?.close('sprites-rename-modal'); return; }
+    const bad = /^[A-Za-z0-9_][A-Za-z0-9._@-]*$/.test(name) ? S.files.checkPath(to) : 'Use letters, numbers, dots, dashes and underscores, starting with a letter or number.';
+    if (bad) { fieldError('sprites-rename-name', bad); return; }
+    if (await S.files.exists(to)) { fieldError('sprites-rename-name', `${fileOf(to)} is already a file here.`); return; }
+    window.Rux?.modal?.close('sprites-rename-modal');
+    await filing('rename', async () => {
+      await S.files.rename(from, to);
+      S.known.set(S.known.get().map(p => (p === from ? to : p)));
+      if (path === from) { path = to; keep(); }
+      note('success', `Renamed ${fileOf(from)} to ${fileOf(to)}.`);
+    })();
+  });
+
+  // Duplicate: a copy beside it, under a free name, shown by no element.
+  const duplicate = filing('duplicate', async got => {
+    const to = await freePath(folderOf(got.path), `${fileOf(got.path).replace(/\.(png|svg)$/i, '')}-copy`, extOf(got.path));
+    await S.files.copy(got.path, to);
+    S.known.add(to);
+    note('success', `Made ${fileOf(to)}.`);
+  });
+
+  // Delete, after asking: the file goes. The drawing in hand stays, not saved.
+  let deleting = null;
+  function askDelete(got, trigger) {
+    deleting = got;
+    $('sprites-delete-what').textContent = fileOf(got.path);
+    window.Rux?.modal?.open('sprites-delete-modal', trigger);
+  }
+  $('sprites-delete-go').addEventListener('click', () => {
+    window.Rux?.modal?.close('sprites-delete-modal');
+    filing('delete', async () => {
+      const gone = deleting.path;
+      await S.files.remove(gone);
+      S.known.set(S.known.get().filter(p => p !== gone));
+      if (path === gone) { path = null; dirty = true; keep(); }
+      note('success', `Deleted ${fileOf(gone)}.`);
+    })();
+  });
+
   // A saved drawing's elements, each written again; a drawing started for an
   // element is assigned to it first.
   async function spread(art) {
@@ -878,16 +977,7 @@
 
   // ---- save ----
   const pathField = $('sprites-save-path'), formatField = $('sprites-format');
-  const pathError = msg => {
-    const wrap = $('sprites-save-path-wrap');
-    for (const el of [wrap, pathField]) {
-      if (msg) el.setAttribute('data-invalid', ''); else el.removeAttribute('data-invalid');
-    }
-    $('sprites-save-path-icon').hidden = !msg;
-    pathField.classList.toggle('rux--text-input--invalid', !!msg);
-    pathField.setAttribute('aria-invalid', String(!!msg));
-    $('sprites-save-error').textContent = msg;
-  };
+  const pathError = msg => fieldError('sprites-save-path', msg);
   const extFor = f => (f === 'svg' ? 'svg' : 'png');
   // The path another file holds that the next Save may write over.
   let replacing = null;

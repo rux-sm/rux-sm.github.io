@@ -358,6 +358,60 @@
   </div>
 </div>
 
+<!-- Rename, from a drawing's menu: its name in the same folder, its kind kept. -->
+<div class="rux--layer-one rux--modal" id="sprites-rename-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="sprites-rename-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="sprites-rename-h">Rename</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper">
+            <label class="rux--label" for="sprites-rename-name">Name</label>
+          </div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper" id="sprites-rename-name-wrap">
+              <svg class="rux--text-input__invalid-icon" id="sprites-rename-name-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" hidden><use href="#i-warning--filled"/></svg>
+              <input id="sprites-rename-name" class="rux--text-input" type="text" autocomplete="off" spellcheck="false" aria-describedby="sprites-rename-help">
+            </div>
+            <div class="rux--form-requirement" id="sprites-rename-name-error"></div>
+            <div class="rux--form__helper-text" id="sprites-rename-help">Stays a <span id="sprites-rename-ext"></span> in the same folder. An app it is assigned to keeps showing it.</div>
+          </div>
+        </div>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary" id="sprites-rename-go">Rename</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete, from the menu of a drawing no element shows. -->
+<div class="rux--layer-one rux--modal" id="sprites-delete-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="sprites-delete-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="sprites-delete-h">Delete <span id="sprites-delete-what"></span></h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <p>The file leaves the checkout. Undo cannot bring it back.</p>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--danger" id="sprites-delete-go">Delete</button>
+    </div>
+  </div>
+</div>
+
 <!-- A drawing's menu, from a right click on its tile. app.js fills it. -->
 <ul id="sprites-tile-menu" class="rux--menu" role="menu" aria-label="Drawing" tabindex="-1"></ul>
 
@@ -384,7 +438,7 @@
               <svg class="rux--text-input__invalid-icon" id="sprites-save-path-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" hidden><use href="#i-warning--filled"/></svg>
               <input id="sprites-save-path" class="rux--text-input" type="text" placeholder="sprites/art/star.png" autocomplete="off" spellcheck="false">
             </div>
-            <div class="rux--form-requirement" id="sprites-save-error"></div>
+            <div class="rux--form-requirement" id="sprites-save-path-error"></div>
             <div class="rux--form__helper-text" id="sprites-save-help"></div>
           </div>
         </div>

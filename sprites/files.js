@@ -32,6 +32,9 @@
    out of the checkout, which is how an element is left with no drawing.
    The element's own file is a 1× PNG written from the drawing.
 
+   A DRAWING'S FILE. copy() writes a file's bytes at another path, and
+   rename() moves a drawing there, its elements' record moving with it.
+
    OPENING. A PNG is read pixel by pixel. An SVG is read only as the writer
    here writes one, rect by rect, so it comes back as the drawing it was
    saved from; any other SVG is turned away, since a picture of curves has
@@ -160,6 +163,22 @@
     try { await dir?.removeEntry(path.split('/').at(-1)); } catch (err) { if (err.name !== 'NotFoundError') throw err; }
   }
 
+  // A file's bytes at another path, the first left where it is.
+  async function copy(from, to) {
+    const handle = await reach(await checkout(), from, 'file');
+    if (!handle) throw new Error(`${from} is not there any more.`);
+    await write(to, await handle.getFile());
+  }
+  // A drawing moved to another path: copied, its elements pointed at the
+  // copy, then the first taken away, so a failure part way loses nothing.
+  async function rename(from, to) {
+    await copy(from, to);
+    const map = await assigned();
+    const mine = Object.keys(map).filter(e => map[e] === from);
+    for (const element of mine) await assign(element, to);
+    await remove(from);
+  }
+
   // A PNG or an SVG picked from the checkout, or from the file picker elsewhere, with
   // its path in the checkout when the browser can say it.
   async function browse() {
@@ -284,5 +303,5 @@
     return new Blob([text], { type: 'image/svg+xml' });
   }
 
-  S.files = { canWrite, allowed, checkout, checkPath, write, download, exists, gallery, assigned, assign, remove, browse, read, png, svg };
+  S.files = { canWrite, allowed, checkout, checkPath, write, download, exists, gallery, assigned, assign, remove, copy, rename, browse, read, png, svg };
 })();

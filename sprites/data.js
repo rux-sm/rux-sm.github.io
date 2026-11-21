@@ -19,9 +19,12 @@
    PRESETS are the sizes the Size window offers. A console is 24 high: a
    home console 36 wide, a handheld as wide as it needs up to 36.
 
-   THE DRAFT is the drawing as it stands, kept in localStorage on every step,
-   so a reload or a closed tab loses nothing. It is this browser's only;
-   what is meant to last is saved into the checkout.
+   THE DRAFT is the drawing as it stands, kept on every step in two places.
+   The tab's own, in sessionStorage, is what a reload brings back, so two
+   tabs each keep the drawing they hold. The browser's, in localStorage, is
+   the one drawn last in any tab, and is what a new tab starts from, so a
+   closed tab loses nothing. Both are this browser's only; what is meant to
+   last is saved into the checkout.
 
    WHERE DRAWINGS LIVE. Each palette has a folder a new drawing's save
    starts in: sprites/art/ for Sprites' own two, the home of a drawing no
@@ -125,16 +128,24 @@
   };
 
   const DRAFT = 'sprites-draft';
+  // The tab's own store first, then the browser's. Reaching for one can
+  // throw where storage is blocked, so each is asked for when it is used.
+  const STORES = [() => sessionStorage, () => localStorage];
   const draft = {
     load() {
-      try {
-        const d = JSON.parse(localStorage.getItem(DRAFT) ?? 'null');
-        if (!d || !(d.w > 0 && d.h > 0) || d.px?.length !== d.w * d.h) return null;
-        return { ...d, px: Int32Array.from(d.px) };
-      } catch { return null; }
+      for (const store of STORES) {
+        try {
+          const d = JSON.parse(store().getItem(DRAFT) ?? 'null');
+          if (d && d.w > 0 && d.h > 0 && d.px?.length === d.w * d.h) return { ...d, px: Int32Array.from(d.px) };
+        } catch { /* a blocked or broken store has no draft; the next may */ }
+      }
+      return null;
     },
     save(d) {
-      try { localStorage.setItem(DRAFT, JSON.stringify({ ...d, px: Array.from(d.px) })); } catch { /* a full or blocked store keeps the last draft */ }
+      const text = JSON.stringify({ ...d, px: Array.from(d.px) });
+      for (const store of STORES) {
+        try { store().setItem(DRAFT, text); } catch { /* a full or blocked store keeps the last draft */ }
+      }
     },
   };
 

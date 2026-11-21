@@ -62,7 +62,9 @@ colours beside it, with Gallery to go back.
 
 The drawing as it stands is kept in this browser, so a reload loses
 nothing, and it stands in the gallery as Not saved until a file holds it. A
-tile, Browse and New drawing ask before they replace it.
+tile, Browse and New drawing ask before they replace it. Each tab keeps its
+own, so two tabs can hold two drawings; a new tab starts from the one drawn
+last.
 
 ## Saving into the checkout
 

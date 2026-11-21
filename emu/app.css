@@ -1,26 +1,6 @@
 /* app.css -- Emu's own layout, under the emu- prefix. Every colour is a
    --rux-* token. Design's components are used as they are and never restyled. */
 
-/* The side nav is persistent from 66rem, so the page clears its 16rem there,
-   and keeps .rux--content's own 2rem beside it. templates/app-shell.html
-   explains why this is a padding and not a grid offset. The room's page
-   keeps its menu behind the header's button, so it takes the wide frame's
-   own even inset on both sides. */
-@media (min-width: 66rem) {
-  .emu-main:not(.emu-main--whole) { padding-inline-start: 18rem; }
-}
-/* The room's page is a narrower wide frame, Carbon's lg breakpoint, 1056px,
-   so the room and the store sit calm in the middle of a large window. The
-   room's tile is a container, so it fills the frame edge to edge, under the
-   header's menu button and account: its grid gives up its margin and gutter
-   for it, keeping only the 16px Design's shell holds inside a ruled frame's
-   lines. The store alone is type on the page and keeps Carbon's grid, as a
-   phone does. */
-:root[data-emu-room] { --frame-wide: 66rem; }
-@media (min-width: 42rem) {
-  .emu-main > .rux--css-grid:has(.emu-wall--mac) { --rux-grid-margin: var(--frame-inset, 0px); --rux-grid-gutter: 0; }
-}
-
 /* The filters, side by side in one row that wraps. */
 .emu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
 .emu-filters > * { flex: none; min-inline-size: 0; }
@@ -114,7 +94,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, under the header: its head, then the stage, the room, then
-   its foot. It is as wide as the page's frame and as tall as the window
+   its foot. It is as wide as the page's content, where every Emu page's
+   content stands beside the menu, and as tall as the window
    leaves under the header and the page's 2rem above and below, never under
    28rem, so the page does not scroll; it starts at the top of the page, as
    every page's content does. Without the helper the store is the page,

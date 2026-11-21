@@ -28,8 +28,8 @@
    and it asks before an emulator is removed. The TV's glass shows only a
    home console's game, its cover once it starts, a wire running to the TV
    from its console. The TV's knobs, or a press on its case, open its menu,
-   the room's own two: Sound and Tidy up. The pages' menu and Search stay
-   the header's, as on every page.
+   the room's own two: Sound and Tidy up. The pages' menu and Search are the
+   shell's, the same on every page.
 
    A console that is set up brings its favourites out: the favourites of
    its system this Mac holds, fewer each as more consoles stand in the
@@ -223,8 +223,8 @@
     return svg;
   };
   // THE TV'S MENU, under its knobs: what is the room's alone, Sound and
-  // Tidy up. The other pages and Search are the header's, as Carbon keeps a
-  // shell's navigation in the shell on every page.
+  // Tidy up. The other pages and Search are the shell's, as Carbon keeps a
+  // product's navigation in its shell on every page.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
     const knobs = $('emu-tv-knobs');

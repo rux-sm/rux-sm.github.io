@@ -6,8 +6,8 @@ type: plan
 
 ## Goal
 
-The Library is one tile at the top of the page, as wide as the page's
-1056px frame, under the header's menu button and account: its head, then the room, Your Mac, the play surface for what is in use now,
+The Library is one tile at the top of the page, in the shell every Emu
+page has, as wide as the page's content beside the menu: its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, every console set up on this Mac and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
@@ -28,21 +28,19 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
-- **The room's page is a wide frame 1056px across, Carbon's lg breakpoint,**
-  so the room and the store sit calm in the middle of a large window, with
-  even margins either side.
-- **The room's tile fills the frame,** edge to edge under the header's menu
-  button and account, as a container may stand in Carbon's grid where type
-  may not, and is as tall as the window leaves under the header and the
-  page's padding, never under 28rem, so the page does not scroll. A theme
-  that rules the frame keeps Design's 16px between its lines and the tile.
-  It starts at the top of the page, as every page's content does.
+- **The Library has the shell every Emu page has,** Design's narrow frame
+  with the menu standing open beside the content from 66rem and behind the
+  header's button below it, so nothing in the shell moves from page to page.
+- **The room's tile fills the page's content,** where a page's title and
+  table stand, and is as tall as the window leaves under the header and the
+  page's padding, never under 28rem, so the page does not scroll. It starts
+  at the top of the page, as every page's content does.
 - **The room tile's head is the room's name, the strip and Rux's Server,**
   a primary button at its end, on the md size token's height over a rule,
   in by the theme's toolbar inset as the scheduler's heads are, its name in
   heading-compact-02, as the scheduler's week name is. In a narrow window
   the room's name gives way first.
-- **The header keeps the pages' menu and Search, as on every page,** since
+- **The shell keeps the pages' menu and Search, as on every page,** since
   Carbon's shell is the same throughout a product. The TV's menu holds what
   is the room's alone, Sound and Tidy up.
 - **The strip is the room's one communication surface.** At rest it is

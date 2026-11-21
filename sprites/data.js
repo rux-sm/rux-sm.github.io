@@ -25,10 +25,15 @@
 
    WHERE DRAWINGS LIVE. Each palette has a folder a new drawing's save
    starts in: sprites/art/ for Sprites' own two, the home of a drawing no
-   app has claimed yet. The gallery shows every picture there and in Emu's
-   consoles folder, which Emu's room shows as they are drawn, and beside them the drawings this
-   browser saved or opened anywhere else in the checkout, whose paths are
-   kept here.
+   app has claimed yet. The gallery shows every picture there, and beside
+   them the drawings this browser saved or opened anywhere else in the
+   checkout, whose paths are kept here.
+
+   EMU'S SETS are three folders that each hold one picture for each of
+   Emu's systems, named for the system: its console, which Emu's room shows
+   as it is drawn, its logo and its controller. The systems are the ones
+   emu/emulators.json names. The gallery shows each set whole, with an empty
+   tile where a system's picture is yet to be drawn.
    ========================================================================== */
 (() => {
   'use strict';
@@ -138,7 +143,18 @@
 
   // The folders the gallery looks in, and the paths of drawings kept outside them,
   // the newest first.
-  const FOLDERS = [...new Set(PALETTES.map(p => p.folder)), 'emu/brand/consoles/'];
+  const SETS = [
+    { name: 'Consoles', folder: 'emu/brand/consoles/' },
+    { name: 'Logos', folder: 'emu/brand/logos/' },
+    { name: 'Controllers', folder: 'emu/brand/controllers/' },
+  ];
+  const FOLDERS = [...new Set(PALETTES.map(p => p.folder)), ...SETS.map(s => s.folder)];
+  // Emu's systems as its emulators file names them, fetched once.
+  let named = null;
+  const systems = () => (named ??= fetch('/emu/emulators.json').then(r => {
+    if (!r.ok) throw new Error(`/emu/emulators.json: ${r.status}`);
+    return r.json();
+  }).then(json => Object.keys(json.systems)));
   const KNOWN = 'sprites-known', MOST = 60;
   const known = {
     get() {
@@ -151,5 +167,5 @@
     add(path) { known.set([path, ...known.get().filter(p => p !== path)]); },
   };
 
-  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, FOLDERS, palette, draft, folder, known, hexOf, numOf, convert, cssOf });
+  window.Sprites = Object.assign(window.Sprites || {}, { PALETTES, PRESETS, SETS, FOLDERS, systems, palette, draft, folder, known, hexOf, numOf, convert, cssOf });
 })();

@@ -68,7 +68,9 @@
 .sprites-view[hidden] { display: none; }
 
 /* THE GALLERY: a tile for a new drawing, then the saved ones, each a
-   picture scaled up whole with its file name under it. */
+   picture scaled up whole with its file name under it. Each of Emu's sets
+   starts a row of its own under its name, and a tile whose picture is yet
+   to be drawn is quieter than one that has it. */
 .sprites-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .5rem; }
 .sprites-tile { display: grid; gap: .5rem; align-content: start; text-align: start; inline-size: 100%; border: 0; cursor: pointer; }
 .sprites-tile__picture {
@@ -76,3 +78,6 @@
 }
 .sprites-tile__picture--new { display: grid; place-items: center; color: var(--rux-icon-primary); }
 .sprites-tile__name { overflow-wrap: anywhere; color: var(--rux-text-primary); }
+.sprites-tile--empty .sprites-tile__picture--new { color: var(--rux-icon-secondary); }
+.sprites-tile--empty .sprites-tile__name { color: var(--rux-text-secondary); }
+.sprites-gallery__heading { grid-column: 1 / -1; margin-block-start: 1rem; color: var(--rux-text-primary); }

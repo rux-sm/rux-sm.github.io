@@ -34,7 +34,10 @@
    a reload stays where it was and Back leaves the editor. The gallery's
    tiles are New drawing, then the drawing with changes no file holds, then
    in Chrome every picture in the palettes' folders and every drawing this
-   browser saved or opened elsewhere, the last changed first. Chrome reads
+   browser saved or opened elsewhere, the last changed first. Under them
+   stands each of Emu's sets beneath its name, a tile for each system in
+   Emu's order: its picture, or an empty tile that starts a new drawing at
+   that system's path. Chrome reads
    the checkout only once it is allowed, which takes a click on each visit
    unless it was allowed for good, so until then a button stands where the
    saved tiles will. Browse is the file picker, for any other file.
@@ -450,7 +453,10 @@
   heightField.addEventListener('input', syncPreset);
   widthField.addEventListener('change', syncPreset);
   heightField.addEventListener('change', syncPreset);
-  function sizeFor(resizing) {
+  // The path a new drawing starts with: an empty tile's, or none.
+  let start = null;
+  function sizeFor(resizing, at = null) {
+    start = at;
     widthField.value = drawing.w;
     heightField.value = drawing.h;
     presetSelect.value = presetOf(drawing.w, drawing.h);
@@ -497,7 +503,7 @@
           if (ny >= 0 && ny < h) px[ny * w + x] = drawing.px[y * drawing.w + x];
         }
       }
-    } else path = null;
+    } else path = start;
     drawing = { w, h, px };
     view('draw');
     fit();
@@ -544,25 +550,32 @@
 
   // ---- the gallery ----
   const editor = $('sprites-editor'), galleryView = $('sprites-gallery-view'), gallery = $('sprites-gallery');
-  // A tile: a picture and a name, the whole path in its title.
+  // A tile: a picture and a name, the whole path in its title. An empty
+  // one, with no picture yet, is drawn as the New drawing tile is.
   function tile(blob, name, title, act) {
-    const b = document.createElement('button');
+    const b = blob ? document.createElement('button') : $('sprites-new-tile').cloneNode(true);
+    b.removeAttribute('id');
     b.type = 'button';
-    b.className = 'rux--tile rux--tile--clickable sprites-tile';
+    b.className = `rux--tile rux--tile--clickable sprites-tile${blob ? '' : ' sprites-tile--empty'}`;
     b.title = title;
-    const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(blob) });
-    const text = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name', textContent: name });
-    b.append(img, text);
+    if (blob) {
+      const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(blob) });
+      const text = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name' });
+      b.append(img, text);
+    }
+    b.lastElementChild.textContent = name;
     b.addEventListener('click', () => act(b));
     return b;
   }
+  const fileOf = p => p.split('/').at(-1);
+  const forget = within => { for (const img of within.querySelectorAll('img')) URL.revokeObjectURL(img.src); };
   // The drawing in hand, where it has pixels no file holds.
   const unsaved = () => dirty && drawing.px.some(v => v !== -1);
   let drawn = 0;
   async function showGallery(ask = false) {
     const turn = ++drawn;
-    const tiles = [];
-    if (unsaved()) tiles.push(tile(await S.files.png(drawing, 1, pal.space), 'Not saved', path ?? 'Not saved yet', () => view('draw')));
+    const tiles = new DocumentFragment();
+    if (unsaved()) tiles.append(tile(await S.files.png(drawing, 1, pal.space), 'Not saved', path ?? 'Not saved yet', () => view('draw')));
     let allowed = false;
     if (S.files.canWrite && (ask || await S.files.allowed())) {
       const kept = S.known.get();
@@ -571,11 +584,29 @@
       // A drawing whose file has gone is no longer kept.
       const there = new Set(found.map(g => g.path));
       if (kept.some(p => !there.has(p))) S.known.set(kept.filter(p => there.has(p)));
-      tiles.push(...found.map(got => tile(got.file, got.path.split('/').at(-1), got.path, b => sure(opening(() => load(got)), b))));
+      const saved = got => tile(got.file, fileOf(got.path), got.path, b => sure(opening(() => load(got)), b));
+      const inSet = got => S.SETS.some(set => got.path.startsWith(set.folder));
+      tiles.append(...found.filter(got => !inSet(got)).map(saved));
+      // Each of Emu's sets: a tile for each system, then any other picture in its folder.
+      const systems = await S.systems();
+      for (const set of S.SETS) {
+        const mine = found.filter(got => got.path.startsWith(set.folder));
+        const systemOf = got => fileOf(got.path).replace(/\.(png|svg)$/i, '');
+        tiles.append(Object.assign(document.createElement('h2'), { className: 'rux--type-heading-compact-01 sprites-gallery__heading', textContent: set.name }));
+        for (const system of systems) {
+          const got = mine.find(g => systemOf(g) === system);
+          const at = `${set.folder}${system}.png`;
+          tiles.append(got ? saved(got) : tile(null, fileOf(at), at, b => {
+            sizeFor(false, at);
+            window.Rux?.modal?.open('sprites-size-modal', b);
+          }));
+        }
+        tiles.append(...mine.filter(g => !systems.includes(systemOf(g))).map(saved));
+      }
     }
-    if (turn !== drawn) { for (const t of tiles) URL.revokeObjectURL(t.firstChild.src); return; }
-    for (const img of gallery.querySelectorAll('img')) URL.revokeObjectURL(img.src);
-    gallery.replaceChildren($('sprites-new-tile'), ...tiles);
+    if (turn !== drawn) { forget(tiles); return; }
+    forget(gallery);
+    gallery.replaceChildren($('sprites-new-tile'), tiles);
     $('sprites-allow').hidden = !S.files.canWrite || allowed;
   }
   $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));

@@ -53,7 +53,9 @@ to: the version Supabase holds and each Mac's, with Install where this Mac lacks
 it needs; every kind of file it writes with the setting that moves it; the settings to have,
 with backups to put back and a preferred set; and what is worth knowing. `docs/emulator-setup.md`
 is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
-`docs/drawing-consoles.md` how a console is drawn in pixels for the room.
+`docs/drawing-consoles.md` how a console is drawn in pixels for the room. `brand/logos/`
+and `brand/controllers/` hold each system's logo and controller, named as its console is; no
+page shows them.
 
 ## The scan
 

@@ -34,9 +34,15 @@ colours beside it, with Gallery to go back.
   and `emu/docs/drawing-consoles.md` is how one is drawn.
 - **Opening:** a PNG, or an SVG that Sprites saved, which comes back as
   the drawing it was saved from. Any other SVG is turned away. In Chrome,
-  the gallery shows every picture in `sprites/art/` and Emu's consoles
-  folder, and each drawing this browser saved or opened elsewhere in the
-  checkout, with Browse for any other file.
+  the gallery shows every picture in `sprites/art/` and each drawing this
+  browser saved or opened elsewhere in the checkout, with Browse for any
+  other file.
+- **Emu's sets:** under those, the gallery shows three folders whole, each
+  holding one picture for each of Emu's systems, named for the system:
+  `emu/brand/consoles/`, `emu/brand/logos/` and `emu/brand/controllers/`.
+  A system with no picture yet has an empty tile, which starts a new
+  drawing at that system's path. The systems are the ones
+  `emu/emulators.json` names.
 
 The drawing as it stands is kept in this browser, so a reload loses
 nothing, and it stands in the gallery as Not saved until a file holds it. A
@@ -56,7 +62,7 @@ file and says the path it belongs at.
 | :--- | :--- |
 | `index.html` | the page, from Design's header-only shell |
 | `app.js` | the gallery and the editor: the tiles, the canvas, the tools, undo, the colours, Size and Save |
-| `data.js` | the palettes and presets, the colour spaces, the draft kept in this browser, and the paths the gallery remembers |
+| `data.js` | the palettes and presets, the colour spaces, the draft kept in this browser, the paths the gallery remembers, and Emu's sets |
 | `files.js` | opening a PNG or an SVG Sprites saved, listing the pictures the gallery shows, the PNG and SVG writers, and the checkout's folder |
 | `palette.json` | Sprites' 122 colours, in ramps |
 | `app.css`, `theme.css`, `overrides.css` | its own components, and Design's two delta files, both empty |

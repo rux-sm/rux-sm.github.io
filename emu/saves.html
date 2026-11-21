@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="white">
+<html lang="en" data-theme="white" data-frame="wide">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -53,7 +53,7 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Rux Emu">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle rux--header__menu-toggle__hidden" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
@@ -101,7 +101,7 @@
 
   <!-- The scrim, shown only below 66rem and wider than a phone, where the nav overlays the page. -->
   <div class="rux--side-nav__overlay"></div>
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Emu">
+  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Emu">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--large">
         <a class="rux--side-nav__link" href="./">
@@ -144,7 +144,7 @@
 </header>
 
 <main id="main-content" class="rux--content emu-main">
-  <div class="rux--css-grid">
+  <div class="rux--css-grid rux--css-grid--full-width">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <h1>Saves</h1>

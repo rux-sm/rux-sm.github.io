@@ -7,7 +7,7 @@ type: plan
 ## Goal
 
 The Library is one tile at the top of the page, in the shell every Emu
-page has, as wide as the page's content beside the menu: its head, then the room, Your Mac, the play surface for what is in use now,
+page has, as wide as the page's frame: its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, every console set up on this Mac and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
@@ -28,11 +28,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
-- **The Library has the shell every Emu page has,** Design's narrow frame
-  with the menu standing open beside the content from 66rem and behind the
-  header's button below it, so nothing in the shell moves from page to page.
-- **The room's tile fills the page's content,** where a page's title and
-  table stand, and is as tall as the window leaves under the header and the
+- **Every Emu page stands in the scheduler's frame,** Design's wide frame
+  at 82rem, 1312px centred, with the pages' menu behind the header's
+  button, so nothing in the shell moves from page to page or from app to
+  app. A list or a table fills the frame and a paragraph keeps 42rem.
+- **The room's tile fills the frame,** under the menu button and the
+  account, and is as tall as the window leaves under the header and the
   page's padding, never under 28rem, so the page does not scroll. It starts
   at the top of the page, as every page's content does.
 - **The room tile's head is the room's name, the strip and Rux's Server,**

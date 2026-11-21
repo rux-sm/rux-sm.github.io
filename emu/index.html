@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="white">
+<html lang="en" data-theme="white" data-frame="wide">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -66,7 +66,7 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Rux Emu">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle rux--header__menu-toggle__hidden" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
   <div class="rux--header__global">
@@ -116,7 +116,7 @@
   <div class="rux--side-nav__overlay"></div>
   <!-- The menu is behind the header's button on this page, at every width, so the room has
        the page: `--hidden` after `--ux` closes it, and the button carries no `__hidden`. -->
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux" aria-label="Emu">
+  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Emu">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--large rux--side-nav__item--active">
         <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page" title="Library">
@@ -159,7 +159,7 @@
 </header>
 
 <main id="main-content" class="rux--content emu-main">
-  <div class="rux--css-grid">
+  <div class="rux--css-grid rux--css-grid--full-width">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
         <h1 class="rux--visually-hidden" id="emu-title">Library</h1>
@@ -190,7 +190,7 @@
         </div>
 
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is one
-             tile as wide as the page's content: its head, then the room, Your Mac, then its foot,
+             tile as wide as the page's frame: its head, then the room, Your Mac, then its foot,
              whose buttons open drawers of this Mac's games and the
              account's saves. The head's one button opens Rux's Server,
              the store, as a modal. Without the helper only the store shows,

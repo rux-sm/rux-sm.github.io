@@ -1,6 +1,24 @@
 /* app.css -- Emu's own layout, under the emu- prefix. Every colour is a
    --rux-* token. Design's components are used as they are and never restyled. */
 
+/* EVERY EMU PAGE STANDS IN ONE FRAME, the scheduler's: Design's wide frame
+   at 82rem, Carbon's extra-large breakpoint, 1312px centred, or the window
+   less 16px either side where it is narrower, with the pages' menu behind
+   the header's button. Each page declares the wide frame on `<html>`. What
+   a page holds fills the frame from edge to edge, under the menu button and
+   the account, so its outer grid gives up its margin and its one column's
+   gutter, keeping only the 16px Design's shell holds inside a ruled frame's
+   lines. A phone keeps Carbon's grid. */
+:root { --frame-wide: 82rem; }
+@media (min-width: 42rem) {
+  .emu-main > .rux--css-grid { padding-inline: var(--frame-inset, 0px); }
+  .emu-main > .rux--css-grid > .rux--css-grid-column { margin-inline: 0; }
+}
+/* A list or a table fills the frame; a paragraph keeps a reading width
+   inside it, 42rem, Carbon's medium breakpoint, as the scheduler's records
+   and forms keep theirs. */
+.emu-main p { max-inline-size: 42rem; }
+
 /* The filters, side by side in one row that wraps. */
 .emu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
 .emu-filters > * { flex: none; min-inline-size: 0; }
@@ -94,8 +112,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, under the header: its head, then the stage, the room, then
-   its foot. It is as wide as the page's content, where every Emu page's
-   content stands beside the menu, and as tall as the window
+   its foot. It is as wide as the page's frame, as every Emu page's
+   content is, and as tall as the window
    leaves under the header and the page's 2rem above and below, never under
    28rem, so the page does not scroll; it starts at the top of the page, as
    every page's content does. Without the helper the store is the page,

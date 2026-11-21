@@ -858,8 +858,12 @@ a.rux--header__name,
    the window less a 16px margin either side where it is narrower, the
    header's contents standing on that margin. It keeps that width whatever
    opens in it, so a panel takes its width from the work beside it and
-   opening one moves no edge. A page that should fill the window sets
-   `--frame-wide`. Below 42rem a wide page is Carbon's. Where the window's
+   opening one moves no edge. A page sets `--frame-wide` for a frame of
+   another width. FILL IS WIDE GROWN TO THE WINDOW, declared as
+   `data-frame="wide fill"`: the frame is the window, with no edge, so no
+   lines rule it, and the header, its panels and the content stand 16px in
+   from the window's edges in every theme. Below 42rem a wide page is
+   Carbon's. Where the window's
    edge holds a phone's camera cutout, the header's contents stand clear of
    it too.
    HELD IN FROM THE WINDOW'S EDGES, an open header button and the panel it
@@ -872,35 +876,36 @@ a.rux--header__name,
    persistent shell, whose nav stands open beside the content. :where()
    keeps each rule at the specificity it would have without the test. */
 @media (min-width: 76.25rem) {
-  :where(:root:not([data-frame="wide"])) .rux--content,
-  :where(:root:not([data-frame="wide"])) .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
-  :where(:root:not([data-frame="wide"])) .rux--header { padding-inline: max(env(safe-area-inset-left, 0px), calc((100% - 76.25rem) / 2)) max(env(safe-area-inset-right, 0px), calc((100% - 76.25rem) / 2)); }
-  :where(:root:not([data-frame="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
-  :where(:root:not([data-frame="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) { inset-inline: calc((100% - 76.25rem) / 2); padding-inline: 0; }
-  :where(:root:not([data-frame="wide"]))[data-theme="geist-dark"] .rux--header,
-  :where(:root:not([data-frame="wide"])) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }
-  :where(:root:not([data-frame="wide"])) .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
-  :where(:root:not([data-frame="wide"])) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
-  :where(:root:not([data-frame="wide"])) .rux--header__action.rux--header__action--active { background-image: linear-gradient(var(--rux-border-subtle) 0 0), linear-gradient(var(--rux-border-subtle) 0 0); background-position: left, right; }
-  :where(:root:not([data-frame="wide"])) .rux--side-nav--hidden.rux--side-nav--expanded { border-inline-start: 1px solid var(--rux-border-subtle); }
-  :where(:root:not([data-frame="wide"])) .rux--header-panel--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
+  :where(:root:not([data-frame~="wide"])) .rux--content,
+  :where(:root:not([data-frame~="wide"])) .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
+  :where(:root:not([data-frame~="wide"])) .rux--header { padding-inline: max(env(safe-area-inset-left, 0px), calc((100% - 76.25rem) / 2)) max(env(safe-area-inset-right, 0px), calc((100% - 76.25rem) / 2)); }
+  :where(:root:not([data-frame~="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
+  :where(:root:not([data-frame~="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) { inset-inline: calc((100% - 76.25rem) / 2); padding-inline: 0; }
+  :where(:root:not([data-frame~="wide"]))[data-theme="geist-dark"] .rux--header,
+  :where(:root:not([data-frame~="wide"])) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }
+  :where(:root:not([data-frame~="wide"])) .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
+  :where(:root:not([data-frame~="wide"])) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
+  :where(:root:not([data-frame~="wide"])) .rux--header__action.rux--header__action--active { background-image: linear-gradient(var(--rux-border-subtle) 0 0), linear-gradient(var(--rux-border-subtle) 0 0); background-position: left, right; }
+  :where(:root:not([data-frame~="wide"])) .rux--side-nav--hidden.rux--side-nav--expanded { border-inline-start: 1px solid var(--rux-border-subtle); }
+  :where(:root:not([data-frame~="wide"])) .rux--header-panel--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
 }
+:root[data-frame~="fill"] { --frame-wide: 100vw; }
 @media (min-width: 42rem) {
-  :where(:root[data-frame="wide"]) .rux--content { padding-inline: var(--rux-spacing-05); }
-  :where(:root[data-frame="wide"]) .rux--content > .rux--css-grid--full-width { box-sizing: border-box; max-inline-size: var(--frame-wide, 99rem); margin-inline: auto; }
-  :where(:root[data-frame="wide"]) .rux--header { padding-inline: max(var(--rux-spacing-05), env(safe-area-inset-left, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)) max(var(--rux-spacing-05), env(safe-area-inset-right, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)); }
-  :where(:root[data-frame="wide"]):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
-  :where(:root[data-frame="wide"]) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) {
+  :where(:root[data-frame~="wide"]) .rux--content { padding-inline: var(--rux-spacing-05); }
+  :where(:root[data-frame~="wide"]) .rux--content > .rux--css-grid--full-width { box-sizing: border-box; max-inline-size: var(--frame-wide, 99rem); margin-inline: auto; }
+  :where(:root[data-frame~="wide"]) .rux--header { padding-inline: max(var(--rux-spacing-05), env(safe-area-inset-left, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)) max(var(--rux-spacing-05), env(safe-area-inset-right, 0px), calc((100% - var(--frame-wide, 99rem)) / 2)); }
+  :where(:root[data-frame~="wide"]:not([data-frame~="fill"])):is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"], [data-theme="g100"]:where(:not([data-rux-custom-theme]))) .rux--header,
+  :where(:root[data-frame~="wide"]:not([data-frame~="fill"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="rux-100"]) {
     inset-inline: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2));
     padding-inline: 0;
   }
-  :where(:root[data-frame="wide"])[data-theme="geist-dark"] .rux--header,
-  :where(:root[data-frame="wide"]) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }
-  :where(:root[data-frame="wide"]) .rux--side-nav { inset-inline-start: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
-  :where(:root[data-frame="wide"]) .rux--header-panel { inset-inline-end: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
-  :where(:root[data-frame="wide"]) .rux--header__action.rux--header__action--active { background-image: linear-gradient(var(--rux-border-subtle) 0 0), linear-gradient(var(--rux-border-subtle) 0 0); background-position: left, right; }
-  :where(:root[data-frame="wide"]) .rux--side-nav--hidden.rux--side-nav--expanded { border-inline-start: 1px solid var(--rux-border-subtle); }
-  :where(:root[data-frame="wide"]) .rux--header-panel--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
+  :where(:root[data-frame~="wide"])[data-theme="geist-dark"] .rux--header,
+  :where(:root[data-frame~="wide"]) .rux--header[data-theme="geist-dark"] { padding-inline: var(--rux-spacing-05); }
+  :where(:root[data-frame~="wide"]) .rux--side-nav { inset-inline-start: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
+  :where(:root[data-frame~="wide"]) .rux--header-panel { inset-inline-end: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
+  :where(:root[data-frame~="wide"]) .rux--header__action.rux--header__action--active { background-image: linear-gradient(var(--rux-border-subtle) 0 0), linear-gradient(var(--rux-border-subtle) 0 0); background-position: left, right; }
+  :where(:root[data-frame~="wide"]) .rux--side-nav--hidden.rux--side-nav--expanded { border-inline-start: 1px solid var(--rux-border-subtle); }
+  :where(:root[data-frame~="wide"]) .rux--header-panel--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
 }
 /* ON A PHONE A PAGE'S TEXT STARTS 16PX FROM THE SCREEN'S EDGE, where
    Carbon's small grid places it. Carbon's shell pads its content 2rem and a
@@ -923,7 +928,7 @@ a.rux--header__name,
    a gradient naming an unset property draws nothing. A screen draws them and
    paper does not, because a printed form keeps its background colours. */
 @media screen and (min-width: 42rem) {
-  :where(:root[data-frame="wide"]) body { --frame-edge: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
+  :where(:root[data-frame~="wide"]:not([data-frame~="fill"])) body { --frame-edge: max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)); }
   body {
     background-image: linear-gradient(to right,
       transparent calc(var(--frame-edge) - 1px),
@@ -935,7 +940,7 @@ a.rux--header__name,
   }
 }
 @media screen and (min-width: 76.25rem) {
-  :where(:root:not([data-frame="wide"])) body { --frame-edge: calc(50% - 38.125rem); }
+  :where(:root:not([data-frame~="wide"])) body { --frame-edge: calc(50% - 38.125rem); }
 }
 /* GEIST'S NAV IS RULED TOO, AND SO ARE BOTH DARK THEMES'. The header's
    hairline also parts a side nav standing open beside the content from the
@@ -948,8 +953,8 @@ a.rux--header__name,
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav--ux:not(.rux--side-nav--hidden) {
     border-inline-end: 1px solid var(--rux-border-subtle-01);
   }
-  :where(:root[data-nav="open"]:not([data-frame="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  :where(:root[data-nav="open"]:not([data-frame="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+  :where(:root[data-nav="open"]:not([data-frame~="wide"])):is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
+  :where(:root[data-nav="open"]:not([data-frame~="wide"])) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
     background-image: linear-gradient(to right,
       transparent calc(16rem - 1px),
       var(--rux-border-subtle-01) calc(16rem - 1px) 16rem,
@@ -966,11 +971,11 @@ a.rux--header__name,
    a nav held inside the header. A content holding no grid keeps Carbon's
    padding. */
 @media (min-width: 66rem) {
-  :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 17rem 1rem; }
-  :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content > .rux--css-grid { --rux-grid-margin: 0; }
+  :where(:root:not([data-frame~="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 17rem 1rem; }
+  :where(:root:not([data-frame~="wide"])) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content > .rux--css-grid { --rux-grid-margin: 0; }
   /* The rail is the same nav 3rem wide, so the content pads itself 3rem
      past it and its text stands the same 2rem from it. */
-  :where(:root:not([data-frame="wide"])) :is(.rux--side-nav--rail:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--rail:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 4rem 1rem; }
+  :where(:root:not([data-frame~="wide"])) :is(.rux--side-nav--rail:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--rail:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 4rem 1rem; }
 }
 /* THE RAIL STANDS ONLY WHERE THE NAV STANDS OPEN, from 66rem. Carbon keeps
    its rail 3rem at every width, over a narrow page's content; below 66rem
@@ -3799,12 +3804,12 @@ a.rux--header__name,
   }
 }
 @media (min-width: 76.25rem) {
-  :where(:root:not([data-frame="wide"])):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: calc((100% - 76.25rem) / 2 + 0.5rem); }
-  :where(:root:not([data-frame="wide"])):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2 + 0.5rem); }
+  :where(:root:not([data-frame~="wide"])):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: calc((100% - 76.25rem) / 2 + 0.5rem); }
+  :where(:root:not([data-frame~="wide"])):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2 + 0.5rem); }
 }
 @media (min-width: 42rem) {
-  :where(:root[data-frame="wide"]):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: calc(max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)) + 0.5rem); }
-  :where(:root[data-frame="wide"]):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel { inset-inline-end: calc(max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)) + 0.5rem); }
+  :where(:root[data-frame~="wide"]):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav.rux--side-nav--hidden { inset-inline-start: calc(max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)) + 0.5rem); }
+  :where(:root[data-frame~="wide"]):is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel { inset-inline-end: calc(max(var(--rux-spacing-05), calc((100% - var(--frame-wide, 99rem)) / 2)) + 0.5rem); }
 }
 /* ON A PHONE IT IS THE WHOLE SCREEN UNDER THE BAR in every theme, as Vercel's
    phone menu is: under Carbon's md breakpoint a 256px drawer left a strip of

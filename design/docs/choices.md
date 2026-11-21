@@ -88,15 +88,17 @@ nav and the header's panels line up with the same two edges, in every theme,
 and CSS draws it, so the first paint is the final layout. A narrow page's
 frame is 76.25rem (1220px) centred in the window, as Geist's pages are, or the
 window where it is narrower: a reading width, right for prose and forms, and
-the default on every template. Carbon's own `--full-width` modifier on the
-page's outer grid makes the page wide: its frame is that grid at 99rem
+the default on every template. A page whose outer grid carries Carbon's own
+`--full-width` modifier declares `data-frame="wide"` on `<html>` to be wide:
+its frame is that grid at 99rem
 (1584px), Carbon's `max` breakpoint, centred in the window, or the window
 less a 16px margin either side where it is narrower. It keeps that width
 whatever opens in it, so a panel takes its width from the work beside it and
 no edge of the page moves. It is the choice for a page that is worked in
 rather than read, such as a board or a wide table, and the scheduler's board
-takes it; a wide page that should fill the window sets `--frame-wide` to
-`100vw`. Attested by `elements-grid--full-width` and `sink/grid.html`.
+takes it. A framed page is ruled down its edges by two hairlines, and a wide
+page that should fill the window declares `data-frame="wide fill"`, a frame
+that is the window itself, with no edge and no lines. Attested by `elements-grid--full-width` and `sink/grid.html`.
 Suggestion: narrow unless the page's main thing is wider than a paragraph.
 It is one class on the page's outer grid.
 

@@ -36,8 +36,9 @@ first paint is the final layout and nothing moves once the scripts load.
   minimum beside any one panel, the 24rem document panel the widest.
 - **A wide frame keeps its width whatever opens in it.** A panel takes its
   width from the work beside it, so opening one moves no edge of the page.
-- **A wide page that should fill the window says so** by setting
-  `--frame-wide`, as the scheduler's Fill the window and Maintenance do.
+- **A wide page that should fill the window says so** by declaring
+  `data-frame="wide fill"`, a frame with no edge and no lines, as the
+  scheduler's Fill the window and Maintenance do.
 - **One frame for the whole shell:** the header's contents, the side nav and
   the header's panels follow the frame's edges on every page, so no app
   lines its header up with its content in code of its own.

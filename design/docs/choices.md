@@ -104,7 +104,7 @@ window's edge, as Carbon's product and docs pages do; Geist dark, Rux dark and
 Rux 100 put the header and the nav inside the frame and rule its edges with
 two hairlines, as Geist's pages do. Attested by `elements-grid--full-width` and `sink/grid.html`.
 Suggestion: narrow unless the page's main thing is wider than a paragraph.
-It is one class on the page's outer grid.
+Wide is one attribute on `<html>`, beside the grid's own modifier.
 
 ## Fields — regular or fluid
 

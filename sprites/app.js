@@ -24,8 +24,10 @@
    box stands, so a part dragged past the edge comes back when it is dragged
    in again; any other step, or dropping the box, cuts it at the edge. A
    press outside the box, Escape or another tool drops it. Keys: S, and Cmd
-   or Ctrl with A to select the whole drawing. Crop, in the bar while a box
-   stands, makes the box the whole drawing, as one step.
+   or Ctrl with A to select the whole drawing, and Delete to clear what the
+   box holds. Crop, in the bar while a box stands, makes the box the whole
+   drawing, as one step. A press on the canvas gives it the keys, so an
+   arrow moves the box and not the tool switcher's choice.
 
    UNDO. Each stroke, fill, resize, new drawing and opened file is one step,
    a hundred kept. A step holds the whole drawing and its path, which at 256
@@ -55,7 +57,10 @@
    SAVING. The Save window takes a path in the checkout and a format, and
    files.js writes it in the palette's colour space. A 1× PNG or an SVG
    holds the drawing as drawn, so its path becomes the drawing's; a larger
-   PNG is a copy.
+   PNG is a copy, and leaves the drawing's changes not saved. A new drawing
+   is offered a name no file has, and a path that holds another file is
+   written over only on a second Save. The draft, data.js's, is kept on
+   every step.
 
    ASSIGNING. A right click on a drawing's tile opens its menu. Assign to
    picks an element, whose file is then written from the drawing; a drawing
@@ -63,12 +68,11 @@
    no drawing and takes its file away. Saving a drawing writes each of its
    elements' files again, and a drawing started from an empty tile is
    assigned to that element on its first save.
-   The draft, data.js's, is kept on every step.
 
    CHANGES NOT SAVED. Leaving the page asks first, and so do a tile, Browse
    and New drawing, which replace the drawing: undo would bring it back
-   only until the page is loaded again. Going to the gallery replaces
-   nothing, so it asks nothing.
+   only until the page is loaded again. None asks over a drawing with no
+   pixels. Going to the gallery replaces nothing, so it asks nothing.
    ========================================================================== */
 (() => {
   'use strict';
@@ -166,7 +170,7 @@
     if (hover) {
       ctx.strokeStyle = look.hover;
       ctx.lineWidth = 1;
-      const marks = mirror && tool !== 'fill' && tool !== 'picker' ? [hover.x, w - 1 - hover.x] : [hover.x];
+      const marks = mirror && (tool === 'pencil' || tool === 'eraser') ? [hover.x, w - 1 - hover.x] : [hover.x];
       for (const x of marks) ctx.strokeRect(x * p + 0.5, hover.y * p + 0.5, p - 1, p - 1);
     }
     if (sel) {
@@ -182,18 +186,21 @@
     }
     // Crop is there to press only while a box stands, and the box is drawn here.
     cropKey.disabled = !sel;
+    // Over the box the pointer says it moves; elsewhere it is app.css's.
+    canvas.style.cursor = tool === 'select' && hover && within(hover) ? 'move' : '';
   }
 
   // The largest whole zoom at which the drawing fits the stage.
   function fit() {
     const pad = parseFloat(getComputedStyle(stage).paddingLeft) * 2;
     const room = Math.min((stage.clientWidth - pad) / drawing.w, (stage.clientHeight - pad) / drawing.h);
-    zoom = Math.max(1, Math.min(64, Math.floor(room)));
+    zoom = Math.max(ZOOMS[0], Math.min(ZOOMS[1], Math.floor(room)));
     fitted = true;
   }
 
+  const ZOOMS = [1, 64];
   function setZoom(z) {
-    zoom = Math.max(1, Math.min(64, z));
+    zoom = Math.max(ZOOMS[0], Math.min(ZOOMS[1], z));
     fitted = false;
     show();
   }
@@ -202,6 +209,8 @@
   function show() {
     render();
     $('sprites-zoom').textContent = `${zoom}×`;
+    $('sprites-zoom-out').disabled = zoom <= ZOOMS[0];
+    $('sprites-zoom-in').disabled = zoom >= ZOOMS[1];
     undoKey.disabled = !past.length;
     redoKey.disabled = !ahead.length;
     const where = hover ? ` · pixel ${hover.x}, ${hover.y}` : '';
@@ -341,6 +350,15 @@
     commit(true);
   }
   const dropSel = () => { sel = null; render(); };
+  // What the box holds, cleared, as one step; the box stays.
+  function clearSel() {
+    begin(true);
+    lift();
+    const had = sel.piece.some(v => v !== -1);
+    sel.piece.fill(-1);
+    place();
+    commit(had);
+  }
   // The box becomes the whole drawing: what is outside it goes, and so does
   // any of it past the drawing's edge.
   function crop() {
@@ -389,6 +407,8 @@
     const c = at(e);
     if (!inside(c)) return;
     e.preventDefault();
+    // The keys follow the press, off whatever control had them.
+    canvas.focus({ preventScroll: true });
     const using = e.altKey ? 'picker' : tool;
     if (using === 'picker') { pick(c.x, c.y, !e.altKey); return; }
     if (using === 'select') {
@@ -574,12 +594,24 @@
   const presetSelect = $('sprites-preset'), widthField = $('sprites-width'), heightField = $('sprites-height');
   const sizeOf = () => ({ w: Math.round(Number(widthField.value)), h: Math.round(Number(heightField.value)) });
   const presetOf = (w, h) => Object.keys(S.PRESETS).find(k => S.PRESETS[k].w === w && S.PRESETS[k].h === h)
-    ?? (h === 24 && w <= 36 ? 'handheld' : 'free');
+    ?? (h === 24 && w >= 1 && w <= 36 ? 'handheld' : 'free');
   presetSelect.addEventListener('change', () => {
     const p = S.PRESETS[presetSelect.value];
-    if (p) { widthField.value = p.w; heightField.value = p.h; }
+    if (p) { widthField.value = p.w; heightField.value = p.h; syncPreset(); }
   });
-  const syncPreset = () => { const { w, h } = sizeOf(); presetSelect.value = presetOf(w, h); };
+  const syncPreset = () => { const { w, h } = sizeOf(); presetSelect.value = presetOf(w, h); sizeError(widthField, w, true); sizeError(heightField, h, true); };
+  // A side out of range says so under its own field; `clear` only takes the
+  // words away once it is in range again. True where the side is good.
+  function sizeError(field, n, clear = false) {
+    const good = n >= 1 && n <= LIMIT;
+    if (good || !clear) {
+      const box = field.closest('.rux--number');
+      if (good) box.removeAttribute('data-invalid'); else box.setAttribute('data-invalid', '');
+      field.setAttribute('aria-invalid', String(!good));
+      box.querySelector('.rux--form-requirement').textContent = good ? '' : `1 to ${LIMIT} pixels.`;
+    }
+    return good;
+  }
   widthField.addEventListener('input', syncPreset);
   heightField.addEventListener('input', syncPreset);
   widthField.addEventListener('change', syncPreset);
@@ -590,6 +622,8 @@
     start = at;
     widthField.value = drawing.w;
     heightField.value = drawing.h;
+    sizeError(widthField, drawing.w);
+    sizeError(heightField, drawing.h);
     presetSelect.value = presetOf(drawing.w, drawing.h);
     $('sprites-resize').hidden = !resizing;
   }
@@ -616,7 +650,7 @@
 
   function newSize(blank) {
     const { w, h } = sizeOf();
-    if (!(w >= 1 && h >= 1 && w <= LIMIT && h <= LIMIT)) { note('error', `A drawing is 1 to ${LIMIT} pixels a side.`); return; }
+    if (![sizeError(widthField, w), sizeError(heightField, h)].every(ok => ok)) return;
     if (blank) {
       window.Rux?.modal?.close('sprites-size-modal');
       sure(() => resize(w, h, true), editor.hidden ? $('sprites-new-tile') : $('sprites-size'));
@@ -855,12 +889,24 @@
     $('sprites-save-error').textContent = msg;
   };
   const extFor = f => (f === 'svg' ? 'svg' : 'png');
-  function openSave() {
+  // The path another file holds that the next Save may write over.
+  let replacing = null;
+  // A new drawing's name in a folder: `drawing`, or the next no file has,
+  // where the checkout can be read without asking.
+  async function freeName(folder) {
+    if (!S.files.canWrite || !await S.files.allowed()) return 'drawing.png';
+    for (let n = 1; ; n++) {
+      const name = n === 1 ? 'drawing' : `drawing-${n}`;
+      if (!await S.files.exists(`${folder}${name}.png`) && !await S.files.exists(`${folder}${name}.svg`)) return `${name}.png`;
+    }
+  }
+  async function openSave() {
     const formats = [...formatField.options];
     formats.forEach(o => { o.hidden = o.disabled = !pal.free && o.value !== 'png1'; });
     if (!pal.free) formatField.value = 'png1';
     const folder = path ? path.replace(/[^/]*$/, '') : (S.folder.get() || pal.folder);
-    const name = path ? path.split('/').at(-1) : 'drawing.png';
+    const name = path ? path.split('/').at(-1) : await freeName(folder);
+    replacing = null;
     pathField.value = (folder + name).replace(/\.(png|svg)$/, `.${extFor(formatField.value)}`);
     $('sprites-save-help').textContent = S.files.canWrite
       ? ['Written straight into the checkout.', pal.space === 'display-p3' ? 'A PNG carries a Display P3 profile; an SVG gives each colour an sRGB one too, for an app that cannot show P3.' : ''].filter(Boolean).join(' ')
@@ -872,7 +918,7 @@
   formatField.addEventListener('change', () => {
     pathField.value = pathField.value.replace(/\.(png|svg)$/, `.${extFor(formatField.value)}`);
   });
-  pathField.addEventListener('input', () => pathError(''));
+  pathField.addEventListener('input', () => { replacing = null; pathError(''); });
   pathField.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
 
   async function save() {
@@ -882,6 +928,12 @@
     const format = formatField.value;
     if (!target.endsWith(`.${extFor(format)}`)) { pathError(`An ${extFor(format).toUpperCase()} ends in .${extFor(format)}.`); return; }
     try {
+      // Another file at that path is written over only when Save is pressed again.
+      if (S.files.canWrite && target !== path && target !== replacing && await S.files.exists(target)) {
+        replacing = target;
+        pathError(`${target} is already a file. Save again to replace it.`);
+        return;
+      }
       const blob = format === 'svg' ? S.files.svg(drawing, pal.space) : await S.files.png(drawing, Number(format.slice(3)), pal.space);
       if (S.files.canWrite) await S.files.write(target, blob);
       else S.files.download(target, blob);
@@ -890,8 +942,8 @@
       if (format === 'png1' || format === 'svg') {
         path = target;
         if (S.files.canWrite) { S.known.add(target); shown = await spread(target); }
+        dirty = false;
       }
-      dirty = false;
       S.folder.set(target.replace(/[^/]*$/, ''));
       keep();
       show();
@@ -918,13 +970,14 @@
       const by = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
       if (by) { e.preventDefault(); nudge(...by); return; }
       if (e.key === 'Escape') { e.preventDefault(); dropSel(); return; }
+      if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); clearSel(); return; }
     }
     const keys = { s: () => setTool('select'), b: () => setTool('pencil'), p: () => setTool('pencil'), e: () => setTool('eraser'), g: () => setTool('fill'), i: () => setTool('picker'), m: () => setMirror(!mirror), '+': () => setZoom(zoom + 1), '=': () => setZoom(zoom + 1), '-': () => setZoom(zoom - 1), 0: () => { fit(); show(); } };
     const act = keys[e.key.toLowerCase()];
     if (act) { e.preventDefault(); act(); }
   });
 
-  window.addEventListener('beforeunload', e => { if (dirty) e.preventDefault(); });
+  window.addEventListener('beforeunload', e => { if (unsaved()) e.preventDefault(); });
 
   // The theme's colours change the canvas's, and a new size or pixel ratio its fit.
   new MutationObserver(() => { readLook(); render(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });

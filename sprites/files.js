@@ -20,7 +20,7 @@
    interlaced, with every pixel opaque or clear, which is the picture
    Emu's room reads a console from.
 
-   FINDING. gallery() lists the pictures standing directly in the folders it
+   FINDING. exists() says whether a path holds a file. gallery() lists the pictures standing directly in the folders it
    is given, and those at the paths it is given that still exist, the last
    changed first; the gallery draws them as tiles. allowed() says whether
    that can be done without asking. browse() is the file picker, for
@@ -117,6 +117,8 @@
       return kind === 'file' ? await dir.getFileHandle(parts.at(-1)) : dir;
     } catch { return null; }
   }
+
+  const exists = async path => !!await reach(await checkout(), path, 'file');
 
   // The pictures in these folders and at these paths, as { path, file }, the
   // last changed first. A folder or a path that is not there gives none.
@@ -282,5 +284,5 @@
     return new Blob([text], { type: 'image/svg+xml' });
   }
 
-  S.files = { canWrite, allowed, checkout, checkPath, write, download, gallery, assigned, assign, remove, browse, read, png, svg };
+  S.files = { canWrite, allowed, checkout, checkPath, write, download, exists, gallery, assigned, assign, remove, browse, read, png, svg };
 })();

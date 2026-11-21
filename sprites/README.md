@@ -21,8 +21,9 @@ colours beside it, with Gallery to go back.
   tool.
 - **Select:** drag a box over part of the drawing, then drag inside the box
   to move what is in it, or press an arrow key to move it a pixel. Cmd A
-  selects the whole drawing. A press outside the box or Escape drops it.
-  Crop, in the bar, trims the drawing to the box.
+  selects the whole drawing, and Delete clears what the box holds. A press
+  outside the box or Escape drops it. Crop, in the bar, trims the drawing
+  to the box.
 - **Size:** presets for an Emu home console, 36 × 24, an Emu handheld, 24
   high and up to 36 wide, and icons at 16 and 32, or any size up to 256.
   Resize keeps the drawing anchored to its bottom left.
@@ -33,7 +34,9 @@ colours beside it, with Gallery to go back.
   and back unchanged.
 - **Saving:** a path in the checkout and a format: PNG at 1×, 2×, 4× or
   8×, or SVG. A new drawing's path starts in `sprites/art/`, the home of
-  every drawing, under any name. A Sprites P3 PNG carries a Display P3
+  every drawing, under a name no file has yet; a path another file holds is
+  written over only on a second Save. A larger PNG is a copy, and leaves
+  the drawing's own changes not saved. A Sprites P3 PNG carries a Display P3
   profile, which Open reads to open it in Sprites P3 again; its SVG paints
   each colour in P3 over an sRGB fill.
 - **Assigning:** an element is a place in an app that shows a drawing, a

@@ -6,7 +6,7 @@
 .sprites-page { display: grid; gap: 1rem; padding-block: 1rem; }
 
 /* THE BAR: the tool switcher, then groups of 36px buttons 8px apart, with
-   Size, Open and Save at its end. It wraps on a phone. */
+   Crop, Size and Save at its end. It wraps on a phone. */
 .sprites-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; }
 .sprites-bar__group { display: flex; align-items: center; gap: .5rem; }
 .sprites-bar__end { margin-inline-start: auto; }
@@ -34,6 +34,9 @@
   --sprites-hover: var(--rux-border-inverse);
   display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated;
 }
+/* It takes the keys on a press, and shows the ring only when a key brought them. */
+.sprites-canvas:focus { outline: none; }
+.sprites-canvas:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 
 /* THE COLOURS. */
 .sprites-side { display: grid; gap: 1.5rem; align-content: start; }

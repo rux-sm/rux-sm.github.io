@@ -22,6 +22,18 @@
 /* Geist dark's header is 65px, where every other theme's is Carbon's 48px,
    and the room's tile is as tall as the window less the header. */
 [data-theme="geist-dark"] { --emu-header: calc(4rem + 1px); }
+/* A drawer floats clear of its button, 8px inside the room, in the themes
+   whose menus float clear in Design: Ant Design Pro's, Geist's, Rux dark's
+   and Apple's. There its button keeps the drawer's layer and no shadow or
+   strip, as a floating panel's button does. */
+[data-theme="ant-dark"],
+[data-theme="geist-dark"],
+[data-theme="rux-dark"],
+[data-theme^="apple-"] {
+  --emu-drawer-inset: var(--rux-spacing-03);
+  --emu-drawer-shadow: none;
+  --emu-drawer-strip: 0px;
+}
 /* A tile's head holds its controls in from its edges as the scheduler's
    heads do, by the theme's toolbar inset and gap (docs/button-spacing.md in
    Design): flush and edge to edge in Carbon's themes and Rux dark, in from

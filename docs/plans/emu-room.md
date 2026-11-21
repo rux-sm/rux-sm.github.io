@@ -94,11 +94,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   its start, Games, Saves and Controllers, each with a chevron that turns
   down while its drawer is open. Any other view of what this Mac or the account keeps joins
   them as a button.
-- **A drawer opens up from its button, floating over the room's foot,** 8px
-  in from its edges, raised with Carbon's raised shadow, unfolding on
-  Carbon's moderate-02, one at a time. It floats rather than pushing the
-  room up, so opening it never sweeps the room's things, and a drag from it
-  into the room is a short move up. Its button pressed again, or Escape,
+- **A drawer opens up from its button as one surface with it,** as the
+  scheduler's menus are with theirs: a layer up from the room's tile,
+  standing on the tile's foot from edge to edge, its open button in the
+  same layer and shadow, unfolding on Carbon's moderate-02, one at a time.
+  A theme whose menus float clear holds it 8px in instead. It lies over the
+  room rather than pushing it up, so opening it never sweeps the room's
+  things, and a drag from it into the room is a short move up. Its button pressed again, or Escape,
   closes it; another button turns it to that drawer. All start closed each
   time the page loads, so the room shows whole.
 - **Games is one row that scrolls sideways, so it fits any width,** of this

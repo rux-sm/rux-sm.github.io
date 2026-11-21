@@ -188,14 +188,26 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    rule, in by the theme's inset, its buttons from its start. */
 .emu-tile__foot { display: flex; align-items: center; gap: var(--emu-head-gap, 0); min-block-size: var(--rux-layout-size-height-md); padding: var(--emu-head-inset, 0); border-block-start: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__foot[hidden] { display: none; }
-/* THE DRAWER: a tile floating over the room's foot 8px in, raised with
-   Carbon's raised shadow, what it holds a layer up as Carbon's layering
-   steps it. It floats rather than pushing the room up, so opening it never
-   sweeps the room's things. It unfolds up from the foot on Carbon's
-   moderate-02, entering and leaving on its productive curves; the clip
-   stops a rem past the top so its shadow shows. Each of its rows is one
-   line that scrolls sideways. */
-.emu-mine { position: absolute; z-index: 3; inset-inline: var(--rux-spacing-03); inset-block-end: var(--rux-spacing-03); max-block-size: calc(100% - 2 * var(--rux-spacing-03)); overflow-y: auto; padding: var(--rux-spacing-05); background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
+/* THE DRAWER IS ONE SURFACE WITH THE BUTTON THAT OPENED IT, as the
+   scheduler's menus are with theirs and Carbon's overflow menu is with its
+   trigger: a layer up from the room's tile, Layer 02, standing on the
+   tile's foot from edge to edge, what it holds a layer up again. Its open
+   button takes that layer and the menu shadow, the shadow stopping at the
+   button's top, and a strip the button's width in the same layer covers
+   the foot's rule between them; under the pointer the open button holds
+   its layer, as Carbon's open trigger does. A theme whose menus float
+   clear (theme.css) holds the drawer 8px in instead, and its button keeps
+   only the layer. The drawer lies over the room rather than pushing it up,
+   so opening it never sweeps the room's things. It unfolds up from the
+   foot on Carbon's moderate-02, entering and leaving on its productive
+   curves; the clip stops a rem past the top so its shadow shows. Each of
+   its rows is one line that scrolls sideways. */
+.emu-foot [data-drawer][aria-expanded="true"] { z-index: 1; background-color: var(--rux-layer-02); box-shadow: var(--emu-drawer-shadow, 0 2px 6px var(--rux-shadow)); clip-path: inset(-1px -6px -6px -6px); }
+.emu-foot [data-drawer][aria-expanded="true"]:hover { background-color: var(--rux-layer-02); }
+/* The strip starts 2px above the button's padding box: past the button's own
+   1px border, clear in a ghost button, and over the foot's 1px rule. */
+.emu-foot [data-drawer][aria-expanded="true"]::before { content: ""; position: absolute; inset-inline: -1px; inset-block-start: -2px; block-size: var(--emu-drawer-strip, 2px); background-color: var(--rux-layer-02); }
+.emu-mine { position: absolute; z-index: 3; inset-inline: var(--emu-drawer-inset, 0px); inset-block-end: var(--emu-drawer-inset, 0px); max-block-size: calc(100% - 2 * var(--emu-drawer-inset, 0px)); overflow-y: auto; padding: var(--rux-spacing-05); background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
 .emu-mine[hidden], .emu-mine__pane[hidden] { display: none; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
 .emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }

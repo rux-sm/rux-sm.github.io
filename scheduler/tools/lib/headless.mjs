@@ -130,13 +130,15 @@ export async function openHeadless({ root, chrome, name, data }) {
    settled: two frames on, so a style just changed is computed and its
    transitions started, the fonts it asked for are in, and no transition or
    animation that ends is still running, asked again after each has ended,
-   since one may start another. */
+   since one may start another. Only those on the document's clock count: a
+   scroll-driven one, as the board's day band follows its scroll, runs as
+   long as its scroller does and never ends. */
 export const SETTLE = `async () => {
   const frames = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
   for (;;) {
     await frames();
     await document.fonts.ready;
-    const running = document.getAnimations().filter(a => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity);
+    const running = document.getAnimations().filter(a => a.playState === 'running' && a.timeline instanceof DocumentTimeline && a.effect?.getComputedTiming().endTime !== Infinity);
     if (!running.length) return;
     await Promise.allSettled(running.map(a => a.finished));
   }

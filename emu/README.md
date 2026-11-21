@@ -10,7 +10,7 @@ The repository root's `AGENTS.md` is the policy, and
 ## What it is
 
 `index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper answers, a TV and every console set up on
-this Mac with their favourite games, on one square tile whose foot has a button for each drawer: this Mac's games, saves and controllers. The head's one button
+this Mac with their favourite games, on one tile as wide as the page's frame whose foot has a button for each drawer: this Mac's games, saves and controllers. The head's one button
 opens Rux's Server, a store of every console and game, with box art from libretro's thumbnails and Download on each. The strip
 in the head says how this Mac stands and what a move did. Without the helper Rux's Server is the page. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks
@@ -21,7 +21,7 @@ it, `this-mac.js`, which is Play, Download to this Mac with its progress and Rem
 from this Mac; then its region, version and format, each file's header and
 fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, `search.js`,
 finds any game by title and opens it on the Library, ⌘K too; it sits in each page's
-header with the pages' menu, but in the room the TV's knobs or case open both, with Sound and Tidy up.
+header with the pages' menu; in the room the TV's knobs or case open Sound and Tidy up.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad
@@ -122,8 +122,7 @@ public.
 | `app.js` | the systems, each one's preferred format, what each emulator needs, a game's problems and status, sizes and dates |
 | `game-panel.js`, `this-mac.js`, `carry.js`, `helper.js`, `gamepad.js` | one game in the side panel; its Play, Download and Remove on this Mac; its emulator's saves carried between this Mac and Supabase around Play; asking Rux Emu Helper to play, download and read this Mac; a controller as moves |
 | `room.js`, `collection.js`, `problems.js`, `saves.js`, `status.js`, `emulators.js` | each page's own behaviour |
-| `view.js` | whether the room stood here last time, said before the Library draws so its frame is the room's tile from the first paint |
-| `search.js` | Search, in every page's header or the TV's menu |
+| `search.js` | Search, in every page's header |
 | `app.css` | the filters, rows, the side panel's facts and its part for this Mac, under `emu-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone; a search result as a row, not a link |
 

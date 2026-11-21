@@ -6,8 +6,8 @@ type: plan
 
 ## Goal
 
-The Library is one square tile at the top of the page, which is the page's
-frame, so the header's contents stand on its two edges: its head, then the room, Your Mac, the play surface for what is in use now,
+The Library is one tile at the top of the page, as wide as the page's
+1056px frame, under the header's menu button and account: its head, then the room, Your Mac, the play surface for what is in use now,
 with a single CRT TV, every console set up on this Mac and their favourite games, each
 standing wherever it is left. One primary button in the head, Rux's
 Server, opens the store: a modal of every console and game the server
@@ -28,25 +28,23 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   in the middle of the room and is dragged anywhere like a console, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
-- **The store's page is a wide frame 1056px across, Carbon's lg breakpoint,**
-  so the store sits calm in the middle of a large window, with even margins
-  either side.
-- **The room's tile is a square and the page's frame,** its side the
-  window's height under the header and the page's padding, or the window's
-  width where that is less, but never under 28rem. The header's contents
-  and menus stand on its edges, as every page's do on its frame's; a theme
+- **The room's page is a wide frame 1056px across, Carbon's lg breakpoint,**
+  so the room and the store sit calm in the middle of a large window, with
+  even margins either side.
+- **The room's tile fills the frame,** edge to edge under the header's menu
+  button and account, as a container may stand in Carbon's grid where type
+  may not, and is as tall as the window leaves under the header and the
+  page's padding, never under 28rem, so the page does not scroll. A theme
   that rules the frame keeps Design's 16px between its lines and the tile.
-  `view.js` says the room stood here last time before the first paint, so
-  the header does not move once the helper answers. It starts at the top of
-  the page, as every page's content does, and stands centred across it.
+  It starts at the top of the page, as every page's content does.
 - **The room tile's head is the room's name, the strip and Rux's Server,**
   a primary button at its end, on the md size token's height over a rule,
   in by the theme's toolbar inset as the scheduler's heads are, its name in
   heading-compact-02, as the scheduler's week name is. In a narrow window
   the room's name gives way first.
-- **The TV's menu holds everything the room does besides moving things:**
-  the other pages, Search and Sound, then Tidy up and Put everything away,
-  so the head holds no menu.
+- **The header keeps the pages' menu and Search, as on every page,** since
+  Carbon's shell is the same throughout a product. The TV's menu holds what
+  is the room's alone, Sound and Tidy up.
 - **The strip is the room's one communication surface.** At rest it is
   Carbon's icon indicators, only what it is for: Connected while Rux Emu
   Helper answers, its version in its tooltip, or "Update the helper",

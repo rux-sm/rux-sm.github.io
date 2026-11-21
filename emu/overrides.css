@@ -7,9 +7,6 @@
 /* A closed side panel is gone, not merely faded: Carbon's own display rule
    beats [hidden], and a transparent panel would still catch presses. */
 .rux--side-panel[hidden] { display: none; }
-/* The header's menu button is gone where the room's TV holds the menu, and
-   Carbon's display rule beats [hidden] there too. */
-.rux--header__menu-toggle[hidden] { display: none; }
 
 /* On a phone the panel is the whole screen. Carbon caps it at 75vw, which
    leaves a strip of page too narrow to use beside it. */

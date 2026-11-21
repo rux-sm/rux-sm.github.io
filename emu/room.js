@@ -27,9 +27,9 @@
    it, after one it says what it did, with Undo where it can be taken back,
    and it asks before an emulator is removed. The TV's glass shows only a
    home console's game, its cover once it starts, a wire running to the TV
-   from its console. The TV's knobs, or a press on its case, open its menu:
-   the other pages, Search and Sound, which the header holds only where
-   there is no room, then Tidy up.
+   from its console. The TV's knobs, or a press on its case, open its menu,
+   the room's own two: Sound and Tidy up. The pages' menu and Search stay
+   the header's, as on every page.
 
    A console that is set up brings its favourites out: the favourites of
    its system this Mac holds, fewer each as more consoles stand in the
@@ -222,27 +222,16 @@
     svg.setAttribute('height', '16');
     return svg;
   };
-  // THE TV'S MENU, under its knobs: the other pages, as the header's menu
-  // lists them, then Search and Sound, then Tidy up and Put everything away.
-  // So the room's header holds only the account, and the TV is how the room
-  // goes anywhere else and tidies itself.
+  // THE TV'S MENU, under its knobs: what is the room's alone, Sound and
+  // Tidy up. The other pages and Search are the header's, as Carbon keeps a
+  // shell's navigation in the shell on every page.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
     const knobs = $('emu-tv-knobs');
     if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
-    const pages = [...document.querySelectorAll('.rux--side-nav__link')].filter(a => !a.hasAttribute('aria-current')).map(a => {
-      const icon = a.querySelector('svg').cloneNode(true);
-      return menuItem(menu, a.textContent.trim(), () => { location.href = a.href; }, { icon });
-    });
-    const divider = () => {
-      const li = el('li', 'rux--menu-item-divider');
-      li.setAttribute('role', 'separator');
-      return li;
-    };
-    menu.replaceChildren(...pages, divider(),
-      menuItem(menu, 'Search games', () => window.Rux.modal.open('emu-search-modal', knobs), { icon: iconOf('#i-search'), shortcut: '⌘K' }),
+    menu.replaceChildren(
       menuItem(menu, 'Sound', toggleSound, { icon: iconOf(loud ? '#m-volume_up' : '#m-volume_off'), role: 'menuitemcheckbox', checked: loud }),
-      divider(), menuItem(menu, 'Tidy up', tidy));
+      menuItem(menu, 'Tidy up', tidy));
     window.Rux.menu.open(menu, knobs);
   }
   $('emu-tv-knobs').addEventListener('click', openTvMenu);
@@ -397,16 +386,10 @@
     $('emu-mine').hidden = !mac;
     $('emu-foot').hidden = !mac;
     $('emu-wall').classList.toggle('emu-wall--mac', mac);
-    // The page's frame is the room's tile where the room stands, kept for view.js to say before the next first paint.
-    document.documentElement.dataset.emuRoom = mac ? 'mac' : '';
-    try { localStorage.setItem('emu.room', mac ? 'mac' : ''); } catch { /* the frame is set once the helper answers */ }
     // The store is the modal's where the room is, and the page where it is not.
     const home = mac ? $('emu-store-body') : $('emu-wall');
     if ($('emu-collection').parentElement !== home) home.prepend($('emu-collection'));
     if (!mac) window.Rux.modal.close('emu-store');
-    // Where the room is, the TV's menu holds the pages and Search, so the header does not.
-    $('emu-menu-open').hidden = mac;
-    $('emu-search-open').hidden = mac || !R.data;
     if (!mac) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     renderStrip();

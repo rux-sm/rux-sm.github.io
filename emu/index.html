@@ -20,7 +20,6 @@
 <!-- Before theme.js, which resolves a stored custom theme through it. -->
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<script src="view.js"></script>
 </head>
 <body>
 <!-- The Library, Emu's front page, as a room that fills the page;
@@ -67,7 +66,6 @@
 
 <header class="rux--header" data-theme="g100" aria-label="Rux Emu">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <!-- The menu and Search are the header's only where the room is not; where it is, the TV's menu holds them, from room.js. -->
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" id="emu-menu-open" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">
     <span class="rux--header__name--prefix">Rux</span>&nbsp;Emu</a>
@@ -178,7 +176,7 @@
         </div>
 
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is one
-             square tile: its head, then the room, Your Mac, then its foot,
+             tile as wide as the page's frame: its head, then the room, Your Mac, then its foot,
              whose buttons open drawers of this Mac's games and the
              account's saves. The head's one button opens Rux's Server,
              the store, as a modal. Without the helper only the store shows,
@@ -306,12 +304,11 @@
     </div>
   </div>
 </main>
-<!-- The TV's menu, filled and opened under its knobs by room.js: the other pages, Search and Sound, Tidy up and Put everything away. -->
+<!-- The TV's menu, filled and opened under its knobs by room.js: Sound and Tidy up. -->
 <ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
 <!-- A console's menu, filled and opened under the console by room.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>
-<!-- Rux's Server, from the head's button: Carbon's default modal, its medium, about as
-     wide as the room's 1056px frame on a large window, which room.js fills
+<!-- Rux's Server, from the head's button: Carbon's default modal, its medium, which room.js fills
      with the store's section while the helper answers. -->
 <div class="rux--layer-one rux--modal" id="emu-store" role="presentation">
   <div role="dialog" aria-modal="true" aria-labelledby="emu-store-h" tabindex="-1" class="rux--modal-container">

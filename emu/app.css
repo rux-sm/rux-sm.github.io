@@ -10,21 +10,15 @@
   .emu-main:not(.emu-main--whole) { padding-inline-start: 18rem; }
 }
 /* The room's page is a narrower wide frame, Carbon's lg breakpoint, 1056px,
-   so the store sits calm in the middle of a large window. Where the room
-   stands, which view.js and room.js say on the root, the frame is the
-   room's tile itself, so the header's contents and its menus stand on the
-   tile's two edges: the tile's side is the window's height less the header
-   and the page's 2rem above and below, never under 28rem, and the frame is
-   that side and the margin Design's shell keeps inside a ruled frame's
-   lines, with the grid's own margin and gutter given up for it. A phone
-   keeps Carbon's grid. */
+   so the room and the store sit calm in the middle of a large window. The
+   room's tile is a container, so it fills the frame edge to edge, under the
+   header's menu button and account: its grid gives up its margin and gutter
+   for it, keeping only the 16px Design's shell holds inside a ruled frame's
+   lines. The store alone is type on the page and keeps Carbon's grid, as a
+   phone does. */
 :root[data-emu-room] { --frame-wide: 66rem; }
-:root[data-emu-room="mac"] {
-  --emu-side: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom));
-  --frame-wide: calc(var(--emu-side) + 2 * var(--frame-inset, 0px));
-}
 @media (min-width: 42rem) {
-  :root[data-emu-room="mac"] .emu-main > .rux--css-grid { --rux-grid-margin: var(--frame-inset, 0px); --rux-grid-gutter: 0; }
+  .emu-main > .rux--css-grid:has(.emu-wall--mac) { --rux-grid-margin: var(--frame-inset, 0px); --rux-grid-gutter: 0; }
 }
 
 /* The filters, side by side in one row that wraps. */
@@ -46,7 +40,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* A phone row: the title over its system and size, the status tag beside. */
 .emu-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rux-spacing-05); inline-size: 100%; text-align: start; }
 .emu-row__main { display: grid; min-inline-size: 0; }
-.emu-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+.emu-row__sub { color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 /* A save's card in Storage: 8 by 10 art pixels at three to one, its edges kept sharp. */
 .emu-row--card { justify-content: flex-start; align-items: center; gap: var(--rux-spacing-04); }
 .emu-card { flex: none; inline-size: 1.5rem; block-size: 1.875rem; shape-rendering: crispEdges; }
@@ -61,9 +55,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* The side panel's facts: a label over each value. */
 .emu-facts { display: grid; gap: var(--rux-spacing-05); }
-.emu-facts dt { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+.emu-facts dt { color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .emu-facts dd { overflow-wrap: anywhere; }
-.emu-hash { font-family: var(--rux-code-01-font-family, monospace); font-size: .75rem; }
+.emu-hash { font-family: var(--rux-code-01-font-family, monospace); font-size: var(--rux-label-01-font-size); }
 
 /* A step's buttons side by side, wrapping on a phone. */
 .emu-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); }
@@ -82,7 +76,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-state { flex: none; }
 
 /* A save's files, one to a line. */
-.emu-files { white-space: pre-line; font-size: .75rem; }
+.emu-files { white-space: pre-line; font-size: var(--rux-label-01-font-size); }
 
 /* BOX ART, which Carbon has no component for: a console's games are a shelf
    of covers that wraps, each game its cover over its name. Every cover is one
@@ -96,7 +90,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-shelf { --emu-cover-height: 8.75rem; }
 }
 /* The shelf's 4px inset keeps a focused cover's ring inside what it shows. */
-.emu-shelf { list-style: none; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rux-spacing-05) var(--rux-spacing-03); padding: 4px; margin: -4px; }
+.emu-shelf { list-style: none; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rux-spacing-05) var(--rux-spacing-03); padding: var(--rux-spacing-02); margin: calc(-1 * var(--rux-spacing-02)); }
 :is(.emu-cover, .emu-panel-art)[data-system="nes"] { --emu-box: 7 / 10; }
 :is(.emu-cover, .emu-panel-art)[data-system="snes"] { --emu-box: 7 / 5; }
 .emu-cover { position: relative; appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: grid; gap: var(--rux-spacing-03); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); text-align: start; }
@@ -104,8 +98,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover-art, .emu-panel-art { position: relative; display: grid; place-items: center; aspect-ratio: var(--emu-box, 3 / 4); overflow: hidden; background: var(--rux-layer); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover); }
 .emu-cover-art img, .emu-panel-art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
-.emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; text-align: center; overflow-wrap: anywhere; }
-.emu-cover-name { font-size: .875rem; line-height: 1.125rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); text-align: center; overflow-wrap: anywhere; }
+.emu-cover-name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .emu-panel-art { max-inline-size: 16rem; }
 
 /* THE ROOM, the front page. Carbon has no room, so its parts are Emu's own.
@@ -119,12 +113,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
-   the room's, a square under the header: its head, then the stage, the
-   room, then its foot. It is as wide as the page's frame, which is the
-   tile's side or the window where that is narrower; it starts at the top of
-   the page, as every page's content does. Without the helper the store is
-   the page, with no tile around it. */
-.emu-wall--mac { display: flex; flex-direction: column; inline-size: min(100%, var(--emu-side, 100%)); aspect-ratio: 1; margin-inline: auto; }
+   the room's, under the header: its head, then the stage, the room, then
+   its foot. It is as wide as the page's frame and as tall as the window
+   leaves under the header and the page's 2rem above and below, never under
+   28rem, so the page does not scroll; it starts at the top of the page, as
+   every page's content does. Without the helper the store is the page,
+   with no tile around it. */
+.emu-wall--mac { display: flex; flex-direction: column; block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
 .emu-stage { position: relative; }
 .emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
 /* A TILE, the room's: a surface a layer up from the page,
@@ -186,7 +181,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-store__console { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: start; gap: var(--rux-spacing-02); padding: 0; text-align: start; }
 .emu-store__console .emu-console { justify-self: center; block-size: 4.5rem; margin-block: var(--rux-spacing-03); }
 .emu-store__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.emu-store__name { font-size: .875rem; line-height: 1.125rem; }
+.emu-store__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-store__action.rux--btn { margin-block-start: auto; inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: var(--rux-spacing-04); }
 
 /* THE TILE'S FOOT mirrors its head: the md size token's height over a
@@ -204,7 +199,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mine[hidden], .emu-mine__pane[hidden] { display: none; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
 .emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
-.emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: 4px 4px var(--rux-spacing-03); }
+.emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: var(--rux-spacing-02) var(--rux-spacing-02) var(--rux-spacing-03); }
 @media (prefers-reduced-motion: reduce) { .emu-mine, .emu-mine--open { transition: none; } }
 /* A controller in its drawer: Carbon's game-console glyph over its name and
    whether it is connected, in a row as the store's cards are. */
@@ -256,7 +251,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    by room.js, --emu-left and --emu-top its top-left corner in art pixels. The
    list takes no press itself, so a drop between consoles lands on the room. */
 .emu-floor { position: absolute; inset: 0; }
-.emu-floor__empty { position: absolute; inset: 55% 0 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: .875rem; line-height: 1.125rem; pointer-events: none; }
+.emu-floor__empty { position: absolute; inset: 55% 0 0; display: grid; place-items: center; color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); pointer-events: none; }
 .emu-floor__empty[hidden] { display: none; }
 .emu-units { list-style: none; position: absolute; inset: 0; pointer-events: none; }
 .emu-units > li { position: absolute; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); pointer-events: auto; display: grid; justify-items: center; }
@@ -272,11 +267,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
 .emu-units > li, .emu-tv { transition: inset-inline-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 /* A favourite out on the floor: its cover 20 art pixels tall and as wide as
-   its art, with a console's shadow and name tag and no name beneath. */
+   its art, with a console's shadow and name tag and no name beneath. One
+   with no art says its name in label-01, Carbon's smallest type. */
 .emu-floor-cover .emu-cover { --emu-cover-height: calc(20 * var(--emu-px)); cursor: grab; touch-action: none; }
 .emu-floor-cover .emu-cover-name { display: none; }
 .emu-floor-cover .emu-cover-art { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); overflow: visible; }
-.emu-floor-cover .emu-cover-title { padding: var(--rux-spacing-01); font-size: .625rem; line-height: .75rem; }
+.emu-floor-cover .emu-cover-title { padding: var(--rux-spacing-01); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 .emu-floor-cover:focus-within .emu-unit__name { opacity: 1; }
 @media (hover: hover) { .emu-floor-cover:hover .emu-unit__name { opacity: 1; } }
 /* The wire from the playing console to the TV, an art pixel thick, under the things. */
@@ -316,7 +312,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* A console's name is a tag under it that shows under the pointer or the
    keyboard, and while it is set up, on Carbon's fast-02 fade, so the room
    at rest is only its drawings. */
-.emu-unit__name { position: absolute; inset-block-start: 100%; inset-inline-start: 50%; transform: translateX(-50%); z-index: 2; padding: var(--rux-spacing-01) var(--rux-spacing-02); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-unit__name { position: absolute; inset-block-start: 100%; inset-inline-start: 50%; transform: translateX(-50%); z-index: 2; padding: var(--rux-spacing-01) var(--rux-spacing-02); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-unit:focus-within .emu-unit__name, .emu-unit--fit .emu-unit__name { opacity: 1; }
 @media (hover: hover) { .emu-unit:hover .emu-unit__name { opacity: 1; } }
 .emu-units > li:is(:hover, :focus-within) { z-index: 2; }
@@ -331,7 +327,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-ghost--gone { opacity: 0; transition: opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-ghost--back { transition: transform 240ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-held { opacity: .25; }
-.emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; font-weight: 600; white-space: nowrap; }
+.emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
 .emu-unit.emu-lit .emu-console, .emu-unit.emu-no .emu-console { outline: 2px dashed var(--rux-border-interactive); outline-offset: var(--rux-spacing-02); }
 .emu-unit.emu-no .emu-console { outline-color: var(--rux-support-error); }
@@ -347,7 +343,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-unit { position: relative; }
 .emu-unit--shakes .emu-console { animation: emu-shake 400ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 @keyframes emu-shake { 0%, 100% { transform: none; } 20% { transform: translateX(-8px) rotate(-4deg); } 45% { transform: translateX(7px) rotate(3deg); } 70% { transform: translateX(-4px) rotate(-1deg); } }
-.emu-bubble { position: absolute; inset-block-end: calc(100% + var(--rux-spacing-02)); inset-inline-start: 50%; transform: translateX(-50%); z-index: 2; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: .75rem; line-height: 1rem; white-space: nowrap; pointer-events: none; }
+.emu-bubble { position: absolute; inset-block-end: calc(100% + var(--rux-spacing-02)); inset-inline-start: 50%; transform: translateX(-50%); z-index: 2; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); white-space: nowrap; pointer-events: none; }
 .emu-unit__console { position: relative; }
 .emu-media { position: absolute; inset-inline-start: 50%; inset-block-start: calc(var(--emu-slot) * 100%); overflow: hidden; background: var(--rux-layer-03); pointer-events: none; z-index: 1; }
 .emu-media img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }

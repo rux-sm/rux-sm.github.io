@@ -22,6 +22,7 @@ colours beside it, with Gallery to go back.
 - **Select:** drag a box over part of the drawing, then drag inside the box
   to move what is in it, or press an arrow key to move it a pixel. Cmd A
   selects the whole drawing. A press outside the box or Escape drops it.
+  Crop, in the bar, trims the drawing to the box.
 - **Size:** presets for an Emu home console, 36 × 24, an Emu handheld, 24
   high and up to 36 wide, and icons at 16 and 32, or any size up to 256.
   Resize keeps the drawing anchored to its bottom left.

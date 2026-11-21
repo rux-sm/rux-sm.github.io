@@ -24,7 +24,8 @@
    box stands, so a part dragged past the edge comes back when it is dragged
    in again; any other step, or dropping the box, cuts it at the edge. A
    press outside the box, Escape or another tool drops it. Keys: S, and Cmd
-   or Ctrl with A to select the whole drawing.
+   or Ctrl with A to select the whole drawing. Crop, in the bar while a box
+   stands, makes the box the whole drawing, as one step.
 
    UNDO. Each stroke, fill, resize, new drawing and opened file is one step,
    a hundred kept. A step holds the whole drawing and its path, which at 256
@@ -77,7 +78,7 @@
   const canvas = $('sprites-canvas'), stage = $('sprites-stage');
   const ctx = canvas.getContext('2d', { colorSpace: 'display-p3' });
   const tools = $('sprites-tools'), mirrorKey = $('sprites-mirror');
-  const undoKey = $('sprites-undo'), redoKey = $('sprites-redo');
+  const undoKey = $('sprites-undo'), redoKey = $('sprites-redo'), cropKey = $('sprites-crop');
   const LIMIT = 256, STEPS = 100, RECENT = 8;
 
   // The state. `dirty` is whether the drawing has changed since it was last
@@ -179,6 +180,8 @@
       ctx.strokeRect(...box);
       ctx.setLineDash([]);
     }
+    // Crop is there to press only while a box stands, and the box is drawn here.
+    cropKey.disabled = !sel;
   }
 
   // The largest whole zoom at which the drawing fits the stage.
@@ -338,6 +341,20 @@
     commit(true);
   }
   const dropSel = () => { sel = null; render(); };
+  // The box becomes the whole drawing: what is outside it goes, and so does
+  // any of it past the drawing's edge.
+  function crop() {
+    begin();
+    if (!sel) { commit(false); return; }
+    const { x, y, w, h } = sel, from = drawing;
+    const px = new Int32Array(w * h);
+    for (let row = 0; row < h; row++) px.set(from.px.subarray((y + row) * from.w + x, (y + row) * from.w + x + w), row * w);
+    sel = null;
+    drawing = { w, h, px };
+    fit();
+    commit(w !== from.w || h !== from.h);
+  }
+  cropKey.addEventListener('click', crop);
 
   function setTool(t) {
     tool = t;

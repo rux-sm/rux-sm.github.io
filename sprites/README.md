@@ -15,9 +15,13 @@ of an app that show one. A tile opens the
 editor: the drawing on a stage at a whole zoom, the tools above it and the
 colours beside it, with Gallery to go back.
 
-- **Tools:** pencil, eraser, fill and picker, with mirror, undo and redo,
-  and zoom. The keys are B, E, G, I, M, + and −, 0 to fit, Cmd Z and
-  Shift Cmd Z, and Cmd S to save. Holding Alt picks a colour with any tool.
+- **Tools:** pencil, eraser, fill, picker and select, with mirror, undo and
+  redo, and zoom. The keys are B, E, G, I, S, M, + and −, 0 to fit, Cmd Z
+  and Shift Cmd Z, and Cmd S to save. Holding Alt picks a colour with any
+  tool.
+- **Select:** drag a box over part of the drawing, then drag inside the box
+  to move what is in it, or press an arrow key to move it a pixel. Cmd A
+  selects the whole drawing. A press outside the box or Escape drops it.
 - **Size:** presets for an Emu home console, 36 × 24, an Emu handheld, 24
   high and up to 36 wide, and icons at 16 and 32, or any size up to 256.
   Resize keeps the drawing anchored to its bottom left.

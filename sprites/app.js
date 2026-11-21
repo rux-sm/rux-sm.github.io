@@ -17,6 +17,15 @@
    + and −, 0 to fit, Cmd or Ctrl with Z to undo and with Shift to redo, and
    Cmd or Ctrl with S to save.
 
+   SELECT drags a box over part of the drawing; a drag that starts inside
+   the box moves what is in it, and the arrow keys move it a pixel. The
+   moved pixels leave clear ones behind and cover what they land on, less
+   their own clear pixels. They are held apart from the drawing while the
+   box stands, so a part dragged past the edge comes back when it is dragged
+   in again; any other step, or dropping the box, cuts it at the edge. A
+   press outside the box, Escape or another tool drops it. Keys: S, and Cmd
+   or Ctrl with A to select the whole drawing.
+
    UNDO. Each stroke, fill, resize, new drawing and opened file is one step,
    a hundred kept. A step holds the whole drawing and its path, which at 256
    a side at most is small.
@@ -80,6 +89,9 @@
   let tool = 'pencil', mirror = false, zoom = 1, fitted = true;
   let past = [], ahead = [];
   let hover = null;
+  // The selection: its box in art pixels, and once moved the pixels it holds,
+  // `piece`, and the drawing without them, `base`.
+  let sel = null;
 
   // ---- notes: one inline notification at a time, above the bar ----
   const KINDS = {
@@ -156,6 +168,17 @@
       const marks = mirror && tool !== 'fill' && tool !== 'picker' ? [hover.x, w - 1 - hover.x] : [hover.x];
       for (const x of marks) ctx.strokeRect(x * p + 0.5, hover.y * p + 0.5, p - 1, p - 1);
     }
+    if (sel) {
+      // The box: dashes over a solid line, so it shows on any colour.
+      const box = [sel.x * p + 0.5, sel.y * p + 0.5, sel.w * p - 1, sel.h * p - 1];
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = look.a;
+      ctx.strokeRect(...box);
+      ctx.strokeStyle = look.hover;
+      ctx.setLineDash([Math.max(2, Math.round(dpr * 4))]);
+      ctx.strokeRect(...box);
+      ctx.setLineDash([]);
+    }
   }
 
   // The largest whole zoom at which the drawing fits the stage.
@@ -188,7 +211,8 @@
   // ---- steps ----
   const snapshot = () => ({ w: drawing.w, h: drawing.h, px: drawing.px.slice(), path, assignTo, palette: pal?.id });
   let pending = null;
-  const begin = () => { pending = snapshot(); };
+  // A step begins. Any but a move of the selection ends its hold on its pixels.
+  const begin = (moving = false) => { pending = snapshot(); if (!moving) settle(); };
   function commit(changed = true) {
     if (pending && changed) {
       past.push(pending);
@@ -207,6 +231,7 @@
     drawing = { w: s.w, h: s.h, px: s.px };
     path = s.path;
     assignTo = s.assignTo ?? null;
+    sel = null;
     // A step taken in another palette brings it back, already loaded.
     if (s.palette && s.palette !== pal.id) setPal(palettes.get(s.palette));
     dirty = true;
@@ -269,13 +294,59 @@
     }
   }
 
+  // ---- select ----
+  const within = c => sel && c.x >= sel.x && c.y >= sel.y && c.x < sel.x + sel.w && c.y < sel.y + sel.h;
+  // The box cut to the drawing, holding no pixels of its own; none where nothing of it is left.
+  function settle() {
+    if (!sel) return;
+    const x = Math.max(0, sel.x), y = Math.max(0, sel.y);
+    const w = Math.min(drawing.w, sel.x + sel.w) - x, h = Math.min(drawing.h, sel.y + sel.h) - y;
+    sel = w > 0 && h > 0 ? { x, y, w, h } : null;
+  }
+  // Takes the box's pixels out of the drawing, once, to be carried.
+  function lift() {
+    if (sel.piece) return;
+    const { w, px } = drawing;
+    sel.piece = new Int32Array(sel.w * sel.h);
+    sel.base = px.slice();
+    for (let y = 0; y < sel.h; y++) {
+      for (let x = 0; x < sel.w; x++) {
+        const i = (sel.y + y) * w + sel.x + x;
+        sel.piece[y * sel.w + x] = px[i];
+        sel.base[i] = -1;
+      }
+    }
+  }
+  // The drawing as its base with the carried pixels over it where the box is.
+  function place() {
+    const { w, h, px } = drawing;
+    px.set(sel.base);
+    for (let y = 0; y < sel.h; y++) {
+      for (let x = 0; x < sel.w; x++) {
+        const v = sel.piece[y * sel.w + x], nx = sel.x + x, ny = sel.y + y;
+        if (v !== -1 && nx >= 0 && ny >= 0 && nx < w && ny < h) px[ny * w + nx] = v;
+      }
+    }
+  }
+  // The box moved by whole pixels, as one step.
+  function nudge(dx, dy) {
+    begin(true);
+    lift();
+    sel.x += dx;
+    sel.y += dy;
+    place();
+    commit(true);
+  }
+  const dropSel = () => { sel = null; render(); };
+
   function setTool(t) {
     tool = t;
+    if (t !== 'select') sel = null;
     const option = tools.querySelector(`[data-tool="${t}"]`);
     window.Rux?.contentSwitcher?.select(tools, option, { focus: false, silent: true });
     render();
   }
-  tools.addEventListener('rux:content-switcher-selected', e => { tool = e.detail.option.dataset.tool; render(); });
+  tools.addEventListener('rux:content-switcher-selected', e => { tool = e.detail.option.dataset.tool; if (tool !== 'select') sel = null; render(); });
 
   function setMirror(on) {
     mirror = on;
@@ -292,7 +363,10 @@
   }
   const inside = c => c.x >= 0 && c.y >= 0 && c.x < drawing.w && c.y < drawing.h;
 
-  let last = null;
+  // A drag of the select tool: `box` draws one from its first corner, `grab`
+  // carries the one there from where it stood.
+  let last = null, box = null, grab = null;
+  const clamp = c => ({ x: Math.max(0, Math.min(drawing.w - 1, c.x)), y: Math.max(0, Math.min(drawing.h - 1, c.y)) });
   canvas.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const c = at(e);
@@ -300,6 +374,20 @@
     e.preventDefault();
     const using = e.altKey ? 'picker' : tool;
     if (using === 'picker') { pick(c.x, c.y, !e.altKey); return; }
+    if (using === 'select') {
+      canvas.setPointerCapture(e.pointerId);
+      if (within(c)) {
+        begin(true);
+        lift();
+        grab = { from: c, x: sel.x, y: sel.y };
+      } else {
+        // A press outside drops the box; a drag from there draws the next.
+        sel = null;
+        box = c;
+      }
+      render();
+      return;
+    }
     begin();
     changed = false;
     if (using === 'fill') { flood(c.x, c.y); commit(changed); return; }
@@ -315,9 +403,26 @@
       line(last, c);
       last = c;
     }
+    if (grab) {
+      sel.x = grab.x + c.x - grab.from.x;
+      sel.y = grab.y + c.y - grab.from.y;
+      place();
+    }
+    if (box) {
+      const to = clamp(c);
+      sel = to.x === box.x && to.y === box.y && !sel ? null
+        : { x: Math.min(box.x, to.x), y: Math.min(box.y, to.y), w: Math.abs(to.x - box.x) + 1, h: Math.abs(to.y - box.y) + 1 };
+    }
     show();
   });
   const end = () => {
+    box = null;
+    if (grab) {
+      const moved = sel.x !== grab.x || sel.y !== grab.y;
+      grab = null;
+      commit(moved);
+      return;
+    }
     if (!last) return;
     last = null;
     commit(changed);
@@ -502,6 +607,7 @@
   }
   function resize(w, h, blank) {
     begin();
+    sel = null;
     const px = new Int32Array(w * h).fill(-1);
     if (!blank) {
       // Anchored to the bottom left, because a console stands on its bottom row.
@@ -533,6 +639,7 @@
     const want = read.space === 'display-p3' ? (pal.space === 'display-p3' ? pal.id : 'sprites-p3')
       : pal.space === 'srgb' && read.px.every(v => pal.free || pal.has(v)) ? pal.id : 'sprites';
     begin();
+    sel = null;
     drawing = { w: read.w, h: read.h, px: read.px };
     path = got.path;
     assignTo = null;
@@ -788,8 +895,14 @@
     if (typing(e.target) || document.querySelector('.rux--modal.is-visible')) return;
     if (cmd && e.key.toLowerCase() === 'z') { e.preventDefault(); move(e.shiftKey ? ahead : past, e.shiftKey ? past : ahead); return; }
     if (cmd && e.key.toLowerCase() === 'y') { e.preventDefault(); move(ahead, past); return; }
+    if (cmd && e.key.toLowerCase() === 'a') { e.preventDefault(); setTool('select'); sel = { x: 0, y: 0, w: drawing.w, h: drawing.h }; render(); return; }
     if (cmd || e.altKey) return;
-    const keys = { b: () => setTool('pencil'), p: () => setTool('pencil'), e: () => setTool('eraser'), g: () => setTool('fill'), i: () => setTool('picker'), m: () => setMirror(!mirror), '+': () => setZoom(zoom + 1), '=': () => setZoom(zoom + 1), '-': () => setZoom(zoom - 1), 0: () => { fit(); show(); } };
+    if (sel && tool === 'select') {
+      const by = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (by) { e.preventDefault(); nudge(...by); return; }
+      if (e.key === 'Escape') { e.preventDefault(); dropSel(); return; }
+    }
+    const keys = { s: () => setTool('select'), b: () => setTool('pencil'), p: () => setTool('pencil'), e: () => setTool('eraser'), g: () => setTool('fill'), i: () => setTool('picker'), m: () => setMirror(!mirror), '+': () => setZoom(zoom + 1), '=': () => setZoom(zoom + 1), '-': () => setZoom(zoom - 1), 0: () => { fit(); show(); } };
     const act = keys[e.key.toLowerCase()];
     if (act) { e.preventDefault(); act(); }
   });

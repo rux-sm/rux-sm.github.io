@@ -173,6 +173,7 @@ export const ICONS = {
   'route': { material: 'route', rux: null },  // Carbon draws no route; Material's is a path between two pins.
   'save': { material: 'save', rux: null },
   'search': { material: 'search', rux: null },
+  'select--window': { material: 'select', rux: null },  // A dashed box in both families: the box that selects part of a drawing.
   'shuttle': { material: 'airport_shuttle', rux: null },
   'settings': { material: 'settings', rux: null },
   'subtract': { material: 'remove', rux: null },

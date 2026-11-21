@@ -1586,6 +1586,22 @@
         "path|d=M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"
       ]
     },
+    "select@960": {
+      "name": "select",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/select.svg",
+      "geometry": [
+        "path|d=M285-120v-60h60v60h-60ZM120-780v-60h60v60h-60Zm165 0v-60h60v60h-60Zm165 660v-60h60v60h-60Zm0-660v-60h60v60h-60Zm165 0v-60h60v60h-60Zm0 660v-60h60v60h-60Zm165-660v-60h60v60h-60ZM120-120v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm660 495v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Z"
+      ]
+    },
+    "select-fill@960": {
+      "name": "select-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/select-fill.svg",
+      "geometry": [
+        "path|d=M285-120v-60h60v60h-60ZM120-780v-60h60v60h-60Zm165 0v-60h60v60h-60Zm165 660v-60h60v60h-60Zm0-660v-60h60v60h-60Zm165 0v-60h60v60h-60Zm0 660v-60h60v60h-60Zm165-660v-60h60v60h-60ZM120-120v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm660 495v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Zm0-165v-60h60v60h-60Z"
+      ]
+    },
     "airport_shuttle@960": {
       "name": "airport_shuttle",
       "size": "960",

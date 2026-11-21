@@ -96,9 +96,13 @@ less a 16px margin either side where it is narrower. It keeps that width
 whatever opens in it, so a panel takes its width from the work beside it and
 no edge of the page moves. It is the choice for a page that is worked in
 rather than read, such as a board or a wide table, and the scheduler's board
-takes it. A framed page is ruled down its edges by two hairlines, and a wide
-page that should fill the window declares `data-frame="wide fill"`, a frame
-that is the window itself, with no edge and no lines. Attested by `elements-grid--full-width` and `sink/grid.html`.
+takes it. A wide page that should fill the window declares
+`data-frame="wide fill"`, a frame that is the window itself. The shell
+follows the theme: Carbon's themes keep Carbon's full-width header, and a
+page with a nav standing open stands at the window's left with the nav on the
+window's edge, as Carbon's product and docs pages do; Geist dark, Rux dark and
+Rux 100 put the header and the nav inside the frame and rule its edges with
+two hairlines, as Geist's pages do. Attested by `elements-grid--full-width` and `sink/grid.html`.
 Suggestion: narrow unless the page's main thing is wider than a paragraph.
 It is one class on the page's outer grid.
 

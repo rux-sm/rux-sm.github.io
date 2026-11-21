@@ -8,7 +8,8 @@ type: plan
 
 Every page of every app stands in one frame: the header's contents, the
 nav, the header's menus and the page's content all line up with the same
-two edges. The frame is narrow by default, a centred column, and a page
+two edges. The frame is narrow by default, a centred column, or one at the
+window's left beside an open nav in Carbon's themes, and a page
 that is worked in rather than read, the scheduler's board first, opts into
 a wide frame of a fixed width, and what opens beside its work takes width
 from the work rather than widening the frame. CSS draws the frame, so the
@@ -21,9 +22,12 @@ first paint is the final layout and nothing moves once the scripts load.
   own.
 - **Narrow is 76.25rem,** Geist's 1220px container and the width the
   content's frame already is, so a framed page keeps its width.
-- **Every theme frames the header,** Carbon's four, the Apple pair and the
-  rest as rux-dark and geist-dark do, so a page is laid out one way
-  whatever theme it wears.
+- **The shell follows the theme.** Carbon's themes, and any whose header is
+  a bar of its own colour, keep Carbon's full-width header with its contents
+  on the frame's edges, and a page with a nav standing open stands at the
+  window's left with the nav on its edge. Geist dark, Rux dark and Rux 100
+  put the header and the nav inside the frame and rule its edges with two
+  hairlines.
 - **Wide is the one opt-in, declared as `data-frame="wide"` on `<html>`** by
   a page whose content is Carbon's full-width grid, `rux--css-grid--full-width`,
   Carbon's own mark of a page worked in rather than read. The frame in
@@ -40,8 +44,8 @@ first paint is the final layout and nothing moves once the scripts load.
   `data-frame="wide fill"`, a frame with no edge and no lines, as the
   scheduler's Fill the window and Maintenance do.
 - **One frame for the whole shell:** the header's contents, the side nav and
-  the header's panels follow the frame's edges on every page, so no app
-  lines its header up with its content in code of its own.
+  the header's panels follow the frame's edges, as its theme's shell places
+  them, so no app lines its header up with its content in code of its own.
 - **CSS draws the frame on the first paint.** No script measures a page to
   size or centre it; a script may round a size to whole pixels, which moves
   nothing a person can see.

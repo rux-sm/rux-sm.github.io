@@ -175,6 +175,20 @@
           <p>No scan yet. The server scans every night.</p>
         </div>
 
+        <!-- Carbon's inline loading, until room.js has read the collection
+             and this Mac and knows which the page is, the room or the store. -->
+        <div class="rux--inline-loading" id="emu-loading" role="status" aria-live="polite">
+          <div class="rux--inline-loading__animation">
+            <div class="rux--loading rux--loading--small">
+              <svg class="rux--loading__svg" viewBox="0 0 100 100" aria-hidden="true">
+                <circle class="rux--loading__background" cx="50%" cy="50%" r="42"></circle>
+                <circle class="rux--loading__stroke" cx="50%" cy="50%" r="42"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="rux--inline-loading__text">Loading the library…</div>
+        </div>
+
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is one
              tile as wide as the page's frame: its head, then the room, Your Mac, then its foot,
              whose buttons open drawers of this Mac's games and the
@@ -201,8 +215,10 @@
 
           <!-- Rux's Server, the store: every console with games and every
                game, a card each with Download. Inside the store's modal where
-               the helper answers, and the page itself where it does not. -->
-          <section class="emu-store" id="emu-collection" aria-labelledby="emu-collection-h">
+               the helper answers, and the page itself where it does not;
+               hidden until room.js knows which, so it never shows as the
+               page for a moment before the room does. -->
+          <section class="emu-store" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
             <h2 class="emu-tile__title emu-store__title" id="emu-collection-h">Rux's Server</h2>
             <div class="rux--tabs rux--tabs--contained rux--tabs--full-width rux--layout--size-lg">
               <div class="rux--tab--list" role="tablist" aria-label="Rux's Server" id="emu-store-tabs">

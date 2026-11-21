@@ -77,7 +77,7 @@
   const R = window.Emu;
   const $ = id => document.getElementById(id);
   const { el, nameOf, cover } = R;
-  if (!R?.data) { R?.notice('Emu needs a log-in to read the collection.'); return; }
+  if (!R?.data) { $('emu-loading')?.remove(); R?.notice('Emu needs a log-in to read the collection.'); return; }
 
   let games = [];
   let saves = [];
@@ -1350,6 +1350,7 @@
       newestHelper = R.installerOf(files, 'Rux Emu Helper')?.name.match(/-(\d+)-macOS/)?.[1] ?? null;
     } catch (error) {
       console.error(error);
+      $('emu-loading')?.remove();
       R.notice('Emu could not read the collection. Try again.');
       return;
     }
@@ -1357,6 +1358,8 @@
     games = R.withNotes(rows, notes).map(g => ({ ...g, status: R.statusOf(g) }))
       .sort((a, b) => nameOf(a).localeCompare(nameOf(b)));
     await takeMac(mac);
+    // The loading line goes as the page is drawn, the room or the store.
+    $('emu-loading')?.remove();
     $('emu-empty').hidden = games.length > 0;
     $('emu-collection').hidden = games.length === 0;
     render();

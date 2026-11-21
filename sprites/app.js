@@ -67,8 +67,10 @@
    carries its elements with it. Duplicate copies it beside itself under a
    free name, shown by no element. Delete asks first and takes the file
    away; it is not offered on a drawing an element shows, which is
-   unassigned first. The drawing in hand follows a rename, and a deleted
-   one stays in hand as changes not saved.
+   unassigned first. The drawing in hand follows a rename, and goes with
+   its file on a delete, leaving a blank one its size. The Not saved
+   tile's menu has Discard changes, which asks, then puts the drawing back
+   as its file holds it, or blank where it has none.
 
    ASSIGNING. Assign to, in a drawing's menu, picks an element, whose file is then written from the drawing; a drawing
    can be several elements'. Unassign, on an element's tile, leaves it with
@@ -781,7 +783,10 @@
   async function showGallery(ask = false) {
     const turn = ++drawn;
     const tiles = new DocumentFragment();
-    if (unsaved()) tiles.append(tile(await S.files.png(drawing, 1, pal.space), 'Not saved', path ?? 'Not saved yet', () => view('draw')));
+    if (unsaved()) {
+      tiles.append(tile(await S.files.png(drawing, 1, pal.space), 'Not saved', path ?? 'Not saved yet', () => view('draw'),
+        [{ label: 'Discard changes', danger: true, run: b => sure(opening(discard), b) }]));
+    }
     let allowed = false;
     if (S.files.canWrite && (ask || await S.files.allowed())) {
       const kept = S.known.get();
@@ -930,11 +935,34 @@
     note('success', `Made ${fileOf(to)}.`);
   });
 
-  // Delete, after asking: the file goes. The drawing in hand stays, not saved.
+  // A blank drawing the size of the one in hand, saved nowhere, as a step.
+  function blank() {
+    begin();
+    sel = null;
+    drawing = { w: drawing.w, h: drawing.h, px: new Int32Array(drawing.w * drawing.h).fill(-1) };
+    path = null;
+    assignTo = null;
+    commit(true);
+    dirty = false;
+    keep();
+    show();
+  }
+  // The drawing in hand as its file holds it, or blank where it has none.
+  // Opening the file shows the editor, so from the gallery it goes back there.
+  async function discard() {
+    const fromGallery = editor.hidden;
+    const [got] = path && S.files.canWrite && await S.files.allowed() ? await S.files.gallery([], [path]) : [];
+    if (got) await load(got); else blank();
+    if (fromGallery) view('gallery'); else opening(showGallery)();
+    note('success', 'Changes discarded.');
+  }
+
+  // Delete, after asking: the file goes, and the drawing in hand with it.
   let deleting = null;
   function askDelete(got, trigger) {
     deleting = got;
     $('sprites-delete-what').textContent = fileOf(got.path);
+    $('sprites-delete-open').hidden = got.path !== path;
     window.Rux?.modal?.open('sprites-delete-modal', trigger);
   }
   $('sprites-delete-go').addEventListener('click', () => {
@@ -943,7 +971,7 @@
       const gone = deleting.path;
       await S.files.remove(gone);
       S.known.set(S.known.get().filter(p => p !== gone));
-      if (path === gone) { path = null; dirty = true; keep(); }
+      if (path === gone) blank();
       note('success', `Deleted ${fileOf(gone)}.`);
     })();
   });

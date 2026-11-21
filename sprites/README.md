@@ -41,8 +41,9 @@ colours beside it, with Gallery to go back.
   each colour in P3 over an sRGB fill.
 - **A drawing's menu:** a right click on its tile offers Rename, which
   keeps its folder and its apps; Duplicate, a copy beside it; Assign to;
-  and Delete, which asks first. A drawing an app shows offers Unassign in
-  Delete's place.
+  and Delete, which asks first and closes the drawing if it is open. A
+  drawing an app shows offers Unassign in Delete's place. The Not saved
+  tile offers Discard changes.
 - **Assigning:** an element is a place in an app that shows a drawing, a
   file the app reads. Assign to picks the element; Sprites writes the element's file from the
   drawing as a 1× PNG and records the pair in `assigned.json`. Saving the

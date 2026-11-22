@@ -281,14 +281,6 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Tasks
 
-- [ ] Add Consoles to the foot: this Mac's consoles put away, each taken
-      out by a press or a drag, putting away the one out, its wire run to
-      the TV as it comes out.
-- [ ] Start every console put away, keep which one is out in this Mac's
-      room, and stand the TV and that one console in their fixed spots,
-      taking out dragging consoles and the TV, the swept pile and Tidy up.
-- [ ] End Consoles and Games with an outlined Download tile opening Rux's
-      Server on its tab, and take the head's button out.
 
 - [ ] Give Rux Emu Helper a call that says whether the home server answers,
       and show it on the strip beside the collection.

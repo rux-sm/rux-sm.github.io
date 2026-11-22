@@ -9,9 +9,9 @@ The repository root's `AGENTS.md` is the policy, and
 
 ## What it is
 
-`index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper answers, a TV and every console set up on
-this Mac, on one tile as wide as the page's frame whose foot has a button for each drawer: this Mac's games, saves and controllers. The head's one button
-opens Rux's Server, a store of every console and game, with box art from libretro's thumbnails and Download on each. The strip
+`index.html` is the Library, drawn as a room by `room.js`: Your Mac, where Rux Emu Helper answers, a TV and the one console out,
+on one tile as wide as the page's frame whose foot has a button for each drawer: this Mac's consoles put away, its games, saves and controllers.
+Consoles and Games each end in a tile that opens Rux's Server, a store of every console and game, with box art from libretro's thumbnails and Download on each. The strip
 in the head says how this Mac stands and what a move did. Without the helper Rux's Server is the page. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks
 each game this Mac holds, and On this Mac lists only those, each with Remove, over
@@ -21,7 +21,7 @@ it, `this-mac.js`, which is Play, Download to this Mac with its progress and Rem
 from this Mac; then its region, version and format, each file's header and
 fingerprints, a Switch game's add-ons, its saves, and rux's notes. Search, `search.js`,
 finds any game by title and opens it on the Library, ⌘K too; it sits in each page's
-header with the pages' menu; in the room a press on the TV opens Sound and Tidy up.
+header with the pages' menu; in the room a press on the TV opens Sound.
 
 `problems.html` lists every game that needs a look, under one heading per
 kind, worst first: a missing disc or track, a copy not on the list, a bad

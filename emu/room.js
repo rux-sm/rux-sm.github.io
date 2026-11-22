@@ -573,7 +573,7 @@
       if (!s) { b.classList.add('emu-cover--away'); b.title = `${g.title}, a favourite not on this Mac`; }
       else if (s.state === 'arriving') {
         const veil = el('span', 'emu-cover__veil');
-        veil.style.blockSize = `${Math.round(100 - (s.total ? s.done / s.total : 0) * 100)}%`;
+        veil.style.blockSize = veilOf(s);
         b.querySelector('.emu-cover-art').append(veil);
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
@@ -582,6 +582,27 @@
       return li;
     }));
     $('emu-mine-none').hidden = all.length > 0;
+  }
+
+  // How far a game arriving has come: how much of its cover its veil still
+  // hides, and the words on its button.
+  const veilOf = s => `${Math.round(100 - (s.total ? s.done / s.total : 0) * 100)}%`;
+  const comingOf = s => (s.total ? `Downloading ${Math.round(s.done / s.total * 100)}%` : 'Downloading…');
+  // Only that, and the room this Mac has free, follow while a game arrives:
+  // its veils and its button change in place, and nothing else is drawn again.
+  function showComing() {
+    renderStrip();
+    for (const g of games) {
+      const s = stands(g);
+      if (s.state !== 'arriving') continue;
+      const covers = document.querySelectorAll(`.emu-cover[data-game="${CSS.escape(keyOf(g))}"]`);
+      for (const c of covers) {
+        const veil = c.querySelector('.emu-cover__veil');
+        if (veil) veil.style.blockSize = veilOf(s);
+        const button = c.closest('.emu-store__card')?.querySelector('.emu-store__action');
+        if (button) button.textContent = comingOf(s);
+      }
+    }
   }
 
   // RUX'S SERVER -------------------------------------------------------------
@@ -604,7 +625,7 @@
     if (!helper) return null;
     const s = standing(g);
     if (s.state === 'held') return action('On this Mac');
-    if (s.state === 'arriving') return action(s.total ? `Downloading ${Math.round(s.done / s.total * 100)}%` : 'Downloading…');
+    if (s.state === 'arriving') return action(comingOf(s));
     if (!keeps) return null;
     return action('Download', () => getGame(g));
   }
@@ -864,15 +885,20 @@
     if (games.some(g => stands(g).state === 'arriving')) again = setTimeout(look, 1000);
   }
   const readMac = async () => takeMac(await R.thisMac.read());
-  const told = () => JSON.stringify([helper, free, games.map(g => { const s = stands(g); return s.state === 'away' ? 0 : [s.state, s.done]; })]);
+  // What the page draws from this Mac: where each game stands, and apart
+  // from that how far each arriving one has come and the room free.
+  const told = () => JSON.stringify([helper, games.map(g => stands(g).state)]);
+  const coming = () => JSON.stringify([free, games.map(g => stands(g).done ?? 0)]);
   const panelOpen = () => !$('emu-panel').hidden;
   async function look() {
-    const before = told();
-    const coming = games.filter(g => stands(g).state === 'arriving');
+    const before = told(), came = coming();
+    const arriving = games.filter(g => stands(g).state === 'arriving');
     await readMac();
-    if (coming.some(g => stands(g).state === 'held')) sfx.done();
-    // Nothing is drawn again under a held game, an open panel or a console's open menu.
-    if (told() !== before && !panelOpen() && !drag?.on && !window.Rux.menu.isOpen($('emu-console-menu'))) render();
+    if (arriving.some(g => stands(g).state === 'held')) sfx.done();
+    // Nothing is drawn again under a held game, an open panel or a console's
+    // open menu; a download's progress alone changes only what shows it.
+    if (told() !== before) { if (!panelOpen() && !drag?.on && !window.Rux.menu.isOpen($('emu-console-menu'))) render(); }
+    else if (coming() !== came && helper) showComing();
     // A game wanted for play starts once it is here, and is let go if it stopped.
     for (const key of [...wanted]) {
       const g = games.find(x => keyOf(x) === key);

@@ -34,8 +34,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   app. A list or a table fills the frame and a paragraph keeps 42rem.
 - **The room's tile fills the frame,** under the menu button and the
   account, and is as tall as the window leaves under the header and the
-  page's padding, never under 28rem, so the page does not scroll, and never
-  over 42rem, so its foot stays near the room's things. It starts
+  page's padding, never under 28rem, so the page does not scroll, and a
+  tall window shows more of Consoles and Games. It starts
   at the top of the page, as every page's content does.
 - **The room tile's head is the room's name and the strip,**
   on the md size token's height over a rule,

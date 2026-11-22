@@ -115,11 +115,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its foot. It is as wide as the page's frame, as every Emu page's
    content is, and as tall as the window
    leaves under the header and the page's 2rem above and below, never under
-   28rem, so the page does not scroll, and never over 42rem, Carbon's medium
-   breakpoint, so its foot stays near what stands in the room in a tall
-   window; it starts at the top of the page, as every page's content does. Without the helper the store is the page,
+   28rem, so the page does not scroll and a tall window shows more of
+   Consoles and Games; it starts at the top of the page, as every page's content does. Without the helper the store is the page,
    with no tile around it. */
-.emu-wall--mac { display: flex; flex-direction: column; block-size: clamp(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom), 42rem); }
+.emu-wall--mac { display: flex; flex-direction: column; block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
 .emu-stage { position: relative; }
 .emu-wall--mac .emu-stage { flex: 1; min-block-size: 0; }
 /* A TILE, the room's: a surface a layer up from the page,
@@ -216,7 +215,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    whether it is connected, in a row as the store's cards are. */
 .emu-pads { list-style: none; display: flex; gap: var(--rux-spacing-03); }
 .emu-pad { flex: none; inline-size: 10rem; display: grid; gap: var(--rux-spacing-02); padding: var(--rux-spacing-05); background: var(--rux-layer); }
-.emu-kits { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-03); }
+.emu-kits { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-05); }
 .emu-kits > li { display: flex; }
 .emu-kits .emu-add { inline-size: 100%; min-inline-size: 0; min-block-size: 6rem; }
 .emu-kit { --emu-px: var(--emu-kit-px, 3px); inline-size: 100%; min-inline-size: 0; appearance: none; border: 0; font: inherit; color: var(--rux-text-primary); cursor: grab; touch-action: none; display: grid; justify-items: center; align-content: end; gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); background: var(--rux-layer); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -258,14 +257,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    the consoles put away one under another, each its drawing at three CSS
    pixels to the art pixel over its wordmark, or the console out's games,
    each cover scaled to the column's width and as tall as its art, the
-   column never widened by a picture larger than it; each ends in
-   its Download tile. Under 66rem the drawings are two to the art pixel and
+   column never widened by a picture larger than it, 16px around the tiles
+   and between them; each ends in its Download tile. Under 66rem the drawings are two to the art pixel and
    the columns narrower. */
-.emu-rail { --emu-kit-px: 3px; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; inline-size: 11rem; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
-@media (max-width: 65.98rem) { .emu-rail { --emu-kit-px: 2px; inline-size: 8.5rem; } }
+.emu-rail { --emu-kit-px: 3px; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; inline-size: 12rem; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05); border-inline-end: 1px solid var(--rux-border-subtle-01); }
+@media (max-width: 65.98rem) { .emu-rail { --emu-kit-px: 2px; inline-size: 9.5rem; } }
 .emu-rail__none { padding: var(--rux-spacing-03); }
 .emu-rail--games { border-inline-end: 0; border-inline-start: 1px solid var(--rux-border-subtle-01); }
-.emu-rail__games { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-03); }
+.emu-rail__games { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-05); }
 .emu-rail__games .emu-cover { inline-size: 100%; }
 .emu-rail__games .emu-cover-name { display: none; }
 .emu-rail__games > .emu-add-item .emu-add { inline-size: 100%; min-inline-size: 0; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); box-sizing: border-box; padding: var(--rux-spacing-03); text-align: center; }

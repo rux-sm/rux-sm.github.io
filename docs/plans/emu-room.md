@@ -73,8 +73,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The TV and the console out stand in fixed spots,** the TV at the top,
   centred, and the console centred under it, so nothing in the room is
   moved, swept or tidied. Which console is out is kept with this Mac's
-  room, in the `room` column of its `emu_macs` row. An empty room says
-  faintly to take a console out of Consoles.
+  room, in the `room` column of its `emu_macs` row, so the page opens with
+  the console last out, which is the one last played, since a game plays
+  only in the console out. A Mac that has never had one out opens with an
+  empty room, which says faintly to take a console out of Consoles.
 - **One console is out at a time, handheld or home.** A home console is
   wired to the TV; a handheld lights its own screen.
 - **Rux's Server is no longer in the room's head.** Consoles and Games each

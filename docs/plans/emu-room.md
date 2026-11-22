@@ -101,7 +101,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   closes it; another button turns it to that drawer. All start closed each
   time the page loads, so the room shows whole.
 - **Consoles is one row of the consoles set up on this Mac,** each its
-  drawing, pressed or dragged into the room to take it out.
+  drawing over its wordmark, pressed or dragged into the room to take it
+  out.
 - **Games is one row that scrolls sideways, so it fits any width,** of this
   Mac's games, one console's at a time under a tab for each console with
   games, the tabs only choosing which games show, Carbon's line tabs at 44px reaching the drawer's edges, each tab

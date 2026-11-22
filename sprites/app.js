@@ -47,7 +47,8 @@
    tiles are New drawing, then the drawing with changes no file holds, then
    in Chrome every picture in the palettes' folders and every drawing this
    browser saved or opened elsewhere, the last changed first, less the
-   drawings an element shows. Under them stands each of Emu's sets beneath
+   drawings an element shows. Every picture is drawn at one scale, so
+   drawings show their true sizes beside each other. Under them stands each of Emu's sets beneath
    its name, a tile for each element in Emu's order: the drawing assigned
    to it, or an empty tile that starts a new drawing for it. Chrome reads
    the checkout only once it is allowed, which takes a click on each visit
@@ -737,9 +738,10 @@
     b.className = `rux--tile rux--tile--clickable sprites-tile${blob ? '' : ' sprites-tile--empty'}`;
     b.title = title;
     if (blob) {
-      const img = Object.assign(document.createElement('img'), { className: 'sprites-tile__picture', alt: '', src: URL.createObjectURL(blob) });
+      const frame = Object.assign(document.createElement('span'), { className: 'sprites-tile__picture' });
+      frame.append(Object.assign(document.createElement('img'), { className: 'sprites-tile__art', alt: '', src: URL.createObjectURL(blob) }));
       const text = Object.assign(document.createElement('span'), { className: 'rux--type-body-compact-01 sprites-tile__name' });
-      b.append(img, text);
+      b.append(frame, text);
     }
     b.lastElementChild.textContent = name;
     b.addEventListener('click', () => act(b));
@@ -835,11 +837,27 @@
         }
       }
     }
+    // Each picture's own size in pixels, for the shared scale.
+    await Promise.all([...tiles.querySelectorAll('img')].map(img => img.decode().then(() => {
+      img.style.setProperty('--sprites-w', img.naturalWidth);
+      img.style.setProperty('--sprites-h', img.naturalHeight);
+    }, () => {})));
     if (turn !== drawn) { forget(tiles); return; }
     forget(gallery);
     gallery.replaceChildren($('sprites-new-tile'), tiles);
+    scaleGallery();
     $('sprites-allow').hidden = !S.files.canWrite || allowed;
   }
+  // ONE SCALE for every picture in the gallery, so drawings sit at their true
+  // sizes beside each other: the largest whole number of screen pixels per
+  // drawing pixel that fits the biggest drawing in a tile.
+  function scaleGallery() {
+    const box = gallery.querySelector('.sprites-tile__picture')?.clientWidth ?? 0;
+    const most = Math.max(1, ...[...gallery.querySelectorAll('.sprites-tile__art')].map(img => Math.max(img.naturalWidth, img.naturalHeight)));
+    const dpr = window.devicePixelRatio || 1;
+    gallery.style.setProperty('--sprites-scale', Math.max(1, Math.floor(box * dpr / most)) / dpr);
+  }
+  new ResizeObserver(scaleGallery).observe(gallery);
   $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));
 
   // ---- assign ----

@@ -103,6 +103,8 @@
   // Consoles whose emulator is being taken off this Mac now, its saves and
   // settings kept first.
   const keeping = new Set();
+  // Games whose Download waits on their console's setup, by key.
+  const waiting = new Set();
   // The consoles standing in the room as drawn, each 'on', 'setting' or 'keeping'.
   let stand = new Map();
 
@@ -557,7 +559,7 @@
   }
   function renderMine() {
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
-    const all = games.filter(g => here.has(keyOf(g)) || g.notes?.favourite)
+    const all = games.filter(g => here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite)
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
     const systems = Object.keys(R.SYSTEMS).filter(s => all.some(g => g.system === s));
     if (!systems.includes(shelf)) shelf = null;
@@ -570,7 +572,12 @@
       const li = coverItem(g);
       const b = li.firstChild;
       const s = here.get(keyOf(g));
-      if (!s) { b.classList.add('emu-cover--away'); b.title = `${g.title}, a favourite not on this Mac`; }
+      if (waiting.has(keyOf(g))) {
+        const veil = el('span', 'emu-cover__veil');
+        veil.style.blockSize = '100%';
+        b.querySelector('.emu-cover-art').append(veil);
+        b.title = `${g.title}. Setting up ${emulatorOf(g.system)} first.`;
+      } else if (!s) { b.classList.add('emu-cover--away'); b.title = `${g.title}, a favourite not on this Mac`; }
       else if (s.state === 'arriving') {
         const veil = el('span', 'emu-cover__veil');
         veil.style.blockSize = veilOf(s);
@@ -626,6 +633,7 @@
     const s = standing(g);
     if (s.state === 'held') return action('On this Mac');
     if (s.state === 'arriving') return action(comingOf(s));
+    if (waiting.has(keyOf(g))) return action(`Setting up ${emulatorOf(g.system)}…`);
     if (!keeps) return null;
     return action('Download', () => getGame(g));
   }
@@ -995,14 +1003,26 @@
   // DOWNLOAD FROM THE STORE. A console comes into the room's first clear
   // spot and its emulator is set up where it stands. A game whose console is
   // not set up sets that up first.
-  async function getConsole(system) {
-    if (plays(system) || settingUp.has(system)) return;
-    landed = system;
-    await setUp(system);
+  // One setup a console, which every Download waiting on it shares.
+  const setups = new Map();
+  function getConsole(system) {
+    if (plays(system)) return Promise.resolve();
+    if (!setups.has(system)) {
+      landed = system;
+      setups.set(system, setUp(system).finally(() => setups.delete(system)));
+    }
+    return setups.get(system);
   }
+  // A game waiting on its console's setup says so on its card and in the
+  // Games drawer, under a veil, and downloads once the console is ready.
   async function getGame(g) {
-    if (!plays(g.system)) await getConsole(g.system);
-    if (plays(g.system)) await download(g);
+    const key = keyOf(g);
+    if (!plays(g.system)) {
+      waiting.add(key);
+      render();
+      try { await getConsole(g.system); } finally { waiting.delete(key); }
+    }
+    if (plays(g.system)) await download(g); else render();
   }
   // The slot a game goes into, as a part of its console's drawing from the
   // top, and the consoles that take a disc.

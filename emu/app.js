@@ -162,8 +162,12 @@
   function cover(g, cls) {
     const box = el('div', cls);
     box.dataset.system = g.system;
+    // A game with no box art shows its name where the picture would be,
+    // leaving anything laid over the picture, such as a download's veil.
     const name = () => {
-      box.replaceChildren(el('span', 'emu-cover-title', nameOf(g)));
+      const title = el('span', 'emu-cover-title', nameOf(g));
+      const img = box.querySelector('img');
+      if (img) img.replaceWith(title); else box.prepend(title);
       (box.closest('.emu-cover') ?? box).style.removeProperty('--emu-box');
     };
     const img = art(g, name);

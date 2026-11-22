@@ -30,7 +30,8 @@
    and Search are the shell's, the same on every page.
 
    Consoles, the left column, lists the consoles set up, each its drawing
-   over its wordmark. Pressing one chooses it; dragging it into the room,
+   over its wordmark. Pressing one chooses it, and again lets it go; Games
+   shows only the chosen console's games. Dragging it into the room,
    or Take out in its menu, a right click away, takes it out. The one out
    leaves an empty spot, and dragging it back onto the column, or Put away
    in its menu, puts it away.
@@ -431,8 +432,8 @@
     setTimeout(drawWire, 260);
   }
   // GAMES, the column down the room's right: the games of the console
-  // chosen in Consoles, or else the console out, a game of a console not
-  // out dimmed and saying to take it out,
+  // chosen in Consoles, and none while none is chosen, a game of a console
+  // not out dimmed and saying to take it out,
   // favourites first and then A to Z, one under another as wide as the
   // column, each as tall as its art: a favourite this Mac lacks is dimmed,
   // one arriving sits under a veil that lifts as it comes, and one whose
@@ -458,7 +459,7 @@
   function renderMine() {
     const out = outNow();
     if (chosen && !stand.has(chosen)) chosen = null;
-    const shown = chosen ?? out;
+    const shown = chosen;
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
     const list = shown ? games.filter(g => g.system === shown && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite))) : [];
@@ -497,8 +498,8 @@
   // it out, then the tile that downloads another.
   // The console out keeps its place as an empty spot, its outline over its
   // wordmark, so nothing moves. Pressing a console chooses it, which lights
-  // its tile, and only a drag or its menu, a right click away, takes it out
-  // or puts it away.
+  // its tile, and pressing it again lets it go; only a drag or its menu, a
+  // right click away, takes it out or puts it away.
   function renderKit() {
     const out = outNow();
     $('emu-kit').replaceChildren(...[...stand].map(([system, state]) => {
@@ -518,7 +519,7 @@
       spot.append(consoleOf(system));
       b.append(spot, mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
       if (mark) b.lastChild.append(mark);
-      b.addEventListener('click', () => { chosen = system; choose(system); renderKit(); renderMine(); });
+      b.addEventListener('click', () => { chosen = chosen === system ? null : system; if (chosen) choose(chosen); renderKit(); renderMine(); });
       b.addEventListener('contextmenu', e => { e.preventDefault(); chosen = system; renderKit(); openMenu(system, $('emu-kit').querySelector(`[data-spot="${system}"]`)); });
       li.append(b);
       return li;

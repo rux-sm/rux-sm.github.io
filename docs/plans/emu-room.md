@@ -111,8 +111,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   puts it away.
   The TV and the console out stand centred in the room beside it.
 - **Games is a column down the room's right, the same width as Consoles,**
-  of the games of the console chosen in Consoles, or the console out where
-  none is chosen; taking one out chooses it, and a game whose console is
+  of the games of the console chosen in Consoles, and none while none is
+  chosen, even with a console out; pressing the chosen console again lets
+  it go, and taking one out chooses it, and a game whose console is
   not out is dimmed, its title saying to take it out. Every cover is as wide as the column and as tall as its art, and
   the column scrolls up and down. A console's wordmark is the one-colour
   mark in `emu/brand/marks.svg`.

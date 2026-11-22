@@ -71,14 +71,24 @@
 .sprites-view[hidden] { display: none; }
 
 /* THE GALLERY: a tile for a new drawing, then the saved ones, each a
-   picture centred in a square with its file name under it. Every picture is
-   drawn at the one scale app.js sets as --sprites-scale, so drawings show
-   their true sizes beside each other. Each of Emu's sets starts a row of its
-   own under its name, and a tile whose picture is yet to be drawn is quieter
-   than one that has it. */
-.sprites-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .5rem; }
+   picture centred above its file name. Every picture is drawn at the one
+   scale picked in the bar, which app.js sets as --sprites-scale, so
+   drawings show their true sizes beside each other. Every tile's picture
+   area fits the widest and the tallest drawing, --sprites-most-w and
+   --sprites-most-h pixels, at that scale: a tile is 9rem wide or that wide,
+   whichever is more, never wider than the page, and at least 4rem tall.
+   Each of Emu's sets starts a row of its own under its name, and a tile
+   whose picture is yet to be drawn is quieter than one that has it. */
+.sprites-gallery {
+  display: grid; gap: .5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9rem, calc(var(--sprites-most-w, 0) * var(--sprites-scale, 3) * 1px + 2rem))), 1fr));
+}
+.sprites-scales { inline-size: auto; }
 .sprites-tile { display: grid; gap: .5rem; align-content: start; text-align: start; inline-size: 100%; border: 0; cursor: pointer; }
-.sprites-tile__picture { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; }
+.sprites-tile__picture {
+  display: grid; place-items: center; inline-size: 100%; overflow: hidden;
+  block-size: max(4rem, calc(var(--sprites-most-h, 0) * var(--sprites-scale, 3) * 1px));
+}
 .sprites-tile__art {
   inline-size: calc(var(--sprites-w) * var(--sprites-scale, 1) * 1px);
   block-size: calc(var(--sprites-h) * var(--sprites-scale, 1) * 1px);

@@ -54,7 +54,8 @@ colours beside it, with Gallery to go back.
   the drawing it was saved from. Any other SVG is turned away. In Chrome,
   the gallery shows every picture in `sprites/art/` and each drawing this
   browser saved or opened elsewhere in the checkout, with Browse for any
-  other file.
+  other file. Every picture there is drawn at one size, 2× to 8× from the
+  bar, so drawings compare at their true sizes; 3× is Emu's room.
 - **Emu's elements:** under the drawings no element shows, the gallery
   lists Emu's three sets, one element for each of Emu's systems, its file
   named for the system: `emu/brand/consoles/`, which holds the room's TV

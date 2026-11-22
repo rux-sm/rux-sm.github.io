@@ -116,15 +116,24 @@
              of Emu's sets under its name. A right click on a drawing's tile
              opens the menu below the modals. -->
         <div class="sprites-view" id="sprites-gallery-view">
+          <!-- The bar: showing the saved drawings, Browse, and how many
+               screen pixels each drawing pixel takes; 3 is Emu's room. -->
+          <div class="sprites-bar">
+            <button type="button" class="rux--btn rux--btn--md rux--btn--tertiary" id="sprites-allow" hidden>Show saved drawings</button>
+            <button type="button" class="rux--btn rux--btn--md rux--btn--ghost" id="sprites-browse">Browse</button>
+            <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg sprites-bar__end sprites-scales" role="tablist" aria-label="Picture size" id="sprites-scale">
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-scale="2" title="Each pixel 2 screen pixels"><span class="rux--content-switcher__label">2×</span></button>
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-scale="3" title="Each pixel 3 screen pixels, as in Emu's room"><span class="rux--content-switcher__label">3×</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-scale="4" title="Each pixel 4 screen pixels"><span class="rux--content-switcher__label">4×</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-scale="6" title="Each pixel 6 screen pixels"><span class="rux--content-switcher__label">6×</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-scale="8" title="Each pixel 8 screen pixels"><span class="rux--content-switcher__label">8×</span></button>
+            </div>
+          </div>
           <div class="sprites-gallery" id="sprites-gallery">
             <button type="button" class="rux--tile rux--tile--clickable sprites-tile" id="sprites-new-tile">
               <span class="sprites-tile__picture sprites-tile__picture--new"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></span>
               <span class="rux--type-body-compact-01 sprites-tile__name">New drawing</span>
             </button>
-          </div>
-          <div class="sprites-bar">
-            <button type="button" class="rux--btn rux--btn--md rux--btn--tertiary" id="sprites-allow" hidden>Show saved drawings</button>
-            <button type="button" class="rux--btn rux--btn--md rux--btn--ghost" id="sprites-browse">Browse</button>
           </div>
         </div>
 

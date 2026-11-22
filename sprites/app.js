@@ -47,8 +47,9 @@
    tiles are New drawing, then the drawing with changes no file holds, then
    in Chrome every picture in the palettes' folders and every drawing this
    browser saved or opened elsewhere, the last changed first, less the
-   drawings an element shows. Every picture is drawn at one scale, so
-   drawings show their true sizes beside each other. Under them stands each of Emu's sets beneath
+   drawings an element shows. Every picture is drawn at one scale, 2× to
+   8× from the bar and 3× as in Emu's room at first, so drawings show
+   their true sizes beside each other. Under them stands each of Emu's sets beneath
    its name, a tile for each element in Emu's order: the drawing assigned
    to it, or an empty tile that starts a new drawing for it. Chrome reads
    the checkout only once it is allowed, which takes a click on each visit
@@ -849,15 +850,25 @@
     $('sprites-allow').hidden = !S.files.canWrite || allowed;
   }
   // ONE SCALE for every picture in the gallery, so drawings sit at their true
-  // sizes beside each other: the largest whole number of screen pixels per
-  // drawing pixel that fits the biggest drawing in a tile.
+  // sizes beside each other: the screen pixels per drawing pixel picked in
+  // the bar, 3 as in Emu's room unless this browser picked another. Every
+  // tile is wide enough for the biggest drawing at that scale.
+  const SCALE = 'sprites-gallery-scale', scales = $('sprites-scale');
+  let scale = 3;
+  try { scale = Number(localStorage.getItem(SCALE)) || 3; } catch {}
+  const saved = scales.querySelector(`[data-scale="${scale}"]`);
+  if (saved) window.Rux?.contentSwitcher?.select(scales, saved, { focus: false, silent: true }); else scale = 3;
+  scales.addEventListener('rux:content-switcher-selected', e => {
+    scale = Number(e.detail.option.dataset.scale);
+    try { localStorage.setItem(SCALE, String(scale)); } catch {}
+    scaleGallery();
+  });
   function scaleGallery() {
-    const box = gallery.querySelector('.sprites-tile__picture')?.clientWidth ?? 0;
-    const most = Math.max(1, ...[...gallery.querySelectorAll('.sprites-tile__art')].map(img => Math.max(img.naturalWidth, img.naturalHeight)));
-    const dpr = window.devicePixelRatio || 1;
-    gallery.style.setProperty('--sprites-scale', Math.max(1, Math.floor(box * dpr / most)) / dpr);
+    const arts = [...gallery.querySelectorAll('.sprites-tile__art')];
+    gallery.style.setProperty('--sprites-scale', scale);
+    gallery.style.setProperty('--sprites-most-w', Math.max(0, ...arts.map(img => img.naturalWidth)));
+    gallery.style.setProperty('--sprites-most-h', Math.max(0, ...arts.map(img => img.naturalHeight)));
   }
-  new ResizeObserver(scaleGallery).observe(gallery);
   $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));
 
   // ---- assign ----

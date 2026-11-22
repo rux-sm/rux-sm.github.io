@@ -48,8 +48,9 @@
    The tile's foot has a button for each drawer, which opens up over the
    room's foot, one at a time, all closed each time the page loads. Games
    is a row that scrolls sideways of this Mac's games, favourites first, one
-   still arriving under a veil that lifts as it comes, under tabs for All
-   and each console it has games for; a console pressed picks its tab. Saves is the picked
+   still arriving under a veil that lifts as it comes, one console's at a
+   time under a tab for each console it has games for; a console pressed
+   picks its tab. Saves is the picked
    console's saves as cards: each game's, the one in it and those out, with
    Take out, Put in and a name to change, then the console's own.
    Controllers is each controller this Mac sees, and says its button
@@ -522,21 +523,22 @@
   // a favourite this Mac lacks is dimmed, one arriving sits under a veil
   // that lifts as it comes, and one whose console is not set up is dimmed
   // with what it needs in its title. A cover shows no name under it, only
-  // in its title, and the row keeps one cover's height. Tabs above the row show All, or one
-  // console's games, a tab for each console the row has games for in the
-  // filter's order; pressing a console in the room picks its tab.
+  // in its title, and the row keeps one cover's height. The row shows one
+  // console's games under a tab for each console it has games for, in the
+  // filter's order: the picked console's at first, and pressing a console
+  // in the room picks its tab.
   // A console's tab shows its wordmark from brand/marks.svg, in the tab's
   // own colour, or its name where it has none.
   let shelf = null;
   const consoleTabs = $('emu-mine-consoles');
-  consoleTabs.addEventListener('rux:tab-selected', e => { shelf = e.detail.tab.dataset.system || null; renderMine(); });
+  consoleTabs.addEventListener('rux:tab-selected', e => { shelf = e.detail.tab.dataset.system; renderMine(); });
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
     if (games.length) renderMine();
   }).catch(error => console.error(error));
   function tabOf(system, label) {
-    const on = system === (shelf ?? '');
+    const on = system === shelf;
     const b = el('button', `rux--tabs__nav-item rux--tabs__nav-link${on ? ' rux--tabs__nav-item--selected' : ''}`);
     b.type = 'button';
     b.setAttribute('role', 'tab');
@@ -562,12 +564,12 @@
     const all = games.filter(g => here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite)
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
     const systems = Object.keys(R.SYSTEMS).filter(s => all.some(g => g.system === s));
-    if (!systems.includes(shelf)) shelf = null;
+    if (!systems.includes(shelf)) shelf = systems.includes(pick) ? pick : systems[0] ?? null;
     const focused = consoleTabs.contains(document.activeElement);
-    consoleTabs.replaceChildren(tabOf('', 'All'), ...systems.map(s => tabOf(s, R.systemName(s))));
+    consoleTabs.replaceChildren(...systems.map(s => tabOf(s, R.systemName(s))));
     if (focused) consoleTabs.querySelector('[aria-selected="true"]').focus();
     $('emu-mine-consoles-wrap').hidden = !systems.length;
-    const list = shelf ? all.filter(g => g.system === shelf) : all;
+    const list = all.filter(g => g.system === shelf);
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
       const b = li.firstChild;

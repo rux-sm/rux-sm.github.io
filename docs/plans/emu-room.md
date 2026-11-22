@@ -103,10 +103,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   time the page loads, so the room shows whole.
 - **Consoles is a column down the room's left of the consoles set up,**
   always in view and scrolling up and down, as a mouse wheel turns, each
-  its drawing over its wordmark, pressed or dragged into the room to take
-  it out. The console out keeps its place as an empty spot, its outline
-  over its wordmark, so nothing moves; pressing the spot, or dragging the
-  console out back onto the column, which lights the spot, puts it away.
+  its drawing over its wordmark. Pressing one chooses it, on Carbon's
+  selected layer; dragging it into the room, or Take out in its menu, a
+  right click away, takes it out. The console out keeps its place as an
+  empty spot, its outline over its wordmark, so nothing moves; dragging it
+  back onto the column, which lights the spot, or Put away in its menu,
+  puts it away.
   The TV and the console out stand centred in the room beside it.
 - **Games is a column down the room's right, the same width as Consoles,**
   of the console out's games, so another console's games show once it is

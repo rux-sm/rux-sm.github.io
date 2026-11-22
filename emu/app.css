@@ -228,10 +228,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* A console's drawing in its spot; the console out leaves the spot empty,
    its outline the drawing's size, and a console carried back lights it. */
 .emu-kit__spot { display: block; }
-.emu-kit--out { cursor: pointer; }
 .emu-kit--out .emu-kit__spot { outline: 1px dashed var(--rux-border-strong-01); }
 .emu-kit--out .emu-console { visibility: hidden; }
 .emu-kit.emu-lit .emu-kit__spot { outline: 2px dashed var(--rux-border-interactive); }
+/* The console chosen, pressed in Consoles, stands on Carbon's selected layer. */
+.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected); }
 .emu-kit__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* A drawer's last tile: an outline with a plus over its words, opening
    Rux's Server; in Games as tall as a cover and as wide as the row's covers

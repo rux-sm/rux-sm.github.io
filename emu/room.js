@@ -30,9 +30,10 @@
    and Search are the shell's, the same on every page.
 
    Consoles, the left column, lists the consoles set up, each its drawing
-   over its wordmark, pressed or dragged into the room to take it out; the
-   one out leaves an empty spot, and pressing it, or dragging the console
-   out back onto the column, puts it away.
+   over its wordmark. Pressing one chooses it; dragging it into the room,
+   or Take out in its menu, a right click away, takes it out. The one out
+   leaves an empty spot, and dragging it back onto the column, or Put away
+   in its menu, puts it away.
    Games, the right column, lists the console out's games, favourites
    first, each cover as wide as the column, one still arriving under a veil
    that lifts as it comes, and a game is played by carrying it onto the
@@ -298,9 +299,10 @@
     li.append(body, el('span', 'emu-unit__name', called));
     return li;
   }
-  // A CONSOLE'S MENU, Design's menu under the console: Remove, which the
-  // strip then asks about, or what it is busy with. So no control is drawn
-  // on the room, and an emulator is never taken off in one press.
+  // A CONSOLE'S MENU, Design's menu under the console, in the room or in
+  // Consoles: Take out or Put away, then Remove, which the strip then asks
+  // about, or what it is busy with. So no control is drawn on the room, and
+  // an emulator is never taken off in one press.
   function openMenu(system, trigger) {
     const menu = $('emu-console-menu');
     window.Rux.menu.close(menu);
@@ -309,7 +311,8 @@
     const item = (label, run, opts) => menuItem(menu, label, run, opts);
     menu.setAttribute('aria-label', R.systemName(system));
     menu.replaceChildren(...(BUSY[state] ? [item(BUSY[state](system), null, { off: true })]
-      : [item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]));
+      : [outNow() === system ? item('Put away', putAway) : item('Take out', () => takeOut(system)),
+        item(`Remove ${emulator} from this Mac`, () => askRemove(system), { danger: true })]));
     window.Rux.menu.open(menu, trigger);
   }
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
@@ -483,17 +486,22 @@
   // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
   // it out, then the tile that downloads another.
   // The console out keeps its place as an empty spot, its outline over its
-  // wordmark, so nothing moves, and pressing the spot puts it away.
+  // wordmark, so nothing moves. Pressing a console chooses it, which lights
+  // its tile, and only a drag or its menu, a right click away, takes it out
+  // or puts it away.
+  let chosen = null;
   function renderKit() {
     const out = outNow();
     $('emu-kit').replaceChildren(...[...stand].map(([system, state]) => {
       const li = el('li');
       const isOut = system === out;
-      const b = el('button', isOut ? 'emu-kit emu-kit--out' : 'emu-kit');
+      const b = el('button', `emu-kit${isOut ? ' emu-kit--out' : ''}${system === chosen ? ' emu-kit--chosen' : ''}`);
+      b.setAttribute('aria-pressed', String(system === chosen));
+      b.setAttribute('aria-haspopup', 'menu');
       b.type = 'button';
       b.dataset.spot = system;
       if (!isOut) b.dataset.kit = system;
-      b.title = BUSY[state]?.(system) ?? (isOut ? `Put the ${R.systemName(system)} away` : `Take out the ${R.systemName(system)}`);
+      b.title = BUSY[state]?.(system) ?? (isOut ? `The ${R.systemName(system)} is out` : R.systemName(system));
       b.disabled = state !== 'on';
       const mark = markOf(system);
       if (mark) b.setAttribute('aria-label', isOut ? `${R.systemName(system)}, out` : R.systemName(system));
@@ -501,7 +509,8 @@
       spot.append(consoleOf(system));
       b.append(spot, mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
       if (mark) b.lastChild.append(mark);
-      b.addEventListener('click', () => (isOut ? putAway() : takeOut(system)));
+      b.addEventListener('click', () => { chosen = system; choose(system); renderKit(); });
+      b.addEventListener('contextmenu', e => { e.preventDefault(); chosen = system; renderKit(); openMenu(system, $('emu-kit').querySelector(`[data-spot="${system}"]`)); });
       li.append(b);
       return li;
     }), addTile('Download consoles', b => openStore(b, 'emu-store-consoles-tab')));

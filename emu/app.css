@@ -235,10 +235,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-add__icon { inline-size: 1.5rem; block-size: 1.5rem; fill: currentColor; }
 .emu-add__label { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* Rux's Server opened from a Download tile shows one thing, plainly: its
-   tabs and its bar of selects give way, the modal's heading says which,
+   tabs, its bar of selects and each console's count of games give way,
+   the modal's heading says which,
    and the cards stand borderless on the modal's own layer, one spacing-05
    step apart every way, each cover scaled to its card's width. */
-.emu-store--one > .rux--tabs, .emu-store--one .emu-store__bar { display: none; }
+.emu-store--one > .rux--tabs, .emu-store--one .emu-store__bar, .emu-store--one .emu-store__games { display: none; }
 .emu-store--one .emu-store__pane { margin-block-start: 0; }
 .emu-store--one .emu-store__grid { gap: var(--rux-spacing-05); border: 0; }
 .emu-store--one .emu-store__card { padding: 0; background: none; border: 0; }

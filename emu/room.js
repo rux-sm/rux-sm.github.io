@@ -573,7 +573,7 @@
       const b = el('button', 'emu-store__console');
       b.type = 'button';
       b.title = `The ${R.systemName(system)}'s games`;
-      b.append(consoleOf(system), el('span', 'emu-store__name', R.systemName(system)), el('span', 'emu-row__sub', countOf(gamesOf(system).length)));
+      b.append(consoleOf(system), el('span', 'emu-store__name', R.systemName(system)), el('span', 'emu-row__sub emu-store__games', countOf(gamesOf(system).length)));
       b.addEventListener('click', () => { choose(system); showStoreGames(); });
       li.append(b);
       const button = consoleAction(system);

@@ -101,10 +101,13 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   things, and a drag from it into the room is a short move up. Its button pressed again, or Escape,
   closes it; another button turns it to that drawer. All start closed each
   time the page loads, so the room shows whole.
-- **Consoles is a column down the room's left of the consoles put away,**
+- **Consoles is a column down the room's left of the consoles set up,**
   always in view and scrolling up and down, as a mouse wheel turns, each
   its drawing over its wordmark, pressed or dragged into the room to take
-  it out; the TV and the console out stand centred in the room beside it.
+  it out. The console out keeps its place as an empty spot, its outline
+  over its wordmark, so nothing moves; pressing the spot, or dragging the
+  console out back onto the column, which lights the spot, puts it away.
+  The TV and the console out stand centred in the room beside it.
 - **Games is a column down the room's right, the same width as Consoles,**
   of the console out's games, so another console's games show once it is
   out. Every cover is as wide as the column and as tall as its art, and

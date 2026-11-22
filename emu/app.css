@@ -225,6 +225,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit:hover { background: var(--rux-layer-hover); }
 .emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-kit:disabled { cursor: default; opacity: .45; }
+/* A console's drawing in its spot; the console out leaves the spot empty,
+   its outline the drawing's size, and a console carried back lights it. */
+.emu-kit__spot { display: block; }
+.emu-kit--out { cursor: pointer; }
+.emu-kit--out .emu-kit__spot { outline: 1px dashed var(--rux-border-strong-01); }
+.emu-kit--out .emu-console { visibility: hidden; }
+.emu-kit.emu-lit .emu-kit__spot { outline: 2px dashed var(--rux-border-interactive); }
 .emu-kit__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* A drawer's last tile: an outline with a plus over its words, opening
    Rux's Server; in Games as tall as a cover and as wide as the row's covers
@@ -322,7 +329,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    by 24 art pixels; a handheld is as tall, cut to its width. Each thing on
    the floor, the TV too, throws a hard shadow two art pixels down, and
    slides to a new spot on Carbon's moderate-02, productive. */
-.emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: pointer; }
+.emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: grab; touch-action: none; }
 .emu-unit__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
 .emu-units > li, .emu-tv { transition: inset-inline-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }

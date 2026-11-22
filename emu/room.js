@@ -29,8 +29,10 @@
    anywhere on it, opens its menu, the room's own: Sound. The pages' menu
    and Search are the shell's, the same on every page.
 
-   Consoles, the left column, lists the consoles put away, each its drawing
-   over its wordmark, pressed or dragged into the room to take it out.
+   Consoles, the left column, lists the consoles set up, each its drawing
+   over its wordmark, pressed or dragged into the room to take it out; the
+   one out leaves an empty spot, and pressing it, or dragging the console
+   out back onto the column, puts it away.
    Games, the right column, lists the console out's games, favourites
    first, each cover as wide as the column, one still arriving under a veil
    that lifts as it comes, and a game is played by carrying it onto the
@@ -257,7 +259,8 @@
 
   // YOUR MAC -----------------------------------------------------------------
   // The console out, standing under the TV: its drawing, a button that,
-  // pressed or right-clicked, opens its menu. Its power
+  // pressed or right-clicked, opens its menu, and dragged onto Consoles,
+  // goes back to its spot. Its power
   // light is lit on the drawing while it is on, blinks while its emulator
   // is set up, and is the drawing's own unlit pixel while it is off, the
   // whole drawing dimmed. Its name is a tag that shows under the pointer or
@@ -479,21 +482,26 @@
   // CONSOLES, the column down the room's left: every console set up on this Mac and put away,
   // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
   // it out, then the tile that downloads another.
+  // The console out keeps its place as an empty spot, its outline over its
+  // wordmark, so nothing moves, and pressing the spot puts it away.
   function renderKit() {
     const out = outNow();
-    const away = [...stand].filter(([system]) => system !== out);
-    $('emu-kit').replaceChildren(...away.map(([system, state]) => {
+    $('emu-kit').replaceChildren(...[...stand].map(([system, state]) => {
       const li = el('li');
-      const b = el('button', 'emu-kit');
+      const isOut = system === out;
+      const b = el('button', isOut ? 'emu-kit emu-kit--out' : 'emu-kit');
       b.type = 'button';
-      b.dataset.kit = system;
-      b.title = BUSY[state]?.(system) ?? `Take out the ${R.systemName(system)}`;
+      b.dataset.spot = system;
+      if (!isOut) b.dataset.kit = system;
+      b.title = BUSY[state]?.(system) ?? (isOut ? `Put the ${R.systemName(system)} away` : `Take out the ${R.systemName(system)}`);
       b.disabled = state !== 'on';
       const mark = markOf(system);
-      if (mark) b.setAttribute('aria-label', R.systemName(system));
-      b.append(consoleOf(system), mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
+      if (mark) b.setAttribute('aria-label', isOut ? `${R.systemName(system)}, out` : R.systemName(system));
+      const spot = el('span', 'emu-kit__spot');
+      spot.append(consoleOf(system));
+      b.append(spot, mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
       if (mark) b.lastChild.append(mark);
-      b.addEventListener('click', () => takeOut(system));
+      b.addEventListener('click', () => (isOut ? putAway() : takeOut(system)));
       li.append(b);
       return li;
     }), addTile('Download consoles', b => openStore(b, 'emu-store-consoles-tab')));
@@ -1044,6 +1052,17 @@
     keepRoom();
     if (!quiet && system) say(`${R.systemName(system)} is out.`, was ? () => takeOut(was, true) : null, UNDO);
   }
+  // The console out goes back to its spot in Consoles and the room is
+  // empty; Undo takes it out again.
+  function putAway() {
+    const was = outNow();
+    if (!was) return;
+    room = { ...room, out: null };
+    sfx.unplug();
+    render();
+    keepRoom();
+    say(`${R.systemName(was)} is put away.`, () => takeOut(was, true), UNDO);
+  }
   // Removing an emulator: the strip asks first. Its saves and settings are
   // kept in Supabase and checked, then the helper moves it to the Trash, and
   // every console that played in it goes back to the server, the room empty
@@ -1119,9 +1138,12 @@
     return null;
   }
 
-  // A console from Consoles let go over the room's space comes out.
+  // A console from Consoles let go over the room's space comes out; the
+  // console out let go over Consoles goes back to its spot, which lights.
   const kitIntent = (system, under) => (under?.closest('#emu-space') ? yes(`Take out the ${R.systemName(system)}`, null, () => takeOut(system)) : null);
-  const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point) : kitIntent(d.system, under));
+  const awayIntent = (system, under) => (under?.closest('#emu-rail-kit') ? yes('Put away', $('emu-kit').querySelector(`[data-spot="${system}"]`), putAway) : null);
+  const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point)
+    : d.from === 'room' ? awayIntent(d.system, under) : kitIntent(d.system, under));
 
   // THE DRAG, with the pointer, where the helper answers. A press that does
   // not move is the cover's or the console's own click.
@@ -1141,10 +1163,11 @@
   // A cover's picture is not dragged away as a file.
   document.addEventListener('dragstart', e => { if (e.target.closest?.('.emu-cover')) e.preventDefault(); });
   document.addEventListener('pointerdown', e => {
-    const src = e.target.closest?.('.emu-cover[data-game], [data-kit]');
+    const src = e.target.closest?.('.emu-cover[data-game], [data-kit], [data-console]');
     if (!src || e.button > 0 || !helper) return;
     const at = { src, x: e.clientX, y: e.clientY, on: false, id: e.pointerId };
     if (src.dataset.kit) { drag = { ...at, system: src.dataset.kit, from: 'kit' }; return; }
+    if (src.dataset.console) { if (stand.get(src.dataset.console) === 'on') drag = { ...at, system: src.dataset.console, from: 'room' }; return; }
     const g = games.find(x => keyOf(x) === src.dataset.game);
     const from = FROM.find(([sel]) => src.closest(sel))?.[1];
     if (g && from) drag = { ...at, g, from };

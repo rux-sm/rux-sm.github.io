@@ -431,8 +431,20 @@
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
-    if (games.length) renderMine();
+    if (games.length) { renderMine(); renderKit(); }
   }).catch(error => console.error(error));
+  // A console's wordmark, drawn in the text colour at one height, which a
+  // symbol's `data-scale` grows where its letters sit small in its shape,
+  // or null where it has none.
+  function markOf(system) {
+    const mark = marks.get(system);
+    if (!mark) return null;
+    const svg = svgOf('emu-mark', mark.getAttribute('viewBox'));
+    svg.append(...[...mark.childNodes].map(n => document.importNode(n, true)));
+    const scale = mark.getAttribute('data-scale');
+    if (scale) svg.style.setProperty('--emu-mark-scale', scale);
+    return svg;
+  }
   function tabOf(system, label) {
     const on = system === shelf;
     const b = el('button', `rux--tabs__nav-item rux--tabs__nav-link${on ? ' rux--tabs__nav-item--selected' : ''}`);
@@ -443,13 +455,8 @@
     b.dataset.system = system;
     b.title = label;
     const text = el('span', 'rux--tabs__nav-item-label');
-    const mark = marks.get(system);
-    if (mark) {
-      const svg = svgOf('emu-mine__mark', mark.getAttribute('viewBox'));
-      svg.append(...[...mark.childNodes].map(n => document.importNode(n, true)));
-      b.setAttribute('aria-label', label);
-      text.append(svg);
-    } else text.textContent = label;
+    const mark = markOf(system);
+    if (mark) { b.setAttribute('aria-label', label); text.append(mark); } else text.textContent = label;
     const wrap = el('div', 'rux--tabs__nav-item-label-wrapper');
     wrap.append(text);
     b.append(wrap);
@@ -494,7 +501,7 @@
     $('emu-mine-none').hidden = all.length > 0;
   }
   // CONSOLES, the drawer: every console set up on this Mac and put away,
-  // each its drawing over its name, pressed or dragged into the room to take
+  // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
   // it out, then the tile that downloads another.
   function renderKit() {
     const out = outNow();
@@ -506,7 +513,10 @@
       b.dataset.kit = system;
       b.title = BUSY[state]?.(system) ?? `Take out the ${R.systemName(system)}`;
       b.disabled = state !== 'on';
-      b.append(consoleOf(system, HANDHELD.has(system)), el('span', 'emu-kit__name', R.systemName(system)));
+      const mark = markOf(system);
+      if (mark) b.setAttribute('aria-label', R.systemName(system));
+      b.append(consoleOf(system, HANDHELD.has(system)), mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
+      if (mark) b.lastChild.append(mark);
       b.addEventListener('click', () => takeOut(system));
       li.append(b);
       return li;

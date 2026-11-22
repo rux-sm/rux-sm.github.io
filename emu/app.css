@@ -210,8 +210,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    Carbon's own height setting, between its 40 and 48. */
 .emu-mine__consoles { --rux-layout-size-height: 2.75rem; inline-size: auto; margin: calc(-1 * var(--rux-spacing-05)) calc(-1 * var(--rux-spacing-05)) var(--rux-spacing-05); }
 .emu-mine__consoles[hidden] { display: none; }
-/* A console's wordmark in its tab: one height for every console, its width its own, in the tab's text colour. */
-.emu-mine__mark { display: block; block-size: 1rem; inline-size: auto; max-inline-size: 100%; fill: currentColor; }
+/* A console's wordmark, in a Games tab or under its drawing in Consoles:
+   one height for every console, grown by --emu-mark-scale where a mark's
+   letters sit small in its shape, its width its own, in the text colour. */
+.emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
+.emu-kit__mark { display: grid; place-items: center; block-size: 1.25rem; }
 .emu-mine__row {overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 /* The Games drawer's row: covers alone, each game's name in its title, and
    one cover high even with none, so the drawer keeps its height on every tab. */

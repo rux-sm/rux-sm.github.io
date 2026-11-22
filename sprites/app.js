@@ -838,11 +838,8 @@
         }
       }
     }
-    // Each picture's own size in pixels, for the shared scale.
-    await Promise.all([...tiles.querySelectorAll('img')].map(img => img.decode().then(() => {
-      img.style.setProperty('--sprites-w', img.naturalWidth);
-      img.style.setProperty('--sprites-h', img.naturalHeight);
-    }, () => {})));
+    // Each picture's own width in pixels, for the shared scale.
+    await Promise.all([...tiles.querySelectorAll('img')].map(img => img.decode().then(() => img.style.setProperty('--sprites-w', img.naturalWidth), () => {})));
     if (turn !== drawn) { forget(tiles); return; }
     forget(gallery);
     gallery.replaceChildren($('sprites-new-tile'), tiles);
@@ -851,8 +848,7 @@
   }
   // ONE SCALE for every picture in the gallery, so drawings sit at their true
   // sizes beside each other: the screen pixels per drawing pixel picked in
-  // the bar, 3 as in Emu's room unless this browser picked another. Every
-  // tile is wide enough for the biggest drawing at that scale.
+  // the bar, 3 as in Emu's room unless this browser picked another.
   const SCALE = 'sprites-gallery-scale', scales = $('sprites-scale');
   let scale = 3;
   try { scale = Number(localStorage.getItem(SCALE)) || 3; } catch {}
@@ -863,12 +859,7 @@
     try { localStorage.setItem(SCALE, String(scale)); } catch {}
     scaleGallery();
   });
-  function scaleGallery() {
-    const arts = [...gallery.querySelectorAll('.sprites-tile__art')];
-    gallery.style.setProperty('--sprites-scale', scale);
-    gallery.style.setProperty('--sprites-most-w', Math.max(0, ...arts.map(img => img.naturalWidth)));
-    gallery.style.setProperty('--sprites-most-h', Math.max(0, ...arts.map(img => img.naturalHeight)));
-  }
+  function scaleGallery() { gallery.style.setProperty('--sprites-scale', scale); }
   $('sprites-allow').addEventListener('click', opening(() => showGallery(true)));
 
   // ---- assign ----

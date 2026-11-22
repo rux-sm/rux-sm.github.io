@@ -71,31 +71,27 @@
 .sprites-view[hidden] { display: none; }
 
 /* THE GALLERY: a tile for a new drawing, then the saved ones, each a
-   picture centred above its file name. Every picture is drawn at the one
-   scale picked in the bar, which app.js sets as --sprites-scale, so
-   drawings show their true sizes beside each other. Every tile's picture
-   area fits the widest and the tallest drawing, --sprites-most-w and
-   --sprites-most-h pixels, at that scale: a tile is 9rem wide or that wide,
-   whichever is more, never wider than the page, and at least 4rem tall.
+   picture above its file name. Every picture is drawn at the one scale
+   picked in the bar, which app.js sets as --sprites-scale, and each tile
+   fits its own picture, so drawings stand at their true sizes side by side
+   on a row's shared floor, as in Emu's room. A tile is never narrower than
+   7rem or wider than the page; one with no picture yet holds a 4rem plus.
    Each of Emu's sets starts a row of its own under its name, and a tile
    whose picture is yet to be drawn is quieter than one that has it. */
-.sprites-gallery {
-  display: grid; gap: .5rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9rem, calc(var(--sprites-most-w, 0) * var(--sprites-scale, 3) * 1px + 2rem))), 1fr));
-}
+.sprites-gallery { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .5rem; }
 .sprites-scales { inline-size: auto; }
-.sprites-tile { display: grid; gap: .5rem; align-content: start; text-align: start; inline-size: 100%; border: 0; cursor: pointer; }
-.sprites-tile__picture {
-  display: grid; place-items: center; inline-size: 100%; overflow: hidden;
-  block-size: max(4rem, calc(var(--sprites-most-h, 0) * var(--sprites-scale, 3) * 1px));
+.sprites-tile {
+  display: grid; gap: .5rem; align-content: end; text-align: start; flex: none;
+  inline-size: auto; block-size: auto; min-inline-size: 7rem; max-inline-size: 100%; border: 0; cursor: pointer;
 }
+.sprites-tile__picture { display: grid; place-items: end center; min-block-size: 4rem; overflow: hidden; }
 .sprites-tile__art {
   inline-size: calc(var(--sprites-w) * var(--sprites-scale, 1) * 1px);
-  block-size: calc(var(--sprites-h) * var(--sprites-scale, 1) * 1px);
+  max-inline-size: 100%; block-size: auto;
   image-rendering: pixelated;
 }
 .sprites-tile__picture--new { color: var(--rux-icon-primary); }
 .sprites-tile__name { overflow-wrap: anywhere; color: var(--rux-text-primary); }
 .sprites-tile--empty .sprites-tile__picture--new { color: var(--rux-icon-secondary); }
 .sprites-tile--empty .sprites-tile__name { color: var(--rux-text-secondary); }
-.sprites-gallery__heading { grid-column: 1 / -1; margin-block-start: 1rem; color: var(--rux-text-primary); }
+.sprites-gallery__heading { flex-basis: 100%;margin-block-start: 1rem; color: var(--rux-text-primary); }

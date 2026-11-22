@@ -218,7 +218,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kits { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-05); }
 .emu-kits > li { display: flex; }
 .emu-kits .emu-add { inline-size: 100%; min-inline-size: 0; min-block-size: 6rem; }
-.emu-kit { --emu-px: var(--emu-kit-px, 3px); inline-size: 100%; min-inline-size: 0; appearance: none; border: 0; font: inherit; color: var(--rux-text-primary); cursor: grab; touch-action: none; display: grid; justify-items: center; align-content: end; gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); background: var(--rux-layer); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-kit { --emu-px: var(--emu-kit-px, 3px); inline-size: 100%; min-inline-size: 0; appearance: none; border: 0; font: inherit; color: var(--rux-text-primary); cursor: grab; touch-action: none; display: grid; justify-items: center; align-content: end; gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); background: none; transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-kit:hover { background: var(--rux-layer-hover); }
 .emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-kit:disabled { cursor: default; opacity: .45; }
@@ -237,12 +237,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    tabs, its bar of selects and each console's count of games give way,
    the modal's heading says which,
    and the cards stand borderless on the modal's own layer, one spacing-05
-   step apart every way, each cover scaled to its card's width. */
+   step apart every way, each cover scaled to its card's width over its
+   button, its name only in its title. */
 .emu-store--one > .rux--tabs, .emu-store--one .emu-store__bar, .emu-store--one .emu-store__games { display: none; }
 .emu-store--one .emu-store__pane { margin-block-start: 0; }
 .emu-store--one .emu-store__grid { gap: var(--rux-spacing-05); border: 0; }
 .emu-store--one .emu-store__card { padding: 0; background: none; border: 0; }
 .emu-store--one .emu-store__card > .emu-cover { inline-size: 100%; }
+.emu-store--one .emu-store__card .emu-cover-name { display: none; }
 .emu-pad__icon { inline-size: 2rem; block-size: 2rem; fill: currentColor; margin-block-end: var(--rux-spacing-03); }
 
 /* YOUR MAC: the page's own background, where the TV and the console out

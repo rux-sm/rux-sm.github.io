@@ -485,7 +485,12 @@
         b.title = `${g.title}. Needs the ${R.systemName(g.system)} out.`;
       }
       return li;
-    }), addTile('Download games', b => { if (shelf) choose(shelf); openStore(b, 'emu-store-games-tab'); }));
+    }), addTile('Download games', b => { if (shelf) choose(shelf); openStore(b, 'emu-store-games-tab'); }, shelf));
+    // The tile takes the shape of the row's first cover once its art has come.
+    const tile = $('emu-mine-games').querySelector('.emu-add');
+    const first = $('emu-mine-games').querySelector('.emu-cover img');
+    const shape = () => { const box = first.closest('.emu-cover').style.getPropertyValue('--emu-box'); if (box) tile.style.setProperty('--emu-box', box); };
+    if (first?.complete) shape(); else first?.addEventListener('load', shape);
     $('emu-mine-none').hidden = all.length > 0;
   }
   // CONSOLES, the drawer: every console set up on this Mac and put away,
@@ -731,21 +736,32 @@
   }
 
   // THE STORE, Rux's Server, opens from the Download tile that ends Consoles
-  // or Games as Carbon's modal, on that tab and, from Games, its console. It
-  // closes itself on its close, Escape or the scrim, and gives the focus
-  // back to the tile.
+  // or Games as Carbon's modal, showing only that: the consoles, or the
+  // games of the tab's console, with no tabs or Console select, and headed
+  // with what it shows. It closes itself on its close, Escape or the scrim,
+  // and gives the focus back to the tile.
   let storeFrom = null;
   function openStore(trigger = storeFrom, tab = null) {
     storeFrom = trigger;
+    $('emu-collection').classList.add('emu-store--one');
     if (tab) window.Rux.tabs.select($('emu-store-tabs'), $(tab));
+    headStore();
     toTop();
     window.Rux.modal.open('emu-store', trigger);
   }
-  // A drawer's last tile, outlined with a plus, which opens the store.
-  function addTile(label, run) {
+  const headStore = () => {
+    const games = $('emu-store-games-tab').getAttribute('aria-selected') === 'true';
+    $('emu-store-h').textContent = games && pick ? `${R.systemName(pick)} games` : 'Consoles';
+  };
+  // A console's card pressed turns the store to its games, and the heading with it.
+  $('emu-store-tabs').addEventListener('rux:tab-selected', headStore);
+  // A drawer's last tile, outlined with a plus, which opens the store; in
+  // Games it has the shape of the console's covers.
+  function addTile(label, run, system = null) {
     const li = el('li', 'emu-add-item');
     const b = el('button', 'emu-add');
     b.type = 'button';
+    if (system) b.dataset.system = system;
     b.append(useOf(svgOf('emu-add__icon', '0 0 32 32'), '#i-add'.slice(1)), el('span', 'emu-add__label', label));
     b.addEventListener('click', () => run(b));
     li.append(b);

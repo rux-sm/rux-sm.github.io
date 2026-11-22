@@ -89,8 +89,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 }
 /* The shelf's 4px inset keeps a focused cover's ring inside what it shows. */
 .emu-shelf { list-style: none; display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--rux-spacing-05) var(--rux-spacing-03); padding: var(--rux-spacing-02); margin: calc(-1 * var(--rux-spacing-02)); }
-:is(.emu-cover, .emu-panel-art)[data-system="nes"] { --emu-box: 7 / 10; }
-:is(.emu-cover, .emu-panel-art)[data-system="snes"] { --emu-box: 7 / 5; }
+:is(.emu-cover, .emu-panel-art, .emu-add)[data-system="nes"] { --emu-box: 7 / 10; }
+:is(.emu-cover, .emu-panel-art, .emu-add)[data-system="snes"] { --emu-box: 7 / 5; }
 .emu-cover { position: relative; appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; display: grid; gap: var(--rux-spacing-03); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); text-align: start; }
 .emu-cover:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-cover-art, .emu-panel-art { position: relative; display: grid; place-items: center; aspect-ratio: var(--emu-box, 3 / 4); overflow: hidden; background: var(--rux-layer); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -232,15 +232,19 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit:disabled { cursor: default; opacity: .45; }
 .emu-kit .emu-console { block-size: calc(24 * var(--emu-px)); inline-size: auto; image-rendering: pixelated; }
 .emu-kit__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
-/* A drawer's last tile: an outline with a plus over its words, as tall as
-   the row's other tiles, opening Rux's Server. */
+/* A drawer's last tile: an outline with a plus over its words, opening
+   Rux's Server; in Games as tall as a cover and as wide as the row's covers
+   are, --emu-box. */
 .emu-add-item { flex: none; display: flex; }
-.emu-shelf > .emu-add-item { block-size: var(--emu-cover-height); }
+.emu-shelf > .emu-add-item .emu-add { block-size: var(--emu-cover-height); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); min-inline-size: 0; box-sizing: border-box; padding: var(--rux-spacing-03); text-align: center; }
 .emu-add { appearance: none; font: inherit; cursor: pointer; display: grid; place-content: center; justify-items: center; gap: var(--rux-spacing-03); min-inline-size: 8rem; padding: var(--rux-spacing-05); background: transparent; color: var(--rux-text-secondary); border: 1px dashed var(--rux-border-strong-01); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-add:hover { background: var(--rux-layer-hover); color: var(--rux-text-primary); }
 .emu-add:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-add__icon { inline-size: 1.5rem; block-size: 1.5rem; fill: currentColor; }
 .emu-add__label { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
+/* Rux's Server opened from a Download tile shows one thing: its tabs and
+   its Console select give way, and the modal's heading says which. */
+.emu-store--one > .rux--tabs, .emu-store--one .emu-store__select:first-child { display: none; }
 .emu-pad__icon { inline-size: 2rem; block-size: 2rem; fill: currentColor; margin-block-end: var(--rux-spacing-03); }
 
 /* YOUR MAC: the page's own background, where the TV and the console out

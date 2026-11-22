@@ -61,11 +61,15 @@
 
    What is picked up from a drawer is held as a copy. A word follows it and
    says what letting go will do, and a place it would land lights where
-   that place is one thing, never the room as a whole. A game onto its
-   console or the TV plays it; a console it does not fit says so in red and
+   that place is one thing, never the room as a whole. A game let go
+   anywhere in the room plays on its own console, taking it out first where
+   it is put away; a console busy, or not set up, says so in red and
    nothing happens. A game is taken off this Mac from its side panel.
 
-   The wrong console shakes its head and says a line. A game played goes in
+   A console that cannot play now shakes its head and says why. A console
+   taken out slides from its spot in Consoles to its place under the TV,
+   and back when it is put away; Games fades to a newly chosen console's
+   games. A game played goes in
    first as it would on the real console: a cartridge drops into its slot, a
    disc slides onto a tray. Each move makes a small sound, made here with no
    sound files, which the TV's menu turns off, remembered in this browser.
@@ -231,9 +235,15 @@
   // console, shown pixel for pixel in its own colours, the same in every
   // theme. app.css draws it at its own size in art pixels, --emu-w by
   // --emu-h, read once it has loaded, and the room is laid out again then.
+  // A drawing's size, once one has loaded, is set at once on the next, so
+  // it is drawn at its size from the start and a slide knows where it lands.
+  const drawnSize = new Map();
   function consoleOf(system) {
     const img = el('img', 'emu-console');
+    const size = drawnSize.get(system);
+    if (size) { img.style.setProperty('--emu-w', size[0]); img.style.setProperty('--emu-h', size[1]); }
     img.addEventListener('load', () => {
+      drawnSize.set(system, [img.naturalWidth, img.naturalHeight]);
       img.style.setProperty('--emu-w', img.naturalWidth);
       img.style.setProperty('--emu-h', img.naturalHeight);
       if (img.closest('#emu-units')) layout();
@@ -464,8 +474,8 @@
     setTimeout(drawWire, 260);
   }
   // GAMES, the column down the room's right: the games of the console
-  // chosen in Consoles, and none while none is chosen, a game of a console
-  // not out dimmed and saying to take it out,
+  // chosen in Consoles, and none while none is chosen, every cover in its
+  // own colours,
   // favourites first and then A to Z, one under another as wide as the
   // column, each as tall as its art: a favourite this Mac lacks is dimmed,
   // one arriving sits under a veil that lifts as it comes, and one whose
@@ -488,10 +498,13 @@
     if (scale) svg.style.setProperty('--emu-mark-scale', scale);
     return svg;
   }
+  // Games fades in a newly chosen console's games on Carbon's entrance curve at fast-02.
+  let lastShown = null;
   function renderMine() {
-    const out = outNow();
     if (chosen && !stand.has(chosen)) chosen = null;
     const shown = chosen;
+    if (shown !== lastShown && !calm()) $('emu-mine-games').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 110, easing: 'cubic-bezier(0, 0, 0.38, 0.9)' });
+    lastShown = shown;
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
     const list = shown ? games.filter(g => g.system === shown && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite))) : [];
@@ -504,18 +517,12 @@
         veil.style.blockSize = '100%';
         b.querySelector('.emu-cover-art').append(veil);
         b.title = `${g.title}. Setting up ${emulatorOf(g.system)} first.`;
-      } else if (!s) { b.classList.add('emu-cover--away'); b.title = `${g.title}, a favourite not on this Mac`; }
+      } else if (!s) b.title = `${g.title}, a favourite not on this Mac`;
       else if (s.state === 'arriving') {
         const veil = el('span', 'emu-cover__veil');
         veil.style.blockSize = veilOf(s);
         b.querySelector('.emu-cover-art').append(veil);
-      } else if (stand.get(g.system) !== 'on') {
-        b.classList.add('emu-cover--away');
-        b.title = `${g.title}. ${BUSY[stand.get(g.system)]?.(g.system) ?? ''}`.trim();
-      } else if (g.system !== out) {
-        b.classList.add('emu-cover--away');
-        b.title = `${g.title}. Take out the ${R.systemName(g.system)} to play it.`;
-      }
+      } else if (stand.get(g.system) !== 'on') b.title = `${g.title}. ${BUSY[stand.get(g.system)]?.(g.system) ?? ''}`.trim();
       return li;
     }), ...(shown ? [addTile('Download games', b => { choose(shown); openStore(b, 'emu-store-games-tab'); }, shown)] : []));
     // The tile takes the shape of the first cover once its art has come.
@@ -1074,9 +1081,7 @@
       say(`${error.message}`, () => play(g), 30000, true, 'Try again', ['Play anyway', () => play(g, true)]);
     }
   }
-  // The console that will not have it shakes its head, buzzes and says why.
-  const NO = [name => `Nope. That's a ${name} game.`, name => `Doesn't fit. Try the ${name}.`, name => `*blows on it* Still a ${name} game.`, name => `Wrong slot! It wants a ${name}.`];
-  const wrong = system => NO[Math.floor(Math.random() * NO.length)](R.systemName(system));
+  // The console that will not have it now shakes its head, buzzes and says why.
   function refuse(system, text) {
     const u = unitOf(system);
     sfx.no();
@@ -1099,17 +1104,40 @@
     try { if (!await R.data.saveRoom(macName, room)) say('This room is kept once Status has saved this Mac.'); }
     catch (error) { console.error(error); sayNo('The room could not be kept. Try again.'); }
   }
+  // A CONSOLE'S SLIDE between its spot in Consoles and its place under the
+  // TV: a copy of its drawing flies from where it was to where it lands
+  // while the drawing there waits hidden, on Carbon's productive standard
+  // curve at moderate-02. A drag sets where it starts, the copy in the hand.
+  let flyFrom = null;
+  const takeFlyFrom = () => { const r = flyFrom; flyFrom = null; return r; };
+  const spotImg = system => $('emu-kit').querySelector(`[data-spot="${system}"] .emu-console`);
+  const unitImg = () => $('emu-units').querySelector('.emu-console');
+  function flight(from, target) {
+    if (!from || !target || calm()) return;
+    const to = target.getBoundingClientRect();
+    if (!to.width || !from.width) return;
+    const copy = target.cloneNode();
+    Object.assign(copy.style, { position: 'fixed', left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, margin: '0', zIndex: '9000', pointerEvents: 'none', transformOrigin: '0 0', visibility: 'visible' });
+    document.body.append(copy);
+    target.style.visibility = 'hidden';
+    copy.animate([{ transform: 'none' }, { transform: `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(${to.width / from.width}, ${to.height / from.height})` }],
+      { duration: 240, easing: 'cubic-bezier(0.2, 0, 0.38, 0.9)' }).finished.catch(() => {}).finally(() => { copy.remove(); target.style.visibility = ''; });
+  }
   // A console comes out of Consoles into the room, putting away the one that
   // was out, and a home console is hooked up to the TV; Undo takes the other
   // one out again. `quiet` is a move another says, such as a setup.
   function takeOut(system, quiet = false) {
     const was = outNow();
     if (was === system) return;
+    const from = takeFlyFrom() ?? spotImg(system)?.getBoundingClientRect();
+    const back = was ? unitImg()?.getBoundingClientRect() : null;
     room = { ...room, out: system };
     if (system) chosen = system;
-    landed = system;
+    if (!from || calm()) landed = system;
     sfx.plug();
     render();
+    if (system) flight(from, unitImg());
+    if (was) flight(back, spotImg(was));
     keepRoom();
     if (!quiet && system) say(`${R.systemName(system)} is out.`, was ? () => takeOut(was, true) : null, UNDO);
   }
@@ -1118,9 +1146,11 @@
   function putAway() {
     const was = outNow();
     if (!was) return;
+    const from = takeFlyFrom() ?? unitImg()?.getBoundingClientRect();
     room = { ...room, out: null };
     sfx.unplug();
     render();
+    flight(from, spotImg(was));
     keepRoom();
     say(`${R.systemName(was)} is put away.`, () => takeOut(was, true), UNDO);
   }
@@ -1181,22 +1211,24 @@
   const yes = (word, light, run) => ({ word, light, run });
   // A move refused: `says` is the console and its line, said when the game is let go.
   const no = (word, light, says = null) => ({ word, light, no: true, says });
-  function intent(g, from, under, point) {
-    if (!under) return null;
+  // A game let go anywhere in the room's space plays on its own console:
+  // where that console is put away it comes out first, and the console out,
+  // where it is the game's, lights.
+  function intent(g, from, under) {
+    if (!under?.closest('#emu-space')) return null;
     const s = standing(g);
-    const unit = under.closest('.emu-unit')
-      ?? (under.closest('.emu-tv') && !HANDHELD.has(g.system) ? unitOf(g.system) : null);
-    if (unit) {
-      const system = unit.dataset.system;
-      if (system !== g.system) return no(`Doesn't fit the ${R.systemName(system)}`, unit, [system, wrong(g.system)]);
-      if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
-      if (stand.get(system) === 'keeping') return no('Being removed', unit, [system, 'I am being removed.']);
-      if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
-      if (s.state === 'held') return yes('Play', unit, () => play(g));
-      if (keeps) return yes('Download and play', unit, () => download(g, true));
-      return no('Update the helper to download', unit, [system, 'Update the helper to download.']);
-    }
-    return null;
+    const system = g.system;
+    const name = R.systemName(system);
+    const out = outNow() === system;
+    const unit = out ? unitOf(system) : null;
+    if (!stand.has(system)) return no(`Download the ${name} first`, null, [system, `Download the ${name} from Consoles first.`]);
+    if (stand.get(system) === 'setting') return no('Still setting up', unit, [system, 'Hang on, still setting up.']);
+    if (stand.get(system) === 'keeping') return no('Being removed', unit, [system, 'I am being removed.']);
+    if (s.state === 'arriving') return no('Still downloading', unit, [system, 'Not all here yet.']);
+    const then = run => () => { if (!out) takeOut(system, true); run(); };
+    if (s.state === 'held') return yes(out ? 'Play' : `Take out the ${name} and play`, unit, then(() => play(g)));
+    if (keeps) return yes(out ? 'Download and play' : `Take out the ${name}, download and play`, unit, then(() => download(g, true)));
+    return no('Update the helper to download', unit, [system, 'Update the helper to download.']);
   }
 
   // A console from Consoles let go over the room's space comes out; the
@@ -1288,6 +1320,8 @@
     };
     // A move that happens fades where it was dropped; any other flies back
     // to where it came from. Both are Carbon's productive motion.
+    // A console let go flies on from the copy in the hand.
+    if (it && !it.no && !d.g) { flyFrom = d.ghost.querySelector('.emu-console')?.getBoundingClientRect() ?? null; d.ghost.remove(); done(); return; }
     if (it && !it.no) { d.ghost.classList.add('emu-ghost--gone'); setTimeout(done, 110); return; }
     d.ghost.classList.add('emu-ghost--back');
     d.ghost.style.transform = `translate(${d.home.left}px, ${d.home.top}px)`;

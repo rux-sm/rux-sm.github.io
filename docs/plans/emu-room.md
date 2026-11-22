@@ -62,7 +62,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   acknowledgement.
 - **The strip says what a room move did and offers its Undo.** A status region
   announces the same change to assistive technology. Errors that say where to
-  act stay at their source: a wrong console speaks beside that console, a
+  act stay at their source: a console that cannot play speaks beside it, a
   game-panel action stays in its panel and Update stays on Status.
 - **A console has three places.** On the server it is not on this Mac. In
   Consoles, the room's column, it is set up on this Mac and put away. In the room
@@ -70,8 +70,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   away, and only one is out at a time: taking one out puts the other away.
   Remove in its menu takes its emulator off this Mac.
 - **Games stay put away, so the room stays clean.** No cover stands on the
-  floor. A game is played by carrying its cover from Games onto the
-  console out.
+  floor. A game is played by carrying its cover from Games anywhere into
+  the room.
 - **The TV and the console out stand in fixed spots,** the TV at the top,
   centred, and the console centred under it, so nothing in the room is
   moved, swept or tidied. Which console is out is kept with this Mac's
@@ -113,8 +113,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **Games is a column down the room's right, the same width as Consoles,**
   of the games of the console chosen in Consoles, and none while none is
   chosen, even with a console out; pressing the chosen console again lets
-  it go, and taking one out chooses it, and a game whose console is
-  not out is dimmed, its title saying to take it out. Every cover is as wide as the column and as tall as its art, and
+  it go, and taking one out chooses it. No cover is dimmed. Every cover is as wide as the column and as tall as its art, and
   the column scrolls up and down. A console's wordmark is the one-colour
   mark in `emu/brand/marks.svg`.
 - **A console downloaded from Consoles comes out into the room and is set
@@ -127,8 +126,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   a game's tile shows its progress while the strip names it. A game whose
   console is not set up sets it up first, and says so while it waits.
 - **Games lists the chosen console's games on this Mac,** favourites first, then the rest A to
-  Z, as covers that are dragged onto the console to play. A favourite is
-  `emu_notes`' favourite mark, and one this Mac lacks is dimmed.
+  Z, as covers that are dragged into the room to play. A favourite is
+  `emu_notes`' favourite mark, and one this Mac lacks downloads as it is
+  played.
   There is no Recently played, because a Mac holds only a handful of games.
 - **Saves follows the picked console and the game in it,** or the first
   console out in the room where this Mac does not play the picked one, under a heading
@@ -141,7 +141,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   shows the room as it was. Pressing a game opens its side panel and leaves
   Games as it is, so one press does one thing.
 - **The room draws Your Mac and its drawers from the real games
-  and this Mac;** a game is dragged from Games onto its console, and opens
+  and this Mac;** a game is dragged from Games into the room, and opens
   its side panel when pressed.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room: "Remove mGBA from
@@ -182,9 +182,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **An emulator that plays several consoles readies them all.** Setting up
   the Game Boy installs mGBA, so the Game Boy Color and Game Boy Advance
   stand in the room too, and removing mGBA takes all three.
-- **A game on this Mac is played by dragging it from Games onto its
-  console,** the helper's Play; a home console's game dropped on the TV
-  counts as dropped on its console. Remove from this Mac, in its side
+- **A game is played by dragging it from Games anywhere into the room,**
+  the helper's Play on its own console, which comes out first where it is
+  put away; one not on this Mac downloads first. Remove from this Mac, in its side
   panel, takes it off; its saves stay.
 - **A place means the same for everything:** behind a Download tile a
   thing is kept on the server and not on this Mac, in Consoles and Games it
@@ -231,21 +231,24 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   real card holds many games' saves, as on the PS2 and the GameCube, the
   card is that whole card and belongs to its console.
 - **A word follows what is held and says what letting go will do:**
-  Play, Download and play, or in red why not, such as
-  "Doesn't fit the Game Boy". The place it will land lights up where it is one
+  Play, Download and play, Take out the Game Boy and play, or in red why
+  not, such as "Still downloading". The place it will land lights up where it is one
   thing, such as a console, never the whole room or a drawer. The word and
   the move come from one function, so they never disagree.
-- **Picking up a game lights the consoles it fits and dims the rest,** so
-  where it goes shows before it is dropped.
+- **Picking up a game lights its console where it is out,** so where it
+  plays shows before it is dropped.
 - **A game goes in as it would on the real console:** a cartridge drops into
   its slot, a disc slides onto a tray that opens and shuts, then the strip names
   it. A download fills its cover from the bottom as it comes.
 - **Removing a console while its game runs stops the game first.** The
   helper quits an emulator only from the controller's + and − today, so the
   page needs a quit request from it.
-- **The wrong console says no and does nothing:** it shakes its head, buzzes
-  and says a short line, such as "Doesn't fit. Try the SNES.", and the game
-  goes back.
+- **A console that cannot play now says no and does nothing:** it shakes
+  its head, buzzes and says why, such as "Hang on, still setting up.", and
+  the game goes back.
+- **A console slides between its spot in Consoles and its place under the
+  TV** as it is taken out or put away, and Games fades to a newly chosen
+  console's games, on Carbon's curves.
 - **Every move makes a small sound,** made in the browser with no sound
   files: a click to pick up, a thunk and rising tone to set up, a chime
   when a download finishes, a start-up jingle to play, a buzz for no. A

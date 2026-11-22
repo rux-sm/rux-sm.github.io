@@ -84,8 +84,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **Rux's Server is no longer in the room's head.** Consoles and Games each
   end in an outlined tile with a plus, Download consoles and Download
   games, which opens Rux's Server, Carbon's medium modal, showing only
-  that: the server's consoles, or the console out's games, with no tabs or
-  Console select. The Download games tile has the shape of the covers. The account is the
+  that: the server's consoles, or the console out's games, with no tabs,
+  selects or count, its cards borderless and evenly spaced. The Download games tile has the shape of the covers. The account is the
   header's round button, so nothing else stands around the room.
 - **The tile's foot mirrors its head:** the md size token's height over a
   rule, in by the theme's inset, with a ghost button for each drawer from

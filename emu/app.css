@@ -234,9 +234,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-add:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-add__icon { inline-size: 1.5rem; block-size: 1.5rem; fill: currentColor; }
 .emu-add__label { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
-/* Rux's Server opened from a Download tile shows one thing: its tabs and
-   its Console select give way, and the modal's heading says which. */
-.emu-store--one > .rux--tabs, .emu-store--one .emu-store__select:first-child { display: none; }
+/* Rux's Server opened from a Download tile shows one thing, plainly: its
+   tabs and its bar of selects give way, the modal's heading says which,
+   and the cards stand borderless on the modal's own layer, one spacing-05
+   step apart every way, each cover scaled to its card's width. */
+.emu-store--one > .rux--tabs, .emu-store--one .emu-store__bar { display: none; }
+.emu-store--one .emu-store__pane { margin-block-start: 0; }
+.emu-store--one .emu-store__grid { gap: var(--rux-spacing-05); border: 0; }
+.emu-store--one .emu-store__card { padding: 0; background: none; border: 0; }
+.emu-store--one .emu-store__card > .emu-cover { inline-size: 100%; }
 .emu-pad__icon { inline-size: 2rem; block-size: 2rem; fill: currentColor; margin-block-end: var(--rux-spacing-03); }
 
 /* YOUR MAC: the page's own background, where the TV and the console out

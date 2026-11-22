@@ -34,7 +34,7 @@
    or Take out in its menu, a right click away, takes it out. The one out
    leaves an empty spot, and dragging it back onto the column, or Put away
    in its menu, puts it away.
-   Games, the right column, lists the console out's games, favourites
+   Games, the right column, lists the chosen console's games, favourites
    first, each cover as wide as the column, one still arriving under a veil
    that lifts as it comes, and a game is played by carrying it onto the
    console out. Both scroll up and down and end in an outlined Download
@@ -105,6 +105,9 @@
   const keeping = new Set();
   // Games whose Download waits on their console's setup, by key.
   const waiting = new Set();
+  // The console chosen in Consoles, whose games Games shows; a console
+  // taken out is chosen with it.
+  let chosen = null;
   // The consoles set up on this Mac as drawn, each 'on', 'setting' or 'keeping'.
   let stand = new Map();
 
@@ -427,7 +430,9 @@
     drawWire();
     setTimeout(drawWire, 260);
   }
-  // GAMES, the column down the room's right: the games of the console out,
+  // GAMES, the column down the room's right: the games of the console
+  // chosen in Consoles, or else the console out, a game of a console not
+  // out dimmed and saying to take it out,
   // favourites first and then A to Z, one under another as wide as the
   // column, each as tall as its art: a favourite this Mac lacks is dimmed,
   // one arriving sits under a veil that lifts as it comes, and one whose
@@ -452,8 +457,10 @@
   }
   function renderMine() {
     const out = outNow();
+    if (chosen && !stand.has(chosen)) chosen = null;
+    const shown = chosen ?? out;
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
-    const list = out ? games.filter(g => g.system === out && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
+    const list = shown ? games.filter(g => g.system === shown && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite))) : [];
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
@@ -472,15 +479,18 @@
       } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
         b.title = `${g.title}. ${BUSY[stand.get(g.system)]?.(g.system) ?? ''}`.trim();
+      } else if (g.system !== out) {
+        b.classList.add('emu-cover--away');
+        b.title = `${g.title}. Take out the ${R.systemName(g.system)} to play it.`;
       }
       return li;
-    }), ...(out ? [addTile('Download games', b => { choose(out); openStore(b, 'emu-store-games-tab'); }, out)] : []));
+    }), ...(shown ? [addTile('Download games', b => { choose(shown); openStore(b, 'emu-store-games-tab'); }, shown)] : []));
     // The tile takes the shape of the first cover once its art has come.
     const tile = $('emu-mine-games').querySelector('.emu-add');
     const first = $('emu-mine-games').querySelector('.emu-cover img');
     const shape = () => { const box = first.closest('.emu-cover').style.getPropertyValue('--emu-box'); if (box) tile.style.setProperty('--emu-box', box); };
     if (first?.complete) shape(); else first?.addEventListener('load', shape);
-    $('emu-mine-none').hidden = Boolean(out);
+    $('emu-mine-none').hidden = Boolean(shown);
   }
   // CONSOLES, the column down the room's left: every console set up on this Mac and put away,
   // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
@@ -489,7 +499,6 @@
   // wordmark, so nothing moves. Pressing a console chooses it, which lights
   // its tile, and only a drag or its menu, a right click away, takes it out
   // or puts it away.
-  let chosen = null;
   function renderKit() {
     const out = outNow();
     $('emu-kit').replaceChildren(...[...stand].map(([system, state]) => {
@@ -509,7 +518,7 @@
       spot.append(consoleOf(system));
       b.append(spot, mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
       if (mark) b.lastChild.append(mark);
-      b.addEventListener('click', () => { chosen = system; choose(system); renderKit(); });
+      b.addEventListener('click', () => { chosen = system; choose(system); renderKit(); renderMine(); });
       b.addEventListener('contextmenu', e => { e.preventDefault(); chosen = system; renderKit(); openMenu(system, $('emu-kit').querySelector(`[data-spot="${system}"]`)); });
       li.append(b);
       return li;
@@ -1055,6 +1064,7 @@
     const was = outNow();
     if (was === system) return;
     room = { ...room, out: system };
+    if (system) chosen = system;
     landed = system;
     sfx.plug();
     render();

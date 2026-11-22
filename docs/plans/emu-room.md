@@ -111,8 +111,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   puts it away.
   The TV and the console out stand centred in the room beside it.
 - **Games is a column down the room's right, the same width as Consoles,**
-  of the console out's games, so another console's games show once it is
-  out. Every cover is as wide as the column and as tall as its art, and
+  of the games of the console chosen in Consoles, or the console out where
+  none is chosen; taking one out chooses it, and a game whose console is
+  not out is dimmed, its title saying to take it out. Every cover is as wide as the column and as tall as its art, and
   the column scrolls up and down. A console's wordmark is the one-colour
   mark in `emu/brand/marks.svg`.
 - **A console downloaded from Consoles comes out into the room and is set
@@ -124,7 +125,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   game,** the same `this-mac.js` and helper calls a drag makes today, and
   a game's tile shows its progress while the strip names it. A game whose
   console is not set up sets it up first, and says so while it waits.
-- **Games lists the console out's games on this Mac,** favourites first, then the rest A to
+- **Games lists the chosen console's games on this Mac,** favourites first, then the rest A to
   Z, as covers that are dragged onto the console to play. A favourite is
   `emu_notes`' favourite mark, and one this Mac lacks is dimmed.
   There is no Recently played, because a Mac holds only a handful of games.

@@ -110,7 +110,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* A cover's marks in the drawer: one this Mac lacks, or whose console it
    cannot play, is dimmed; one arriving sits under a veil that lifts from the foot. */
 .emu-cover--away .emu-cover-art { opacity: .45; }
-.emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; }
+/* The veil over a cover still arriving lifts as it comes. Its height is
+   read once a second, so it glides from one reading to the next in that
+   second, at an even pace; Carbon's curves are for moves that start and
+   stop, and this one is continuous. */
+.emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; transition: block-size 1000ms linear; }
+@media (prefers-reduced-motion: reduce) { .emu-cover__veil { transition: none; } }
 
 /* THE WALL. Where the helper answers, room.js marks it --mac: one tile,
    the room's, under the header: its head, then the stage, the room, then

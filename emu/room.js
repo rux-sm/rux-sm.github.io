@@ -247,6 +247,33 @@
   const units = () => $('emu-room').querySelectorAll('.emu-unit');
   const unitOf = system => $('emu-room').querySelector(`.emu-unit[data-system="${system}"]`);
 
+  // A REDRAW keeps the pictures already shown, so a list drawn again never
+  // blinks them out while they load again: a cover takes the old cover's
+  // loaded art, or its name where it has none, and the shape its art gave
+  // it, by its game; any other picture takes the old one showing its file.
+  function redraw(parent, ...nodes) {
+    const covers = new Map([...parent.querySelectorAll('.emu-cover[data-game]')].map(c => [c.dataset.game, c]));
+    const shown = new Map();
+    for (const img of parent.querySelectorAll('img')) if (!img.closest('.emu-cover-art') && !shown.has(img.src)) shown.set(img.src, img);
+    for (const node of nodes) {
+      if (!(node instanceof Element)) continue;
+      for (const c of node.querySelectorAll('.emu-cover[data-game]')) {
+        const was = covers.get(c.dataset.game);
+        const old = was?.querySelector('.emu-cover-art > :is(img, .emu-cover-title)');
+        if (!old || (old.matches('img') && !old.complete)) continue;
+        covers.delete(c.dataset.game);
+        c.querySelector('.emu-cover-art > :is(img, .emu-cover-title)')?.replaceWith(old);
+        const box = was.style.getPropertyValue('--emu-box');
+        if (box) c.style.setProperty('--emu-box', box); else c.style.removeProperty('--emu-box');
+      }
+      for (const img of node.querySelectorAll('img')) {
+        if (img.closest('.emu-cover-art')) continue;
+        const was = shown.get(img.src);
+        if (was) { shown.delete(img.src); img.replaceWith(was); }
+      }
+    }
+    parent.replaceChildren(...nodes);
+  }
   // A game's cover as the button that opens it, its name beneath.
   function coverItem(g) {
     const li = el('li');
@@ -343,6 +370,7 @@
     if (href) { const a = el('a', 'rux--link', text); a.href = href; li.append(a); } else li.append(text);
     return li;
   }
+  let stripSaid = '';
   function renderStrip() {
     const library = Boolean(helper.library);
     const behind = newestHelper != null && Number(helper.version) < Number(newestHelper);
@@ -354,6 +382,10 @@
       days == null || days > STALE ? ['warn', 'Needs sync', 'status.html', '', days == null ? 'The server has never scanned' : `The server's scan is late: last scanned ${R.when(driveRow.scanned_at)}`] : null,
     ].filter(Boolean);
     const worst = facts.find(f => f[0] === 'bad') ?? facts.find(f => f[0] === 'warn');
+    // Drawn again only when what it says has changed, as the room free does while a game arrives.
+    const said = JSON.stringify([facts, worst]);
+    if (said === stripSaid) return;
+    stripSaid = said;
     $('emu-strip-facts').replaceChildren(...facts.map(f => indicator(...f)),
       worst ? indicator(worst[0], worst[1], 'status.html', 'emu-strip__sum') : indicator('ok', 'Ready', 'status.html', 'emu-strip__sum'));
   }
@@ -373,7 +405,7 @@
     renderStrip();
     stand = consolesNow();
     const out = outNow();
-    $('emu-units').replaceChildren(...(out ? [unit(out, stand.get(out))] : []));
+    redraw($('emu-units'), ...(out ? [unit(out, stand.get(out))] : []));
     // The console just taken out lands.
     const landing = landed && unitOf(landed);
     landed = null;
@@ -463,7 +495,7 @@
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
     const list = shown ? games.filter(g => g.system === shown && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite))) : [];
-    $('emu-mine-games').replaceChildren(...list.map(g => {
+    redraw($('emu-mine-games'), ...list.map(g => {
       const li = coverItem(g);
       const b = li.firstChild;
       const s = here.get(keyOf(g));
@@ -502,7 +534,7 @@
   // right click away, takes it out or puts it away.
   function renderKit() {
     const out = outNow();
-    $('emu-kit').replaceChildren(...[...stand].map(([system, state]) => {
+    redraw($('emu-kit'), ...[...stand].map(([system, state]) => {
       const li = el('li');
       const isOut = system === out;
       const b = el('button', `emu-kit${isOut ? ' emu-kit--out' : ''}${system === chosen ? ' emu-kit--chosen' : ''}`);
@@ -582,11 +614,18 @@
     if ($('emu-store-sort').value === 'favourites') list.sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
     const needs = pick && helper && keeps && !plays(pick) && !settingUp.has(pick) ? `Download sets up the ${R.systemName(pick)} too` : null;
     $('emu-store-count').textContent = [pick ? countOf(list.length) : '', needs].filter(Boolean).join(' · ');
-    $('emu-games').replaceChildren(...list.map(g => {
+    redraw($('emu-games'), ...list.map(g => {
       const li = el('li', 'emu-store__card');
       const b = coverItem(g).firstChild;
       b.title = `${g.title}, its details`;
       li.append(b);
+      // A game arriving shows it on its cover too, under the veil Games uses.
+      const st = standing(g);
+      if (st.state === 'arriving') {
+        const veil = el('span', 'emu-cover__veil');
+        veil.style.blockSize = veilOf(st);
+        b.querySelector('.emu-cover-art').append(veil);
+      }
       const button = gameAction(g);
       if (button) li.append(button);
       return li;
@@ -601,7 +640,7 @@
     if (select.options.length !== systems.length) {
       select.replaceChildren(...systems.map(system => { const o = el('option', '', R.systemName(system)); o.value = system; return o; }));
     }
-    $('emu-store-console-list').replaceChildren(...systems.map(system => {
+    redraw($('emu-store-console-list'), ...systems.map(system => {
       const li = el('li', 'emu-store__card');
       const b = el('button', 'emu-store__console');
       b.type = 'button';
@@ -863,7 +902,9 @@
   const readMac = async () => takeMac(await R.thisMac.read());
   // What the page draws from this Mac: where each game stands, and apart
   // from that how far each arriving one has come and the room free.
-  const told = () => JSON.stringify([helper, games.map(g => stands(g).state)]);
+  // The helper's answer is compared by what it says, since it lists its
+  // fields in a different order each time it is asked.
+  const told = () => JSON.stringify([helper && [helper.version, helper.library, [...helper.systems ?? []].sort()], games.map(g => stands(g).state)]);
   const coming = () => JSON.stringify([free, games.map(g => stands(g).done ?? 0)]);
   const panelOpen = () => !$('emu-panel').hidden;
   async function look() {

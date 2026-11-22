@@ -519,7 +519,8 @@
   // GAMES, the drawer: this Mac's games, favourites first and then A to Z:
   // a favourite this Mac lacks is dimmed, one arriving sits under a veil
   // that lifts as it comes, and one whose console is not set up is dimmed
-  // with what it needs in its title. Tabs above the row show All, or one
+  // with what it needs in its title. A cover shows no name under it, only
+  // in its title, and the row keeps one cover's height. Tabs above the row show All, or one
   // console's games, a tab for each console the row has games for in the
   // filter's order; pressing a console in the room picks its tab.
   let shelf = null;
@@ -543,7 +544,7 @@
     const tabs = [tabOf('', 'All'), ...systems.map(s => tabOf(s, R.systemName(s)))];
     consoleTabs.replaceChildren(...tabs);
     window.Rux.contentSwitcher.select(consoleTabs, tabs.find(b => b.dataset.system === (shelf ?? '')), { focus: false, silent: true });
-    consoleTabs.hidden = systems.length < 2;
+    consoleTabs.hidden = !systems.length;
     const list = shelf ? all.filter(g => g.system === shelf) : all;
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);

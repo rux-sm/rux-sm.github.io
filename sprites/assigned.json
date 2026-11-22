@@ -16,5 +16,7 @@
   "emu/brand/consoles/wiiu.png": "sprites/art/wiiu-console.png",
   "emu/brand/consoles/xbox.png": "sprites/art/xbox-console.png",
   "emu/brand/controllers/snes.png": "sprites/art/snes-controller.png",
-  "emu/brand/logos/nes.png": "sprites/art/nes-logo.png"
+  "emu/brand/logos/n64.png": "sprites/art/n64-logo.png",
+  "emu/brand/logos/nes.png": "sprites/art/nes-logo.png",
+  "emu/brand/logos/snes.png": "sprites/art/snes-logo.png"
 }

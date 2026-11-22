@@ -101,9 +101,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-panel-art { max-inline-size: 16rem; }
 
 /* THE ROOM, the front page. Carbon has no room, so its parts are Emu's own.
-   A console's drawing is its PNG in brand/consoles/, shown pixel for pixel
-   in its own colours, the same in every theme. A home console's is 36 by 24. */
-.emu-console { display: block; block-size: 3rem; aspect-ratio: 3 / 2; object-fit: contain; image-rendering: pixelated; }
+   A console's drawing is its PNG in brand/consoles/, cropped to the
+   console and shown pixel for pixel in its own colours, the same in every
+   theme, at its own size: --emu-w by --emu-h art pixels, which room.js
+   reads from the file, at --emu-px CSS pixels each. */
+.emu-console { display: block; inline-size: calc(var(--emu-w, 36) * var(--emu-px, 2px)); block-size: calc(var(--emu-h, 24) * var(--emu-px, 2px)); image-rendering: pixelated; }
 
 /* A cover's marks in the drawer: one this Mac lacks, or whose console it
    cannot play, is dimmed; one arriving sits under a veil that lifts from the foot. */
@@ -178,7 +180,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-store__card { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; padding: var(--rux-spacing-05); background: var(--rux-layer); border-block-end: 1px solid var(--rux-border-subtle); border-inline-end: 1px solid var(--rux-border-subtle); }
 .emu-store__card > .emu-cover { --emu-cover-height: 9rem; justify-self: center; align-self: center; }
 .emu-store__console { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; display: grid; justify-items: start; gap: var(--rux-spacing-02); padding: 0; text-align: start; }
-.emu-store__console .emu-console { justify-self: center; block-size: 4.5rem; margin-block: var(--rux-spacing-03); }
+.emu-store__console { --emu-px: 3px; }
+.emu-store__console .emu-console { justify-self: center; margin-block: var(--rux-spacing-03); }
 .emu-store__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-store__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-store__action.rux--btn { margin-block-start: auto; inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: var(--rux-spacing-04); }
@@ -222,7 +225,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit:hover { background: var(--rux-layer-hover); }
 .emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-kit:disabled { cursor: default; opacity: .45; }
-.emu-kit .emu-console { block-size: calc(24 * var(--emu-px)); inline-size: auto; image-rendering: pixelated; }
 .emu-kit__name { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* A drawer's last tile: an outline with a plus over its words, opening
    Rux's Server; in Games as tall as a cover and as wide as the row's covers
@@ -271,12 +273,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-rail__games .emu-cover-name { display: none; }
 .emu-rail__games > .emu-add-item .emu-add { inline-size: 100%; min-inline-size: 0; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); box-sizing: border-box; padding: var(--rux-spacing-03); text-align: center; }
 .emu-room[hidden] { display: none; }
-/* The TV: a flat screen on its stand, drawn as brand/consoles/tv.png, 80 by
-   54 art pixels, placed by room.js as the console is, --emu-left and
+/* The TV: a flat screen, drawn as brand/consoles/tv.png, 80 by 46 art
+   pixels, placed by room.js as the console is, --emu-left and
    --emu-top in art pixels. Its glass, 74 by 40 art pixels
    from 3 across and 3 down, shows only a playing home console's game; it is
    dark in every theme, so it reads Gray 100's tokens. */
-.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(54 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.emu-tv { position: absolute; z-index: 1; inset-inline-start: calc(var(--emu-left, 0) * var(--emu-px)); inset-block-start: calc(var(--emu-top, 0) * var(--emu-px)); inline-size: calc(80 * var(--emu-px)); block-size: calc(46 * var(--emu-px)); background: url("brand/consoles/tv.png") 0 0 / 100% 100% no-repeat; image-rendering: pixelated; cursor: pointer; -webkit-user-select: none; user-select: none; }
 .emu-tv__screen { position: absolute; inset-inline-start: calc(3 * var(--emu-px)); inset-block-start: calc(3 * var(--emu-px)); inline-size: calc(74 * var(--emu-px)); block-size: calc(40 * var(--emu-px)); overflow: hidden; }
 /* Its picture fades in as a game's cover comes on, and a last glow fades
    from the glass as it goes, as a flat screen's does: Carbon's moderate-01
@@ -304,9 +306,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @keyframes emu-drift-x { from { transform: translateX(0); } to { transform: translateX(calc(100% - 8 * var(--emu-px))); } }
 @keyframes emu-drift-y { from { transform: translateY(0); } to { transform: translateY(calc(32 * var(--emu-px) - 8 * var(--emu-px))); } }
 @media (prefers-reduced-motion: reduce) { .emu-tv--on .emu-tv__screen, .emu-tv--off .emu-tv__screen::after, .emu-tv__saver, .emu-tv__saver img { animation: none; } .emu-tv--off .emu-tv__screen::after { display: none; } }
-/* The TV's stand, in art pixels on its drawing: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
-.emu-tv__stand { position: absolute; inset-inline-start: calc(24 * var(--emu-px)); inset-block-start: calc(46 * var(--emu-px)); inline-size: calc(32 * var(--emu-px)); block-size: calc(8 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
-.emu-tv__stand:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+/* The TV's foot, its bezel under the glass, 3 art pixels high: the button that opens its menu, drawn by the drawing and outlined only for the keyboard. */
+.emu-tv__foot { position: absolute; inset-inline-start: 0; inset-block-start: calc(43 * var(--emu-px)); inline-size: 100%; block-size: calc(3 * var(--emu-px)); padding: 0; border: 0; background: transparent; cursor: pointer; }
+.emu-tv__foot:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 /* The space the consoles stand in, the whole room under the TV: each placed
    by room.js, --emu-left and --emu-top its top-left corner in art pixels. The
    list takes no press itself, so a drop between consoles lands on the room. */
@@ -322,8 +324,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    slides to a new spot on Carbon's moderate-02, productive. */
 .emu-unit__console { appearance: none; border: 0; background: none; padding: 0; display: block; cursor: pointer; }
 .emu-unit__console:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.emu-unit .emu-console { inline-size: calc(36 * var(--emu-px)); block-size: calc(24 * var(--emu-px)); }
-.emu-unit .emu-console--hand { inline-size: auto; aspect-ratio: auto; }
 .emu-unit .emu-console, .emu-tv { filter: drop-shadow(0 calc(2 * var(--emu-px)) 0 var(--rux-shadow)); }
 .emu-units > li, .emu-tv { transition: inset-inline-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), inset-block-start 240ms cubic-bezier(0.2, 0, 0.38, 0.9), opacity 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 /* The wire from the home console out to the TV, an art pixel thick, under the things. */

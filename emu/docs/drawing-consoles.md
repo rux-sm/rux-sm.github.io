@@ -29,8 +29,10 @@ outline.
 
 ## The size
 
-A home console's canvas is 36 by 24, and the console fills its whole height,
-so the consoles read as one set. It stands in the middle. Its front comes
+A home console is drawn on a canvas 36 by 24, and the console fills its
+whole height, so the consoles read as one set; the file is then cropped
+to the console, and Emu draws each at its own size, so a cube is 24 wide
+and the Wii 8. It stands in the middle. Its front comes
 from the real console's height, and its top takes the rows left:
 
 - **Front rows** are the real height over 9, rounded to an even number.
@@ -56,18 +58,17 @@ It lies face up on the table, drawn larger than the home consoles' scale:
 its whole face, screen and buttons, over three rows a tone darker for the
 edge nearest you. One that folds stands its top screen up behind the half
 lying flat. A Game Boy Advance is drawn at the Game Boy's scale, 28 wide
-and 14 high, on the bottom rows of its 24-high canvas.
+and 14 high.
 
 ## The TV
 
-The room's TV is `tv.png` in the same folder, a flat screen on a centre
-stand, 80 by 54, with the outline in black: a thin frame with one lighter
-row along its top, a standby light at its foot, then a neck and a low base.
-Its glass is the dark rectangle 74 wide and 40 high, 3 across and 3 down;
-the room writes on it there, so a redrawn TV keeps its glass in that place,
-or `.emu-tv__screen` in `app.css` moves with it. The stand, 32 wide and 8
-high from 24 across and 46 down, is the button that opens the TV's menu,
-`.emu-tv__stand`.
+The room's TV is `tv.png` in the same folder, a flat screen with no
+stand, 80 by 46: a thin frame and a standby light in the middle of its
+foot. Its glass is the dark rectangle 74 wide and 40 high, 3 across and 3
+down; the room writes on it there, so a redrawn TV keeps its glass in that
+place, or `.emu-tv__screen` in `app.css` moves with it. Its foot, the
+bezel 3 high under the glass, is the button that opens the TV's menu,
+`.emu-tv__foot`.
 
 ## Steps
 

@@ -25,7 +25,7 @@
    scan, each opening Status where it is wrong; while a move runs it names
    it, after one it says what it did, with Undo where it can be taken back,
    and it asks before an emulator is removed. The TV's glass shows only a
-   home console's game, its cover once it starts. The TV's stand, or a press
+   home console's game, its cover once it starts. The TV's foot, or a press
    anywhere on it, opens its menu, the room's own: Sound. The pages' menu
    and Search are the shell's, the same on every page.
 
@@ -205,7 +205,7 @@
     svg.setAttribute('height', '16');
     return svg;
   };
-  // THE TV'S MENU, under its stand: what is the room's alone, Sound. The other pages and Search are the shell's, as Carbon keeps a
+  // THE TV'S MENU, under its foot: what is the room's alone, Sound. The other pages and Search are the shell's, as Carbon keeps a
   // product's navigation in its shell on every page.
   function openTvMenu() {
     const menu = $('emu-tv-menu');
@@ -216,15 +216,21 @@
     window.Rux.menu.open(menu, button);
   }
   $('emu-tv-menu-open').addEventListener('click', openTvMenu);
-  // A press on the TV opens it too, but not one on its stand, which opens it itself.
+  // A press on the TV opens it too, but not one on its foot, which opens it itself.
   $('emu-tv').addEventListener('click', e => { if (!e.target.closest('a, button')) openTvMenu(); });
   $('emu-tv').addEventListener('contextmenu', e => { e.preventDefault(); openTvMenu(); });
 
-  // A console's drawing: its PNG in brand/consoles/, shown pixel for pixel
-  // in its own colours, the same in every theme. app.css sizes it by its
-  // height, 24 art pixels, so a handheld is as wide as it was drawn.
-  function consoleOf(system, hand) {
-    const img = el('img', hand ? 'emu-console emu-console--hand' : 'emu-console');
+  // A console's drawing: its PNG in brand/consoles/, cropped to the
+  // console, shown pixel for pixel in its own colours, the same in every
+  // theme. app.css draws it at its own size in art pixels, --emu-w by
+  // --emu-h, read once it has loaded, and the room is laid out again then.
+  function consoleOf(system) {
+    const img = el('img', 'emu-console');
+    img.addEventListener('load', () => {
+      img.style.setProperty('--emu-w', img.naturalWidth);
+      img.style.setProperty('--emu-h', img.naturalHeight);
+      if (img.closest('#emu-units')) layout();
+    });
     img.src = `brand/consoles/${system}.png`;
     img.alt = '';
     img.draggable = false;
@@ -262,9 +268,9 @@
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
   const LIGHT = {
-    nes: [4, 21, 1, 1, 'error'], snes: [3, 19, 1, 1, 'error'], n64: [17, 21, 2, 1, 'error'], gc: [8, 3, 2, 2, 'warning'],
-    wii: [15, 8, 2, 1, 'success'], wiiu: [28, 21, 1, 1, 'info'], switch: [9, 21, 1, 1, 'success'], gb: [2, 5, 1, 1, 'error'],
-    gbc: [2, 5, 1, 1, 'error'], gba: [21, 12, 1, 1, 'success'], nds: [18, 4, 1, 1, 'success'], n3ds: [3, 13, 2, 2, 'info'],
+    nes: [4, 21, 1, 1, 'error'], snes: [3, 19, 1, 1, 'error'], n64: [17, 21, 2, 1, 'error'], gc: [2, 3, 2, 2, 'warning'],
+    wii: [1, 8, 2, 1, 'success'], wiiu: [28, 16, 1, 1, 'info'], switch: [9, 16, 1, 1, 'success'], gb: [2, 5, 1, 1, 'error'],
+    gbc: [2, 5, 1, 1, 'error'], gba: [21, 2, 1, 1, 'success'], nds: [17, 4, 1, 1, 'success'], n3ds: [2, 13, 2, 2, 'info'],
     psx: [4, 14, 3, 1, 'success'], ps2: [32, 17, 1, 1, 'success'], xbox: [17, 18, 2, 2, 'success'],
   };
   function unit(system, state) {
@@ -277,7 +283,7 @@
     body.dataset.console = system;
     body.setAttribute('aria-haspopup', 'menu');
     body.setAttribute('aria-label', `${called}, ${state === 'on' ? 'ready to play' : state === 'setting' ? 'being set up' : state === 'keeping' ? 'being removed' : 'not set up'}`);
-    body.append(consoleOf(system, hand));
+    body.append(consoleOf(system));
     const at = LIGHT[system];
     if (at) {
       const light = el('i', `emu-light emu-light--${at[4]}`);
@@ -485,7 +491,7 @@
       b.disabled = state !== 'on';
       const mark = markOf(system);
       if (mark) b.setAttribute('aria-label', R.systemName(system));
-      b.append(consoleOf(system, HANDHELD.has(system)), mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
+      b.append(consoleOf(system), mark ? el('span', 'emu-kit__mark') : el('span', 'emu-kit__name', R.systemName(system)));
       if (mark) b.lastChild.append(mark);
       b.addEventListener('click', () => takeOut(system));
       li.append(b);

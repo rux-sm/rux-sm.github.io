@@ -23,8 +23,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   floor, furniture or shelves, so there is nothing to read but what this
   Mac has.
 - **The TV is a flat screen on a centre stand in pixel art,
-  `emu/brand/consoles/tv.png`, which starts at the top of the room, centred,
-  and is dragged anywhere like a console, and its
+  `emu/brand/consoles/tv.png`, at the top of the room, centred, and its
   glass shows only the game,** a home console's cover once it has started,
   and is dark otherwise, so it is never a notification log.
 - **Every Emu page stands in the scheduler's frame,** Design's wide frame
@@ -43,7 +42,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   the room's name gives way first.
 - **The shell keeps the pages' menu and Search, as on every page,** since
   Carbon's shell is the same throughout a product. The TV's menu holds what
-  is the room's alone, Sound and Tidy up.
+  is the room's alone, Sound.
 - **The strip is the room's one communication surface.** At rest it is
   Carbon's icon indicators, only what it is for: Connected while Rux Emu
   Helper answers, its version in its tooltip, or "Update the helper",
@@ -71,22 +70,18 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **Games stay put away, so the room stays clean.** No cover stands on the
   floor. A game is played by opening Games, the drawer, and carrying its
   cover onto its console.
-- **The whole room is for the TV and the consoles,** each a
-  thing on the floor standing where it was last left, its top-left corner in
-  art pixels from the room's, dragged to move it. A console just set up
-  stands at its place in the room's layout, or the first clear spot where
-  something stands there already. Each one's spot is kept
-  with this Mac's room, in the `room` column of its `emu_macs` row. An empty
-  room says faintly to take a console out of Consoles.
-- **A smaller window sweeps the room's things into a pile, and they stay
-  there.** Its edges push in whatever is past them, and whatever then
-  overlaps takes the nearest free spot, so things end up touching but not
-  overlapping while the room can hold them; the thing just dropped holds
-  still and the others make room. The swept spots are kept, so a larger
-  window leaves the pile as it is, and things are put back by hand.
-- **A Mac has no separate store.** Consoles and Games each end in an
-  outlined tile with a plus, Download consoles and Download games, which
-  shows what the server holds that this Mac lacks. The account is the
+- **The TV and the console out stand in fixed spots,** the TV at the top,
+  centred, and the console centred under it, so nothing in the room is
+  moved, swept or tidied. Which console is out is kept with this Mac's
+  room, in the `room` column of its `emu_macs` row. An empty room says
+  faintly to take a console out of Consoles.
+- **One console is out at a time, handheld or home.** A home console is
+  wired to the TV; a handheld lights its own screen.
+- **Rux's Server is no longer in the room's head.** Consoles and Games each
+  end in an outlined tile with a plus, Download consoles and Download
+  games, which opens Rux's Server, Carbon's medium modal of every console
+  and game the server holds, on that tab and, from Games, the tab's
+  console. The account is the
   header's round button, so nothing else stands around the room.
 - **The tile's foot mirrors its head:** the md size token's height over a
   rule, in by the theme's inset, with a ghost button for each drawer from
@@ -98,7 +93,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   standing on the tile's foot from edge to edge, its open button in the
   same layer and shadow, unfolding on Carbon's moderate-02, one at a time.
   A theme whose menus float clear holds it 8px in instead. It lies over the
-  room rather than pushing it up, so opening it never sweeps the room's
+  room rather than pushing it up, so opening it never moves the room's
   things, and a drag from it into the room is a short move up. Its button pressed again, or Escape,
   closes it; another button turns it to that drawer. All start closed each
   time the page loads, so the room shows whole.
@@ -106,7 +101,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   drawing, pressed or dragged into the room to take it out.
 - **Games is one row that scrolls sideways, so it fits any width,** of this
   Mac's games, one console's at a time under a tab for each console with
-  games, Carbon's line tabs at 44px reaching the drawer's edges, each tab
+  games, the tabs only choosing which games show, Carbon's line tabs at 44px reaching the drawer's edges, each tab
   the console's one-colour wordmark from `emu/brand/marks.svg` or its name.
 - **A console downloaded from Consoles comes out into the room and is set
   up where it stands,** its light blinking, putting away the one that was
@@ -135,9 +130,6 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **The room draws Your Mac and its drawers from the real games
   and this Mac;** a game is dragged from Games onto its console, and opens
   its side panel when pressed.
-- **A room never kept is laid out as Tidy up lays it:** the TV at the top
-  of the room, centred, and the consoles side by side under it, each row
-  centred, with a cover under its console.
 - **A console has its own menu,** opened under it by pressing or
   right-clicking it, so no control is drawn on the room: "Remove mGBA from
   this Mac", or what it is busy with.
@@ -147,14 +139,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   tag, since the strip says how far it has got.
 - **A console's name shows only under the pointer or the keyboard,** as a
   tag beneath it, so the room at rest is only its drawings.
-- **A console in the room, or the TV, is itself carried, never a copy of
-  it,** so it feels like a thing with weight: it lifts two art pixels off
-  the floor over a longer shadow, follows the pointer a little behind, the
-  TV further behind since it is heavier, leans the way it goes, and lands
-  where it is put down. Let go outside the room it slides back.
-- **Each thing on the floor throws a hard shadow two art pixels down and
-  slides to a spot it is pushed to.** Things the window pushes into one
-  another clack.
+- **Each thing in the room throws a hard shadow two art pixels down.**
 - **One wire runs from the console that is playing to the TV,** while its
   game's cover is on the glass or while it is being set up, so which
   console is on the TV shows; it runs out from the console as it plugs in. A
@@ -165,10 +150,6 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   until the page is looked at again, since the helper does not say when a
   game ends. A minute with the glass dark and nothing touched, the mark
   drifts around it until the pointer or a key moves.
-- **Tidy up, in the TV's menu, lays the room out again:** the TV at the top
-  of the room, centred, two gaps under its head, and the consoles side by
-  side two gaps below it, a gap apart, each row centred under the TV, with
-  Undo on the strip, since a swept pile stays until it is put back.
 - **Removing an emulator is three steps, and the strip asks before it goes.**
   Remove in the console's menu has the strip ask "Remove mGBA from this Mac? Your saves are kept." with
   Remove and Keep. Remove keeps its saves and settings in Supabase,
@@ -238,8 +219,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   card is that whole card and belongs to its console.
 - **A word follows what is held and says what letting go will do:**
   Play, Download and play, or in red why not, such as
-  "Doesn't fit the Game Boy". A console moved in the room has no word,
-  since the drag shows it. The place it will land lights up where it is one
+  "Doesn't fit the Game Boy". The place it will land lights up where it is one
   thing, such as a console, never the whole room or a drawer. The word and
   the move come from one function, so they never disagree.
 - **Picking up a game lights the consoles it fits and dims the rest,** so
@@ -260,7 +240,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **Every move works without dragging:** pressing a game opens its side
   panel, `game-panel.js`, with its details, saves and notes and the same
   moves as buttons; a console's menu opens
-  from the keyboard as from the pointer, Tidy up is a menu item, Enter does on a keyboard, and on a controller A picks up and A
+  from the keyboard as from the pointer, Enter does on a keyboard, and on a controller A picks up and A
   puts down.
 - **The consoles are Emu's own set, `emu/brand/consoles/`,** one pixel
   drawing per system, a PNG in Sprites' palette on the standard shapes
@@ -294,17 +274,6 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 - Besides Consoles, Games, Saves and Controllers, what else should the
   foot open, such as favourites or time played?
-- Does Download games open the server's games for the tab's console in the
-  same row, each with Download and a Back to this Mac's games, or a
-  larger panel of every console's games?
-- Is one console out counting handhelds too, or one home console on the TV
-  with any handhelds out beside it?
-- With one console out, does the room keep dragging, the swept pile and
-  Tidy up, or stand the TV and the console where Tidy up lays them, with
-  nothing to move?
-- Does the Games drawer open on the console that is out, and pressing a
-  tab take that console out too, or do the tabs only choose which games
-  show?
 - Without the helper, as on the phone, does the server's library stay the
   whole page as now?
 
@@ -314,10 +283,10 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
       out by a press or a drag, putting away the one out, its wire run to
       the TV as it comes out.
 - [ ] Start every console put away, keep which one is out in this Mac's
-      room, and lay the room out as the TV and that one console.
-- [ ] End Consoles and Games with an outlined Download tile, as the
-      Questions settle, and take Rux's Server, its modal and the head's
-      button out of the room.
+      room, and stand the TV and that one console in their fixed spots,
+      taking out dragging consoles and the TV, the swept pile and Tidy up.
+- [ ] End Consoles and Games with an outlined Download tile opening Rux's
+      Server on its tab, and take the head's button out.
 
 - [ ] Give Rux Emu Helper a call that says whether the home server answers,
       and show it on the strip beside the collection.

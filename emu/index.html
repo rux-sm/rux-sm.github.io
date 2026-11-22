@@ -290,7 +290,9 @@
               <div class="emu-mine__pane" id="emu-mine-games-pane" hidden>
                 <p class="emu-row__sub" id="emu-mine-none" hidden>No games on this Mac yet. Download one from Rux's Server.</p>
                 <!-- All, then a tab for each console the row has games for; room.js fills it. -->
-                <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg emu-mine__consoles" role="tablist" aria-label="Console" id="emu-mine-consoles" hidden></div>
+                <div class="rux--tabs emu-mine__consoles" id="emu-mine-consoles-wrap" hidden>
+                  <div class="rux--tab--list" role="tablist" aria-label="Console" id="emu-mine-consoles"></div>
+                </div>
                 <ul class="emu-shelf emu-mine__row" role="list" id="emu-mine-games" aria-label="Games on this Mac"></ul>
               </div>
               <div class="rux--stack-vertical rux--stack-scale-3 emu-mine__pane" id="emu-storage" hidden>

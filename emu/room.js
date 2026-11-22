@@ -527,19 +527,22 @@
   // own colour, or its name where it has none.
   let shelf = null;
   const consoleTabs = $('emu-mine-consoles');
-  consoleTabs.addEventListener('rux:content-switcher-selected', e => { shelf = e.detail.option.dataset.system || null; renderMine(); });
+  consoleTabs.addEventListener('rux:tab-selected', e => { shelf = e.detail.tab.dataset.system || null; renderMine(); });
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
     if (games.length) renderMine();
   }).catch(error => console.error(error));
   function tabOf(system, label) {
-    const b = el('button', 'rux--content-switcher-btn');
+    const on = system === (shelf ?? '');
+    const b = el('button', `rux--tabs__nav-item rux--tabs__nav-link${on ? ' rux--tabs__nav-item--selected' : ''}`);
     b.type = 'button';
     b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', String(on));
+    b.tabIndex = on ? 0 : -1;
     b.dataset.system = system;
     b.title = label;
-    const text = el('span', 'rux--content-switcher__label');
+    const text = el('span', 'rux--tabs__nav-item-label');
     const mark = marks.get(system);
     if (mark) {
       const svg = svgOf('emu-mine__mark', mark.getAttribute('viewBox'));
@@ -547,7 +550,9 @@
       b.setAttribute('aria-label', label);
       text.append(svg);
     } else text.textContent = label;
-    b.append(text);
+    const wrap = el('div', 'rux--tabs__nav-item-label-wrapper');
+    wrap.append(text);
+    b.append(wrap);
     return b;
   }
   function renderMine() {
@@ -556,10 +561,10 @@
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
     const systems = Object.keys(R.SYSTEMS).filter(s => all.some(g => g.system === s));
     if (!systems.includes(shelf)) shelf = null;
-    const tabs = [tabOf('', 'All'), ...systems.map(s => tabOf(s, R.systemName(s)))];
-    consoleTabs.replaceChildren(...tabs);
-    window.Rux.contentSwitcher.select(consoleTabs, tabs.find(b => b.dataset.system === (shelf ?? '')), { focus: false, silent: true });
-    consoleTabs.hidden = !systems.length;
+    const focused = consoleTabs.contains(document.activeElement);
+    consoleTabs.replaceChildren(tabOf('', 'All'), ...systems.map(s => tabOf(s, R.systemName(s))));
+    if (focused) consoleTabs.querySelector('[aria-selected="true"]').focus();
+    $('emu-mine-consoles-wrap').hidden = !systems.length;
     const list = shelf ? all.filter(g => g.system === shelf) : all;
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);

@@ -25,8 +25,8 @@
 <!-- The Library, Emu's front page, as a room that fills the page;
      docs/plans/emu-room.md is the plan. room.js draws Your Mac, one TV and
      the one console out, with this Mac's consoles put away in a column down
-     its left; a foot whose buttons open drawers of this Mac's games and the
-     account's saves; and Rux's Server, the store,
+     its left and that console's games in one down its right; a foot whose
+     buttons open the account's saves and the controllers; and Rux's Server, the store,
      a modal opened from the Download tile that ends Consoles and Games. A game is dragged from its drawer onto its console,
      and a game pressed opens in the side panel. The shell is templates/app-shell.html. -->
 
@@ -192,8 +192,7 @@
 
         <!-- The wall, from room.js. Where Rux Emu Helper answers it is one
              tile as wide as the page's frame: its head, then the room, Your Mac, then its foot,
-             whose buttons open drawers of this Mac's games and the
-             account's saves. Without the helper only the store
+             whose buttons open the account's saves and the controllers. Without the helper only the store
              shows, as the page. -->
         <div class="emu-wall" id="emu-wall">
           <!-- The room tile's head: the room's name and the strip. The strip is the room's one place for words: this Mac
@@ -261,8 +260,9 @@
           </section>
 
           <!-- Your Mac, from room.js: Consoles, a column down its left of the
-               consoles put away, then one solid space holding the TV and
-               the console out. -->
+               consoles put away, one solid space holding the TV and the
+               console out, and Games, a column down its right of that
+               console's games. -->
           <div class="emu-stage">
             <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
               <aside class="emu-rail rux--layer-two" aria-labelledby="emu-rail-h">
@@ -288,20 +288,16 @@
                 <ul class="emu-units" role="list" id="emu-units" aria-label="Consoles on this Mac"></ul>
               </div>
               </div>
+              <aside class="emu-rail emu-rail--games rux--layer-two" aria-labelledby="emu-games-h">
+                <h3 class="rux--visually-hidden" id="emu-games-h">Games</h3>
+                <p class="emu-row__sub emu-rail__none" id="emu-mine-none" hidden>Take a console out to see its games.</p>
+                <ul class="emu-rail__games" role="list" id="emu-mine-games" aria-label="Games for the console out"></ul>
+              </aside>
             </section>
             <!-- The drawer, over the room's foot and opened up from the
-                 footer's buttons: this Mac's games, in a row that scrolls
-                 sideways, the picked console's saves, or the controllers
-                 this Mac sees, one at a time. -->
-            <section class="emu-mine rux--layer-three" id="emu-mine" aria-label="Games" hidden>
-              <div class="emu-mine__pane" id="emu-mine-games-pane" hidden>
-                <p class="emu-row__sub" id="emu-mine-none" hidden>No games on this Mac yet.</p>
-                <!-- A tab for each console the row has games for; room.js fills it. -->
-                <div class="rux--tabs emu-mine__consoles" id="emu-mine-consoles-wrap" hidden>
-                  <div class="rux--tab--list" role="tablist" aria-label="Console" id="emu-mine-consoles"></div>
-                </div>
-                <ul class="emu-shelf emu-mine__row" role="list" id="emu-mine-games" aria-label="Games on this Mac"></ul>
-              </div>
+                 footer's buttons: the picked console's saves, or the
+                 controllers this Mac sees, one at a time. -->
+            <section class="emu-mine rux--layer-three" id="emu-mine" aria-label="Saves" hidden>
               <div class="rux--stack-vertical rux--stack-scale-3 emu-mine__pane" id="emu-storage" hidden>
                 <div>
                   <h3 class="rux--type-heading-02" id="emu-storage-for"></h3>
@@ -317,11 +313,10 @@
             </section>
           </div>
           <!-- The room tile's foot, mirroring its head: a button for each
-               drawer, Games, Saves and Controllers, each opening its drawer up
+               drawer, Saves and Controllers, each opening its drawer up
                over the room's foot, its chevron turning down while it is
                open, and closing it again. -->
           <div class="emu-tile__foot emu-foot" id="emu-foot" hidden>
-            <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" data-drawer="emu-mine-games-pane" aria-expanded="false" aria-controls="emu-mine"><svg class="emu-foot__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg>Games<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" data-drawer="emu-storage" aria-expanded="false" aria-controls="emu-mine"><svg class="emu-foot__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg>Saves<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" data-drawer="emu-pads-pane" aria-expanded="false" aria-controls="emu-mine"><svg class="emu-foot__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-game--console"/></svg>Controllers<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg></button>
           </div>

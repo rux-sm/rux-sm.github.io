@@ -8,11 +8,12 @@ type: plan
 
 The Library is one tile at the top of the page, in the shell every Emu
 page has, as wide as the page's frame: its head, then the room, Your Mac, the play surface for what is in use now,
-with a single flat TV and the one console out, hooked up to it, and
-Consoles, a column down the room's left of the consoles put away. The
-tile's foot, mirroring its head, has a button for each drawer of what
-this Mac and the account keep: Games, Saves and Controllers, each
-opening up over the room's foot. Consoles and Games each end in a
+with a single flat TV and the one console out, hooked up to it, between
+Consoles, a column down the room's left of the consoles put away, and
+Games, its twin down the right, of that console's games. The tile's foot,
+mirroring its head, has a button for each drawer of what this Mac and
+the account keep: Saves and Controllers, each opening up over the room's
+foot. Consoles and Games each end in a
 tile that downloads more from the server, so a Mac has no separate store. Getting a game, setting up its console and playing it are
 one press or one drag each, and the page is fun to use
 while staying plain. It is Emu's front page, `emu/index.html`, drawn by
@@ -69,8 +70,8 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   away, and only one is out at a time: taking one out puts the other away.
   Remove in its menu takes its emulator off this Mac.
 - **Games stay put away, so the room stays clean.** No cover stands on the
-  floor. A game is played by opening Games, the drawer, and carrying its
-  cover onto its console.
+  floor. A game is played by carrying its cover from Games onto the
+  console out.
 - **The TV and the console out stand in fixed spots,** the TV at the top,
   centred, and the console centred under it, so nothing in the room is
   moved, swept or tidied. Which console is out is kept with this Mac's
@@ -83,13 +84,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 - **Rux's Server is no longer in the room's head.** Consoles and Games each
   end in an outlined tile with a plus, Download consoles and Download
   games, which opens Rux's Server, Carbon's medium modal, showing only
-  that: the server's consoles, or the games of the Games tab's console,
-  with no tabs or Console select. The Download games tile has the shape of
-  the row's covers. The account is the
+  that: the server's consoles, or the console out's games, with no tabs or
+  Console select. The Download games tile has the shape of the covers. The account is the
   header's round button, so nothing else stands around the room.
 - **The tile's foot mirrors its head:** the md size token's height over a
   rule, in by the theme's inset, with a ghost button for each drawer from
-  its start, Games, Saves and Controllers, each with a chevron that turns
+  its start, Saves and Controllers, each with a chevron that turns
   down while its drawer is open. Any other view of what this Mac or the account keeps joins
   them as a button.
 - **A drawer opens up from its button as one surface with it,** as the
@@ -105,11 +105,11 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   always in view and scrolling up and down, as a mouse wheel turns, each
   its drawing over its wordmark, pressed or dragged into the room to take
   it out; the TV and the console out stand centred in the room beside it.
-- **Games is one row that scrolls sideways, so it fits any width,** by a
-  mouse wheel too while the pointer is over it, of this
-  Mac's games, one console's at a time under a tab for each console with
-  games, the tabs only choosing which games show, Carbon's line tabs at 44px reaching the drawer's edges, each tab
-  the console's one-colour wordmark from `emu/brand/marks.svg` or its name.
+- **Games is a column down the room's right, the same width as Consoles,**
+  of the console out's games, so another console's games show once it is
+  out. Every cover is as wide as the column and as tall as its art, and
+  the column scrolls up and down. A console's wordmark is the one-colour
+  mark in `emu/brand/marks.svg`.
 - **A console downloaded from Consoles comes out into the room and is set
   up where it stands,** its light blinking, putting away the one that was
   out; where setup fails it goes back to the server.
@@ -119,10 +119,9 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   game,** the same `this-mac.js` and helper calls a drag makes today, and
   a game's tile shows its progress while the strip names it. A game whose
   console is not set up sets it up first, and says so while it waits.
-- **The games row lists every game on this Mac,** favourites first, then the rest A to
-  Z, as covers that are dragged onto a console to play. A favourite is
-  `emu_notes`' favourite mark, and one this Mac lacks is dimmed. A game whose
-  console is not out is dimmed, its title naming the console it needs.
+- **Games lists the console out's games on this Mac,** favourites first, then the rest A to
+  Z, as covers that are dragged onto the console to play. A favourite is
+  `emu_notes`' favourite mark, and one this Mac lacks is dimmed.
   There is no Recently played, because a Mac holds only a handful of games.
 - **Saves follows the picked console and the game in it,** or the first
   console out in the room where this Mac does not play the picked one, under a heading
@@ -133,7 +132,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   game or console to swap it in, and the one swapped out goes back to Saves.
 - **A game's side panel opens on the right,** over the room, and closing it
   shows the room as it was. Pressing a game opens its side panel and leaves
-  the drawer as it is, so one press does one thing.
+  Games as it is, so one press does one thing.
 - **The room draws Your Mac and its drawers from the real games
   and this Mac;** a game is dragged from Games onto its console, and opens
   its side panel when pressed.
@@ -279,7 +278,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Questions
 
-- Besides Games, Saves and Controllers, what else should the
+- Besides Saves and Controllers, what else should the
   foot open, such as favourites or time played?
 - Without the helper, as on the phone, does the server's library stay the
   whole page as now?

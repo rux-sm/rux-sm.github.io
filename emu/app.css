@@ -205,21 +205,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mine { position: absolute; z-index: 3; inset-inline: var(--emu-drawer-inset, 0px); inset-block-end: var(--emu-drawer-inset, 0px); max-block-size: calc(100% - 2 * var(--emu-drawer-inset, 0px)); overflow-y: auto; padding: var(--rux-spacing-05); background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
 .emu-mine[hidden], .emu-mine__pane[hidden] { display: none; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
-/* The Games drawer's console tabs, Carbon's line tabs, each as wide as its
-   name, reaching the drawer's edges past its padding, 44px tall through
-   Carbon's own height setting, between its 40 and 48. */
-.emu-mine__consoles { --rux-layout-size-height: 2.75rem; inline-size: auto; margin: calc(-1 * var(--rux-spacing-05)) calc(-1 * var(--rux-spacing-05)) var(--rux-spacing-05); }
-.emu-mine__consoles[hidden] { display: none; }
-/* A console's wordmark, in a Games tab or under its drawing in Consoles:
+/* A console's wordmark, under its drawing in Consoles:
    one height for every console, grown by --emu-mark-scale where a mark's
    letters sit small in its shape, its width its own, in the text colour. */
 .emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 .emu-kit__mark { display: grid; place-items: center; block-size: 1.25rem; }
 .emu-mine__row {overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
-/* The Games drawer's row: covers alone, each game's name in its title, and
-   one cover high even with none, so the drawer keeps its height on every tab. */
-.emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: var(--rux-spacing-02) var(--rux-spacing-02) var(--rux-spacing-03); min-block-size: var(--emu-cover-height); box-sizing: content-box; }
-.emu-mine__row .emu-cover-name { display: none; }
 @media (prefers-reduced-motion: reduce) { .emu-mine, .emu-mine--open { transition: none; } }
 /* A controller in its drawer: Carbon's game-console glyph over its name and
    whether it is connected, in a row as the store's cards are. */
@@ -238,7 +229,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    Rux's Server; in Games as tall as a cover and as wide as the row's covers
    are, --emu-box. */
 .emu-add-item { flex: none; display: flex; }
-.emu-shelf > .emu-add-item .emu-add { block-size: var(--emu-cover-height); inline-size: calc(var(--emu-cover-height) * var(--emu-box, 3 / 4)); min-inline-size: 0; box-sizing: border-box; padding: var(--rux-spacing-03); text-align: center; }
 .emu-add { appearance: none; font: inherit; cursor: pointer; display: grid; place-content: center; justify-items: center; gap: var(--rux-spacing-03); min-inline-size: 8rem; padding: var(--rux-spacing-05); background: transparent; color: var(--rux-text-secondary); border: 1px dashed var(--rux-border-strong-01); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-add:hover { background: var(--rux-layer-hover); color: var(--rux-text-primary); }
 .emu-add:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
@@ -253,17 +243,24 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    stand in their fixed spots. Inside it every size is a whole number of art
    pixels, --emu-px, which room.js sets to three CSS pixels or two, so the
    pixel art lands on whole pixels. */
-.emu-room { --emu-px: 3px; position: relative; block-size: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); }
-/* The room's space, beside Consoles: the TV and the console out stand in it. */
+.emu-room { --emu-px: 3px; position: relative; block-size: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
+/* The room's space, between Consoles and Games: the TV and the console out stand in it. */
 .emu-space { position: relative; min-block-size: 0; }
-/* CONSOLES, the column down the room's left, a layer up from the room: the
-   consoles put away one under another, scrolling up and down, each its
-   drawing at three CSS pixels to the art pixel over its wordmark, then the
-   Download tile; under 66rem the drawings are two to the art pixel and the
-   column narrower. */
+/* CONSOLES, the column down the room's left, and GAMES, its twin down the
+   right, a layer up from the room, the same width, scrolling up and down:
+   the consoles put away one under another, each its drawing at three CSS
+   pixels to the art pixel over its wordmark, or the console out's games,
+   each cover as wide as the column and as tall as its art; each ends in
+   its Download tile. Under 66rem the drawings are two to the art pixel and
+   the columns narrower. */
 .emu-rail { --emu-kit-px: 3px; display: grid; align-content: start; inline-size: 11rem; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
 @media (max-width: 65.98rem) { .emu-rail { --emu-kit-px: 2px; inline-size: 8.5rem; } }
 .emu-rail__none { padding: var(--rux-spacing-03); }
+.emu-rail--games { border-inline-end: 0; border-inline-start: 1px solid var(--rux-border-subtle-01); }
+.emu-rail__games { list-style: none; display: grid; gap: var(--rux-spacing-03); }
+.emu-rail__games .emu-cover { inline-size: 100%; }
+.emu-rail__games .emu-cover-name { display: none; }
+.emu-rail__games > .emu-add-item .emu-add { inline-size: 100%; min-inline-size: 0; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); box-sizing: border-box; padding: var(--rux-spacing-03); text-align: center; }
 .emu-room[hidden] { display: none; }
 /* The TV: a flat screen on its stand, drawn as brand/consoles/tv.png, 80 by
    54 art pixels, placed by room.js as the console is, --emu-left and

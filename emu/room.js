@@ -2,9 +2,9 @@
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is one tile, the room's: its head,
-   then the room, Your Mac: Consoles, a column down its left, then the TV
-   at the top and the one console out centred under it, then its foot, a
-   button for each drawer. Without the
+   then the room, Your Mac: Consoles, a column down its left, the TV at the
+   top and the one console out centred under it, and Games, a column down
+   its right, then its foot, a button for each drawer. Without the
    helper the store, Rux's Server, is the whole page.
 
    A console has three places. On the server it is not on this Mac; in
@@ -29,22 +29,20 @@
    anywhere on it, opens its menu, the room's own: Sound. The pages' menu
    and Search are the shell's, the same on every page.
 
-   Games stay put away, and a game is played by opening Games and carrying
-   it onto the console out.
+   Consoles, the left column, lists the consoles put away, each its drawing
+   over its wordmark, pressed or dragged into the room to take it out.
+   Games, the right column, lists the console out's games, favourites
+   first, each cover as wide as the column, one still arriving under a veil
+   that lifts as it comes, and a game is played by carrying it onto the
+   console out. Both scroll up and down and end in an outlined Download
+   tile that opens Rux's Server on that alone.
 
    The tile's foot has a button for each drawer, which opens up over the
-   room's foot, one at a time, all closed each time the page loads.
-   Consoles, the column, lists the consoles put away, scrolling up and
-   down, each pressed or dragged into the room to take it out. Games is a
-   row that scrolls sideways, by the wheel too, of this
-   Mac's games, favourites first, one still arriving under a veil that lifts
-   as it comes, one console's at a time under a tab for each console it has
-   games for; a console pressed picks its tab. Both end in an outlined
-   Download tile that opens Rux's Server on its tab. Saves is the picked
-   console's saves as cards: each game's, the one in it and those out, with
-   Take out, Put in and a name to change, then the console's own.
-   Controllers is each controller this Mac sees, and says its button
-   layouts stay on each Mac for now.
+   room's foot, one at a time, all closed each time the page loads. Saves
+   is the picked console's saves as cards: each game's, the one in it and
+   those out, with Take out, Put in and a name to change, then the
+   console's own. Controllers is each controller this Mac sees, and says
+   its button layouts stay on each Mac for now.
 
    Rux's Server has two tabs of cards. Consoles is every console with
    games, its drawing from brand/consoles/ over its name and count; Games is
@@ -417,23 +415,16 @@
     drawWire();
     setTimeout(drawWire, 260);
   }
-  // GAMES, the drawer: this Mac's games, favourites first and then A to Z:
-  // a favourite this Mac lacks is dimmed, one arriving sits under a veil
-  // that lifts as it comes, and one whose console is not set up is dimmed
-  // with what it needs in its title. A cover shows no name under it, only
-  // in its title, and the row keeps one cover's height. The row shows one
-  // console's games under a tab for each console it has games for, in the
-  // filter's order: the picked console's at first, and pressing a console
-  // in the room picks its tab.
-  // A console's tab shows its wordmark from brand/marks.svg, in the tab's
-  // own colour, or its name where it has none.
-  let shelf = null;
-  const consoleTabs = $('emu-mine-consoles');
-  consoleTabs.addEventListener('rux:tab-selected', e => { shelf = e.detail.tab.dataset.system; renderMine(); });
+  // GAMES, the column down the room's right: the games of the console out,
+  // favourites first and then A to Z, one under another as wide as the
+  // column, each as tall as its art: a favourite this Mac lacks is dimmed,
+  // one arriving sits under a veil that lifts as it comes, and one whose
+  // console is busy is dimmed with why in its title. A cover shows no name
+  // under it, only in its title. The Download tile ends it.
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
-    if (games.length) { renderMine(); renderKit(); }
+    if (games.length) renderKit();
   }).catch(error => console.error(error));
   // A console's wordmark, drawn in the text colour at one height, which a
   // symbol's `data-scale` grows where its letters sit small in its shape,
@@ -447,34 +438,11 @@
     if (scale) svg.style.setProperty('--emu-mark-scale', scale);
     return svg;
   }
-  function tabOf(system, label) {
-    const on = system === shelf;
-    const b = el('button', `rux--tabs__nav-item rux--tabs__nav-link${on ? ' rux--tabs__nav-item--selected' : ''}`);
-    b.type = 'button';
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-selected', String(on));
-    b.tabIndex = on ? 0 : -1;
-    b.dataset.system = system;
-    b.title = label;
-    const text = el('span', 'rux--tabs__nav-item-label');
-    const mark = markOf(system);
-    if (mark) { b.setAttribute('aria-label', label); text.append(mark); } else text.textContent = label;
-    const wrap = el('div', 'rux--tabs__nav-item-label-wrapper');
-    wrap.append(text);
-    b.append(wrap);
-    return b;
-  }
   function renderMine() {
+    const out = outNow();
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
-    const all = games.filter(g => here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite)
-      .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
-    const systems = Object.keys(R.SYSTEMS).filter(s => all.some(g => g.system === s));
-    if (!systems.includes(shelf)) shelf = systems.includes(pick) ? pick : systems[0] ?? null;
-    const focused = consoleTabs.contains(document.activeElement);
-    consoleTabs.replaceChildren(...systems.map(s => tabOf(s, R.systemName(s))));
-    if (focused) consoleTabs.querySelector('[aria-selected="true"]').focus();
-    $('emu-mine-consoles-wrap').hidden = !systems.length;
-    const list = all.filter(g => g.system === shelf);
+    const list = out ? games.filter(g => g.system === out && (here.has(keyOf(g)) || waiting.has(keyOf(g)) || g.notes?.favourite))
+      .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite))) : [];
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
       const b = li.firstChild;
@@ -489,18 +457,18 @@
         const veil = el('span', 'emu-cover__veil');
         veil.style.blockSize = veilOf(s);
         b.querySelector('.emu-cover-art').append(veil);
-      } else if (g.system !== outNow() || stand.get(g.system) !== 'on') {
+      } else if (stand.get(g.system) !== 'on') {
         b.classList.add('emu-cover--away');
-        b.title = `${g.title}. Needs the ${R.systemName(g.system)} out.`;
+        b.title = `${g.title}. ${BUSY[stand.get(g.system)]?.(g.system) ?? ''}`.trim();
       }
       return li;
-    }), addTile('Download games', b => { if (shelf) choose(shelf); openStore(b, 'emu-store-games-tab'); }, shelf));
-    // The tile takes the shape of the row's first cover once its art has come.
+    }), ...(out ? [addTile('Download games', b => { choose(out); openStore(b, 'emu-store-games-tab'); }, out)] : []));
+    // The tile takes the shape of the first cover once its art has come.
     const tile = $('emu-mine-games').querySelector('.emu-add');
     const first = $('emu-mine-games').querySelector('.emu-cover img');
     const shape = () => { const box = first.closest('.emu-cover').style.getPropertyValue('--emu-box'); if (box) tile.style.setProperty('--emu-box', box); };
     if (first?.complete) shape(); else first?.addEventListener('load', shape);
-    $('emu-mine-none').hidden = all.length > 0;
+    $('emu-mine-none').hidden = Boolean(out);
   }
   // CONSOLES, the column down the room's left: every console set up on this Mac and put away,
   // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
@@ -838,8 +806,6 @@
     if (!gamesOf(system).length) return;
     pick = system;
     showPick();
-    shelf = system;
-    renderMine();
   }
   const render = () => { renderRoom(); renderServer(); };
   // The room's art pixel follows its width, so it is set again when the

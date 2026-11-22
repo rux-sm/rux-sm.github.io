@@ -208,6 +208,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* The Games drawer's console tabs, across the drawer as Carbon lays a switcher out. */
 .emu-mine__consoles { margin-block-end: var(--rux-spacing-05); }
 .emu-mine__consoles[hidden] { display: none; }
+/* A console's wordmark in its tab: one height for every console, its width its own, in the tab's text colour. */
+.emu-mine__mark { display: block; block-size: 1rem; inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 .emu-mine__row {overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 /* The Games drawer's row: covers alone, each game's name in its title, and
    one cover high even with none, so the drawer keeps its height on every tab. */

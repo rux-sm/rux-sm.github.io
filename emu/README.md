@@ -56,6 +56,7 @@ is how each is set up on a Mac, `docs/home-server.md` how the home server sends 
 `docs/drawing-consoles.md` how a console is drawn in pixels for the room. `brand/logos/`
 and `brand/controllers/` hold each system's logo and controller, named as its console is; no
 page shows them. Sprites writes all three folders from the drawings in `sprites/art/`.
+`brand/marks.svg` holds each console's wordmark in one colour, which the Games drawer's tabs show.
 
 ## The scan
 

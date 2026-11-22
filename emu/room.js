@@ -523,16 +523,31 @@
   // in its title, and the row keeps one cover's height. Tabs above the row show All, or one
   // console's games, a tab for each console the row has games for in the
   // filter's order; pressing a console in the room picks its tab.
+  // A console's tab shows its wordmark from brand/marks.svg, in the tab's
+  // own colour, or its name where it has none.
   let shelf = null;
   const consoleTabs = $('emu-mine-consoles');
   consoleTabs.addEventListener('rux:content-switcher-selected', e => { shelf = e.detail.option.dataset.system || null; renderMine(); });
+  let marks = new Map();
+  fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
+    marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
+    if (games.length) renderMine();
+  }).catch(error => console.error(error));
   function tabOf(system, label) {
     const b = el('button', 'rux--content-switcher-btn');
     b.type = 'button';
     b.setAttribute('role', 'tab');
     b.dataset.system = system;
     b.title = label;
-    b.append(el('span', 'rux--content-switcher__label', label));
+    const text = el('span', 'rux--content-switcher__label');
+    const mark = marks.get(system);
+    if (mark) {
+      const svg = svgOf('emu-mine__mark', mark.getAttribute('viewBox'));
+      svg.append(...[...mark.childNodes].map(n => document.importNode(n, true)));
+      b.setAttribute('aria-label', label);
+      text.append(svg);
+    } else text.textContent = label;
+    b.append(text);
     return b;
   }
   function renderMine() {

@@ -48,7 +48,8 @@
    The tile's foot has a button for each drawer, which opens up over the
    room's foot, one at a time, all closed each time the page loads. Games
    is a row that scrolls sideways of this Mac's games, favourites first, one
-   still arriving under a veil that lifts as it comes. Saves is the picked
+   still arriving under a veil that lifts as it comes, under tabs for All
+   and each console it has games for; a console pressed picks its tab. Saves is the picked
    console's saves as cards: each game's, the one in it and those out, with
    Take out, Put in and a name to change, then the console's own.
    Controllers is each controller this Mac sees, and says its button
@@ -518,11 +519,32 @@
   // GAMES, the drawer: this Mac's games, favourites first and then A to Z:
   // a favourite this Mac lacks is dimmed, one arriving sits under a veil
   // that lifts as it comes, and one whose console is not set up is dimmed
-  // with what it needs in its title.
+  // with what it needs in its title. Tabs above the row show All, or one
+  // console's games, a tab for each console the row has games for in the
+  // filter's order; pressing a console in the room picks its tab.
+  let shelf = null;
+  const consoleTabs = $('emu-mine-consoles');
+  consoleTabs.addEventListener('rux:content-switcher-selected', e => { shelf = e.detail.option.dataset.system || null; renderMine(); });
+  function tabOf(system, label) {
+    const b = el('button', 'rux--content-switcher-btn');
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.dataset.system = system;
+    b.title = label;
+    b.append(el('span', 'rux--content-switcher__label', label));
+    return b;
+  }
   function renderMine() {
     const here = new Map(mineNow().map(([g, s]) => [keyOf(g), s]));
-    const list = games.filter(g => here.has(keyOf(g)) || g.notes?.favourite)
+    const all = games.filter(g => here.has(keyOf(g)) || g.notes?.favourite)
       .sort((a, b) => Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
+    const systems = Object.keys(R.SYSTEMS).filter(s => all.some(g => g.system === s));
+    if (!systems.includes(shelf)) shelf = null;
+    const tabs = [tabOf('', 'All'), ...systems.map(s => tabOf(s, R.systemName(s)))];
+    consoleTabs.replaceChildren(...tabs);
+    window.Rux.contentSwitcher.select(consoleTabs, tabs.find(b => b.dataset.system === (shelf ?? '')), { focus: false, silent: true });
+    consoleTabs.hidden = systems.length < 2;
+    const list = shelf ? all.filter(g => g.system === shelf) : all;
     $('emu-mine-games').replaceChildren(...list.map(g => {
       const li = coverItem(g);
       const b = li.firstChild;
@@ -538,7 +560,7 @@
       }
       return li;
     }));
-    $('emu-mine-none').hidden = list.length > 0;
+    $('emu-mine-none').hidden = all.length > 0;
   }
 
   // RUX'S SERVER -------------------------------------------------------------
@@ -795,6 +817,8 @@
     if (!gamesOf(system).length) return;
     pick = system;
     showPick();
+    shelf = system;
+    renderMine();
   }
   const render = () => { renderRoom(); renderServer(); };
   // The room's art pixel follows its width, so it is set again when the

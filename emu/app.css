@@ -205,7 +205,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mine { position: absolute; z-index: 3; inset-inline: var(--emu-drawer-inset, 0px); inset-block-end: var(--emu-drawer-inset, 0px); max-block-size: calc(100% - 2 * var(--emu-drawer-inset, 0px)); overflow-y: auto; padding: var(--rux-spacing-05); background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); visibility: hidden; clip-path: inset(100% 0 0 0); transition: clip-path 240ms cubic-bezier(0.2, 0, 1, 0.9), visibility 0s linear 240ms; }
 .emu-mine[hidden], .emu-mine__pane[hidden] { display: none; }
 .emu-mine--open { visibility: visible; clip-path: inset(-1rem -1rem 0 -1rem); transition: clip-path 240ms cubic-bezier(0, 0, 0.38, 0.9), visibility 0s; }
-.emu-mine__row { overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
+/* The Games drawer's console tabs, across the drawer as Carbon lays a switcher out. */
+.emu-mine__consoles { margin-block-end: var(--rux-spacing-05); }
+.emu-mine__consoles[hidden] { display: none; }
+.emu-mine__row {overflow-x: auto; overscroll-behavior-x: contain; padding-block-end: var(--rux-spacing-03); }
 .emu-mine__row.emu-shelf { --emu-cover-height: 7.5rem; flex-wrap: nowrap; margin: 0; padding: var(--rux-spacing-02) var(--rux-spacing-02) var(--rux-spacing-03); }
 @media (prefers-reduced-motion: reduce) { .emu-mine, .emu-mine--open { transition: none; } }
 /* A controller in its drawer: Carbon's game-console glyph over its name and

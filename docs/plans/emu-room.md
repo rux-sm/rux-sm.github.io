@@ -8,10 +8,11 @@ type: plan
 
 The Library is one tile at the top of the page, in the shell every Emu
 page has, as wide as the page's frame: its head, then the room, Your Mac, the play surface for what is in use now,
-with a single flat TV and the one console out, hooked up to it. The
+with a single flat TV and the one console out, hooked up to it, and
+Consoles, a column down the room's left of the consoles put away. The
 tile's foot, mirroring its head, has a button for each drawer of what
-this Mac and the account keep: Consoles, Games, Saves and Controllers,
-each opening up over the room's foot. Consoles and Games each end in a
+this Mac and the account keep: Games, Saves and Controllers, each
+opening up over the room's foot. Consoles and Games each end in a
 tile that downloads more from the server, so a Mac has no separate store. Getting a game, setting up its console and playing it are
 one press or one drag each, and the page is fun to use
 while staying plain. It is Emu's front page, `emu/index.html`, drawn by
@@ -63,7 +64,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   act stay at their source: a wrong console speaks beside that console, a
   game-panel action stays in its panel and Update stays on Status.
 - **A console has three places.** On the server it is not on this Mac. In
-  Consoles, the drawer, it is set up on this Mac and put away. In the room
+  Consoles, the room's column, it is set up on this Mac and put away. In the room
   it is out, hooked up to the TV, ready to play. Every console starts put
   away, and only one is out at a time: taking one out puts the other away.
   Remove in its menu takes its emulator off this Mac.
@@ -88,7 +89,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   header's round button, so nothing else stands around the room.
 - **The tile's foot mirrors its head:** the md size token's height over a
   rule, in by the theme's inset, with a ghost button for each drawer from
-  its start, Consoles, Games, Saves and Controllers, each with a chevron that turns
+  its start, Games, Saves and Controllers, each with a chevron that turns
   down while its drawer is open. Any other view of what this Mac or the account keeps joins
   them as a button.
 - **A drawer opens up from its button as one surface with it,** as the
@@ -100,10 +101,12 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
   things, and a drag from it into the room is a short move up. Its button pressed again, or Escape,
   closes it; another button turns it to that drawer. All start closed each
   time the page loads, so the room shows whole.
-- **Consoles is one row of the consoles set up on this Mac,** each its
-  drawing over its wordmark, pressed or dragged into the room to take it
-  out.
-- **Games is one row that scrolls sideways, so it fits any width,** of this
+- **Consoles is a column down the room's left of the consoles put away,**
+  always in view and scrolling up and down, as a mouse wheel turns, each
+  its drawing over its wordmark, pressed or dragged into the room to take
+  it out; the TV and the console out stand centred in the room beside it.
+- **Games is one row that scrolls sideways, so it fits any width,** by a
+  mouse wheel too while the pointer is over it, of this
   Mac's games, one console's at a time under a tab for each console with
   games, the tabs only choosing which games show, Carbon's line tabs at 44px reaching the drawer's edges, each tab
   the console's one-colour wordmark from `emu/brand/marks.svg` or its name.
@@ -276,7 +279,7 @@ while staying plain. It is Emu's front page, `emu/index.html`, drawn by
 
 ## Questions
 
-- Besides Consoles, Games, Saves and Controllers, what else should the
+- Besides Games, Saves and Controllers, what else should the
   foot open, such as favourites or time played?
 - Without the helper, as on the phone, does the server's library stay the
   whole page as now?

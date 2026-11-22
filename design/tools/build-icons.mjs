@@ -110,8 +110,6 @@ const ICONS = [
   'chat',
   // A GAME CONTROLLER, the Controllers button in the foot of Emu's room.
   'game--console',
-  // THE CONSOLES SET UP ON A MAC, the Consoles button beside it.
-  'devices',
 ];
 
 /* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.

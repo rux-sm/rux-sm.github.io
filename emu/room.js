@@ -2,12 +2,13 @@
    room.js — the Library as a room, Emu's front page
    --------------------------------------------------------------------------
    Where Rux Emu Helper answers, the page is one tile, the room's: its head,
-   then the room, Your Mac: the TV at the top and the one console out
-   centred under it, then its foot, a button for each drawer. Without the
+   then the room, Your Mac: Consoles, a column down its left, then the TV
+   at the top and the one console out centred under it, then its foot, a
+   button for each drawer. Without the
    helper the store, Rux's Server, is the whole page.
 
    A console has three places. On the server it is not on this Mac; in
-   Consoles, the drawer, it is set up and put away; in the room it is out,
+   Consoles, the room's column, it is set up and put away; in the room it is out,
    a home console wired to the TV. Only one is out at a time, and taking one
    out puts the other away. Which consoles are set up is read from the
    helper; which one is out is this Mac's room, kept on its row in Supabase,
@@ -33,8 +34,9 @@
 
    The tile's foot has a button for each drawer, which opens up over the
    room's foot, one at a time, all closed each time the page loads.
-   Consoles is a row of the consoles put away, each pressed or dragged into
-   the room to take it out. Games is a row that scrolls sideways of this
+   Consoles, the column, lists the consoles put away, scrolling up and
+   down, each pressed or dragged into the room to take it out. Games is a
+   row that scrolls sideways, by the wheel too, of this
    Mac's games, favourites first, one still arriving under a veil that lifts
    as it comes, one console's at a time under a tab for each console it has
    games for; a console pressed picks its tab. Both end in an outlined
@@ -305,7 +307,7 @@
   }
   // The art pixel: three CSS pixels where the TV, 80 art pixels wide, takes
   // at most half the room's width, else two.
-  const pxOf = () => (80 * 3 <= $('emu-room').getBoundingClientRect().width / 2 ? 3 : 2);
+  const pxOf = () => (80 * 3 <= $('emu-space').getBoundingClientRect().width / 2 ? 3 : 2);
   // THE STRIP AT REST: this Mac as Carbon's icon indicators, only what it is
   // for. Connected while Rux Emu Helper answers, its version in its tooltip,
   // or "Update the helper", opening Status, where Supabase holds a newer
@@ -381,7 +383,7 @@
     const fresh = Boolean(u) && wired !== to;
     wired = u ? to : null;
     if (!u) return;
-    const r = $('emu-room').getBoundingClientRect();
+    const r = $('emu-space').getBoundingClientRect();
     const a = u.getBoundingClientRect();
     const b = $('emu-tv').getBoundingClientRect();
     const [x1, y1, x2, y2] = [a.left + a.width / 2 - r.left, a.top - r.top + 2, b.left + b.width / 2 - r.left, b.bottom - r.top - 2].map(Math.round);
@@ -500,7 +502,7 @@
     if (first?.complete) shape(); else first?.addEventListener('load', shape);
     $('emu-mine-none').hidden = all.length > 0;
   }
-  // CONSOLES, the drawer: every console set up on this Mac and put away,
+  // CONSOLES, the column down the room's left: every console set up on this Mac and put away,
   // each its drawing over its wordmark, or its name where it has none, pressed or dragged into the room to take
   // it out, then the tile that downloads another.
   function renderKit() {
@@ -814,6 +816,15 @@
     }));
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { if (drawer === 'emu-pads-pane') renderPads(); });
+  // A drawer's row scrolls sideways, and a mouse wheel, which turns only up
+  // and down, scrolls it sideways too while the pointer is over it.
+  for (const row of document.querySelectorAll('.emu-mine__row')) {
+    row.addEventListener('wheel', e => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX) || row.scrollWidth <= row.clientWidth) return;
+      e.preventDefault();
+      row.scrollLeft += e.deltaY;
+    }, { passive: false });
+  }
   for (const b of drawerButtons) b.addEventListener('click', () => openDrawer(drawer === b.dataset.drawer ? null : b.dataset.drawer));
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !drawer || panelOpen() || document.querySelector('.rux--modal.is-visible')) return;
@@ -837,7 +848,7 @@
     if (!helper) return;
     $('emu-room').style.setProperty('--emu-px', `${pxOf()}px`);
     layout();
-  }).observe($('emu-room'));
+  }).observe($('emu-space'));
 
   // What the helper says of this Mac, read again; while a game arrives it is
   // read every second, so its veil lifts.
@@ -1136,8 +1147,8 @@
     return null;
   }
 
-  // A console from Consoles let go over the room comes out.
-  const kitIntent = (system, under) => (under?.closest('#emu-room') ? yes(`Take out the ${R.systemName(system)}`, null, () => takeOut(system)) : null);
+  // A console from Consoles let go over the room's space comes out.
+  const kitIntent = (system, under) => (under?.closest('#emu-space') ? yes(`Take out the ${R.systemName(system)}`, null, () => takeOut(system)) : null);
   const intentOf = (d, under, point) => (d.g ? intent(d.g, d.from, under, point) : kitIntent(d.system, under));
 
   // THE DRAG, with the pointer, where the helper answers. A press that does

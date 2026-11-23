@@ -16,8 +16,8 @@
 
    Which consoles are set up, and which games this Mac holds, are read from
    the helper. What this Mac lacks is faded with a download arrow, a console
-   and a game alike. A console's menu, from the wall's head or a right click,
-   has Download or Remove, which the strip asks about first, naming every
+   and a game alike. A console's menu, from a right click,
+   has Set up or Remove, which the strip asks about first, naming every
    console that goes with its emulator.
 
    The strip, in the head, is the page's one place for words. At rest it
@@ -311,8 +311,8 @@
   // The arrow on what this Mac lacks.
   const awayMark = cls => { const svg = iconOf('#i-download'); svg.setAttribute('class', cls); return svg; };
 
-  // A CONSOLE'S MENU, Design's, from the wall's head or a right click on the
-  // console: Download or Remove, which the strip then asks about, or what it
+  // A CONSOLE'S MENU, Design's, from a right click on the console: Set up or
+  // Remove, which the strip then asks about, or what it
   // is busy with. So no control is drawn on the row.
   function openMenu(trigger) {
     const menu = $('emu-console-menu');
@@ -325,11 +325,9 @@
         : menuItem(menu, `Remove ${emulatorOf(system)} from this Mac`, () => askRemove(system), { danger: true }));
     window.Rux.menu.open(menu, trigger);
   }
-  $('emu-games-menu').addEventListener('click', e => openMenu(e.currentTarget));
 
   // THE WALL, the chosen console's games as covers. Its head is the console's
-  // wordmark, or its name, how many are here and how many on the server, and
-  // the switch between All and On this Mac.
+  // wordmark, or its name, and the switch between All and On this Mac.
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
@@ -381,10 +379,7 @@
     h.replaceChildren(mark ?? R.systemName(chosen));
     if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
     const all = inOrder(chosen);
-    const here = all.filter(isHere).length;
-    $('emu-games-count').textContent = !helper ? `${all.length} ${all.length === 1 ? 'game' : 'games'}`
-      : [here ? `${here} on this Mac` : '', all.length - here ? `${all.length - here} on the server` : ''].filter(Boolean).join(' · ');
-    for (const id of ['emu-games-show', 'emu-games-menu']) $(id).hidden = !helper;
+    $('emu-games-show').hidden = !helper;
     const shown = helper && show === 'mac' ? all.filter(isHere) : all;
     const ul = $('emu-games');
     ul.classList.toggle('emu-games__list--wide', WIDE.has(chosen));

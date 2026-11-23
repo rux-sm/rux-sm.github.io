@@ -49,8 +49,8 @@ The consoles:
 - **A console not set up is faded with a download arrow,** as a game not on
   this Mac is, so away looks the same everywhere. Its games still fill the
   wall, and Download on one sets its console up first.
-- **A console's menu is a button in the wall's head,** and a right click on the
-  console: Download, or Remove. So no control is drawn on the row.
+- **A console's menu is a right click on it:** Set up, or Remove. So no control
+  is drawn on the row or the wall.
 - **Removing asks first and names every console that goes,** such as "Remove
   Mesen 2? The NES and SNES go too. Your saves are kept.", since one emulator
   plays several. Its saves and settings are kept in Supabase and checked
@@ -66,8 +66,8 @@ The wall:
   no name under them, six across for wide covers and eight for tall: those on
   this Mac first, favourites leading, then the server's, faded with a download
   arrow, each A to Z.
-- **Its head is the console's name, how many are on this Mac and how many on
-  the server,** and a switch, All or On this Mac, which starts on All.
+- **Its head is the console's name and a switch,** All or On this Mac, which
+  starts on All.
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 

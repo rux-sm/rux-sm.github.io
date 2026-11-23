@@ -165,15 +165,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit__away { position: absolute; inset-block-end: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); fill: var(--rux-icon-primary); }
 
 /* THE WALL, the one part that scrolls, under a head that does not: the
-   console's wordmark or name, its counts, the switch and its menu. Every
+   console's wordmark or name and the switch. Every
    cover is its column's width and as tall as its art, standing on its row's
    foot: eight across, or six where boxes are wider than tall. */
 .emu-games { flex: 1; min-block-size: 0; display: flex; flex-direction: column; }
 .emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-05); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-03) var(--rux-spacing-05); }
 .emu-games__title { min-inline-size: 0; font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); }
-.emu-games__count.emu-row__sub { flex: 1; min-inline-size: 0; max-inline-size: none; }
-.emu-games__show { flex: none; inline-size: var(--emu-show, 15rem); }
-.emu-games__show[hidden], #emu-games-menu[hidden] { display: none; }
+.emu-games__show { flex: none; margin-inline-start: auto; inline-size: var(--emu-show, 15rem); }
+.emu-games__show[hidden] { display: none; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-02) var(--rux-spacing-05) var(--rux-spacing-05); }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); align-items: end; }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */

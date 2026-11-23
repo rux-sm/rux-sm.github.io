@@ -4,7 +4,7 @@
    One tile: a head, and under it every console with games down the side,
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
-   cover, its name and facts, its save, its controller, Details and one
+   screenshot, its name and facts, its save, its controller, Details and one
    button, the one next move. The head is Installed or All games, over the
    consoles, then the strip and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
@@ -454,8 +454,8 @@
     renderChosen();
   }
 
-  // THE CHOSEN GAME, over the wall: its cover, faded where this Mac lacks it,
-  // drawn again only when the game changes; its name over when it was last
+  // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
+  // it, fetched again only when the game changes; its name over when it was last
   // played, its region and size; its save, its controller, Details, and one
   // button, the one next move.
   const playedOf = g => {
@@ -467,7 +467,7 @@
   function renderChosen() {
     if (!helper || !game) return;
     const art = $('emu-chosen-art');
-    if (artFor !== game) { artFor = game; art.replaceChildren(cover(game, 'emu-cover-art')); }
+    if (artFor !== game) { artFor = game; art.replaceChildren(R.shot(game)); }
     art.classList.toggle('emu-chosen__art--away', !isHere(game));
     $('emu-chosen-name').textContent = nameOf(game);
     const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`

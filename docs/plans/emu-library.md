@@ -8,7 +8,7 @@ type: plan
 
 The Library, Emu's front page, is one tile: a head and, under it, every
 console down the side and the chosen console's games beside them as a wall
-of covers, with the chosen game over them: its cover and facts, its save,
+of covers, with the chosen game over them: its screenshot and facts, its save,
 its controller and Play. The head is Installed or All games and the strip.
 It opens on the game last played. Choose a console and its games fill the
 wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
@@ -80,11 +80,12 @@ The wall:
 
 The chosen game, over the wall and still while it scrolls:
 
-- **It is the game's cover beside its name, when it was last played, its
+- **It is a screenshot of the game beside its name, when it was last played, its
   region and its size, over Save, Controller, Details and one button,** so
   what will play and with what shows before Play is pressed, and changing
-  nothing keeps Play one press. The cover is faded where this Mac lacks the
-  game.
+  nothing keeps Play one press. The screenshot is libretro's, a moment in
+  play, else the title screen, else an empty screen, so the box shows only in
+  the wall; it is faded where this Mac lacks the game.
 - **The button is the one next move:** Play; Download with its size; how far a
   download has come; or why not, such as setting up.
 - **The page opens on the game last played that this Mac holds,** from

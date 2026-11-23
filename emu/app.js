@@ -25,12 +25,14 @@
     switch: ['xci', 'nsp'], xbox: ['iso'],
   };
 
-  // A game's box art on libretro's thumbnails, the addresses to try in turn, by
-  // the names scan-save.js gives it, as the scan asks for it too.
+  // A game's pictures on libretro's thumbnails, the addresses to try in turn,
+  // by the names scan-save.js gives it, as the scan asks for its box art too:
+  // Named_Boxarts its box, Named_Snaps a moment in play, Named_Titles its
+  // title screen.
   const { ART, ART_AT, artNames } = window.Emu.scanSave;
-  const artOf = game => {
+  const artOf = (game, kind = 'Named_Boxarts') => {
     const set = ART[game.system];
-    return set ? artNames(game).map(n => `${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`) : [];
+    return set ? artNames(game).map(n => `${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/${kind}/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`) : [];
   };
   // Each system's box, its width over its height, as its covers measure.
   const BOX = { nes: 0.7, snes: 1.4, n64: 1.37, gb: 1, gbc: 1, gba: 1, nds: 1.115, n3ds: 1.12, gc: 0.705, wii: 0.714, wiiu: 0.714, switch: 0.62, psx: 1, ps2: 0.705, xbox: 0.714 };
@@ -180,6 +182,18 @@
     box.append(img);
     return box;
   }
+  // A game's screenshot: a moment in play, else its title screen, else none,
+  // the picture taken away.
+  function shot(g) {
+    const img = el('img');
+    img.alt = '';
+    img.decoding = 'async';
+    const urls = [...artOf(g, 'Named_Snaps'), ...artOf(g, 'Named_Titles')];
+    const next = () => { const url = urls.shift(); if (url) img.src = url; else img.remove(); };
+    img.addEventListener('error', next);
+    next();
+    return img;
+  }
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };
   // A name as lowercase letters and digits: how an installer is matched to its app, and an emulator's profile is addressed.
   const slug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -242,7 +256,7 @@
   };
 
   window.Emu = Object.assign(window.Emu || {}, {
-    SYSTEMS, systemName, PREFERRED, BOX, nameOf, cover, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
+    SYSTEMS, systemName, PREFERRED, BOX, nameOf, cover, shot, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
     size, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

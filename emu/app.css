@@ -195,16 +195,18 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 
 /* THE CHOSEN GAME, over the wall and still while it scrolls, over a rule:
-   its cover, 9rem tall in its box's shape and faded where this Mac lacks it,
+   its screenshot, whole in a 4:3 screen 9rem tall, empty where libretro has
+   none, and faded where this Mac lacks the game,
    beside its name and facts over a row of its save, its controller and its
    moves, which wraps where it does not fit. Under 42rem the cover is 6rem
    tall and the moves take a row of their own. */
 .emu-chosen { flex: none; display: flex; gap: var(--rux-spacing-06); padding: var(--rux-spacing-06) var(--rux-spacing-05); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-chosen[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen { --emu-art: 9rem; }
-.emu-chosen__art { flex: none; align-self: flex-start; }
-.emu-chosen__art .emu-cover-art { block-size: var(--emu-art); inline-size: calc(var(--emu-art) * var(--emu-box, .75)); background: var(--rux-layer-02); }
-.emu-chosen__art--away .emu-cover-art { opacity: .45; }
+.emu-chosen__art { flex: none; align-self: flex-start; display: grid; place-items: center; block-size: var(--emu-art); inline-size: calc(var(--emu-art) * 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
+.emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+.emu-chosen__art img:not([src]) { visibility: hidden; }
+.emu-chosen__art--away img { opacity: .45; }
 .emu-chosen__main { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; justify-content: space-between; gap: var(--rux-spacing-05); }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
 .emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }

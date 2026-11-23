@@ -14,23 +14,6 @@
    scrolled sideways. */
 .emu-main .rux--stack-vertical > * { min-inline-size: 0; }
 
-/* THE ROOM'S FOOT. Its three buttons open drawers and go nowhere, so they
-   take the primary text colour, as the scheduler's toolbar buttons do,
-   where Carbon's ghost button is the link's blue. One that is open is one
-   surface with its drawer (app.css): the drawer's Layer 02 and the menu
-   shadow, the shadow stopping at the button's top, with a strip the
-   button's width in that layer over the foot's rule between them. The
-   strip starts 2px above the button's padding box, past the button's own
-   1px border, clear in a ghost button, and over the foot's 1px rule. Under
-   the pointer the open button holds its layer, as Carbon's open overflow
-   trigger does. */
-.emu-foot .rux--btn--ghost,
-.emu-foot .rux--btn--ghost:hover,
-.emu-foot .rux--btn--ghost:active { color: var(--rux-text-primary); }
-.emu-foot .rux--btn--ghost[aria-expanded="true"] { z-index: 1; background-color: var(--rux-layer-02); box-shadow: var(--emu-drawer-shadow, 0 2px 6px var(--rux-shadow)); clip-path: inset(-1px -6px -6px -6px); }
-.emu-foot .rux--btn--ghost[aria-expanded="true"]:hover { background-color: var(--rux-layer-02); }
-.emu-foot .rux--btn--ghost[aria-expanded="true"]::before { content: ""; position: absolute; inset-inline: -1px; inset-block-start: -2px; block-size: var(--emu-drawer-strip, 2px); background-color: var(--rux-layer-02); }
-
 /* On a phone the panel is the whole screen. Carbon caps it at 75vw, which
    leaves a strip of page too narrow to use beside it. */
 @media (max-width: 41.98rem) {
@@ -40,8 +23,8 @@
 /* A row of Search's results is a link, where Carbon's clickable row is a
    button, so it takes the row's text colour and no underline. */
 .rux--contained-list-item--clickable a.rux--contained-list-item__content { color: var(--rux-text-primary); text-decoration: none; }
-/* A save's card stands beside its name, where Carbon sets a row's content as
-   one block, and its row leaves room for a worded button, where Carbon's
-   leaves room for an icon. */
-.rux--contained-list-item__content.emu-row--card { display: flex; }
-.rux--contained-list-item--with-action .rux--contained-list-item__content.emu-row--card { padding-inline-end: 5.5rem; }
+/* A row of a list in the bar stands its name and its tick apart, where Carbon
+   sets a row's content as one block, and a row with a control of its own
+   leaves it room. */
+.emu-pop .rux--contained-list-item__content { display: flex; align-items: center; }
+.emu-pop .rux--contained-list-item--with-action .rux--contained-list-item__content { padding-inline-end: var(--rux-spacing-09); }

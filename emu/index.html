@@ -22,13 +22,10 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The Library, Emu's front page, as a room that fills the page;
-     docs/plans/emu-room.md is the plan. room.js draws Your Mac, one TV and
-     the one console out, with this Mac's consoles put away in a column down
-     its left and that console's games in one down its right; a foot whose
-     buttons open the account's saves and the controllers; and Rux's Server, the store,
-     a modal opened from the Download tile that ends Consoles and Games. A game is dragged from its drawer onto its console,
-     and a game pressed opens in the side panel. The shell is templates/app-shell.html. -->
+<!-- The Library, Emu's front page, drawn by library.js: a row of every
+     console, the chosen console's games as a wall of covers, and the bar, the
+     chosen game's save, controller and Play. docs/plans/emu-library.md is the
+     plan. The shell is templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -41,17 +38,19 @@
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--up" viewBox="0 0 16 16"><path d="M8 5 13 10 12.3 10.7 8 6.4 3.7 10.7 3 10z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-checkmark" viewBox="0 0 20 20"><path d="M8 13.2 3.6 8.8 2.7 9.7 7.1 14.1 8 15 16.5 6.5 15.6 5.6z" style="fill:var(--rux-icon-path-1)"/><path d="M15.6 5.6 8 13.2 3.6 8.8 2.7 9.7 7.1 14.1 8 15 16.5 6.5 15.6 5.6z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-checkmark--filled" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" style="fill:var(--rux-icon-path-1)"/><path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-checkmark--outline" viewBox="0 0 32 32"><path d="M14 21.414 9 16.413 10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z" style="fill:var(--rux-icon-path-1)"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-warning--alt--filled" viewBox="0 0 32 32"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z" style="fill:var(--rux-icon-path-2)"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></symbol>
 <symbol id="i-error--filled" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M10.7,11.5L4.5,5.3l0.8-0.8l6.2,6.2L10.7,11.5z" style="fill:var(--rux-icon-path-1)"/><path fill="none" d="M10.7,11.5L4.5,5.3l0.8-0.8l6.2,6.2L10.7,11.5z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-search" viewBox="0 0 16 16"><path d="M15,14.3L10.7,10c1.9-2.3,1.6-5.8-0.7-7.7S4.2,0.7,2.3,3S0.7,8.8,3,10.7c2,1.7,5,1.7,7,0l4.3,4.3L15,14.3z M2,6.5	C2,4,4,2,6.5,2S11,4,11,6.5S9,11,6.5,11S2,9,2,6.5z" style="fill:var(--rux-icon-path-1)"/></symbol>
-<symbol id="i-add" viewBox="0 0 32 32"><path d="M17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-overflow-menu--vertical" viewBox="0 0 32 32"><circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
+<symbol id="i-edit" viewBox="0 0 32 32"><path d="M2 26H30V28H2z" style="fill:var(--rux-icon-path-1)"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6	l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-warning--alt-inverted--filled" viewBox="0 0 32 32"><path fill="none" d="M16,20a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,20Zm-1.125-5h2.25V6h-2.25Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M27.3494,4H4.6506l-.0019.0034L15.998,25.8286h.004L27.3513,4.0034ZM14.875,6h2.25v9h-2.25ZM16,20a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,20Z" style="fill:var(--rux-icon-path-2)"/><path d="M29.855,2.481a1.001,1.001,0,0,1,.0322.98l-13,25a1,1,0,0,1-1.7744,0l-13-25A1,1,0,0,1,3,2H29A1.0007,1.0007,0,0,1,29.855,2.481ZM4.6487,4.0033,15.998,25.8286h.004L27.3513,4.0033,27.3493,4H4.6507Z"/></symbol>
-<symbol id="i-game--console" viewBox="0 0 32 32"><path d="M7.51,26a5.48,5.48,0,0,1-1.44-.19A5.6,5.6,0,0,1,2.19,19l2.33-8.84A5.54,5.54,0,0,1,7.11,6.73a5.43,5.43,0,0,1,4.15-.54A5.52,5.52,0,0,1,14.7,9h2.6a5.49,5.49,0,0,1,3.44-2.81,5.43,5.43,0,0,1,4.15.54,5.57,5.57,0,0,1,2.59,3.41L29.81,19a5.6,5.6,0,0,1-3.89,6.83,5.43,5.43,0,0,1-4.15-.54,5.54,5.54,0,0,1-2.59-3.41L19,21H13l-.23.86a5.54,5.54,0,0,1-2.59,3.41A5.46,5.46,0,0,1,7.51,26ZM9.83,8a3.49,3.49,0,0,0-1.72.46,3.6,3.6,0,0,0-1.66,2.19L4.12,19.49A3.6,3.6,0,0,0,6.6,23.88a3.43,3.43,0,0,0,2.62-.34,3.54,3.54,0,0,0,1.66-2.19L11.5,19h9l.61,2.35a3.58,3.58,0,0,0,1.66,2.19,3.46,3.46,0,0,0,2.63.34,3.58,3.58,0,0,0,2.47-4.39l-2.33-8.84a3.55,3.55,0,0,0-1.65-2.19,3.46,3.46,0,0,0-2.63-.34,3.55,3.55,0,0,0-2.37,2.22l-.24.66h-5.3l-.24-.66a3.56,3.56,0,0,0-2.38-2.22A3.48,3.48,0,0,0,9.83,8Z" style="fill:var(--rux-icon-path-1)"/><path d="M10,16a2,2,0,1,1,2-2A2,2,0,0,1,10,16Zm0-2Z" style="fill:var(--rux-icon-path-2)"/><circle cx="22" cy="12" r="1"/><circle cx="22" cy="16" r="1"/><circle cx="20" cy="14" r="1"/><circle cx="24" cy="14" r="1"/></symbol>
+<symbol id="i-download" viewBox="0 0 16 16"><path d="M13 7 12.3 6.3 8.5 10.1 8.5 1 7.5 1 7.5 10.1 3.7 6.3 3 7 8 12z" style="fill:var(--rux-icon-path-1)"/><path d="M13,12v2H3v-2H2v2l0,0c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1l0,0v-2H13z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-warning" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm104-60h672L480-760 144-180Zm361.5-65.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Zm26-122Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -115,7 +114,7 @@
 
   <!-- The scrim, shown only below 66rem and wider than a phone, where the nav overlays the page. -->
   <div class="rux--side-nav__overlay"></div>
-  <!-- The menu is behind the header's button on this page, at every width, so the room has
+  <!-- The menu is behind the header's button on this page, at every width, so the Library has
        the page: `--hidden` after `--ux` closes it, and the button carries no `__hidden`. -->
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Emu">
     <ul class="rux--side-nav__items">
@@ -176,8 +175,7 @@
           <p>No scan yet. The server scans every night.</p>
         </div>
 
-        <!-- Carbon's inline loading, until room.js has read the collection
-             and this Mac and knows which the page is, the room or the store. -->
+        <!-- Carbon's inline loading, until library.js has read the collection and this Mac. -->
         <div class="rux--inline-loading" id="emu-loading" role="status" aria-live="polite">
           <div class="rux--inline-loading__animation">
             <div class="rux--loading rux--loading--small">
@@ -190,161 +188,75 @@
           <div class="rux--inline-loading__text">Loading the library…</div>
         </div>
 
-        <!-- The wall, from room.js. Where Rux Emu Helper answers it is one
-             tile as wide as the page's frame: its head, then the room, Your Mac, then its foot,
-             whose buttons open the account's saves and the controllers. Without the helper only the store
-             shows, as the page. -->
-        <div class="emu-wall" id="emu-wall">
-          <!-- The room tile's head: the room's name and the strip. The strip is the room's one place for words: this Mac
-               at rest, and what a move is doing or did, with Undo where it
-               can be taken back. -->
+        <!-- The Library's tile, from library.js. Its head and its bar show
+             only where Rux Emu Helper answers. -->
+        <div class="emu-library" id="emu-library" hidden>
+          <!-- The head: this Mac's name, the strip, the page's one place for
+               words, and Sound. -->
           <div class="emu-tile__head emu-head" id="emu-head" hidden>
-            <h2 class="emu-tile__title" id="emu-room-h">Your Mac</h2>
+            <h2 class="emu-tile__title">Your Mac</h2>
             <div class="emu-strip" id="emu-strip">
               <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
               <div class="emu-strip__said">
-                <p class="emu-strip__words" role="status" id="emu-room-said"></p>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="emu-room-undo" hidden>Undo</button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="emu-room-keep" hidden>Keep</button>
+                <p class="emu-strip__words" role="status" id="emu-said"></p>
+                <div class="emu-strip__answers" id="emu-said-answers"></div>
               </div>
             </div>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
           </div>
 
-          <!-- Rux's Server, the store: every console with games and every
-               game, a card each with Download. Inside the store's modal where
-               the helper answers, and the page itself where it does not;
-               hidden until room.js knows which, so it never shows as the
-               page for a moment before the room does. -->
-          <section class="emu-store" id="emu-collection" aria-labelledby="emu-collection-h" hidden>
-            <h2 class="emu-tile__title emu-store__title" id="emu-collection-h">Rux's Server</h2>
-            <div class="rux--tabs rux--tabs--contained rux--tabs--full-width rux--layout--size-lg">
-              <div class="rux--tab--list" role="tablist" aria-label="Rux's Server" id="emu-store-tabs">
-                <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="emu-store-consoles" id="emu-store-consoles-tab">
-                  <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Consoles</span></div>
-                </button>
-                <button class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="emu-store-games" id="emu-store-games-tab" tabindex="-1">
-                  <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Games</span></div>
-                </button>
+          <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul>
+
+          <section class="emu-games" aria-labelledby="emu-games-h">
+            <div class="emu-games__head">
+              <h2 class="emu-games__title" id="emu-games-h"></h2>
+              <p class="emu-row__sub emu-games__count" id="emu-games-count"></p>
+              <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg emu-games__show" role="tablist" aria-label="Show" id="emu-games-show" hidden>
+                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-show="all"><span class="rux--content-switcher__label">All</span></button>
+                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-show="mac"><span class="rux--content-switcher__label">On this Mac</span></button>
               </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="emu-games-menu" aria-label="This console" title="This console" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg></button>
             </div>
-            <div class="emu-store__pane" id="emu-store-consoles" role="tabpanel" aria-labelledby="emu-store-consoles-tab">
-              <ul class="emu-store__grid" role="list" id="emu-store-console-list" aria-label="Consoles"></ul>
-            </div>
-            <div class="emu-store__pane" id="emu-store-games" role="tabpanel" aria-labelledby="emu-store-games-tab" hidden>
-              <div class="emu-store__bar">
-                <div class="rux--form-item emu-store__select">
-                  <div class="rux--select">
-                    <label class="rux--label" for="emu-store-console">Console</label>
-                    <div class="rux--select-input__wrapper">
-                      <select class="rux--select-input" id="emu-store-console"></select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                    </div>
-                  </div>
-                </div>
-                <div class="rux--form-item emu-store__select">
-                  <div class="rux--select">
-                    <label class="rux--label" for="emu-store-sort">Sort by</label>
-                    <div class="rux--select-input__wrapper">
-                      <select class="rux--select-input" id="emu-store-sort">
-                        <option value="az">A to Z</option>
-                        <option value="favourites">Favourites first</option>
-                      </select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                    </div>
-                  </div>
-                </div>
-                <p class="emu-row__sub emu-store__count" id="emu-store-count"></p>
-              </div>
-              <ul class="emu-store__grid" role="list" id="emu-games" aria-label="Games"></ul>
+            <div class="emu-games__scroll">
+              <p class="emu-row__sub" id="emu-games-none" hidden>None on this Mac yet.</p>
+              <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>
             </div>
           </section>
 
-          <!-- Your Mac, from room.js: Consoles, a column down its left of the
-               consoles put away, one solid space holding the TV and the
-               console out, and Games, a column down its right of that
-               console's games. -->
-          <div class="emu-stage">
-            <section class="emu-room" id="emu-room" aria-labelledby="emu-room-h" hidden>
-              <aside class="emu-rail rux--layer-two" id="emu-rail-kit" aria-labelledby="emu-rail-h">
-                <h3 class="rux--visually-hidden" id="emu-rail-h">Consoles</h3>
-                <p class="emu-row__sub emu-rail__none" id="emu-kit-none" hidden>No consoles on this Mac yet.</p>
-                <ul class="emu-kits" role="list" id="emu-kit" aria-label="Consoles put away"></ul>
-              </aside>
-              <div class="emu-space" id="emu-space">
-              <!-- The TV, at the top of the room: its glass shows only a playing home console's game, and the mark that drifts as the screensaver. -->
-              <div class="emu-tv" id="emu-tv">
-                <div class="emu-tv__screen" data-theme="g100">
-                  <div class="emu-tv__art" id="emu-tv-art"></div>
-                  <div class="emu-tv__saver" aria-hidden="true"><img src="/brand/logo.svg" alt=""></div>
-                </div>
-                <!-- The TV's foot, the bezel under its glass: the button that opens its menu; a press anywhere on the TV opens it too. -->
-                <button type="button" class="emu-tv__foot" id="emu-tv-menu-open" aria-haspopup="menu" aria-label="TV menu" title="Menu"></button>
-              </div>
-              <!-- The wire from the console that is playing to the TV, drawn by room.js. -->
-              <svg class="emu-wire" id="emu-wire" aria-hidden="true"><path pathLength="1"/></svg>
-              <!-- The room under the TV, where the console out stands. -->
-              <div class="emu-floor" id="emu-floor">
-                <p class="emu-floor__empty" id="emu-floor-empty" hidden></p>
-                <ul class="emu-units" role="list" id="emu-units" aria-label="Consoles on this Mac"></ul>
-              </div>
-              </div>
-              <aside class="emu-rail emu-rail--games rux--layer-two" aria-labelledby="emu-games-h">
-                <h3 class="rux--visually-hidden" id="emu-games-h">Games</h3>
-                <p class="emu-row__sub emu-rail__none" id="emu-mine-none" hidden>Choose a console to see its games.</p>
-                <ul class="emu-rail__games" role="list" id="emu-mine-games" aria-label="Games for the console chosen"></ul>
-              </aside>
-            </section>
-            <!-- The drawer, over the room's foot and opened up from the
-                 footer's buttons: the picked console's saves, or the
-                 controllers this Mac sees, one at a time. -->
-            <section class="emu-mine rux--layer-three" id="emu-mine" aria-label="Saves" hidden>
-              <div class="rux--stack-vertical rux--stack-scale-3 emu-mine__pane" id="emu-storage" hidden>
-                <div>
-                  <h3 class="rux--type-heading-02" id="emu-storage-for"></h3>
-                  <p class="emu-row__sub" id="emu-storage-sub"></p>
-                </div>
-                <div class="rux--stack-vertical rux--stack-scale-5" id="emu-storage-lists"></div>
-              </div>
-              <div class="rux--stack-vertical rux--stack-scale-3 emu-mine__pane" id="emu-pads-pane" hidden>
-                <p class="emu-row__sub" id="emu-pads-none">Press a button on a controller to see it here.</p>
-                <ul class="emu-pads emu-mine__row" role="list" id="emu-pads" aria-label="Controllers on this Mac"></ul>
-                <p class="emu-row__sub">Button layouts stay on each Mac for now.</p>
-              </div>
-            </section>
+          <!-- The bar, the chosen game's: its name, its save, its controller,
+               Details and the one next move. A list opens up from Save or
+               Controller. -->
+          <div class="emu-bar" id="emu-bar" role="group" aria-labelledby="emu-bar-name" hidden>
+            <div class="emu-bar__game">
+              <h2 class="emu-bar__name" id="emu-bar-name"></h2>
+              <p class="emu-row__sub" id="emu-bar-sub"></p>
+            </div>
+            <div class="emu-pick">
+              <button type="button" class="emu-pick__button" id="emu-bar-save" aria-expanded="false" aria-controls="emu-bar-save-list">
+                <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+              </button>
+              <div class="emu-pop rux--layer-two" id="emu-bar-save-list" hidden></div>
+            </div>
+            <div class="emu-pick">
+              <button type="button" class="emu-pick__button" id="emu-bar-pad" aria-expanded="false" aria-controls="emu-bar-pad-list">
+                <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+              </button>
+              <div class="emu-pop rux--layer-two" id="emu-bar-pad-list" hidden></div>
+            </div>
+            <div class="emu-bar__moves">
+              <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-lg" id="emu-bar-details">Details</button>
+              <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-bar-go">Play</button>
+            </div>
           </div>
-          <!-- The room tile's foot, mirroring its head: a button for each
-               drawer, Saves and Controllers, each opening its drawer up
-               over the room's foot, its chevron turning down while it is
-               open, and closing it again. -->
-          <div class="emu-tile__foot emu-foot" id="emu-foot" hidden>
-            <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" data-drawer="emu-storage" aria-expanded="false" aria-controls="emu-mine"><svg class="emu-foot__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg>Saves<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" data-drawer="emu-pads-pane" aria-expanded="false" aria-controls="emu-mine"><svg class="emu-foot__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-game--console"/></svg>Controllers<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg></button>
-          </div>
-
         </div>
       </div>
     </div>
   </div>
 </main>
-<!-- The TV's menu, filled and opened under its foot by room.js: Sound. -->
-<ul id="emu-tv-menu" class="rux--menu rux--menu--with-icons" role="menu" aria-label="TV" tabindex="-1"></ul>
-<!-- A console's menu, filled and opened under the console by room.js. -->
+<!-- The chosen console's menu, filled and opened by library.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>
-<!-- Rux's Server, from a drawer's Download tile: Carbon's default modal, its medium, which room.js fills
-     with the store's section while the helper answers. -->
-<div class="rux--layer-one rux--modal" id="emu-store" role="presentation">
-  <div role="dialog" aria-modal="true" aria-labelledby="emu-store-h" tabindex="-1" class="rux--modal-container">
-    <div class="rux--modal-header">
-      <h2 class="rux--modal-header__heading" id="emu-store-h">Rux's Server</h2>
-      <div class="rux--modal-close-button">
-        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="rux--modal-content emu-store-modal" id="emu-store-body"></div>
-  </div>
-</div>
 <!-- Search, from the header's button: any game by its title, from search.js. -->
 <div class="rux--layer-one rux--modal" id="emu-search-modal" role="presentation">
   <div role="dialog" aria-modal="true" aria-labelledby="emu-search-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
@@ -388,7 +300,7 @@
 
 
 <script src="/design/js/overlay.js"></script>
-<script src="/design/js/tabs.js"></script>
+<script src="/design/js/accordion.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/menu.js"></script>
 <script src="/design/js/form-controls.js"></script>
@@ -410,6 +322,6 @@
 <script src="carry.js"></script>
 <script src="this-mac.js"></script>
 <script src="gamepad.js"></script>
-<script src="room.js"></script>
+<script src="library.js"></script>
 </body>
 </html>

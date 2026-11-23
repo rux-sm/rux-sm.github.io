@@ -6,12 +6,13 @@
    files and the downloads, each null where no helper answers or it is too
    old to say. `area` is the part, shown only on a Mac: Play where this Mac
    holds the game, Download to this Mac
-   with its progress and Cancel while it comes, and Remove from this Mac,
-   which takes the game's files and leaves its saves. Where the helper is
+   with its progress and Cancel while it comes; `remover` beside it is where
+   Remove from this Mac stands, which takes the game's files and leaves its
+   saves. Where the helper is
    not running it offers to start it. A game played is marked with when,
    for Recently played. `onChanged` is told when what this Mac holds, or
-   whether the helper runs, has changed. `play` is Play itself, which the
-   room uses too.
+   whether the helper runs, has changed. `play` is Play itself, the Library's
+   own where the panel is given one, so a game starts one way there.
    ========================================================================== */
 (() => {
   'use strict';
@@ -76,9 +77,10 @@
     return { node, set };
   }
 
-  function area(g, { focus = false, onChanged = () => {} } = {}) {
+  function area(g, { focus = false, onChanged = () => {}, play: own = null } = {}) {
     const box = el('div', 'emu-mac rux--stack-vertical rux--stack-scale-3');
-    if (!H.onMac) return box;
+    const remover = el('div', 'emu-mac');
+    if (!H.onMac) return { box, remover };
     const said = el('p', 'rux--type-body-01');
     said.setAttribute('role', 'status');
     // The bar while the game arrives, kept between looks so it moves, not blinks.
@@ -108,6 +110,7 @@
 
       if (!helper) {
         bar = null;
+        remover.replaceChildren();
         said.textContent = words ?? 'Rux Emu Helper is not running on this Mac.';
         const start = button('Start Rux Emu Helper', 'rux--btn--secondary', async () => {
           start.disabled = true;
@@ -129,6 +132,7 @@
           });
           said.textContent = '';
           show([bar.node, row(cancel), said]);
+          remover.replaceChildren();
         }
         bar.set(s);
         timer = setTimeout(draw, 1000);
@@ -145,10 +149,12 @@
       const name = R.systemName(g.system);
 
       const buttons = [];
+      const removes = [];
       if (here && emulator) {
         // Play tries again where the saves could not be brought, and Play
         // anyway, shown only then, plays this Mac's own.
         const start = anyway => async () => {
+          if (own) { own(); return; }
           go.disabled = true;
           lone.hidden = true;
           said.textContent = 'Starting…';
@@ -176,10 +182,11 @@
       if (keeps && (here || s.done)) {
         const remove = button('Remove from this Mac', 'rux--btn--danger--tertiary', async () => {
           remove.disabled = true;
+          wantsFocus = true;
           try { await H.remove(g); onChanged(); draw('Removed from this Mac. Its saves are kept.'); }
           catch (error) { said.textContent = error.message; remove.disabled = false; }
         });
-        buttons.push(remove);
+        removes.push(remove);
       }
 
       const facts = [
@@ -190,10 +197,9 @@
         here && !emulator ? `This Mac has no emulator installed for ${name}.` : '',
       ].filter(Boolean);
       said.textContent = words ?? facts.join(' ');
-      // Play or Download leads where there is one; Remove is always last.
-      const safe = keeps && (here || s.done) ? buttons.slice(0, -1)[0] : buttons[0];
       const saves = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      show(buttons.length ? [row(...buttons), said, saves] : [said, saves], safe);
+      show(buttons.length ? [row(...buttons), said, saves] : [said, saves], buttons[0]);
+      remover.replaceChildren(...removes);
       if (emulator) drawSaves(saves);
     }
 
@@ -204,7 +210,7 @@
       try { st = await R.carry?.standing(g); } catch (error) { console.error(error); return; }
       if (!st || closed() || !box.isConnected) return;
       const line = el('p', 'rux--type-body-01', st.running ? `${st.emulator} is open: its saves are carried when it quits.`
-        : st.inStep ? 'Its saves on this Mac are the ones in Supabase.' : 'Its saves on this Mac differ from Supabase: they are carried when Play is pressed.');
+        : st.inStep ? 'Its saves are up to date.' : 'Its saves are brought up to date when you play.');
       line.setAttribute('role', 'status');
       box.replaceChildren(line);
       if (!st.other.length || st.running) return;
@@ -220,7 +226,7 @@
     }
 
     draw();
-    return box;
+    return { box, remover };
   }
 
   R.thisMac = { read, area, play };

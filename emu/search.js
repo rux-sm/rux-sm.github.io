@@ -1,10 +1,9 @@
 /* ==========================================================================
-   search.js — Search, in every page's header or the TV's menu
+   search.js — Search, in every page's header
    --------------------------------------------------------------------------
    The one search finds any game in the collection by its title, from
-   every page's header, or the TV's menu where the Library is a room, in
-   Design's modal that each page carries as #emu-search-modal. A game picked opens in the Library with its panel,
-   ./?game=<system>/<title>, which room.js reads. The games are
+   every page's header, in Design's modal that each page carries as #emu-search-modal. A game picked is chosen in the Library,
+   ./?game=<system>/<title>, which library.js reads. The games are
    read the first time the window opens. ⌘K or Ctrl+K opens it too.
    ========================================================================== */
 (() => {

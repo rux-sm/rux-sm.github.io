@@ -5,7 +5,7 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
-/* THE LIBRARY'S TILES, the room's and each drawer's, are rounded as the
+/* THE LIBRARY'S TILE is rounded, and a console or a pick on it, as the
    scheduler's board is: 12px in the themes that round Design's largest box,
    Ant Design Pro's, Geist's and Apple's, and square in the rest, as Carbon
    draws them. Geist and Rux dark tell a tile from the page by a line
@@ -14,25 +14,26 @@
 [data-theme="geist-dark"],
 [data-theme^="apple-"] {
   --emu-tile-radius: 12px;
+  --emu-kit-radius: 6px;
 }
 [data-theme="geist-dark"],
 [data-theme="rux-dark"] {
   --emu-tile-edge: 1px solid var(--rux-border-subtle-01);
 }
+/* The pixel theme's wider letters need more of the wall's switch. */
+[data-theme="pixel-dark"] { --emu-show: 19.5rem; }
 /* Geist dark's header is 65px, where every other theme's is Carbon's 48px,
-   and the room's tile is as tall as the window less the header. */
+   and the Library's tile is as tall as the window less the header. */
 [data-theme="geist-dark"] { --emu-header: calc(4rem + 1px); }
-/* A drawer floats clear of its button, 8px inside the room, in the themes
+/* A list opened from the bar floats clear of its button by 8px in the themes
    whose menus float clear in Design: Ant Design Pro's, Geist's, Rux dark's
-   and Apple's. There its button keeps the drawer's layer and no shadow or
-   strip, as a floating panel's button does. */
+   and Apple's. */
 [data-theme="ant-dark"],
 [data-theme="geist-dark"],
 [data-theme="rux-dark"],
 [data-theme^="apple-"] {
   --emu-drawer-inset: var(--rux-spacing-03);
-  --emu-drawer-shadow: none;
-  --emu-drawer-strip: 0px;
+  --emu-pop-radius: var(--emu-tile-radius, 0);
 }
 /* A tile's head holds its controls in from its edges as the scheduler's
    heads do, by the theme's toolbar inset and gap (docs/button-spacing.md in

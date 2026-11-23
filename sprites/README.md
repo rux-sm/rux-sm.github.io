@@ -55,11 +55,11 @@ colours beside it, with Gallery to go back.
   the gallery shows every picture in `sprites/art/` and each drawing this
   browser saved or opened elsewhere in the checkout, with Browse for any
   other file. Every picture there is drawn at one size, 2× to 8× from the
-  bar, so drawings compare at their true sizes; 3× is Emu's room.
+  bar, so drawings compare at their true sizes; 2× is Emu's Library.
 - **Emu's elements:** under the drawings no element shows, the gallery
   lists Emu's three sets, one element for each of Emu's systems, its file
-  named for the system: `emu/brand/consoles/`, which holds the room's TV
-  too and which `emu/docs/drawing-consoles.md` says how to draw,
+  named for the system: `emu/brand/consoles/`, which
+  `emu/docs/drawing-consoles.md` says how to draw,
   `emu/brand/logos/` and `emu/brand/controllers/`. Each tile is the
   element's drawing, or an empty tile that starts a new drawing assigned to
   it on its first save. The systems are the ones `emu/emulators.json`

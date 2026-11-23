@@ -12,7 +12,7 @@ the chosen game, its save, its controller and Play. It opens on the game last
 played. Press a console and its games fill the wall, press a game and the bar
 is that game's, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
-`emu/room.js`; the rest of Emu is unchanged.
+`emu/library.js`; the rest of Emu is unchanged.
 
 ## Decisions
 
@@ -30,6 +30,8 @@ The page:
 - **The consoles are pixel art at two CSS pixels to an art pixel,** never
   stretched, and Carbon lays out everything else.
 - **Motion follows Carbon's curves,** and every move makes its small sound.
+- **A controller moves over the consoles and the covers,** A to choose and then
+  to play, B to close what is open.
 - **Every move works without dragging,** and a game dropped on its console
   plays, as an extra; the word under the pointer says what letting go will do.
 
@@ -132,37 +134,23 @@ The side panel:
   from this Mac;** its region, format, list name and fingerprints are one
   fold, shut, below them.
 
+- **Without the helper, as on the phone, the page is the row and the wall
+  alone,** with no Save, Controller, Play or Download, and a game pressed opens
+  its panel.
+
 ## Questions
 
-- Without the helper, as on the phone, should the page be the same row and
-  wall, with no Save, Controller, Play or Download? Recommended: yes.
+None.
 
 ## Tasks
 
-- [ ] Make one chosen console and one chosen game the page's whole state,
-      opening on the game last played, with Search following it.
-- [ ] Lay the page out: the row, the wall and the bar with Details and its
-      button. Take out the TV, the console columns, taking out, putting away
-      and their drag.
-- [ ] Put the server's games in the wall and consoles not set up in the row,
-      with Download on both, and take out Rux's Server.
-- [ ] Make Play one function, the page's, which the side panel calls too.
-- [ ] Put Save in the bar with its list, and take out the Saves drawer.
-- [ ] Put Controller in the bar with the controller connected, and take out the
-      Controllers drawer.
-- [ ] Order the side panel as decided, its facts in a fold.
-- [ ] Name every console that goes when an emulator is removed.
-- [ ] Lay it out without the helper and on the phone, and see it in Safari.
-- [ ] Take out the kept room: its calls in `emu/data.js`, then the `room` column
-      of `emu_macs` as its own database step on rux's yes.
-- [ ] Take out the TV's drawing, from Sprites' art as well as Emu's.
+- [ ] Drop the `room` column of `emu_macs`, which nothing reads, on rux's yes.
+- [ ] See the Library in Safari.
 - [ ] Give Rux Emu Helper a call that opens an emulator with no game, for
       Change buttons.
 - [ ] Have the helper read which controller an emulator has buttons for, one
       emulator at a time, Dolphin first, whose `GCPadNew.ini` names it.
 - [ ] Choose a controller from the list, once its layouts are carried.
-- [ ] Choose a console and a game with a controller, A to play and B back, from
-      `emu/gamepad.js`, which nothing listens to.
 - [ ] Give Rux Emu Helper a call that says whether the home server answers, and
       show it on the strip.
 - [ ] Update each Mac to Rux Emu Helper 35 or later, which takes a carried save

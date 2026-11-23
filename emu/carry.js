@@ -29,11 +29,11 @@
    `start` sets up an emulator never opened on this Mac from the settings
    kept for it: this Mac's own where it kept some before its emulator was
    removed, else the preferred ones. `setUp` is an emulator made ready on this
-   Mac, as Status and the room do it: installed where an installer is given,
+   Mac, as Status and the Library do it: installed where an installer is given,
    then started, given its files, its saves carried and its managed settings
    written. `keep` carries an emulator's saves and keeps its settings in
-   Supabase, and checks both are held as they are, as the room does when a
-   console is turned off. `remove` does the same, then has the helper move
+   Supabase, and checks both are held as they are, as the Library does when a
+   console is removed. `remove` does the same, then has the helper move
    the emulator and its folders to the
    Trash, so installing it again sets it up as it was. `give` brings the BIOS, key and firmware files Supabase holds for an
    emulator that this Mac lacks, one way. `before` is what Play does first:

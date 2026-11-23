@@ -2,11 +2,11 @@
 type: how-to
 ---
 
-# Drawing a console for the room
+# Drawing a console for the Library
 
-A console in the room is a pixel drawing, a PNG in `brand/consoles/` named
+A console in the Library is a pixel drawing, a PNG in `brand/consoles/` named
 for its system as `R.SYSTEMS` in `app.js` names it: `snes.png`, `gba.png`,
-`psx.png`. The room shows it pixel for pixel in its own colours, the same in
+`psx.png`. The Library shows it pixel for pixel in its own colours, the same in
 every theme. You draw it in Sprites, the site's pixel editor at `/sprites/`,
 in Sprites' palette, `sprites/palette.json`. The drawing itself is kept in
 `sprites/art/`, and Sprites writes the console's PNG from it, as
@@ -14,7 +14,7 @@ in Sprites' palette, `sprites/palette.json`. The drawing itself is kept in
 
 ## The view
 
-The room is seen from above and in front, so a console shows two faces. Its
+A console is seen from above and in front, so a console shows two faces. Its
 top is drawn first and holds what is on top of the real one: the slot, the
 lid, the switches. Its front is drawn under that, a tone or two darker, with
 the ports and the tray. The two feet are cut from the bottom corners: one
@@ -60,16 +60,6 @@ edge nearest you. One that folds stands its top screen up behind the half
 lying flat. A Game Boy Advance is drawn at the Game Boy's scale, 28 wide
 and 14 high.
 
-## The TV
-
-The room's TV is `tv.png` in the same folder, a flat screen with no
-stand, 80 by 46: a thin frame and a standby light in the middle of its
-foot. Its glass is the dark rectangle 74 wide and 40 high, 3 across and 3
-down; the room writes on it there, so a redrawn TV keeps its glass in that
-place, or `.emu-tv__screen` in `app.css` moves with it. Its foot, the
-bezel 3 high under the glass, is the button that opens the TV's menu,
-`.emu-tv__foot`.
-
 ## Steps
 
 1. Open Sprites and pick the console from the gallery under Consoles, or
@@ -79,10 +69,10 @@ bezel 3 high under the glass, is the button that opens the TV's menu,
    the console's PNG into `emu/brand/consoles/`, straight into the checkout
    in Chrome.
 4. Where the slot or tray moved, set the console's place in `SLOT` in
-   `room.js`: how far down the drawing a game goes in, from 0 to 1. Where
+   `library.js`: how far down the drawing a game goes in, from 0 to 1. Where
    its power light moved, set `LIGHT` there too: the light's left, top,
    width and height in pixels and its colour. Draw the light unlit or dim;
-   the room lights it while the console is on.
-5. Load the room on :8641 again and look at the console in a dark theme and
+   the Library lights it while the console is set up.
+5. Load the Library on :8641 again and look at the console in a dark theme and
    a light one, then commit the drawing, the PNG and
    `sprites/assigned.json`. The published site shows it after the push.

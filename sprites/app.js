@@ -48,7 +48,7 @@
    in Chrome every picture in the palettes' folders and every drawing this
    browser saved or opened elsewhere, the last changed first, less the
    drawings an element shows. Every picture is drawn at one scale, 2× to
-   8× from the bar and 3× as in Emu's room at first, so drawings show
+   8× from the bar and 3× at first, so drawings show
    their true sizes beside each other. Under them stands each of Emu's sets beneath
    its name, a tile for each element in Emu's order: the drawing assigned
    to it, or an empty tile that starts a new drawing for it. Chrome reads
@@ -848,7 +848,7 @@
   }
   // ONE SCALE for every picture in the gallery, so drawings sit at their true
   // sizes beside each other: the screen pixels per drawing pixel picked in
-  // the bar, 3 as in Emu's room unless this browser picked another.
+  // the bar, 3 unless this browser picked another.
   const SCALE = 'sprites-gallery-scale', scales = $('sprites-scale');
   let scale = 3;
   try { scale = Number(localStorage.getItem(SCALE)) || 3; } catch {}

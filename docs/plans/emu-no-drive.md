@@ -20,7 +20,7 @@ stays, since that is the server reading its own disk.
   the only scan.** Status's Update, which scans a drive from a Mac through
   the helper, goes, with `emu/update.js` and `emu/drive.js`.
 - **A game plays only from this Mac's library.** Playing straight from a
-  drive or share goes from `emu/this-mac.js`, `emu/room.js` and the helper's
+  drive or share goes from `emu/this-mac.js`, `emu/library.js` and the helper's
   `/play`, so a game not downloaded says "Download it first."
 - **Rux Emu Helper stops looking for a collection.** It drops `collection()`,
   every `/drive` call and the collection in `/status`, and its menu-bar

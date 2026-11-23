@@ -161,20 +161,6 @@
     },
     // How each Mac stood when its saves were last gathered.
     macs: () => all(() => client.from('emu_macs').select('*').order('name')),
-    // A Mac's room on the Library: each console out in it, and under
-    // `placed` where each thing in it stands; null where nothing was ever
-    // moved, or the Mac has no row.
-    async room(mac) {
-      const { data: row, error } = await client.from('emu_macs').select('room').eq('name', mac).maybeSingle();
-      fail(error);
-      return row?.room ?? null;
-    },
-    // A Mac's room kept on its row, which it has once Status saved the Mac: whether it was kept.
-    async saveRoom(mac, room) {
-      const { data: rows, error } = await client.from('emu_macs').update({ room }).eq('name', mac).select('name');
-      fail(error);
-      return rows.length > 0;
-    },
     // The last scan's row: when the server last scanned, what it found to
     // delete or unsorted, and each emulator's newest version out.
     async lastScan() {

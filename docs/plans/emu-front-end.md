@@ -8,7 +8,7 @@ type: plan
 
 Emu shows every game as box art, and Play on a game opens it in its emulator
 on the MacBook Pro, so the site, not ES-DE, is where a game is picked. The
-front page is `docs/plans/emu-room.md`, and the rest of Emu
+front page is `docs/plans/emu-library.md`, and the rest of Emu
 `docs/plans/emu-app.md`.
 
 ## Decisions

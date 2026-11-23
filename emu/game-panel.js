@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    The game opened from the Library or the Collection, in Carbon's side panel
    that each page carries as #emu-panel: what this Mac can do with it,
-   this-mac.js, then everything the scan read about it, its saves, and rux's
-   marks and note, which are saved from here.
+   this-mac.js, its problems, its saves, and rux's marks and note, which are
+   saved from here, then Remove from this Mac, and everything the scan read
+   about it in one fold, shut.
    ========================================================================== */
 (() => {
   'use strict';
@@ -13,14 +14,14 @@
   const $ = id => document.getElementById(id);
   const { el, tag } = R;
 
-  // Play, Download and Remove on this Mac, what the game is, its problems,
-  // its saves, rux's notes, then each file. `top` is put first, as the
-  // Library puts the game's art there, and `mac` is this-mac.js's options.
+  // `top` is put first, as the Library puts the game's art there, and `mac` is
+  // this-mac.js's options.
   function open(g, { saves = [], onSaved = () => {}, top = [], mac = {} } = {}) {
     $('emu-panel-label').textContent = R.systemName(g.system);
-    $('emu-panel-title').textContent = g.title;
+    $('emu-panel-title').textContent = R.nameOf(g);
     const body = $('emu-panel-body');
-    body.replaceChildren(...top, R.thisMac.area(g, mac));
+    const { box, remover } = R.thisMac.area(g, mac);
+    body.replaceChildren(...top, box);
     const facts = (pairs) => {
       const dl = el('dl', 'emu-facts');
       for (const [k, v, cls] of pairs) {
@@ -32,20 +33,13 @@
       return dl;
     };
     const problems = R.problemsOf(g);
-    const status = el('div');
-    status.append(tag(R.STATUS[g.status]));
-    body.append(status);
     if (problems.length) {
+      const status = el('div');
+      status.append(tag(R.STATUS[g.status]));
       const ul = el('ul', 'rux--list--unordered');
       for (const [, words] of problems) ul.append(el('li', 'rux--list__item', words));
-      body.append(ul);
+      body.append(status, ul);
     }
-    body.append(facts([
-      ['Region', g.region], ['Languages', g.languages], ['Revision', g.revision],
-      ['Format', g.formats.join(' + ').toUpperCase()], ['Size', R.size(g.size)],
-      ['Title ID', g.title_id], ['Version', g.title_id ? g.version : null],
-      ['On the list as', g.match?.names?.join(', ')], ['Found by', g.match?.by?.join(', ')],
-    ]));
     const own = saves.filter(s => s.system === g.system && s.game === g.title);
     if (own.length) {
       // Each save opens in Saves.
@@ -59,18 +53,24 @@
       }
       body.append(el('h3', 'rux--type-heading-02', 'Saves'), ul);
     }
-    body.append(notesForm(g, onSaved));
+    body.append(notesForm(g, onSaved), remover);
+    const about = [facts([
+      ['Title', g.title], ['Region', g.region], ['Languages', g.languages], ['Revision', g.revision],
+      ['Format', g.formats.join(' + ').toUpperCase()], ['Size', R.size(g.size)],
+      ['Title ID', g.title_id], ['Version', g.title_id ? g.version : null],
+      ['On the list as', g.match?.names?.join(', ')], ['Found by', g.match?.by?.join(', ')],
+    ])];
     for (const x of g.extras ?? []) {
-      body.append(el('h3', 'rux--type-heading-02', x.kind === 'update' ? 'Update' : 'Add-on'),
+      about.push(el('h3', 'rux--type-heading-02', x.kind === 'update' ? 'Update' : 'Add-on'),
         facts([['File', x.file?.name], ['Version', x.version], ['Size', x.file ? R.size(x.file.size) : null]]));
     }
     const files = g.files ?? [];
     if (g.folder) {
-      body.append(el('h3', 'rux--type-heading-02', 'Folder'), facts([['Files', files.length]]));
+      about.push(el('h3', 'rux--type-heading-02', 'Folder'), facts([['Files', files.length]]));
     } else {
       for (const f of files) {
         const h = f.header ?? {};
-        body.append(el('h3', 'rux--type-heading-02', f.name.split('/').pop()), facts([
+        about.push(el('h3', 'rux--type-heading-02', f.name.split('/').pop()), facts([
           ['Size', R.size(f.size)],
           ['Internal title', h.internalTitle], ['Game code', h.gameCode], ['Product code', h.productCode],
           ['Disc ID', h.discId], ['Disc', h.discNumber], ['Serial', h.serial],
@@ -82,6 +82,7 @@
         ]));
       }
     }
+    body.append(R.folds([R.fold([el('span', '', 'About this copy')], about, { id: 'emu-panel-about' })]));
     $('emu-panel').hidden = false;
     $('emu-panel').classList.add('rux--side-panel--open');
     // A game opens at its top, whatever the last one was scrolled to.

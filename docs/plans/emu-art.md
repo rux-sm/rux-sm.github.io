@@ -33,6 +33,4 @@ None.
 - [ ] Once a scan has put every cover in Supabase, remove the libretro
   addresses from `emu/app.js`, which tries them for a game Supabase has no
   cover of.
-- [ ] Put rux's own pictures, for the games no list names as theirs, in the
-  share's `art` folder.
 - [ ] Replace the box art decision in `docs/plans/emu-front-end.md`.

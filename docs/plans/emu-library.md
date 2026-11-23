@@ -98,7 +98,8 @@ Save:
 - **Its list is the game's cards, each with its name to change, then Start a
   new save,** where a save's own name says whose it is, as on the NES, SNES,
   N64, Game Boy, Color, Advance, DS, PlayStation and PS2. On the other six it
-  lists them with no moves.
+  lists them with no moves, and one it cannot match to the game is what the
+  scan knows of it, or "Kept in Dolphin", never called new.
 - **A console's own saves, which name no game, are in the Saves page,** which
   the list links to.
 - **A card is one game's save and its save states, swapped as one,** so a game

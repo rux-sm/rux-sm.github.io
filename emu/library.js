@@ -561,6 +561,13 @@
   const cardNote = c => [R.date(c.saved), states(c.states)].filter(Boolean).join(' · ');
   const wordOf = system => emulators?.systems?.[system]?.saveWord ?? 'Save';
   const mineOf = g => (cards.system === g.system ? cards.read?.games.get(g.title) : null) ?? { in: null, out: [] };
+  // Where a console's cards cannot move, its files may not say which game
+  // each is, so one not found is never called new: it is what the scan knows
+  // of the game's save, or kept in its emulator.
+  const unsaid = g => {
+    const last = saves.filter(s => s.system === g.system && s.game === g.title).map(s => s.saved_at ?? '').sort().at(-1);
+    return last ? R.date(last) : `Kept in ${emulatorOf(g.system)}`;
+  };
   const savePick = pickOf('emu-bar-save', fillSave);
   function writeSave() {
     const g = game;
@@ -570,6 +577,7 @@
     if (!cards.read) { savePick.write({ value: 'On this Mac', note: 'Not kept in Supabase', off: true }); return; }
     const mine = mineOf(g);
     const two = aside?.key === keyOf(g) && aside.other.length > 0;
+    if (!mine.in && !cards.read.moves) { savePick.write({ value: wordOf(g.system), note: unsaid(g), off: moving }); return; }
     savePick.write({ value: mine.in ? mine.in.name ?? wordOf(g.system) : 'New save',
       note: two ? 'Two saves found' : mine.in ? cardNote(mine.in) : mine.out.length ? `${mine.out.length} put away` : 'Starts when you play', warn: two, off: moving });
   }
@@ -646,7 +654,7 @@
       rows.push(popRow(c.name, cardNote(c), { end: renames(c),
         run: can ? () => moveCard('Putting the save in…', `${nameOf(g)} will play ${c.name}.`, () => R.carry.putIn(g, games, c.id)) : null }));
     }
-    if (!mine.in) rows.unshift(popRow('New save', 'Starts when you play', { on: true }));
+    if (!mine.in) rows.unshift(read.moves ? popRow('New save', 'Starts when you play', { on: true }) : popRow(wordOf(g.system), unsaid(g), { on: true }));
     else if (can) rows.push(popRow('Start a new save', 'The one there is put away, not lost', { run: () => moveCard('Putting the save away…', `${nameOf(g)} starts a new save when you play.`, () => R.carry.takeOut(g, games)) }));
     if (aside?.key === keyOf(g) && aside.other.length && !read.running) {
       rows.push(popRow('Use the other save', 'Two were found. The one saved last plays.', { run: () => moveCard('Bringing the other save…', 'The other save will play.',

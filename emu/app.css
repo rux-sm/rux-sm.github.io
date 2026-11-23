@@ -177,6 +177,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-games__show[hidden], #emu-games-menu[hidden] { display: none; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-02) var(--rux-spacing-05) var(--rux-spacing-05); }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); align-items: end; }
+/* A cover's tile stands a layer up from the wall, so one with no art shows. */
+.emu-games__list .emu-cover-art { background: var(--rux-layer-02); }
+.emu-games__list .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover-02); }
 .emu-games__list--wide { grid-template-columns: repeat(auto-fill, minmax(min(11.5rem, 40%), 1fr)); }
 /* A console's wordmark: one height for every console, grown by
    --emu-mark-scale where a mark's letters sit small in its shape, its width

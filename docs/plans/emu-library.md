@@ -24,8 +24,8 @@ The page:
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
 - **The tile's head is the chosen console's wordmark, or its name,** which is the
-  page's title, and at its end the strip, which says how this Mac stands and
-  what a move is doing or did, and Sound, an icon button.
+  page's title, and at its end the strip, which says only what is
+  wrong and what a move is doing or did, and Sound, an icon button.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
 - **The consoles are pixel art at two CSS pixels to an art pixel,** never
@@ -47,7 +47,7 @@ The consoles:
 - **One console is chosen, always,** on Carbon's selected layer. The wall, the
   bar and Search all follow that one choice, so they never disagree. Pressing
   the chosen console again does nothing.
-- **A console not set up is faded with a download arrow,** as a game not on
+- **A console not set up is faded,** as a game not on
   this Mac is, so away looks the same everywhere. Its games still fill the
   wall, and Download on one sets its console up first.
 - **A console's menu is a right click on it:** Set up, or Remove. So no control
@@ -63,10 +63,9 @@ The consoles:
 
 The wall:
 
-- **The wall is the chosen console's games,** as covers in their own shape with
-  no name under them, six across for wide covers and eight for tall: those on
-  this Mac first, favourites leading, then the server's, faded with a download
-  arrow, each A to Z.
+- **The wall is the chosen console's games,** as covers all in that console's box
+  shape with no name under them, six across for wide covers and eight for tall: those on
+  this Mac first, favourites leading, then the server's, faded, each A to Z.
 - **There is no switch to this Mac's games alone,** since they come first in
   full colour and Collection lists only them.
 - **The chosen game is raised off the wall,** a little larger over a deep
@@ -90,8 +89,7 @@ The bar, at the tile's foot:
 - **Play is one thing, wherever it is pressed:** the cartridge drops into its
   console or the disc slides onto its tray, the jingle plays, the strip names
   it and the saves are carried. The panel's Play is the same one.
-- **What is wrong is said in the bar before Play,** such as "No controller" or
-  "Two saves found", and never stops Play.
+- **What is wrong is said in the bar before Play,** such as "Two saves found", and never stops Play.
 - **Save and Controller each open a short list up over the wall,** one at a
   time, and take the place of the Saves and Controllers drawers.
 
@@ -121,8 +119,8 @@ Save:
 
 Controller:
 
-- **It says the controller connected,** by Chrome's Gamepad API, and "Press a
-  button" until one is seen, since Chrome shows a controller only then.
+- **It shows once a controller is seen,** by Chrome's Gamepad API, which shows
+  one only once a button on it is pressed.
 - **It says whether that controller's buttons are set for the chosen console,**
   read by the helper from its emulator's own settings, which each emulator
   keeps in its own way, and says nothing for an emulator not yet read.

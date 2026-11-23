@@ -170,6 +170,8 @@ const scan = {
     [`${at}${encodeURIComponent('Odd Link (USA).png')}`]: text('../somewhere/else.png'),
     [`${at}${encodeURIComponent('Tom _ Jerry (USA).png')}`]: png,
     [`${at}${encodeURIComponent('Two Discs (USA).png')}`]: png,
+    [`${at}${encodeURIComponent('Many Regions (USA).png')}`]: png,
+    [`${at}${encodeURIComponent('First Disc (USA) (Disc 1).png')}`]: png,
   };
   const asked = [];
   const fetch = async to => {
@@ -184,6 +186,9 @@ const scan = {
   check('a link that leaves the folder is not', (await cover('Odd Link (USA)')) === null);
   check('a name\'s & is asked for as _', (await cover('Tom & Jerry (USA)'))?.length === png.length);
   check('a disc finds its game\'s one cover', (await cover('Two Discs (USA) (Disc 2)'))?.length === png.length);
+  check('a game of more regions finds the plain USA cover', (await cover('Many Regions (USA, Canada) (En,Fr)'))?.length === png.length);
+  check('a game of several discs finds its first disc\'s cover', (await cover('First Disc (USA, Canada)'))?.length === png.length);
+  check('a game of another region does not take the USA cover', (await cover('Many Regions (Japan)')) === null);
   check('a game libretro lacks has none', (await cover('Nobody Has This')) === null);
   const before = asked.length;
   check('a system libretro has no art for is not asked', (await scanSave.fetchArt({ system: 'switch', title: 'Any' }, fetch)) === null && asked.length === before);

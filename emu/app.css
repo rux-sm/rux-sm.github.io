@@ -66,18 +66,16 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-files { white-space: pre-line; font-size: var(--rux-label-01-font-size); }
 
 /* BOX ART, which Carbon has no component for: a game is its cover, as wide
-   as its place in the Library's wall and as tall as its own art, which app.js's
-   cover gives it as the art loads. Until then, and with no art, a cover takes
-   its system's box shape, or 3:4 for a system with no shape of its own here,
-   and shows its name. The hover follows Carbon's fast-02 fade on the
+   as its place in the Library's wall, in its system's box shape, --emu-box,
+   which app.js's cover sets. Art near that shape fills it and art of another
+   shows whole; with no art a cover shows its name. The hover follows Carbon's fast-02 fade on the
    productive standard curve, design/docs/motion.md. */
-:is(.emu-cover, .emu-panel-art)[data-system="nes"] { --emu-box: 7 / 10; }
-:is(.emu-cover, .emu-panel-art)[data-system="snes"] { --emu-box: 7 / 5; }
 .emu-cover { position: relative; display: block; inline-size: 100%; appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; text-align: start; }
 .emu-cover:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .emu-cover-art, .emu-panel-art { position: relative; display: grid; place-items: center; aspect-ratio: var(--emu-box, 3 / 4); overflow: hidden; background: var(--rux-layer); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover); }
-.emu-cover-art img, .emu-panel-art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
+.emu-cover-art img, .emu-panel-art img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.emu-cover-art img.emu-cover-whole, .emu-panel-art img.emu-cover-whole { object-fit: contain; }
 .emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); text-align: center; overflow-wrap: anywhere; }
 .emu-panel-art { max-inline-size: 16rem; }
 
@@ -89,14 +87,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 
 /* A game chosen is raised off the wall: a little larger, lifted 4px, over a
    deep shadow, on Carbon's moderate-01 and productive standard curve. The
-   wall's padding is room for it. One on the server is faded, with a download arrow at its corner; one
+   wall's padding is room for it. One on the server is faded; one
    arriving sits under a veil that lifts from the foot. */
 .emu-cover { scroll-margin: var(--rux-spacing-06); transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 150ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-cover[aria-pressed="true"] { z-index: 1; transform: translateY(-4px) scale(1.06); box-shadow: 0 4px 8px var(--rux-shadow), 0 16px 32px var(--rux-shadow); }
 @media (prefers-reduced-motion: reduce) { .emu-cover { transition: none; } }
 .emu-cover--away .emu-cover-art { opacity: .45; }
 .emu-cover--away[aria-pressed="true"] .emu-cover-art { opacity: .75; }
-.emu-cover__away { position: absolute; inset-block-end: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); padding: var(--rux-spacing-02); box-sizing: content-box; background: var(--rux-background-inverse); fill: var(--rux-text-inverse); }
 /* The veil over a cover still arriving lifts as it comes. Its height is
    read once a second, so it glides from one reading to the next in that
    second, at an even pace; Carbon's curves are for moves that start and
@@ -123,8 +120,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
 /* The head: the chosen console's wordmark or name, the strip and Sound at its
    end, in by the theme's inset (theme.css). The strip's words keep to the end,
-   so they stay put as the wordmark's width changes. */
-.emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
+   so they stay put as the wordmark's width changes. No rule parts it from the
+   consoles, since the two are read as one. */
+.emu-head { border-block-end: 0; gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
 .emu-head .emu-tile__title { flex: none; padding-inline: var(--rux-spacing-05); }
 .emu-tile__title:focus { outline: none; }
 .emu-tile__title:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
@@ -159,8 +157,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* THE CONSOLES, a row under the head, every one in view where the window is
    wide enough, else scrolling sideways. Each is its drawing, two CSS pixels
    to the art pixel, on one baseline. The chosen one stands on
-   Carbon's selected layer; one not set up is faded, with a download arrow at its
-   corner, as a game on the server is. Their boxes share what width is left. */
+   Carbon's selected layer; one not set up is faded, as a game on the server is. Their boxes share what width is left. */
 .emu-consoles { --emu-px: 2px; list-style: none; flex: none; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding: var(--rux-spacing-03); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-consoles > li { flex: 1 0 auto; display: flex; }
 .emu-kit { position: relative; flex: 1; appearance: none; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; align-content: end; padding: var(--rux-spacing-05) var(--rux-spacing-03); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -169,14 +166,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-01); }
 .emu-kit__spot { position: relative; display: block; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
-.emu-kit__away { position: absolute; inset-block-end: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); fill: var(--rux-icon-primary); }
 
 /* THE WALL, the one part that scrolls. Every
-   cover is its column's width and as tall as its art, standing on its row's
-   foot: eight across, or six where boxes are wider than tall. */
+   cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
 .emu-games { flex: 1; min-block-size: 0; display: flex; flex-direction: column; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-06) var(--rux-spacing-05) var(--rux-spacing-07); }
-.emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); align-items: end; }
+.emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */
 .emu-games__list .emu-cover-art { background: var(--rux-layer-02); }
 .emu-games__list .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover-02); }

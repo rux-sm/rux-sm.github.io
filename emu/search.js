@@ -44,13 +44,13 @@
     const note = $('emu-search-note');
     list.replaceChildren();
     if (!q) { list.hidden = true; note.hidden = true; return; }
-    const found = games.filter(g => g.title.toLowerCase().includes(q));
+    const found = games.filter(g => g.title.toLowerCase().includes(q) || R.nameOf(g).toLowerCase().includes(q));
     for (const g of found.slice(0, MOST)) {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
       const a = el('a', 'rux--contained-list-item__content emu-row');
       a.href = hrefOf(g);
       const main = el('span', 'emu-row__main');
-      main.append(el('span', '', g.title), el('span', 'emu-row__sub', R.systemName(g.system)));
+      main.append(el('span', '', R.nameOf(g)), el('span', 'emu-row__sub', [R.systemName(g.system), g.region].filter(Boolean).join(' · ')));
       a.append(main);
       li.append(a);
       list.append(li);

@@ -15,15 +15,14 @@
    page is kept.
 
    Which consoles are set up, and which games this Mac holds, are read from
-   the helper. What this Mac lacks is faded with a download arrow, a console
+   the helper. What this Mac lacks is faded, a console
    and a game alike. A console's menu, from a right click,
    has Set up or Remove, which the strip asks about first, naming every
    console that goes with its emulator.
 
    The strip, in the head, is the page's one place for words. At rest it
-   shows this Mac as Carbon's icon indicators: the helper, the room this Mac
-   has free and, once it is late, the server's nightly scan, each opening
-   Status where it is wrong; while a move runs it names it, and after one it
+   says only what is wrong, each opening Status: a helper to update, little room
+   left, no library or a late scan; while a move runs it names it, and after one it
    says what it did. Each move makes a small sound, made here with no sound
    files, which the head's button turns off, remembered in this browser.
 
@@ -197,8 +196,7 @@
 
   // A REDRAW keeps the pictures already shown, so a list drawn again never
   // blinks them out while they load again: a cover takes the old cover's
-  // loaded art, or its name where it has none, and the shape its art gave
-  // it, by its game; any other picture takes the old one showing its file.
+  // loaded art, or its name where it has none, by its game; any other picture takes the old one showing its file.
   function redraw(parent, ...nodes) {
     const covers = new Map([...parent.querySelectorAll('.emu-cover[data-game]')].map(c => [c.dataset.game, c]));
     const shown = new Map();
@@ -211,8 +209,6 @@
         if (!old || (old.matches('img') && !old.complete)) continue;
         covers.delete(c.dataset.game);
         c.querySelector('.emu-cover-art > :is(img, .emu-cover-title)')?.replaceWith(old);
-        const box = was.style.getPropertyValue('--emu-box');
-        if (box) c.style.setProperty('--emu-box', box); else c.style.removeProperty('--emu-box');
       }
       for (const img of node.querySelectorAll('img')) {
         if (img.closest('.emu-cover-art')) continue;
@@ -227,49 +223,47 @@
     const key = at.game ? `[data-game="${CSS.escape(at.game)}"]` : at.console ? `[data-console="${at.console}"]` : null;
     if (key) parent.querySelector(key)?.focus({ preventScroll: true });
   }
-  // THE STRIP AT REST: this Mac as Carbon's icon indicators, only what it is
-  // for. Connected while Rux Emu Helper answers, its version in its tooltip,
-  // or "Update the helper", opening Status, where Supabase holds a newer
-  // one; the room this Mac has free for games, a caution under LOW, or a
-  // failure where a current helper keeps no library; and "Needs sync",
-  // opening Status, only once the server's nightly scan is more than STALE
-  // days old, one missed night's grace. In a narrow window only the summary
-  // shows: the worst, or Ready.
+  // THE STRIP AT REST says only what is wrong, as Carbon's icon indicators:
+  // "Update the helper" where Supabase holds a newer one, how much room this
+  // Mac has free once it is under LOW, a failure where a current helper keeps
+  // no library, and "Needs sync" once the server's nightly scan is more than
+  // STALE days old, one missed night's grace. Each opens Status. In a narrow
+  // window only the worst shows.
   const LOW = 10e9;
   const STALE = 2;
-  const INDICATOR = { ok: ['rux--icon-indicator--succeeded', '#i-checkmark--filled'], warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
-  function indicator(kind, text, href = null, cls = '', title = '') {
+  const INDICATOR = { warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
+  function indicator(kind, text, cls = '', title = '') {
     const li = el('li', `rux--icon-indicator ${cls}`.trim());
     if (title) li.title = title;
     const [status, icon] = INDICATOR[kind];
     const svg = iconOf(icon);
     svg.setAttribute('class', status);
-    li.append(svg);
-    if (href) { const a = el('a', 'rux--link', text); a.href = href; li.append(a); } else li.append(text);
+    const a = el('a', 'rux--link', text);
+    a.href = 'status.html';
+    li.append(svg, a);
     return li;
   }
   let stripSaid = '';
   function renderStrip() {
-    const library = Boolean(helper.library);
     const behind = newestHelper != null && Number(helper.version) < Number(newestHelper);
     const days = driveRow?.scanned_at ? (Date.now() - new Date(driveRow.scanned_at)) / 864e5 : null;
     const facts = [
-      behind ? ['warn', 'Update the helper', 'status.html', '', `Rux Emu Helper ${helper.version}, ${newestHelper} is out`]
-        : ['ok', 'Connected', null, '', `Rux Emu Helper ${helper.version ?? ''}`.trim()],
-      !library ? (behind ? null : ['bad', 'No library on this Mac', 'status.html']) : free == null ? null : [free < LOW ? 'warn' : 'ok', `${R.size(free)} free`],
-      days == null || days > STALE ? ['warn', 'Needs sync', 'status.html', '', days == null ? 'The server has never scanned' : `The server's scan is late: last scanned ${R.when(driveRow.scanned_at)}`] : null,
+      behind ? ['warn', 'Update the helper', `Rux Emu Helper ${helper.version}, ${newestHelper} is out`] : null,
+      !helper.library && !behind ? ['bad', 'No library on this Mac'] : null,
+      free != null && free < LOW ? ['warn', `${R.size(free)} free`] : null,
+      days == null || days > STALE ? ['warn', 'Needs sync', days == null ? 'The server has never scanned' : `The server's scan is late: last scanned ${R.when(driveRow.scanned_at)}`] : null,
     ].filter(Boolean);
-    const worst = facts.find(f => f[0] === 'bad') ?? facts.find(f => f[0] === 'warn');
-    // Drawn again only when what it says has changed, as the room free does while a game arrives.
-    const said = JSON.stringify([facts, worst]);
+    // Drawn again only when what it says has changed.
+    const said = JSON.stringify(facts);
     if (said === stripSaid) return;
     stripSaid = said;
-    $('emu-strip-facts').replaceChildren(...facts.map(f => indicator(...f)),
-      worst ? indicator(worst[0], worst[1], 'status.html', 'emu-strip__sum') : indicator('ok', 'Ready', 'status.html', 'emu-strip__sum'));
+    const worst = facts.find(f => f[0] === 'bad') ?? facts[0];
+    $('emu-strip-facts').replaceChildren(...facts.map(([kind, text, title]) => indicator(kind, text, '', title)),
+      ...(worst ? [indicator(worst[0], worst[1], 'emu-strip__sum', worst[2])] : []));
   }
   // THE CONSOLES, a row of every console with games, each its drawing, its
   // name only in its title, since the tile's head names the chosen one. That one stands on Carbon's selected layer. One not set up is
-  // faded with a download arrow. The power light, on the drawing, is lit while
+  // faded. The power light, on the drawing, is lit while
   // it is set up and flashes while it is set up or removed.
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
@@ -299,7 +293,6 @@
         spot.append(light);
       }
       b.append(spot);
-      if (state === 'away') b.append(awayMark('emu-kit__away'));
       b.addEventListener('click', () => choose(system));
       b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); openMenu(kitOf(system)); });
       const li = el('li');
@@ -307,8 +300,6 @@
       return li;
     }));
   }
-  // The arrow on what this Mac lacks.
-  const awayMark = cls => { const svg = iconOf('#i-download'); svg.setAttribute('class', cls); return svg; };
 
   // A CONSOLE'S MENU, Design's, from a right click on the console: Set up or
   // Remove, which the strip then asks about, or what it
@@ -344,8 +335,6 @@
     if (scale) svg.style.setProperty('--emu-mark-scale', scale);
     return svg;
   }
-  // The consoles whose boxes are wider than they are tall, so fewer go across.
-  const WIDE = new Set(['snes', 'n64']);
   function coverItem(g) {
     const li = el('li');
     const s = stands(g);
@@ -355,7 +344,7 @@
     b.type = 'button';
     b.dataset.game = key;
     b.dataset.system = g.system;
-    b.title = g.title;
+    b.title = nameOf(g);
     b.setAttribute('aria-label', `${nameOf(g)}${away ? ', on the server' : ''}`);
     if (helper) b.setAttribute('aria-pressed', String(g === game));
     const art = cover(g, 'emu-cover-art');
@@ -365,7 +354,6 @@
       art.append(veil);
     }
     b.append(art);
-    if (away) b.append(awayMark('emu-cover__away'));
     b.addEventListener('click', () => (helper ? pick(g) : openGame(g, b)));
     li.append(b);
     return li;
@@ -378,7 +366,8 @@
     h.replaceChildren(mark ?? R.systemName(chosen));
     if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
     const ul = $('emu-games');
-    ul.classList.toggle('emu-games__list--wide', WIDE.has(chosen));
+    // Boxes much wider than they are tall go fewer across.
+    ul.classList.toggle('emu-games__list--wide', R.BOX[chosen] > 1.2);
     redraw(ul, ...inOrder(chosen).map(coverItem));
     if (lastShown !== chosen) {
       ul.parentElement.scrollTop = 0;
@@ -560,9 +549,11 @@
     if (!cards.read) { savePick.write({ value: 'On this Mac', note: 'Not kept in Supabase', off: true }); return; }
     const mine = mineOf(g);
     const two = aside?.key === keyOf(g) && aside.other.length > 0;
-    if (!mine.in && !cards.read.moves) { savePick.write({ value: wordOf(g.system), note: unsaid(g), off: moving }); return; }
+    if (!mine.in && !cards.read.moves) { savePick.write({ value: wordOf(g.system), note: unsaid(g), off: true }); return; }
     savePick.write({ value: mine.in ? mine.in.name ?? wordOf(g.system) : 'New save',
-      note: two ? 'Two saves found' : mine.in ? cardNote(mine.in) : mine.out.length ? `${mine.out.length} put away` : 'Starts when you play', warn: two, off: moving });
+      note: two ? 'Two saves found' : mine.in ? cardNote(mine.in) : mine.out.length ? `${mine.out.length} put away` : 'Starts when you play', warn: two,
+      // A list opens only where there is something to choose or change.
+      off: moving || !(two || (cards.read.moves && mine.in) || mine.out.length) });
   }
   async function renderSave(fresh = false) {
     writeSave();
@@ -589,7 +580,7 @@
     savePick.close({ restoreFocus: true });
     moving = true;
     renderBar();
-    say(doing, { ms: 600000 });
+    say(doing, { ms: LONG });
     try { await run(); sfx.done(); say(done); } catch (error) { console.error(error); sfx.no(); sayNo(error.message); }
     moving = false;
     cards.at = 0;
@@ -658,19 +649,20 @@
 
   // CONTROLLER: each one this Mac sees through Chrome's Gamepad API, named as
   // its maker names it, its maker's numbers left off. Chrome shows one to a
-  // page only once a button on it is pressed. Its button layout is its
+  // page only once a button on it is pressed, so it shows in the bar from then.
+  // Its button layout is its
   // emulator's own, so the list says where that is set.
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean)
     .map(p => p.id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller');
   const padPick = pickOf('emu-bar-pad', pop => {
     const pads = padsNow();
-    pop.replaceChildren(popList('Controllers', ...(pads.length ? pads.map(name => popRow(name, 'Connected')) : [popRow('None seen yet', 'Press a button on one')])),
+    pop.replaceChildren(popList('Controllers', ...pads.map(name => popRow(name, 'Connected'))),
       el('p', 'emu-pop__note', `Buttons are set in ${emulatorOf(game.system)}.`));
   });
   function renderPad() {
     if (!game) return;
     const pads = padsNow();
-    padPick.write({ hidden: ['away', 'setting'].includes(stateOf(game.system)), value: pads[0] ?? 'Press a button', note: pads.length > 1 ? `Connected, and ${pads.length - 1} more` : pads.length ? 'Connected' : 'To see a controller' });
+    padPick.write({ hidden: !pads.length || ['away', 'setting'].includes(stateOf(game.system)), value: pads[0], note: pads.length > 1 ? `Connected, and ${pads.length - 1} more` : 'Connected' });
     padPick.refill();
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, renderPad);
@@ -732,6 +724,8 @@
   // the facts by itself. A move refused or failed says so with Carbon's
   // failed indicator, and a question with its caution.
   let saidFor = 0;
+  // How long a move with no known end is said: until something else is.
+  const LONG = 600000;
   function say(text = '', { ms = 4000, bad = false, answers = [] } = {}) {
     clearTimeout(saidFor);
     const words = $('emu-said');
@@ -751,15 +745,16 @@
       b.addEventListener('click', () => { say(); run?.(); });
       return b;
     }));
-    asking = answers.length > 0;
+    holding = answers.length > 0 || ms === LONG;
     if (text) saidFor = setTimeout(say, ms);
     else if (untold) { const told = untold; untold = null; say(told); }
   }
   // What a game's saves say as they are carried, which may come long after
-  // Play: it waits for a question's answer rather than taking its place.
-  let asking = false;
+  // Play: it waits for a question's answer, or a long move's end, rather than
+  // taking its place.
+  let holding = false;
   let untold = null;
-  const mutter = text => { if (asking) untold = text; else say(text); };
+  const mutter = text => { if (holding) untold = text; else say(text); };
   const sayNo = text => say(text, { ms: 6000, bad: true });
   async function download(g, thenPlay = false) {
     if (stands(g).state !== 'held') {
@@ -833,7 +828,7 @@
     renderGo();
     try {
       if (stateOf(g.system) === 'on') await insert(g);
-      say('Starting…', { ms: 600000 });
+      say('Starting…', { ms: 60000 });
       await R.thisMac.play(g, mutter, { anyway });
       sfx.start();
       say(`Playing ${nameOf(g)}.`);
@@ -872,7 +867,7 @@
     const going = playedBy(emulator);
     for (const sys of going) keeping.add(sys);
     render();
-    say(`Keeping ${emulator}'s saves and settings…`, { ms: 600000 });
+    say(`Keeping ${emulator}'s saves and settings…`, { ms: LONG });
     let failed = null;
     try { await R.carry.remove(emulator); } catch (error) { console.error(error); failed = error; }
     for (const sys of going) keeping.delete(sys);
@@ -892,13 +887,13 @@
     for (const sys of coming) settingUp.add(sys);
     sfx.plug();
     render();
-    say(`Setting up ${emulator}…`, { ms: 600000 });
+    say(`Setting up ${emulator}…`, { ms: LONG });
     let failed = null;
     try {
       const installer = R.installerOf(await R.data.files(), emulator);
       if (!installer) throw new Error(`Supabase holds no installer for ${emulator}.`);
       await R.carry.setUp(emulator, installer, R.keptVersion(installer),
-        part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, { ms: 600000 }));
+        part => say(part === 'install' ? `Installing ${emulator}…` : `Making ${emulator} ready…`, { ms: LONG }));
     } catch (error) { console.error(error); failed = error; }
     for (const sys of coming) settingUp.delete(sys);
     await readMac();
@@ -1068,7 +1063,7 @@
     }
     // A game's status is what its panel shows of it.
     games = R.withNotes(rows, notes).map(g => ({ ...g, status: R.statusOf(g) }))
-      .sort((a, b) => nameOf(a).localeCompare(nameOf(b)));
+      .sort((a, b) => a.title.localeCompare(b.title));
     await takeMac(mac);
     $('emu-loading')?.remove();
     $('emu-empty').hidden = games.length > 0;

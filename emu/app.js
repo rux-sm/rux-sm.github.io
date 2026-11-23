@@ -25,24 +25,15 @@
     switch: ['xci', 'nsp'], xbox: ['iso'],
   };
 
-  // Box art, from libretro's thumbnails on GitHub, one repository a system,
-  // named as the system with _ for each space. Each picture is named after the
-  // game's name on No-Intro's or Redump's list with &*/:`<>?\\| as _. A
-  // game's candidates are its list names, then its title, then its title
-  // less the disc, so a multi-disc game finds one cover. Switch has none.
-  const ART = {
-    nes: 'Nintendo - Nintendo Entertainment System', snes: 'Nintendo - Super Nintendo Entertainment System',
-    n64: 'Nintendo - Nintendo 64', gb: 'Nintendo - Game Boy', gbc: 'Nintendo - Game Boy Color',
-    gba: 'Nintendo - Game Boy Advance', nds: 'Nintendo - Nintendo DS', n3ds: 'Nintendo - Nintendo 3DS',
-    gc: 'Nintendo - GameCube', wii: 'Nintendo - Wii', wiiu: 'Nintendo - Wii U',
-    psx: 'Sony - PlayStation', ps2: 'Sony - PlayStation 2', xbox: 'Microsoft - Xbox',
-  };
+  // A game's box art on libretro's thumbnails, the addresses to try in turn, by
+  // the names scan-save.js gives it, as the scan asks for it too.
+  const { ART, ART_AT, artNames } = window.Emu.scanSave;
   const artOf = game => {
     const set = ART[game.system];
-    if (!set) return [];
-    const names = [...(game.match?.names ?? []), game.title, game.title.replace(/ \(Disc \d+\)/, '')];
-    return [...new Set(names)].map(n => `https://raw.githubusercontent.com/libretro-thumbnails/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`);
+    return set ? artNames(game).map(n => `${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`) : [];
   };
+  // Each system's box, its width over its height, as its covers measure.
+  const BOX = { nes: 0.7, snes: 1.4, n64: 1.37, gb: 1, gbc: 1, gba: 1, nds: 1.115, n3ds: 1.12, gc: 0.705, wii: 0.714, wiiu: 0.714, switch: 0.62, psx: 1, ps2: 0.705, xbox: 0.714 };
 
   // Each system's emulator, why, how it names a save and what it needs, from
   // emulators.json, which the scan reads too.
@@ -140,8 +131,12 @@
   // What a save is called by its kind.
   const saveKind = s => (s.kind === 'state' ? 'Save state' : s.kind === 'card' ? 'Memory card' : 'Save');
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  // A game's name without the bracketed tags its list adds: region, languages, revision.
-  const nameOf = g => g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title;
+  // A game's name as it is read: without the bracketed tags its list adds,
+  // region, languages, revision, its article put back in front and its first
+  // dash a colon, "Legend of Zelda, The - A Link to the Past" as "The Legend of
+  // Zelda: A Link to the Past".
+  const nameOf = g => (g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title)
+    .replace(/^(.*?), (The|An|A)(?= - |$)/, '$2 $1').replace(' - ', ': ');
   // A game's art: the first of its pictures that loads, else `none()`.
   function art(g, none) {
     const urls = artOf(g);
@@ -155,26 +150,23 @@
     img.src = urls[0];
     return img;
   }
-  // A cover: the game's art, else its name on the tile. Its system gives it
-  // its box's shape until the art loads, and then the art's own shape does,
-  // so every cover is one height and as wide as its own box art. The shape
-  // goes on the cover button where there is one, because it sets the width.
+  // A cover: the game's art, else its name, on a tile of its system's box's
+  // shape, so a console's covers are all one shape. Art near that shape fills
+  // the tile, its edge trimmed; art of another shape shows whole on it.
   function cover(g, cls) {
     const box = el('div', cls);
-    box.dataset.system = g.system;
+    const shape = BOX[g.system] ?? 0.75;
+    box.style.setProperty('--emu-box', shape);
     // A game with no box art shows its name where the picture would be,
     // leaving anything laid over the picture, such as a download's veil.
     const name = () => {
       const title = el('span', 'emu-cover-title', nameOf(g));
       const img = box.querySelector('img');
       if (img) img.replaceWith(title); else box.prepend(title);
-      (box.closest('.emu-cover') ?? box).style.removeProperty('--emu-box');
     };
     const img = art(g, name);
     if (img) {
-      img.addEventListener('load', () => {
-        if (img.naturalWidth && img.naturalHeight) (box.closest('.emu-cover') ?? box).style.setProperty('--emu-box', `${img.naturalWidth} / ${img.naturalHeight}`);
-      });
+      img.addEventListener('load', () => { img.classList.toggle('emu-cover-whole', Math.abs(img.naturalWidth / img.naturalHeight / shape - 1) > 0.15); });
       box.append(img);
     }
     return box;
@@ -241,7 +233,7 @@
   };
 
   window.Emu = Object.assign(window.Emu || {}, {
-    SYSTEMS, systemName, PREFERRED, artOf, nameOf, cover, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
+    SYSTEMS, systemName, PREFERRED, BOX, nameOf, cover, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
     size, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

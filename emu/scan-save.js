@@ -177,8 +177,17 @@
   const artKey = g => `art/${g.system}/${g.title}`;
   const PICTURE = /\.(png|jpe?g|webp)$/i;
   // The names a game's cover may have there: its list names, then its title,
-  // then its title less the disc, so a multi-disc game finds one cover.
-  const artNames = g => [...new Set([...(g.match?.names ?? []), g.title, g.title.replace(/ \(Disc \d+\)/, '')])];
+  // then its title less the disc, so a multi-disc game finds one cover. Then
+  // the plain USA release, whole or its first disc, and the World one, since a
+  // list may name more regions or languages than the cover does.
+  function artNames(g) {
+    const names = [...(g.match?.names ?? []), g.title, g.title.replace(/ \(Disc \d+\)/, '')];
+    if (/\((?:[^)]*, )?(?:USA|World)\b/.test(g.title)) {
+      const plain = g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim();
+      names.push(...['(USA)', '(USA) (Disc 1)', '(World)'].map(tag => `${plain} ${tag}`));
+    }
+    return [...new Set(names)];
+  }
   const isPng = b => b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
 
   // A game's cover from libretro's thumbnails as bytes, or null when they
@@ -288,7 +297,7 @@
   }
 
   const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven,
-    ART, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
+    ART, ART_AT, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Emu = Object.assign(root.Emu || {}, { scanSave: api });
 })(typeof window === 'object' ? window : globalThis);

@@ -8,10 +8,10 @@ type: plan
 
 The Library, Emu's front page, is one tile: a head and, under it, every
 console down the side and the chosen console's games beside them as a wall
-of covers. The head is Installed or All games, then a bar with the chosen
-game, its save, its controller and Play. It opens on the game last played. Choose
-a console and its games fill the wall, press a game and the bar is that
-game's, press Play. A game this Mac lacks stands in the same wall,
+of covers, with the chosen game over them: its cover and facts, its save,
+its controller and Play. The head is Installed or All games and the strip.
+It opens on the game last played. Choose a console and its games fill the
+wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
 `emu/library.js`; the rest of Emu is unchanged.
 
@@ -25,13 +25,13 @@ The page:
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
 - **The tile's head is Installed or All games,** as wide as the consoles under
-  it, then the bar, then Sound, an icon button. Installed shows only the games
+  it, then the strip, then Sound, an icon button. Installed shows only the games
   this Mac holds or is fetching, and only their consoles; it is off while this
   Mac holds none. The page opens on Installed where the last played game is
   here.
 - **The wall's title is the chosen console's wordmark,** or its name.
-- **The strip is in the bar after the game's name,** saying only what is
-  wrong at rest, and what a move is doing or did in the name's place.
+- **The strip is in the head after Installed or All games,** saying only what
+  is wrong at rest, and what a move is doing or did.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
 - **The consoles are pixel art at one CSS pixel to an art pixel,** never
@@ -50,7 +50,7 @@ The consoles:
 - **There is no taking out and no putting away,** because playing a game
   never needed it.
 - **One console is chosen, always,** on Carbon's selected layer in the list.
-  The wall, the bar and Search all follow that one choice, so they never
+  The wall, the chosen game and Search all follow that one choice, so they never
   disagree.
 - **A console not set up is faded,** as a game not on
   this Mac is, so away looks the same everywhere. Its games still fill the
@@ -78,12 +78,13 @@ The wall:
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 
-The bar, in the head after Installed or All games, and under 66rem a row
-under it:
+The chosen game, over the wall and still while it scrolls:
 
-- **It is the chosen game's:** its name and when it was last played, then Save,
-  Controller, Details and one button, so what will play and with what shows
-  before Play is pressed, and changing nothing keeps Play one press.
+- **It is the game's cover beside its name, when it was last played, its
+  region and its size, over Save, Controller, Details and one button,** so
+  what will play and with what shows before Play is pressed, and changing
+  nothing keeps Play one press. The cover is faded where this Mac lacks the
+  game.
 - **The button is the one next move:** Play; Download with its size; how far a
   download has come; or why not, such as setting up.
 - **The page opens on the game last played that this Mac holds,** from
@@ -95,8 +96,8 @@ under it:
 - **Play is one thing, wherever it is pressed:** the cartridge drops into its
   console or the disc slides onto its tray, the jingle plays, the strip names
   it and the saves are carried. The panel's Play is the same one.
-- **What is wrong is said in the bar before Play,** such as "Two saves found", and never stops Play.
-- **Save and Controller each open a short list up over the wall,** one at a
+- **What is wrong is said beside Play before it is pressed,** such as "Two saves found", and never stops Play.
+- **Save and Controller each open a short list down over the wall,** one at a
   time, and take the place of the Saves and Controllers drawers.
 
 Save:
@@ -144,7 +145,7 @@ The side panel:
   fold, shut, below them.
 
 - **Without the helper, as on the phone, the page is the consoles and the
-  wall alone, with no head,** with no Save, Controller, Play or Download, and a game pressed opens
+  wall alone, with no head and no chosen game,** with no Save, Controller, Play or Download, and a game pressed opens
   its panel.
 
 ## Questions

@@ -3,12 +3,12 @@
    --------------------------------------------------------------------------
    One tile: a head, and under it every console with games down the side,
    each its drawing and name, and beside them the chosen console's games, a
-   wall of covers under its wordmark. The head is Installed or All games,
-   over the consoles, then the bar, which is the chosen game's: its name,
-   with the strip after it, its save, its controller, Details and one button,
-   the one next move. Installed shows only the games this Mac holds or is
+   wall of covers under its wordmark, and over them the chosen game: its
+   cover, its name and facts, its save, its controller, Details and one
+   button, the one next move. The head is Installed or All games, over the
+   consoles, then the strip and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
-   phone, there is no head, and pressing a game opens its side panel,
+   phone, there is no head and no chosen game, and pressing a game opens its side panel,
    game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
@@ -22,7 +22,7 @@
    has Set up or Remove, which the strip asks about first, naming every
    console that goes with its emulator.
 
-   The strip, in the bar, is the page's one place for words. At rest it
+   The strip, in the head, is the page's one place for words. At rest it
    says only what is wrong, each opening Status: a helper to update, little room
    left, no library or a late scan; while a move runs it names it, and after one it
    says what it did. Each move makes a small sound, made here with no sound
@@ -331,7 +331,7 @@
     renderConsoles();
     renderGames();
     showChosen();
-    renderBar();
+    renderChosen();
   });
 
   // A CONSOLE'S MENU, Design's, from a right click on a console, which
@@ -440,7 +440,7 @@
     }
     renderGames();
     showChosen();
-    renderBar();
+    renderChosen();
   }
   // The chosen console in the list's view, and, where the wall scrolls
   // alone, the chosen game in the wall's.
@@ -451,21 +451,28 @@
   function pick(g) {
     game = g;
     for (const b of $('emu-games').querySelectorAll('.emu-cover')) b.setAttribute('aria-pressed', String(b.dataset.game === keyOf(g)));
-    renderBar();
+    renderChosen();
   }
 
-  // THE BAR, the chosen game's: its name and when it was last played, its
-  // save, its controller, Details, and one button, the one next move.
+  // THE CHOSEN GAME, over the wall: its cover, faded where this Mac lacks it,
+  // drawn again only when the game changes; its name over when it was last
+  // played, its region and size; its save, its controller, Details, and one
+  // button, the one next move.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();
     return day(playedAt(g)) === day(Date.now()) ? 'Played today' : `Played ${R.date(playedAt(g))}`;
   };
-  function renderBar() {
+  let artFor = null;
+  function renderChosen() {
     if (!helper || !game) return;
-    $('emu-bar-name').textContent = nameOf(game);
-    $('emu-bar-sub').textContent = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
+    const art = $('emu-chosen-art');
+    if (artFor !== game) { artFor = game; art.replaceChildren(cover(game, 'emu-cover-art')); }
+    art.classList.toggle('emu-chosen__art--away', !isHere(game));
+    $('emu-chosen-name').textContent = nameOf(game);
+    const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
+    $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');
     renderSave();
     renderPad();
     renderGo();
@@ -485,12 +492,12 @@
   }
   function renderGo() {
     const [words, run] = nextOf(game);
-    const b = $('emu-bar-go');
+    const b = $('emu-chosen-go');
     b.textContent = words;
     b.disabled = !run || moving;
   }
-  $('emu-bar-go').addEventListener('click', () => { const [, run] = nextOf(game); run?.(); });
-  $('emu-bar-details').addEventListener('click', e => openGame(game, e.currentTarget));
+  $('emu-chosen-go').addEventListener('click', () => { const [, run] = nextOf(game); run?.(); });
+  $('emu-chosen-details').addEventListener('click', e => openGame(game, e.currentTarget));
 
   // SAVE AND CONTROLLER are each a button of three lines, what it is, what
   // will be used and a note, over a list that opens up from it, one at a time.
@@ -571,7 +578,7 @@
     const last = saves.filter(s => s.system === g.system && s.game === g.title).map(s => s.saved_at ?? '').sort().at(-1);
     return last ? R.date(last) : `Kept in ${emulatorOf(g.system)}`;
   };
-  const savePick = pickOf('emu-bar-save', fillSave);
+  const savePick = pickOf('emu-chosen-save', fillSave);
   function writeSave() {
     const g = game;
     if (stateOf(g.system) === 'away' || stateOf(g.system) === 'setting') { savePick.write({ hidden: true }); return; }
@@ -606,16 +613,16 @@
     }
     savePick.refill();
   }
-  // A move on a card: said as it goes, the bar held until it is done.
+  // A move on a card: said as it goes, Play held until it is done.
   async function moveCard(doing, done, run) {
     savePick.close({ restoreFocus: true });
     moving = true;
-    renderBar();
+    renderChosen();
     say(doing, { ms: LONG });
     try { await run(); sfx.done(); say(done); } catch (error) { console.error(error); sfx.no(); sayNo(error.message); }
     moving = false;
     cards.at = 0;
-    renderBar();
+    renderChosen();
   }
   function fillSave(pop, close) {
     const g = game;
@@ -680,12 +687,12 @@
 
   // CONTROLLER: each one this Mac sees through Chrome's Gamepad API, named as
   // its maker names it, its maker's numbers left off. Chrome shows one to a
-  // page only once a button on it is pressed, so it shows in the bar from then.
+  // page only once a button on it is pressed, so it shows from then.
   // Its button layout is its
   // emulator's own, so the list says where that is set.
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean)
     .map(p => p.id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller');
-  const padPick = pickOf('emu-bar-pad', pop => {
+  const padPick = pickOf('emu-chosen-pad', pop => {
     const pads = padsNow();
     pop.replaceChildren(popList('Controllers', ...pads.map(name => popRow(name, 'Connected'))),
       el('p', 'emu-pop__note', `Buttons are set in ${emulatorOf(game.system)}.`));
@@ -700,13 +707,13 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-bar', 'emu-head']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-head']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) { renderStrip(); renderWhere(); }
     keepShown();
     renderConsoles();
     renderGames();
-    renderBar();
+    renderChosen();
   }
 
   // What the helper says of this Mac, read again; while a game arrives it is
@@ -871,7 +878,7 @@
     }
     starting = null;
     cards.at = 0;
-    renderBar();
+    renderChosen();
   }
   // A console that will not have it now shakes its head and buzzes, and the strip says why.
   function refuse(system, text) {
@@ -1063,7 +1070,7 @@
     if (panelOpen() || document.querySelector('.rux--modal.is-visible')) { if (move === 'a' && at?.matches('button')) at.click(); return; }
     const places = '#emu-consoles .emu-kit, #emu-games .emu-cover';
     if (!at?.matches(places)) { coverOf(game)?.focus(); return; }
-    if (move === 'a') { if (at.dataset.game === keyOf(game)) $('emu-bar-go').click(); else at.click(); return; }
+    if (move === 'a') { if (at.dataset.game === keyOf(game)) $('emu-chosen-go').click(); else at.click(); return; }
     const middle = n => { const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
     const [x, y] = middle(at);
     const [dx, dy] = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] }[move];

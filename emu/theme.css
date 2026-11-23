@@ -23,7 +23,7 @@
 /* Geist dark's header is 65px, where every other theme's is Carbon's 48px,
    and the Library's tile is as tall as the window less the header. */
 [data-theme="geist-dark"] { --emu-header: calc(4rem + 1px); }
-/* A list opened from the bar floats clear of its button by 8px in the themes
+/* A list opened from Save or Controller floats clear of its button by 8px in the themes
    whose menus float clear in Design: Ant Design Pro's, Geist's, Rux dark's
    and Apple's. */
 [data-theme="ant-dark"],

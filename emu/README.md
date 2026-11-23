@@ -10,9 +10,9 @@ The repository root's `AGENTS.md` is the policy, and
 ## What it is
 
 `index.html` is the Library, drawn by `library.js`: every console down the side, the chosen one's
-games as a wall of covers beside them, Installed or All games over the consoles, the ones the server keeps in Supabase or else libretro's, and a bar for
-the chosen game: its save, its controller, Details and Play. What this Mac lacks is faded, and
-the bar's button downloads it. The bar is in the head, and the strip in the bar says how this Mac
+games as a wall of covers beside them, the ones the server keeps in Supabase or else libretro's, and over the wall
+the chosen game: its cover and facts, its save, its controller, Details and Play. What this Mac lacks is faded, and
+the chosen game's button downloads it. The head is Installed or All games over the consoles, and the strip, which says how this Mac
 stands and what a move did. Without Rux Emu Helper, as on the phone, it is the consoles and the games alone, a game
 opening in its panel. `collection.html` is the
 same games as a table, with a filter per system and per status; on a Mac it marks

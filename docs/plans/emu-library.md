@@ -68,6 +68,8 @@ The wall:
   arrow, each A to Z.
 - **Its head is the console's name and a switch,** All or On this Mac, which
   starts on All.
+- **The chosen game is raised off the wall,** a little larger over a deep
+  shadow, with no ring.
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 

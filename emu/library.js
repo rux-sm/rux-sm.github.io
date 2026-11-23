@@ -959,7 +959,7 @@
       const ghost = el('div', 'emu-ghost');
       ghost.style.transformOrigin = `${drag.dx}px ${drag.dy}px`;
       const copy = drag.src.cloneNode(true);
-      Object.assign(copy.style, { position: 'static', inlineSize: `${r.width}px`, blockSize: `${r.height}px` });
+      Object.assign(copy.style, { position: 'static', transform: 'none', inlineSize: `${r.width}px`, blockSize: `${r.height}px` });
       ghost.append(copy);
       document.body.append(ghost);
       drag.ghost = ghost;

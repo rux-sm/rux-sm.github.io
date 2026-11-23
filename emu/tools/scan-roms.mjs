@@ -14,7 +14,8 @@
 // libretro's thumbnails, and put in Supabase for the pages. A picture rux
 // puts in the games folder at `art/<system>/<title>.png`, or .jpg or .webp,
 // is the game's cover in place of libretro's. A game libretro has no cover
-// for is asked about again after a week, as `art/missing.json` keeps.
+// for is asked about again after a week, as `art/missing.json` keeps, or at
+// once where how a cover is looked for has changed.
 //
 //   CACHE=/cache SUPABASE_KEY=<secret key> node scan-roms.mjs /games --save
 //
@@ -185,7 +186,9 @@ await scanSave.save(db, scanSave.rowsOf(scan, change, { newest }));
 // in a row that are neither a picture nor a 404 end the asking for the night.
 const artDir = path.join(cacheDir, 'art');
 const missingPath = path.join(artDir, 'missing.json');
-const missing = readJson(missingPath, {});
+const missingKept = readJson(missingPath, {});
+const missing = missingKept.asking === scanSave.ART_ASKING ? missingKept.games : {};
+const artLists = new Map();
 const WEEK = 7 * 864e5;
 const coversOf = (n) => `${n} ${n === 1 ? 'cover' : 'covers'}`;
 const covers = [];
@@ -203,7 +206,7 @@ for (const g of scan.games) {
       if (refused >= 3) unasked += 1;
       else {
         try {
-          const bytes = await scanSave.fetchArt(g, (to) => fetch(to, { headers: { 'user-agent': 'rux-emu-scan' }, signal: AbortSignal.timeout(30000) }));
+          const bytes = await scanSave.fetchArt(g, (to) => fetch(to, { headers: { 'user-agent': 'rux-emu-scan' }, signal: AbortSignal.timeout(30000) }), artLists);
           refused = 0;
           if (bytes) {
             fs.mkdirSync(path.dirname(kept), { recursive: true });
@@ -231,7 +234,7 @@ for (const system of fs.existsSync(artDir) ? fs.readdirSync(artDir, { withFileTy
 const titles = new Set(scan.games.map(scanSave.artKey));
 for (const key of Object.keys(missing)) if (!titles.has(key)) delete missing[key];
 fs.mkdirSync(artDir, { recursive: true });
-fs.writeFileSync(missingPath, JSON.stringify(missing, null, 1));
+fs.writeFileSync(missingPath, JSON.stringify({ asking: scanSave.ART_ASKING, games: missing }, null, 1));
 
 const art = scanSave.artChanged(covers, held.filter((f) => f.sha1 && f.path.startsWith('art/')));
 const coverAt = new Map(covers.map((c) => [c.path, c.file]));

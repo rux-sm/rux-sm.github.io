@@ -76,6 +76,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover); }
 .emu-cover-art img, .emu-panel-art img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .emu-cover-art img.emu-cover-whole, .emu-panel-art img.emu-cover-whole { object-fit: contain; }
+/* A picture not fetched yet draws no outline of its own. */
+.emu-cover-art img:not([src]), .emu-panel-art img:not([src]) { visibility: hidden; }
 .emu-cover-title { padding: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); text-align: center; overflow-wrap: anywhere; }
 .emu-panel-art { max-inline-size: 16rem; }
 

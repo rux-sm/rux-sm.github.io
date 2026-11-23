@@ -58,6 +58,8 @@
     }).map(x => x.n));
   };
 
+  let covers = null;
+  const coverUrls = new Map();
   const data = client && {
     games: () => all(() => client.from('emu_games').select('*').order('system').order('title')),
     // What Update compares a scan with: each game's key and its files' fingerprints.
@@ -68,6 +70,25 @@
     // Everything but the games, which Supabase holds: each file as it stands,
     // by its path, or those under one folder.
     files: (folder = '') => all(() => client.from('emu_files_now').select('*').not('sha1', 'is', null).like('path', `${folder}%`).order('path')),
+    // Each game's cover the server keeps: its bytes' SHA-1 by the game's key,
+    // read once.
+    covers: () => (covers ??= data.files('art/').then(rows => new Map(rows.map(f => [f.path.replace(/\.[^./]+$/, ''), f.sha1])))),
+    // A cover as an address the page can show, its bytes kept in this browser
+    // under their SHA-1, so a cover is fetched once.
+    coverUrl: sha1 => {
+      if (!coverUrls.has(sha1)) {
+        coverUrls.set(sha1, (async () => {
+          const kept = await globalThis.caches?.open('emu-art').catch(() => null);
+          const at = `/emu/art/${sha1}`;
+          const held = await kept?.match(at).catch(() => null);
+          const bytes = held ? await held.arrayBuffer() : await data.fileBytes(sha1);
+          if (kept && !held) kept.put(at, new Response(bytes)).catch(() => { /* a full browser keeps none */ });
+          return URL.createObjectURL(new Blob([bytes]));
+        })());
+        coverUrls.get(sha1).catch(() => coverUrls.delete(sha1));
+      }
+      return coverUrls.get(sha1);
+    },
     // The BIOS, keys and firmware among them, each by its name under bios/.
     bios: async () => (await data.files('bios/')).map(f => ({ name: f.path.slice('bios/'.length), size: f.size, sha1: f.sha1 })),
     // A file put in Supabase, as scan-save.js puts one.

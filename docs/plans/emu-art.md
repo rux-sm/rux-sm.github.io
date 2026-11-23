@@ -30,11 +30,9 @@ None.
 
 ## Tasks
 
-- [ ] In `emu/data.js`, read which games have a cover and a cover's bytes,
-  kept in the browser; in `emu/app.js`, draw a cover from them and remove
-  the libretro addresses.
-- [ ] Prove it in Chrome on :8641 once a real scan has put the covers in
-  Supabase: every game libretro has shows its cover, Ice Climber among them,
-  and a second visit fetches none again.
-- [ ] Say where the page's covers come from in `emu/README.md`, and replace
-  the box art decision in `docs/plans/emu-front-end.md`.
+- [ ] Once a scan has put every cover in Supabase, remove the libretro
+  addresses from `emu/app.js`, which tries them for a game Supabase has no
+  cover of.
+- [ ] Put rux's own pictures, for the games no list names as theirs, in the
+  share's `art` folder.
+- [ ] Replace the box art decision in `docs/plans/emu-front-end.md`.

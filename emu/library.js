@@ -206,7 +206,7 @@
       for (const c of node.querySelectorAll('.emu-cover[data-game]')) {
         const was = covers.get(c.dataset.game);
         const old = was?.querySelector('.emu-cover-art > :is(img, .emu-cover-title)');
-        if (!old || (old.matches('img') && !old.complete)) continue;
+        if (!old || (old.matches('img') && !(old.complete && old.naturalWidth))) continue;
         covers.delete(c.dataset.game);
         c.querySelector('.emu-cover-art > :is(img, .emu-cover-title)')?.replaceWith(old);
       }

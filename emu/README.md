@@ -10,7 +10,7 @@ The repository root's `AGENTS.md` is the policy, and
 ## What it is
 
 `index.html` is the Library, drawn by `library.js`: a row of every console, the chosen
-console's games as a wall of covers, with box art from libretro's thumbnails, and a bar for
+console's games as a wall of covers, the ones the server keeps in Supabase or else libretro's, and a bar for
 the chosen game: its save, its controller, Details and Play. What this Mac lacks is faded, and
 the bar's button downloads it. The strip in the head says how this Mac stands and what a move
 did. Without Rux Emu Helper, as on the phone, it is the consoles and the games alone, a game

@@ -118,7 +118,8 @@ one, and asks each emulator's project for its newest version out. It keeps
 each game's cover: rux's own picture in the share's `art` folder, as
 `emu/docs/emulator-setup.md` names it, else one fetched once from libretro's
 thumbnails on GitHub into the `art` folder of `scan-cache`, and puts it in
-Supabase for the pages; a game libretro has no cover for is asked about again
+Supabase for the pages; a game is looked for by its list name, then by any name
+libretro writes another way, and one it has no cover for is asked about again
 after a week. It reads
 the games read-only and keeps its fingerprints, its last scan and the
 organize tool's renames in its own `scan-cache` volume, so only a new or

@@ -173,6 +173,7 @@
     psx: 'Sony - PlayStation', ps2: 'Sony - PlayStation 2', xbox: 'Microsoft - Xbox',
   };
   const ART_AT = 'https://raw.githubusercontent.com/libretro-thumbnails';
+  const ART_LIST = 'https://api.github.com/repos/libretro-thumbnails';
   // A game's cover in Supabase is `art/<system>/<title>` and its picture's ending.
   const artKey = g => `art/${g.system}/${g.title}`;
   const PICTURE = /\.(png|jpe?g|webp)$/i;
@@ -188,6 +189,23 @@
     }
     return [...new Set(names)];
   }
+  // Bumped when how a cover is looked for changes, so a game found none before
+  // is asked about again at once.
+  const ART_ASKING = 2;
+  // A name with its tags, articles and punctuation gone, so a name written
+  // another way is still the same name.
+  const plainName = n => n.replace(/\.png$/i, '').replace(/\s*[([][^)\]]*[)\]]/g, '').toLowerCase()
+    .replace(/, (?:the|an|a)(?= - |$)/, '').replace(/\b(?:the|an|a|and)\b/g, '').replace(/[^a-z0-9]/g, '');
+  // Which of a system's pictures is a game's by its plain name: never a demo or
+  // the like, its own region's before the World's, then Europe's, then any,
+  // and the shortest name of those; null where none is.
+  function artNear(game, files) {
+    const plain = plainName(game.title);
+    const own = game.title.match(/\(([^)]*)\)/)?.[1].split(', ')[0] ?? 'USA';
+    const rank = n => [own, 'USA', 'World', 'Europe'].findIndex(r => new RegExp(`\\([^)]*\\b${r}\\b`).test(n)) + 1 || 9;
+    return files.filter(n => plainName(n) === plain && !/\((?:[^)]*\b)?(?:Demo|Beta|Proto|Debug|Kiosk|Pirate|Unl|Aftermarket|Virtual Console)\b/i.test(n))
+      .sort((a, b) => rank(a) - rank(b) || a.length - b.length)[0] ?? null;
+  }
   const isPng = b => b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
 
   // A game's cover from libretro's thumbnails as bytes, or null when they
@@ -195,25 +213,40 @@
   // &*/:`<>?\| as _. GitHub sends a picture that is a link to another as the
   // other's file name in text, so that one is fetched in its place. Anything
   // but an answer or a 404 is an error, so a night GitHub is down is not
-  // taken for a game with no cover.
-  async function fetchArt(game, fetch = globalThis.fetch) {
+  // taken for a game with no cover. `lists` keeps each system's names between
+  // calls, read once where a game is not found by name.
+  async function fetchArt(game, fetch = globalThis.fetch, lists = new Map()) {
     const set = ART[game.system];
     if (!set) return null;
+    const listOf = async name => {
+      if (!lists.has(name)) {
+        const res = await fetch(`${ART_LIST}/${encodeURIComponent(name.replaceAll(' ', '_'))}/git/trees/HEAD:Named_Boxarts`);
+        if (!res.ok && res.status !== 404) throw new Error(`GitHub answered ${res.status}.`);
+        lists.set(name, res.ok ? (await res.json()).tree.map(f => f.path) : []);
+      }
+      return lists.get(name);
+    };
     const get = async file => {
       const res = await fetch(`${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(file)}`);
       if (res.status === 404) return null;
       if (!res.ok) throw new Error(`libretro's thumbnails: ${res.status}`);
       return new Uint8Array(await res.arrayBuffer());
     };
-    for (const name of artNames(game)) {
-      let bytes = await get(`${name.replace(/[&*/:`<>?\\|]/g, '_')}.png`);
+    const picture = async file => {
+      let bytes = await get(file);
       if (bytes && !isPng(bytes)) {
         const to = bytes.length < 512 ? new TextDecoder().decode(bytes).trim() : '';
         bytes = /^[^/\\\0\n]+\.png$/.test(to) ? await get(to) : null;
       }
-      if (bytes && isPng(bytes)) return bytes;
+      return bytes && isPng(bytes) ? bytes : null;
+    };
+    for (const name of artNames(game)) {
+      const bytes = await picture(`${name.replace(/[&*/:`<>?\\|]/g, '_')}.png`);
+      if (bytes) return bytes;
     }
-    return null;
+    // Named some other way, it is found among every name the system has.
+    const near = artNear(game, await listOf(set));
+    return near ? picture(near) : null;
   }
 
   // What the covers the server keeps change in Supabase. `covers` is each
@@ -297,7 +330,7 @@
   }
 
   const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven,
-    ART, ART_AT, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
+    ART, ART_AT, ART_ASKING, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Emu = Object.assign(root.Emu || {}, { scanSave: api });
 })(typeof window === 'object' ? window : globalThis);

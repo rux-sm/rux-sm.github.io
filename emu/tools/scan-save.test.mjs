@@ -173,10 +173,13 @@ const scan = {
     [`${at}${encodeURIComponent('Many Regions (USA).png')}`]: png,
     [`${at}${encodeURIComponent('First Disc (USA) (Disc 1).png')}`]: png,
   };
+  const listing = ['Odd - Game & Friends (USA).png', 'Odd Game and Friends (Europe).png', 'Odd Game and Friends (USA) (Demo).png'];
+  shelf[`${at}${encodeURIComponent(listing[0])}`] = png;
   const asked = [];
   const fetch = async to => {
     asked.push(to);
     if (to.includes('Broken')) return { ok: false, status: 503 };
+    if (to.endsWith('/git/trees/HEAD:Named_Boxarts')) return { ok: true, status: 200, json: async () => ({ tree: listing.map(path => ({ path })) }) };
     const body = shelf[to];
     return body ? { ok: true, status: 200, arrayBuffer: async () => body.buffer } : { ok: false, status: 404 };
   };
@@ -189,6 +192,7 @@ const scan = {
   check('a game of more regions finds the plain USA cover', (await cover('Many Regions (USA, Canada) (En,Fr)'))?.length === png.length);
   check('a game of several discs finds its first disc\'s cover', (await cover('First Disc (USA, Canada)'))?.length === png.length);
   check('a game of another region does not take the USA cover', (await cover('Many Regions (Japan)')) === null);
+  check('a name written another way is found, its own region first and no demo', (await cover('Odd Game, The - Friends (USA)'))?.length === png.length && asked.at(-1).endsWith(encodeURIComponent(listing[0])), asked.at(-1));
   check('a game libretro lacks has none', (await cover('Nobody Has This')) === null);
   const before = asked.length;
   check('a system libretro has no art for is not asked', (await scanSave.fetchArt({ system: 'switch', title: 'Any' }, fetch)) === null && asked.length === before);

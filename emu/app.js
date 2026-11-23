@@ -137,17 +137,29 @@
   // Zelda: A Link to the Past".
   const nameOf = g => (g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title)
     .replace(/^(.*?), (The|An|A)(?= - |$)/, '$2 $1').replace(' - ', ': ');
-  // A game's art: the first of its pictures that loads, else `none()`.
+  // A game's art, fetched as it comes near the view: the cover the server
+  // keeps, else the first of libretro's that loads, else `none()`.
+  const near = new IntersectionObserver(seen => {
+    for (const { target, isIntersecting } of seen) {
+      if (!isIntersecting) continue;
+      near.unobserve(target);
+      target.dispatchEvent(new Event('emu-near'));
+    }
+  }, { rootMargin: '600px' });
   function art(g, none) {
-    const urls = artOf(g);
-    if (!urls.length) { none(); return null; }
     const img = el('img');
     img.alt = '';
-    img.loading = 'lazy';
     img.decoding = 'async';
-    let i = 0;
-    img.addEventListener('error', () => { i += 1; if (i < urls.length) img.src = urls[i]; else { img.remove(); none(); } });
-    img.src = urls[0];
+    const urls = artOf(g);
+    const next = () => { const url = urls.shift(); if (url) img.src = url; else { img.remove(); none(); } };
+    img.addEventListener('error', next);
+    img.addEventListener('emu-near', async () => {
+      const data = window.Emu.data;
+      const sha1 = (await data?.covers().catch(() => null))?.get(window.Emu.scanSave.artKey(g));
+      const own = sha1 ? await data.coverUrl(sha1).catch(error => { console.error(error); return null; }) : null;
+      if (own) img.src = own; else next();
+    });
+    near.observe(img);
     return img;
   }
   // A cover: the game's art, else its name, on a tile of its system's box's
@@ -161,14 +173,11 @@
     // leaving anything laid over the picture, such as a download's veil.
     const name = () => {
       const title = el('span', 'emu-cover-title', nameOf(g));
-      const img = box.querySelector('img');
-      if (img) img.replaceWith(title); else box.prepend(title);
+      box.prepend(title);
     };
     const img = art(g, name);
-    if (img) {
-      img.addEventListener('load', () => { img.classList.toggle('emu-cover-whole', Math.abs(img.naturalWidth / img.naturalHeight / shape - 1) > 0.15); });
-      box.append(img);
-    }
+    img.addEventListener('load', () => { img.classList.toggle('emu-cover-whole', Math.abs(img.naturalWidth / img.naturalHeight / shape - 1) > 0.15); });
+    box.append(img);
     return box;
   }
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };

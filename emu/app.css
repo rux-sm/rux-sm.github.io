@@ -121,23 +121,20 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__head[hidden] { display: none; }
 .emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
-/* The head: this Mac's name, the strip taking what is left, then Sound at its
-   end, in by the theme's inset (theme.css). Its name gives way first in a
-   narrow window. */
-.emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); }
-.emu-head .emu-tile__title { padding-inline: var(--rux-spacing-05); }
+/* The head: the chosen console's wordmark or name, the strip and Sound at its
+   end, in by the theme's inset (theme.css). The strip's words keep to the end,
+   so they stay put as the wordmark's width changes. */
+.emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
+.emu-head .emu-tile__title { flex: none; padding-inline: var(--rux-spacing-05); }
 .emu-tile__title:focus { outline: none; }
 .emu-tile__title:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-@media (max-width: 41.98rem) {
-  .emu-head .emu-tile__title { display: none; }
-  .emu-head .emu-strip { padding-inline-start: var(--rux-spacing-05); }
-}
 /* THE STRIP: the page's one place for words, on one line. At rest it is
    this Mac's facts as Carbon's icon indicators; while a move runs or after
    one it is what that move says in their place, with a question's answers
    beside it. It gives up its width before the buttons do, and in a narrow
    window the facts give way to one, the worst, or Ready. */
-.emu-strip { flex: 1 1 auto; min-inline-size: 0; display: flex; align-items: center; overflow: hidden; white-space: nowrap; contain: inline-size; padding-inline-end: var(--rux-spacing-05); }
+.emu-strip[hidden], #emu-sound[hidden] { display: none; }
+.emu-strip { flex: 1 1 auto; min-inline-size: 0; display: flex; align-items: center; justify-content: flex-end; overflow: hidden; white-space: nowrap; contain: inline-size; padding-inline-end: var(--rux-spacing-05); }
 .emu-strip__facts { list-style: none; display: flex; align-items: center; gap: var(--rux-spacing-06); min-inline-size: 0; overflow: hidden; }
 .emu-strip svg { flex: none; }
 .emu-strip__facts .rux--link { white-space: nowrap; }
@@ -153,6 +150,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-strip__facts > .emu-strip__sum { display: flex; }
 }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
+/* In a narrow window the wordmark gives way while the strip speaks, and its
+   words may wrap, so a question is read whole before it is answered. */
+@media (max-width: 65.98rem) {
+  .emu-head:has(.emu-strip--said) .emu-tile__title { display: none; }
+  .emu-strip--said { white-space: normal; padding-inline-start: var(--rux-spacing-05); }
+}
 /* THE CONSOLES, a row under the head, every one in view where the window is
    wide enough, else scrolling sideways. Each is its drawing, two CSS pixels
    to the art pixel, on one baseline. The chosen one stands on
@@ -168,16 +171,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
 .emu-kit__away { position: absolute; inset-block-end: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); fill: var(--rux-icon-primary); }
 
-/* THE WALL, the one part that scrolls, under a head that does not: the
-   console's wordmark or name and the switch. Every
+/* THE WALL, the one part that scrolls. Every
    cover is its column's width and as tall as its art, standing on its row's
    foot: eight across, or six where boxes are wider than tall. */
 .emu-games { flex: 1; min-block-size: 0; display: flex; flex-direction: column; }
-.emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-05); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-03) var(--rux-spacing-05); }
-.emu-games__title { min-inline-size: 0; font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); }
-.emu-games__show { flex: none; margin-inline-start: auto; inline-size: var(--emu-show, 15rem); }
-.emu-games__show[hidden] { display: none; }
-.emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-07); }
+.emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-06) var(--rux-spacing-05) var(--rux-spacing-07); }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); align-items: end; }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */
 .emu-games__list .emu-cover-art { background: var(--rux-layer-02); }

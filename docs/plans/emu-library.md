@@ -23,8 +23,9 @@ The page:
   moves from page to page.
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
-- **The tile's head is its name and the strip,** which says how this Mac stands
-  and what a move is doing or did, with Sound, an icon button, at its end.
+- **The tile's head is the chosen console's wordmark, or its name,** which is the
+  page's title, and at its end the strip, which says how this Mac stands and
+  what a move is doing or did, and Sound, an icon button.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
 - **The consoles are pixel art at two CSS pixels to an art pixel,** never
@@ -38,7 +39,7 @@ The page:
 The consoles:
 
 - **Every console stands in the row always,** in the collection's order, its
-  drawing with its name only in its title, since the wall's head names the
+  drawing with its name only in its title, since the tile's head names the
   chosen one, so all fifteen are in view at 1312px and none moves;
   a narrower window scrolls the row sideways to the chosen one.
 - **There is no taking out and no putting away,** because playing a game
@@ -50,7 +51,7 @@ The consoles:
   this Mac is, so away looks the same everywhere. Its games still fill the
   wall, and Download on one sets its console up first.
 - **A console's menu is a right click on it:** Set up, or Remove. So no control
-  is drawn on the row or the wall.
+  is drawn on the row.
 - **Removing asks first and names every console that goes,** such as "Remove
   Mesen 2? The NES and SNES go too. Your saves are kept.", since one emulator
   plays several. Its saves and settings are kept in Supabase and checked
@@ -66,8 +67,8 @@ The wall:
   no name under them, six across for wide covers and eight for tall: those on
   this Mac first, favourites leading, then the server's, faded with a download
   arrow, each A to Z.
-- **Its head is the console's name and a switch,** All or On this Mac, which
-  starts on All.
+- **There is no switch to this Mac's games alone,** since they come first in
+  full colour and Collection lists only them.
 - **The chosen game is raised off the wall,** a little larger over a deep
   shadow, with no ring.
 - **A cover with no art shows its name,** and one arriving sits under a veil

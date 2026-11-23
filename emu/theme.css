@@ -20,8 +20,6 @@
 [data-theme="rux-dark"] {
   --emu-tile-edge: 1px solid var(--rux-border-subtle-01);
 }
-/* The pixel theme's wider letters need more of the wall's switch. */
-[data-theme="pixel-dark"] { --emu-show: 19.5rem; }
 /* Geist dark's header is 65px, where every other theme's is Carbon's 48px,
    and the Library's tile is as tall as the window less the header. */
 [data-theme="geist-dark"] { --emu-header: calc(4rem + 1px); }

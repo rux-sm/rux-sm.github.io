@@ -1,8 +1,8 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile, read from the top down. Its head is this Mac's name and the
-   strip; then a row of every console with games; then the chosen console's
+   One tile, read from the top down. Its head is the chosen console's wordmark
+   and the strip; then a row of every console with games; then the chosen console's
    games, a wall of covers, the only part that scrolls; then the bar, which
    is the chosen game's: its name, its save, its controller, Details and one
    button, the one next move. Without Rux Emu Helper, such as on a phone,
@@ -59,10 +59,9 @@
   let keeps = false;
   // The bytes this Mac has free for games, or null where no helper says.
   let free = null;
-  // The console and the game chosen, and whether the wall shows All or On this Mac.
+  // The console and the game chosen.
   let chosen = null;
   let game = null;
-  let show = 'all';
   // The last scan's row, for when the server last scanned, and the version
   // of Rux Emu Helper Supabase holds, the one a Mac should run.
   let driveRow = null;
@@ -269,7 +268,7 @@
       worst ? indicator(worst[0], worst[1], 'status.html', 'emu-strip__sum') : indicator('ok', 'Ready', 'status.html', 'emu-strip__sum'));
   }
   // THE CONSOLES, a row of every console with games, each its drawing, its
-  // name only in its title, since the wall's head names the chosen one. That one stands on Carbon's selected layer. One not set up is
+  // name only in its title, since the tile's head names the chosen one. That one stands on Carbon's selected layer. One not set up is
   // faded with a download arrow. The power light, on the drawing, is lit while
   // it is set up and flashes while it is set up or removed.
   // Where each console's power light is on its drawing, in art pixels from
@@ -326,8 +325,8 @@
     window.Rux.menu.open(menu, trigger);
   }
 
-  // THE WALL, the chosen console's games as covers. Its head is the console's
-  // wordmark, or its name, and the switch between All and On this Mac.
+  // THE WALL, the chosen console's games as covers, with the console's
+  // wordmark, or its name, in the tile's head.
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
@@ -378,20 +377,15 @@
     const h = $('emu-games-h');
     h.replaceChildren(mark ?? R.systemName(chosen));
     if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
-    const all = inOrder(chosen);
-    $('emu-games-show').hidden = !helper;
-    const shown = helper && show === 'mac' ? all.filter(isHere) : all;
     const ul = $('emu-games');
     ul.classList.toggle('emu-games__list--wide', WIDE.has(chosen));
-    redraw(ul, ...shown.map(coverItem));
-    $('emu-games-none').hidden = shown.length > 0;
+    redraw(ul, ...inOrder(chosen).map(coverItem));
     if (lastShown !== chosen) {
       ul.parentElement.scrollTop = 0;
       if (lastShown && !calm()) ul.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 110, easing: 'cubic-bezier(0, 0, 0.38, 0.9)' });
       lastShown = chosen;
     }
   }
-  $('emu-games-show').addEventListener('rux:content-switcher-selected', e => { show = e.detail.option.dataset.show; renderGames(); });
 
   // How far a game arriving has come: how much of its cover its veil still
   // hides, and the words on its button.
@@ -417,11 +411,6 @@
     const other = system !== chosen;
     chosen = system;
     game = g ?? firstOf(system);
-    // A game the wall does not show brings back All.
-    if (show === 'mac' && !isHere(game)) {
-      show = 'all';
-      window.Rux.contentSwitcher.select($('emu-games-show'), $('emu-games-show').querySelector('[data-show="all"]'), { focus: false, silent: true });
-    }
     if (other) for (const b of $('emu-consoles').querySelectorAll('[data-console]')) {
       b.classList.toggle('emu-kit--chosen', b.dataset.console === system);
       b.setAttribute('aria-pressed', String(b.dataset.console === system));
@@ -688,7 +677,7 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-head', 'emu-bar']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-bar']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) renderStrip();
     renderConsoles();
@@ -762,8 +751,15 @@
       b.addEventListener('click', () => { say(); run?.(); });
       return b;
     }));
+    asking = answers.length > 0;
     if (text) saidFor = setTimeout(say, ms);
+    else if (untold) { const told = untold; untold = null; say(told); }
   }
+  // What a game's saves say as they are carried, which may come long after
+  // Play: it waits for a question's answer rather than taking its place.
+  let asking = false;
+  let untold = null;
+  const mutter = text => { if (asking) untold = text; else say(text); };
   const sayNo = text => say(text, { ms: 6000, bad: true });
   async function download(g, thenPlay = false) {
     if (stands(g).state !== 'held') {
@@ -838,7 +834,7 @@
     try {
       if (stateOf(g.system) === 'on') await insert(g);
       say('Starting…', { ms: 600000 });
-      await R.thisMac.play(g, say, { anyway });
+      await R.thisMac.play(g, mutter, { anyway });
       sfx.start();
       say(`Playing ${nameOf(g)}.`);
     } catch (error) {

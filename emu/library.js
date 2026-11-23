@@ -1,9 +1,9 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile, read from the top down. Its head is the chosen console's wordmark
-   and the strip; then a row of every console with games; then the chosen console's
-   games, a wall of covers, the only part that scrolls; then the bar, which
+   One tile, read from the top down. Its head is the chosen console, a
+   button that opens every console with games as a grid under it, and the
+   strip; then the chosen console's games, a wall of covers, the only part that scrolls; then the bar, which
    is the chosen game's: its name, its save, its controller, Details and one
    button, the one next move. Without Rux Emu Helper, such as on a phone,
    there is no head and no bar, and pressing a game opens its side panel,
@@ -33,8 +33,8 @@
    Play, the one way a game starts, drops its cartridge into its console or
    slides its disc onto a tray as it starts. A cover dragged onto its console
    plays too, and a word under the pointer says what letting go will do. A
-   controller moves over the consoles and the covers, A to choose and then to
-   play, B to close what is open.
+   controller moves over the head's button and the covers, or the grid while
+   it is open, A to choose and then to play, B to close what is open.
 
    ?game=<system>/<title>, from Search, chooses that game; with &details,
    from Problems, its panel opens.
@@ -261,10 +261,12 @@
     $('emu-strip-facts').replaceChildren(...facts.map(([kind, text, title]) => indicator(kind, text, '', title)),
       ...(worst ? [indicator(worst[0], worst[1], 'emu-strip__sum', worst[2])] : []));
   }
-  // THE CONSOLES, a row of every console with games, each its drawing, its
-  // name only in its title, since the tile's head names the chosen one. That one stands on Carbon's selected layer. One not set up is
-  // faded. The power light, on the drawing, is lit while
-  // it is set up and flashes while it is set up or removed.
+  // THE CONSOLES. The head's button is the chosen console: its drawing, its
+  // wordmark, or its name, and a chevron. It opens the grid of every console
+  // with games, each its drawing with its name only in its title, the chosen
+  // one on Carbon's selected layer. One not set up is faded. The power light,
+  // on the drawing, is lit while it is set up and flashes while it is set up
+  // or removed.
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
@@ -274,8 +276,31 @@
     gbc: [2, 5, 1, 1, 'error'], gba: [21, 2, 1, 1, 'success'], nds: [17, 4, 1, 1, 'success'], n3ds: [2, 13, 2, 2, 'info'],
     psx: [4, 14, 3, 1, 'success'], ps2: [32, 17, 1, 1, 'success'], xbox: [17, 18, 2, 2, 'success'],
   };
-  const kitOf = system => $('emu-consoles').querySelector(`[data-console="${system}"]`);
+  // The chosen console is the head's button, so a game goes into it and it
+  // shakes its head; any other is in the grid.
+  const kitOf = system => (system === chosen ? $('emu-chooser') : $('emu-consoles').querySelector(`[data-console="${system}"]`));
+  function spotOf(system) {
+    const spot = el('span', 'emu-kit__spot');
+    spot.append(consoleOf(system));
+    const at = LIGHT[system];
+    if (at && ['on', 'setting', 'keeping'].includes(stateOf(system))) {
+      const light = el('i', `emu-light emu-light--${at[4]}`);
+      light.style.cssText = `--emu-lx:${at[0]};--emu-ly:${at[1]};--emu-lw:${at[2]};--emu-lh:${at[3]}`;
+      spot.append(light);
+    }
+    return spot;
+  }
   function renderConsoles() {
+    const now = stateOf(chosen);
+    const head = $('emu-chooser');
+    head.className = `emu-chooser emu-kit--${now}`;
+    head.dataset.console = chosen;
+    head.title = BUSY[now]?.(chosen) ?? 'Choose a console';
+    head.setAttribute('aria-label', `${R.systemName(chosen)}${now === 'away' ? ', not set up' : ''}. Choose a console`);
+    const chevron = iconOf('#i-chevron--up');
+    chevron.setAttribute('class', 'emu-chooser__chevron');
+    redraw(head, spotOf(chosen), markOf(chosen) ?? el('span', 'emu-chooser__name', R.systemName(chosen)), chevron);
+    $('emu-games-h').setAttribute('aria-label', R.systemName(chosen));
     redraw($('emu-consoles'), ...consoles().map(system => {
       const state = stateOf(system);
       const b = el('button', `emu-kit emu-kit--${state}${system === chosen ? ' emu-kit--chosen' : ''}`);
@@ -284,26 +309,37 @@
       b.setAttribute('aria-pressed', String(system === chosen));
       b.title = BUSY[state]?.(system) ?? R.systemName(system);
       b.setAttribute('aria-label', state === 'away' ? `${R.systemName(system)}, not set up` : R.systemName(system));
-      const spot = el('span', 'emu-kit__spot');
-      spot.append(consoleOf(system));
-      const at = LIGHT[system];
-      if (at && ['on', 'setting', 'keeping'].includes(state)) {
-        const light = el('i', `emu-light emu-light--${at[4]}`);
-        light.style.cssText = `--emu-lx:${at[0]};--emu-ly:${at[1]};--emu-lw:${at[2]};--emu-lh:${at[3]}`;
-        spot.append(light);
-      }
-      b.append(spot);
-      b.addEventListener('click', () => choose(system));
-      b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); openMenu(kitOf(system)); });
+      b.append(spotOf(system));
+      b.addEventListener('click', () => { choose(system); shutGrid(true); });
+      b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); shutGrid(true); openMenu($('emu-chooser')); });
       const li = el('li');
       li.append(b);
       return li;
     }));
   }
+  // THE GRID opens from the head's button, on the chosen console, and shuts on
+  // a choice, Escape, the button again or a press anywhere else.
+  const gridOpen = () => !$('emu-consoles').hidden;
+  function openGrid() {
+    $('emu-consoles').hidden = false;
+    $('emu-chooser').setAttribute('aria-expanded', 'true');
+    $('emu-consoles').querySelector('.emu-kit--chosen')?.focus();
+  }
+  function shutGrid(back = false) {
+    if (!gridOpen()) return;
+    $('emu-consoles').hidden = true;
+    $('emu-chooser').setAttribute('aria-expanded', 'false');
+    if (back) $('emu-chooser').focus();
+  }
+  $('emu-chooser').addEventListener('click', () => (gridOpen() ? shutGrid() : openGrid()));
+  $('emu-chooser').addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); shutGrid(); openMenu($('emu-chooser')); });
+  document.addEventListener('pointerdown', e => { if (gridOpen() && !e.target.closest?.('#emu-consoles, #emu-chooser')) shutGrid(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && gridOpen()) { e.stopImmediatePropagation(); shutGrid(true); } }, true);
 
-  // A CONSOLE'S MENU, Design's, from a right click on the console: Set up or
-  // Remove, which the strip then asks about, or what it
-  // is busy with. So no control is drawn on the row.
+  // A CONSOLE'S MENU, Design's, from a right click on a console, the head's
+  // button or one in the grid, which chooses it: Set up or Remove, which the
+  // strip then asks about, or what it is busy with. So no control is drawn on
+  // a console.
   function openMenu(trigger) {
     const menu = $('emu-console-menu');
     if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
@@ -316,12 +352,12 @@
     window.Rux.menu.open(menu, trigger);
   }
 
-  // THE WALL, the chosen console's games as covers, with the console's
-  // wordmark, or its name, in the tile's head.
+  // THE WALL, the chosen console's games as covers; the head's button shows
+  // the console's wordmark, or its name.
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
-    if (games.length) renderGames();
+    if (chosen) { renderConsoles(); renderGames(); }
   }).catch(error => console.error(error));
   // A console's wordmark, drawn in the text colour at one height, which a
   // symbol's `data-scale` grows where its letters sit small in its shape,
@@ -361,10 +397,6 @@
   const coverOf = g => $('emu-games').querySelector(`.emu-cover[data-game="${CSS.escape(keyOf(g))}"]`);
   let lastShown = null;
   function renderGames() {
-    const mark = markOf(chosen);
-    const h = $('emu-games-h');
-    h.replaceChildren(mark ?? R.systemName(chosen));
-    if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
     const ul = $('emu-games');
     // Boxes much wider than they are tall go fewer across.
     ul.classList.toggle('emu-games__list--wide', R.BOX[chosen] > 1.2);
@@ -400,23 +432,15 @@
     const other = system !== chosen;
     chosen = system;
     game = g ?? firstOf(system);
-    if (other) for (const b of $('emu-consoles').querySelectorAll('[data-console]')) {
-      b.classList.toggle('emu-kit--chosen', b.dataset.console === system);
-      b.setAttribute('aria-pressed', String(b.dataset.console === system));
-    }
+    if (other) renderConsoles();
     renderGames();
     showChosen();
     renderBar();
   }
-  // The chosen console in its row's view, and, where the wall scrolls alone,
-  // the chosen game in the wall's.
+  // Where the wall scrolls alone, the chosen game in its view.
   function showChosen() {
-    const row = $('emu-consoles');
-    const kit = kitOf(chosen);
-    if (kit) row.scrollLeft = Math.max(Math.min(row.scrollLeft, kit.parentElement.offsetLeft - row.offsetLeft - 8), kit.parentElement.offsetLeft - row.offsetLeft + kit.offsetWidth + 8 - row.clientWidth);
     if (helper) coverOf(game)?.scrollIntoView({ block: 'nearest' });
   }
-  new ResizeObserver(() => { if (chosen) showChosen(); }).observe($('emu-consoles'));
   function pick(g) {
     game = g;
     for (const b of $('emu-games').querySelectorAll('.emu-cover')) b.setAttribute('aria-pressed', String(b.dataset.game === keyOf(g)));
@@ -788,9 +812,9 @@
   const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
   // A timer beside each animation, so the game still starts where one is not run.
   const after = (anim, ms) => Promise.race([anim.finished, new Promise(r => setTimeout(r, ms + 80))]).catch(() => {});
-  // The game goes into its console in the row, with its own picture on it. It
-  // is drawn over the page at the console's place, since the row clips what
-  // falls into it from above.
+  // The game goes into its console in the head, with its own picture on it.
+  // It is drawn over the page at the console's place, since the head clips
+  // what falls into it from above.
   async function insert(g) {
     const at = kitOf(g.system)?.querySelector('.emu-console')?.getBoundingClientRect();
     if (!at || calm()) { sfx.insert(); return; }
@@ -913,7 +937,6 @@
     if (!kit) return null;
     const system = kit.dataset.console;
     const no = (word, says) => ({ word, kit, no: true, says });
-    if (system !== g.system) return no(`Does not fit the ${R.systemName(system)}`, `${nameOf(g)} does not fit the ${R.systemName(system)}.`);
     const state = stateOf(system);
     if (state === 'setting') return no('Still setting up', 'Hang on, still setting up.');
     if (state === 'keeping') return no('Being removed', 'It is being removed.');
@@ -955,7 +978,6 @@
       document.body.append(ghost);
       drag.ghost = ghost;
       drag.src.classList.add('emu-held');
-      for (const b of $('emu-consoles').querySelectorAll('[data-console]')) b.classList.toggle('emu-kit--dim', b.dataset.console !== drag.g.system);
     }
     drag.ghost.style.transform = `translate(${e.clientX - drag.dx}px, ${e.clientY - drag.dy}px) rotate(-3deg) scale(.5)`;
     const it = intent(drag.g, underOf(e));
@@ -967,13 +989,12 @@
     word.style.transform = `translate(${Math.min(e.clientX + 16, innerWidth - word.offsetWidth - 8)}px, ${e.clientY + 20}px)`;
     it.kit.classList.add(it.no ? 'emu-no' : 'emu-lit');
   });
-  // The hold over: the word, the lights and the dimming gone.
+  // The hold over: the word and the lights gone.
   function letGo() {
     const d = drag;
     drag = null;
     word.hidden = true;
     unlight();
-    for (const b of $('emu-consoles').querySelectorAll('.emu-kit--dim')) b.classList.remove('emu-kit--dim');
     return d;
   }
   // A drag that ended on its own cover would press it; that one click is swallowed.
@@ -1023,21 +1044,22 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && panelOpen()) { e.stopImmediatePropagation(); closeGame(); } }, true);
   $('emu-panel-close').addEventListener('click', e => { e.stopImmediatePropagation(); closeGame(); }, true);
 
-  // A CONTROLLER moves the focus over the consoles and the covers to the
-  // nearest one that way. A presses it, and a cover already chosen is played
+  // A CONTROLLER moves the focus over the head's button and the covers, or the
+  // grid's consoles while it is open, to the nearest one that way. A presses it, and a cover already chosen is played
   // or downloaded; B closes what is open. The first move only finds the place.
   R.onPad(move => {
     if (!helper || !game) return;
     const at = document.activeElement;
     if (move === 'b') { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return; }
     if (panelOpen() || document.querySelector('.rux--modal.is-visible')) { if (move === 'a' && at?.matches('button')) at.click(); return; }
-    if (!at?.matches('#emu-consoles .emu-kit, #emu-games .emu-cover')) { coverOf(game)?.focus(); return; }
+    const places = gridOpen() ? '#emu-consoles .emu-kit' : '#emu-chooser, #emu-games .emu-cover';
+    if (!at?.matches(places)) { (gridOpen() ? $('emu-consoles').querySelector('.emu-kit--chosen') : coverOf(game))?.focus(); return; }
     if (move === 'a') { if (at.dataset.game === keyOf(game)) $('emu-bar-go').click(); else at.click(); return; }
     const middle = n => { const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
     const [x, y] = middle(at);
     const [dx, dy] = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] }[move];
     let best = null, least = Infinity;
-    for (const n of document.querySelectorAll('#emu-consoles .emu-kit, #emu-games .emu-cover')) {
+    for (const n of document.querySelectorAll(places)) {
       const [nx, ny] = middle(n);
       const along = (nx - x) * dx + (ny - y) * dy;
       const across = Math.abs((nx - x) * dy) + Math.abs((ny - y) * dx);

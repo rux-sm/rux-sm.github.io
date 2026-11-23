@@ -188,10 +188,11 @@
         <!-- The Library's tile, from library.js. Its strip, Sound and its bar
              show only where Rux Emu Helper answers. -->
         <div class="emu-library" id="emu-library" hidden>
-          <!-- The head: the chosen console's wordmark or name, then, with the
-               helper, the strip, the page's one place for words, and Sound. -->
+          <!-- The head: the chosen console, a button that opens the rest as
+               a grid under it, then, with the helper, the strip, the page's
+               one place for words, and Sound. -->
           <div class="emu-tile__head emu-head">
-            <h2 class="emu-tile__title" id="emu-games-h"></h2>
+            <h2 class="emu-tile__title" id="emu-games-h"><button type="button" class="emu-chooser" id="emu-chooser" aria-haspopup="true" aria-expanded="false" aria-controls="emu-consoles"></button></h2>
             <div class="emu-strip" id="emu-strip" hidden>
               <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
               <div class="emu-strip__said">
@@ -200,9 +201,8 @@
               </div>
             </div>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
+            <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles" hidden></ul>
           </div>
-
-          <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul>
 
           <section class="emu-games" aria-labelledby="emu-games-h">
             <div class="emu-games__scroll">

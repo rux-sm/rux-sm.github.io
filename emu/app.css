@@ -120,12 +120,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__head[hidden] { display: none; }
 .emu-tile__title { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); color: var(--rux-text-primary); white-space: nowrap; }
-/* The head: the chosen console's wordmark or name, the strip and Sound at its
-   end, in by the theme's inset (theme.css). The strip's words keep to the end,
-   so they stay put as the wordmark's width changes. No rule parts it from the
-   consoles, since the two are read as one. */
-.emu-head { border-block-end: 0; gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
-.emu-head .emu-tile__title { flex: none; padding-inline: var(--rux-spacing-05); }
+/* The head: the chosen console's button, the strip and Sound at its end, in
+   by the theme's inset (theme.css), over a rule. The strip's words keep to
+   the end, so they stay put as the wordmark's width changes. The grid of
+   consoles hangs from it. */
+.emu-head { position: relative; gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
+.emu-head .emu-tile__title { flex: none; min-inline-size: 0; display: flex; }
 .emu-tile__title:focus { outline: none; }
 .emu-tile__title:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* THE STRIP: the page's one place for words, on one line. At rest it is
@@ -150,24 +150,38 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-strip__facts > .emu-strip__sum { display: flex; }
 }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
-/* In a narrow window the wordmark gives way while the strip speaks, and its
+/* In a narrow window the chosen console gives way while the strip speaks, and its
    words may wrap, so a question is read whole before it is answered. */
 @media (max-width: 65.98rem) {
   .emu-head:has(.emu-strip--said) .emu-tile__title { display: none; }
   .emu-strip--said { white-space: normal; padding-inline-start: var(--rux-spacing-05); }
 }
-/* THE CONSOLES, a row under the head, every one in view where the window is
-   wide enough, else scrolling sideways. Each is its drawing, two CSS pixels
-   to the art pixel, on one baseline. The chosen one stands on
-   Carbon's selected layer; one not set up is faded, as a game on the server is. Their boxes share what width is left. */
-.emu-consoles { --emu-px: 2px; list-style: none; flex: none; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding: var(--rux-spacing-03); border-block-end: 1px solid var(--rux-border-subtle-01); }
-.emu-consoles > li { flex: 1 0 auto; display: flex; }
-.emu-kit { position: relative; flex: 1; appearance: none; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; align-content: end; padding: var(--rux-spacing-05) var(--rux-spacing-03); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-kit:hover { background: var(--rux-layer-hover-01); }
+/* THE CONSOLES. The head's button is the chosen console: its drawing, two
+   CSS pixels to the art pixel, its wordmark twice the strip's height, or its
+   name, and a chevron that turns as Save's does. It opens the grid, hung from
+   the head a layer up under the menu shadow, as lists open from the bar: five
+   across where they fit, each console's drawing in its box. The chosen one
+   stands on Carbon's selected layer; one not set up is faded, as a game on
+   the server is. */
+.emu-chooser { --emu-px: 2px; position: relative; min-inline-size: 0; appearance: none; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; display: flex; align-items: center; gap: var(--rux-spacing-06); min-block-size: 4.5rem; padding: var(--rux-spacing-03) var(--rux-spacing-05); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-chooser:hover { background: var(--rux-layer-hover-01); }
+.emu-chooser[aria-expanded="true"] { background: var(--rux-layer-02); }
+.emu-chooser:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.emu-chooser .emu-kit__spot { flex: none; }
+.emu-chooser .emu-mark { flex: 0 1 auto; min-inline-size: 0; block-size: calc(2rem * var(--emu-mark-scale, 1)); max-inline-size: 16rem; }
+.emu-chooser__name { overflow: hidden; text-overflow: ellipsis; font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); }
+.emu-chooser__chevron { flex: none; rotate: 180deg; transition: rotate 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-chooser[aria-expanded="true"] .emu-chooser__chevron { rotate: 0deg; }
+.emu-consoles { --emu-px: 2px; list-style: none; position: absolute; z-index: 3; inset-block-start: calc(100% + var(--emu-drawer-inset, 0px)); inset-inline-start: var(--emu-head-inset, 0); display: grid; grid-template-columns: repeat(auto-fill, 8rem); inline-size: min(41rem, 100% - 2 * var(--emu-head-inset, 0px)); padding: var(--rux-spacing-03); background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-pop-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); }
+.emu-consoles[hidden] { display: none; }
+.emu-consoles > li { display: flex; }
+.emu-kit { position: relative; flex: 1; min-block-size: 6rem; appearance: none; border: 0; background: none; cursor: pointer; display: grid; place-items: center; padding: var(--rux-spacing-05) var(--rux-spacing-03); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-kit:hover { background: var(--rux-layer-hover-02); }
 .emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-01); }
+.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-02); }
 .emu-kit__spot { position: relative; display: block; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
+@media (prefers-reduced-motion: reduce) { .emu-chooser__chevron { transition: none; } }
 
 /* THE WALL, the one part that scrolls. Every
    cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
@@ -231,7 +245,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    a light; the glow breathes slowly, and neither moves where motion is
    reduced. */
 .emu-light { position: absolute; inset-inline-start: calc(var(--emu-lx) * var(--emu-px)); inset-block-start: calc(var(--emu-ly) * var(--emu-px)); inline-size: calc(var(--emu-lw) * var(--emu-px)); block-size: calc(var(--emu-lh) * var(--emu-px)); background: var(--emu-light); pointer-events: none; }
-.emu-kit--chosen .emu-light::after { content: ""; position: absolute; inset: 0; box-shadow: 0 0 calc(2 * var(--emu-px)) var(--emu-px) var(--emu-light); opacity: .7; animation: emu-glow 2400ms ease-in-out infinite alternate; }
+:is(.emu-kit--chosen, .emu-chooser) .emu-light::after { content: ""; position: absolute; inset: 0; box-shadow: 0 0 calc(2 * var(--emu-px)) var(--emu-px) var(--emu-light); opacity: .7; animation: emu-glow 2400ms ease-in-out infinite alternate; }
 .emu-light--error { --emu-light: var(--rux-support-error); }
 .emu-light--success { --emu-light: var(--rux-support-success); }
 .emu-light--warning { --emu-light: var(--rux-support-warning); }
@@ -243,8 +257,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @media (prefers-reduced-motion: reduce) { .emu-light::after, :is(.emu-kit--setting, .emu-kit--keeping) .emu-light { animation: none; } }
 
 /* THE DRAG. A game held is a copy of its cover under the pointer, with a
-   word beside it for what letting go will do, red where nothing will. The
-   console it would land on is ringed, and every console but its own dims.
+   word beside it for what letting go will do, red where nothing will. Its
+   console, the head's button, is ringed while it is held over it.
    Carbon has no drag: the fades are its fast-02, the flight back its
    moderate-02, both on the productive standard curve. */
 .emu-ghost { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9000; pointer-events: none; filter: drop-shadow(0 .75rem 1.5rem var(--rux-shadow)); }
@@ -253,9 +267,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-.emu-kit:is(.emu-lit, .emu-no) { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; }
-.emu-kit.emu-no { outline-color: var(--rux-support-error); }
-.emu-kit--dim { opacity: .3; }
+.emu-chooser:is(.emu-lit, .emu-no) { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; }
+.emu-chooser.emu-no { outline-color: var(--rux-support-error); }
 
 /* THE REFUSAL AND THE GAME GOING IN. The wrong console shakes its head; a
    cartridge drops into its slot and a disc slides onto a tray that opens and

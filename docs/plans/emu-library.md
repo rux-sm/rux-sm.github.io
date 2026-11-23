@@ -6,12 +6,12 @@ type: plan
 
 ## Goal
 
-The Library, Emu's front page, is one tile, read from the top down: the
-chosen console as a button that opens every console as a grid, the chosen
-console's games as a wall of covers, and a bar with the chosen game, its
-save, its controller and Play. It opens on the game last played. Choose a
-console and its games fill the wall, press a game and the bar
-is that game's, press Play. A game this Mac lacks stands in the same wall,
+The Library, Emu's front page, is one tile: a head and, under it, the chosen
+console's games as a wall of covers. The head is the chosen console, a
+button that opens every console as a grid, then a bar with the chosen game,
+its save, its controller and Play. It opens on the game last played. Choose
+a console and its games fill the wall, press a game and the bar is that
+game's, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
 `emu/library.js`; the rest of Emu is unchanged.
 
@@ -25,8 +25,10 @@ The page:
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
 - **The tile's head is the chosen console,** its drawing and its wordmark, or
-  its name, which is the page's title, and at its end the strip, which says only what is
-  wrong and what a move is doing or did, and Sound, an icon button.
+  its name, which is the page's title, then the bar, then Sound, an icon
+  button, so the wall fills everything under it.
+- **The strip is in the bar after the game's name,** saying only what is
+  wrong at rest, and what a move is doing or did in the name's place.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
 - **The consoles are pixel art at two CSS pixels to an art pixel,** never
@@ -74,7 +76,7 @@ The wall:
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 
-The bar, at the tile's foot:
+The bar, in the head after the console, and under 66rem a row under it:
 
 - **It is the chosen game's:** its name and when it was last played, then Save,
   Controller, Details and one button, so what will play and with what shows

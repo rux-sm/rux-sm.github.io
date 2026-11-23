@@ -1,13 +1,13 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile, read from the top down. Its head is the chosen console, a
-   button that opens every console with games as a grid under it, and the
-   strip; then the chosen console's games, a wall of covers, the only part that scrolls; then the bar, which
-   is the chosen game's: its name, its save, its controller, Details and one
-   button, the one next move. Without Rux Emu Helper, such as on a phone,
-   there is no head and no bar, and pressing a game opens its side panel,
-   game-panel.js.
+   One tile: a head, and under it the chosen console's games, a wall of
+   covers, the only part that scrolls. The head is the chosen console, a
+   button that opens every console with games as a grid under it, then the
+   bar, which is the chosen game's: its name, with the strip after it, its
+   save, its controller, Details and one button, the one next move. Without
+   Rux Emu Helper, such as on a phone, the head is the console alone, and
+   pressing a game opens its side panel, game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
    The page opens on the game last played that this Mac holds, and choosing a
@@ -20,7 +20,7 @@
    has Set up or Remove, which the strip asks about first, naming every
    console that goes with its emulator.
 
-   The strip, in the head, is the page's one place for words. At rest it
+   The strip, in the bar, is the page's one place for words. At rest it
    says only what is wrong, each opening Status: a helper to update, little room
    left, no library or a late scan; while a move runs it names it, and after one it
    says what it did. Each move makes a small sound, made here with no sound

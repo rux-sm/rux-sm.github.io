@@ -185,19 +185,45 @@
           <div class="rux--inline-loading__text">Loading the library…</div>
         </div>
 
-        <!-- The Library's tile, from library.js. Its strip, Sound and its bar
-             show only where Rux Emu Helper answers. -->
+        <!-- The Library's tile, from library.js. Its bar, with the strip in
+             it, and Sound show only where Rux Emu Helper answers. -->
         <div class="emu-library" id="emu-library" hidden>
           <!-- The head: the chosen console, a button that opens the rest as
-               a grid under it, then, with the helper, the strip, the page's
-               one place for words, and Sound. -->
+               a grid under it; then, with the helper, the bar, the chosen
+               game's: its name, or the strip's words in its place, its save,
+               its controller, Details and the one next move, a list opening
+               down from Save or Controller; then Sound. -->
           <div class="emu-tile__head emu-head">
             <h2 class="emu-tile__title" id="emu-games-h"><button type="button" class="emu-chooser" id="emu-chooser" aria-haspopup="true" aria-expanded="false" aria-controls="emu-consoles"></button></h2>
-            <div class="emu-strip" id="emu-strip" hidden>
-              <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
-              <div class="emu-strip__said">
-                <p class="emu-strip__words" role="status" id="emu-said"></p>
-                <div class="emu-strip__answers" id="emu-said-answers"></div>
+            <div class="emu-bar" id="emu-bar" role="group" aria-labelledby="emu-bar-name" hidden>
+              <div class="emu-bar__game">
+                <h2 class="emu-bar__name" id="emu-bar-name"></h2>
+                <p class="emu-row__sub" id="emu-bar-sub"></p>
+              </div>
+              <div class="emu-strip" id="emu-strip" hidden>
+                <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
+                <div class="emu-strip__said">
+                  <p class="emu-strip__words" role="status" id="emu-said"></p>
+                  <div class="emu-strip__answers" id="emu-said-answers"></div>
+                </div>
+              </div>
+              <div class="emu-pick">
+                <button type="button" class="emu-pick__button" id="emu-bar-save" aria-expanded="false" aria-controls="emu-bar-save-list">
+                  <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                  <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                </button>
+                <div class="emu-pop rux--layer-two" id="emu-bar-save-list" hidden></div>
+              </div>
+              <div class="emu-pick">
+                <button type="button" class="emu-pick__button" id="emu-bar-pad" aria-expanded="false" aria-controls="emu-bar-pad-list">
+                  <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                  <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                </button>
+                <div class="emu-pop rux--layer-two" id="emu-bar-pad-list" hidden></div>
+              </div>
+              <div class="emu-bar__moves">
+                <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-lg" id="emu-bar-details">Details</button>
+                <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-bar-go">Play</button>
               </div>
             </div>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
@@ -209,34 +235,6 @@
               <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>
             </div>
           </section>
-
-          <!-- The bar, the chosen game's: its name, its save, its controller,
-               Details and the one next move. A list opens up from Save or
-               Controller. -->
-          <div class="emu-bar" id="emu-bar" role="group" aria-labelledby="emu-bar-name" hidden>
-            <div class="emu-bar__game">
-              <h2 class="emu-bar__name" id="emu-bar-name"></h2>
-              <p class="emu-row__sub" id="emu-bar-sub"></p>
-            </div>
-            <div class="emu-pick">
-              <button type="button" class="emu-pick__button" id="emu-bar-save" aria-expanded="false" aria-controls="emu-bar-save-list">
-                <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-              </button>
-              <div class="emu-pop rux--layer-two" id="emu-bar-save-list" hidden></div>
-            </div>
-            <div class="emu-pick">
-              <button type="button" class="emu-pick__button" id="emu-bar-pad" aria-expanded="false" aria-controls="emu-bar-pad-list">
-                <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-              </button>
-              <div class="emu-pop rux--layer-two" id="emu-bar-pad-list" hidden></div>
-            </div>
-            <div class="emu-bar__moves">
-              <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-lg" id="emu-bar-details">Details</button>
-              <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-bar-go">Play</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

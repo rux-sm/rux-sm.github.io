@@ -185,16 +185,20 @@
           <div class="rux--inline-loading__text">Loading the library…</div>
         </div>
 
-        <!-- The Library's tile, from library.js. Its bar, with the strip in
-             it, and Sound show only where Rux Emu Helper answers. -->
+        <!-- The Library's tile, from library.js. Its head shows only where
+             Rux Emu Helper answers. -->
         <div class="emu-library" id="emu-library" hidden>
-          <!-- The head: the chosen console, a button that opens the rest as
-               a grid under it; then, with the helper, the bar, the chosen
-               game's: its name, or the strip's words in its place, its save,
-               its controller, Details and the one next move, a list opening
-               down from Save or Controller; then Sound. -->
-          <div class="emu-tile__head emu-head">
-            <h2 class="emu-tile__title" id="emu-games-h"><button type="button" class="emu-chooser" id="emu-chooser" aria-haspopup="true" aria-expanded="false" aria-controls="emu-consoles"></button></h2>
+          <!-- The head: Installed or All games, over the consoles; then the
+               bar, the chosen game's: its name, or the strip's words in its
+               place, its save, its controller, Details and the one next move,
+               a list opening down from Save or Controller; then Sound. -->
+          <div class="emu-tile__head emu-head" id="emu-head" hidden>
+            <div class="emu-head__where">
+              <div class="rux--content-switcher" role="tablist" aria-label="Show" id="emu-where">
+                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="mac"><span class="rux--content-switcher__label">Installed</span></button>
+                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
+              </div>
+            </div>
             <div class="emu-bar" id="emu-bar" role="group" aria-labelledby="emu-bar-name" hidden>
               <div class="emu-bar__game">
                 <h2 class="emu-bar__name" id="emu-bar-name"></h2>
@@ -227,14 +231,20 @@
               </div>
             </div>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
-            <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles" hidden></ul>
           </div>
 
-          <section class="emu-games" aria-labelledby="emu-games-h">
-            <div class="emu-games__scroll">
-              <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>
-            </div>
-          </section>
+          <!-- The body: every console with games down the side, each its
+               drawing and name, and the chosen one's games beside them, under
+               its wordmark. -->
+          <div class="emu-body">
+            <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul>
+            <section class="emu-games" aria-labelledby="emu-games-h">
+              <div class="emu-games__scroll">
+                <h2 class="emu-games__title" id="emu-games-h"></h2>
+                <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </div>
@@ -292,6 +302,7 @@
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
 <script src="/design/js/modal.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>

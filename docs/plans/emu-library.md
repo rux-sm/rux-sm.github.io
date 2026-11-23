@@ -6,10 +6,10 @@ type: plan
 
 ## Goal
 
-The Library, Emu's front page, is one tile: a head and, under it, the chosen
-console's games as a wall of covers. The head is the chosen console, a
-button that opens every console as a grid, then a bar with the chosen game,
-its save, its controller and Play. It opens on the game last played. Choose
+The Library, Emu's front page, is one tile: a head and, under it, every
+console down the side and the chosen console's games beside them as a wall
+of covers. The head is Installed or All games, then a bar with the chosen
+game, its save, its controller and Play. It opens on the game last played. Choose
 a console and its games fill the wall, press a game and the bar is that
 game's, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
@@ -24,37 +24,39 @@ The page:
   moves from page to page.
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
-- **The tile's head is the chosen console,** its drawing and its wordmark, or
-  its name, which is the page's title, then the bar, then Sound, an icon
-  button, so the wall fills everything under it.
+- **The tile's head is Installed or All games,** as wide as the consoles under
+  it, then the bar, then Sound, an icon button. Installed shows only the games
+  this Mac holds or is fetching, and only their consoles; it is off while this
+  Mac holds none. The page opens on Installed where the last played game is
+  here.
+- **The wall's title is the chosen console's wordmark,** or its name.
 - **The strip is in the bar after the game's name,** saying only what is
   wrong at rest, and what a move is doing or did in the name's place.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
-- **The consoles are pixel art at two CSS pixels to an art pixel,** never
+- **The consoles are pixel art at one CSS pixel to an art pixel,** never
   stretched, and Carbon lays out everything else.
 - **Motion follows Carbon's curves,** and every move makes its small sound.
-- **A controller moves over the head's button and the covers, or the grid while
-  it is open,** A to choose and then to play, B to close what is open.
+- **A controller moves over the consoles and the covers,** A to choose and then
+  to play, B to close what is open.
 - **Every move works without dragging,** and a game dropped on its console
   plays, as an extra; the word under the pointer says what letting go will do.
 
 The consoles:
 
-- **The consoles are a menu,** the head's button opening a grid of every
-  console in the collection's order, five across where they fit, each its
-  drawing with its name only in its title, so the wall keeps the height and
-  nothing scrolls sideways.
+- **The consoles are a list down the side,** in the collection's order, each
+  its drawing and its name, scrolling on their own where they do not fit.
+  Under 42rem they are a row over the wall, scrolling sideways.
 - **There is no taking out and no putting away,** because playing a game
   never needed it.
-- **One console is chosen, always,** on Carbon's selected layer in the grid.
+- **One console is chosen, always,** on Carbon's selected layer in the list.
   The wall, the bar and Search all follow that one choice, so they never
-  disagree. Choosing one shuts the grid.
+  disagree.
 - **A console not set up is faded,** as a game not on
   this Mac is, so away looks the same everywhere. Its games still fill the
   wall, and Download on one sets its console up first.
-- **A console's menu is a right click on it,** the head's button or one in the
-  grid: Set up, or Remove. So no control is drawn on a console.
+- **A console's menu is a right click on it,** which chooses it: Set up, or
+  Remove. So no control is drawn on a console.
 - **Removing asks first and names every console that goes,** such as "Remove
   Mesen 2? The NES and SNES go too. Your saves are kept.", since one emulator
   plays several. Its saves and settings are kept in Supabase and checked
@@ -76,7 +78,8 @@ The wall:
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 
-The bar, in the head after the console, and under 66rem a row under it:
+The bar, in the head after Installed or All games, and under 66rem a row
+under it:
 
 - **It is the chosen game's:** its name and when it was last played, then Save,
   Controller, Details and one button, so what will play and with what shows
@@ -140,8 +143,8 @@ The side panel:
   from this Mac;** its region, format, list name and fingerprints are one
   fold, shut, below them.
 
-- **Without the helper, as on the phone, the page is the head's button and the
-  wall alone,** with no Save, Controller, Play or Download, and a game pressed opens
+- **Without the helper, as on the phone, the page is the consoles and the
+  wall alone, with no head,** with no Save, Controller, Play or Download, and a game pressed opens
   its panel.
 
 ## Questions

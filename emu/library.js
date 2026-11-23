@@ -1,18 +1,20 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile: a head, and under it the chosen console's games, a wall of
-   covers, the only part that scrolls. The head is the chosen console, a
-   button that opens every console with games as a grid under it, then the
-   bar, which is the chosen game's: its name, with the strip after it, its
-   save, its controller, Details and one button, the one next move. Without
-   Rux Emu Helper, such as on a phone, the head is the console alone, and
-   pressing a game opens its side panel, game-panel.js.
+   One tile: a head, and under it every console with games down the side,
+   each its drawing and name, and beside them the chosen console's games, a
+   wall of covers under its wordmark. The head is Installed or All games,
+   over the consoles, then the bar, which is the chosen game's: its name,
+   with the strip after it, its save, its controller, Details and one button,
+   the one next move. Installed shows only the games this Mac holds or is
+   fetching, and only their consoles. Without Rux Emu Helper, such as on a
+   phone, there is no head, and pressing a game opens its side panel,
+   game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
-   The page opens on the game last played that this Mac holds, and choosing a
-   console chooses its last played game, else its first. Nothing about the
-   page is kept.
+   The page opens on the game last played that this Mac holds, on Installed,
+   else on All games, and choosing a console chooses its last played game
+   shown, else its first. Nothing about the page is kept.
 
    Which consoles are set up, and which games this Mac holds, are read from
    the helper. What this Mac lacks is faded, a console
@@ -33,8 +35,8 @@
    Play, the one way a game starts, drops its cartridge into its console or
    slides its disc onto a tray as it starts. A cover dragged onto its console
    plays too, and a word under the pointer says what letting go will do. A
-   controller moves over the head's button and the covers, or the grid while
-   it is open, A to choose and then to play, B to close what is open.
+   controller moves over the consoles and the covers, A to choose and then to
+   play, B to close what is open.
 
    ?game=<system>/<title>, from Search, chooses that game; with &details,
    from Problems, its panel opens.
@@ -58,7 +60,9 @@
   let keeps = false;
   // The bytes this Mac has free for games, or null where no helper says.
   let free = null;
-  // The console and the game chosen.
+  // Which games show, 'mac' for Installed or 'all', and the console and the
+  // game chosen.
+  let where = 'all';
   let chosen = null;
   let game = null;
   // The last scan's row, for when the server last scanned, and the version
@@ -96,10 +100,12 @@
   const playedAt = g => g.notes?.played_at ?? '';
   // A console's games as the wall lists them: those here first, then the
   // server's, favourites leading each, then A to Z, as `games` is sorted.
-  const inOrder = system => gamesOf(system).sort((a, b) => Number(isHere(b)) - Number(isHere(a))
+  const inOrder = system => gamesOf(system).filter(g => where === 'all' || isHere(g)).sort((a, b) => Number(isHere(b)) - Number(isHere(a))
     || Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
   const lastPlayed = list => list.filter(playedAt).sort((a, b) => playedAt(b).localeCompare(playedAt(a)))[0] ?? null;
-  const firstOf = system => lastPlayed(gamesOf(system)) ?? inOrder(system)[0];
+  const firstOf = system => lastPlayed(inOrder(system)) ?? inOrder(system)[0];
+  // The consoles down the side: on Installed, only those with a game here.
+  const shown = () => consoles().filter(sys => where === 'all' || gamesOf(sys).some(isHere));
   const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const list = words => (words.length < 2 ? words.join('') : `${words.slice(0, -1).join(', ')} and ${words.at(-1)}`);
 
@@ -261,12 +267,10 @@
     $('emu-strip-facts').replaceChildren(...facts.map(([kind, text, title]) => indicator(kind, text, '', title)),
       ...(worst ? [indicator(worst[0], worst[1], 'emu-strip__sum', worst[2])] : []));
   }
-  // THE CONSOLES. The head's button is the chosen console: its drawing, its
-  // wordmark, or its name, and a chevron. It opens the grid of every console
-  // with games, each its drawing with its name only in its title, the chosen
-  // one on Carbon's selected layer. One not set up is faded. The power light,
-  // on the drawing, is lit while it is set up and flashes while it is set up
-  // or removed.
+  // THE CONSOLES down the side, each its drawing and its name, the chosen one
+  // on Carbon's selected layer. One not set up is faded. The power light, on
+  // the drawing, is lit while it is set up and flashes while it is set up or
+  // removed.
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
@@ -276,9 +280,7 @@
     gbc: [2, 5, 1, 1, 'error'], gba: [21, 2, 1, 1, 'success'], nds: [17, 4, 1, 1, 'success'], n3ds: [2, 13, 2, 2, 'info'],
     psx: [4, 14, 3, 1, 'success'], ps2: [32, 17, 1, 1, 'success'], xbox: [17, 18, 2, 2, 'success'],
   };
-  // The chosen console is the head's button, so a game goes into it and it
-  // shakes its head; any other is in the grid.
-  const kitOf = system => (system === chosen ? $('emu-chooser') : $('emu-consoles').querySelector(`[data-console="${system}"]`));
+  const kitOf = system => $('emu-consoles').querySelector(`[data-console="${system}"]`);
   function spotOf(system) {
     const spot = el('span', 'emu-kit__spot');
     spot.append(consoleOf(system));
@@ -291,53 +293,49 @@
     return spot;
   }
   function renderConsoles() {
-    const now = stateOf(chosen);
-    const head = $('emu-chooser');
-    head.className = `emu-chooser emu-kit--${now}`;
-    head.dataset.console = chosen;
-    head.title = BUSY[now]?.(chosen) ?? 'Choose a console';
-    head.setAttribute('aria-label', `${R.systemName(chosen)}${now === 'away' ? ', not set up' : ''}. Choose a console`);
-    const chevron = iconOf('#i-chevron--up');
-    chevron.setAttribute('class', 'emu-chooser__chevron');
-    redraw(head, spotOf(chosen), markOf(chosen) ?? el('span', 'emu-chooser__name', R.systemName(chosen)), chevron);
-    $('emu-games-h').setAttribute('aria-label', R.systemName(chosen));
-    redraw($('emu-consoles'), ...consoles().map(system => {
+    redraw($('emu-consoles'), ...shown().map(system => {
       const state = stateOf(system);
       const b = el('button', `emu-kit emu-kit--${state}${system === chosen ? ' emu-kit--chosen' : ''}`);
       b.type = 'button';
       b.dataset.console = system;
       b.setAttribute('aria-pressed', String(system === chosen));
       b.title = BUSY[state]?.(system) ?? R.systemName(system);
-      b.setAttribute('aria-label', state === 'away' ? `${R.systemName(system)}, not set up` : R.systemName(system));
-      b.append(spotOf(system));
-      b.addEventListener('click', () => { choose(system); shutGrid(true); });
-      b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); shutGrid(true); openMenu($('emu-chooser')); });
+      if (state === 'away') b.setAttribute('aria-label', `${R.systemName(system)}, not set up`);
+      const icon = el('span', 'emu-kit__icon');
+      icon.append(spotOf(system));
+      b.append(icon, el('span', 'emu-kit__name', R.systemName(system)));
+      b.addEventListener('click', () => choose(system));
+      b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); openMenu(kitOf(system)); });
       const li = el('li');
       li.append(b);
       return li;
     }));
   }
-  // THE GRID opens from the head's button, on the chosen console, and shuts on
-  // a choice, Escape, the button again or a press anywhere else.
-  const gridOpen = () => !$('emu-consoles').hidden;
-  function openGrid() {
-    $('emu-consoles').hidden = false;
-    $('emu-chooser').setAttribute('aria-expanded', 'true');
-    $('emu-consoles').querySelector('.emu-kit--chosen')?.focus();
-  }
-  function shutGrid(back = false) {
-    if (!gridOpen()) return;
-    $('emu-consoles').hidden = true;
-    $('emu-chooser').setAttribute('aria-expanded', 'false');
-    if (back) $('emu-chooser').focus();
-  }
-  $('emu-chooser').addEventListener('click', () => (gridOpen() ? shutGrid() : openGrid()));
-  $('emu-chooser').addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); shutGrid(); openMenu($('emu-chooser')); });
-  document.addEventListener('pointerdown', e => { if (gridOpen() && !e.target.closest?.('#emu-consoles, #emu-chooser')) shutGrid(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && gridOpen()) { e.stopImmediatePropagation(); shutGrid(true); } }, true);
 
-  // A CONSOLE'S MENU, Design's, from a right click on a console, the head's
-  // button or one in the grid, which chooses it: Set up or Remove, which the
+  // INSTALLED OR ALL GAMES. Installed is off while this Mac holds no game.
+  // Where the chosen console has none to show, the first that has is chosen.
+  function renderWhere() {
+    const mine = $('emu-where').querySelector('[data-where="mac"]');
+    mine.disabled = !games.some(isHere);
+    if (mine.disabled) where = 'all';
+    window.Rux.contentSwitcher.select($('emu-where'), $('emu-where').querySelector(`[data-where="${where}"]`), { focus: false, silent: true });
+  }
+  function keepShown() {
+    if (shown().includes(chosen) && inOrder(chosen).includes(game)) return;
+    chosen = shown().includes(chosen) ? chosen : shown()[0];
+    game = firstOf(chosen);
+  }
+  $('emu-where').addEventListener('rux:content-switcher-selected', e => {
+    where = e.detail.option.dataset.where;
+    keepShown();
+    renderConsoles();
+    renderGames();
+    showChosen();
+    renderBar();
+  });
+
+  // A CONSOLE'S MENU, Design's, from a right click on a console, which
+  // chooses it: Set up or Remove, which the
   // strip then asks about, or what it is busy with. So no control is drawn on
   // a console.
   function openMenu(trigger) {
@@ -352,12 +350,12 @@
     window.Rux.menu.open(menu, trigger);
   }
 
-  // THE WALL, the chosen console's games as covers; the head's button shows
-  // the console's wordmark, or its name.
+  // THE WALL, the chosen console's games as covers, under the console's
+  // wordmark, or its name.
   let marks = new Map();
   fetch('brand/marks.svg').then(r => (r.ok ? r.text() : '')).then(text => {
     marks = new Map([...new DOMParser().parseFromString(text, 'image/svg+xml').querySelectorAll('symbol')].map(s => [s.id, s]));
-    if (chosen) { renderConsoles(); renderGames(); }
+    if (chosen) renderGames();
   }).catch(error => console.error(error));
   // A console's wordmark, drawn in the text colour at one height, which a
   // symbol's `data-scale` grows where its letters sit small in its shape,
@@ -397,6 +395,10 @@
   const coverOf = g => $('emu-games').querySelector(`.emu-cover[data-game="${CSS.escape(keyOf(g))}"]`);
   let lastShown = null;
   function renderGames() {
+    const mark = markOf(chosen);
+    const h = $('emu-games-h');
+    h.replaceChildren(mark ?? R.systemName(chosen));
+    if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
     const ul = $('emu-games');
     // Boxes much wider than they are tall go fewer across.
     ul.classList.toggle('emu-games__list--wide', R.BOX[chosen] > 1.2);
@@ -432,13 +434,18 @@
     const other = system !== chosen;
     chosen = system;
     game = g ?? firstOf(system);
-    if (other) renderConsoles();
+    if (other) for (const b of $('emu-consoles').querySelectorAll('[data-console]')) {
+      b.classList.toggle('emu-kit--chosen', b.dataset.console === system);
+      b.setAttribute('aria-pressed', String(b.dataset.console === system));
+    }
     renderGames();
     showChosen();
     renderBar();
   }
-  // Where the wall scrolls alone, the chosen game in its view.
+  // The chosen console in the list's view, and, where the wall scrolls
+  // alone, the chosen game in the wall's.
   function showChosen() {
+    kitOf(chosen)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (helper) coverOf(game)?.scrollIntoView({ block: 'nearest' });
   }
   function pick(g) {
@@ -693,9 +700,10 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-bar']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-bar', 'emu-head']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
-    if (mac) renderStrip();
+    if (mac) { renderStrip(); renderWhere(); }
+    keepShown();
     renderConsoles();
     renderGames();
     renderBar();
@@ -812,8 +820,8 @@
   const DISC = new Set(['gc', 'wii', 'wiiu', 'psx', 'ps2', 'xbox']);
   // A timer beside each animation, so the game still starts where one is not run.
   const after = (anim, ms) => Promise.race([anim.finished, new Promise(r => setTimeout(r, ms + 80))]).catch(() => {});
-  // The game goes into its console in the head, with its own picture on it.
-  // It is drawn over the page at the console's place, since the head clips
+  // The game goes into its console in the list, with its own picture on it.
+  // It is drawn over the page at the console's place, since the list clips
   // what falls into it from above.
   async function insert(g) {
     const at = kitOf(g.system)?.querySelector('.emu-console')?.getBoundingClientRect();
@@ -937,6 +945,7 @@
     if (!kit) return null;
     const system = kit.dataset.console;
     const no = (word, says) => ({ word, kit, no: true, says });
+    if (system !== g.system) return no(`Does not fit the ${R.systemName(system)}`, `${nameOf(g)} does not fit the ${R.systemName(system)}.`);
     const state = stateOf(system);
     if (state === 'setting') return no('Still setting up', 'Hang on, still setting up.');
     if (state === 'keeping') return no('Being removed', 'It is being removed.');
@@ -1044,16 +1053,16 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && panelOpen()) { e.stopImmediatePropagation(); closeGame(); } }, true);
   $('emu-panel-close').addEventListener('click', e => { e.stopImmediatePropagation(); closeGame(); }, true);
 
-  // A CONTROLLER moves the focus over the head's button and the covers, or the
-  // grid's consoles while it is open, to the nearest one that way. A presses it, and a cover already chosen is played
+  // A CONTROLLER moves the focus over the consoles and the covers to the
+  // nearest one that way. A presses it, and a cover already chosen is played
   // or downloaded; B closes what is open. The first move only finds the place.
   R.onPad(move => {
     if (!helper || !game) return;
     const at = document.activeElement;
     if (move === 'b') { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return; }
     if (panelOpen() || document.querySelector('.rux--modal.is-visible')) { if (move === 'a' && at?.matches('button')) at.click(); return; }
-    const places = gridOpen() ? '#emu-consoles .emu-kit' : '#emu-chooser, #emu-games .emu-cover';
-    if (!at?.matches(places)) { (gridOpen() ? $('emu-consoles').querySelector('.emu-kit--chosen') : coverOf(game))?.focus(); return; }
+    const places = '#emu-consoles .emu-kit, #emu-games .emu-cover';
+    if (!at?.matches(places)) { coverOf(game)?.focus(); return; }
     if (move === 'a') { if (at.dataset.game === keyOf(game)) $('emu-bar-go').click(); else at.click(); return; }
     const middle = n => { const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
     const [x, y] = middle(at);
@@ -1103,6 +1112,7 @@
     }
     game = asked ?? lastPlayed(games.filter(g => stands(g).state === 'held' && plays(g.system))) ?? firstOf(consoles().find(plays) ?? consoles()[0]);
     chosen = game.system;
+    where = isHere(game) ? 'mac' : 'all';
     renderSound();
     render();
     showChosen();

@@ -151,19 +151,18 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
 /* THE CONSOLES, a row under the head, every one in view where the window is
    wide enough, else scrolling sideways. Each is its drawing, two CSS pixels
-   to the art pixel, over its name, on one baseline. The chosen one stands on
-   Carbon's selected layer; one not set up is faded, as a game on the server
-   is. Their boxes share what width is left. */
+   to the art pixel, on one baseline. The chosen one stands on
+   Carbon's selected layer; one not set up is faded, with a download arrow at its
+   corner, as a game on the server is. Their boxes share what width is left. */
 .emu-consoles { --emu-px: 2px; list-style: none; flex: none; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding: var(--rux-spacing-03); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-consoles > li { flex: 1 0 auto; display: flex; }
-.emu-kit { flex: 1; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-secondary); cursor: pointer; display: grid; justify-items: center; align-content: end; gap: var(--rux-spacing-03); padding: var(--rux-spacing-03); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.emu-kit { position: relative; flex: 1; appearance: none; border: 0; background: none; cursor: pointer; display: grid; justify-items: center; align-content: end; padding: var(--rux-spacing-05) var(--rux-spacing-03); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-kit:hover { background: var(--rux-layer-hover-01); }
 .emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-01); color: var(--rux-text-primary); }
+.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-01); }
 .emu-kit__spot { position: relative; display: block; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
-.emu-kit__name { display: flex; align-items: center; gap: var(--rux-spacing-01); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); white-space: nowrap; }
-.emu-kit__away { inline-size: .75rem; block-size: .75rem; fill: currentColor; }
+.emu-kit__away { position: absolute; inset-block-end: var(--rux-spacing-02); inset-inline-end: var(--rux-spacing-02); fill: var(--rux-icon-primary); }
 
 /* THE WALL, the one part that scrolls, under a head that does not: the
    console's wordmark or name, its counts, the switch and its menu. Every

@@ -38,7 +38,8 @@ The page:
 The consoles:
 
 - **Every console stands in the row always,** in the collection's order, its
-  drawing over its name, so all fifteen are in view at 1312px and none moves;
+  drawing with its name only in its title, since the wall's head names the
+  chosen one, so all fifteen are in view at 1312px and none moves;
   a narrower window scrolls the row sideways to the chosen one.
 - **There is no taking out and no putting away,** because playing a game
   never needed it.

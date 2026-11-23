@@ -268,8 +268,8 @@
     $('emu-strip-facts').replaceChildren(...facts.map(f => indicator(...f)),
       worst ? indicator(worst[0], worst[1], 'status.html', 'emu-strip__sum') : indicator('ok', 'Ready', 'status.html', 'emu-strip__sum'));
   }
-  // THE CONSOLES, a row of every console with games, each its drawing over its
-  // name. The chosen one stands on Carbon's selected layer. One not set up is
+  // THE CONSOLES, a row of every console with games, each its drawing, its
+  // name only in its title, since the wall's head names the chosen one. That one stands on Carbon's selected layer. One not set up is
   // faded with a download arrow. The power light, on the drawing, is lit while
   // it is set up and flashes while it is set up or removed.
   // Where each console's power light is on its drawing, in art pixels from
@@ -289,8 +289,8 @@
       b.type = 'button';
       b.dataset.console = system;
       b.setAttribute('aria-pressed', String(system === chosen));
-      const busy = BUSY[state]?.(system);
-      if (busy) b.title = busy;
+      b.title = BUSY[state]?.(system) ?? R.systemName(system);
+      b.setAttribute('aria-label', state === 'away' ? `${R.systemName(system)}, not set up` : R.systemName(system));
       const spot = el('span', 'emu-kit__spot');
       spot.append(consoleOf(system));
       const at = LIGHT[system];
@@ -299,9 +299,8 @@
         light.style.cssText = `--emu-lx:${at[0]};--emu-ly:${at[1]};--emu-lw:${at[2]};--emu-lh:${at[3]}`;
         spot.append(light);
       }
-      const name = el('span', 'emu-kit__name', R.systemName(system));
-      if (state === 'away') { name.append(awayMark('emu-kit__away')); b.setAttribute('aria-label', `${R.systemName(system)}, not set up`); }
-      b.append(spot, name);
+      b.append(spot);
+      if (state === 'away') b.append(awayMark('emu-kit__away'));
       b.addEventListener('click', () => choose(system));
       b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); choose(system); openMenu(kitOf(system)); });
       const li = el('li');

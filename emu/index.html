@@ -214,7 +214,8 @@
             <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul>
             <section class="emu-games" aria-labelledby="emu-games-h">
               <!-- The chosen game: its screenshot, its name over when it was last
-                   played, its region and size, then its save, its controller,
+                   played, its region and size, its facts and its description,
+                   then its save, its controller,
                    Details and the one next move, a list opening down from Save
                    or Controller. It does not scroll with the wall. -->
               <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name" hidden>
@@ -223,6 +224,8 @@
                   <div class="emu-chosen__game">
                     <h2 class="emu-chosen__name" id="emu-chosen-name"></h2>
                     <p class="emu-row__sub" id="emu-chosen-sub"></p>
+                    <p class="emu-row__sub" id="emu-chosen-facts" hidden></p>
+                    <p class="emu-chosen__about" id="emu-chosen-about" hidden></p>
                   </div>
                   <div class="emu-chosen__row">
                     <div class="emu-pick">

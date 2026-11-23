@@ -11,7 +11,7 @@ The repository root's `AGENTS.md` is the policy, and
 
 `index.html` is the Library, drawn by `library.js`: every console down the side, the chosen one's
 games as a wall of covers beside them, the ones the server keeps in Supabase or else libretro's, and over the wall
-the chosen game: libretro's screenshot of it and its facts, its save, its controller, Details and Play. What this Mac lacks is faded, and
+the chosen game: libretro's screenshot of it, its facts and description, its save, its controller, Details and Play. What this Mac lacks is faded, and
 the chosen game's button downloads it. The head is Installed or All games over the consoles, and the strip, which says how this Mac
 stands and what a move did. Without Rux Emu Helper, as on the phone, it is the consoles and the games alone, a game
 opening in its panel. `collection.html` is the
@@ -70,7 +70,7 @@ and the BIOS in its bios folder, and saves the scan to Supabase: every game and
 save, leaving rux's notes, moving the notes of a game the organize tool renamed,
 removing what is no longer there, and each BIOS, key, firmware and installer
 Supabase lacks. It keeps each game's cover, rux's own picture from the games
-folder's `art` folder or libretro's fetched once, and puts it in Supabase. It
+folder's `art` folder or libretro's fetched once, and puts it in Supabase. Each game `emu_info` lacks it looks up in libretro's database for its year, genre, developer, publisher, players and, for the PlayStation and PS2, its description. It
 keeps its fingerprints, the scan and the fetched covers in its cache folder and
 never writes beside the games. Each save is matched to its game the way its
 emulator names it, by file name, title ID, disc ID or serial, as
@@ -109,7 +109,7 @@ downloaded into it from the home server or removed. The app carries its own
 ## How it works
 
 `emu_games`, `emu_saves` and `emu_scan` hold the last scan saved, `emu_macs` how each Mac
-stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, and the `emu-backups` bucket the old backup zips.
+stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, `emu_info` each game's facts and description as the scan looked them up, and the `emu-backups` bucket the old backup zips.
 `emu_files` lists each copy of each file the `emu-collection` bucket holds, its bytes there
 under its SHA-1 and its newest copy in the view `emu_files_now`: the BIOS, keys, firmware
 and installers every Mac is given, each game's cover, and the last five copies of each Mac's settings for an

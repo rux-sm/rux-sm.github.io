@@ -244,11 +244,21 @@ await scanSave.putArt(db, art, {
   mac: 'home server',
 });
 
+// The facts: each game emu_info lacks, looked up in libretro's database. A
+// night libretro does not answer, they wait for tomorrow.
+let looked = 0;
+let factsLate = false;
+try {
+  looked = await scanSave.putInfo(db, scan.games, (to) => fetch(to, { headers: { 'user-agent': 'rux-emu-scan' }, signal: AbortSignal.timeout(60000) }));
+} catch { factsLate = true; }
+
 const counts = [...Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`),
   ...(given.length ? [`${given.length} files every Mac is given put in Supabase`] : []),
   ...(fetched ? [`${coversOf(fetched)} fetched`] : []),
   ...(art.put.length ? [`${coversOf(art.put.length)} put in Supabase`] : []),
-  ...(art.gone.length ? [`${coversOf(art.gone.length)} removed`] : [])];
+  ...(art.gone.length ? [`${coversOf(art.gone.length)} removed`] : []),
+  ...(looked ? [`${looked} ${looked === 1 ? 'game' : 'games'} looked up in libretro's database`] : [])];
 console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the server; ${counts.join(', ') || 'nothing changed'}`
   + (unanswered.length ? `; no newest version from ${unanswered.join(', ')}` : '')
-  + (unasked ? `; libretro's thumbnails did not answer, so ${coversOf(unasked)} ${unasked === 1 ? 'waits' : 'wait'} for tomorrow` : ''));
+  + (unasked ? `; libretro's thumbnails did not answer, so ${coversOf(unasked)} ${unasked === 1 ? 'waits' : 'wait'} for tomorrow` : '')
+  + (factsLate ? "; libretro's database did not answer, so the facts wait for tomorrow" : ''));

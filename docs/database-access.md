@@ -30,7 +30,7 @@ bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
 other account reads it.
 
 The Emu tables, `emu_games`, `emu_saves`, `emu_notes`,
-`emu_scan`, `emu_macs`, `emu_files` and `emu_cards`, ask `is_owner()` in `owner_all`, and so does every rule on the
+`emu_scan`, `emu_macs`, `emu_files`, `emu_cards` and `emu_info`, ask `is_owner()` in `owner_all`, and so does every rule on the
 `emu-backups` and `emu-collection` buckets: the game collection, its saves
 and their backups are the owner's alone. `emu_files_now` is a view that asks
 as its reader.

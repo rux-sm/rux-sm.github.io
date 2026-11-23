@@ -210,6 +210,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen__main { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; justify-content: space-between; gap: var(--rux-spacing-05); }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
 .emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+/* A description is three lines at most, whole when the pointer rests on it. */
+.emu-chosen__about { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .emu-chosen__row { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--rux-spacing-03); }
 .emu-chosen__moves { flex: none; margin-inline-start: auto; display: flex; align-items: stretch; gap: var(--emu-head-gap, 0); }
 .emu-chosen__moves > .rux--btn { block-size: auto; min-block-size: 3rem; align-items: center; padding-block: 0; }

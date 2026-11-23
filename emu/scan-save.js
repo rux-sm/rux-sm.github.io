@@ -10,7 +10,9 @@
    `putFile` and `dropFile` are one file in and out of Supabase. `fetchArt`
    is a game's cover from libretro's thumbnails, `artChanged` says which
    covers the server keeps that Supabase lacks or no longer needs, and
-   `putArt` puts and removes them.
+   `putArt` puts and removes them. `putInfo` looks up each game `emu_info`
+   lacks in libretro's database, `fetchFacts` and `factsOf`, and keeps its
+   facts and description there.
 
    `save` writes through a `db` of four calls, which each side makes:
    `clientDb` from the signed-in account's Supabase client in the browser,
@@ -249,6 +251,68 @@
     return near ? picture(near) : null;
   }
 
+  // A game's facts in libretro's database, its `metadat` files, a folder a
+  // fact, each a file a system named as its thumbnails are; the PlayStation's
+  // and PS2's are one file a system, with a description too. Each game in a
+  // file is `game ( ... )`, named by its `comment` or `name`, a line a fact.
+  const FACTS_AT = 'https://raw.githubusercontent.com/libretro/libretro-database/HEAD/metadat';
+  const FACT_FILES = ['genre', 'developer', 'publisher', 'releaseyear', 'maxusers', ''];
+  // Bumped when a new source joins, so every game is asked again once.
+  const INFO_ASKING = 1;
+  function readDat(text, into = new Map()) {
+    for (const block of text.split(/^game \(/m).slice(1)) {
+      const field = key => block.match(new RegExp(`^\\s*${key} "((?:[^"\\\\]|\\\\.)*)"`, 'm'))?.[1].replace(/\\(.)/g, '$1');
+      const users = block.match(/^\s*users "?(\d+)/m)?.[1];
+      const name = field('comment') ?? field('name');
+      if (!name) continue;
+      const had = into.get(name) ?? {};
+      const description = field('description');
+      const got = {
+        year: field('releaseyear'), genre: field('genre'), developer: field('developer'), publisher: field('publisher'),
+        players: users ? Number(users) : undefined, description: description && description !== name ? description : undefined,
+      };
+      into.set(name, { ...had, ...Object.fromEntries(Object.entries(got).filter(([, v]) => v != null && v !== '')) });
+    }
+    return into;
+  }
+  // Every game's facts a system has, by name; empty where libretro has none.
+  // Anything but an answer or a 404 is an error, so a night GitHub is down is
+  // not taken for a system with no facts.
+  async function fetchFacts(system, fetch = globalThis.fetch) {
+    const set = ART[system];
+    const facts = new Map();
+    if (!set) return facts;
+    for (const kind of FACT_FILES) {
+      const res = await fetch(`${FACTS_AT}/${kind ? `${kind}/` : ''}${encodeURIComponent(set)}.dat`);
+      if (res.status === 404) continue;
+      if (!res.ok) throw new Error(`libretro's database: ${res.status}`);
+      readDat(await res.text(), facts);
+    }
+    return facts;
+  }
+  // A game's facts among a system's, by the names its cover is found by, or null.
+  function factsOf(game, facts) {
+    for (const name of artNames(game)) if (facts.has(name)) return facts.get(name);
+    return null;
+  }
+  // Each of `games` that emu_info has no row for, or one asked an older way,
+  // looked up and written there: its facts, its description and how it was
+  // asked, a game libretro does not know too, so it is not asked each night.
+  // Each system's facts are read once. Says how many it wrote.
+  async function putInfo(db, games, fetch = globalThis.fetch) {
+    const asked = new Map((await db.rows('emu_info', 'system,title,asked')).map(r => [`${r.system}/${r.title}`, r.asked]));
+    const want = games.filter(g => (asked.get(`${g.system}/${g.title}`) ?? -1) < INFO_ASKING);
+    const read = new Map();
+    const rows = [];
+    for (const g of want) {
+      if (!read.has(g.system)) read.set(g.system, await fetchFacts(g.system, fetch));
+      const { description = null, ...facts } = factsOf(g, read.get(g.system)) ?? {};
+      rows.push({ system: g.system, title: g.title, facts: Object.keys(facts).length ? facts : null, description, asked: INFO_ASKING, asked_at: new Date().toISOString() });
+    }
+    for (let i = 0; i < rows.length; i += 100) await db.upsert('emu_info', rows.slice(i, i + 100), 'system,title');
+    return rows.length;
+  }
+
   // What the covers the server keeps change in Supabase. `covers` is each
   // game's, as { path, size, mtimeMs }; `held` is emu_files_now's rows under
   // art/. One Supabase lacks or holds another copy of is put, and one held
@@ -330,7 +394,8 @@
   }
 
   const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven,
-    ART, ART_AT, ART_ASKING, PICTURE, artKey, artNames, fetchArt, artChanged, putArt, clientDb, restDb };
+    ART, ART_AT, ART_ASKING, PICTURE, artKey, artNames, fetchArt, artChanged, putArt,
+    FACTS_AT, INFO_ASKING, readDat, fetchFacts, factsOf, putInfo, clientDb, restDb };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Emu = Object.assign(root.Emu || {}, { scanSave: api });
 })(typeof window === 'object' ? window : globalThis);

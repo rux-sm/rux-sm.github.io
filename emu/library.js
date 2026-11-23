@@ -464,6 +464,9 @@
     return day(playedAt(g)) === day(Date.now()) ? 'Played today' : `Played ${R.date(playedAt(g))}`;
   };
   let artFor = null;
+  // Each game's facts and description by its key, as the scan looked them up,
+  // read once after the page shows.
+  let info = new Map();
   function renderChosen() {
     if (!helper || !game) return;
     const art = $('emu-chosen-art');
@@ -473,6 +476,13 @@
     const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
     $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');
+    const { facts, description } = info.get(keyOf(game)) ?? {};
+    const shown = facts ? [facts.year, facts.genre, facts.developer ?? facts.publisher, facts.players && `${facts.players} ${facts.players === 1 ? 'player' : 'players'}`].filter(Boolean) : [];
+    $('emu-chosen-facts').textContent = shown.join(' · ');
+    $('emu-chosen-facts').hidden = !shown.length;
+    $('emu-chosen-about').textContent = description ?? '';
+    $('emu-chosen-about').title = description ?? '';
+    $('emu-chosen-about').hidden = !description;
     renderSave();
     renderPad();
     renderGo();
@@ -1107,6 +1117,7 @@
     $('emu-empty').hidden = games.length > 0;
     $('emu-library').hidden = games.length === 0;
     if (!games.length) return;
+    R.data.info().then(rows => { info = new Map(rows.map(r => [keyOf(r), r])); renderChosen(); }, error => console.error(error));
     // The game ?game= names, taken off the address, else the one last played here.
     const url = new URL(location.href);
     const key = url.searchParams.get('game');

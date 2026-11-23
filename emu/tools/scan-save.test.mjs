@@ -244,5 +244,18 @@ const scan = {
   check('a refused key stops the save', threw);
 }
 
+// libretro's facts: a fact a file, read by the game's comment, and the
+// PlayStation's one file a game, named, with its description.
+{
+  const facts = scanSave.readDat(`clrmamepro (\n\tname "Invented"\n)\n\ngame (\n\tcomment "Plain Game (USA)"\n\tgenre "Puzzle"\n\trom ( crc 00000000 )\n)\n`);
+  scanSave.readDat(`game (\n\tcomment "Plain Game (USA)"\n\treleaseyear "1991"\n)\ngame (\n\tcomment "Plain Game (USA)"\n\tusers 2\n)\n`, facts);
+  scanSave.readDat(`game (\n\tname "Disc Game (USA)"\n\tdescription "A \\"quoted\\" tale."\n\tdeveloper "Some Studio"\n\tusers "1"\n\trom (\n\t\tname "Disc Game (USA).cue"\n\t)\n)\n`, facts);
+  const plain = scanSave.factsOf({ system: 'gb', title: 'Plain Game (USA)' }, facts);
+  check('a game\'s facts are gathered from each file', plain?.genre === 'Puzzle' && plain.year === '1991' && plain.players === 2, plain);
+  const disc = scanSave.factsOf({ system: 'psx', title: 'Disc Game (USA)' }, facts);
+  check('a named game keeps its description and not its file\'s name', disc?.description === 'A "quoted" tale.' && disc.developer === 'Some Studio' && disc.players === 1, disc);
+  check('a game libretro lacks has no facts', scanSave.factsOf({ system: 'gb', title: 'Nobody Has This' }, facts) === null);
+}
+
 console.log(`  ${failed ? 'fail' : 'ok  '}  ${cases - failed} of ${cases} cases`);
 process.exit(failed ? 1 : 0);

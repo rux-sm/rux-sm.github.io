@@ -65,6 +65,8 @@
     // What Update compares a scan with: each game's key and its files' fingerprints.
     gameKeys: () => all(() => client.from('emu_games').select('system, title, size, scanned_at').order('system').order('title')),
     notes: () => all(() => client.from('emu_notes').select('*')),
+    // Each game's facts and description, as the scan looked them up.
+    info: () => all(() => client.from('emu_info').select('system, title, facts, description')),
     saves: () => all(() => client.from('emu_saves').select('*').order('system').order('name')),
     saveKeys: () => all(() => client.from('emu_saves').select('system, name, kind, location')),
     // Everything but the games, which Supabase holds: each file as it stands,

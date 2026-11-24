@@ -166,14 +166,18 @@
     $('emu-sound').querySelector('use').setAttribute('href', loud ? '#m-volume_up' : '#m-volume_off');
   }
 
-  // A MENU ITEM, Design's: its label, and whether it can be pressed.
-  function menuItem(menu, label, run, { off = false, danger = false } = {}) {
+  // A MENU ITEM, Design's: its label, whether it can be pressed, and, where
+  // `checked` is given, a box ticked while it is on.
+  function menuItem(menu, label, run, { off = false, danger = false, checked = null } = {}) {
     const li = el('li', `rux--menu-item${danger ? ' rux--menu-item--danger' : ''}${off ? ' rux--menu-item--disabled' : ''}`);
-    li.setAttribute('role', 'menuitem');
+    li.setAttribute('role', checked === null ? 'menuitem' : 'menuitemcheckbox');
+    if (checked !== null) li.setAttribute('aria-checked', String(checked));
     li.setAttribute('aria-haspopup', 'false');
     li.tabIndex = off ? -1 : 0;
     if (off) li.setAttribute('aria-disabled', 'true');
-    li.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'), el('div', 'rux--menu-item__label', label));
+    const tick = el('div', 'rux--menu-item__selection-icon');
+    if (checked) tick.append(iconOf('#i-checkmark'));
+    li.append(tick, el('div', 'rux--menu-item__icon'), el('div', 'rux--menu-item__label', label));
     if (!off) li.addEventListener('click', () => { window.Rux.menu.close(menu); run(); });
     return li;
   }
@@ -390,6 +394,7 @@
     }
     b.append(art);
     b.addEventListener('click', () => (helper ? pick(g) : openGame(g, b)));
+    b.addEventListener('contextmenu', e => { if (!helper) return; e.preventDefault(); pick(g); openGameMenu(g, b); });
     li.append(b);
     return li;
   }
@@ -461,10 +466,10 @@
   }
 
   // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
-  // it, fetched again only when the game changes; its name over when it was last
-  // played, its region and size; Favourite and Finished; its save and its
-  // controller; and a row of one button, the one next move, About this copy
-  // and Remove from this Mac.
+  // it, fetched again only when the game changes, in its console's screen
+  // shape; its name
+  // over its facts, then when it was last played, its region and size; its
+  // save and its controller; and the one next move, with More.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();
@@ -477,23 +482,24 @@
   function renderChosen() {
     if (!helper || !game) return;
     const art = $('emu-chosen-art');
-    if (artFor !== game) { artFor = game; art.replaceChildren(R.shot(game)); }
+    if (artFor !== game) {
+      artFor = game;
+      art.style.setProperty('--emu-shot', R.SCREEN[game.system] ?? 4 / 3);
+      art.replaceChildren(R.shot(game));
+    }
     art.classList.toggle('emu-chosen__art--away', !isHere(game));
     $('emu-chosen-name').textContent = nameOf(game);
     const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
     $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');
     const { facts, description } = info.get(keyOf(game)) ?? {};
-    $('emu-chosen-facts').textContent = [R.systemName(game.system), facts?.genre, facts?.year, facts?.developer ?? facts?.publisher,
+    // The console is not said: its wordmark heads the wall.
+    $('emu-chosen-facts').textContent = [facts?.genre, facts?.year, facts?.developer ?? facts?.publisher,
       facts?.players && `${facts.players} ${facts.players === 1 ? 'player' : 'players'}`].filter(Boolean).join(' · ');
+    $('emu-chosen-facts').hidden = !$('emu-chosen-facts').textContent;
     $('emu-chosen-about').textContent = description ?? '';
     $('emu-chosen-about').title = description ?? '';
     $('emu-chosen-about').hidden = !description;
-    const n = game.notes ?? {};
-    for (const [id, key, on, off] of [['emu-chosen-favourite', 'favourite', '#m-star-fill', '#m-star'], ['emu-chosen-finished', 'finished', '#m-flag-fill', '#m-flag']]) {
-      $(id).setAttribute('aria-pressed', String(Boolean(n[key])));
-      $(id).querySelector('use').setAttribute('href', n[key] ? on : off);
-    }
     renderSave();
     renderPad();
     renderGo();
@@ -516,9 +522,6 @@
     const b = $('emu-chosen-go');
     b.textContent = words;
     b.disabled = !run || moving;
-    const s = stands(game);
-    $('emu-chosen-remove').hidden = !(keeps && s.state !== 'arriving' && (s.state === 'held' || s.done));
-    $('emu-chosen-remove').disabled = moving;
   }
   $('emu-chosen-go').addEventListener('click', () => { const [, run] = nextOf(game); run?.(); });
   // RUX'S MARKS on a game, saved as each changes, the rest of its notes left
@@ -539,19 +542,34 @@
     return true;
   }
   // A favourite leads its console's wall, so the wall is drawn again.
-  for (const [id, key] of [['emu-chosen-favourite', 'favourite'], ['emu-chosen-finished', 'finished']]) {
-    $(id).addEventListener('click', async () => {
-      const g = game;
-      if (!await keepNotes(g, { [key]: !g.notes?.[key] })) return;
-      if (key === 'favourite') renderGames();
-      if (g === game) renderChosen();
-    });
+  async function mark(g, key) {
+    if (!await keepNotes(g, { [key]: !g.notes?.[key] })) return;
+    if (key === 'favourite') renderGames();
+    if (g === game) renderChosen();
   }
 
-  // About this copy opens the panel on what the scan read of the game, and
-  // Remove from this Mac, shown where any of it is here, takes it off.
-  $('emu-chosen-copy').addEventListener('click', e => openGame(game, e.currentTarget, { about: true }));
-  $('emu-chosen-remove').addEventListener('click', () => removeGame(game));
+  // A GAME'S MENU, from a right-click on its cover or More beside Play:
+  // Favourite and Finished, ticked while on; About this copy, which opens the
+  // panel on what the scan read of the game; and, where any of it is here,
+  // Remove from this Mac, which takes it off.
+  function openGameMenu(g, trigger) {
+    const menu = $('emu-game-menu');
+    if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
+    const n = g.notes ?? {};
+    const s = stands(g);
+    menu.setAttribute('aria-label', nameOf(g));
+    menu.replaceChildren(
+      menuItem(menu, 'Favourite', () => mark(g, 'favourite'), { checked: Boolean(n.favourite) }),
+      menuItem(menu, 'Finished', () => mark(g, 'finished'), { checked: Boolean(n.finished) }),
+      menuItem(menu, 'About this copy', () => openGame(g, trigger, { about: true })));
+    if (keeps && s.state !== 'arriving' && (s.state === 'held' || s.done)) {
+      const line = el('li', 'rux--menu-item-divider');
+      line.setAttribute('role', 'separator');
+      menu.append(line, menuItem(menu, 'Remove from this Mac', () => removeGame(g), { off: moving, danger: true }));
+    }
+    window.Rux.menu.open(menu, trigger);
+  }
+  $('emu-chosen-more').addEventListener('click', e => openGameMenu(game, e.currentTarget));
   async function removeGame(g) {
     try { await R.helper.remove(g); } catch (error) { sayNo(error.message); return; }
     say(`${nameOf(g)} is off this Mac. Its saves are kept.`);
@@ -652,9 +670,12 @@
     if (!cards.read) { savePick.write({ value: 'On this Mac', note: 'Not kept in Supabase', off: true }); return; }
     const mine = mineOf(g);
     const two = aside?.key === keyOf(g) && aside.other.length > 0;
-    if (!mine.in && !cards.read.moves) { savePick.write({ value: wordOf(g.system), note: unsaid(g), off: true }); return; }
-    savePick.write({ value: mine.in ? mine.in.name ?? wordOf(g.system) : 'New save',
-      note: two ? 'Two saves found' : mine.in ? cardNote(mine.in) : mine.out.length ? `${mine.out.length} put away` : 'Starts when you play', warn: two,
+    if (!mine.in && !cards.read.moves) { savePick.write({ value: unsaid(g), off: true }); return; }
+    // A card with no name of its own is said by when it was saved, since the
+    // field's label already says Save.
+    const [value, note] = !mine.in ? ['New save', mine.out.length ? `${mine.out.length} put away` : 'Starts when you play']
+      : mine.in.name ? [mine.in.name, cardNote(mine.in)] : [R.date(mine.in.saved) || wordOf(g.system), states(mine.in.states)];
+    savePick.write({ value, note: two ? 'Two saves found' : note, warn: two,
       // A list opens only where there is something to choose or change.
       off: moving || !(two || (cards.read.moves && mine.in) || mine.out.length) });
   }

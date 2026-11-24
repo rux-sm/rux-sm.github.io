@@ -400,6 +400,11 @@
     const h = $('emu-games-h');
     h.replaceChildren(mark ?? R.systemName(chosen));
     if (mark) h.setAttribute('aria-label', R.systemName(chosen)); else h.removeAttribute('aria-label');
+    // How many games the console has, and where the helper answers, how many
+    // of them this Mac holds.
+    const count = n => `${n} ${n === 1 ? 'game' : 'games'}`;
+    const all = gamesOf(chosen);
+    $('emu-games-count').textContent = helper ? `${count(all.length)} · ${all.filter(isHere).length} installed` : count(all.length);
     const ul = $('emu-games');
     // Boxes much wider than they are tall go fewer across.
     ul.classList.toggle('emu-games__list--wide', R.BOX[chosen] > 1.2);
@@ -479,9 +484,8 @@
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
     $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');
     const { facts, description } = info.get(keyOf(game)) ?? {};
-    const shown = facts ? [facts.year, facts.genre, facts.developer ?? facts.publisher, facts.players && `${facts.players} ${facts.players === 1 ? 'player' : 'players'}`].filter(Boolean) : [];
-    $('emu-chosen-facts').textContent = shown.join(' · ');
-    $('emu-chosen-facts').hidden = !shown.length;
+    $('emu-chosen-facts').textContent = [R.systemName(game.system), facts?.genre, facts?.year, facts?.developer ?? facts?.publisher,
+      facts?.players && `${facts.players} ${facts.players === 1 ? 'player' : 'players'}`].filter(Boolean).join(' · ');
     $('emu-chosen-about').textContent = description ?? '';
     $('emu-chosen-about').title = description ?? '';
     $('emu-chosen-about').hidden = !description;

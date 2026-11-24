@@ -198,11 +198,12 @@
             <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul>
             <section class="emu-games" aria-labelledby="emu-games-h">
               <!-- The chosen game: its screenshot; its name with Favourite and
-                   Finished; when it was last played, its region and size, its
-                   facts and its description; its save and its controller, a
-                   list opening down from each; then a row under them all of
-                   the one next move and About this copy, a set at its start,
-                   and Remove from this Mac at its end. It does not scroll with the
+                   Finished; its console and the facts libretro has, then when
+                   it was last played, its region and size; its description;
+                   its save and its controller, a list opening down from each;
+                   then a row under them all of the one next move and About
+                   this copy, a set at its start, and Remove from this Mac at
+                   its end. It does not scroll with the
                    wall. -->
               <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name" hidden>
                 <div class="emu-chosen__art" id="emu-chosen-art"></div>
@@ -219,8 +220,8 @@
                         <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Finished</span><span class="rux--popover-caret"></span></span>
                       </span>
                     </div>
+                    <p class="emu-row__sub" id="emu-chosen-facts"></p>
                     <p class="emu-row__sub" id="emu-chosen-sub"></p>
-                    <p class="emu-row__sub" id="emu-chosen-facts" hidden></p>
                     <p class="emu-chosen__about" id="emu-chosen-about" hidden></p>
                   </div>
                   <div class="emu-chosen__picks">
@@ -256,11 +257,13 @@
                   <button type="button" class="rux--btn rux--btn--danger--tertiary rux--layout--size-lg" id="emu-chosen-remove" hidden>Remove from this Mac</button>
                 </div>
               </div>
-              <!-- The wall's title row: the chosen console's wordmark; the
-                   strip, the page's one place for words; Installed or All
-                   games; and Sound. It does not scroll. -->
+              <!-- The wall's title row: the chosen console's wordmark and how
+                   many games it has; the strip, the page's one place for
+                   words; and Installed or All games with Sound. It does not
+                   scroll. -->
               <div class="emu-games__head">
                 <h2 class="emu-games__title" id="emu-games-h"></h2>
+                <p class="emu-games__count" id="emu-games-count"></p>
                 <div class="emu-strip" id="emu-strip" hidden>
                   <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
                   <div class="emu-strip__said">
@@ -273,11 +276,11 @@
                     <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="mac"><span class="rux--content-switcher__label">Installed</span></button>
                     <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
                   </div>
+                  <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--high-contrast">
+                    <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button></span>
+                    <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Sound</span><span class="rux--popover-caret"></span></span>
+                  </span>
                 </div>
-                <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--high-contrast">
-                  <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button></span>
-                  <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Sound</span><span class="rux--popover-caret"></span></span>
-                </span>
               </div>
               <div class="emu-games__scroll">
                 <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>

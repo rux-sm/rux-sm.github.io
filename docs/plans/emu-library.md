@@ -29,7 +29,9 @@ The page:
   this Mac holds or is fetching, and only their consoles; it is off while this
   Mac holds none. The page opens on Installed where the last played game is
   here.
-- **The wall's title is the chosen console's wordmark,** or its name.
+- **The wall's title is the chosen console's wordmark,** or its name, smaller
+  than the chosen game's name, with how many games it has and how many are
+  installed.
 - **The strip is in the title row,** saying only what
   is wrong at rest, and what a move is doing or did.
 - **There is no TV and no room to arrange,** because the games are what is
@@ -80,7 +82,8 @@ The wall:
 
 The chosen game, over the wall and still while it scrolls:
 
-- **It is a screenshot of the game beside its name, when it was last played, its
+- **It is a screenshot of the game, 171px wide, beside its name, its console
+  and the facts libretro has, when it was last played, its
   region and its size, over Save and Controller, and under them all a row
   of one button and About this copy, as Carbon starts an in-page form's
   buttons with the primary, and Remove from this Mac at the row's end,** so

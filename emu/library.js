@@ -5,8 +5,8 @@
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
    screenshot, its name and facts, its marks, its save and its controller, and a
-   row of About this copy, Remove from this Mac and one
-   button, the one next move. The wall's title row holds the strip, then
+   row of one button, the one next move, About this copy and Remove from
+   this Mac. The wall's title row holds the strip, then
    Installed or All games and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
    phone, there is no strip, switch or chosen game, and pressing a game opens its side panel,
@@ -458,8 +458,8 @@
   // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
   // it, fetched again only when the game changes; its name over when it was last
   // played, its region and size; Favourite and Finished; its save and its
-  // controller; and a row of About this copy, Remove from this Mac and one
-  // button, the one next move.
+  // controller; and a row of one button, the one next move, About this copy
+  // and Remove from this Mac.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();

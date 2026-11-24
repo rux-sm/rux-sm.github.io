@@ -82,7 +82,8 @@ The chosen game, over the wall and still while it scrolls:
 
 - **It is a screenshot of the game beside its name, when it was last played, its
   region and its size, over Save and Controller, and under them all a row
-  of About this copy, Remove from this Mac and one button,** so
+  of one button and About this copy, as Carbon starts an in-page form's
+  buttons with the primary, and Remove from this Mac at the row's end,** so
   what will play and with what shows before Play is pressed, and changing
   nothing keeps Play one press. The screenshot is libretro's, a moment in
   play, else the title screen, else an empty screen, so the box shows only in

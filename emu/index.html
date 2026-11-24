@@ -201,8 +201,8 @@
                    Finished; when it was last played, its region and size, its
                    facts and its description; its save and its controller, a
                    list opening down from each; then a row under them all of
-                   About this copy, Remove from this Mac and the one next
-                   move. It does not scroll with the
+                   the one next move and About this copy, a set at its start,
+                   and Remove from this Mac at its end. It does not scroll with the
                    wall. -->
               <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name" hidden>
                 <div class="emu-chosen__art" id="emu-chosen-art"></div>
@@ -235,9 +235,11 @@
                   </div>
                 </div>
                 <div class="emu-chosen__row">
-                  <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-lg" id="emu-chosen-copy">About this copy</button>
+                  <div class="rux--btn-set">
+                    <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>
+                    <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-lg" id="emu-chosen-copy">About this copy</button>
+                  </div>
                   <button type="button" class="rux--btn rux--btn--danger--tertiary rux--layout--size-lg" id="emu-chosen-remove" hidden>Remove from this Mac</button>
-                  <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>
                 </div>
               </div>
               <!-- The wall's title row: the chosen console's wordmark; the

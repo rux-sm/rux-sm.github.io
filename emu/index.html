@@ -185,22 +185,8 @@
           <div class="rux--inline-loading__text">Loading the library…</div>
         </div>
 
-        <!-- The Library's tile, from library.js. Its head shows only where
-             Rux Emu Helper answers. -->
+        <!-- The Library's tile, from library.js. -->
         <div class="emu-library" id="emu-library" hidden>
-          <!-- The head: the strip, the page's one place for words; then
-               Sound. -->
-          <div class="emu-tile__head emu-head" id="emu-head" hidden>
-            <div class="emu-strip" id="emu-strip" hidden>
-              <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
-              <div class="emu-strip__said">
-                <p class="emu-strip__words" role="status" id="emu-said"></p>
-                <div class="emu-strip__answers" id="emu-said-answers"></div>
-              </div>
-            </div>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
-          </div>
-
           <!-- The body: every console with games down the side, each its
                drawing and name, and beside them the chosen game over the
                chosen console's games, under its wordmark. -->
@@ -243,16 +229,25 @@
                   </div>
                 </div>
               </div>
-              <!-- The wall's title row: the chosen console's wordmark, and at
-                   its end Installed or All games. It does not scroll. -->
+              <!-- The wall's title row: the chosen console's wordmark; the
+                   strip, the page's one place for words; Installed or All
+                   games; and Sound. It does not scroll. -->
               <div class="emu-games__head">
                 <h2 class="emu-games__title" id="emu-games-h"></h2>
+                <div class="emu-strip" id="emu-strip" hidden>
+                  <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
+                  <div class="emu-strip__said">
+                    <p class="emu-strip__words" role="status" id="emu-said"></p>
+                    <div class="emu-strip__answers" id="emu-said-answers"></div>
+                  </div>
+                </div>
                 <div class="emu-games__where" id="emu-where-row" hidden>
                   <div class="rux--content-switcher" role="tablist" aria-label="Show" id="emu-where">
                     <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="mac"><span class="rux--content-switcher__label">Installed</span></button>
                     <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
                   </div>
                 </div>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
               </div>
               <div class="emu-games__scroll">
                 <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>

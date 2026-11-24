@@ -1,14 +1,14 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile: a head, and under it every console with games down the side,
+   One tile: every console with games down the side,
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
    screenshot, its name and facts, its save, its controller, Details and one
-   button, the one next move. Installed or All games stands at the end
-   of the wall's title row, and the head is the strip and Sound. Installed shows only the games this Mac holds or is
+   button, the one next move. The wall's title row holds the strip, then
+   Installed or All games and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
-   phone, there is no head and no chosen game, and pressing a game opens its side panel,
+   phone, there is no strip, switch or chosen game, and pressing a game opens its side panel,
    game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
@@ -22,11 +22,11 @@
    has Set up or Remove, which the strip asks about first, naming every
    console that goes with its emulator.
 
-   The strip, in the head, is the page's one place for words. At rest it
+   The strip, in the wall's title row, is the page's one place for words. At rest it
    says only what is wrong, each opening Status: a helper to update, little room
    left, no library or a late scan; while a move runs it names it, and after one it
    says what it did. Each move makes a small sound, made here with no sound
-   files, which the head's button turns off, remembered in this browser.
+   files, which Sound, at the title row's end, turns off, remembered in this browser.
 
    Save says which card the game will play, from carry.js; its list is the
    game's cards and Start a new save where the console's cards can move.
@@ -120,7 +120,7 @@
   const useOf = (svg, id) => { const use = document.createElementNS(SVG, 'use'); use.setAttribute('href', `#${id}`); svg.append(use); return svg; };
   // SOUND, made in the browser: a click to pick up, a thud to put down, a
   // thunk and a rising tone to set up, a chime when something is done, a
-  // jingle to play and a buzz for no. The button in the head turns it off.
+  // jingle to play and a buzz for no. Sound, at the title row's end, turns it off.
   const KEPT = 'emu-sound';
   let loud = true;
   try { loud = localStorage.getItem(KEPT) !== 'off'; } catch { /* a browser that keeps nothing starts with sound */ }
@@ -717,7 +717,7 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-head', 'emu-where-row']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-where-row']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) { renderStrip(); renderWhere(); }
     keepShown();

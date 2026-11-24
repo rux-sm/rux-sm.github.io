@@ -6,10 +6,10 @@ type: plan
 
 ## Goal
 
-The Library, Emu's front page, is one tile: a head and, under it, every
+The Library, Emu's front page, is one tile: every
 console down the side and the chosen console's games beside them as a wall
 of covers, with the chosen game over them: its screenshot and facts, its save,
-its controller and Play. The head is the strip, and the wall's title row ends in Installed or All games.
+its controller and Play. The wall's title row holds the strip, Installed or All games and Sound.
 It opens on the game last played. Choose a console and its games fill the
 wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
@@ -24,14 +24,13 @@ The page:
   moves from page to page.
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
-- **The tile's head is the strip, then Sound,** an icon button.
-- **Installed or All games ends the wall's title row,** which stays put while
-  the wall scrolls. Installed shows only the games
+- **The wall's title row is the wordmark, the strip, then Installed or All
+  games and Sound,** an icon button, and stays put while the wall scrolls. Installed shows only the games
   this Mac holds or is fetching, and only their consoles; it is off while this
   Mac holds none. The page opens on Installed where the last played game is
   here.
 - **The wall's title is the chosen console's wordmark,** or its name.
-- **The strip is in the head,** saying only what
+- **The strip is in the title row,** saying only what
   is wrong at rest, and what a move is doing or did.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.
@@ -147,7 +146,7 @@ The side panel:
   fold, shut, below them.
 
 - **Without the helper, as on the phone, the page is the consoles and the
-  wall alone, with no head and no chosen game,** with no Save, Controller, Play or Download, and a game pressed opens
+  wall alone, with no strip, switch, Sound or chosen game,** with no Save, Controller, Play or Download, and a game pressed opens
   its panel.
 
 ## Questions

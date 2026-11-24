@@ -33,10 +33,9 @@
   --emu-drawer-inset: var(--rux-spacing-03);
   --emu-pop-radius: var(--emu-tile-radius, 0);
 }
-/* A tile's head holds its controls in from its edges as the scheduler's
-   heads do, by the theme's toolbar inset and gap (docs/button-spacing.md in
-   Design): flush and edge to edge in Carbon's themes and Rux dark, in from
-   a rounded tile's corner in the rest. */
-[data-theme="geist-dark"] { --emu-head-inset: var(--rux-spacing-05); --emu-head-gap: var(--rux-spacing-03); }
-[data-theme="ant-dark"] { --emu-head-inset: 8px; --emu-head-gap: var(--rux-spacing-03); }
-[data-theme^="apple-"] { --emu-head-inset: var(--rux-spacing-04); --emu-head-gap: var(--rux-spacing-03); }
+/* Details and Play stand apart by the theme's toolbar gap
+   (docs/button-spacing.md in Design): flush in Carbon's themes and Rux dark,
+   8px apart in the rest. */
+[data-theme="geist-dark"],
+[data-theme="ant-dark"],
+[data-theme^="apple-"] { --emu-moves-gap: var(--rux-spacing-03); }

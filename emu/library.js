@@ -579,12 +579,17 @@
     return {
       close,
       refill: () => { if (held) fill(pop, close); },
+      // The value in the field with its note beside it, or, where the note
+      // warns, the note on its own line under the field, as Carbon puts a
+      // field's warning.
       write: ({ value, note = '', warn = false, off = false, hidden = false }) => {
-        button.parentElement.hidden = hidden;
+        const box = button.closest('.emu-pick');
+        box.hidden = hidden;
         button.querySelector('.emu-pick__value').textContent = value ?? '';
-        const line = button.querySelector('.emu-pick__note');
-        line.textContent = note;
-        line.classList.toggle('emu-pick__note--warn', warn);
+        button.querySelector('.emu-pick__note').textContent = warn ? '' : note;
+        const line = box.querySelector('.emu-pick__warn');
+        line.textContent = warn ? note : '';
+        line.hidden = !warn;
         button.disabled = off;
         if (off || hidden) close();
       },

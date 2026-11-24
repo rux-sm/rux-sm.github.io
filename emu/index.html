@@ -210,8 +210,14 @@
                   <div class="emu-chosen__game">
                     <div class="emu-chosen__title">
                       <h2 class="emu-chosen__name" id="emu-chosen-name"></h2>
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-chosen-favourite" aria-pressed="false" aria-label="Favourite" title="Favourite"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-star"/></svg></button>
-                      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-chosen-finished" aria-pressed="false" aria-label="Finished" title="Finished"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-flag"/></svg></button>
+                      <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+                        <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-chosen-favourite" aria-pressed="false" aria-label="Favourite"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-star"/></svg></button></span>
+                        <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Favourite</span><span class="rux--popover-caret"></span></span>
+                      </span>
+                      <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+                        <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-chosen-finished" aria-pressed="false" aria-label="Finished"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-flag"/></svg></button></span>
+                        <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Finished</span><span class="rux--popover-caret"></span></span>
+                      </span>
                     </div>
                     <p class="emu-row__sub" id="emu-chosen-sub"></p>
                     <p class="emu-row__sub" id="emu-chosen-facts" hidden></p>
@@ -219,18 +225,26 @@
                   </div>
                   <div class="emu-chosen__picks">
                     <div class="emu-pick">
-                      <button type="button" class="emu-pick__button" id="emu-chosen-save" aria-expanded="false" aria-controls="emu-chosen-save-list">
-                        <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                        <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-                      </button>
-                      <div class="emu-pop rux--layer-two" id="emu-chosen-save-list" hidden></div>
+                      <span class="rux--label" id="emu-chosen-save-label">Save</span>
+                      <div class="emu-pick__field">
+                        <button type="button" class="emu-pick__button" id="emu-chosen-save" aria-labelledby="emu-chosen-save-label emu-chosen-save" aria-expanded="false" aria-controls="emu-chosen-save-list">
+                          <span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                          <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                        </button>
+                        <div class="emu-pop rux--layer-two" id="emu-chosen-save-list" hidden></div>
+                      </div>
+                      <p class="emu-pick__warn" hidden></p>
                     </div>
                     <div class="emu-pick">
-                      <button type="button" class="emu-pick__button" id="emu-chosen-pad" aria-expanded="false" aria-controls="emu-chosen-pad-list">
-                        <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                        <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-                      </button>
-                      <div class="emu-pop rux--layer-two" id="emu-chosen-pad-list" hidden></div>
+                      <span class="rux--label" id="emu-chosen-pad-label">Controller</span>
+                      <div class="emu-pick__field">
+                        <button type="button" class="emu-pick__button" id="emu-chosen-pad" aria-labelledby="emu-chosen-pad-label emu-chosen-pad" aria-expanded="false" aria-controls="emu-chosen-pad-list">
+                          <span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                          <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                        </button>
+                        <div class="emu-pop rux--layer-two" id="emu-chosen-pad-list" hidden></div>
+                      </div>
+                      <p class="emu-pick__warn" hidden></p>
                     </div>
                   </div>
                 </div>
@@ -260,7 +274,10 @@
                     <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
                   </div>
                 </div>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" title="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button>
+                <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--high-contrast">
+                  <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="emu-sound" aria-label="Sound" aria-pressed="true" hidden><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg></button></span>
+                  <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Sound</span><span class="rux--popover-caret"></span></span>
+                </span>
               </div>
               <div class="emu-games__scroll">
                 <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>

@@ -172,6 +172,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); padding: var(--rux-spacing-06) var(--rux-spacing-05) 0; }
 @media (max-width: 41.98rem) { .emu-strip--said { order: 1; flex-basis: 100%; } }
 .emu-games__where { flex: none; inline-size: 14rem; }
+/* The switch's own stacking stays in the row, so a list opened from Save or
+   Controller above covers it. */
+.emu-games__head { isolation: isolate; }
 .emu-games__where[hidden] { display: none; }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */
@@ -208,7 +211,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen__title .emu-chosen__name { flex: 0 1 auto; min-inline-size: 0; margin-inline-end: var(--rux-spacing-03); }
 .emu-chosen__title .rux--btn { flex: none; }
 /* Save and Controller, under the facts. */
-.emu-chosen__picks { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }
+.emu-chosen__picks { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); margin-block-start: var(--rux-spacing-05); }
 /* A description is three lines at most, whole when the pointer rests on it. */
 /* The facts under the name in body-compact-01, the size Carbon pairs with
    its large buttons. */
@@ -222,21 +225,26 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen__row { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); }
 .emu-chosen__row > .rux--btn { margin-inline-start: auto; }
 .emu-chosen__row > .rux--btn[hidden] { display: none; }
-/* SAVE AND CONTROLLER, each three lines over a chevron on a field, as
-   Carbon's dropdown stands on a layer, opening a list down from its foot, a
-   layer up under the menu shadow. Open, it takes the list's layer, so the two
-   are one surface. */
-.emu-pick { position: relative; flex: none; inline-size: 12.5rem; display: flex; }
-.emu-pick__button { position: relative; flex: 1; min-inline-size: 0; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-primary); text-align: start; cursor: pointer; display: grid; align-content: center; padding: var(--rux-spacing-03) var(--rux-spacing-08) var(--rux-spacing-03) var(--rux-spacing-05); background: var(--rux-field-02); border-block-end: 1px solid var(--rux-border-strong-01); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+/* SAVE AND CONTROLLER, each as Carbon's dropdown stands on a layer: its
+   label over a 48px field, the large size Carbon pairs with large buttons,
+   the field holding the value with its note beside it in the secondary
+   colour and a chevron, and a warning, where there is one, on a line under
+   it. The list opens down from the field's foot, a layer up under the menu
+   shadow; open, the field takes the list's layer, so the two are one
+   surface. */
+.emu-pick { flex: none; inline-size: 16rem; display: flex; flex-direction: column; }
+.emu-pick__field { position: relative; display: flex; }
+.emu-pick__button { position: relative; flex: 1; min-inline-size: 0; block-size: 3rem; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-primary); text-align: start; cursor: pointer; display: flex; align-items: baseline; gap: var(--rux-spacing-03); padding: 0 var(--rux-spacing-08) 0 var(--rux-spacing-05); line-height: 3rem; background: var(--rux-field-02); border-block-end: 1px solid var(--rux-border-strong-01); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-pick__button:hover { background: var(--rux-field-hover-02); }
 .emu-pick__button[aria-expanded="true"] { background: var(--rux-layer-02); }
 .emu-pick__button:disabled { cursor: default; background: var(--rux-field-02); }
 .emu-pick__button:disabled .emu-pick__chevron { visibility: hidden; }
 .emu-pick__button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-pick__button > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.emu-pick__label, .emu-pick__note { font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
-.emu-pick__note--warn { color: var(--rux-text-error); }
-.emu-pick__value { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
+.emu-pick__button > span { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.emu-pick__value { flex: none; max-inline-size: 100%; font-size: var(--rux-body-compact-01-font-size); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
+.emu-pick__note { flex: 0 1 auto; font-size: var(--rux-label-01-font-size); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
+.emu-pick__warn { margin-block-start: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-error); }
+.emu-pick__warn[hidden] { display: none; }
 .emu-pick__chevron { position: absolute; inset-inline-end: var(--rux-spacing-05); inset-block-start: calc(50% - 8px); rotate: 180deg; transition: rotate 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-pick__button[aria-expanded="true"] .emu-pick__chevron { rotate: 0deg; }
 .emu-pop { position: absolute; z-index: 3; inset-inline-start: 0; inset-block-start: calc(100% + var(--emu-drawer-inset, 0px)); inline-size: 22rem; max-inline-size: calc(100vw - 2rem); max-block-size: min(24rem, 60dvh); overflow-y: auto; background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-pop-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); }

@@ -5,7 +5,10 @@
    that each page carries as #emu-panel: what this Mac can do with it,
    this-mac.js, its problems, its saves, and rux's marks and note, which are
    saved from here, then Remove from this Mac, and everything the scan read
-   about it in one fold, shut.
+   about it in one fold, shut. Opened `about`, as the Library's About this
+   copy opens it beside a chosen game that already shows the rest, it is its
+   problems, its saves, a converted game's mark that its originals can go,
+   and that fold, open.
    ========================================================================== */
 (() => {
   'use strict';
@@ -16,12 +19,12 @@
 
   // `top` is put first, as the Library puts the game's art there, and `mac` is
   // this-mac.js's options.
-  function open(g, { saves = [], onSaved = () => {}, top = [], mac = {} } = {}) {
+  function open(g, { saves = [], onSaved = () => {}, top = [], mac = {}, about: only = false } = {}) {
     $('emu-panel-label').textContent = R.systemName(g.system);
     $('emu-panel-title').textContent = R.nameOf(g);
     const body = $('emu-panel-body');
-    const { box, remover } = R.thisMac.area(g, mac);
-    body.replaceChildren(...top, box);
+    const { box, remover } = only ? {} : R.thisMac.area(g, mac);
+    body.replaceChildren(...top, ...(box ? [box] : []));
     const facts = (pairs) => {
       const dl = el('dl', 'emu-facts');
       for (const [k, v, cls] of pairs) {
@@ -53,7 +56,8 @@
       }
       body.append(el('h3', 'rux--type-heading-02', 'Saves'), ul);
     }
-    body.append(notesForm(g, onSaved), remover);
+    if (!only) body.append(notesForm(g, onSaved), remover);
+    else if (g.originals?.length) body.append(notesForm(g, onSaved, { plays: true }));
     const about = [facts([
       ['Title', g.title], ['Region', g.region], ['Languages', g.languages], ['Revision', g.revision],
       ['Format', g.formats.join(' + ').toUpperCase()], ['Size', R.size(g.size)],
@@ -82,7 +86,7 @@
         ]));
       }
     }
-    body.append(R.folds([R.fold([el('span', '', 'About this copy')], about, { id: 'emu-panel-about' })]));
+    body.append(R.folds([R.fold([el('span', '', 'About this copy')], about, { id: 'emu-panel-about', open: only })]));
     $('emu-panel').hidden = false;
     $('emu-panel').classList.add('rux--side-panel--open');
     // A game opens at its top, whatever the last one was scrolled to.
@@ -90,15 +94,16 @@
     $('emu-panel-close').focus();
   }
   // rux's marks and note on the game, saved on Save. `plays` is asked only of
-  // a converted game whose originals wait in to-delete.
-  function notesForm(g, onSaved) {
+  // a converted game whose originals wait in to-delete; with `plays` set, it
+  // is asked alone, the rest of the notes kept as they are.
+  function notesForm(g, onSaved, { plays = false } = {}) {
     const n = g.notes ?? {};
     const form = el('form', 'rux--stack-vertical rux--stack-scale-5');
-    form.append(el('h3', 'rux--type-heading-02', 'Your notes'));
+    form.append(el('h3', 'rux--type-heading-02', plays ? 'Its originals' : 'Your notes'));
     const fieldset = el('fieldset', 'rux--fieldset');
     const legend = el('legend', 'rux--label', 'Marks');
     fieldset.append(legend);
-    const marks = [['played', 'Played'], ['finished', 'Finished'], ['favourite', 'Favourite']];
+    const marks = plays ? [] : [['played', 'Played'], ['finished', 'Finished'], ['favourite', 'Favourite']];
     if (g.originals?.length) marks.push(['plays', 'The new file plays, so its originals can go']);
     for (const [k, label] of marks) {
       const wrap = el('div', 'rux--form-item rux--checkbox-wrapper');
@@ -131,11 +136,11 @@
     const said = el('p', 'rux--type-body-01');
     said.setAttribute('role', 'status');
     actions.append(button);
-    form.append(fieldset, item, actions, said);
+    form.append(...(plays ? [fieldset] : [fieldset, item]), actions, said);
     form.addEventListener('submit', async e => {
       e.preventDefault();
       button.disabled = true;
-      const row = { system: g.system, title: g.title, note: area.value.trim() || null };
+      const row = { system: g.system, title: g.title, note: plays ? n.note ?? null : area.value.trim() || null };
       for (const [k] of [['played'], ['finished'], ['favourite'], ['plays']]) row[k] = Boolean(form.elements[k]?.checked ?? n[k]);
       try {
         await R.data.saveNotes(row);

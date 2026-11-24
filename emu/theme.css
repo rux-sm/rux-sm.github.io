@@ -33,7 +33,7 @@
   --emu-drawer-inset: var(--rux-spacing-03);
   --emu-pop-radius: var(--emu-tile-radius, 0);
 }
-/* Details and Play stand apart by the theme's toolbar gap
+/* More and Play stand apart by the theme's toolbar gap
    (docs/button-spacing.md in Design): flush in Carbon's themes and Rux dark,
    8px apart in the rest. */
 [data-theme="geist-dark"],

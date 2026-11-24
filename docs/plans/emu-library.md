@@ -81,11 +81,15 @@ The wall:
 The chosen game, over the wall and still while it scrolls:
 
 - **It is a screenshot of the game beside its name, when it was last played, its
-  region and its size, over Save, Controller, Details and one button,** so
+  region and its size, over Save, Controller, More and one button,** so
   what will play and with what shows before Play is pressed, and changing
   nothing keeps Play one press. The screenshot is libretro's, a moment in
   play, else the title screen, else an empty screen, so the box shows only in
   the wall; it is faded where this Mac lacks the game.
+- **Favourite and Finished are icons beside the name, and rux's note a line
+  under the facts,** each saved as it changes; Played is the date Play keeps.
+- **More is a menu: About this copy, and Remove from this Mac** where any of
+  the game is here.
 - **The button is the one next move:** Play; Download with its size; how far a
   download has come; or why not, such as setting up.
 - **The page opens on the game last played that this Mac holds,** from
@@ -141,9 +145,11 @@ Controller:
 
 The side panel:
 
-- **Details opens the panel: this game's saves and rux's notes, then Remove
-  from this Mac;** its region, format, list name and fingerprints are one
-  fold, shut, below them.
+- **About this copy opens the panel on a Mac:** the game's problems, its saves,
+  a converted game's mark that its originals can go, and its region, format,
+  list name and fingerprints in one fold, open.
+- **On the phone a game opens the whole panel:** its saves, rux's marks and
+  note, and that fold, shut.
 
 - **Without the helper, as on the phone, the page is the consoles and the
   wall alone, with no strip, switch, Sound or chosen game,** with no Save, Controller, Play or Download, and a game pressed opens

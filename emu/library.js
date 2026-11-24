@@ -4,8 +4,8 @@
    One tile: every console with games down the side,
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
-   screenshot, its name and facts, its marks and note, and a row of its save, its
-   controller, About this copy, Remove from this Mac and one
+   screenshot, its name and facts, its marks, its save and its controller, and a
+   row of About this copy, Remove from this Mac and one
    button, the one next move. The wall's title row holds the strip, then
    Installed or All games and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
@@ -457,8 +457,8 @@
 
   // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
   // it, fetched again only when the game changes; its name over when it was last
-  // played, its region and size; Favourite and Finished, rux's note; and a row
-  // of its save, its controller, About this copy, Remove from this Mac and one
+  // played, its region and size; Favourite and Finished; its save and its
+  // controller; and a row of About this copy, Remove from this Mac and one
   // button, the one next move.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
@@ -490,12 +490,6 @@
       $(id).setAttribute('aria-pressed', String(Boolean(n[key])));
       $(id).querySelector('use').setAttribute('href', n[key] ? on : off);
     }
-    // The note being written is left as it is.
-    const note = $('emu-chosen-note');
-    if (document.activeElement !== note || note.dataset.game !== keyOf(game)) {
-      note.value = n.note ?? '';
-      note.dataset.game = keyOf(game);
-    }
     renderSave();
     renderPad();
     renderGo();
@@ -523,8 +517,8 @@
     $('emu-chosen-remove').disabled = moving;
   }
   $('emu-chosen-go').addEventListener('click', () => { const [, run] = nextOf(game); run?.(); });
-  // RUX'S MARKS AND NOTE on a game, saved as each changes, the rest of its
-  // notes left as they are. Played is the date Play keeps, so it is not asked.
+  // RUX'S MARKS on a game, saved as each changes, the rest of its notes left
+  // as they are. Played is the date Play keeps, so it is not asked.
   async function keepNotes(g, change) {
     const n = g.notes ?? {};
     const row = { system: g.system, title: g.title, note: n.note ?? null, played: Boolean(n.played), finished: Boolean(n.finished),
@@ -549,15 +543,6 @@
       if (g === game) renderChosen();
     });
   }
-  // The note is saved when it is left or Return is pressed, as the game it was
-  // written for.
-  $('emu-chosen-note').addEventListener('change', async e => {
-    const g = games.find(x => keyOf(x) === e.target.dataset.game);
-    const note = e.target.value.trim() || null;
-    if (!g || note === (g.notes?.note ?? null)) return;
-    if (await keepNotes(g, { note })) say('Note saved.');
-  });
-  $('emu-chosen-note').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
 
   // About this copy opens the panel on what the scan read of the game, and
   // Remove from this Mac, shown where any of it is here, takes it off.

@@ -81,14 +81,15 @@ The wall:
 The chosen game, over the wall and still while it scrolls:
 
 - **It is a screenshot of the game beside its name, when it was last played, its
-  region and its size, over a row of Save, as wide as the screenshot,
-  Controller, About this copy, Remove from this Mac and one button,** so
+  region and its size, over Save and Controller, and under them all a row
+  of About this copy, Remove from this Mac and one button,** so
   what will play and with what shows before Play is pressed, and changing
   nothing keeps Play one press. The screenshot is libretro's, a moment in
   play, else the title screen, else an empty screen, so the box shows only in
   the wall; it is faded where this Mac lacks the game.
-- **Favourite and Finished are icons beside the name, and rux's note a line
-  under the facts,** each saved as it changes; Played is the date Play keeps.
+- **Favourite and Finished are icons beside the name,** each saved as it
+  changes; Played is the date Play keeps. rux's note is written in the
+  phone's panel.
 - **Remove from this Mac shows only where any of the game is here.**
 - **The button is the one next move:** Play; Download with its size; how far a
   download has come; or why not, such as setting up.

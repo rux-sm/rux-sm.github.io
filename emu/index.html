@@ -199,10 +199,10 @@
             <section class="emu-games" aria-labelledby="emu-games-h">
               <!-- The chosen game: its screenshot; its name with Favourite and
                    Finished; when it was last played, its region and size, its
-                   facts, its description and rux's note; then a row under them
-                   all of its save, its controller, About this copy, Remove
-                   from this Mac and the one next move, a list opening down
-                   from Save or Controller. It does not scroll with the
+                   facts and its description; its save and its controller, a
+                   list opening down from each; then a row under them all of
+                   About this copy, Remove from this Mac and the one next
+                   move. It does not scroll with the
                    wall. -->
               <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name" hidden>
                 <div class="emu-chosen__art" id="emu-chosen-art"></div>
@@ -216,31 +216,25 @@
                     <p class="emu-row__sub" id="emu-chosen-sub"></p>
                     <p class="emu-row__sub" id="emu-chosen-facts" hidden></p>
                     <p class="emu-chosen__about" id="emu-chosen-about" hidden></p>
-                    <div class="rux--form-item rux--text-input-wrapper emu-chosen__note">
-                      <label class="rux--label rux--visually-hidden" for="emu-chosen-note">Note</label>
-                      <div class="rux--text-input__field-outer-wrapper">
-                        <div class="rux--text-input__field-wrapper">
-                          <input id="emu-chosen-note" class="rux--text-input" type="text" placeholder="Add a note" autocomplete="off">
-                        </div>
-                      </div>
+                  </div>
+                  <div class="emu-chosen__picks">
+                    <div class="emu-pick">
+                      <button type="button" class="emu-pick__button" id="emu-chosen-save" aria-expanded="false" aria-controls="emu-chosen-save-list">
+                        <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                        <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                      </button>
+                      <div class="emu-pop rux--layer-two" id="emu-chosen-save-list" hidden></div>
+                    </div>
+                    <div class="emu-pick">
+                      <button type="button" class="emu-pick__button" id="emu-chosen-pad" aria-expanded="false" aria-controls="emu-chosen-pad-list">
+                        <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
+                        <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
+                      </button>
+                      <div class="emu-pop rux--layer-two" id="emu-chosen-pad-list" hidden></div>
                     </div>
                   </div>
                 </div>
                 <div class="emu-chosen__row">
-                  <div class="emu-pick">
-                    <button type="button" class="emu-pick__button" id="emu-chosen-save" aria-expanded="false" aria-controls="emu-chosen-save-list">
-                      <span class="emu-pick__label">Save</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                      <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-                    </button>
-                    <div class="emu-pop rux--layer-two" id="emu-chosen-save-list" hidden></div>
-                  </div>
-                  <div class="emu-pick">
-                    <button type="button" class="emu-pick__button" id="emu-chosen-pad" aria-expanded="false" aria-controls="emu-chosen-pad-list">
-                      <span class="emu-pick__label">Controller</span><span class="emu-pick__value"></span><span class="emu-pick__note"></span>
-                      <svg class="emu-pick__chevron" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--up"/></svg>
-                    </button>
-                    <div class="emu-pop rux--layer-two" id="emu-chosen-pad-list" hidden></div>
-                  </div>
                   <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-lg" id="emu-chosen-copy">About this copy</button>
                   <button type="button" class="rux--btn rux--btn--danger--tertiary rux--layout--size-lg" id="emu-chosen-remove" hidden>Remove from this Mac</button>
                   <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>

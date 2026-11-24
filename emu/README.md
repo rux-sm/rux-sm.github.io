@@ -11,7 +11,7 @@ The repository root's `AGENTS.md` is the policy, and
 
 `index.html` is the Library, drawn by `library.js`: every console down the side, the chosen one's
 games as a wall of covers beside them, the ones the server keeps in Supabase or else libretro's, and over the wall
-the chosen game: libretro's screenshot of it, its facts and description, Favourite and Finished, rux's note, and a row of its save, its controller, About this copy, Remove from this Mac and Play. What this Mac lacks is faded, and
+the chosen game: libretro's screenshot of it, its facts and description, Favourite and Finished, its save and its controller, and a row of About this copy, Remove from this Mac and Play. What this Mac lacks is faded, and
 the chosen game's button downloads it. The wall's title row holds Installed or All games, Sound and the strip, which says how this Mac
 stands and what a move did. Without Rux Emu Helper, as on the phone, it is the consoles and the games alone, a game
 opening in its panel. `collection.html` is the

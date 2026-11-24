@@ -188,15 +188,9 @@
         <!-- The Library's tile, from library.js. Its head shows only where
              Rux Emu Helper answers. -->
         <div class="emu-library" id="emu-library" hidden>
-          <!-- The head: Installed or All games, over the consoles; then the
-               strip, the page's one place for words; then Sound. -->
+          <!-- The head: the strip, the page's one place for words; then
+               Sound. -->
           <div class="emu-tile__head emu-head" id="emu-head" hidden>
-            <div class="emu-head__where">
-              <div class="rux--content-switcher" role="tablist" aria-label="Show" id="emu-where">
-                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="mac"><span class="rux--content-switcher__label">Installed</span></button>
-                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
-              </div>
-            </div>
             <div class="emu-strip" id="emu-strip" hidden>
               <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>
               <div class="emu-strip__said">
@@ -249,8 +243,18 @@
                   </div>
                 </div>
               </div>
-              <div class="emu-games__scroll">
+              <!-- The wall's title row: the chosen console's wordmark, and at
+                   its end Installed or All games. It does not scroll. -->
+              <div class="emu-games__head">
                 <h2 class="emu-games__title" id="emu-games-h"></h2>
+                <div class="emu-games__where" id="emu-where-row" hidden>
+                  <div class="rux--content-switcher" role="tablist" aria-label="Show" id="emu-where">
+                    <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-where="mac"><span class="rux--content-switcher__label">Installed</span></button>
+                    <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-where="all"><span class="rux--content-switcher__label">All games</span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="emu-games__scroll">
                 <ul class="emu-games__list" role="list" id="emu-games" aria-labelledby="emu-games-h"></ul>
               </div>
             </section>

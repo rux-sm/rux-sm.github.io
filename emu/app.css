@@ -117,17 +117,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    toolbar sets them, on the md size token's height. */
 .emu-tile__head { display: flex; align-items: center; gap: var(--rux-spacing-03); min-block-size: var(--rux-layout-size-height-md); border-block-end: 1px solid var(--rux-border-subtle-01); }
 .emu-tile__head[hidden] { display: none; }
-/* The head: Installed or All games, as wide as the consoles under it, then
-   the strip and Sound at its end, in by the theme's inset (theme.css), over a
-   rule. Under 42rem the strip's words take a row of their own. */
+/* The head: the strip, then Sound at its end, in by the theme's inset
+   (theme.css), over a rule. */
 .emu-library { --emu-side: 15rem; }
 .emu-head { gap: var(--emu-head-gap, 0); padding: var(--emu-head-inset, 0); min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--emu-head-inset, 0px)); }
-.emu-head__where { flex: none; inline-size: calc(var(--emu-side) - var(--emu-head-inset, 0px)); padding-inline: var(--rux-spacing-05); }
-@media (max-width: 41.98rem) {
-  .emu-head { flex-wrap: wrap; }
-  .emu-head__where { flex: 1 1 auto; inline-size: auto; }
-  .emu-strip--said { order: 1; flex-basis: 100%; }
-}
 /* THE STRIP: the page's one place for words, in the head after the switch.
    At rest it is this Mac's facts as Carbon's icon indicators, on one line at
    its end; while a move runs or after one it is what that move says, with a
@@ -179,7 +172,12 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* THE WALL, the one part that scrolls. Every
    cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
 .emu-games { flex: 1; min-inline-size: 0; min-block-size: 0; display: flex; flex-direction: column; }
-.emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-06) var(--rux-spacing-05) var(--rux-spacing-07); }
+.emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-07); }
+/* The wall's title row, still over the wall: the wordmark, and Installed or
+   All games at its end, wrapping under it where the two do not fit. */
+.emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); padding: var(--rux-spacing-06) var(--rux-spacing-05) 0; }
+.emu-games__where { flex: none; inline-size: 14rem; }
+.emu-games__where[hidden] { display: none; }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */
 .emu-games__list .emu-cover-art { background: var(--rux-layer-02); }
@@ -187,7 +185,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-games__list--wide { grid-template-columns: repeat(auto-fill, minmax(min(11.5rem, 40%), 1fr)); }
 /* The wall's title, the chosen console's wordmark at twice its height, or
    its name. */
-.emu-games__title { display: flex; align-items: center; min-block-size: 2rem; margin-block-end: var(--rux-spacing-06); font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); }
+.emu-games__title { display: flex; align-items: center; min-block-size: 2rem; font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); }
 .emu-games__title .emu-mark { block-size: calc(2rem * var(--emu-mark-scale, 1)); max-inline-size: 16rem; }
 /* A console's wordmark: one height for every console, grown by
    --emu-mark-scale where a mark's letters sit small in its shape, its width

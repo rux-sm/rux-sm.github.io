@@ -9,7 +9,7 @@ type: plan
 The Library, Emu's front page, is one tile: a head and, under it, every
 console down the side and the chosen console's games beside them as a wall
 of covers, with the chosen game over them: its screenshot and facts, its save,
-its controller and Play. The head is Installed or All games and the strip.
+its controller and Play. The head is the strip, and the wall's title row ends in Installed or All games.
 It opens on the game last played. Choose a console and its games fill the
 wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
@@ -24,13 +24,14 @@ The page:
   moves from page to page.
 - **The tile fills the frame,** as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
-- **The tile's head is Installed or All games,** as wide as the consoles under
-  it, then the strip, then Sound, an icon button. Installed shows only the games
+- **The tile's head is the strip, then Sound,** an icon button.
+- **Installed or All games ends the wall's title row,** which stays put while
+  the wall scrolls. Installed shows only the games
   this Mac holds or is fetching, and only their consoles; it is off while this
   Mac holds none. The page opens on Installed where the last played game is
   here.
 - **The wall's title is the chosen console's wordmark,** or its name.
-- **The strip is in the head after Installed or All games,** saying only what
+- **The strip is in the head,** saying only what
   is wrong at rest, and what a move is doing or did.
 - **There is no TV and no room to arrange,** because the games are what is
   looked through.

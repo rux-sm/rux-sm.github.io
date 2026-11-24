@@ -5,8 +5,8 @@
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
    screenshot, its name and facts, its save, its controller, Details and one
-   button, the one next move. The head is Installed or All games, over the
-   consoles, then the strip and Sound. Installed shows only the games this Mac holds or is
+   button, the one next move. Installed or All games stands at the end
+   of the wall's title row, and the head is the strip and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
    phone, there is no head and no chosen game, and pressing a game opens its side panel,
    game-panel.js.
@@ -717,7 +717,7 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-head']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-head', 'emu-where-row']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) { renderStrip(); renderWhere(); }
     keepShown();

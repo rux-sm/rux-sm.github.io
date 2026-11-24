@@ -172,12 +172,18 @@
     const c = target instanceof Element ? target.closest(CONTAINER) : null;
     return c && isTooltip(c) ? c : null;
   }
+  // A tooltip stays shut while its trigger holds open the menu or list it
+  // opened, which would otherwise cover it.
+  const holdsOpen = c => triggerOf(c)?.getAttribute('aria-expanded') === 'true';
+  const shutHeld = () => { for (const c of [...live.keys()]) if (isTooltip(c) && holdsOpen(c)) close(c); };
+  document.addEventListener('rux:menu-opened', shutHeld);
+  document.addEventListener('rux:popover-opened', shutHeld);
 
   document.addEventListener('pointerover', event => {
     const container = tooltipUnder(event.target);
-    if (!container || live.has(container)) return;
+    if (!container || live.has(container) || holdsOpen(container)) return;
     clearTimeout(pending);
-    pending = setTimeout(() => open(container), ENTER_MS);
+    pending = setTimeout(() => { if (!holdsOpen(container)) open(container); }, ENTER_MS);
   });
 
   document.addEventListener('pointerout', event => {
@@ -193,7 +199,7 @@
   // Keyboard: no delay in either direction.
   document.addEventListener('focusin', event => {
     const container = tooltipUnder(event.target);
-    if (container) open(container);
+    if (container && !holdsOpen(container)) open(container);
   });
   document.addEventListener('focusout', event => {
     const container = tooltipUnder(event.target);

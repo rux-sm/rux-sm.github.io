@@ -4,8 +4,8 @@
    One tile: every console with games down the side,
    each its drawing and name, and beside them the chosen console's games, a
    wall of covers under its wordmark, and over them the chosen game: its
-   screenshot, its name and facts, its marks and note, its save, its
-   controller, More and one
+   screenshot, its name and facts, its marks and note, and a row of its save, its
+   controller, About this copy, Remove from this Mac and one
    button, the one next move. The wall's title row holds the strip, then
    Installed or All games and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
@@ -457,8 +457,9 @@
 
   // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
   // it, fetched again only when the game changes; its name over when it was last
-  // played, its region and size; Favourite and Finished, rux's note; its save,
-  // its controller, More, and one button, the one next move.
+  // played, its region and size; Favourite and Finished, rux's note; and a row
+  // of its save, its controller, About this copy, Remove from this Mac and one
+  // button, the one next move.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();
@@ -517,6 +518,9 @@
     const b = $('emu-chosen-go');
     b.textContent = words;
     b.disabled = !run || moving;
+    const s = stands(game);
+    $('emu-chosen-remove').hidden = !(keeps && s.state !== 'arriving' && (s.state === 'held' || s.done));
+    $('emu-chosen-remove').disabled = moving;
   }
   $('emu-chosen-go').addEventListener('click', () => { const [, run] = nextOf(game); run?.(); });
   // RUX'S MARKS AND NOTE on a game, saved as each changes, the rest of its
@@ -555,20 +559,10 @@
   });
   $('emu-chosen-note').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
 
-  // THE GAME'S MENU, from More: About this copy, the panel with what the scan
-  // read of it, and Remove from this Mac where any of it is here.
-  function openGameMenu(trigger) {
-    const menu = $('emu-game-menu');
-    if (window.Rux.menu.isOpen(menu)) { window.Rux.menu.close(menu); return; }
-    const g = game;
-    const s = stands(g);
-    menu.setAttribute('aria-label', nameOf(g));
-    const items = [menuItem(menu, 'About this copy', () => openGame(g, trigger, { about: true }))];
-    if (keeps && s.state !== 'arriving' && (s.state === 'held' || s.done)) items.push(menuItem(menu, 'Remove from this Mac', () => removeGame(g), { danger: true }));
-    menu.replaceChildren(...items);
-    window.Rux.menu.open(menu, trigger);
-  }
-  $('emu-chosen-more').addEventListener('click', e => openGameMenu(e.currentTarget));
+  // About this copy opens the panel on what the scan read of the game, and
+  // Remove from this Mac, shown where any of it is here, takes it off.
+  $('emu-chosen-copy').addEventListener('click', e => openGame(game, e.currentTarget, { about: true }));
+  $('emu-chosen-remove').addEventListener('click', () => removeGame(game));
   async function removeGame(g) {
     try { await R.helper.remove(g); } catch (error) { sayNo(error.message); return; }
     say(`${nameOf(g)} is off this Mac. Its saves are kept.`);
@@ -822,7 +816,7 @@
     if (arriving.some(g => stands(g).state === 'held')) sfx.done();
     // Nothing is drawn again under a held game, an open panel or a console's
     // open menu; a download's progress alone changes only what shows it.
-    if (told() !== before) { if (!panelOpen() && !drag?.on && !window.Rux.menu.isOpen($('emu-console-menu')) && !window.Rux.menu.isOpen($('emu-game-menu'))) render(); }
+    if (told() !== before) { if (!panelOpen() && !drag?.on && !window.Rux.menu.isOpen($('emu-console-menu'))) render(); }
     else if (coming() !== came && helper) showComing();
     // A game wanted for play starts once it is here, and is let go if it stopped.
     for (const key of [...wanted]) {

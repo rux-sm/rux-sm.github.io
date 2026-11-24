@@ -125,6 +125,8 @@ export const ICONS = {
   'event--busy': { material: 'event_busy', rux: null },  // Carbon draws no crossed-out day; Material's is a calendar with a cross.
   'eyedropper': { material: 'colorize', rux: null },  // A dropper in both families: the tool that takes a colour from a drawing.
   'fit-to-width': { material: 'fit_screen', rux: null },
+  'flag': { material: 'flag', rux: null },
+  'flag--filled': { material: 'flag-fill', rux: null },
   'folder': { material: 'folder', rux: null },
   'gas-station': { material: 'local_gas_station', rux: null },  // A bus's fuel in the bus column, at 16px.
   'gas-station--filled': { material: 'local_gas_station-fill', rux: null },  // A bus's tank on its live card.
@@ -176,6 +178,8 @@ export const ICONS = {
   'select--window': { material: 'select', rux: null },  // A dashed box in both families: the box that selects part of a drawing.
   'shuttle': { material: 'airport_shuttle', rux: null },
   'settings': { material: 'settings', rux: null },
+  'star': { material: 'star', rux: null },
+  'star--filled': { material: 'star-fill', rux: null },
   'subtract': { material: 'remove', rux: null },
   'text--fill': { material: 'format_color_fill', rux: null },  // A tipped paint bucket over a bar, in both families: the tool that fills an area.
   'time': { material: 'schedule', rux: null },

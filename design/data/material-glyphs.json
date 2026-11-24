@@ -898,6 +898,22 @@
         "path|d=M820-610v-130H690v-60h190v190h-60Zm-740 0v-190h190v60H140v130H80Zm610 450v-60h130v-130h60v190H690Zm-610 0v-190h60v130h130v60H80Zm120-120v-400h560v400H200Z"
       ]
     },
+    "flag@960": {
+      "name": "flag",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/flag.svg",
+      "geometry": [
+        "path|d=M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z"
+      ]
+    },
+    "flag-fill@960": {
+      "name": "flag-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/flag-fill.svg",
+      "geometry": [
+        "path|d=M200-120v-680h343l19 86h238v370H544l-19-85H260v309h-60Z"
+      ]
+    },
     "folder@960": {
       "name": "folder",
       "size": "960",
@@ -1632,6 +1648,22 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/settings-fill.svg",
       "geometry": [
         "path|d=m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm92-270q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Z"
+      ]
+    },
+    "star@960": {
+      "name": "star",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/star.svg",
+      "geometry": [
+        "path|d=m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"
+      ]
+    },
+    "star-fill@960": {
+      "name": "star-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/star-fill.svg",
+      "geometry": [
+        "path|d=m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"
       ]
     },
     "remove@960": {

@@ -15,6 +15,8 @@ browser; only the helper and what it reads are Mac-only today:
 
 ## Decisions
 
+- **Nothing is built until there is a Windows PC to test on,** since a helper
+  no session can run is a guess; the old PC now runs TrueNAS.
 - **The Windows helper answers the same calls as the Mac's, on the same
   `127.0.0.1:47647`,** so the site talks to both the same way and barely
   changes.
@@ -47,9 +49,6 @@ browser; only the helper and what it reads are Mac-only today:
 
 ## Questions
 
-- **Which Windows PC will play?** The old PC now runs TrueNAS, and a session
-  needs a PC to test each step on; without one, the work stops at what this
-  Mac can prove.
 - **Sign the Windows helper, or not?** Unsigned is free, but Windows warns
   "unknown publisher" on each new build until you press Run anyway. Azure
   Trusted Signing is about $10 a month and stops the warning. Recommended:

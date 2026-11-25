@@ -132,6 +132,13 @@
     async setCard(id, values) {
       fail((await client.from('emu_cards').update(values).eq('id', id)).error);
     },
+    // The names rux gives controllers, by their maker's and product's
+    // numbers, `057e:2009`, since Chrome names an 8BitDo in Switch mode as
+    // Nintendo's own.
+    controllers: () => all(() => client.from('emu_controllers').select('id, name')),
+    async nameController(id, name) {
+      fail((await client.from('emu_controllers').upsert({ id, name, updated_at: new Date().toISOString() })).error);
+    },
     // A file taken out of Supabase, as scan-save.js takes one out.
     dropFile: path => window.Emu.scanSave.dropFile(data.db(), path),
     // Each emulator's settings as Supabase keeps them, under

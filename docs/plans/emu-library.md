@@ -140,13 +140,19 @@ in a window under 66rem:
 - **It lists each controller Chrome's Gamepad API sees,** as connected, or says
   No controller and to press a button on one, because Chrome shows one only
   once a button on it is pressed.
-- **It says whether that controller's buttons are set for the chosen console,**
-  read by the helper from its emulator's own settings, which each emulator
-  keeps in its own way, and says nothing for an emulator not yet read.
+- **Each controller is named as rux named it, else as Chrome names it,** since
+  an 8BitDo in Switch mode shows as Nintendo's Pro Controller; the names are
+  `emu_controllers`, by maker and product, changed in the controller's map.
+- **It says "Set up for" or "Not set up for" the chosen console,** from that
+  console's emulator's own settings, which `emu/pads.js` reads through the
+  helper and `emu/docs/controller-settings.md` lists: set up where player 1 is
+  bound to the first controller, or to this one's maker and product.
+- **A controller's row opens its map, a Carbon modal,** because the map does
+  not fit the tile: the controller drawn by its family, Nintendo, Xbox or
+  PlayStation, each physical button labelled as printed, and what it does on
+  the chosen console beside it; a button the console leaves unused is dashed.
 - **Change buttons opens the emulator,** because each already has an editor for
   them; Emu has none of its own.
-- **Its list is each controller the emulator has buttons for;** picking another
-  comes last, since it writes the emulator's settings.
 - **Button layouts travel with the account** as
   `docs/plans/emu-emulator-profiles.md` carries them.
 
@@ -171,9 +177,6 @@ None.
 - [ ] See the Library in Safari.
 - [ ] Give Rux Emu Helper a call that opens an emulator with no game, for
       Change buttons.
-- [ ] Have the helper read which controller an emulator has buttons for, one
-      emulator at a time, Dolphin first, whose `GCPadNew.ini` names it.
-- [ ] Choose a controller from the list, once its layouts are carried.
 - [ ] Give Rux Emu Helper a call that says whether the home server answers, and
       show it on the strip.
 - [ ] Update each Mac to Rux Emu Helper 35 or later, which takes a carried save

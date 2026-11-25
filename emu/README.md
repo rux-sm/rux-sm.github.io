@@ -55,7 +55,7 @@ to: the version Supabase holds and each Mac's, with Install where this Mac lacks
 it needs; every kind of file it writes with the setting that moves it; the settings to have,
 with backups to put back and a preferred set; and what is worth knowing. `docs/emulator-setup.md`
 is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
-`docs/drawing-consoles.md` how a console is drawn in pixels for the Library. `brand/logos/`
+`docs/drawing-consoles.md` how a console is drawn in pixels for the Library. `docs/controller-settings.md` is where each emulator keeps its controller's buttons, which the controller map reads. `brand/logos/`
 and `brand/controllers/` hold each system's logo and controller, named as its console is; no
 page shows them. Sprites writes all three folders from the drawings in `sprites/art/`.
 `brand/marks.svg` holds each console's wordmark in one colour, which the Library shows over its games.
@@ -109,7 +109,7 @@ downloaded into it from the home server or removed. The app carries its own
 ## How it works
 
 `emu_games`, `emu_saves` and `emu_scan` hold the last scan saved, `emu_macs` how each Mac
-stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, `emu_info` each game's facts and description as the scan looked them up, and the `emu-backups` bucket the old backup zips.
+stood, `emu_notes` rux's marks and notes, `emu_cards` each save's name as a card, `emu_controllers` the names rux gives controllers, `emu_info` each game's facts and description as the scan looked them up, and the `emu-backups` bucket the old backup zips.
 `emu_files` lists each copy of each file the `emu-collection` bucket holds, its bytes there
 under its SHA-1 and its newest copy in the view `emu_files_now`: the BIOS, keys, firmware
 and installers every Mac is given, each game's cover, and the last five copies of each Mac's settings for an

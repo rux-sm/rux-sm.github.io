@@ -1,0 +1,49 @@
+---
+type: reference
+---
+
+# Controller settings, emulator by emulator
+
+Where each emulator keeps player 1's buttons, how it numbers them and how it
+names the controller they are for. `emu/pads.js` reads these through Rux Emu
+Helper's `/mac/setting` to draw the controller map.
+
+## How the numbers are counted
+
+Every emulator here reads controllers through SDL or Apple's GameController,
+and they count buttons in two ways:
+
+- **By position:** SDL 3, Apple's GameController, and SDL's names (`FaceSouth`,
+  `A`, `Button S`). Button 0 is the bottom face button, which a Nintendo pad
+  prints as B.
+- **By label on a Nintendo pad:** SDL 2. Button 0 is the button printed A, on
+  the right. On an Xbox or PlayStation pad SDL 2 also counts by position.
+
+After the four face buttons, SDL counts: 4 −/Back/View, 5 Home, 6 +/Start/Menu,
+7 and 8 the stick presses, 9 and 10 L and R, 11 to 14 up, down, left, right. Its
+axes are 0 and 1 the left stick, 2 and 3 the right stick, 4 and 5 ZL and ZR.
+
+An SDL GUID holds the controller's maker at bytes 4–5 and its product at bytes
+8–9, little-endian. Byte 0 is 03 over USB under SDL 2 and 05 over Bluetooth
+under SDL 3, so the same controller has two GUIDs. The 8BitDo Ultimate in Switch
+mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
+
+## Each emulator
+
+| Emulator | File in its folder | Player 1 | Counted |
+| :--- | :--- | :--- | :--- |
+| Mesen 2 | `settings.json`, `Nes.Port1` and `Snes.Port1`, `Mapping1`–`4` | the first controller: codes from `0x1000` | Apple, by position; 16–23 are the sticks' directions |
+| mGBA | `config.ini`, `[gba.input.SDLB]` | `device0`, an SDL 2 GUID | SDL 2 buttons |
+| melonDS | `melonDS.toml`, `[Instance0.Joystick]` | `JoystickID`, an index | SDL 2 buttons; a hat has `0x100` set, an axis `0x10000` |
+| Azahar | `config/qt-config.ini`, `[Controls]` profile `profile`+1 | `guid:` in each value | SDL 2; `api:controller` names the controller's button |
+| Gopher64 | config.json, `input` | the profile in `input_profile_binding[0]` | SDL 3 when `dinput`; its slots as its `input_profile.rs` orders them |
+| DuckStation | `settings.ini`, `[Pad1]` | `SDL-0` | SDL names, `SDL-0/A` |
+| PCSX2 | `inis/PCSX2.ini`, `[Pad1]` | `SDL-0` | SDL names, `SDL-0/FaceSouth` |
+| Dolphin | `Config/GCPadNew.ini` `[GCPad1]`, `Config/WiimoteNew.ini` `[Wiimote1]` | `Device = SDL/0/<name>` | SDL names in backticks; GameCube port 1 needs `SIDevice0 = 6` in `Config/Dolphin.ini` |
+| Cemu | `controllerProfiles/controller0.xml` | `uuid`, `<index>_<SDL 3 GUID>` | SDL 3; 38–49 are axes, 42 and 43 ZL and ZR |
+| Ryujinx | Config.json, `input_config` for `Player1` | `id`, the GUID as a .NET Guid with its first four characters zeroed | SDL 2 controller names; it writes − and + as `Back` and `Start` |
+| xemu | `xemu.toml`, `[input.bindings] port1` | an SDL 3 GUID | its own layout, by position: White on LB, Black on RB |
+
+Ryujinx rewrites its Config.json when it quits, and Cemu rewrites
+`controller0.xml` when its input settings close, so either file is changed
+only with its app closed.

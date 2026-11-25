@@ -304,6 +304,36 @@
   </div>
 </div>
 
+<!-- A controller's map, from its row in the controller tile: each physical
+     button and what it does on the chosen console, drawn by pads.js and
+     filled by library.js, with the controller's name to change. -->
+<div class="rux--layer-one rux--modal" id="emu-padmap-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="emu-padmap-h" tabindex="-1" class="rux--modal-container rux--modal-container--lg">
+    <div class="rux--modal-header">
+      <p class="rux--modal-header__label" id="emu-padmap-label"></p>
+      <h2 class="rux--modal-header__heading" id="emu-padmap-h">Buttons</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content emu-padmap-body">
+      <p class="emu-padmap-note" id="emu-padmap-note" role="status"></p>
+      <div class="emu-padmap-art" id="emu-padmap-art"></div>
+      <form class="emu-padmap-name" id="emu-padmap-name">
+        <div class="rux--form-item rux--text-input-wrapper">
+          <label class="rux--label" for="emu-padmap-input">Controller name</label>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="emu-padmap-input" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" maxlength="60">
+          </div></div>
+        </div>
+        <button type="submit" class="rux--btn rux--btn--tertiary rux--layout--size-md">Save name</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- The game opened, from game-panel.js: Carbon's side panel over the page.
      overrides.css hides it with [hidden] and lets it fill a phone. -->
 <aside class="rux--side-panel rux--side-panel--right-placement rux--side-panel--md" id="emu-panel" aria-labelledby="emu-panel-title" hidden>
@@ -345,6 +375,7 @@
 <script src="carry.js"></script>
 <script src="this-mac.js"></script>
 <script src="gamepad.js"></script>
+<script src="pads.js"></script>
 <script src="library.js"></script>
 </body>
 </html>

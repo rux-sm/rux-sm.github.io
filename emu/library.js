@@ -772,13 +772,28 @@
   }
 
   // THE CONTROLLER TILE: each controller this Mac sees through Chrome's
-  // Gamepad API, named as its maker names it, its maker's numbers left off,
-  // with Carbon's succeeded indicator; or none, with how to make one show,
-  // because Chrome shows one to a page only once a button on it is pressed.
-  // Its button layout is its emulator's own, so the tile says where that is set.
-  const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean)
-    .map(p => p.id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller');
-  function padRow(name, sub) {
+  // Gamepad API, by the name rux gave it or its maker's name, and whether the
+  // chosen console's emulator has its player 1 set for it, read through
+  // pads.js; or none, with how to make one show, because Chrome shows one to
+  // a page only once a button on it is pressed. A controller's row opens its
+  // map: each physical button and what it does on that console.
+  let padNames = null;
+  const padNamesNow = () => (padNames ??= (R.data?.controllers() ?? Promise.resolve([]))
+    .then(rows => new Map(rows.map(r => [r.id, r.name]))).catch(() => new Map()));
+  const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean).map(R.pads.of);
+  // The chosen console's emulator, read once for each controller family and
+  // kept until the console, a controller or the window's focus changes.
+  let padReading = null;
+  const readPads = system => (padReading?.system === system ? padReading
+    : (padReading = { system, read: Promise.all([...new Set(padsNow().map(p => p.family))].map(async family => [family, await R.pads.read(system, R.helper, family)])).then(Object.fromEntries) })).read;
+  function indicator(kind, text) {
+    const line = el('span', 'rux--icon-indicator');
+    const icon = iconOf(kind === 'ok' ? '#i-checkmark--filled' : '#i-warning--alt--filled');
+    icon.setAttribute('class', kind === 'ok' ? 'rux--icon-indicator--succeeded' : 'rux--icon-indicator--caution-minor');
+    line.append(icon, text);
+    return line;
+  }
+  function padRow(name, sub, open) {
     const li = el('li', 'emu-pad__row');
     const icon = iconOf('#i-game--console');
     icon.setAttribute('width', '24');
@@ -786,27 +801,67 @@
     icon.setAttribute('class', 'emu-pad__icon');
     const main = el('span', 'emu-row__main');
     main.append(el('span', 'emu-pad__name', name), sub);
-    li.append(icon, main);
+    if (open) {
+      const button = el('button', 'emu-pad__open');
+      button.type = 'button';
+      button.append(icon, main);
+      button.addEventListener('click', open);
+      li.append(button);
+    } else li.append(icon, main);
     return li;
   }
-  function renderPad() {
+  // Whether the chosen console is set for a controller, and what to say.
+  const padState = (read, pad, consoleName) => !read ? null
+    : read.problem ? ['warn', read.problem]
+    : R.pads.matches(read.bound, pad) && Object.keys(read.map).length ? ['ok', `Set up for ${consoleName}`]
+    : ['warn', `Not set up for ${consoleName}`];
+  async function renderPad() {
     if (!helper) return;
     const pads = padsNow();
-    const connected = () => {
-      const tick = iconOf('#i-checkmark--filled');
-      tick.setAttribute('class', 'rux--icon-indicator--succeeded');
-      const line = el('span', 'rux--icon-indicator');
-      line.append(tick, 'Connected');
-      return line;
-    };
-    $('emu-pad-list').replaceChildren(...(pads.length ? pads.map(name => padRow(name, connected()))
-      : [padRow('No controller', el('span', 'emu-row__sub', 'Press a button on one to show it here.'))]));
-    $('emu-pad-list').classList.toggle('emu-pad__list--none', !pads.length);
-    const where = pads.length && game && emulatorOf(game.system);
+    const list = $('emu-pad-list');
+    list.classList.toggle('emu-pad__list--none', !pads.length);
+    $('emu-pad-note').hidden = true;
+    if (!pads.length) {
+      list.replaceChildren(padRow('No controller', el('span', 'emu-row__sub', 'Press a button on one to show it here.')));
+      return;
+    }
+    const system = game?.system ?? chosen;
+    const consoleName = system ? R.systemName(system) : null;
+    const [names, reads] = await Promise.all([padNamesNow(), system ? readPads(system) : {}]);
+    list.replaceChildren(...pads.map(pad => {
+      const name = names.get(pad.id) ?? pad.name;
+      const state = system && padState(reads[pad.family], pad, consoleName);
+      const sub = state ? indicator(...state) : indicator('ok', 'Connected');
+      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, name, system, reads[pad.family]) : null);
+    }));
+    const where = system && emulatorOf(system);
     $('emu-pad-note').textContent = where ? `Buttons are set in ${where}.` : '';
     $('emu-pad-note').hidden = !where;
   }
-  for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, renderPad);
+  for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; renderPad(); });
+  // Buttons are changed in the emulator, so they are read again on coming back.
+  window.addEventListener('focus', () => { padReading = null; renderPad(); });
+  // A controller's map in its modal, and its name to change.
+  function openPadMap(pad, name, system, read) {
+    const consoleName = R.systemName(system);
+    $('emu-padmap-label').textContent = name;
+    $('emu-padmap-h').textContent = `${consoleName} buttons`;
+    const state = padState(read, pad, consoleName);
+    $('emu-padmap-note').textContent = state[0] === 'ok' ? `As set in ${read.emulator}.` : `${state[1]}. ${read.problem ? '' : `Its buttons are set in ${read.emulator}.`}`.trim();
+    $('emu-padmap-art').innerHTML = R.pads.draw(pad.family, state[0] === 'ok' ? read.map : {});
+    const input = $('emu-padmap-input');
+    input.value = name;
+    $('emu-padmap-name').onsubmit = async e => {
+      e.preventDefault();
+      const value = input.value.trim();
+      if (!value || !pad.id || !R.data) return;
+      try { await R.data.nameController(pad.id, value); } catch (error) { say(error.message, { bad: true }); return; }
+      padNames = null;
+      $('emu-padmap-label').textContent = value;
+      renderPad();
+    };
+    window.Rux.modal.open('emu-padmap-modal');
+  }
 
   function render() {
     const mac = Boolean(helper);

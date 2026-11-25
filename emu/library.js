@@ -892,7 +892,8 @@
       const done = async control => {
         const release = () => (pressed().some(Boolean) ? requestAnimationFrame(release) : setTimeout(() => R.pauseMoves(false), 200));
         release();
-        if (!control) { note.textContent = `No press came from ${printed}. Try again, or choose Copies nothing.`; return; }
+        // A back button set to copy nothing sends nothing at all.
+        if (!control) { note.textContent = `Nothing came from ${printed}, so it copies nothing yet. To set it on the controller, hold ${printed}, press the button it should copy, then press Star. Then Learn it again.`; return; }
         mine.details.copies = { ...mine.details.copies, [key]: control };
         const named = { ...R.pads.PRINTED[pad.family], ...(R.pads.MODELS[mine.details.model]?.printed ?? {}) };
         note.textContent = (await save()) ? `${printed} copies ${named[control] ?? control}.` : '';

@@ -544,7 +544,7 @@
   // Each emulator's writer: the files it changes for one player on one
   // console, from a layout `L` and the controller the helper reports, `pad`
   // { family, name, sdl2, sdl3, sdl2Index, path }. xemu keeps its own layout.
-  const RYU_NAME = ['A', 'B', 'X', 'Y', 'Minus', 'Guide', 'Plus', 'LeftStick', 'RightStick', 'LeftShoulder', 'RightShoulder', 'DpadUp', 'DpadDown', 'DpadLeft', 'DpadRight'];
+  const RYU_NAME = ['A', 'B', 'X', 'Y', 'Back', 'Guide', 'Start', 'LeftStick', 'RightStick', 'LeftShoulder', 'RightShoulder', 'DpadUp', 'DpadDown', 'DpadLeft', 'DpadRight'];
   const WRITERS = {
     'Mesen 2': (f, system, player, pad, L) => {
       const raw = f['settings.json'];
@@ -585,15 +585,23 @@
     Azahar: (f, system, player, pad, L) => {
       const text = f['config/qt-config.ini'];
       const n = Number(ini(text).Controls?.profile ?? 0) + 1;
-      const at = `guid:${pad.sdl2},port:0`;
-      const value = c => c === 'zl' || c === 'zr' ? `"axis:${c === 'zl' ? 4 : 5},direction:+,engine:sdl,${at},threshold:0.5"`
-        : `"button:${sdl2At(c, pad.family)},engine:sdl,${at}"`;
+      // `api:controller` says the numbers are SDL's game controller ones, as Azahar writes them itself.
+      const at = `guid:${pad.sdl2},port:0`, api = 'api:controller,';
+      const value = c => c === 'zl' || c === 'zr' ? `"${api}axis:${c === 'zl' ? 4 : 5},direction:+,engine:sdl,${at},threshold:0.5"`
+        : `"${api}button:${sdl2At(c, pad.family)},engine:sdl,${at}"`;
       const keys = {};
       for (const [k, c] of Object.entries(L)) keys[`profiles\\${n}\\button_${k.toLowerCase()}`] = value(c);
       for (const d of DIRS) keys[`profiles\\${n}\\button_${d}`] = value(d);
-      keys[`profiles\\${n}\\circle_pad`] = `"axis_x:0,axis_y:1,deadzone:0.100000,engine:sdl,${at},range:1.000000"`;
-      keys[`profiles\\${n}\\c_stick`] = `"axis_x:2,axis_y:3,deadzone:0.100000,engine:sdl,${at},range:1.000000"`;
+      keys[`profiles\\${n}\\circle_pad`] = `"${api}axis_x:0,axis_y:1,deadzone:0.100000,engine:sdl,${at},range:1.000000"`;
+      keys[`profiles\\${n}\\c_stick`] = `"${api}axis_x:2,axis_y:3,deadzone:0.100000,engine:sdl,${at},range:1.000000"`;
       keys[`profiles\\${n}\\motion_device`] = `"engine:sdl,${at}"`;
+      // A line that already binds the same is left as Azahar wrote it, with its own extras such as a button's name.
+      const pack = v => Object.fromEntries(String(v ?? '').replace(/^"|"$/g, '').split(',').map(p => p.split(':')));
+      const was = ini(text).Controls ?? {};
+      for (const [k, v] of Object.entries(keys)) {
+        const old = pack(was[k]);
+        if (Object.entries(pack(v)).every(([p, x]) => old[p] === x)) delete keys[k];
+      }
       return { 'config/qt-config.ini': setSection(text, 'Controls', keys, { sep: '=' }) };
     },
     // Gopher64 binds a player to its controller's SDL 3 path, which the
@@ -667,7 +675,10 @@
       const control = k => L[k] ?? k;
       const code = k => AXES[k] ?? (control(k) === 'zl' ? 42 : control(k) === 'zr' ? 43 : sdl3At(control(k)));
       const entries = order.map((k, i) => k && `\t\t\t<entry>\n\t\t\t\t<mapping>${i + 1}</mapping>\n\t\t\t\t<button>${code(k)}</button>\n\t\t\t</entry>`).filter(Boolean).join('\n');
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<emulated_controller>\n\t<type>${pro ? 'Wii U Pro Controller' : 'Wii U GamePad'}</type>\n\t<controller>\n`
+      // Cemu's own lines beside the controller, its profile's name and display toggle, stay.
+      const was = f[`controllerProfiles/controller${player - 1}.xml`] ?? '';
+      const own = ['profile', 'toggle_display'].map(t => was.match(new RegExp(`^\\t<${t}>.*</${t}>$`, 'm'))?.[0]).filter(Boolean).map(l => `${l}\n`).join('');
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<emulated_controller>\n\t<type>${pro ? 'Wii U Pro Controller' : 'Wii U GamePad'}</type>\n${own}\t<controller>\n`
         + `\t\t<api>SDLController</api>\n\t\t<uuid>0_${pad.sdl3}</uuid>\n\t\t<display_name>${escape(pad.name ?? 'Controller')}</display_name>\n\t\t<motion>${hasGyro(pad.family)}</motion>\n\t\t<rumble>0</rumble>\n`
         + `\t\t<axis>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</axis>\n\t\t<rotation>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</rotation>\n`
         + `\t\t<trigger>\n\t\t\t<deadzone>0.25</deadzone>\n\t\t\t<range>1</range>\n\t\t</trigger>\n\t\t<mappings>\n${entries}\n\t\t</mappings>\n\t</controller>\n</emulated_controller>\n`;
@@ -693,7 +704,13 @@
           button_x: name('X'), button_b: name('B'), button_y: name('Y'), button_a: name('A') },
         version: 1, backend: 'GamepadSDL2', id, name: pad.name ?? 'Controller', controller_type: 'ProController', player_index: `Player${player}`,
       };
-      c.input_config = [...(c.input_config ?? []).filter(x => x.player_index !== `Player${player}`), entry];
+      // Laid over the player's entry as it was, so what Ryujinx keeps besides, such as its light, stays.
+      const list = c.input_config ??= [];
+      const at = list.findIndex(x => x.player_index === `Player${player}`);
+      const was = list[at] ?? {};
+      const merged = { ...was, ...entry };
+      for (const k of ['left_joycon_stick', 'right_joycon_stick', 'motion', 'rumble', 'left_joycon', 'right_joycon']) merged[k] = { ...was[k], ...entry[k] };
+      if (at >= 0) list[at] = merged; else list.push(merged);
       return { 'Config.json': JSON.stringify(c, null, 2) };
     },
     xemu: (f, system, player, pad) => {

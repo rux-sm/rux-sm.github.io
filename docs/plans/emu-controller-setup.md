@@ -52,5 +52,3 @@ None.
 
 - [ ] Build Rux Emu Helper 37 onto the games share, for Supabase and the other
       Macs; the MacBook Pro already runs it.
-- [ ] Check Set up on every console in Chrome on :8641 with the 8BitDo on,
-      the emulators closed: written as it is now, every file stays the same.

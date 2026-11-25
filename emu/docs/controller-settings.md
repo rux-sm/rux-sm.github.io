@@ -62,6 +62,10 @@ Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.
 
+Set up changes only the lines that bind the controller: Cemu's profile
+name, Ryujinx's light and Azahar's own button names stay, and Ryujinx's
+− and + are written as `Back` and `Start`, as it writes them.
+
 Ryujinx rewrites its Config.json when it quits, and Cemu rewrites
 `controller0.xml` when its input settings close, so either file is changed
 only with its app closed.

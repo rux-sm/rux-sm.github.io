@@ -880,13 +880,15 @@
       $('emu-padmap-back-art').innerHTML = R.pads.drawBack(mine.details.model, mine.details.copies, map);
       $('emu-padmap-learn').replaceChildren(...Object.entries(model.back).map(([key, printed]) => {
         const li = el('li', 'emu-padmap-learn__row');
-        const learn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', `Learn ${printed}`);
+        const learn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', 'Learn');
         learn.type = 'button';
+        learn.setAttribute('aria-label', `Learn ${printed}`);
         learn.addEventListener('click', () => learnBack(key, printed));
         const clear = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', 'Copies nothing');
+        clear.setAttribute('aria-label', `${printed} copies nothing`);
         clear.type = 'button';
         clear.addEventListener('click', async () => { mine.details.copies = { ...mine.details.copies, [key]: null }; if (await save()) draw(); });
-        li.append(learn, clear);
+        li.append(el('span', 'emu-padmap-learn__name', printed), learn, clear);
         return li;
       }));
     };
@@ -937,37 +939,81 @@
       $('emu-padmap-setup-note').textContent = message;
       renderPad();
     };
+    // A layout written for a player: the controller as the helper reports
+    // it, the emulator's files changed, and Undo kept for them.
+    const writeLayout = async (player, layout, done) => {
+      const report = await R.helper.controllers();
+      if (!report) throw new Error('Update Rux Emu Helper to version 37 or later to set up a controller here.');
+      const same = report.filter(c => c.vendor === pad.vendor && c.product === pad.product);
+      const twin = padsNow().filter(p => p.vendor === pad.vendor && p.product === pad.product).findIndex(p => p.index === pad.index);
+      const found = same[Math.max(0, twin)];
+      if (!found) throw new Error('Rux Emu Helper does not see this controller. Press a button on it, then try again.');
+      const out = await R.pads.setUp(system, R.helper, player, { family: pad.family, ...found }, layout);
+      if (out.problem) throw new Error(out.problem);
+      if (out.open) {
+        await R.helper.open(out.emulator);
+        setupNote.textContent = `${out.emulator} is open. Choose this controller for player ${player} there.`;
+        return;
+      }
+      const undo = [];
+      for (const [rel, [before, after]] of Object.entries(out.files)) {
+        await R.helper.putSetting(out.emulator, rel, new TextEncoder().encode(after));
+        undo.push([rel, before]);
+      }
+      padUndo = { emulator: out.emulator, files: undo };
+      await reopen(done(out.emulator));
+    };
     goButton.onclick = async () => {
       const player = Number(playerPick.value);
       goButton.disabled = true;
       setupNote.textContent = 'Setting up…';
-      try {
-        const report = await R.helper.controllers();
-        if (!report) throw new Error('Update Rux Emu Helper to version 37 or later to set up a controller here.');
-        const same = report.filter(c => c.vendor === pad.vendor && c.product === pad.product);
-        const twin = padsNow().filter(p => p.vendor === pad.vendor && p.product === pad.product).findIndex(p => p.index === pad.index);
-        const found = same[Math.max(0, twin)];
-        if (!found) throw new Error('Rux Emu Helper does not see this controller. Press a button on it, then try again.');
-        const out = await R.pads.setUp(system, R.helper, player, { family: pad.family, ...found });
-        if (out.problem) throw new Error(out.problem);
-        if (out.open) {
-          await R.helper.open(out.emulator);
-          setupNote.textContent = `${out.emulator} is open. Choose this controller for player ${player} there.`;
-          return;
-        }
-        const undo = [];
-        for (const [rel, [before, after]] of Object.entries(out.files)) {
-          await R.helper.putSetting(out.emulator, rel, new TextEncoder().encode(after));
-          undo.push([rel, before]);
-        }
-        padUndo = { emulator: out.emulator, files: undo };
-        await reopen(`Set up as player ${player} in ${out.emulator}.`);
-      } catch (error) {
-        setupNote.textContent = error.message;
-      } finally {
-        goButton.disabled = false;
-      }
+      try { await writeLayout(player, undefined, emulator => `Set up as player ${player} in ${emulator}.`); }
+      catch (error) { setupNote.textContent = error.message; }
+      finally { goButton.disabled = false; }
     };
+    // Change a button: the console's button chosen, then the next press is
+    // the controller's button for it; the button that had that press takes
+    // the chosen one's old place, so no two share one. It starts from the
+    // player's layout as its emulator has it, so earlier changes stay.
+    const layoutNow = R.pads.LAYOUTS[system];
+    const buttonPick = $('emu-padmap-button'), changeButton = $('emu-padmap-change');
+    $('emu-padmap-change-row').hidden = !layoutNow || !one;
+    if (layoutNow && one) {
+      const current = { ...layoutNow };
+      for (const [control, does] of Object.entries(one.map)) if (does in layoutNow) current[does] = control;
+      const named = { ...R.pads.PRINTED[pad.family], ...(R.pads.MODELS[mine.details.model]?.printed ?? {}) };
+      buttonPick.replaceChildren(...Object.keys(layoutNow).map(k => Object.assign(el('option', null, `${consoleName} ${k} · now ${named[current[k]] ?? current[k]}`), { value: k })));
+      changeButton.onclick = () => {
+        const key = buttonPick.value;
+        const pressed = () => [...(navigator.getGamepads?.()[pad.index]?.buttons ?? [])].map(b => b.pressed);
+        const before = pressed();
+        const until = performance.now() + 10000;
+        R.pauseMoves(true);
+        changeButton.disabled = true;
+        setupNote.textContent = `Press the controller's button for ${consoleName} ${key}.`;
+        const finish = async control => {
+          const release = () => (pressed().some(Boolean) ? requestAnimationFrame(release) : setTimeout(() => R.pauseMoves(false), 200));
+          release();
+          try {
+            if (!control) throw new Error('No press came. Try again.');
+            if (!R.pads.usable(read.emulator, control)) throw new Error(`${read.emulator} cannot use ${named[control] ?? control} as a button.`);
+            const layout = { ...current };
+            const holder = Object.keys(layout).find(k => layout[k] === control);
+            if (holder && holder !== key) layout[holder] = layout[key];
+            layout[key] = control;
+            await writeLayout(one.player, layout, emulator => `${consoleName} ${key} is now ${named[control] ?? control}${holder && holder !== key ? `, and ${holder} moved to ${named[layout[holder]] ?? layout[holder]}` : ''}, in ${emulator}.`);
+          } catch (error) { setupNote.textContent = error.message; }
+          finally { changeButton.disabled = false; }
+        };
+        const watch = () => {
+          const i = pressed().findIndex((on, n) => on && !before[n]);
+          if (i >= 0) return finish(R.pads.CHROME[i] ?? null);
+          if (performance.now() > until) return finish(null);
+          requestAnimationFrame(watch);
+        };
+        requestAnimationFrame(watch);
+      };
+    }
     // Undo puts back each file as it was; a file Set up made new stays.
     undoButton.onclick = async () => {
       if (!padUndo) return;

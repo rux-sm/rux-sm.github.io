@@ -28,8 +28,10 @@ choosing it and pressing the controller's button. What the map reads is
   by position on every other pad and console,** as rux chose for the 8BitDo.
 - **Each emulator gets a writer beside its reader in `emu/pads.js`,** the
   reader's numbering run backwards, so one list of numbers serves both.
-- **Setting a single button listens for the next press, as Learn does,** and
-  writes it in the emulator's own numbering.
+- **Changing a single button listens for the next press, as Learn does,** and
+  the button that had that press takes the changed one's old place, so no two
+  share one; it starts from the layout the emulator has, so earlier changes
+  stay.
 - **Set up opens Gopher64 at its controller settings,** since it binds each
   player to a device number of this Mac's that only it can choose.
 - **Rux Emu Helper reports each connected controller's SDL 2 and SDL 3 GUIDs,**
@@ -47,7 +49,5 @@ None.
 
 - [ ] Build Rux Emu Helper 37 onto the games share, for Supabase and the other
       Macs; the MacBook Pro already runs it.
-- [ ] Change a single button by choosing it on the map and pressing it, the
-      writers taking a layout in place of Emu's fixed one.
 - [ ] Check Set up on every console in Chrome on :8641 with the 8BitDo and
       the Xbox controller, the emulators closed.

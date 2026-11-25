@@ -163,6 +163,8 @@ in a window under 66rem:
   PlayStation, each physical button labelled as printed, and what it does on
   the chosen console beside it; a button the console leaves unused is dashed,
   and it says when the emulator has tilt on.
+- **The map puts its actions first:** Set up and Change button over the
+  drawings, the back buttons under them, and the name and model folded away.
 - **A controller is set up from its map,** Emu's layout written into the
   emulator's own file for the chosen player, as
   `docs/plans/emu-controller-setup.md` decides.

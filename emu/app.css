@@ -298,11 +298,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-padmap__own { fill: var(--rux-text-helper); font-size: 13px; font-style: italic; dominant-baseline: central; }
 .emu-padmap-back { display: flex; flex-direction: column; gap: var(--rux-spacing-04); }
 .emu-padmap-back[hidden] { display: none; }
-.emu-padmap-learn { list-style: none; display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03) var(--rux-spacing-06); }
-.emu-padmap-learn__row { display: flex; gap: var(--rux-spacing-02); }
+.emu-padmap-learn { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); max-inline-size: 40rem; gap: var(--rux-spacing-03) var(--rux-spacing-07); }
+.emu-padmap-learn__row { display: flex; align-items: center; gap: var(--rux-spacing-02); }
+.emu-padmap-learn__name { min-inline-size: 2.5rem; font-size: var(--rux-body-compact-01-font-size); color: var(--rux-text-primary); }
+.emu-padmap-more { margin-block-start: var(--rux-spacing-03); }
 .emu-padmap-setup { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
 .emu-padmap-setup__row { display: flex; align-items: flex-end; gap: var(--rux-spacing-05); }
 .emu-padmap-setup__row .rux--form-item { flex: 0 1 12rem; }
+.emu-padmap-setup__row[hidden] { display: none; }
 .emu-padmap-name { display: flex; align-items: flex-end; gap: var(--rux-spacing-05); }
 .emu-padmap-name .rux--form-item { flex: 1; }
 .emu-padmap-name .rux--form-item + .rux--form-item { flex: 0 1 18rem; }

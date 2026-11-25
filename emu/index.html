@@ -320,13 +320,6 @@
     </div>
     <div class="rux--modal-content emu-padmap-body">
       <p class="emu-padmap-note" id="emu-padmap-note" role="status"></p>
-      <div class="emu-padmap-art" id="emu-padmap-art"></div>
-      <section class="emu-padmap-back" id="emu-padmap-back" aria-labelledby="emu-padmap-back-h" hidden>
-        <h3 class="rux--label" id="emu-padmap-back-h">Back buttons</h3>
-        <div class="emu-padmap-art" id="emu-padmap-back-art"></div>
-        <ul class="emu-padmap-learn" role="list" id="emu-padmap-learn"></ul>
-        <p class="emu-padmap-note" id="emu-padmap-learn-note" role="status"></p>
-      </section>
       <section class="emu-padmap-setup" aria-labelledby="emu-padmap-setup-h">
         <h3 class="rux--label" id="emu-padmap-setup-h">Set up</h3>
         <div class="emu-padmap-setup__row">
@@ -342,26 +335,57 @@
           <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="emu-padmap-go">Set up</button>
           <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="emu-padmap-undo" hidden>Undo</button>
         </div>
-        <p class="emu-padmap-note" id="emu-padmap-setup-note" role="status"></p>
-      </section>
-      <form class="emu-padmap-name" id="emu-padmap-name">
-        <div class="rux--form-item rux--text-input-wrapper">
-          <label class="rux--label" for="emu-padmap-input">Controller name</label>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="emu-padmap-input" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" maxlength="60">
-          </div></div>
-        </div>
-        <div class="rux--form-item">
-          <div class="rux--select">
-            <label class="rux--label" for="emu-padmap-model">Model</label>
-            <div class="rux--select-input__wrapper">
-              <select id="emu-padmap-model" class="rux--select-input rux--layout--size-md"></select>
-              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></svg>
+        <div class="emu-padmap-setup__row" id="emu-padmap-change-row">
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label rux--visually-hidden" for="emu-padmap-button">Button to change</label>
+              <div class="rux--select-input__wrapper">
+                <select id="emu-padmap-button" class="rux--select-input rux--layout--size-md"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></svg>
+              </div>
             </div>
           </div>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-md" id="emu-padmap-change">Change button</button>
         </div>
-        <button type="submit" class="rux--btn rux--btn--tertiary rux--layout--size-md">Save</button>
-      </form>
+        <p class="emu-padmap-note" id="emu-padmap-setup-note" role="status"></p>
+      </section>
+      <div class="emu-padmap-art" id="emu-padmap-art"></div>
+      <section class="emu-padmap-back" id="emu-padmap-back" aria-labelledby="emu-padmap-back-h" hidden>
+        <h3 class="rux--label" id="emu-padmap-back-h">Back buttons</h3>
+        <div class="emu-padmap-art" id="emu-padmap-back-art"></div>
+        <ul class="emu-padmap-learn" role="list" id="emu-padmap-learn"></ul>
+        <p class="emu-padmap-note" id="emu-padmap-learn-note" role="status"></p>
+      </section>
+      <ul class="rux--accordion rux--accordion--end rux--layout--size-md emu-padmap-more">
+        <li class="rux--accordion__item">
+          <button type="button" class="rux--accordion__heading" aria-expanded="false" aria-controls="emu-padmap-more">
+            <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+            <div class="rux--accordion__title">Name and model</div>
+          </button>
+          <div class="rux--accordion__wrapper" id="emu-padmap-more" hidden>
+            <div class="rux--accordion__content">
+              <form class="emu-padmap-name" id="emu-padmap-name">
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <label class="rux--label" for="emu-padmap-input">Controller name</label>
+                  <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+                    <input id="emu-padmap-input" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" maxlength="60">
+                  </div></div>
+                </div>
+                <div class="rux--form-item">
+                  <div class="rux--select">
+                    <label class="rux--label" for="emu-padmap-model">Model</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="emu-padmap-model" class="rux--select-input rux--layout--size-md"></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="rux--btn rux--btn--tertiary rux--layout--size-md">Save</button>
+              </form>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

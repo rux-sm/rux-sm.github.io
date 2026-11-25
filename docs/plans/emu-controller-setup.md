@@ -45,9 +45,8 @@ None.
 
 ## Tasks
 
-- [ ] Build Rux Emu Helper 37 with the games share connected, update this Mac
-      to it, and check `/controllers` with the 8BitDo and the Xbox controller
-      both on.
+- [ ] Build Rux Emu Helper 37 onto the games share, for Supabase and the other
+      Macs; the MacBook Pro already runs it.
 - [ ] Change a single button by choosing it on the map and pressing it, the
       writers taking a layout in place of Emu's fixed one.
 - [ ] Check Set up on every console in Chrome on :8641 with the 8BitDo and

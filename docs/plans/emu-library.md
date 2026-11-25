@@ -163,8 +163,9 @@ in a window under 66rem:
   PlayStation, each physical button labelled as printed, and what it does on
   the chosen console beside it; a button the console leaves unused is dashed,
   and it says when the emulator has tilt on.
-- **Change buttons opens the emulator,** because each already has an editor for
-  them; Emu has none of its own.
+- **A controller is set up from its map,** Emu's layout written into the
+  emulator's own file for the chosen player, as
+  `docs/plans/emu-controller-setup.md` decides.
 - **Button layouts travel with the account** as
   `docs/plans/emu-emulator-profiles.md` carries them.
 
@@ -187,8 +188,6 @@ None.
 ## Tasks
 
 - [ ] See the Library in Safari.
-- [ ] Give Rux Emu Helper a call that opens an emulator with no game, for
-      Change buttons.
 - [ ] Give Rux Emu Helper a call that says whether the home server answers, and
       show it on the strip.
 - [ ] Update each Mac to Rux Emu Helper 35 or later, which takes a carried save

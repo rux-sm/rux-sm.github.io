@@ -95,6 +95,14 @@
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emulator }),
   }, true)).json();
 
+  // Each connected controller as the emulators' SDL sees it, its GUIDs and
+  // places in SDL's count, or null from a helper older than 37.
+  const controllers = async () => { const r = await call('/controllers'); return r ? r.json() : null; };
+  // An emulator opened with no game, to change its buttons there.
+  const open = async emulator => (await call('/mac/open', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emulator }),
+  }, true)).json();
+
   // An emulator's carried saves on this Mac, or null from a helper too old to carry.
   const carry = async emulator => { const r = await call(`/mac/carry?${at(emulator)}`); return r ? r.json() : null; };
   const carried = async path => new Uint8Array(await (await call(`/mac/carried?path=${encodeURIComponent(path)}`, {}, true)).arrayBuffer());
@@ -198,7 +206,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, install, update, settings, setting, putSetting, manage, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, install, update, settings, setting, putSetting, manage, controllers, open, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

@@ -327,6 +327,23 @@
         <ul class="emu-padmap-learn" role="list" id="emu-padmap-learn"></ul>
         <p class="emu-padmap-note" id="emu-padmap-learn-note" role="status"></p>
       </section>
+      <section class="emu-padmap-setup" aria-labelledby="emu-padmap-setup-h">
+        <h3 class="rux--label" id="emu-padmap-setup-h">Set up</h3>
+        <div class="emu-padmap-setup__row">
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label rux--visually-hidden" for="emu-padmap-player">Player</label>
+              <div class="rux--select-input__wrapper">
+                <select id="emu-padmap-player" class="rux--select-input rux--layout--size-md"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></svg>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="emu-padmap-go">Set up</button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md" id="emu-padmap-undo" hidden>Undo</button>
+        </div>
+        <p class="emu-padmap-note" id="emu-padmap-setup-note" role="status"></p>
+      </section>
       <form class="emu-padmap-name" id="emu-padmap-name">
         <div class="rux--form-item rux--text-input-wrapper">
           <label class="rux--label" for="emu-padmap-input">Controller name</label>

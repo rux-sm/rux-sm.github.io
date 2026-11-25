@@ -56,6 +56,13 @@
 //   GET    /library/space  how many bytes this Mac has free for games
 //   DELETE /library/file   ?path=<system>/<name>, that one file out of this
 //                          Mac's library, its download stopped
+//   GET    /controllers    each connected controller as the emulators' SDL
+//                          sees it: its name, maker, product, SDL 2 and
+//                          SDL 3 GUIDs, its place in each SDL's count and
+//                          its SDL 3 path, read in a process of its own run
+//                          as `--controllers`
+//   POST   /mac/open       { "emulator" }, that emulator opened with no game,
+//                          to change its buttons
 //
 // A download comes from the home server's address inside the home when it
 // answers, since the router loops the public name back slowly, and from the
@@ -117,7 +124,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "36"
+let version = "37"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1623,6 +1630,8 @@ final class Server {
     case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
     case ("POST", "/download"): let (code, out) = download(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/downloads"): send(c, .list(200, Downloads.shared.list()), origin: origin)
+    case ("GET", "/controllers"): off { .list(200, controllersNow()) }
+    case ("POST", "/mac/open"): let (code, out) = openEmulator(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/library"): off { .list(200, libraryFiles()) }
     case ("GET", "/library/space"): off { .json(200, librarySpace()) }
     case ("DELETE", "/library/file"): let (code, out) = removeFromLibrary(q["path"] ?? ""); send(c, .json(code, out), origin: origin)
@@ -1844,6 +1853,130 @@ final class Helper: NSObject, NSApplicationDelegate, NSMenuDelegate {
   func application(_ app: NSApplication, open urls: [URL]) {}
 
   @objc func openSite() { NSWorkspace.shared.open(site) }
+}
+
+// MARK: Controllers
+
+// Each connected controller as an SDL library an installed emulator ships
+// sees it, so its GUID is the one that emulator writes: Ryujinx's SDL 2, and
+// DuckStation's or xemu's SDL 3. SDL's GUID is read from the start of the
+// controller's mapping, which SDL hands back as text. A library none of them
+// ships is left out.
+let arch = { () -> String in
+  var info = utsname(); uname(&info)
+  return withUnsafeBytes(of: &info.machine) { String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self) }
+}()
+let sdl2Paths = ["/Applications/Ryujinx.app/Contents/Frameworks/libSDL2.dylib"]
+let sdl3Paths = ["/Applications/DuckStation.app/Contents/Frameworks/libSDL3.0.dylib",
+                 "/Applications/xemu.app/Contents/Libraries/\(arch)/libSDL3.0.dylib"]
+
+func sdlRead(_ paths: [String], three: Bool) -> [[String: Any]] {
+  guard let path = paths.first(where: exists), let lib = dlopen(path, RTLD_NOW | RTLD_LOCAL) else { return [] }
+  func fn<T>(_ name: String, _ type: T.Type) -> T? { dlsym(lib, name).map { unsafeBitCast($0, to: type) } }
+  typealias Hint = @convention(c) (UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
+  typealias Void0 = @convention(c) () -> Void
+  typealias Free = @convention(c) (UnsafeMutableRawPointer?) -> Void
+  guard let hint = fn("SDL_SetHint", Hint.self), let quit = fn("SDL_Quit", Void0.self), let free = fn("SDL_free", Free.self) else { return [] }
+  hint("SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS", "1")
+  var out: [[String: Any]] = []
+  let guid = { (mapping: UnsafeMutablePointer<CChar>?) -> String? in
+    guard let mapping else { return nil }
+    defer { free(mapping) }
+    return String(cString: mapping).split(separator: ",").first.map(String.init)
+  }
+  if three {
+    typealias Init = @convention(c) (UInt32) -> Bool
+    typealias List = @convention(c) (UnsafeMutablePointer<Int32>?) -> UnsafeMutablePointer<UInt32>?
+    typealias Text = @convention(c) (UInt32) -> UnsafePointer<CChar>?
+    typealias Mapping = @convention(c) (UInt32) -> UnsafeMutablePointer<CChar>?
+    typealias Number = @convention(c) (UInt32) -> UInt16
+    guard let start = fn("SDL_Init", Init.self), let update = fn("SDL_UpdateJoysticks", Void0.self),
+          let list = fn("SDL_GetJoysticks", List.self), let name = fn("SDL_GetJoystickNameForID", Text.self),
+          let path = fn("SDL_GetJoystickPathForID", Text.self), let mapping = fn("SDL_GetGamepadMappingForID", Mapping.self),
+          let vendor = fn("SDL_GetJoystickVendorForID", Number.self), let product = fn("SDL_GetJoystickProductForID", Number.self),
+          start(0x200 | 0x2000) else { return [] }
+    for _ in 0..<15 { update(); usleep(100_000) }
+    var count: Int32 = 0
+    if let ids = list(&count) {
+      for i in 0..<Int(count) {
+        let id = ids[i]
+        out.append(["name": orNull(name(id).map { String(cString: $0) }), "vendor": String(format: "%04x", vendor(id)),
+                    "product": String(format: "%04x", product(id)), "sdl3": orNull(guid(mapping(id))), "sdl3Index": i,
+                    "path": orNull(path(id).map { String(cString: $0) })])
+      }
+      free(ids)
+    }
+  } else {
+    typealias Init = @convention(c) (UInt32) -> Int32
+    typealias Count = @convention(c) () -> Int32
+    typealias Text = @convention(c) (Int32) -> UnsafePointer<CChar>?
+    typealias Mapping = @convention(c) (Int32) -> UnsafeMutablePointer<CChar>?
+    typealias Number = @convention(c) (Int32) -> UInt16
+    guard let start = fn("SDL_Init", Init.self), let update = fn("SDL_JoystickUpdate", Void0.self),
+          let count = fn("SDL_NumJoysticks", Count.self), let name = fn("SDL_JoystickNameForIndex", Text.self),
+          let mapping = fn("SDL_GameControllerMappingForDeviceIndex", Mapping.self),
+          let vendor = fn("SDL_JoystickGetDeviceVendor", Number.self), let product = fn("SDL_JoystickGetDeviceProduct", Number.self),
+          start(0x200 | 0x2000) == 0 else { return [] }
+    for _ in 0..<15 { update(); usleep(100_000) }
+    for i in 0..<count() {
+      out.append(["name": orNull(name(i).map { String(cString: $0) }), "vendor": String(format: "%04x", vendor(i)),
+                  "product": String(format: "%04x", product(i)), "sdl2": orNull(guid(mapping(i))), "sdl2Index": Int(i)])
+    }
+  }
+  // SDL closes each controller it opened, so it is left as it was found.
+  quit()
+  return out
+}
+
+// Each controller, its SDL 2 and SDL 3 readings joined by maker and product,
+// in the order SDL 3 counts them.
+func controllersReport() -> [[String: Any]] {
+  let two = sdlRead(sdl2Paths, three: false), three = sdlRead(sdl3Paths, three: true)
+  let key = { (c: [String: Any]) in "\(c["vendor"] ?? ""):\(c["product"] ?? "")" }
+  var used = Set<Int>()
+  var out = three.map { c -> [String: Any] in
+    var c = c
+    if let i = two.indices.first(where: { !used.contains($0) && key(two[$0]) == key(c) }) { used.insert(i); c["sdl2"] = two[i]["sdl2"]; c["sdl2Index"] = two[i]["sdl2Index"] }
+    return c
+  }
+  out += two.indices.filter { !used.contains($0) }.map { two[$0] }
+  return out
+}
+
+// The report read in a process of the helper's own, so SDL never stays
+// loaded in the helper, and a stuck read is ended after ten seconds.
+func controllersNow() -> [[String: Any]] {
+  guard let exe = Bundle.main.executableURL else { return [] }
+  let p = Process()
+  p.executableURL = exe
+  p.arguments = ["--controllers"]
+  let pipe = Pipe()
+  p.standardOutput = pipe
+  p.standardError = FileHandle.nullDevice
+  do { try p.run() } catch { return [] }
+  let stop = DispatchWorkItem { if p.isRunning { p.terminate() } }
+  DispatchQueue.global().asyncAfter(deadline: .now() + 10, execute: stop)
+  let data = pipe.fileHandleForReading.readDataToEndOfFile()
+  p.waitUntilExit()
+  stop.cancel()
+  return (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] ?? []
+}
+
+// An emulator opened with no game, to change its buttons in its own window.
+func openEmulator(_ body: Data) -> (Int, [String: Any]) {
+  guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+        let name = req["emulator"] as? String, let e = saver(name) else { return (400, ["error": "Send an emulator Emu knows."]) }
+  guard let found = appOf(appsOf(e.rule)), let path = found["path"] as? String else { return (409, ["error": "\(name) is not installed."]) }
+  let config = NSWorkspace.OpenConfiguration()
+  config.activates = true
+  NSWorkspace.shared.openApplication(at: URL(fileURLWithPath: expand(path)), configuration: config) { _, _ in }
+  return (200, ["opened": name])
+}
+
+if CommandLine.arguments.contains("--controllers") {
+  let data = (try? JSONSerialization.data(withJSONObject: controllersReport())) ?? Data("[]".utf8)
+  FileHandle.standardOutput.write(data)
+  exit(0)
 }
 
 let app = NSApplication.shared

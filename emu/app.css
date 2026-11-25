@@ -300,6 +300,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-padmap-back[hidden] { display: none; }
 .emu-padmap-learn { list-style: none; display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03) var(--rux-spacing-06); }
 .emu-padmap-learn__row { display: flex; gap: var(--rux-spacing-02); }
+.emu-padmap-setup { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+.emu-padmap-setup__row { display: flex; align-items: flex-end; gap: var(--rux-spacing-05); }
+.emu-padmap-setup__row .rux--form-item { flex: 0 1 12rem; }
 .emu-padmap-name { display: flex; align-items: flex-end; gap: var(--rux-spacing-05); }
 .emu-padmap-name .rux--form-item { flex: 1; }
 .emu-padmap-name .rux--form-item + .rux--form-item { flex: 0 1 18rem; }

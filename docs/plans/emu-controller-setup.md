@@ -30,25 +30,25 @@ choosing it and pressing the controller's button. What the map reads is
   reader's numbering run backwards, so one list of numbers serves both.
 - **Setting a single button listens for the next press, as Learn does,** and
   writes it in the emulator's own numbering.
+- **Set up opens Gopher64 at its controller settings,** since it binds each
+  player to a device number of this Mac's that only it can choose.
 - **Rux Emu Helper reports each connected controller's SDL 2 and SDL 3 GUIDs,**
   because Cemu, Ryujinx, xemu, mGBA and Azahar name a controller by its full
-  GUID and Chrome gives only its maker and product. It reads them as each SDL
-  makes them without opening the controller, with SDL's Switch driver off,
-  since opening an 8BitDo through that driver left Chrome unable to see it
-  until it was turned off and on.
+  GUID and Chrome gives only its maker and product. It reads them through the
+  SDL an installed emulator ships, Ryujinx's SDL 2 and DuckStation's or
+  xemu's SDL 3, so they are what the emulators see, in a short-lived process
+  of its own that closes SDL cleanly, and only when Set up asks.
 
 ## Questions
 
-- Gopher64 binds each player to a device number that only it can choose.
-  Leave Gopher64 to its own settings, or open it at its controller screen?
+None.
 
 ## Tasks
 
-- [ ] Give Rux Emu Helper a call that lists each connected controller with
-      its SDL 2 and SDL 3 GUIDs, and bump its version.
-- [ ] Write each emulator's writer, Mesen 2 first, and test each against a
-      copy of its file in the scratchpad before any real write.
-- [ ] Add the player choice, Set up and Undo to the controller map.
-- [ ] Change a single button by choosing it on the map and pressing it.
-- [ ] Check every console in Chrome on :8641 with the 8BitDo and the Xbox
-      controller, the emulators closed.
+- [ ] Build Rux Emu Helper 37 with the games share connected, update this Mac
+      to it, and check `/controllers` with the 8BitDo and the Xbox controller
+      both on.
+- [ ] Change a single button by choosing it on the map and pressing it, the
+      writers taking a layout in place of Emu's fixed one.
+- [ ] Check Set up on every console in Chrome on :8641 with the 8BitDo and
+      the Xbox controller, the emulators closed.

@@ -847,6 +847,9 @@
   // A controller's map in its modal: its front, and for a model with back
   // buttons its back, each learnt by pressing it; and its name and model to
   // change, kept with the account.
+  // The last Set up's files as they were, for Undo while the map is open.
+  let padUndo = null;
+  document.getElementById('emu-padmap-modal')?.addEventListener('rux:modal-closed', () => { padUndo = null; });
   async function openPadMap(pad, system, read, place) {
     const consoleName = R.systemName(system);
     const known = (await padInfoNow()).get(pad.id);
@@ -915,6 +918,65 @@
         requestAnimationFrame(watch);
       };
       requestAnimationFrame(watch);
+    };
+    // Set up: Emu's layout written into the emulator's own file for the
+    // chosen player, through the helper, with Undo while the map is open;
+    // Gopher64, which only it can bind, is opened at its settings instead.
+    const playerPick = $('emu-padmap-player');
+    const most = read.most ?? 1;
+    const taken = new Set(read.players.filter(p => p.bound).map(p => p.player));
+    playerPick.replaceChildren(...Array.from({ length: most }, (_, i) => Object.assign(el('option', null, `Player ${i + 1}`), { value: String(i + 1) })));
+    playerPick.value = String(one?.player ?? (Array.from({ length: most }, (_, i) => i + 1).find(n => !taken.has(n)) ?? 1));
+    const setupNote = $('emu-padmap-setup-note');
+    const goButton = $('emu-padmap-go'), undoButton = $('emu-padmap-undo');
+    undoButton.hidden = !padUndo;
+    const reopen = async message => {
+      padReading = null;
+      const reads = await readPads(system);
+      await openPadMap(pad, system, reads[pad.family], place);
+      $('emu-padmap-setup-note').textContent = message;
+      renderPad();
+    };
+    goButton.onclick = async () => {
+      const player = Number(playerPick.value);
+      goButton.disabled = true;
+      setupNote.textContent = 'Setting up…';
+      try {
+        const report = await R.helper.controllers();
+        if (!report) throw new Error('Update Rux Emu Helper to version 37 or later to set up a controller here.');
+        const same = report.filter(c => c.vendor === pad.vendor && c.product === pad.product);
+        const twin = padsNow().filter(p => p.vendor === pad.vendor && p.product === pad.product).findIndex(p => p.index === pad.index);
+        const found = same[Math.max(0, twin)];
+        if (!found) throw new Error('Rux Emu Helper does not see this controller. Press a button on it, then try again.');
+        const out = await R.pads.setUp(system, R.helper, player, { family: pad.family, ...found });
+        if (out.problem) throw new Error(out.problem);
+        if (out.open) {
+          await R.helper.open(out.emulator);
+          setupNote.textContent = `${out.emulator} is open. Choose this controller for player ${player} there.`;
+          return;
+        }
+        const undo = [];
+        for (const [rel, [before, after]] of Object.entries(out.files)) {
+          await R.helper.putSetting(out.emulator, rel, new TextEncoder().encode(after));
+          undo.push([rel, before]);
+        }
+        padUndo = { emulator: out.emulator, files: undo };
+        await reopen(`Set up as player ${player} in ${out.emulator}.`);
+      } catch (error) {
+        setupNote.textContent = error.message;
+      } finally {
+        goButton.disabled = false;
+      }
+    };
+    // Undo puts back each file as it was; a file Set up made new stays.
+    undoButton.onclick = async () => {
+      if (!padUndo) return;
+      try {
+        for (const [rel, before] of padUndo.files) if (before) await R.helper.putSetting(padUndo.emulator, rel, before);
+      } catch (error) { setupNote.textContent = error.message; return; }
+      const { emulator } = padUndo;
+      padUndo = null;
+      await reopen(`Put back as it was in ${emulator}.`);
     };
     $('emu-padmap-h').textContent = `${consoleName} buttons`;
     $('emu-padmap-note').textContent = said();

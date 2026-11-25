@@ -366,13 +366,22 @@
       switch (c.shape) {
         case 'trig': return `<rect class="${cls}" x="${c.x - 34}" y="${c.y - 10}" width="68" height="20" rx="10"/>`;
         case 'bump': return `<rect class="${cls}" x="${c.x - 40}" y="${c.y - 7}" width="80" height="14" rx="7"/>`;
-        case 'small': return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="7"/>`;
+        case 'small': return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="10"/>${symbol(c)}`;
         case 'stick': return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="22"/><circle class="${cls}" cx="${c.x}" cy="${c.y}" r="13"/>`;
         case 'dpad': return `<path class="${cls}" d="M${c.x - 8} ${c.y - 26} h16 v18 h18 v16 h-18 v18 h-16 v-18 h-18 v-16 h18 z"/>`;
         default: return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="12"/><text class="emu-padmap__glyph" x="${c.x}" y="${c.y}">${c.p}</text>`;
       }
     };
-    const reach = { bump: 40, trig: 34, stick: 22, dpad: 26, small: 7, face: 12 };
+    // The small middle buttons' symbols, as each family prints them: Nintendo's
+    // minus and plus, Xbox's View and Menu, PlayStation's Create and Options.
+    const symbol = c => {
+      const [x, y] = [c.x, c.y], line = d => `<path class="emu-padmap__symbol" d="${d}"/>`;
+      const bars = line(`M${x - 4} ${y - 3} h8 M${x - 4} ${y} h8 M${x - 4} ${y + 3} h8`);
+      if (family === 'nintendo') return line(c.k === 'minus' ? `M${x - 4} ${y} h8` : `M${x - 4} ${y} h8 M${x} ${y - 4} v8`);
+      if (family === 'xbox') return c.k === 'minus' ? line(`M${x - 4} ${y - 1} h5 v5 h-5 z M${x - 1} ${y - 4} h5 v5`) : bars;
+      return c.k === 'minus' ? line(`M${x - 3} ${y - 4} v8 M${x} ${y - 4} v8 M${x + 3} ${y - 4} v8`) : bars;
+    };
+    const reach = { bump: 40, trig: 34, stick: 22, dpad: 26, small: 10, face: 12 };
     const label = c => {
       const left = c.side === 'L', said = does(c);
       const chipW = c.p.length > 2 ? 18 + c.p.length * 6 : 26;

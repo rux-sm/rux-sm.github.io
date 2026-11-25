@@ -820,7 +820,6 @@
     const pads = padsNow();
     const list = $('emu-pad-list');
     list.classList.toggle('emu-pad__list--none', !pads.length);
-    $('emu-pad-note').hidden = true;
     if (!pads.length) {
       list.replaceChildren(padRow('No controller', el('span', 'emu-row__sub', 'Press a button on one to show it here.')));
       return;
@@ -834,9 +833,6 @@
       const sub = state ? indicator(...state) : indicator('ok', 'Connected');
       return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, name, system, reads[pad.family]) : null);
     }));
-    const where = system && emulatorOf(system);
-    $('emu-pad-note').textContent = where ? `Buttons are set in ${where}.` : '';
-    $('emu-pad-note').hidden = !where;
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; renderPad(); });
   // Buttons are changed in the emulator, so they are read again on coming back.

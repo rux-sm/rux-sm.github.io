@@ -274,7 +274,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-pad__icon { flex: none; color: var(--rux-icon-primary); }
 .emu-pad__list--none .emu-pad__icon { color: var(--rux-icon-disabled); }
 .emu-pad__name { overflow-wrap: anywhere; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); color: var(--rux-text-primary); }
-.emu-pad__note { color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 /* A controller's row opens its map: the whole row is the button, plain
    until hovered, as a contained list's clickable row. */
 .emu-pad__open { display: flex; align-items: center; gap: var(--rux-spacing-04); inline-size: 100%; margin: calc(-1 * var(--rux-spacing-03)); padding: var(--rux-spacing-03); box-sizing: content-box; border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
@@ -291,6 +290,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-padmap__part { fill: var(--rux-layer-02); stroke: var(--rux-icon-primary); stroke-width: 1.5; }
 .emu-padmap__part--unused { stroke: var(--rux-border-strong-01); stroke-dasharray: 3 3; }
 .emu-padmap__glyph, .emu-padmap__chip-text { fill: var(--rux-text-secondary); font-size: 10px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.emu-padmap__symbol { fill: none; stroke: var(--rux-text-secondary); stroke-width: 1.5; stroke-linecap: round; }
 .emu-padmap__lead { fill: none; stroke: var(--rux-border-strong-01); stroke-width: 1; }
 .emu-padmap__chip { fill: var(--rux-layer-01); stroke: var(--rux-border-strong-01); }
 .emu-padmap__does { fill: var(--rux-text-primary); font-size: 13px; dominant-baseline: central; }

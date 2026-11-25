@@ -166,7 +166,6 @@ None.
 
 ## Tasks
 
-- [ ] Drop the `room` column of `emu_macs`, which nothing reads, on rux's yes.
 - [ ] See the Library in Safari.
 - [ ] Give Rux Emu Helper a call that opens an emulator with no game, for
       Change buttons.

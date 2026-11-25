@@ -55,7 +55,11 @@ Wii Remotes 2 to 4 are off unless set, Cemu in `controller1.xml` as a
 `Wii U Pro Controller`, Ryujinx in `Player2` and xemu in `port2`. Gopher64
 binds each player to the controller's SDL path, which changes whenever the
 controller connects again, so Emu points it at the path again before an N64
-game starts.
+game starts. Mesen 2, PCSX2 and DuckStation number controllers in the
+order they connect, so player 2 is whichever controller connected second;
+turn the controllers on in player order.
+Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
+controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.
 
 Ryujinx rewrites its Config.json when it quits, and Cemu rewrites

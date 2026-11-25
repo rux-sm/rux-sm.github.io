@@ -543,8 +543,7 @@
 
   // Each emulator's writer: the files it changes for one player on one
   // console, from a layout `L` and the controller the helper reports, `pad`
-  // { family, name, sdl2, sdl3, sdl2Index, sdl3Index }. Gopher64 is opened
-  // instead, since only it can choose a controller; xemu keeps its own layout.
+  // { family, name, sdl2, sdl3, sdl2Index, path }. xemu keeps its own layout.
   const RYU_NAME = ['A', 'B', 'X', 'Y', 'Minus', 'Guide', 'Plus', 'LeftStick', 'RightStick', 'LeftShoulder', 'RightShoulder', 'DpadUp', 'DpadDown', 'DpadLeft', 'DpadRight'];
   const WRITERS = {
     'Mesen 2': (f, system, player, pad, L) => {
@@ -554,11 +553,15 @@
       const console_ = s[system === 'nes' ? 'Nes' : 'Snes'];
       const port = console_[`Port${player}`] ??= JSON.parse(JSON.stringify(console_.Port1));
       port.Type = system === 'nes' ? 'NesController' : 'SnesController';
-      const base = 0x1000 + (pad.sdl3Index ?? player - 1) * 0x100;
+      // Mesen numbers controllers in the order they connect, so player N is the Nth.
+      const base = 0x1000 + (player - 1) * 0x100;
       const m = port.Mapping1 ??= {};
-      for (const k of Object.keys(m)) if (typeof m[k] === 'number' && m[k] >= base && m[k] <= base + 0xff) m[k] = 0;
-      for (const [k, c] of Object.entries(L)) m[k] = base + APPLE_AT[c];
-      for (const d of DIRS) m[d[0].toUpperCase() + d.slice(1)] = base + APPLE_AT[d];
+      const set = Object.fromEntries([...Object.entries(L).map(([k, c]) => [k, base + APPLE_AT[c]]),
+        ...DIRS.map(d => [d[0].toUpperCase() + d.slice(1), base + APPLE_AT[d]])]);
+      // A press another button had is taken from it, so no two share one; the rest, such as turbo, stay.
+      const taken = new Set(Object.values(set));
+      for (const k of Object.keys(m)) if (!(k in set) && taken.has(m[k])) m[k] = 0;
+      Object.assign(m, set);
       // The helper hands the file over without its byte-order mark, and Mesen reads it either way.
       return { 'settings.json': JSON.stringify(s, null, indent) };
     },
@@ -616,7 +619,7 @@
       return { 'config.json': JSON.stringify(c, null, 2) };
     },
     DuckStation: (f, system, player, pad, L) => {
-      const at = `SDL-${pad.sdl3Index ?? player - 1}/`;
+      const at = `SDL-${player - 1}/`; // numbered in the order controllers connect, so player N is the Nth
       const keys = { Type: 'AnalogController' };
       for (const [k, c] of Object.entries(L)) keys[PS_KEY[k] ?? k] = at + (DUCK_FACE[c] ?? SDL_NAME[c]);
       for (const d of DIRS) keys[d[0].toUpperCase() + d.slice(1)] = at + SDL_NAME[d];
@@ -625,7 +628,7 @@
       return { 'settings.ini': setSection(f['settings.ini'], `Pad${player}`, keys, { whole: true }) };
     },
     PCSX2: (f, system, player, pad, L) => {
-      const at = `SDL-${pad.sdl3Index ?? player - 1}/`;
+      const at = `SDL-${player - 1}/`; // numbered in the order controllers connect, so player N is the Nth
       const keys = { Type: 'DualShock2', InvertL: 0, InvertR: 0, Deadzone: 0, AxisScale: 1.33, LargeMotorScale: 1, SmallMotorScale: 1, ButtonDeadzone: 0, PressureModifier: 0.5 };
       for (const d of DIRS) keys[d[0].toUpperCase() + d.slice(1)] = at + SDL_NAME[d];
       for (const [k, c] of Object.entries(L)) keys[PS_KEY[k] ?? k] = at + (FACE_NAME[c] ?? SDL_NAME[c]);
@@ -665,7 +668,7 @@
       const code = k => AXES[k] ?? (control(k) === 'zl' ? 42 : control(k) === 'zr' ? 43 : sdl3At(control(k)));
       const entries = order.map((k, i) => k && `\t\t\t<entry>\n\t\t\t\t<mapping>${i + 1}</mapping>\n\t\t\t\t<button>${code(k)}</button>\n\t\t\t</entry>`).filter(Boolean).join('\n');
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<emulated_controller>\n\t<type>${pro ? 'Wii U Pro Controller' : 'Wii U GamePad'}</type>\n\t<controller>\n`
-        + `\t\t<api>SDLController</api>\n\t\t<uuid>0_${pad.sdl3}</uuid>\n\t\t<display_name>${escape(pad.name ?? 'Controller')}</display_name>\n\t\t<motion>true</motion>\n\t\t<rumble>0</rumble>\n`
+        + `\t\t<api>SDLController</api>\n\t\t<uuid>0_${pad.sdl3}</uuid>\n\t\t<display_name>${escape(pad.name ?? 'Controller')}</display_name>\n\t\t<motion>${hasGyro(pad.family)}</motion>\n\t\t<rumble>0</rumble>\n`
         + `\t\t<axis>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</axis>\n\t\t<rotation>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</rotation>\n`
         + `\t\t<trigger>\n\t\t\t<deadzone>0.25</deadzone>\n\t\t\t<range>1</range>\n\t\t</trigger>\n\t\t<mappings>\n${entries}\n\t\t</mappings>\n\t</controller>\n</emulated_controller>\n`;
       return { [`controllerProfiles/controller${player - 1}.xml`]: xml };
@@ -682,7 +685,7 @@
         left_joycon_stick: { joystick: 'Left', invert_stick_x: false, invert_stick_y: false, rotate90_cw: false, stick_button: 'LeftStick' },
         right_joycon_stick: { joystick: 'Right', invert_stick_x: false, invert_stick_y: false, rotate90_cw: false, stick_button: 'RightStick' },
         deadzone_left: 0.1, deadzone_right: 0.1, range_left: 1, range_right: 1, trigger_threshold: 0.5,
-        motion: { motion_backend: 'GamepadDriver', sensitivity: 100, gyro_deadzone: 1, enable_motion: true },
+        motion: { motion_backend: 'GamepadDriver', sensitivity: 100, gyro_deadzone: 1, enable_motion: hasGyro(pad.family) },
         rumble: { strong_rumble: 1, weak_rumble: 1, enable_rumble: false },
         left_joycon: { button_minus: name('−'), button_l: name('L'), button_zl: name('ZL'), button_sl: 'SingleLeftTrigger0', button_sr: 'SingleRightTrigger0',
           dpad_up: 'DpadUp', dpad_down: 'DpadDown', dpad_left: 'DpadLeft', dpad_right: 'DpadRight' },
@@ -702,6 +705,8 @@
   };
   const PS_KEY = { '✕': 'Cross', '○': 'Circle', '□': 'Square', '△': 'Triangle' };
   // Which IDs a writer needs from the helper, so Set up says when one is missing.
+  // Whether a family's controllers have a gyro, so motion is turned on only for them.
+  const hasGyro = family => family === 'nintendo' || family === 'ps';
   const NEEDS = { mGBA: 'sdl2', Azahar: 'sdl2', Ryujinx: 'sdl2', Cemu: 'sdl3', xemu: 'sdl3' };
 
   // The files Set up writes for one player of the chosen console, read now

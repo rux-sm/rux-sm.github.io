@@ -30,19 +30,22 @@ choosing it and pressing the controller's button. What the map reads is
   reader's numbering run backwards, so one list of numbers serves both.
 - **Setting a single button listens for the next press, as Learn does,** and
   writes it in the emulator's own numbering.
+- **Rux Emu Helper reports each connected controller's SDL 2 and SDL 3 GUIDs,**
+  because Cemu, Ryujinx, xemu, mGBA and Azahar name a controller by its full
+  GUID and Chrome gives only its maker and product. It reads them as each SDL
+  makes them without opening the controller, with SDL's Switch driver off,
+  since opening an 8BitDo through that driver left Chrome unable to see it
+  until it was turned off and on.
 
 ## Questions
 
-- Cemu, Ryujinx, xemu, mGBA and Azahar name a controller by its full SDL
-  GUID, which Chrome does not give, only the maker and product. Should Rux
-  Emu Helper report each connected controller's GUID, a new helper version,
-  or should Emu set those five only for a controller one of them has already
-  been set to by hand?
 - Gopher64 binds each player to a device number that only it can choose.
   Leave Gopher64 to its own settings, or open it at its controller screen?
 
 ## Tasks
 
+- [ ] Give Rux Emu Helper a call that lists each connected controller with
+      its SDL 2 and SDL 3 GUIDs, and bump its version.
 - [ ] Write each emulator's writer, Mesen 2 first, and test each against a
       copy of its file in the scratchpad before any real write.
 - [ ] Add the player choice, Set up and Undo to the controller map.

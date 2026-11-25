@@ -8,8 +8,8 @@
    right button and B the bottom one; on any other, A is the bottom one.
    Chrome names a controller by its maker's number, Nintendo's 057e. A held
    direction repeats after 400ms, then every 120ms; a face button counts once
-   per press. Moves are told only while the page has focus. `R.onPad(fn)`
-   hears them.
+   per press. Moves are told only while the page has focus, and not while
+   `R.pauseMoves(true)` holds them. `R.onPad(fn)` hears them.
    ========================================================================== */
 (() => {
   'use strict';
@@ -37,10 +37,13 @@
     frame = requestAnimationFrame(read);
   }
   const nintendo = pad => /vendor: ?057e/i.test(pad.id);
-  const tell = move => { if (document.hasFocus()) for (const fn of listeners) fn(move); };
+  // Moves wait while a page learns which button a press is, so that press
+  // does not also choose or close something.
+  let paused = false;
+  const tell = move => { if (!paused && document.hasFocus()) for (const fn of listeners) fn(move); };
   const listen = () => { if (!frame) frame = requestAnimationFrame(read); };
   window.addEventListener('gamepadconnected', listen);
   listen();
 
-  window.Emu = Object.assign(window.Emu || {}, { onPad: fn => { listeners.add(fn); listen(); } });
+  window.Emu = Object.assign(window.Emu || {}, { onPad: fn => { listeners.add(fn); listen(); }, pauseMoves: on => { paused = on; } });
 })();

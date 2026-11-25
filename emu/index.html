@@ -320,6 +320,12 @@
     <div class="rux--modal-content emu-padmap-body">
       <p class="emu-padmap-note" id="emu-padmap-note" role="status"></p>
       <div class="emu-padmap-art" id="emu-padmap-art"></div>
+      <section class="emu-padmap-back" id="emu-padmap-back" aria-labelledby="emu-padmap-back-h" hidden>
+        <h3 class="rux--label" id="emu-padmap-back-h">Back buttons</h3>
+        <div class="emu-padmap-art" id="emu-padmap-back-art"></div>
+        <ul class="emu-padmap-learn" role="list" id="emu-padmap-learn"></ul>
+        <p class="emu-padmap-note" id="emu-padmap-learn-note" role="status"></p>
+      </section>
       <form class="emu-padmap-name" id="emu-padmap-name">
         <div class="rux--form-item rux--text-input-wrapper">
           <label class="rux--label" for="emu-padmap-input">Controller name</label>
@@ -327,7 +333,16 @@
             <input id="emu-padmap-input" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" maxlength="60">
           </div></div>
         </div>
-        <button type="submit" class="rux--btn rux--btn--tertiary rux--layout--size-md">Save name</button>
+        <div class="rux--form-item">
+          <div class="rux--select">
+            <label class="rux--label" for="emu-padmap-model">Model</label>
+            <div class="rux--select-input__wrapper">
+              <select id="emu-padmap-model" class="rux--select-input rux--layout--size-md"></select>
+              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></svg>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="rux--btn rux--btn--tertiary rux--layout--size-md">Save</button>
       </form>
     </div>
   </div>

@@ -777,9 +777,9 @@
   // pads.js; or none, with how to make one show, because Chrome shows one to
   // a page only once a button on it is pressed. A controller's row opens its
   // map: each physical button and what it does on that console.
-  let padNames = null;
-  const padNamesNow = () => (padNames ??= (R.data?.controllers() ?? Promise.resolve([]))
-    .then(rows => new Map(rows.map(r => [r.id, r.name]))).catch(() => new Map()));
+  let padInfo = null;
+  const padInfoNow = () => (padInfo ??= (R.data?.controllers() ?? Promise.resolve([]))
+    .then(rows => new Map(rows.map(r => [r.id, { name: r.name, details: r.details ?? {} }]))).catch(() => new Map()));
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean).map(R.pads.of);
   // The chosen console's emulator, read once for each controller family and
   // kept until the console, a controller or the window's focus changes.
@@ -826,36 +826,101 @@
     }
     const system = game?.system ?? chosen;
     const consoleName = system ? R.systemName(system) : null;
-    const [names, reads] = await Promise.all([padNamesNow(), system ? readPads(system) : {}]);
+    const [info, reads] = await Promise.all([padInfoNow(), system ? readPads(system) : {}]);
     list.replaceChildren(...pads.map(pad => {
-      const name = names.get(pad.id) ?? pad.name;
+      const name = info.get(pad.id)?.name ?? pad.name;
       const state = system && padState(reads[pad.family], pad, consoleName);
       const sub = state ? indicator(...state) : indicator('ok', 'Connected');
-      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, name, system, reads[pad.family]) : null);
+      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, system, reads[pad.family]) : null);
     }));
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; renderPad(); });
   // Buttons are changed in the emulator, so they are read again on coming back.
   window.addEventListener('focus', () => { padReading = null; renderPad(); });
-  // A controller's map in its modal, and its name to change.
-  function openPadMap(pad, name, system, read) {
+  // A controller's map in its modal: its front, and for a model with back
+  // buttons its back, each learnt by pressing it; and its name and model to
+  // change, kept with the account.
+  async function openPadMap(pad, system, read) {
     const consoleName = R.systemName(system);
-    $('emu-padmap-label').textContent = name;
-    $('emu-padmap-h').textContent = `${consoleName} buttons`;
+    const known = (await padInfoNow()).get(pad.id);
+    const mine = { name: known?.name ?? pad.name, details: { ...(known?.details ?? {}) } };
     const state = padState(read, pad, consoleName);
-    $('emu-padmap-note').textContent = state[0] === 'ok' ? `As set in ${read.emulator}.` : `${state[1]}. ${read.problem ? '' : `Its buttons are set in ${read.emulator}.`}`.trim();
-    $('emu-padmap-art').innerHTML = R.pads.draw(pad.family, state[0] === 'ok' ? read.map : {});
-    const input = $('emu-padmap-input');
-    input.value = name;
+    const map = state[0] === 'ok' ? read.map : {};
+    const select = $('emu-padmap-model');
+    select.replaceChildren(el('option', null, 'Standard'), ...Object.entries(R.pads.MODELS)
+      .filter(([, m]) => m.family === pad.family).map(([key, m]) => Object.assign(el('option', null, m.name), { value: key })));
+    select.firstChild.value = '';
+    select.value = mine.details.model ?? '';
+    const said = () => [state[0] === 'ok' ? `As set in ${read.emulator}.` : `${state[1]}.${read.problem ? '' : ` Its buttons are set in ${read.emulator}.`}`,
+      read.motion ? 'Tilt is on.' : ''].filter(Boolean).join(' ');
+    const save = async () => {
+      if (!pad.id || !R.data) return false;
+      try { await R.data.setController(pad.id, mine.name, mine.details); } catch (error) { say(error.message, { bad: true }); return false; }
+      padInfo = null;
+      renderPad();
+      return true;
+    };
+    const draw = () => {
+      const model = R.pads.MODELS[mine.details.model];
+      $('emu-padmap-label').textContent = mine.name;
+      $('emu-padmap-art').innerHTML = R.pads.draw(pad.family, map, mine.details.model);
+      $('emu-padmap-back').hidden = !model?.back;
+      if (!model?.back) return;
+      $('emu-padmap-back-art').innerHTML = R.pads.drawBack(mine.details.model, mine.details.copies, map);
+      $('emu-padmap-learn').replaceChildren(...Object.entries(model.back).map(([key, printed]) => {
+        const li = el('li', 'emu-padmap-learn__row');
+        const learn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', `Learn ${printed}`);
+        learn.type = 'button';
+        learn.addEventListener('click', () => learnBack(key, printed));
+        const clear = el('button', 'rux--btn rux--btn--ghost rux--btn--sm', 'Copies nothing');
+        clear.type = 'button';
+        clear.addEventListener('click', async () => { mine.details.copies = { ...mine.details.copies, [key]: null }; if (await save()) draw(); });
+        li.append(learn, clear);
+        return li;
+      }));
+    };
+    // A back button copies another, so the first new press after Learn is
+    // the button it copies. Moves wait meanwhile, so that press does not also
+    // choose or close something, and until every button is let go.
+    const learnBack = (key, printed) => {
+      const note = $('emu-padmap-learn-note');
+      const pressed = () => [...(navigator.getGamepads?.()[pad.index]?.buttons ?? [])].map(b => b.pressed);
+      const before = pressed();
+      const until = performance.now() + 10000;
+      R.pauseMoves(true);
+      note.textContent = `Press ${printed} on the controller.`;
+      const done = async control => {
+        const release = () => (pressed().some(Boolean) ? requestAnimationFrame(release) : setTimeout(() => R.pauseMoves(false), 200));
+        release();
+        if (!control) { note.textContent = `No press came from ${printed}. Try again, or choose Copies nothing.`; return; }
+        mine.details.copies = { ...mine.details.copies, [key]: control };
+        const named = { ...R.pads.PRINTED[pad.family], ...(R.pads.MODELS[mine.details.model]?.printed ?? {}) };
+        note.textContent = (await save()) ? `${printed} copies ${named[control] ?? control}.` : '';
+        draw();
+      };
+      const watch = () => {
+        const now = pressed();
+        const i = now.findIndex((on, n) => on && !before[n]);
+        if (i >= 0) return done(R.pads.CHROME[i] ?? null);
+        if (performance.now() > until) return done(null);
+        requestAnimationFrame(watch);
+      };
+      requestAnimationFrame(watch);
+    };
+    $('emu-padmap-h').textContent = `${consoleName} buttons`;
+    $('emu-padmap-note').textContent = said();
+    $('emu-padmap-learn-note').textContent = '';
+    $('emu-padmap-input').value = mine.name;
+    select.onchange = () => { mine.details.model = select.value || undefined; draw(); };
     $('emu-padmap-name').onsubmit = async e => {
       e.preventDefault();
-      const value = input.value.trim();
-      if (!value || !pad.id || !R.data) return;
-      try { await R.data.nameController(pad.id, value); } catch (error) { say(error.message, { bad: true }); return; }
-      padNames = null;
-      $('emu-padmap-label').textContent = value;
-      renderPad();
+      const value = $('emu-padmap-input').value.trim();
+      if (!value) return;
+      mine.name = value;
+      mine.details.model = select.value || undefined;
+      if (await save()) draw();
     };
+    draw();
     window.Rux.modal.open('emu-padmap-modal');
   }
 

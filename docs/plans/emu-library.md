@@ -142,7 +142,15 @@ in a window under 66rem:
   once a button on it is pressed.
 - **Each controller is named as rux named it, else as Chrome names it,** since
   an 8BitDo in Switch mode shows as Nintendo's Pro Controller; the names are
-  `emu_controllers`, by maker and product, changed in the controller's map.
+  `emu_controllers`, by maker and product, with each controller's details,
+  changed in the controller's map.
+- **A controller can be drawn as its own model,** chosen in its map, so every
+  button it has shows: the 8BitDo Ultimate 2 Bluetooth by its manual, with
+  Home, Square, the stick presses, and Star and Profile marked as the
+  controller's own.
+- **Its back buttons are learnt by pressing them,** since on the Mac they only
+  copy another button, set on the controller itself; Learn listens for the
+  next press, with the page's own controller moves held meanwhile.
 - **It says "Set up for" or "Not set up for" the chosen console,** from that
   console's emulator's own settings, which `emu/pads.js` reads through the
   helper and `emu/docs/controller-settings.md` lists: set up where player 1 is
@@ -150,7 +158,8 @@ in a window under 66rem:
 - **A controller's row opens its map, a Carbon modal,** because the map does
   not fit the tile: the controller drawn by its family, Nintendo, Xbox or
   PlayStation, each physical button labelled as printed, and what it does on
-  the chosen console beside it; a button the console leaves unused is dashed.
+  the chosen console beside it; a button the console leaves unused is dashed,
+  and it says when the emulator has tilt on.
 - **Change buttons opens the emulator,** because each already has an editor for
   them; Emu has none of its own.
 - **Button layouts travel with the account** as

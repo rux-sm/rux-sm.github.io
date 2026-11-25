@@ -11,8 +11,10 @@
    emu/docs/controller-settings.md lists; here every one is turned into the
    physical controls by position: south, east, west and north for the face
    buttons, then the shoulders, triggers, sticks and D-pad.
-   `R.pads.draw(family, map)` draws the controller with each control labelled
-   as printed and what it does beside it.
+   `R.pads.draw(family, map, model)` draws the controller's front with each
+   control labelled as printed and what it does beside it, and
+   `R.pads.drawBack(model, copies, map)` the back buttons of a model that has
+   them, each with the button it copies, learnt by pressing it.
    ========================================================================== */
 (() => {
   'use strict';
@@ -28,20 +30,34 @@
     const m = id.match(/Vendor:\s*([0-9a-f]{4})\s*Product:\s*([0-9a-f]{4})/i) ?? id.match(/^([0-9a-f]{4})-([0-9a-f]{4})-/i);
     const vendor = m?.[1].toLowerCase() ?? null, product = m?.[2].toLowerCase() ?? null;
     const name = id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller';
-    return { id: vendor && product ? `${vendor}:${product}` : null, vendor, product, name, family: FAMILY[vendor] ?? 'xbox' };
+    return { id: vendor && product ? `${vendor}:${product}` : null, index: gamepad?.index ?? 0, vendor, product, name, family: FAMILY[vendor] ?? 'xbox' };
   }
 
   // Each physical control as printed on each family.
   const PRINTED = {
-    nintendo: { south: 'B', east: 'A', west: 'Y', north: 'X', l: 'L', r: 'R', zl: 'ZL', zr: 'ZR', minus: '−', plus: '+' },
-    xbox: { south: 'A', east: 'B', west: 'X', north: 'Y', l: 'LB', r: 'RB', zl: 'LT', zr: 'RT', minus: 'View', plus: 'Menu' },
-    ps: { south: '✕', east: '○', west: '□', north: '△', l: 'L1', r: 'R1', zl: 'L2', zr: 'R2', minus: 'Create', plus: 'Options' },
+    nintendo: { south: 'B', east: 'A', west: 'Y', north: 'X', l: 'L', r: 'R', zl: 'ZL', zr: 'ZR', minus: '−', plus: '+', home: 'Home', capture: 'Capture', l3: 'L stick press', r3: 'R stick press' },
+    xbox: { south: 'A', east: 'B', west: 'X', north: 'Y', l: 'LB', r: 'RB', zl: 'LT', zr: 'RT', minus: 'View', plus: 'Menu', home: 'Xbox', capture: 'Share', l3: 'LS press', r3: 'RS press' },
+    ps: { south: '✕', east: '○', west: '□', north: '△', l: 'L1', r: 'R1', zl: 'L2', zr: 'R2', minus: 'Create', plus: 'Options', home: 'PS', l3: 'L3', r3: 'R3' },
   };
+  // Controllers drawn as themselves, chosen in the map: their own labels, the
+  // back buttons that copy another button, which only a press can tell, and
+  // the buttons the controller keeps for itself. The Ultimate 2 Bluetooth's
+  // are its manual's.
+  const MODELS = {
+    ultimate2: {
+      name: '8BitDo Ultimate 2 Bluetooth', family: 'nintendo',
+      printed: { l: 'L1', r: 'R1', zl: 'L2', zr: 'R2', capture: 'Square', l3: 'LSB', r3: 'RSB' },
+      back: { l4: 'L4', r4: 'R4', pl: 'PL', pr: 'PR' },
+      own: { star: ['Star', 'turbo and lights'], profile: ['Profile', 'its profiles'] },
+    },
+  };
+  // A press as Chrome's standard layout numbers it, by position.
+  const CHROME = ['south', 'east', 'west', 'north', 'l', 'r', 'zl', 'zr', 'minus', 'plus', 'l3', 'r3', 'up', 'down', 'left', 'right', 'home', 'capture'];
 
-  // SDL's button order, which SDL 3 and SDL 2's controller drivers share: by
-  // position, except that SDL 2 numbers a Nintendo pad's face buttons by
+  // SDL's button order, which SDL 3 and SDL 2's controller drivers share,
+  // 15 being Capture: by position, except that SDL 2 numbers a Nintendo pad's face buttons by
   // their labels, A first.
-  const SDL = ['south', 'east', 'west', 'north', 'minus', 'home', 'plus', 'l3', 'r3', 'l', 'r', 'up', 'down', 'left', 'right'];
+  const SDL = ['south', 'east', 'west', 'north', 'minus', 'home', 'plus', 'l3', 'r3', 'l', 'r', 'up', 'down', 'left', 'right', 'capture'];
   const LABELLED = { south: 'east', east: 'south', west: 'north', north: 'west' };
   const sdl3 = i => SDL[i] ?? null;
   const sdl2 = (i, family) => { const c = SDL[i] ?? null; return family === 'nintendo' ? LABELLED[c] ?? c : c; };
@@ -172,7 +188,8 @@
           else if (p.hat != null) pairs.push([{ up: 'up', down: 'down', left: 'left', right: 'right' }[p.direction], does]);
           else if (p.button != null) pairs.push([sdl2(Number(p.button), family), does]);
         }
-        return { bound, map: mapOf(pairs) };
+        const motion = /engine(\$0|:)sdl/.test(at('motion_device'));
+        return { bound, map: mapOf(pairs), motion };
       },
     },
     Gopher64: {
@@ -210,9 +227,10 @@
         }
         const mote = ini(f['Config/WiimoteNew.ini']).Wiimote1 ?? {};
         const nunchuk = mote.Extension === 'Nunchuk';
-        return dolphin(mote, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/1': '1', 'Buttons/2': '2', 'Buttons/-': '−', 'Buttons/+': '+', 'Buttons/Home': 'Home',
+        const motion = Object.keys(mote).some(k => /^IMU(Gyroscope|Accelerometer)\//.test(k) && mote[k]);
+        return { ...dolphin(mote, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/1': '1', 'Buttons/2': '2', 'Buttons/-': '−', 'Buttons/+': '+', 'Buttons/Home': 'Home',
           'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad', 'IR/Up': 'Pointer', 'Shake/X': 'Shake',
-          ...(nunchuk ? { 'Nunchuk/Buttons/C': 'Nunchuk C', 'Nunchuk/Buttons/Z': 'Nunchuk Z', 'Nunchuk/Stick/Up': 'Nunchuk stick' } : {}) });
+          ...(nunchuk ? { 'Nunchuk/Buttons/C': 'Nunchuk C', 'Nunchuk/Buttons/Z': 'Nunchuk Z', 'Nunchuk/Stick/Up': 'Nunchuk stick' } : {}) }), motion };
       },
     },
     Cemu: {
@@ -232,7 +250,8 @@
           : b >= 38 ? ['ls', 'ls', 'rs', 'rs', 'zl', 'zr'][(b - 38) % 6] : null;
         const pairs = [...doc.querySelectorAll('mappings > entry')].map(e => [control(Number(e.querySelector('button')?.textContent)),
           GAMEPAD[Number(e.querySelector('mapping')?.textContent)]]);
-        return { bound: fromGuid(uuid.split('_')[1] ?? ''), map: mapOf(pairs), problem: type && type !== 'Wii U GamePad' ? `Controller 1 is set as a ${type} in Cemu.` : null };
+        const motion = doc.querySelector('controller > motion')?.textContent === 'true';
+        return { bound: fromGuid(uuid.split('_')[1] ?? ''), map: mapOf(pairs), motion, problem: type && type !== 'Wii U GamePad' ? `Controller 1 is set as a ${type} in Cemu.` : null };
       },
     },
     Ryujinx: {
@@ -261,7 +280,7 @@
           [button(l.dpad_left), 'D-pad'], [button(l.dpad_right), 'D-pad'],
           [{ Left: 'ls', Right: 'rs' }[config.left_joycon_stick?.joystick], 'Left stick'], [{ Left: 'ls', Right: 'rs' }[config.right_joycon_stick?.joystick], 'Right stick'],
           [button(config.left_joycon_stick?.stick_button), 'Press'], [button(config.right_joycon_stick?.stick_button), 'Press']];
-        return { bound, map: mapOf(pairs) };
+        return { bound, map: mapOf(pairs), motion: Boolean(config.motion?.enable_motion) };
       },
     },
     xemu: {
@@ -333,71 +352,102 @@
   const matches = (bound, pad) => Boolean(bound && Object.keys(bound).length && (bound.first
     || (bound.vendor && bound.vendor === pad.vendor && (!bound.product || bound.product === pad.product))));
 
-  // THE DRAWING. A Pro or Xbox pad has its left stick high and its D-pad
-  // low; a PlayStation pad its sticks low and level. Labels go on the side
-  // of their control.
-  const PLACES = {
-    offset: { ls: [248, 140], dpad: [280, 204], rs: [370, 212], face: [404, 144] },
-    level: { ls: [262, 206], dpad: [250, 140], rs: [378, 206], face: [404, 140] },
-  };
-  function draw(family, map) {
-    const at = PLACES[family === 'ps' ? 'level' : 'offset'];
-    const printed = PRINTED[family];
-    const [fx, fy] = at.face;
-    const controls = [
-      { k: 'zl', p: printed.zl, x: 214, y: 30, side: 'L', ly: 28, shape: 'trig' },
-      { k: 'l', p: printed.l, x: 214, y: 52, side: 'L', ly: 58, shape: 'bump' },
-      { k: 'minus', p: printed.minus, x: 284, y: 108, side: 'L', ly: 98, shape: 'small' },
-      { k: 'ls', p: 'Left stick', x: at.ls[0], y: at.ls[1], side: 'L', ly: family === 'ps' ? 214 : 140, shape: 'stick' },
-      { k: 'dpad', p: 'D-pad', x: at.dpad[0], y: at.dpad[1], side: 'L', ly: family === 'ps' ? 140 : 214, shape: 'dpad' },
-      { k: 'zr', p: printed.zr, x: 426, y: 30, side: 'R', ly: 28, shape: 'trig' },
-      { k: 'r', p: printed.r, x: 426, y: 52, side: 'R', ly: 58, shape: 'bump' },
-      { k: 'plus', p: printed.plus, x: 356, y: 108, side: 'R', ly: 98, shape: 'small' },
-      { k: 'north', p: printed.north, x: fx, y: fy - 24, side: 'R', ly: 128, shape: 'face' },
-      { k: 'east', p: printed.east, x: fx + 24, y: fy, side: 'R', ly: 158, shape: 'face' },
-      { k: 'west', p: printed.west, x: fx - 24, y: fy, side: 'R', ly: 188, shape: 'face' },
-      { k: 'south', p: printed.south, x: fx, y: fy + 24, side: 'R', ly: 218, shape: 'face' },
-      { k: 'rs', p: 'Right stick', x: at.rs[0], y: at.rs[1], side: 'R', ly: 248, shape: 'stick' },
+  // THE DRAWING. The front: a Pro or Xbox pad has its left stick high and
+  // its D-pad low, a PlayStation pad its sticks low and level; each control's
+  // label goes on its side, spread evenly down it. The back, for a model with
+  // back buttons: each one and the button it copies, and what that does.
+  const W = 800, H = 360;
+  const BODY = '<path class="emu-padmap__body" d="M228 72 H412 C470 72 500 120 506 180 C512 246 494 310 462 314 C440 316 424 300 410 276 L392 250 H248 L230 276 C216 300 200 316 178 314 C146 310 128 246 134 180 C140 120 170 72 228 72 Z"/>';
+  const SHAPES = { trig: 34, bump: 40, stick: 22, press: 9, dpad: 26, small: 10, face: 12, pill: 10 };
+  function front(family, model) {
+    const level = family === 'ps';
+    const ls = level ? [262, 216] : [248, 150], dp = level ? [250, 150] : [280, 214], rs = level ? [378, 216] : [370, 222], f = [404, 152];
+    const own = model?.own ?? {};
+    const left = [
+      { k: 'zl', x: 214, y: 40, shape: 'trig' }, { k: 'l', x: 214, y: 62, shape: 'bump' },
+      { k: 'minus', x: 284, y: 112, shape: 'small' }, { k: 'home', x: 320, y: 100, shape: 'small' },
+      ...(family === 'nintendo' ? [{ k: 'capture', x: 296, y: 134, shape: 'small' }] : []),
+      { k: 'ls', x: ls[0], y: ls[1], shape: 'stick' }, { k: 'l3', x: ls[0], y: ls[1], shape: 'press' },
+      { k: 'dpad', x: dp[0], y: dp[1], shape: 'dpad' },
     ];
-    // A stick's press is said with the stick.
-    const does = c => [map[c.k], c.k === 'ls' ? map.l3 : c.k === 'rs' ? map.r3 : null].filter(Boolean).join(' · ');
-    const part = (c, used) => {
-      const cls = `emu-padmap__part${used ? '' : ' emu-padmap__part--unused'}`;
-      switch (c.shape) {
-        case 'trig': return `<rect class="${cls}" x="${c.x - 34}" y="${c.y - 10}" width="68" height="20" rx="10"/>`;
-        case 'bump': return `<rect class="${cls}" x="${c.x - 40}" y="${c.y - 7}" width="80" height="14" rx="7"/>`;
-        case 'small': return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="10"/>${symbol(c)}`;
-        case 'stick': return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="22"/><circle class="${cls}" cx="${c.x}" cy="${c.y}" r="13"/>`;
-        case 'dpad': return `<path class="${cls}" d="M${c.x - 8} ${c.y - 26} h16 v18 h18 v16 h-18 v18 h-16 v-18 h-18 v-16 h18 z"/>`;
-        default: return `<circle class="${cls}" cx="${c.x}" cy="${c.y}" r="12"/><text class="emu-padmap__glyph" x="${c.x}" y="${c.y}">${c.p}</text>`;
-      }
-    };
-    // The small middle buttons' symbols, as each family prints them: Nintendo's
-    // minus and plus, Xbox's View and Menu, PlayStation's Create and Options.
-    const symbol = c => {
-      const [x, y] = [c.x, c.y], line = d => `<path class="emu-padmap__symbol" d="${d}"/>`;
-      const bars = line(`M${x - 4} ${y - 3} h8 M${x - 4} ${y} h8 M${x - 4} ${y + 3} h8`);
-      if (family === 'nintendo') return line(c.k === 'minus' ? `M${x - 4} ${y} h8` : `M${x - 4} ${y} h8 M${x} ${y - 4} v8`);
-      if (family === 'xbox') return c.k === 'minus' ? line(`M${x - 4} ${y - 1} h5 v5 h-5 z M${x - 1} ${y - 4} h5 v5`) : bars;
-      return c.k === 'minus' ? line(`M${x - 3} ${y - 4} v8 M${x} ${y - 4} v8 M${x + 3} ${y - 4} v8`) : bars;
-    };
-    const reach = { bump: 40, trig: 34, stick: 22, dpad: 26, small: 10, face: 12 };
-    const label = c => {
-      const left = c.side === 'L', said = does(c);
-      const chipW = c.p.length > 2 ? 18 + c.p.length * 6 : 26;
-      const chipX = left ? 112 : 528;
-      const from = c.x + (left ? -1 : 1) * reach[c.shape];
-      const textX = left ? chipX - chipW / 2 - 8 : chipX + chipW / 2 + 8;
-      return `<path class="emu-padmap__lead" d="M${from} ${c.y} L${left ? 150 : 490} ${c.ly} L${left ? chipX + chipW / 2 : chipX - chipW / 2} ${c.ly}"/>`
-        + `<rect class="emu-padmap__chip" x="${chipX - chipW / 2}" y="${c.ly - 10}" width="${chipW}" height="20" rx="4"/>`
-        + `<text class="emu-padmap__chip-text" x="${chipX}" y="${c.ly}">${c.p}</text>`
-        + `<text class="${said ? 'emu-padmap__does' : 'emu-padmap__none'}" x="${textX}" y="${c.ly}" text-anchor="${left ? 'end' : 'start'}">${escape(said || 'not used')}</text>`;
-    };
-    const body = '<path class="emu-padmap__body" d="M228 62 H412 C470 62 500 110 506 170 C512 236 494 300 462 304 C440 306 424 290 410 266 L392 240 H248 L230 266 C216 290 200 306 178 304 C146 300 128 236 134 170 C140 110 170 62 228 62 Z"/>';
-    return `<svg class="emu-padmap" viewBox="0 0 800 330" role="img" aria-label="Each button and what it does"><g transform="translate(80 0)">${body}`
-      + `${controls.map(c => part(c, Boolean(does(c)))).join('')}${controls.map(label).join('')}</g></svg>`;
+    const right = [
+      { k: 'zr', x: 426, y: 40, shape: 'trig' }, { k: 'r', x: 426, y: 62, shape: 'bump' },
+      { k: 'plus', x: 356, y: 112, shape: 'small' },
+      ...(own.star ? [{ k: 'star', x: 344, y: 134, shape: 'small' }] : []),
+      ...(own.profile ? [{ k: 'profile', x: 320, y: 156, shape: 'pill' }] : []),
+      { k: 'north', x: f[0], y: f[1] - 24, shape: 'face' }, { k: 'east', x: f[0] + 24, y: f[1], shape: 'face' },
+      { k: 'west', x: f[0] - 24, y: f[1], shape: 'face' }, { k: 'south', x: f[0], y: f[1] + 24, shape: 'face' },
+      { k: 'rs', x: rs[0], y: rs[1], shape: 'stick' }, { k: 'r3', x: rs[0], y: rs[1], shape: 'press' },
+    ];
+    // Labels go in the order their controls sit, top to bottom, so few lines cross.
+    const spread = (list, side) => [...list].sort((a, b) => a.y - b.y).map((c, i) => ({ ...c, side, ly: 30 + i * ((H - 60) / (list.length - 1)) }));
+    return [...spread(left, 'L'), ...spread(right, 'R')];
+  }
+  function part(c, used, family) {
+    const cls = `emu-padmap__part${used ? '' : ' emu-padmap__part--unused'}`;
+    const { x, y } = c;
+    switch (c.shape) {
+      case 'trig': return `<rect class="${cls}" x="${x - 34}" y="${y - 10}" width="68" height="20" rx="10"/>`;
+      case 'bump': return `<rect class="${cls}" x="${x - 40}" y="${y - 7}" width="80" height="14" rx="7"/>`;
+      case 'stick': return `<circle class="${cls}" cx="${x}" cy="${y}" r="22"/>`;
+      case 'press': return `<circle class="${cls}" cx="${x}" cy="${y}" r="9"/>`;
+      case 'dpad': return `<path class="${cls}" d="M${x - 8} ${y - 26} h16 v18 h18 v16 h-18 v18 h-16 v-18 h-18 v-16 h18 z"/>`;
+      case 'pill': return `<rect class="${cls}" x="${x - 10}" y="${y - 6}" width="20" height="12" rx="6"/>`;
+      case 'small': return `<circle class="${cls}" cx="${x}" cy="${y}" r="10"/>${symbol(c, family)}`;
+      default: return `<circle class="${cls}" cx="${x}" cy="${y}" r="12"/><text class="emu-padmap__glyph" x="${x}" y="${y}">${c.p}</text>`;
+    }
+  }
+  // The small buttons' symbols, as each family prints them.
+  function symbol(c, family) {
+    const { x, y } = c, line = d => `<path class="emu-padmap__symbol" d="${d}"/>`;
+    const bars = line(`M${x - 4} ${y - 3} h8 M${x - 4} ${y} h8 M${x - 4} ${y + 3} h8`);
+    if (c.k === 'home') return `<circle class="emu-padmap__symbol" cx="${x}" cy="${y}" r="4"/>`;
+    if (c.k === 'capture') return line(`M${x - 4} ${y - 4} h8 v8 h-8 z`);
+    if (c.k === 'star') return line(`M${x} ${y - 5} L${x + 1.5} ${y - 1.5} L${x + 5} ${y - 1.5} L${x + 2} ${y + 1} L${x + 3} ${y + 5} L${x} ${y + 2.5} L${x - 3} ${y + 5} L${x - 2} ${y + 1} L${x - 5} ${y - 1.5} L${x - 1.5} ${y - 1.5} Z`);
+    if (family === 'nintendo') return line(c.k === 'minus' ? `M${x - 4} ${y} h8` : `M${x - 4} ${y} h8 M${x} ${y - 4} v8`);
+    if (family === 'xbox') return c.k === 'minus' ? line(`M${x - 4} ${y - 1} h5 v5 h-5 z M${x - 1} ${y - 4} h5 v5`) : bars;
+    return c.k === 'minus' ? line(`M${x - 3} ${y - 4} v8 M${x} ${y - 4} v8 M${x + 3} ${y - 4} v8`) : bars;
+  }
+  // One control's leader line, its printed name in a chip, and what it does.
+  function label(c, said, kind) {
+    const left = c.side === 'L';
+    const chipW = c.p.length > 2 ? 18 + c.p.length * 6 : 26;
+    const chipX = left ? 112 : 528;
+    const from = c.x + (left ? -1 : 1) * SHAPES[c.shape];
+    const textX = left ? chipX - chipW / 2 - 8 : chipX + chipW / 2 + 8;
+    return `<path class="emu-padmap__lead" d="M${from} ${c.y} L${left ? 150 : 490} ${c.ly} L${left ? chipX + chipW / 2 : chipX - chipW / 2} ${c.ly}"/>`
+      + `<rect class="emu-padmap__chip" x="${chipX - chipW / 2}" y="${c.ly - 10}" width="${chipW}" height="20" rx="4"/>`
+      + `<text class="emu-padmap__chip-text" x="${chipX}" y="${c.ly}">${escape(c.p)}</text>`
+      + `<text class="emu-padmap__${kind}" x="${textX}" y="${c.ly}" text-anchor="${left ? 'end' : 'start'}">${escape(said)}</text>`;
+  }
+  // The front of a controller, each control labelled with what it does on
+  // the console; `model` draws one as itself.
+  function draw(family, map, modelKey) {
+    const model = MODELS[modelKey] ?? null;
+    const printed = { ...PRINTED[family], ...(model?.printed ?? {}), dpad: 'D-pad', ls: 'Left stick', rs: 'Right stick' };
+    const controls = front(family, model).map(c => ({ ...c, p: model?.own?.[c.k]?.[0] ?? printed[c.k] ?? c.k }));
+    const parts = controls.map(c => part(c, Boolean(map[c.k] || model?.own?.[c.k]), family)).join('');
+    const labels = controls.map(c => model?.own?.[c.k] ? label(c, model.own[c.k][1], 'own')
+      : label(c, map[c.k] || 'not used', map[c.k] ? 'does' : 'none')).join('');
+    return `<svg class="emu-padmap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Each button on the front and what it does"><g transform="translate(80 0)">${BODY}${parts}${labels}</g></svg>`;
+  }
+  // The back of a model with back buttons: each one, the button it copies,
+  // and what that does on the console, or that it copies nothing yet.
+  function drawBack(modelKey, copies, map) {
+    const model = MODELS[modelKey];
+    if (!model?.back) return '';
+    const printed = { ...PRINTED[model.family], ...model.printed };
+    // Seen from behind, the right-hand buttons are on the left.
+    const controls = [
+      { k: 'r4', x: 228, y: 48, shape: 'bump', side: 'L', ly: 60 }, { k: 'pr', x: 262, y: 210, shape: 'stick', side: 'L', ly: 210 },
+      { k: 'l4', x: 412, y: 48, shape: 'bump', side: 'R', ly: 60 }, { k: 'pl', x: 378, y: 210, shape: 'stick', side: 'R', ly: 210 },
+    ].map(c => ({ ...c, p: model.back[c.k] }));
+    const said = k => copies?.[k] ? `copies ${printed[copies[k]] ?? copies[k]} · ${map[copies[k]] || 'not used'}` : copies && k in copies ? 'copies nothing' : 'press it to learn';
+    const parts = controls.map(c => part(c, Boolean(copies?.[c.k]), model.family)).join('');
+    const labels = controls.map(c => label(c, said(c.k), copies?.[c.k] ? 'does' : 'none')).join('');
+    return `<svg class="emu-padmap" viewBox="0 0 ${W} 300" role="img" aria-label="Each back button and what it copies"><g transform="translate(80 -10)">${BODY}${parts}${labels}</g></svg>`;
   }
   const escape = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 
-  R.pads = { of, read, matches, draw, PRINTED, _readers: READERS };
+  R.pads = { of, read, matches, draw, drawBack, MODELS, CHROME, PRINTED, _readers: READERS };
 })();

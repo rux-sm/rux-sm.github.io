@@ -32,8 +32,11 @@ choosing it and pressing the controller's button. What the map reads is
   the button that had that press takes the changed one's old place, so no two
   share one; it starts from the layout the emulator has, so earlier changes
   stay.
-- **Set up opens Gopher64 at its controller settings,** since it binds each
-  player to a device number of this Mac's that only it can choose.
+- **Gopher64 is set up by its controller's SDL path, which the helper
+  reports,** under a profile named for the controller, and each such player
+  is pointed at its controller's path again before a game starts, since the
+  path changes whenever the controller connects again; without a path, Set
+  up opens Gopher64 instead.
 - **Rux Emu Helper reports each connected controller's SDL 2 and SDL 3 GUIDs,**
   because Cemu, Ryujinx, xemu, mGBA and Azahar name a controller by its full
   GUID and Chrome gives only its maker and product. It reads them through the

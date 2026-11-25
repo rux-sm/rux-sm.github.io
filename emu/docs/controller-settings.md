@@ -48,11 +48,14 @@ mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
 
 Each emulator keeps the next players beside player 1: Mesen 2 in `Port2`
 with codes from `0x1100`, PCSX2 and DuckStation in `[Pad2]` on `SDL-1`,
-Gopher64 at the next place of each list in `input`, Dolphin in `[GCPad2]`
+Gopher64 at the next place of each list in `input`, its profile named
+`Emu <maker>:<product>` where Emu wrote it, Dolphin in `[GCPad2]`
 with `SIDevice1 = 6` and in `[Wiimote2]` with `Source = 1`, since its
 Wii Remotes 2 to 4 are off unless set, Cemu in `controller1.xml` as a
 `Wii U Pro Controller`, Ryujinx in `Player2` and xemu in `port2`. Gopher64
-binds each player to a device number of this Mac's, which only it can choose.
+binds each player to the controller's SDL path, which changes whenever the
+controller connects again, so Emu points it at the path again before an N64
+game starts.
 mGBA, melonDS and Azahar play one player.
 
 Ryujinx rewrites its Config.json when it quits, and Cemu rewrites

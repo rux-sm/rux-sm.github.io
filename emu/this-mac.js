@@ -30,13 +30,16 @@
     return { helper, library, downloads };
   }
 
-  // Plays a game: its saves carried to this Mac first, the helper's Play, the
+  // Plays a game: its saves carried to this Mac first, its controllers' places
+  // brought up to date, the helper's Play, the
   // saves carried back when its emulator quits, and the game marked with
   // when. `say` is told each step in words; a refusal is thrown, one whose
   // saves could not be brought marked `notBrought`. `anyway` plays this Mac's
   // own saves without bringing them, and still carries them back after.
   async function play(g, say = () => {}, { anyway = false } = {}) {
     const carried = anyway ? Boolean(R.carry) : await R.carry?.before(g.system, say);
+    // An emulator that binds a controller by where it is connected is told where it is now.
+    await R.pads?.beforePlay(g.system, H).catch(error => console.error(error));
     await H.play(g);
     say('Playing.');
     if (carried) R.carry.after(g.system, say);

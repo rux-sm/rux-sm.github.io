@@ -212,7 +212,9 @@
           if (kind === 'JoystickAxis' || kind === 'ControllerAxis') return [AXIS[v.id], SLOTS[i]];
           return null;
         }).filter(Boolean);
-        return { bound: { index: at }, map: mapOf(pairs) };
+        // A profile Emu wrote is named for its controller's maker and product.
+        const named = /^Emu ([0-9a-f]{4}):([0-9a-f]{4})$/.exec(input.input_profile_binding[at] ?? '');
+        return { bound: named ? { vendor: named[1], product: named[2] } : { index: at }, map: mapOf(pairs) };
       },
     },
     DuckStation: { files: ['settings.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['settings.ini'])[`Pad${player}`]) },
@@ -492,6 +494,7 @@
     // mGBA keeps one set of buttons for all three Game Boys.
     gb: { A: 'east', B: 'south', L: 'l', R: 'r', Start: 'plus', Select: 'minus' },
     n3ds: { ...SNES, ZL: 'zl', ZR: 'zr', Home: 'home' },
+    n64: { A: 'south', B: 'west', Z: 'zl', R: 'zr', L: 'l', Start: 'plus' },
     psx: PS, ps2: PS,
     gc: { A: 'south', B: 'west', X: 'north', Y: 'east', Z: 'r', Start: 'plus', L: 'zl', R: 'zr' },
     wii: { A: 'east', B: 'south', 1: 'r', 2: 'zr', '−': 'minus', '+': 'plus', Home: 'home', 'Nunchuk C': 'l', 'Nunchuk Z': 'zl', Shake: 'west' },
@@ -590,7 +593,28 @@
       keys[`profiles\\${n}\\motion_device`] = `"engine:sdl,${at}"`;
       return { 'config/qt-config.ini': setSection(text, 'Controls', keys, { sep: '=' }) };
     },
-    Gopher64: () => ({ open: true }),
+    // Gopher64 binds a player to its controller's SDL 3 path, which the
+    // helper reports; where it cannot, Gopher64 is opened to choose one. Its
+    // profile is Emu's own, by SDL 3's gamepad numbers so it fits any pad,
+    // and named for the controller, so `beforePlay` can find it again.
+    Gopher64: (f, system, player, pad, L) => {
+      if (!pad.path) return { open: true };
+      const c = JSON.parse(f['config.json']);
+      const input = c.input;
+      const button = control => control === 'zl' || control === 'zr' ? { ControllerAxis: { id: control === 'zl' ? 4 : 5, axis: 1, initial_state: 0 } }
+        : { ControllerButton: { id: sdl3At(control) } };
+      const axis = (id, sign) => ({ ControllerAxis: { id, axis: sign, initial_state: 0 } });
+      // Its slots in order, as its input_profile.rs numbers them.
+      const slots = [button('right'), button('left'), button('down'), button('up'), button(L.Start), button(L.Z), button(L.B), button(L.A),
+        axis(2, 1), axis(2, -1), axis(3, 1), axis(3, -1), button(L.R), button(L.L), axis(0, 1), axis(0, -1), axis(1, 1), axis(1, -1), button('minus')];
+      const name = `Emu ${pad.vendor}:${pad.product}`;
+      input.input_profiles[name] = { inputs: slots.map(s => [s, null]), dinput: false, deadzone: 5 };
+      const at = player - 1;
+      input.input_profile_binding[at] = name;
+      input.controller_assignment[at] = pad.path;
+      input.controller_enabled[at] = true;
+      return { 'config.json': JSON.stringify(c, null, 2) };
+    },
     DuckStation: (f, system, player, pad, L) => {
       const at = `SDL-${pad.sdl3Index ?? player - 1}/`;
       const keys = { Type: 'AnalogController' };
@@ -700,5 +724,29 @@
     return { emulator, files: Object.fromEntries(Object.entries(out).map(([rel, after]) => [rel, [raw[rel] ?? null, after]])) };
   }
 
-  R.pads = { of, read, playerOf, draw, drawBack, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  // Before a game starts. Gopher64 binds a player to its controller's SDL
+  // path, which changes each time the controller connects again, so each
+  // player Emu set, its profile named for its controller, is pointed at that
+  // controller's path now; two of one model take their paths in turn.
+  async function beforePlay(system, helper) {
+    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+    if (emulator !== 'Gopher64' || !helper.controllers) return;
+    const report = await helper.controllers();
+    if (!report) return;
+    const c = JSON.parse(text(await helper.setting(emulator, 'config.json')));
+    const input = c.input;
+    const taken = new Map();
+    let changed = false;
+    (input.input_profile_binding ?? []).forEach((name, i) => {
+      const m = /^Emu ([0-9a-f]{4}):([0-9a-f]{4})$/.exec(name ?? '');
+      if (!m || !input.controller_enabled?.[i]) return;
+      const key = `${m[1]}:${m[2]}`, n = taken.get(key) ?? 0;
+      taken.set(key, n + 1);
+      const found = report.filter(r => r.vendor === m[1] && r.product === m[2])[n];
+      if (found?.path && input.controller_assignment[i] !== found.path) { input.controller_assignment[i] = found.path; changed = true; }
+    });
+    if (changed) await helper.putSetting(emulator, 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
+  }
+
+  R.pads = { of, read, playerOf, beforePlay, draw, drawBack, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

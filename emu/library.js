@@ -1,15 +1,14 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   One tile: every console with games down the side,
-   each its drawing and name, and beside them the chosen console's games, a
-   wall of covers under its wordmark, and over them the chosen game: its
-   screenshot, its name and facts, its marks, its save and its controller, and a
-   row of one button, the one next move, About this copy and Remove from
-   this Mac. The wall's title row holds the strip, then
+   Four tiles: every console with games down the side, each its drawing and
+   name; beside them the chosen game, its screenshot, its name and facts, its
+   save and a row of one button, the one next move, with More; the controller
+   beside that; and under both the chosen console's games, a wall of covers
+   under its wordmark. The wall's title row holds the strip, then
    Installed or All games and Sound. Installed shows only the games this Mac holds or is
    fetching, and only their consoles. Without Rux Emu Helper, such as on a
-   phone, there is no strip, switch or chosen game, and pressing a game opens its side panel,
+   phone, there is no strip, switch, chosen game or controller, and pressing a game opens its side panel,
    game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
@@ -31,7 +30,8 @@
 
    Save says which card the game will play, from carry.js; its list is the
    game's cards and Start a new save where the console's cards can move.
-   Controller says the controller connected, as Chrome's Gamepad API has it.
+   The controller tile says each controller connected, as Chrome's Gamepad
+   API has it, and where its buttons are set.
 
    Play, the one way a game starts, drops its cartridge into its console or
    slides its disc onto a tray as it starts. A cover dragged onto its console
@@ -469,7 +469,7 @@
   // it, fetched again only when the game changes, in its console's screen
   // shape; its name
   // over its facts, then when it was last played, its region and size; its
-  // save and its controller; and the one next move, with More.
+  // save; and the one next move, with More.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();
@@ -577,8 +577,8 @@
     render();
   }
 
-  // SAVE AND CONTROLLER are each a button of three lines, what it is, what
-  // will be used and a note, over a list that opens up from it, one at a time.
+  // SAVE is a button of three lines, what it is, what will be used and a
+  // note, over a list that opens down from it.
   function pickOf(id, fill) {
     const button = $(id);
     const pop = $(`${id}-list`);
@@ -771,29 +771,46 @@
     pop.replaceChildren(popList('Save to play', ...rows), ...notes);
   }
 
-  // CONTROLLER: each one this Mac sees through Chrome's Gamepad API, named as
-  // its maker names it, its maker's numbers left off. Chrome shows one to a
-  // page only once a button on it is pressed, so it shows from then.
-  // Its button layout is its
-  // emulator's own, so the list says where that is set.
+  // THE CONTROLLER TILE: each controller this Mac sees through Chrome's
+  // Gamepad API, named as its maker names it, its maker's numbers left off,
+  // with Carbon's succeeded indicator; or none, with how to make one show,
+  // because Chrome shows one to a page only once a button on it is pressed.
+  // Its button layout is its emulator's own, so the tile says where that is set.
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean)
     .map(p => p.id.replace(/\s*\(.*\)\s*$/, '').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i, '').trim() || 'Controller');
-  const padPick = pickOf('emu-chosen-pad', pop => {
-    const pads = padsNow();
-    pop.replaceChildren(popList('Controllers', ...pads.map(name => popRow(name, 'Connected'))),
-      el('p', 'emu-pop__note', `Buttons are set in ${emulatorOf(game.system)}.`));
-  });
+  function padRow(name, sub) {
+    const li = el('li', 'emu-pad__row');
+    const icon = iconOf('#i-game--console');
+    icon.setAttribute('width', '24');
+    icon.setAttribute('height', '24');
+    icon.setAttribute('class', 'emu-pad__icon');
+    const main = el('span', 'emu-row__main');
+    main.append(el('span', 'emu-pad__name', name), sub);
+    li.append(icon, main);
+    return li;
+  }
   function renderPad() {
-    if (!game) return;
+    if (!helper) return;
     const pads = padsNow();
-    padPick.write({ hidden: !pads.length || ['away', 'setting'].includes(stateOf(game.system)), value: pads[0], note: pads.length > 1 ? `Connected, and ${pads.length - 1} more` : 'Connected' });
-    padPick.refill();
+    const connected = () => {
+      const tick = iconOf('#i-checkmark--filled');
+      tick.setAttribute('class', 'rux--icon-indicator--succeeded');
+      const line = el('span', 'rux--icon-indicator');
+      line.append(tick, 'Connected');
+      return line;
+    };
+    $('emu-pad-list').replaceChildren(...(pads.length ? pads.map(name => padRow(name, connected()))
+      : [padRow('No controller', el('span', 'emu-row__sub', 'Press a button on one to show it here.'))]));
+    $('emu-pad-list').classList.toggle('emu-pad__list--none', !pads.length);
+    const where = pads.length && game && emulatorOf(game.system);
+    $('emu-pad-note').textContent = where ? `Buttons are set in ${where}.` : '';
+    $('emu-pad-note').hidden = !where;
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, renderPad);
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-where-row']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-pad', 'emu-where-row']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) { renderStrip(); renderWhere(); }
     keepShown();

@@ -102,14 +102,17 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-cover__veil { position: absolute; inset-block-start: 0; inset-inline: 0; background: var(--rux-layer); opacity: .8; border-block-end: 2px solid var(--rux-border-interactive); pointer-events: none; transition: block-size 1000ms linear; }
 @media (prefers-reduced-motion: reduce) { .emu-cover__veil { transition: none; } }
 
-/* THE LIBRARY, one tile: the
-   consoles down the side and the chosen game over the wall of games. Where the helper answers, library.js marks it --mac: as wide as
-   the page's frame and as tall as the window leaves under the header and the
-   page's 2rem above and below, never under 28rem, so the page does not scroll
-   and only the wall does. Without the helper it is as tall as its games. A
-   surface a layer up from the page, square or rounded and lined as the
-   theme's tiles are (theme.css), as the scheduler's board and roster are. */
-.emu-library { display: flex; flex-direction: column; background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
+/* THE LIBRARY, four tiles: the consoles down the side, the chosen game and
+   the controller side by side over the wall of games. Where the helper
+   answers, library.js marks it --mac: as wide as the page's frame and as tall
+   as the window leaves under the header and the page's 2rem above and below,
+   never under 28rem, so the page does not scroll and only the wall does.
+   Without the helper it is the consoles and the wall alone, as tall as its
+   games. Each tile is a surface a layer up from the page, square or rounded
+   and lined as the theme's tiles are (theme.css), as the scheduler's board
+   and roster are, 16px apart, Carbon's narrow gutter. */
+.emu-library { display: flex; flex-direction: column; }
+.emu-consoles, .emu-chosen, .emu-pad, .emu-games { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
 .emu-library[hidden] { display: none; }
 .emu-library--mac { block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
 .emu-library { --emu-side: 15rem; }
@@ -138,14 +141,25 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-strip__facts > .emu-strip__sum { display: flex; }
 }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
-/* THE BODY: the consoles down the side, each its drawing, one CSS pixel to
-   the art pixel, centred in one width, and its name, scrolling on their own
-   where they do not fit; the chosen one stands on Carbon's selected layer,
-   and one not set up is faded, as a game on the server is. Beside them, the
-   wall. Under 42rem the consoles are a row over the wall, scrolling
+/* THE BODY lays the tiles out: the consoles down the whole side; the chosen
+   game, then the controller 16rem wide, along the top; the wall under both.
+   Under 66rem the controller goes under the chosen game, and under 42rem
+   every tile is a row, the consoles first. */
+.emu-body { flex: 1; min-block-size: 0; display: grid; gap: var(--rux-spacing-05); grid-template-columns: var(--emu-side) minmax(0, 1fr) 16rem; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "consoles chosen pad" "consoles games games"; }
+.emu-library:not(.emu-library--mac) .emu-body { grid-template-columns: var(--emu-side) minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "consoles games"; }
+@media (max-width: 65.98rem) {
+  .emu-body { grid-template-columns: var(--emu-side) minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "consoles chosen" "consoles pad" "consoles games"; }
+}
+@media (max-width: 41.98rem) {
+  .emu-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); grid-template-areas: "consoles" "chosen" "pad" "games"; }
+  .emu-library:not(.emu-library--mac) .emu-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "consoles" "games"; }
+}
+/* THE CONSOLES, each its drawing, one CSS pixel to the art pixel, centred in
+   one width, and its name, scrolling on their own where they do not fit; the
+   chosen one stands on Carbon's selected layer, and one not set up is faded,
+   as a game on the server is. Under 42rem they are a row, scrolling
    sideways. */
-.emu-body { flex: 1; min-block-size: 0; display: flex; }
-.emu-consoles { --emu-px: 1px; list-style: none; flex: none; inline-size: var(--emu-side); overflow-y: auto; overscroll-behavior: contain; padding-block: var(--rux-spacing-03); border-inline-end: 1px solid var(--rux-border-subtle-01); }
+.emu-consoles { grid-area: consoles; --emu-px: 1px; list-style: none; min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; padding-block: var(--rux-spacing-03); }
 .emu-consoles > li { display: flex; }
 .emu-kit { position: relative; flex: 1; min-inline-size: 0; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-secondary); text-align: start; cursor: pointer; display: flex; align-items: center; gap: var(--rux-spacing-04); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-02) var(--rux-spacing-05); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-kit:hover { background: var(--rux-layer-hover-01); color: var(--rux-text-primary); }
@@ -156,14 +170,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-kit__spot { position: relative; display: block; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
 @media (max-width: 41.98rem) {
-  .emu-body { flex-direction: column; }
-  .emu-consoles { display: flex; inline-size: auto; overflow: auto hidden; padding: 0 var(--rux-spacing-03); border-inline-end: 0; border-block-end: 1px solid var(--rux-border-subtle-01); }
+  .emu-consoles { display: flex; overflow: auto hidden; padding: 0 var(--rux-spacing-03); }
   .emu-consoles > li { flex: none; }
 }
 
 /* THE WALL, the one part that scrolls. Every
    cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
-.emu-games { flex: 1; min-inline-size: 0; min-block-size: 0; display: flex; flex-direction: column; }
+.emu-games { grid-area: games; min-inline-size: 0; min-block-size: 0; display: flex; flex-direction: column; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-07); }
 /* The wall's title row, still over the wall: the wordmark and its count of
    games, the strip, then Installed or All games with Sound beside it at the
@@ -191,16 +204,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its own, in the text colour. */
 .emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 
-/* THE CHOSEN GAME, over the wall and still while it scrolls, over a rule:
-   its screenshot 8rem tall in its console's screen shape, --emu-shot, from
+/* THE CHOSEN GAME, its own tile over the wall: its screenshot 8rem tall in its console's screen shape, --emu-shot, from
    app.js's SCREEN, so the words beside it stand still from game to game; a
    picture of another shape fills it from the top, which shows a 3DS's top
    screen where both were taken; empty where libretro has none and faded
    where this Mac lacks the game; beside it, from one left
-   edge and the screenshot's top, the name, the facts, Save and Controller,
-   and Play with More. Under 42rem the screenshot is 5.5rem tall. */
-.emu-chosen { flex: none; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); border-block-end: 1px solid var(--rux-border-subtle-01); }
-.emu-chosen[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
+   edge and the screenshot's top, the name, the facts, Save, and Play with
+   More. Under 42rem the screenshot is 5.5rem tall. */
+.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
+.emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen { --emu-art: 8rem; }
 .emu-chosen__art { display: grid; place-items: center; block-size: var(--emu-art); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
@@ -209,7 +221,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen__main { min-inline-size: 0; }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
 .emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-/* Save and Controller, under the facts. */
+/* Save, under the facts. */
 .emu-chosen__picks { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-03); }
 /* A description is three lines at most, whole when the pointer rests on it. */
 /* The facts under the name in body-compact-01, the size Carbon pairs with
@@ -220,7 +232,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    primary, and More beside it, which opens the game's menu. Under 42rem the
    move takes what More leaves of the row. */
 .emu-chosen__row { display: flex; align-items: center; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }
-/* SAVE AND CONTROLLER, each as Carbon's dropdown stands on a layer: its
+/* SAVE, as Carbon's dropdown stands on a layer: its
    label over a 48px field, the large size Carbon pairs with large buttons,
    the field holding the value with its note beside it in the secondary
    colour and a chevron, and a warning, where there is one, on a line under
@@ -252,6 +264,17 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-games__title .emu-mark { block-size: calc(1rem * var(--emu-mark-scale, 1)); }
 }
 @media (prefers-reduced-motion: reduce) { .emu-pick__chevron { transition: none; } }
+/* THE CONTROLLER TILE, from its label down: each controller as a row, its
+   drawing beside its name over Carbon's icon indicator, or No controller
+   with its drawing faded; then where its buttons are set. */
+.emu-pad { grid-area: pad; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--rux-spacing-05); padding: var(--rux-spacing-05); }
+.emu-pad__list { list-style: none; display: grid; gap: var(--rux-spacing-05); }
+.emu-pad__row { display: flex; align-items: center; gap: var(--rux-spacing-04); }
+.emu-pad__row .emu-row__main { gap: var(--rux-spacing-02); }
+.emu-pad__icon { flex: none; color: var(--rux-icon-primary); }
+.emu-pad__list--none .emu-pad__icon { color: var(--rux-icon-disabled); }
+.emu-pad__name { overflow-wrap: anywhere; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); color: var(--rux-text-primary); }
+.emu-pad__note { color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); }
 
 /* A console's power light is a patch over the drawing's own light, --emu-lx
    and --emu-ly its place and --emu-lw and --emu-lh its size in art pixels, in

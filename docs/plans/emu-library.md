@@ -6,10 +6,10 @@ type: plan
 
 ## Goal
 
-The Library, Emu's front page, is one tile: every
-console down the side and the chosen console's games beside them as a wall
-of covers, with the chosen game over them: its screenshot and facts, its save,
-its controller and Play. The wall's title row holds the strip, Installed or All games and Sound.
+The Library, Emu's front page, is four tiles: every
+console down the side, the chosen console's games beside them as a wall
+of covers, and over the wall the chosen game, its screenshot and facts, its
+save and Play, with the controller beside it. The wall's title row holds the strip, Installed or All games and Sound.
 It opens on the game last played. Choose a console and its games fill the
 wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
 faded, so there is no separate store. It is `emu/index.html`, drawn by
@@ -22,7 +22,7 @@ The page:
 - **Every Emu page stands in the scheduler's frame,** Design's wide frame at
   82rem, with the pages' menu and Search in the shell, so nothing in the shell
   moves from page to page.
-- **The tile fills the frame,** as tall as the window leaves and never under
+- **The tiles fill the frame,** 16px apart, as tall as the window leaves and never under
   28rem, so the page does not scroll; only the wall does.
 - **The wall's title row is the wordmark, the strip, then Installed or All
   games and Sound,** an icon button, and stays put while the wall scrolls. Installed shows only the games
@@ -80,11 +80,11 @@ The wall:
 - **A cover with no art shows its name,** and one arriving sits under a veil
   that lifts as it comes.
 
-The chosen game, over the wall and still while it scrolls:
+The chosen game, its own tile over the wall:
 
 - **It is a screenshot of the game, 171px wide, beside its name, its console
   and the facts libretro has, when it was last played, its
-  region and its size, over Save and Controller, and under them all a row
+  region and its size, over Save, and under them all a row
   of one button and About this copy, as Carbon starts an in-page form's
   buttons with the primary, and Remove from this Mac at the row's end,** so
   what will play and with what shows before Play is pressed, and changing
@@ -107,8 +107,8 @@ The chosen game, over the wall and still while it scrolls:
   console or the disc slides onto its tray, the jingle plays, the strip names
   it and the saves are carried. The panel's Play is the same one.
 - **What is wrong is said beside Play before it is pressed,** such as "Two saves found", and never stops Play.
-- **Save and Controller each open a short list down over the wall,** one at a
-  time, and take the place of the Saves and Controllers drawers.
+- **Save opens a short list down over the wall,** and takes the place of the
+  Saves drawer.
 
 Save:
 
@@ -134,10 +134,12 @@ Save:
 - **A save is called what its console calls it,** a word each system has in
   `emu/emulators.json`.
 
-Controller:
+The controller, its own tile beside the chosen game, 16rem wide, and under it
+in a window under 66rem:
 
-- **It shows once a controller is seen,** by Chrome's Gamepad API, which shows
-  one only once a button on it is pressed.
+- **It lists each controller Chrome's Gamepad API sees,** as connected, or says
+  No controller and to press a button on one, because Chrome shows one only
+  once a button on it is pressed.
 - **It says whether that controller's buttons are set for the chosen console,**
   read by the helper from its emulator's own settings, which each emulator
   keeps in its own way, and says nothing for an emulator not yet read.
@@ -157,7 +159,7 @@ The side panel:
   note, and that fold, shut.
 
 - **Without the helper, as on the phone, the page is the consoles and the
-  wall alone, with no strip, switch, Sound or chosen game,** with no Save, Controller, Play or Download, and a game pressed opens
+  wall alone, with no strip, switch, Sound or chosen game,** with no Save, controller, Play or Download, and a game pressed opens
   its panel.
 
 ## Questions

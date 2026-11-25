@@ -42,7 +42,11 @@ choosing it and pressing the controller's button. What the map reads is
   GUID and Chrome gives only its maker and product. It reads them through the
   SDL an installed emulator ships, Ryujinx's SDL 2 and DuckStation's or
   xemu's SDL 3, so they are what the emulators see, in a short-lived process
-  of its own that closes SDL cleanly, and only when Set up asks.
+  of its own that closes SDL cleanly. Set up asks for them, and so does the
+  tile when a controller connects or goes, since Chrome names an Xbox
+  controller on a Mac without its maker and product and knows a controller
+  only once it is pressed; the tile matches each to the helper's list and
+  counts players in that list's order.
 
 ## Questions
 

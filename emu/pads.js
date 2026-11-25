@@ -378,6 +378,29 @@
   // controllers, counted from 0 as the emulator counts them. Null where none.
   const bindsTo = (bound, pad, place) => Boolean(bound && ((bound.vendor && bound.vendor === pad.vendor && (!bound.product || bound.product === pad.product))
     || (bound.index != null && bound.index === place)));
+  // Chrome's controllers matched to the ones Rux Emu Helper reports, which
+  // it lists in the order the emulators count them. Chrome names some
+  // controllers without their maker and product, an Xbox one on a Mac
+  // among them, so one is matched by its maker guessed from its name. Each
+  // gets the helper's entry as `found` and its `place` in that order; with
+  // no report, its place among Chrome's.
+  const MAKER = [[/xbox/i, '045e'], [/dualsense|dualshock|playstation/i, '054c'], [/pro controller|joy-con|switch/i, '057e']];
+  function identify(pads, report) {
+    const list = [...(report ?? [])].sort((a, b) => (a.sdl3Index ?? 0) - (b.sdl3Index ?? 0));
+    const taken = new Set();
+    const claim = test => { const c = list.find(c => !taken.has(c) && test(c)); if (c) taken.add(c); return c; };
+    const found = new Map();
+    for (const p of pads) if (p.vendor) found.set(p, claim(c => c.vendor === p.vendor && c.product === p.product));
+    for (const p of pads) if (!p.vendor) {
+      const maker = MAKER.find(([re]) => re.test(p.name))?.[1];
+      found.set(p, maker ? claim(c => c.vendor === maker) : null);
+    }
+    return pads.map((p, i) => {
+      const c = found.get(p);
+      if (!c) return { ...p, place: i };
+      return { ...p, vendor: c.vendor, product: c.product, id: `${c.vendor}:${c.product}`, family: FAMILY[c.vendor] ?? p.family, found: c, place: list.indexOf(c) };
+    });
+  }
   const playerOf = (read, pad, place) => read?.players.find(p => p.bound?.vendor && bindsTo(p.bound, pad, place))
     ?? read?.players.find(p => bindsTo(p.bound, pad, place)) ?? null;
 
@@ -770,5 +793,5 @@
     if (changed) await helper.putSetting(emulator, 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, read, playerOf, beforePlay, draw, drawBack, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, draw, drawBack, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

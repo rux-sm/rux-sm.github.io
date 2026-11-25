@@ -780,12 +780,16 @@
   let padInfo = null;
   const padInfoNow = () => (padInfo ??= (R.data?.controllers() ?? Promise.resolve([]))
     .then(rows => new Map(rows.map(r => [r.id, { name: r.name, details: r.details ?? {} }]))).catch(() => new Map()));
+  // The connected controllers as Chrome has them, and as matched to Rux Emu
+  // Helper's report, asked again when one connects or goes.
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean).map(R.pads.of);
+  let padReport = null;
+  const padsKnown = async () => R.pads.identify(padsNow(), await (padReport ??= (R.helper?.controllers?.() ?? Promise.resolve(null)).catch(() => null)));
   // The chosen console's emulator, read once for each controller family and
   // kept until the console, a controller or the window's focus changes.
   let padReading = null;
-  const readPads = system => (padReading?.system === system ? padReading
-    : (padReading = { system, read: Promise.all([...new Set(padsNow().map(p => p.family))].map(async family => [family, await R.pads.read(system, R.helper, family)])).then(Object.fromEntries) })).read;
+  const readPads = (system, pads) => (padReading?.system === system ? padReading
+    : (padReading = { system, read: Promise.all([...new Set(pads.map(p => p.family))].map(async family => [family, await R.pads.read(system, R.helper, family)])).then(Object.fromEntries) })).read;
   function indicator(kind, text) {
     const line = el('span', 'rux--icon-indicator');
     const ICONS = { ok: ['#i-checkmark--filled', 'rux--icon-indicator--succeeded'], warn: ['#i-warning--alt--filled', 'rux--icon-indicator--caution-minor'],
@@ -824,7 +828,7 @@
   }
   async function renderPad() {
     if (!helper) return;
-    const pads = padsNow();
+    const pads = await padsKnown();
     const list = $('emu-pad-list');
     list.classList.toggle('emu-pad__list--none', !pads.length);
     if (!pads.length) {
@@ -833,15 +837,16 @@
     }
     const system = game?.system ?? chosen;
     const consoleName = system ? R.systemName(system) : null;
-    const [info, reads] = await Promise.all([padInfoNow(), system ? readPads(system) : {}]);
-    list.replaceChildren(...pads.map((pad, place) => {
+    const [info, reads] = await Promise.all([padInfoNow(), system ? readPads(system, pads) : {}]);
+    list.replaceChildren(...pads.map(pad => {
+      const place = pad.place;
       const name = info.get(pad.id)?.name ?? pad.name;
       const state = system && padState(reads[pad.family], pad, consoleName, place);
       const sub = state ? indicator(state[0], state[1]) : indicator('ok', 'Connected');
       return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, system, reads[pad.family], place) : null);
     }));
   }
-  for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; renderPad(); });
+  for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; padReport = null; renderPad(); });
   // Buttons are changed in the emulator, so they are read again on coming back.
   window.addEventListener('focus', () => { padReading = null; renderPad(); });
   // A controller's map in its modal: its front, and for a model with back
@@ -934,7 +939,7 @@
     undoButton.hidden = !padUndo;
     const reopen = async message => {
       padReading = null;
-      const reads = await readPads(system);
+      const reads = await readPads(system, await padsKnown());
       await openPadMap(pad, system, reads[pad.family], place);
       $('emu-padmap-setup-note').textContent = message;
       renderPad();
@@ -944,9 +949,7 @@
     const writeLayout = async (player, layout, done) => {
       const report = await R.helper.controllers();
       if (!report) throw new Error('Update Rux Emu Helper to version 37 or later to set up a controller here.');
-      const same = report.filter(c => c.vendor === pad.vendor && c.product === pad.product);
-      const twin = padsNow().filter(p => p.vendor === pad.vendor && p.product === pad.product).findIndex(p => p.index === pad.index);
-      const found = same[Math.max(0, twin)];
+      const found = R.pads.identify(padsNow(), report).find(p => p.index === pad.index)?.found;
       if (!found) throw new Error('Rux Emu Helper does not see this controller. Press a button on it, then try again.');
       const out = await R.pads.setUp(system, R.helper, player, { family: pad.family, ...found }, layout);
       if (out.problem) throw new Error(out.problem);

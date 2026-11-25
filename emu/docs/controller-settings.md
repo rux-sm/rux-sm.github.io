@@ -44,6 +44,17 @@ mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
 | Ryujinx | Config.json, `input_config` for `Player1` | `id`, the GUID as a .NET Guid with its first four characters zeroed | SDL 2 controller names; it writes − and + as `Back` and `Start` |
 | xemu | `xemu.toml`, `[input.bindings] port1` | an SDL 3 GUID | its own layout, by position: White on LB, Black on RB |
 
+## Players 2 to 4
+
+Each emulator keeps the next players beside player 1: Mesen 2 in `Port2`
+with codes from `0x1100`, PCSX2 and DuckStation in `[Pad2]` on `SDL-1`,
+Gopher64 at the next place of each list in `input`, Dolphin in `[GCPad2]`
+with `SIDevice1 = 6` and in `[Wiimote2]` with `Source = 1`, since its
+Wii Remotes 2 to 4 are off unless set, Cemu in `controller1.xml` as a
+`Wii U Pro Controller`, Ryujinx in `Player2` and xemu in `port2`. Gopher64
+binds each player to a device number of this Mac's, which only it can choose.
+mGBA, melonDS and Azahar play one player.
+
 Ryujinx rewrites its Config.json when it quits, and Cemu rewrites
 `controller0.xml` when its input settings close, so either file is changed
 only with its app closed.

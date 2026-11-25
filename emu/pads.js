@@ -117,27 +117,29 @@
   // player 1 is bound to, and its map for one console.
   const READERS = {
     'Mesen 2': {
-      files: ['settings.json'],
-      read(f, system) {
+      files: ['settings.json'], players: 2,
+      read(f, system, family, player) {
         const s = JSON.parse(f['settings.json']);
-        const port = s[system === 'nes' ? 'Nes' : 'Snes']?.Port1;
+        const port = s[system === 'nes' ? 'Nes' : 'Snes']?.[`Port${player}`];
         // Apple's GameController, by position, numbered from 0x1000 for the
-        // first controller; 16 to 23 are the sticks' directions.
+        // first controller and 0x100 on for each next; 16 to 23 are the
+        // sticks' directions.
+        const base = 0x1000 + (player - 1) * 0x100;
         const APPLE = ['south', 'east', 'west', 'north', 'l', 'r', 'plus', 'minus', 'up', 'down', 'left', 'right', 'zl', 'zr', 'l3', 'r3',
           'ls', 'ls', 'ls', 'ls', 'rs', 'rs', 'rs', 'rs'];
         const pairs = [];
         for (const k of ['Mapping1', 'Mapping2', 'Mapping3', 'Mapping4']) {
           for (const [button, code] of Object.entries(port?.[k] ?? {})) {
-            if (typeof code !== 'number' || code < 0x1000 || code > 0x10ff) continue;
+            if (typeof code !== 'number' || code < base || code > base + 0xff) continue;
             const does = { Up: 'D-pad', Down: 'D-pad', Left: 'D-pad', Right: 'D-pad' }[button] ?? button;
-            if (['A', 'B', 'X', 'Y', 'L', 'R', 'Start', 'Select', 'Up', 'Down', 'Left', 'Right'].includes(button)) pairs.push([APPLE[code - 0x1000], does]);
+            if (['A', 'B', 'X', 'Y', 'L', 'R', 'Start', 'Select', 'Up', 'Down', 'Left', 'Right'].includes(button)) pairs.push([APPLE[code - base], does]);
           }
         }
-        return { bound: pairs.length ? { first: true } : null, map: mapOf(pairs) };
+        return { bound: pairs.length ? { index: player - 1 } : null, map: mapOf(pairs) };
       },
     },
     mGBA: {
-      files: ['config.ini'],
+      files: ['config.ini'], players: 1,
       read(f, system, family) {
         const s = ini(f['config.ini'])['gba.input.SDLB'] ?? {};
         const pairs = [];
@@ -150,7 +152,7 @@
       },
     },
     melonDS: {
-      files: ['melonDS.toml'],
+      files: ['melonDS.toml'], players: 1,
       read(f, system, family) {
         const s = ini(f['melonDS.toml'])['Instance0.Joystick'] ?? {};
         const pairs = [];
@@ -165,11 +167,11 @@
           else if (v & 0x100) pairs.push([HAT[v & 0xf], does]);
           else pairs.push([sdl2(v, family), does]);
         }
-        return { bound: pairs.length ? { first: true } : null, map: mapOf(pairs) };
+        return { bound: pairs.length ? { index: Number(ini(f['melonDS.toml']).Instance0?.JoystickID ?? 0) } : null, map: mapOf(pairs) };
       },
     },
     Azahar: {
-      files: ['config/qt-config.ini'],
+      files: ['config/qt-config.ini'], players: 1,
       read(f, system, family) {
         const c = ini(f['config/qt-config.ini']).Controls ?? {};
         const n = Number(c.profile ?? 0) + 1;
@@ -193,11 +195,12 @@
       },
     },
     Gopher64: {
-      files: ['config.json'],
-      read(f) {
+      files: ['config.json'], players: 4,
+      read(f, system, family, player) {
         const input = JSON.parse(f['config.json']).input ?? {};
-        const profile = input.input_profiles?.[input.input_profile_binding?.[0]];
-        if (!input.controller_enabled?.[0] || !profile || !input.controller_assignment?.[0]) return { bound: null, map: {} };
+        const at = player - 1;
+        const profile = input.input_profiles?.[input.input_profile_binding?.[at]];
+        if (!input.controller_enabled?.[at] || !profile || !input.controller_assignment?.[at]) return { bound: null, map: {} };
         // Its slots in order, as its input_profile.rs numbers them.
         const SLOTS = ['D-pad', 'D-pad', 'D-pad', 'D-pad', 'Start', 'Z', 'B', 'A', 'C buttons', 'C buttons', 'C buttons', 'C buttons',
           'R', 'L', 'Stick', 'Stick', 'Stick', 'Stick', 'Gopher64 menu'];
@@ -209,23 +212,26 @@
           if (kind === 'JoystickAxis' || kind === 'ControllerAxis') return [AXIS[v.id], SLOTS[i]];
           return null;
         }).filter(Boolean);
-        return { bound: { first: true }, map: mapOf(pairs) };
+        return { bound: { index: at }, map: mapOf(pairs) };
       },
     },
-    DuckStation: { files: ['settings.ini'], read: (f, system) => sdlPad(ini(f['settings.ini']).Pad1) },
-    PCSX2: { files: ['inis/PCSX2.ini'], read: (f, system) => sdlPad(ini(f['inis/PCSX2.ini']).Pad1) },
+    DuckStation: { files: ['settings.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['settings.ini'])[`Pad${player}`]) },
+    PCSX2: { files: ['inis/PCSX2.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['inis/PCSX2.ini'])[`Pad${player}`]) },
     Dolphin: {
-      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini'],
-      read(f, system) {
+      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini'], players: 4,
+      read(f, system, family, player) {
         if (system === 'gc') {
-          const port = ini(f['Config/Dolphin.ini']).Core?.SIDevice0;
-          const pad = ini(f['Config/GCPadNew.ini']).GCPad1 ?? {};
-          const problem = port != null && port !== '6' ? 'Port 1 is not set to a GameCube controller in Dolphin.' : null;
+          const port = ini(f['Config/Dolphin.ini']).Core?.[`SIDevice${player - 1}`];
+          if (port == null || port === '0') return { bound: null, map: {} };
+          const pad = ini(f['Config/GCPadNew.ini'])[`GCPad${player}`] ?? {};
+          const problem = port !== '6' ? `Port ${player} is not set to a GameCube controller in Dolphin.` : null;
           return { ...dolphin(pad, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/X': 'X', 'Buttons/Y': 'Y', 'Buttons/Z': 'Z', 'Buttons/Start': 'Start',
             'Triggers/L': 'L', 'Triggers/R': 'R', 'Main Stick/Up': 'Stick', 'C-Stick/Up': 'C-Stick',
             'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad' }), problem };
         }
-        const mote = ini(f['Config/WiimoteNew.ini']).Wiimote1 ?? {};
+        // Wii Remote 1 is emulated unless said otherwise, the others off.
+        const mote = ini(f['Config/WiimoteNew.ini'])[`Wiimote${player}`] ?? {};
+        if ((mote.Source ?? (player === 1 ? '1' : '0')) !== '1') return { bound: null, map: {} };
         const nunchuk = mote.Extension === 'Nunchuk';
         const motion = Object.keys(mote).some(k => /^IMU(Gyroscope|Accelerometer)\//.test(k) && mote[k]);
         return { ...dolphin(mote, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/1': '1', 'Buttons/2': '2', 'Buttons/-': '−', 'Buttons/+': '+', 'Buttons/Home': 'Home',
@@ -234,30 +240,36 @@
       },
     },
     Cemu: {
-      files: ['controllerProfiles/controller0.xml'],
-      read(f) {
-        const doc = new DOMParser().parseFromString(f['controllerProfiles/controller0.xml'], 'application/xml');
+      files: [0, 1, 2, 3].map(n => `controllerProfiles/controller${n}.xml`), players: 4,
+      read(f, system, family, player) {
+        const xml = f[`controllerProfiles/controller${player - 1}.xml`];
+        if (!xml) return { bound: null, map: {} };
+        const doc = new DOMParser().parseFromString(xml, 'application/xml');
         const type = doc.querySelector('emulated_controller > type')?.textContent;
         const uuid = doc.querySelector('controller > uuid')?.textContent ?? '';
         const api = doc.querySelector('controller > api')?.textContent;
         if (api !== 'SDLController') return { bound: null, map: {} };
         // What each of the GamePad's buttons is, by Cemu's numbers.
+        const STICKS = ['Left stick', 'Left stick', 'Left stick', 'Left stick', 'Right stick', 'Right stick', 'Right stick', 'Right stick'];
         const GAMEPAD = [null, 'A', 'B', 'X', 'Y', 'L', 'R', 'ZL', 'ZR', '+', '−', 'D-pad', 'D-pad', 'D-pad', 'D-pad', 'Press', 'Press',
-          'Left stick', 'Left stick', 'Left stick', 'Left stick', 'Right stick', 'Right stick', 'Right stick', 'Right stick', 'Blow mic', 'Show screen', 'Home'];
+          ...STICKS, 'Blow mic', 'Show screen', 'Home'];
+        // A Pro Controller, Cemu's players 2 to 4, numbers its buttons another way.
+        const PRO = [null, 'A', 'B', 'X', 'Y', 'L', 'R', 'ZL', 'ZR', '+', '−', 'Home', 'D-pad', 'D-pad', 'D-pad', 'D-pad', 'Press', 'Press', ...STICKS];
+        const names = type === 'Wii U Pro Controller' ? PRO : GAMEPAD;
         // Cemu's controls: SDL 3's buttons, then its D-pad again, then each
         // axis's two directions.
         const control = b => b < 15 ? sdl3(b) : b >= 34 && b <= 37 ? ['up', 'down', 'left', 'right'][b - 34]
           : b >= 38 ? ['ls', 'ls', 'rs', 'rs', 'zl', 'zr'][(b - 38) % 6] : null;
         const pairs = [...doc.querySelectorAll('mappings > entry')].map(e => [control(Number(e.querySelector('button')?.textContent)),
-          GAMEPAD[Number(e.querySelector('mapping')?.textContent)]]);
+          names[Number(e.querySelector('mapping')?.textContent)]]);
         const motion = doc.querySelector('controller > motion')?.textContent === 'true';
-        return { bound: fromGuid(uuid.split('_')[1] ?? ''), map: mapOf(pairs), motion, problem: type && type !== 'Wii U GamePad' ? `Controller 1 is set as a ${type} in Cemu.` : null };
+        return { bound: fromGuid(uuid.split('_')[1] ?? ''), map: mapOf(pairs), motion, problem: type && !['Wii U GamePad', 'Wii U Pro Controller'].includes(type) ? `Controller ${player} is set as a ${type} in Cemu.` : null };
       },
     },
     Ryujinx: {
-      files: ['Config.json'],
-      read(f, system, family) {
-        const config = JSON.parse(f['Config.json']).input_config?.find(c => c.player_index === 'Player1');
+      files: ['Config.json'], players: 4,
+      read(f, system, family, player) {
+        const config = JSON.parse(f['Config.json']).input_config?.find(c => c.player_index === `Player${player}`);
         if (!config || !String(config.backend).startsWith('Gamepad')) return { bound: null, map: {} };
         // Its id is an SDL GUID written as a .NET Guid; SDL 2's keeps the
         // maker's and product's bytes as SDL holds them, SDL 3's swaps the
@@ -284,9 +296,9 @@
       },
     },
     xemu: {
-      files: ['xemu.toml'],
-      read(f) {
-        const guid = f['xemu.toml'].match(/^\s*port1\s*=\s*['"]([0-9a-f]{32})['"]/m)?.[1];
+      files: ['xemu.toml'], players: 4,
+      read(f, system, family, player) {
+        const guid = f['xemu.toml'].match(new RegExp(`^\\s*port${player}\\s*=\\s*['"]([0-9a-f]{32})['"]`, 'm'))?.[1];
         // xemu's own layout, by position: White on LB, Black on RB.
         const map = { south: 'A', east: 'B', west: 'X', north: 'Y', l: 'White', r: 'Black', zl: 'Left trigger', zr: 'Right trigger',
           minus: 'Back', plus: 'Start', dpad: 'D-pad', ls: 'Left stick', rs: 'Right stick', l3: 'Press', r3: 'Press' };
@@ -301,14 +313,14 @@
     const PS = { Cross: '✕', Circle: '○', Square: '□', Triangle: '△', L1: 'L1', R1: 'R1', L2: 'L2', R2: 'R2', L3: 'L3', R3: 'R3', Select: 'Select', Start: 'Start',
       Up: 'D-pad', Down: 'D-pad', Left: 'D-pad', Right: 'D-pad', LUp: 'Left stick', RUp: 'Right stick', Analog: 'Analog' };
     const pairs = [];
-    let first = false;
+    let index = null;
     for (const [key, does] of Object.entries(PS)) {
       const m = String(pad[key] ?? '').match(/^SDL-(\d+)\/(.+)$/);
       if (!m) continue;
-      first ||= m[1] === '0';
+      index ??= Number(m[1]);
       pairs.push([named(m[2]), does]);
     }
-    return { bound: first ? { first: true } : null, map: mapOf(pairs) };
+    return { bound: index == null ? null : { index }, map: mapOf(pairs) };
   }
 
   // Dolphin's player 1: its device by name, and each input an SDL name in
@@ -331,26 +343,41 @@
     return { bound: sdl ? { name, vendor } : null, map: sdl ? mapOf(pairs) : {} };
   }
 
-  // The chosen console's emulator's player 1, read now: { emulator, bound,
-  // map, problem }, or null where its emulator is not one this reads.
+  // The chosen console's emulator's players, read now: { emulator, problem,
+  // players, most }, `most` being how many players it can have, each player { player, bound, map, motion, problem } where the
+  // emulator sets one; or null where its emulator is not one this reads. A
+  // file it has not written yet, such as Cemu's for a second controller, is
+  // left out.
   async function read(system, helper, family) {
     const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
     const reader = READERS[emulator];
     if (!reader || !helper) return null;
     const f = {};
     for (const rel of reader.files) {
-      try { f[rel] = text(await helper.setting(emulator, rel)); } catch { return { emulator, bound: null, map: {}, problem: `${emulator} has no controller settings on this Mac yet.` }; }
+      try { f[rel] = text(await helper.setting(emulator, rel)); } catch { /* not written yet */ }
     }
-    try { return { emulator, problem: null, ...reader.read(f, system, family) }; } catch (error) {
+    if (!Object.keys(f).length) return { emulator, players: [], problem: `${emulator} has no controller settings on this Mac yet.` };
+    try {
+      const players = [];
+      for (let player = 1; player <= (reader.players ?? 1); player++) {
+        const one = reader.read(f, system, family, player);
+        if (one?.bound && Object.keys(one.map ?? {}).length) players.push({ player, problem: null, ...one });
+        else if (player === 1) players.push({ player, problem: null, ...one });
+      }
+      return { emulator, problem: null, players, most: reader.players ?? 1 };
+    } catch (error) {
       console.error(error);
-      return { emulator, bound: null, map: {}, problem: `Emu could not read ${emulator}'s controller settings.` };
+      return { emulator, players: [], problem: `Emu could not read ${emulator}'s controller settings.` };
     }
   }
 
-  // Whether an emulator's player 1 is the connected controller: bound to the
-  // first controller, or to this one's maker and product.
-  const matches = (bound, pad) => Boolean(bound && Object.keys(bound).length && (bound.first
-    || (bound.vendor && bound.vendor === pad.vendor && (!bound.product || bound.product === pad.product))));
+  // Which player a connected controller is: the player bound to its maker
+  // and product, else the one bound to its place among the connected
+  // controllers, counted from 0 as the emulator counts them. Null where none.
+  const bindsTo = (bound, pad, place) => Boolean(bound && ((bound.vendor && bound.vendor === pad.vendor && (!bound.product || bound.product === pad.product))
+    || (bound.index != null && bound.index === place)));
+  const playerOf = (read, pad, place) => read?.players.find(p => p.bound?.vendor && bindsTo(p.bound, pad, place))
+    ?? read?.players.find(p => bindsTo(p.bound, pad, place)) ?? null;
 
   // THE DRAWING. The front: a Pro or Xbox pad has its left stick high and
   // its D-pad low, a PlayStation pad its sticks low and level; each control's
@@ -449,5 +476,5 @@
   }
   const escape = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 
-  R.pads = { of, read, matches, draw, drawBack, MODELS, CHROME, PRINTED, _readers: READERS };
+  R.pads = { of, read, playerOf, draw, drawBack, MODELS, CHROME, PRINTED, _readers: READERS };
 })();

@@ -788,8 +788,10 @@
     : (padReading = { system, read: Promise.all([...new Set(padsNow().map(p => p.family))].map(async family => [family, await R.pads.read(system, R.helper, family)])).then(Object.fromEntries) })).read;
   function indicator(kind, text) {
     const line = el('span', 'rux--icon-indicator');
-    const icon = iconOf(kind === 'ok' ? '#i-checkmark--filled' : '#i-warning--alt--filled');
-    icon.setAttribute('class', kind === 'ok' ? 'rux--icon-indicator--succeeded' : 'rux--icon-indicator--caution-minor');
+    const ICONS = { ok: ['#i-checkmark--filled', 'rux--icon-indicator--succeeded'], warn: ['#i-warning--alt--filled', 'rux--icon-indicator--caution-minor'],
+      info: ['#i-information--filled', 'rux--icon-indicator--informative'] };
+    const icon = iconOf(ICONS[kind][0]);
+    icon.setAttribute('class', ICONS[kind][1]);
     line.append(icon, text);
     return line;
   }
@@ -810,11 +812,16 @@
     } else li.append(icon, main);
     return li;
   }
-  // Whether the chosen console is set for a controller, and what to say.
-  const padState = (read, pad, consoleName) => !read ? null
-    : read.problem ? ['warn', read.problem]
-    : R.pads.matches(read.bound, pad) && Object.keys(read.map).length ? ['ok', `Set up for ${consoleName}`]
-    : ['warn', `Not set up for ${consoleName}`];
+  // Which player a controller is on the chosen console, at its place among
+  // the connected controllers, and what to say: [kind, words, player].
+  function padState(read, pad, consoleName, place) {
+    if (!read) return null;
+    const one = R.pads.playerOf(read, pad, place);
+    const problem = read.problem ?? one?.problem;
+    if (problem) return ['warn', problem, one];
+    if (one && Object.keys(one.map).length) return ['ok', `Player ${one.player} · Set up for ${consoleName}`, one];
+    return [read.most === 1 && read.players[0]?.bound ? 'info' : 'warn', read.most === 1 && read.players[0]?.bound ? `${consoleName} has one player` : `Not set up for ${consoleName}`, null];
+  }
   async function renderPad() {
     if (!helper) return;
     const pads = padsNow();
@@ -827,11 +834,11 @@
     const system = game?.system ?? chosen;
     const consoleName = system ? R.systemName(system) : null;
     const [info, reads] = await Promise.all([padInfoNow(), system ? readPads(system) : {}]);
-    list.replaceChildren(...pads.map(pad => {
+    list.replaceChildren(...pads.map((pad, place) => {
       const name = info.get(pad.id)?.name ?? pad.name;
-      const state = system && padState(reads[pad.family], pad, consoleName);
-      const sub = state ? indicator(...state) : indicator('ok', 'Connected');
-      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, system, reads[pad.family]) : null);
+      const state = system && padState(reads[pad.family], pad, consoleName, place);
+      const sub = state ? indicator(state[0], state[1]) : indicator('ok', 'Connected');
+      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, system, reads[pad.family], place) : null);
     }));
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; renderPad(); });
@@ -840,19 +847,20 @@
   // A controller's map in its modal: its front, and for a model with back
   // buttons its back, each learnt by pressing it; and its name and model to
   // change, kept with the account.
-  async function openPadMap(pad, system, read) {
+  async function openPadMap(pad, system, read, place) {
     const consoleName = R.systemName(system);
     const known = (await padInfoNow()).get(pad.id);
     const mine = { name: known?.name ?? pad.name, details: { ...(known?.details ?? {}) } };
-    const state = padState(read, pad, consoleName);
-    const map = state[0] === 'ok' ? read.map : {};
+    const state = padState(read, pad, consoleName, place);
+    const one = state[2];
+    const map = state[0] === 'ok' ? one.map : {};
     const select = $('emu-padmap-model');
     select.replaceChildren(el('option', null, 'Standard'), ...Object.entries(R.pads.MODELS)
       .filter(([, m]) => m.family === pad.family).map(([key, m]) => Object.assign(el('option', null, m.name), { value: key })));
     select.firstChild.value = '';
     select.value = mine.details.model ?? '';
-    const said = () => [state[0] === 'ok' ? `As set in ${read.emulator}.` : `${state[1]}.${read.problem ? '' : ` Its buttons are set in ${read.emulator}.`}`,
-      read.motion ? 'Tilt is on.' : ''].filter(Boolean).join(' ');
+    const said = () => [state[0] === 'ok' ? `Player ${one.player}, as set in ${read.emulator}.` : `${state[1]}.${read.problem || one?.problem ? '' : ` Its buttons are set in ${read.emulator}.`}`,
+      one?.motion ? 'Tilt is on.' : ''].filter(Boolean).join(' ');
     const save = async () => {
       if (!pad.id || !R.data) return false;
       try { await R.data.setController(pad.id, mine.name, mine.details); } catch (error) { say(error.message, { bad: true }); return false; }

@@ -151,10 +151,13 @@ in a window under 66rem:
 - **Its back buttons are learnt by pressing them,** since on the Mac they only
   copy another button, set on the controller itself; Learn listens for the
   next press, with the page's own controller moves held meanwhile.
+- **Each controller says which player it is, "Player 2 · Set up for SNES",**
+  the player its emulator binds to its maker and product, else to its place
+  among the connected controllers; a console with one player says so.
 - **It says "Set up for" or "Not set up for" the chosen console,** from that
   console's emulator's own settings, which `emu/pads.js` reads through the
-  helper and `emu/docs/controller-settings.md` lists: set up where player 1 is
-  bound to the first controller, or to this one's maker and product.
+  helper and `emu/docs/controller-settings.md` lists: set up where one of its
+  players is bound to this controller.
 - **A controller's row opens its map, a Carbon modal,** because the map does
   not fit the tile: the controller drawn by its family, Nintendo, Xbox or
   PlayStation, each physical button labelled as printed, and what it does on

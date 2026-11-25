@@ -25,12 +25,11 @@
     switch: ['xci', 'nsp'], xbox: ['iso'],
   };
 
-  // A game's pictures on libretro's thumbnails, the addresses to try in turn,
-  // by the names scan-save.js gives it, as the scan asks for its box art too:
-  // Named_Boxarts its box, Named_Snaps a moment in play, Named_Titles its
-  // title screen.
+  // A game's screenshots on libretro's thumbnails, the addresses to try in
+  // turn, by the names scan-save.js gives it: Named_Snaps a moment in play,
+  // Named_Titles its title screen.
   const { ART, ART_AT, artNames } = window.Emu.scanSave;
-  const artOf = (game, kind = 'Named_Boxarts') => {
+  const artOf = (game, kind) => {
     const set = ART[game.system];
     return set ? artNames(game).map(n => `${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/${kind}/${encodeURIComponent(n.replace(/[&*/:`<>?\\|]/g, '_'))}.png`) : [];
   };
@@ -142,8 +141,8 @@
   // Zelda: A Link to the Past".
   const nameOf = g => (g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title)
     .replace(/^(.*?), (The|An|A)(?= - |$)/, '$2 $1').replace(' - ', ': ');
-  // A game's art, fetched as it comes near the view: the cover the server
-  // keeps, else the first of libretro's that loads, else `none()`.
+  // A game's cover, fetched as it comes near the view from those the server
+  // keeps in Supabase, else `none()`.
   const near = new IntersectionObserver(seen => {
     for (const { target, isIntersecting } of seen) {
       if (!isIntersecting) continue;
@@ -155,14 +154,13 @@
     const img = el('img');
     img.alt = '';
     img.decoding = 'async';
-    const urls = artOf(g);
-    const next = () => { const url = urls.shift(); if (url) img.src = url; else { img.remove(); none(); } };
-    img.addEventListener('error', next);
+    const gone = () => { img.remove(); none(); };
+    img.addEventListener('error', gone);
     img.addEventListener('emu-near', async () => {
       const data = window.Emu.data;
       const sha1 = (await data?.covers().catch(() => null))?.get(window.Emu.scanSave.artKey(g));
       const own = sha1 ? await data.coverUrl(sha1).catch(error => { console.error(error); return null; }) : null;
-      if (own) img.src = own; else next();
+      if (own) img.src = own; else gone();
     });
     near.observe(img);
     return img;

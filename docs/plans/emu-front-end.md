@@ -19,15 +19,13 @@ front page is `docs/plans/emu-library.md`, and the rest of Emu
   and revision, which its panel keeps.
 - **Play asks Rux Emu Helper to open the game,** because a web page cannot
   open a Mac app itself; the helper is `docs/plans/emu-helper.md`.
-- **Box art comes from libretro's thumbnails by each game's list name,**
-  which is the name the drive's files carry; it is loaded from
-  libretro's thumbnail repositories on GitHub and cached by the browser, and
-  nothing is stored.
-  A game the lists do not name shows its title on a plain tile.
+- **The page shows only the covers the server keeps,** read from Supabase
+  and kept in the browser under each picture's SHA-1, so a cover never
+  depends on another site; how the server finds them is
+  `emu/docs/home-server.md`. A game with no cover shows its title.
 - **Play shows only where it can work:** where the helper answers and has
   the collection. Elsewhere, such as the phone, the page is the collection to
   browse, with no Play button.
-- **A Switch game shows a plain tile with its name** until its art is settled.
 - **ES-DE goes once the library and Play work,** since without internet a
   game is opened from its own emulator, whose settings already save to the
   collection.
@@ -36,8 +34,7 @@ front page is `docs/plans/emu-library.md`, and the rest of Emu
 
 ## Questions
 
-- libretro has no Switch box art. Should Switch tiles use the game's own
-  icon, which Ryujinx shows, read from the game file by the scan?
+None.
 
 ## Tasks
 

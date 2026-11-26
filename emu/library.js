@@ -793,7 +793,11 @@
   // Helper's report, asked again when one connects or goes.
   const padsNow = () => [...(navigator.getGamepads?.() ?? [])].filter(Boolean).map(R.pads.of);
   let padReport = null;
-  const padsKnown = async () => R.pads.identify(padsNow(), await (padReport ??= (R.helper?.controllers?.() ?? Promise.resolve(null)).catch(() => null)));
+  const padsKnown = async () => {
+    const pads = padsNow();
+    if (!pads.length) return [];
+    return R.pads.identify(pads, await (padReport ??= (R.helper?.controllers?.() ?? Promise.resolve(null)).catch(() => null)));
+  };
   // The chosen console's emulator, read once for each controller family and
   // kept until the console, a controller or the window's focus changes.
   let padReading = null;

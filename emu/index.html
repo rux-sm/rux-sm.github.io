@@ -57,7 +57,6 @@
 <symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-list" viewBox="0 -960 960 960"><path d="M290-620v-60h550v60H290Zm0 170v-60h550v60H290Zm0 170v-60h550v60H290ZM150-620q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Z"/></symbol>
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
-<symbol id="m-more_horiz" viewBox="0 -960 960 960"><path d="M207.86-432Q188-432 174-446.14t-14-34Q160-500 174.14-514t34-14Q228-528 242-513.86t14 34Q256-460 241.86-446t-34 14Zm272 0Q460-432 446-446.14t-14-34Q432-500 446.14-514t34-14Q500-528 514-513.86t14 34Q528-460 513.86-446t-34 14Zm272 0Q732-432 718-446.14t-14-34Q704-500 718.14-514t34-14Q772-528 786-513.86t14 34Q800-460 785.86-446t-34 14Z"/></symbol>
 <symbol id="m-save" viewBox="0 -960 960 960"><path d="M840-683v563H120v-720h563l157 157Zm-60 27L656-780H180v600h600v-476ZM553.5-275.26q30.5-30.27 30.5-73.5 0-43.24-30.26-73.74-30.27-30.5-73.5-30.5-43.24 0-73.74 30.26-30.5 30.27-30.5 73.5 0 43.24 30.26 73.74 30.27 30.5 73.5 30.5 43.24 0 73.74-30.26ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"/></symbol>
 <symbol id="m-settings" viewBox="0 -960 960 960"><path d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm48-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></symbol>
 <symbol id="m-volume_off" viewBox="0 -960 960 960"><path d="M813-56 681-188q-28 20-60.5 34.5T553-131v-62q23-7 44.5-15.5T638-231L473-397v237L273-360H113v-240h156L49-820l43-43 764 763-43 44Zm-36-232-43-43q20-34 29.5-71.92Q773-440.85 773-481q0-103.32-60-184.66T553-769v-62q124 28 202 125.5T833-481q0 51-14 100t-42 93ZM643-422l-90-90v-130q47 22 73.5 66t26.5 96q0 15-2.5 29.5T643-422ZM473-592 369-696l104-104v208Zm-60 286v-150l-84-84H173v120h126l114 114Zm-42-192Z"/></symbol>
@@ -196,8 +195,8 @@
             <!-- The chosen game: its screenshot; beside it its name; the
                  facts libretro has, then when it was last played, its
                  region and size; its description; its save, a list opening
-                 down from it, and beside it More, which opens the game's
-                 menu, before the one next move. -->
+                 down from it, and beside it the one next move; the game's
+                 menu opens from a right-click on its cover. -->
             <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name">
               <div class="emu-chosen__frame"><div class="emu-chosen__art" id="emu-chosen-art"></div></div>
               <div class="emu-chosen__main">
@@ -221,10 +220,6 @@
                     <p class="emu-pick__warn" hidden></p>
                   </div>
                   <div class="emu-chosen__row">
-                    <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
-                      <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-lg" id="emu-chosen-more" aria-label="More"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_horiz"/></svg></button></span>
-                      <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">More</span><span class="rux--popover-caret"></span></span>
-                    </span>
                     <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>
                   </div>
                 </div>
@@ -284,7 +279,7 @@
 </main>
 <!-- The chosen console's menu, filled and opened by library.js. -->
 <ul id="emu-console-menu" class="rux--menu" role="menu" aria-label="Console" tabindex="-1"></ul>
-<!-- A game's menu, from a right-click on its cover or More beside Play,
+<!-- A game's menu, from a right-click on its cover,
      filled and opened by library.js. -->
 <ul id="emu-game-menu" class="rux--menu rux--menu--with-selectable-items" role="menu" aria-label="Game" tabindex="-1"></ul>
 <!-- Search, from the header's button: any game by its title, from search.js. -->

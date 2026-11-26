@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    Four tiles: every console with games down the side, each its drawing and
    name; beside them the chosen game, its screenshot, its name and facts, its
-   save and a row of one button, the one next move, with More; the controller
+   save and the one next move beside it; the controller
    beside that; and under both the chosen console's games, a wall of covers
    under its wordmark. The wall's title row holds the strip, then
    Installed or All games and Sound. Installed shows only the games this Mac holds or is
@@ -51,6 +51,13 @@
   const { el, nameOf, cover } = R;
   // The tiles leave their skeletons, or go where there is nothing to show.
   const loaded = shown => { const lib = $('emu-library'); lib.classList.remove('emu-library--loading'); lib.removeAttribute('aria-busy'); lib.hidden = !shown; };
+  // The console the page last opened on, kept in this browser, so the
+  // skeleton covers take its box's shape before the collection is read.
+  const OPENS = 'emu-console';
+  try {
+    const last = localStorage.getItem(OPENS);
+    if (R.BOX[last]) { $('emu-games').style.setProperty('--emu-box', R.BOX[last]); $('emu-games').classList.toggle('emu-games__list--wide', R.BOX[last] > 1.2); }
+  } catch { /* a browser that keeps nothing shows the covers' usual shape */ }
   if (!R?.data) { loaded(false); R?.notice('Emu needs a log-in to read the collection.'); return; }
 
   let games = [];
@@ -471,7 +478,7 @@
   // it, fetched again only when the game changes, in its console's screen
   // shape; its name
   // over its facts, then when it was last played, its region and size; its
-  // save; and the one next move, with More.
+  // save; and the one next move.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
     const day = d => new Date(d).toDateString();
@@ -551,7 +558,7 @@
     if (g === game) renderChosen();
   }
 
-  // A GAME'S MENU, from a right-click on its cover or More beside Play:
+  // A GAME'S MENU, from a right-click on its cover:
   // Favourite and Finished, ticked while on; About this copy, which opens the
   // panel on what the scan read of the game; and, where any of it is here,
   // Remove from this Mac, which takes it off.
@@ -572,7 +579,6 @@
     }
     window.Rux.menu.open(menu, trigger);
   }
-  $('emu-chosen-more').addEventListener('click', e => openGameMenu(game, e.currentTarget));
   async function removeGame(g) {
     try { await R.helper.remove(g); } catch (error) { sayNo(error.message); return; }
     say(`${nameOf(g)} is off this Mac. Its saves are kept.`);
@@ -1461,6 +1467,7 @@
     }
     game = asked ?? lastPlayed(games.filter(g => stands(g).state === 'held' && plays(g.system))) ?? firstOf(consoles().find(plays) ?? consoles()[0]);
     chosen = game.system;
+    try { localStorage.setItem(OPENS, chosen); } catch { /* the skeleton keeps the usual shape */ }
     where = isHere(game) ? 'mac' : 'all';
     renderSound();
     render();

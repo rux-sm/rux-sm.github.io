@@ -212,13 +212,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    picture of another shape fills it from the top, which shows a 3DS's top
    screen where both were taken; empty where libretro has none and faded
    where this Mac lacks the game; beside it, from one left
-   edge and the frame's top, the name, the facts, and at its foot Save, and
-   More with Play. */
+   edge and the frame's top, the name, the facts, and at its foot Save and
+   Play. */
 .emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 /* LOADING: the four tiles stand from the first paint, Carbon's skeletons
    in the shapes of what fills them: console rows, the game's name and two
    lines beside its black screen, a controller row, the wordmark, Installed
-   or All games, and covers.
+   or All games, and covers in the box shape of the console the page
+   last opened on.
    Save and Play keep their place unseen until the game is known. */
 .emu-library--loading .emu-chosen__game { display: none; }
 .emu-library--loading .emu-chosen__picks { visibility: hidden; }
@@ -236,7 +237,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-skel-title { inline-size: 8rem; block-size: 1.5rem; margin: 0; }
 .emu-skel-where { flex: none; inline-size: 14rem; block-size: var(--rux-layout-size-height-md); margin-inline-start: auto; }
 .emu-library:not(.emu-library--loading) .emu-skel-where { display: none; }
-.emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 3 / 4; }
+.emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen__frame { inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
 .emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; }
@@ -253,9 +254,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its large buttons. */
 .emu-chosen__game > .emu-row__sub { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-chosen__about { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-/* The one next move beside Save, at the line's end as the move it leads to,
-   with More before it, which opens the game's menu. Under 42rem the move
-   takes what More leaves of its line, under Save. */
+/* The one next move beside Save, at the line's end as the move it leads to.
+   Under 42rem it takes its own line, under Save. */
 .emu-chosen__row { display: flex; align-items: center; gap: var(--rux-spacing-03); }
 /* SAVE, as Carbon's dropdown stands on a layer: its
    label over a 48px field, the large size Carbon pairs with large buttons,

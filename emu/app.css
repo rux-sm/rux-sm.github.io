@@ -204,17 +204,20 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its own, in the text colour. */
 .emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 
-/* THE CHOSEN GAME, its own tile over the wall: its screenshot 8rem tall in its console's screen shape, --emu-shot, from
-   app.js's SCREEN, so the words beside it stand still from game to game; a
+/* THE CHOSEN GAME, its own tile over the wall: its screenshot in a 4:3
+   frame, the shape most consoles draw, 40% of the tile wide between 7.5rem
+   and 20rem, 320 by 240 at most, the picture as large as fits in its
+   console's screen shape, --emu-shot, from app.js's SCREEN, so the words
+   beside it stand still from game to game; a
    picture of another shape fills it from the top, which shows a 3DS's top
    screen where both were taken; empty where libretro has none and faded
    where this Mac lacks the game; beside it, from one left
-   edge and the screenshot's top, the name, the facts, Save, and Play with
-   More. Under 42rem the screenshot is 5.5rem tall. */
-.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
+   edge and the frame's top, the name, the facts, and at its foot Save, and
+   More with Play. */
+.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
-.emu-chosen { --emu-art: 8rem; }
-.emu-chosen__art { display: grid; place-items: center; align-self: stretch; min-block-size: var(--emu-art); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
+.emu-chosen__frame { inline-size: clamp(7.5rem, 40cqi, 20rem); aspect-ratio: 4 / 3; display: grid; place-items: center; container-type: size; }
+.emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
 .emu-chosen__art--away img { opacity: .45; }
@@ -228,9 +231,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its large buttons. */
 .emu-chosen__game > .emu-row__sub { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-chosen__about { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-/* The one next move beside Save, as Carbon leads a form's buttons with the
-   primary, and More beside it, which opens the game's menu. Under 42rem the
-   move takes what More leaves of its line, under Save. */
+/* The one next move beside Save, at the line's end as the move it leads to,
+   with More before it, which opens the game's menu. Under 42rem the move
+   takes what More leaves of its line, under Save. */
 .emu-chosen__row { display: flex; align-items: center; gap: var(--rux-spacing-03); }
 /* SAVE, as Carbon's dropdown stands on a layer: its
    label over a 48px field, the large size Carbon pairs with large buttons,
@@ -257,7 +260,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-pop { position: absolute; z-index: 3; inset-inline-start: 0; inset-block-start: calc(100% + var(--emu-drawer-inset, 0px)); inline-size: 22rem; max-inline-size: calc(100vw - 2rem); max-block-size: min(24rem, 60dvh); overflow-y: auto; background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-pop-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); }
 .emu-pop__note { padding: var(--rux-spacing-04) var(--rux-spacing-05); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
 @media (max-width: 41.98rem) {
-  .emu-chosen { --emu-art: 5.5rem; gap: var(--rux-spacing-05); }
+  .emu-chosen { gap: var(--rux-spacing-05); }
   .emu-chosen__name { font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); }
   .emu-pick { flex: 1 1 8rem; inline-size: auto; }
   .emu-chosen__row { flex: 1 1 100%; }

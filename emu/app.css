@@ -204,11 +204,11 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    its own, in the text colour. */
 .emu-mark { display: block; block-size: calc(1rem * var(--emu-mark-scale, 1)); inline-size: auto; max-inline-size: 100%; fill: currentColor; }
 
-/* THE CHOSEN GAME, its own tile over the wall: its screenshot in a 4:3
-   frame, the shape most consoles draw, 40% of the tile wide between 7.5rem
-   and 20rem, 320 by 240 at most, the picture as large as fits in its
-   console's screen shape, --emu-shot, from app.js's SCREEN, so the words
-   beside it stand still from game to game; a
+/* THE CHOSEN GAME, its own tile over the wall: its screenshot on a black
+   square, as a screen shows it, 35% of the tile wide between 6rem and 15rem,
+   240 by 240 at most, the picture as large as fits in its console's screen
+   shape, --emu-shot, from app.js's SCREEN, with black above and below it or
+   beside it, so the words beside it stand still from game to game; a
    picture of another shape fills it from the top, which shows a 3DS's top
    screen where both were taken; empty where libretro has none and faded
    where this Mac lacks the game; beside it, from one left
@@ -216,8 +216,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    More with Play. */
 .emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
-.emu-chosen__frame { inline-size: clamp(7.5rem, 40cqi, 20rem); aspect-ratio: 4 / 3; display: grid; place-items: center; container-type: size; }
-.emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
+.emu-chosen__frame { inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
+.emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
 .emu-chosen__art--away img { opacity: .45; }

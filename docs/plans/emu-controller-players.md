@@ -29,12 +29,9 @@ reading and writing `emu/pads.js`.
   controllers are on: every controller after player 1's is turned off before
   the game opens and on again, in player order, once it has, because these
   emulators number a controller that connects while they run after the ones
-  they found at start, which each did with the 8BitDo on and the Xbox turned
-  on mid-run: PCSX2's log gave the Xbox player id 1, DuckStation's `SDL-1`,
-  and Mesen's button window `Pad2`. Their order at start changes: PCSX2
-  opened four times gave the Xbox player 1 once. The step names each
-  controller: "Turn off the Xbox controller. Turn it on again once the game
-  opens."
+  they found at start, as all three did with both controllers. The step names
+  each controller: "Turn off the Xbox controller. Turn it on again once the
+  game opens."
 - **Emu cannot see the order those emulators chose,** so the step is shown
   every time, not only when the order is wrong.
 

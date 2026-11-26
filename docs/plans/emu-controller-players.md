@@ -8,20 +8,13 @@ type: plan
 
 A controller is the same player in every game on every console, whatever
 order the controllers are turned on: rux picks its player once, and Emu
-makes the emulator agree before each game starts. The controller tile asks
-an empty player to press a button to join. The tile and map are `emu/library.js`; what they read
-and write is `emu/pads.js` and `emu/docs/controller-settings.md`.
+makes the emulator agree before each game starts. Each controller already
+keeps its player with the account, chosen in its map; what is left is the
+emulators following it. The tile and map are `emu/library.js`; what they
+read and write is `emu/pads.js` and `emu/docs/controller-settings.md`.
 
 ## Decisions
 
-- **A controller's player is kept with the account** in its `emu_controllers`
-  row's `details`, beside its name and model, so it is the same on every Mac.
-  The map's Player picker sets it, for every console at once.
-- **Two of the same model are told apart only by the order they connect,**
-  since Chrome and SDL give both the same maker, product and GUID.
-- **An empty player box says "Press a button to join".** A press from a
-  controller with no player gives it the first empty box; a press from one
-  with a player lights its box, so rux can see which controller is which.
 - **The emulator is made to agree just before a game starts,** as Gopher64's
   path already is, and only the emulator about to run is touched.
 - **Moving a controller to another player keeps its buttons:** Emu swaps the
@@ -39,10 +32,6 @@ None.
 
 ## Tasks
 
-- [ ] Keep each controller's player in `emu_controllers.details`, set from
-      the map's Player picker, and place controllers in the tile by it.
-- [ ] Show "Press a button to join" in each empty box; a press joins an
-      unplaced controller or lights a placed one's box.
 - [ ] Before a game, swap the players in Cemu, Ryujinx, xemu, Dolphin and
       Gopher64 where the binding differs from the kept player.
 - [ ] Before a game, point PCSX2's and DuckStation's `SDL-N` at each kept
@@ -52,4 +41,4 @@ None.
 - [ ] Prove each emulator with two controllers turned on in both orders, the
       player read back from its file after the game starts.
 - [ ] Replace the "turn the controllers on in player order" sentence in
-      `emu/docs/controller-settings.md`, and the tile's in `emu/README.md`.
+      `emu/docs/controller-settings.md`.

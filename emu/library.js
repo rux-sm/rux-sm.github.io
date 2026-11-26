@@ -839,11 +839,15 @@
     if (one && Object.keys(one.map).length) return ['ok', `Player ${one.player} · Set up for ${consoleName}`, one];
     return [read.most === 1 && read.players[0]?.bound ? 'info' : 'warn', read.most === 1 && read.players[0]?.bound ? `${consoleName} has one player` : `Not set up for ${consoleName}`, null];
   }
-  // Four players, as many as any console here has: each holds the
-  // controller playing it on the chosen console; a connected controller set
-  // up as no player takes the first free one the console has, the player
-  // Set up offers it; past the console's own players a box says so.
+  // Four players, as many as any console here has. Each controller keeps
+  // its player with the account, the same on every console and Mac, and
+  // takes that box; one with none takes the player its emulator has it as,
+  // else the first free box, and keeps that player from then on, as the
+  // press that made Chrome show it joins it. A box past the console's own
+  // players says so. Two of one model share a row, so the second takes the
+  // next free box.
   const SLOTS = 4;
+  const joined = new Set();
   // Each redraw is numbered, and one overtaken by a later, as when consoles
   // are chosen quickly, draws nothing.
   let padTurn = 0;
@@ -861,24 +865,63 @@
     const loose = [];
     for (const pad of pads) {
       const state = padState(reads[pad.family], pad, consoleName, pad.place);
-      const at = state?.[0] === 'ok' ? state[2].player - 1 : -1;
-      if (at >= 0 && at < SLOTS && !held[at]) held[at] = { pad, state }; else loose.push({ pad, state });
+      const kept = info.get(pad.id)?.details?.player;
+      const at = (kept ?? (state?.[0] === 'ok' ? state[2].player : 0)) - 1;
+      if (at >= 0 && at < SLOTS && !held[at]) held[at] = { pad, state, kept }; else loose.push({ pad, state, kept });
     }
     for (const one of loose) {
-      const at = held.findIndex((h, i) => !h && i < most);
+      const at = held.findIndex(h => !h);
       if (at >= 0) held[at] = one;
     }
     $('emu-pad-list').replaceChildren(...held.map((h, i) => {
       const player = i + 1;
-      if (!h) {
-        const why = player > most ? `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}` : 'No controller';
-        return padSlot(player, el('span', 'emu-row__sub', why), player > most ? 'off' : 'none');
-      }
+      const past = player > most ? `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}` : null;
+      if (!h) return padSlot(player, el('span', 'emu-row__sub', past ?? 'Press a button to join'), past ? 'off' : 'none');
       const name = info.get(h.pad.id)?.name ?? h.pad.name;
-      const [kind, words] = h.state ?? ['ok', 'Connected'];
-      const said = kind === 'ok' ? `Set up for ${consoleName}` : words;
-      return padSlot(player, indicator(kind, `${name} · ${said}`), 'held', () => openPadMap(h.pad, system, reads[h.pad.family], h.pad.place));
+      const read = reads[h.pad.family];
+      const [kind, words, one] = h.state ?? ['ok', 'Connected', null];
+      // The player the emulator has it as, where that is not the one it keeps.
+      const elsewhere = kind === 'ok' && one && one.player !== player ? `${read.emulator} has it as player ${one.player}` : null;
+      const said = past ?? elsewhere ?? (kind === 'ok' ? `Set up for ${consoleName}` : words);
+      const li = padSlot(player, indicator(past ? 'info' : elsewhere ? 'warn' : kind, `${name} · ${said}`), past ? 'off' : 'held', () => openPadMap(h.pad, system, read, h.pad.place));
+      li.dataset.pad = String(h.pad.index);
+      if (!h.kept) keepPlayer(h.pad, name, info.get(h.pad.id)?.details, player);
+      return li;
     }));
+    watchPresses();
+  }
+  // A controller's player kept with the account, once per controller.
+  async function keepPlayer(pad, name, details, player) {
+    if (!pad.id || !R.data || joined.has(pad.id)) return;
+    joined.add(pad.id);
+    try { await R.data.setController(pad.id, name, { ...(details ?? {}), player }); padInfo = null; }
+    catch (error) { joined.delete(pad.id); console.error(error); }
+  }
+  // A press on a controller lights its box for a moment, so rux can see
+  // which controller is which. Read once a frame while any is connected.
+  let pressFrame = 0;
+  const pressWas = [];
+  function watchPresses() {
+    if (pressFrame) return;
+    const look = () => {
+      const now = [...(navigator.getGamepads?.() ?? [])];
+      if (!now.some(Boolean)) { pressFrame = 0; return; }
+      now.forEach((gp, i) => {
+        const on = Boolean(gp?.buttons.some(b => b.pressed));
+        if (on && !pressWas[i]) flashSlot(gp.index);
+        pressWas[i] = on;
+      });
+      pressFrame = requestAnimationFrame(look);
+    };
+    pressFrame = requestAnimationFrame(look);
+  }
+  const flashing = new Map();
+  function flashSlot(index) {
+    const li = $('emu-pad-list').querySelector(`[data-pad="${index}"]`);
+    if (!li) return;
+    li.classList.add('emu-slot--lit');
+    clearTimeout(flashing.get(index));
+    flashing.set(index, setTimeout(() => li.classList.remove('emu-slot--lit'), 700));
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; padReport = null; renderPad(); });
   // Buttons are changed in the emulator, so they are read again on coming back.
@@ -960,15 +1003,30 @@
       };
       requestAnimationFrame(watch);
     };
-    // Set up: Emu's layout written into the emulator's own file for the
-    // chosen player, through the helper, with Undo while the map is open;
-    // Gopher64, which only it can bind, is opened at its settings instead.
+    // The controller's player, kept with the account for every console:
+    // choosing one keeps it. Set up then writes Emu's layout into the
+    // emulator's own file for that player, through the helper, with Undo
+    // while the map is open; Gopher64, which only it can bind, is opened at
+    // its settings instead.
     const playerPick = $('emu-padmap-player');
     const most = read.most ?? 1;
     const taken = new Set(read.players.filter(p => p.bound).map(p => p.player));
-    playerPick.replaceChildren(...Array.from({ length: most }, (_, i) => Object.assign(el('option', null, `Player ${i + 1}`), { value: String(i + 1) })));
-    playerPick.value = String(one?.player ?? (Array.from({ length: most }, (_, i) => i + 1).find(n => !taken.has(n)) ?? 1));
+    playerPick.replaceChildren(...Array.from({ length: SLOTS }, (_, i) => Object.assign(el('option', null, `Player ${i + 1}`), { value: String(i + 1) })));
+    playerPick.value = String(mine.details.player ?? one?.player ?? (Array.from({ length: most }, (_, i) => i + 1).find(n => !taken.has(n)) ?? 1));
     const setupNote = $('emu-padmap-setup-note');
+    // A controller that kept the chosen player swaps to this one's old one.
+    playerPick.onchange = async () => {
+      const player = Number(playerPick.value);
+      const before = mine.details.player ?? one?.player;
+      const others = [...(await padInfoNow())].filter(([id, row]) => id !== pad.id && row.details.player === player);
+      mine.details.player = player;
+      try {
+        for (const [id, row] of others) await R.data.setController(id, row.name, { ...row.details, player: before ?? undefined });
+      } catch (error) { say(error.message, { bad: true }); return; }
+      if (!(await save())) return;
+      setupNote.textContent = player > most ? `Player ${player} on every console. ${consoleName} has ${most === 1 ? 'one player' : `${most} players`}.`
+        : one?.player === player ? `Player ${player} on every console.` : `Player ${player} on every console. Set up writes its buttons for player ${player} in ${read.emulator}.`;
+    };
     const goButton = $('emu-padmap-go'), undoButton = $('emu-padmap-undo');
     undoButton.hidden = !padUndo;
     const reopen = async message => {

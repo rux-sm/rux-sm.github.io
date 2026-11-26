@@ -215,6 +215,28 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    edge and the frame's top, the name, the facts, and at its foot Save, and
    More with Play. */
 .emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
+/* LOADING: the four tiles stand from the first paint, Carbon's skeletons
+   in the shapes of what fills them: console rows, the game's name and two
+   lines beside its black screen, a controller row, the wordmark, Installed
+   or All games, and covers.
+   Save and Play keep their place unseen until the game is known. */
+.emu-library--loading .emu-chosen__game { display: none; }
+.emu-library--loading .emu-chosen__picks { visibility: hidden; }
+.emu-library:not(.emu-library--loading) .emu-chosen__skeleton { display: none; }
+.emu-chosen__skeleton { display: grid; gap: var(--rux-spacing-03); }
+.emu-skel-name { inline-size: 60%; block-size: 2rem; margin: 0 0 var(--rux-spacing-02); }
+.emu-skel-line { inline-size: 100%; margin: 0; }
+.emu-skel-line--short { inline-size: 60%; }
+.emu-skel-kit { display: flex; align-items: center; gap: var(--rux-spacing-04); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-02) var(--rux-spacing-05); }
+.emu-skel-kit__icon { flex: none; inline-size: 36px; block-size: 24px; }
+.emu-skel-kit__name { inline-size: 6rem; margin: 0; }
+.emu-skel-pad { display: flex; align-items: center; gap: var(--rux-spacing-04); }
+.emu-skel-pad__icon { flex: none; inline-size: 24px; block-size: 24px; }
+.emu-skel-pad__lines { flex: 1; display: grid; gap: var(--rux-spacing-03); }
+.emu-skel-title { inline-size: 8rem; block-size: 1.5rem; margin: 0; }
+.emu-skel-where { flex: none; inline-size: 14rem; block-size: var(--rux-layout-size-height-md); margin-inline-start: auto; }
+.emu-library:not(.emu-library--loading) .emu-skel-where { display: none; }
+.emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 3 / 4; }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen__frame { inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
 .emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; }

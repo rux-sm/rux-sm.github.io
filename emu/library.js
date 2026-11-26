@@ -49,7 +49,9 @@
   const R = window.Emu;
   const $ = id => document.getElementById(id);
   const { el, nameOf, cover } = R;
-  if (!R?.data) { $('emu-loading')?.remove(); R?.notice('Emu needs a log-in to read the collection.'); return; }
+  // The tiles leave their skeletons, or go where there is nothing to show.
+  const loaded = shown => { const lib = $('emu-library'); lib.classList.remove('emu-library--loading'); lib.removeAttribute('aria-busy'); lib.hidden = !shown; };
+  if (!R?.data) { loaded(false); R?.notice('Emu needs a log-in to read the collection.'); return; }
 
   let games = [];
   let saves = [];
@@ -1435,7 +1437,7 @@
       newestHelper = R.installerOf(files, 'Rux Emu Helper')?.name.match(/-(\d+)-macOS/)?.[1] ?? null;
     } catch (error) {
       console.error(error);
-      $('emu-loading')?.remove();
+      loaded(false);
       R.notice('Emu could not read the collection. Try again.');
       return;
     }
@@ -1443,9 +1445,8 @@
     games = R.withNotes(rows, notes).map(g => ({ ...g, status: R.statusOf(g) }))
       .sort((a, b) => a.title.localeCompare(b.title));
     await takeMac(mac);
-    $('emu-loading')?.remove();
+    loaded(games.length > 0);
     $('emu-empty').hidden = games.length > 0;
-    $('emu-library').hidden = games.length === 0;
     if (!games.length) return;
     R.data.info().then(rows => { info = new Map(rows.map(r => [keyOf(r), r])); renderChosen(); }, error => console.error(error));
     // The game ?game= names, taken off the address, else the one last played here.

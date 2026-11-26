@@ -812,21 +812,21 @@
     line.append(icon, text);
     return line;
   }
-  function padRow(name, sub, open) {
-    const li = el('li', 'emu-pad__row');
+  // A player's box: its number over the controller playing it and what that
+  // controller is, or a line saying why none is; one with a controller is a
+  // button opening its map.
+  function padSlot(player, sub, kind, open) {
+    const li = el('li', `emu-slot emu-slot--${kind}`);
     const icon = iconOf('#i-game--console');
-    icon.setAttribute('width', '24');
-    icon.setAttribute('height', '24');
-    icon.setAttribute('class', 'emu-pad__icon');
+    icon.setAttribute('width', '20');
+    icon.setAttribute('height', '20');
+    icon.setAttribute('class', 'emu-slot__icon');
     const main = el('span', 'emu-row__main');
-    main.append(el('span', 'emu-pad__name', name), sub);
-    if (open) {
-      const button = el('button', 'emu-pad__open');
-      button.type = 'button';
-      button.append(icon, main);
-      button.addEventListener('click', open);
-      li.append(button);
-    } else li.append(icon, main);
+    main.append(el('span', 'emu-slot__player', `Player ${player}`), sub);
+    const box = open ? el('button', 'emu-slot__box') : el('span', 'emu-slot__box');
+    if (open) { box.type = 'button'; box.addEventListener('click', open); }
+    box.append(icon, main);
+    li.append(box);
     return li;
   }
   // Which player a controller is on the chosen console, at its place among
@@ -839,24 +839,45 @@
     if (one && Object.keys(one.map).length) return ['ok', `Player ${one.player} · Set up for ${consoleName}`, one];
     return [read.most === 1 && read.players[0]?.bound ? 'info' : 'warn', read.most === 1 && read.players[0]?.bound ? `${consoleName} has one player` : `Not set up for ${consoleName}`, null];
   }
+  // Four players, as many as any console here has: each holds the
+  // controller playing it on the chosen console; a connected controller set
+  // up as no player takes the first free one the console has, the player
+  // Set up offers it; past the console's own players a box says so.
+  const SLOTS = 4;
+  // Each redraw is numbered, and one overtaken by a later, as when consoles
+  // are chosen quickly, draws nothing.
+  let padTurn = 0;
   async function renderPad() {
     if (!helper) return;
+    const turn = ++padTurn;
     const pads = await padsKnown();
-    const list = $('emu-pad-list');
-    list.classList.toggle('emu-pad__list--none', !pads.length);
-    if (!pads.length) {
-      list.replaceChildren(padRow('No controller', el('span', 'emu-row__sub', 'Press a button on one to show it here.')));
-      return;
-    }
     const system = game?.system ?? chosen;
-    const consoleName = system ? R.systemName(system) : null;
-    const [info, reads] = await Promise.all([padInfoNow(), system ? readPads(system, pads) : {}]);
-    list.replaceChildren(...pads.map(pad => {
-      const place = pad.place;
-      const name = info.get(pad.id)?.name ?? pad.name;
-      const state = system && padState(reads[pad.family], pad, consoleName, place);
-      const sub = state ? indicator(state[0], state[1]) : indicator('ok', 'Connected');
-      return padRow(name, sub, system && reads[pad.family] ? () => openPadMap(pad, system, reads[pad.family], place) : null);
+    if (!system) return;
+    const consoleName = R.systemName(system);
+    const [info, reads] = await Promise.all([padInfoNow(), readPads(system, pads.length ? pads : [{ family: 'xbox' }])]);
+    if (turn !== padTurn) return;
+    const most = Object.values(reads)[0]?.most ?? SLOTS;
+    const held = Array(SLOTS).fill(null);
+    const loose = [];
+    for (const pad of pads) {
+      const state = padState(reads[pad.family], pad, consoleName, pad.place);
+      const at = state?.[0] === 'ok' ? state[2].player - 1 : -1;
+      if (at >= 0 && at < SLOTS && !held[at]) held[at] = { pad, state }; else loose.push({ pad, state });
+    }
+    for (const one of loose) {
+      const at = held.findIndex((h, i) => !h && i < most);
+      if (at >= 0) held[at] = one;
+    }
+    $('emu-pad-list').replaceChildren(...held.map((h, i) => {
+      const player = i + 1;
+      if (!h) {
+        const why = player > most ? `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}` : 'No controller';
+        return padSlot(player, el('span', 'emu-row__sub', why), player > most ? 'off' : 'none');
+      }
+      const name = info.get(h.pad.id)?.name ?? h.pad.name;
+      const [kind, words] = h.state ?? ['ok', 'Connected'];
+      const said = kind === 'ok' ? `Set up for ${consoleName}` : words;
+      return padSlot(player, indicator(kind, `${name} · ${said}`), 'held', () => openPadMap(h.pad, system, reads[h.pad.family], h.pad.place));
     }));
   }
   for (const type of ['gamepadconnected', 'gamepaddisconnected']) window.addEventListener(type, () => { padReading = null; padReport = null; renderPad(); });

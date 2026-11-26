@@ -374,9 +374,10 @@
   }
 
   // Which player a connected controller is: the player bound to its maker
-  // and product, else the one bound to its place among the connected
-  // controllers, counted from 0 as the emulator counts them. Null where none.
-  const bindsTo = (bound, pad, place) => Boolean(bound && ((bound.vendor && bound.vendor === pad.vendor && (!bound.product || bound.product === pad.product))
+  // and product, or its maker alone where its product is unknown, else the
+  // one bound to its place among the connected controllers, counted from 0
+  // as the emulator counts them. Null where none.
+  const bindsTo = (bound, pad, place) => Boolean(bound && ((bound.vendor && bound.vendor === pad.vendor && (!bound.product || !pad.product || bound.product === pad.product))
     || (bound.index != null && bound.index === place)));
   // Chrome's controllers matched to the ones Rux Emu Helper reports, which
   // it lists in the order the emulators count them. Chrome names some
@@ -391,13 +392,18 @@
     const claim = test => { const c = list.find(c => !taken.has(c) && test(c)); if (c) taken.add(c); return c; };
     const found = new Map();
     for (const p of pads) if (p.vendor) found.set(p, claim(c => c.vendor === p.vendor && c.product === p.product));
+    const makers = new Map();
     for (const p of pads) if (!p.vendor) {
       const maker = MAKER.find(([re]) => re.test(p.name))?.[1];
+      makers.set(p, maker);
       found.set(p, maker ? claim(c => c.vendor === maker) : null);
     }
     return pads.map((p, i) => {
       const c = found.get(p);
-      if (!c) return { ...p, place: i };
+      // Unmatched, a controller keeps the maker its name gives, so it still
+      // finds a player bound to that maker.
+      const maker = makers.get(p);
+      if (!c) return maker ? { ...p, vendor: maker, family: FAMILY[maker] ?? p.family, place: i } : { ...p, place: i };
       return { ...p, vendor: c.vendor, product: c.product, id: `${c.vendor}:${c.product}`, family: FAMILY[c.vendor] ?? p.family, found: c, place: list.indexOf(c) };
     });
   }

@@ -901,7 +901,7 @@
       .filter(([, m]) => m.family === pad.family).map(([key, m]) => Object.assign(el('option', null, m.name), { value: key })));
     select.firstChild.value = '';
     select.value = mine.details.model ?? '';
-    const said = () => [state[0] === 'ok' ? `Player ${one.player}, as set in ${read.emulator}.` : `${state[1]}.${read.problem || one?.problem ? '' : ` Its buttons are set in ${read.emulator}.`}`,
+    const said = () => [state[0] === 'ok' ? `Player ${one.player}, as set in ${read.emulator}.` : `${state[1].replace(/\.?$/, '.')}${read.problem || one?.problem ? '' : ` Its buttons are set in ${read.emulator}.`}`,
       one?.motion ? 'Tilt is on.' : ''].filter(Boolean).join(' ');
     const save = async () => {
       if (!pad.id || !R.data) return false;
@@ -1076,6 +1076,51 @@
     };
     draw();
     window.Rux.modal.open('emu-padmap-modal');
+    showOriginal(pad, system, map, consoleName, mine.details.model);
+  }
+  // The console's own controller in the map: its photo, and while the map
+  // is open, each press on the controller lights the button it is on that
+  // console and says so. Read once a frame; a later map stops an earlier.
+  let originalTurn = 0;
+  function showOriginal(pad, system, map, consoleName, model) {
+    const turn = ++originalTurn;
+    const drawn = R.pads.drawOriginal(system);
+    const art = $('emu-original-art'), said = $('emu-original-said');
+    $('emu-original').hidden = !drawn;
+    if (!drawn) return;
+    art.innerHTML = drawn;
+    said.textContent = Object.keys(map).length ? 'Press a button on your controller.' : `This controller is not set up for ${consoleName}, so a press does nothing there yet.`;
+    const named = { ...R.pads.PRINTED[pad.family], ...(R.pads.MODELS[model]?.printed ?? {}),
+      up: 'D-pad', down: 'D-pad', left: 'D-pad', right: 'D-pad', ls: 'left stick', rs: 'right stick' };
+    const STICK = { l3: 'Left stick', r3: 'Right stick' };
+    const tell = control => {
+      const at = ['up', 'down', 'left', 'right'].includes(control) ? 'dpad' : control;
+      const does = String(map[at] ?? '').split(' · ').filter(Boolean).map(d => (d === 'Press' ? `${STICK[control] ?? 'Stick'} press` : d));
+      said.textContent = does.length ? `Your ${named[control] ?? control} is the ${consoleName}'s ${does.join(' and ')}.` : `Your ${named[control] ?? control} does nothing on the ${consoleName}.`;
+    };
+    const modal = $('emu-padmap-modal');
+    let was = [];
+    const watch = () => {
+      if (turn !== originalTurn || !modal.classList.contains('is-visible')) return;
+      const gp = navigator.getGamepads?.()[pad.index];
+      const held = [];
+      gp?.buttons.forEach((b, i) => { if (b.pressed && R.pads.CHROME[i]) held.push(R.pads.CHROME[i]); });
+      if (Math.hypot(gp?.axes[0] ?? 0, gp?.axes[1] ?? 0) > 0.5) held.push('ls');
+      if (Math.hypot(gp?.axes[2] ?? 0, gp?.axes[3] ?? 0) > 0.5) held.push('rs');
+      if (held.join() !== was.join()) {
+        const on = new Set(held.flatMap(c => R.pads.lit(system, map, c)));
+        for (const n of art.querySelectorAll('[data-does]')) {
+          const lit = on.has(n.dataset.does);
+          n.classList.toggle('is-lit', lit);
+          if (n.classList.contains('rux--tag')) { n.classList.toggle('rux--tag--blue', lit); n.classList.toggle('rux--tag--gray', !lit); }
+        }
+        const fresh = held.find(c => !was.includes(c));
+        if (fresh) tell(fresh);
+        was = held;
+      }
+      requestAnimationFrame(watch);
+    };
+    requestAnimationFrame(watch);
   }
 
   function render() {
@@ -1436,8 +1481,10 @@
   // A CONTROLLER moves the focus over the consoles and the covers to the
   // nearest one that way. A presses it, and a cover already chosen is played
   // or downloaded; B closes what is open. The first move only finds the place.
+  // While a controller's map is open its presses light the console's own
+  // controller instead, so they move and close nothing.
   R.onPad(move => {
-    if (!helper || !game) return;
+    if (!helper || !game || $('emu-padmap-modal')?.classList.contains('is-visible')) return;
     const at = document.activeElement;
     if (move === 'b') { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return; }
     if (panelOpen() || document.querySelector('.rux--modal.is-visible')) { if (move === 'a' && at?.matches('button')) at.click(); return; }

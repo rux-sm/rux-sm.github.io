@@ -15,6 +15,9 @@
    control labelled as printed and what it does beside it, and
    `R.pads.drawBack(model, copies, map)` the back buttons of a model that has
    them, each with the button it copies, learnt by pressing it.
+   `R.pads.drawOriginal(system)` shows a photo of the console's own
+   controller with a spot on each button, and `R.pads.lit(system, map,
+   control)` names the spots a press on the controller lights.
    ========================================================================== */
 (() => {
   'use strict';
@@ -508,6 +511,96 @@
   }
   const escape = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 
+  // THE CONSOLE'S OWN CONTROLLER: a photo of the real one in
+  // brand/originals/, from Wikimedia Commons, and each of its buttons a spot
+  // on it, in the photo's pixels, named as the emulators' maps name it:
+  // [x, y, r] a circle, [x, y, rx, ry, turn] an ellipse turned that many
+  // degrees, or a list of either for a button in several places. A button the
+  // photo cannot show, under or behind it, is in `hidden`, drawn as a tag
+  // under the photo. `view` crops the photo to its buttons.
+  const EVAN = 'Evan-Amos, public domain';
+  const ORIGINALS = {
+    nes: { photo: 'nes.jpg', size: [1280, 929], view: [60, 60, 1180, 820], file: 'Nintendo-Entertainment-System-NES-Controller-FL.jpg', by: EVAN,
+      spots: { 'D-pad': [328, 312, 100], Select: [505, 437, 44, 24, 12], Start: [625, 487, 44, 24, 12], B: [790, 548, 52], A: [912, 600, 52] } },
+    snes: { photo: 'snes.jpg', size: [1280, 625], file: 'SNES-Controller-Flat.jpg', by: EVAN,
+      spots: { 'D-pad': [284, 342, 112], Select: [520, 378, 50, 18, -40], Start: [650, 378, 50, 18, -40],
+        X: [987, 245, 52], A: [1098, 340, 52], B: [982, 430, 52], Y: [867, 340, 52], L: [292, 84, 128, 16], R: [976, 82, 128, 16] } },
+    n64: { photo: 'n64.jpg', size: [1280, 1260], view: [0, 100, 1280, 800], file: 'Nintendo-64-Controller-Gray-Flat.jpg', by: EVAN,
+      spots: { 'D-pad': [262, 418, 108], Start: [645, 447, 46], B: [877, 440, 50], A: [962, 530, 50], Stick: [650, 690, 78],
+        'C buttons': [[1053, 300, 38], [982, 370, 38], [1128, 373, 38], [1056, 438, 38]], L: [268, 180, 120, 24, -12], R: [1012, 178, 120, 24, 10] },
+      hidden: ['Z'] },
+    gb: { photo: 'gb.jpg', size: [1280, 2048], view: [0, 1000, 1280, 1000], file: 'Game-Boy-Original.jpg', by: EVAN,
+      spots: { 'D-pad': [272, 1390, 142], B: [818, 1445, 74], A: [998, 1372, 74], Select: [443, 1665, 66, 26, -20], Start: [628, 1665, 66, 26, -20] } },
+    gba: { photo: 'gba.jpg', size: [1280, 884], view: [60, 60, 1170, 780], file: 'Nintendo-Game-Boy-Advance-Purple-FL.jpg', by: EVAN,
+      spots: { 'D-pad': [290, 245, 72], Start: [288, 383, 22], Select: [258, 432, 22], B: [963, 500, 40], A: [1072, 500, 40] }, hidden: ['L', 'R'] },
+    nds: { photo: 'nds.jpg', size: [1280, 1165], file: 'Nintendo-DS-Fat-Blue.jpg', by: EVAN,
+      spots: { 'D-pad': [252, 700, 76], Select: [955, 720, 32, 13, 5], Start: [1022, 738, 32, 13, 5], X: [952, 795, 27], Y: [878, 826, 27], A: [975, 850, 27], B: [905, 878, 27] },
+      hidden: ['L', 'R'] },
+    n3ds: { photo: 'n3ds.jpg', size: [1280, 1158], file: 'Nintendo-3DS-AquaOpen.jpg', by: EVAN,
+      spots: { 'Circle Pad': [270, 620, 62], 'D-pad': [195, 758, 66], X: [930, 742, 30], Y: [858, 773, 30], A: [962, 797, 30], B: [887, 828, 30],
+        Select: [330, 887, 38, 15, 12], Home: [470, 925, 46, 15, 12], Start: [605, 962, 38, 15, 12] },
+      hidden: ['L', 'R', 'ZL', 'ZR', 'C-Stick'] },
+    gc: { photo: 'gc.jpg', size: [1280, 1103], view: [0, 0, 1280, 800], file: 'Gamecube-controller.jpg', by: EVAN,
+      spots: { Stick: [432, 145, 82], 'D-pad': [418, 390, 78], Start: [720, 292, 32], B: [848, 368, 44], A: [987, 357, 66], X: [1105, 375, 40, 56, -8],
+        Y: [1027, 258, 64, 36, 4], 'C-Stick': [718, 505, 82], Z: [1170, 290, 26, 62] },
+      hidden: ['L', 'R'] },
+    wii: { photo: 'wii.jpg', size: [1280, 1185], view: [100, 90, 1120, 820], file: 'Nintendo-Wii-Remote-wNunchuk.jpg', by: EVAN,
+      spots: { 'D-pad': [1047, 232, 56], A: [1003, 335, 35], '−': [902, 438, 20], Home: [955, 457, 20], '+': [1010, 470, 20], 1: [880, 637, 26], 2: [855, 702, 26],
+        'Nunchuk stick': [508, 155, 56, 36], 'Nunchuk C': [642, 232, 13, 22], 'Nunchuk Z': [622, 330, 22, 40] },
+      hidden: ['B', 'Shake', 'Pointer'] },
+    wiiu: { photo: 'wiiu.png', size: [1280, 692], file: 'Wii U Gamepad schwarz transparent.png', by: 'Mariofan13, CC BY-SA 4.0',
+      spots: { 'Left stick': [130, 155, 62], 'Right stick': [1150, 155, 62], 'D-pad': [180, 290, 66], X: [1105, 242, 27], Y: [1053, 293, 27], A: [1160, 293, 27], B: [1108, 341, 27],
+        '+': [1057, 422, 22], '−': [1057, 488, 22], Home: [640, 600, 29], 'Show screen': [907, 602, 20], 'Blow mic': [568, 602, 14] },
+      hidden: ['L', 'R', 'ZL', 'ZR'] },
+    switch: { photo: 'switch.jpg', size: [1280, 996], view: [80, 60, 1140, 880], file: 'Nintendo-Switch-Pro-Controller-FL.jpg', by: EVAN,
+      spots: { 'Left stick': [413, 213, 72], 'Right stick': [775, 400, 82], 'D-pad': [493, 358, 86], '−': [585, 185, 26], Capture: [615, 257, 22], Home: [752, 282, 30],
+        '+': [825, 233, 26], Y: [868, 298, 39], X: [962, 260, 39], A: [1025, 333, 39], B: [928, 372, 39] },
+      hidden: ['L', 'R', 'ZL', 'ZR'] },
+    psx: { photo: 'psx.jpg', size: [1280, 1004], view: [0, 20, 1280, 760], file: 'PSX-DualShock-Controller.jpg', by: EVAN,
+      spots: { 'D-pad': [380, 195, 116], Select: [605, 272, 34, 18, 15], Start: [800, 322, 36, 18, 15], Analog: [655, 378, 32, 18, 10],
+        '□': [930, 345, 44], '△': [1060, 302, 44], '○': [1113, 393, 44], '✕': [982, 435, 44],
+        'Left stick': [455, 335, 92], 'Right stick': [775, 410, 92], L3: [455, 335, 92], R3: [775, 410, 92] },
+      hidden: ['L1', 'L2', 'R1', 'R2'] },
+    ps2: { photo: 'ps2.jpg', size: [1280, 996], view: [100, 60, 1100, 740], file: 'PS2-DualShock2.jpg', by: EVAN,
+      spots: { 'D-pad': [360, 300, 122], Select: [572, 345, 30, 18, 8], Start: [762, 380, 34, 16, 15], Analog: [650, 455, 32, 18],
+        '□': [887, 402, 44], '△': [1000, 340, 44], '○': [1065, 440, 44], '✕': [952, 505, 44],
+        'Left stick': [450, 490, 88], 'Right stick': [765, 520, 88], L3: [450, 490, 88], R3: [765, 520, 88] },
+      hidden: ['L1', 'L2', 'R1', 'R2'] },
+    xbox: { photo: 'xbox.jpg', size: [1280, 1161], view: [40, 60, 1220, 760], file: 'Xbox-Controller-S-FR.jpg', by: EVAN,
+      spots: { 'Left stick': [222, 398, 116], 'D-pad': [450, 515, 116], 'Right stick': [775, 430, 112], Y: [840, 160, 42], B: [948, 227, 42], X: [785, 252, 42], A: [895, 318, 42],
+        Black: [1015, 368, 37], White: [958, 447, 37], Back: [153, 550, 37], Start: [240, 595, 37] },
+      hidden: ['Left trigger', 'Right trigger'] },
+  };
+  ORIGINALS.gbc = ORIGINALS.gb;
+  // A stick pressed in is named Press on the Wii U, Switch and Xbox, so its
+  // spot is the stick's own, found from which stick was pressed.
+  const PRESS = { l3: 'Left stick', r3: 'Right stick' };
+  // The console's buttons a press lights: what `map` says the physical
+  // control does there, each one that has a spot or a tag.
+  function lit(system, map, control) {
+    const o = ORIGINALS[system];
+    if (!o) return [];
+    const at = ['up', 'down', 'left', 'right'].includes(control) ? 'dpad' : control;
+    return String(map[at] ?? '').split(' · ').filter(Boolean)
+      .map(does => (does === 'Press' ? PRESS[control] : does))
+      .filter(does => does && (does in o.spots || o.hidden?.includes(does)));
+  }
+  // The photo with a spot on each button, every spot named by `data-does`,
+  // and a tag for each button the photo cannot show, also named.
+  function drawOriginal(system) {
+    const o = ORIGINALS[system];
+    if (!o) return '';
+    const [w, h] = o.size;
+    const [vx, vy, vw, vh] = o.view ?? [0, 0, w, h];
+    const shape = s => (s.length === 3 ? `<circle cx="${s[0]}" cy="${s[1]}" r="${s[2]}"/>`
+      : `<ellipse cx="${s[0]}" cy="${s[1]}" rx="${s[2]}" ry="${s[3]}"${s[4] ? ` transform="rotate(${s[4]} ${s[0]} ${s[1]})"` : ''}/>`);
+    const spots = Object.entries(o.spots).map(([does, s]) => `<g class="emu-original__spot" data-does="${escape(does)}">${(Array.isArray(s[0]) ? s : [s]).map(shape).join('')}</g>`).join('');
+    const tags = (o.hidden ?? []).map(does => `<span class="rux--tag rux--tag--gray emu-original__tag" data-does="${escape(does)}"><span class="rux--tag__label">${escape(does)}</span></span>`).join('');
+    const credit = `<a class="rux--link" href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(o.file.replace(/ /g, '_'))}" target="_blank" rel="noopener">Photo: ${escape(o.by)}</a>`;
+    return `<svg class="emu-original__photo" viewBox="${vx} ${vy} ${vw} ${vh}" role="img" aria-label="The console's own controller"><image href="brand/originals/${o.photo}" width="${w}" height="${h}"/>${spots}</svg>`
+      + `<div class="emu-original__foot">${tags ? `<div class="emu-original__tags">${tags}</div>` : ''}<p class="emu-original__credit">${credit}</p></div>`;
+  }
+
   // SETTING UP. Emu's layout for each console: which physical control, by
   // position, does each of its buttons, named as the map names them. A
   // Nintendo pad's labels and an Xbox pad's positions land on the same
@@ -799,5 +892,5 @@
     if (changed) await helper.putSetting(emulator, 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, identify, read, playerOf, beforePlay, draw, drawBack, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

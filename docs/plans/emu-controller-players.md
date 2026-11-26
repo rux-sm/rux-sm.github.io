@@ -2,16 +2,14 @@
 type: plan
 ---
 
-# Plan: Each controller keeps its player, and shows the console's own buttons
+# Plan: Each controller keeps its player
 
 ## Goal
 
 A controller is the same player in every game on every console, whatever
 order the controllers are turned on: rux picks its player once, and Emu
 makes the emulator agree before each game starts. The controller tile asks
-an empty player to press a button to join. The Buttons map shows a photo of
-the console's own controller, and a press on rux's controller lights the button
-it is on that console. The tile and map are `emu/library.js`; what they read
+an empty player to press a button to join. The tile and map are `emu/library.js`; what they read
 and write is `emu/pads.js` and `emu/docs/controller-settings.md`.
 
 ## Decisions
@@ -34,26 +32,10 @@ and write is `emu/pads.js` and `emu/docs/controller-settings.md`.
 - **PCSX2 and DuckStation bind a player to `SDL-N`, SDL's place for a
   controller,** so before a game each player's `SDL-N` is pointed at its
   controller's place in Rux Emu Helper's report.
-- **The console's own controller is a photo of the real one,** from Wikimedia
-  Commons, kept in `emu/brand/originals/` named for its system and shrunk to
-  1200px wide. All but one are Evan-Amos's, in the public domain; the Wii U
-  GamePad is Mariofan13's, CC BY-SA 4.0, credited under the map.
-- **One photo per console, 14 in all:** the Game Boy and Game Boy Color share
-  one. The Wii is its Remote with its Nunchuk, the Xbox its Controller S.
-- **Each button is a spot laid over the photo,** an SVG shape at the button's
-  place, named as the console names it, the names `LAYOUTS` and the
-  emulators' maps already use, so it lights from the map the emulator really
-  has, not from Emu's layout. The spots for each photo are a list in
-  `emu/pads.js`.
-- **A lit spot is a ring and a fill in the interactive colour** over Carbon's
-  fast-01, 110ms, so it shows on a grey, black or purple controller, and a
-  line under the photo says what it is: "Your A is B on the Super Nintendo."
 
 ## Questions
 
-- **Keep the drawing of rux's controller under the console's photo?** It
-  labels every button at once; the photo answers one press at a time.
-  Keeping both is the default.
+None.
 
 ## Tasks
 
@@ -69,9 +51,5 @@ and write is `emu/pads.js` and `emu/docs/controller-settings.md`.
       have the helper report it; then point its ports the same way.
 - [ ] Prove each emulator with two controllers turned on in both orders, the
       player read back from its file after the game starts.
-- [ ] Fetch the 14 photos into `emu/brand/originals/` and place each one's
-      button spots in `emu/pads.js`.
-- [ ] Put the console's photo in the Buttons map, lit on each press, with
-      the line naming the button and the Wii U photo's credit.
 - [ ] Replace the "turn the controllers on in player order" sentence in
       `emu/docs/controller-settings.md`, and the tile's in `emu/README.md`.

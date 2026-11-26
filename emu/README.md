@@ -11,7 +11,7 @@ The repository root's `AGENTS.md` is the policy, and
 
 `index.html` is the Library, drawn by `library.js`: every console down the side, the chosen one's
 games as a wall of covers beside them, the ones the server keeps in Supabase, and over the wall
-the chosen game: libretro's screenshot of it, its facts and description, its save, and Play; beside it, four players, each the controller playing it on that console or No controller, opening where its buttons are set. Each of the four is its own tile. A right-click on a cover opens the game's menu: Favourite, Finished, About this copy and Remove from this Mac. What this Mac lacks is faded, and
+the chosen game: libretro's screenshot of it, its facts and description, its save, and Play; beside it, four players, each the controller playing it on that console or No controller, opening where its buttons are set: a photo of the console's own controller, whose buttons light as the controller's are pressed, over the controller's own buttons and what each does. Each of the four is its own tile. A right-click on a cover opens the game's menu: Favourite, Finished, About this copy and Remove from this Mac. What this Mac lacks is faded, and
 the chosen game's button downloads it. The wall's title row holds Installed or All games, Sound and the strip, which says how this Mac
 stands and what a move did. Without Rux Emu Helper, as on the phone, it is the consoles and the games alone, a game
 opening in its panel. `collection.html` is the
@@ -57,7 +57,7 @@ with backups to put back and a preferred set; and what is worth knowing. `docs/e
 is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
 `docs/drawing-consoles.md` how a console is drawn in pixels for the Library. `docs/controller-settings.md` is where each emulator keeps its controller's buttons, which the controller map reads. `brand/logos/`
 and `brand/controllers/` hold each system's logo and controller, named as its console is; no
-page shows them. Sprites writes all three folders from the drawings in `sprites/art/`.
+page shows them. Sprites writes all three folders from the drawings in `sprites/art/`. `brand/originals/` holds a photo of each console's own controller from Wikimedia Commons, which `pads.js` credits and marks each button on.
 `brand/marks.svg` holds each console's wordmark in one colour, which the Library shows over its games.
 
 ## The scan

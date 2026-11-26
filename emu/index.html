@@ -200,8 +200,8 @@
             <!-- The chosen game: its screenshot; beside it its name; the
                  facts libretro has, then when it was last played, its
                  region and size; its description; its save, a list opening
-                 down from it; and the one next move with More, which opens
-                 the game's menu. -->
+                 down from it, and beside it the one next move with More,
+                 which opens the game's menu. -->
             <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name" hidden>
               <div class="emu-chosen__art" id="emu-chosen-art"></div>
               <div class="emu-chosen__main">
@@ -223,13 +223,13 @@
                     </div>
                     <p class="emu-pick__warn" hidden></p>
                   </div>
-                </div>
-                <div class="emu-chosen__row">
-                  <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>
-                  <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
-                    <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-lg" id="emu-chosen-more" aria-label="More"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_horiz"/></svg></button></span>
-                    <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">More</span><span class="rux--popover-caret"></span></span>
-                  </span>
+                  <div class="emu-chosen__row">
+                    <button type="button" class="rux--btn rux--btn--primary rux--layout--size-lg" id="emu-chosen-go">Play</button>
+                    <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
+                      <span class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-lg" id="emu-chosen-more" aria-label="More"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_horiz"/></svg></button></span>
+                      <span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">More</span><span class="rux--popover-caret"></span></span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

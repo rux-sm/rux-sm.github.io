@@ -488,7 +488,8 @@
       art.replaceChildren(R.shot(game));
     }
     art.classList.toggle('emu-chosen__art--away', !isHere(game));
-    $('emu-chosen-name').textContent = nameOf(game);
+    // One line, so the whole name rests under the pointer.
+    $('emu-chosen-name').textContent = $('emu-chosen-name').title = nameOf(game);
     const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
     $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');

@@ -214,24 +214,24 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen { --emu-art: 8rem; }
-.emu-chosen__art { display: grid; place-items: center; block-size: var(--emu-art); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
+.emu-chosen__art { display: grid; place-items: center; align-self: stretch; min-block-size: var(--emu-art); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; background: var(--rux-layer-02); }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
 .emu-chosen__art--away img { opacity: .45; }
-.emu-chosen__main { min-inline-size: 0; }
+.emu-chosen__main { min-inline-size: 0; align-self: stretch; display: flex; flex-direction: column; }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
-.emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-/* Save, under the facts. */
-.emu-chosen__picks { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-03); }
+.emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* Save and the move beside it, their feet on one line with the screenshot's. */
+.emu-chosen__picks { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--rux-spacing-05); padding-block-start: var(--rux-spacing-05); margin-block-start: auto; }
 /* A description is three lines at most, whole when the pointer rests on it. */
 /* The facts under the name in body-compact-01, the size Carbon pairs with
    its large buttons. */
 .emu-chosen__game > .emu-row__sub { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-chosen__about { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-/* The one next move under Save, as Carbon leads a form's buttons with the
+/* The one next move beside Save, as Carbon leads a form's buttons with the
    primary, and More beside it, which opens the game's menu. Under 42rem the
-   move takes what More leaves of the row. */
-.emu-chosen__row { display: flex; align-items: center; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }
+   move takes what More leaves of its line, under Save. */
+.emu-chosen__row { display: flex; align-items: center; gap: var(--rux-spacing-03); }
 /* SAVE, as Carbon's dropdown stands on a layer: its
    label over a 48px field, the large size Carbon pairs with large buttons,
    the field holding the value with its note beside it in the secondary
@@ -239,7 +239,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    it. The list opens down from the field's foot, a layer up under the menu
    shadow; open, the field takes the list's layer, so the two are one
    surface. */
-.emu-pick { flex: none; inline-size: 14rem; display: flex; flex-direction: column; }
+.emu-pick { flex: 1 1 12rem; max-inline-size: 20rem; display: flex; flex-direction: column; }
 .emu-pick__field { position: relative; display: flex; }
 .emu-pick__button { position: relative; flex: 1; min-inline-size: 0; block-size: 3rem; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-primary); text-align: start; cursor: pointer; display: flex; align-items: baseline; gap: var(--rux-spacing-03); padding: 0 var(--rux-spacing-08) 0 var(--rux-spacing-05); line-height: 3rem; background: var(--rux-field-02); border-block-end: 1px solid var(--rux-border-strong-01); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-pick__button:hover { background: var(--rux-field-hover-02); }
@@ -260,6 +260,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
   .emu-chosen { --emu-art: 5.5rem; gap: var(--rux-spacing-05); }
   .emu-chosen__name { font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); }
   .emu-pick { flex: 1 1 8rem; inline-size: auto; }
+  .emu-chosen__row { flex: 1 1 100%; }
   .emu-chosen__row > .rux--btn--primary { flex: 1 1 auto; min-inline-size: 0; max-inline-size: none; }
   .emu-games__title .emu-mark { block-size: calc(1rem * var(--emu-mark-scale, 1)); }
 }

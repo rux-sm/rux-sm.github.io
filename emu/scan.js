@@ -16,6 +16,7 @@
      exists(rel)         whether a file is there
      fingerprint(rel)    the whole file's { crc32, md5, sha1 }, in hex
      inside(rel)         a CHD's track fingerprints, or null where it cannot
+     unzstd(bytes)       a zstd frame decompressed, for a .wua's blocks
      progress(read, all) told after each file how many new bytes are hashed
 
    It returns the scan and the fingerprints to keep; writing them is the
@@ -46,7 +47,10 @@
 
   const u16le = (b, i) => b[i] | (b[i + 1] << 8);
   const u32le = (b, i) => (b[i] | (b[i + 1] << 8) | (b[i + 2] << 16) | (b[i + 3] << 24)) >>> 0;
+  const u16be = (b, i) => (b[i] << 8) | b[i + 1];
   const u32be = (b, i) => ((b[i] << 24) | (b[i + 1] << 16) | (b[i + 2] << 8) | b[i + 3]) >>> 0;
+  // As a Number, exact to 2^53, which any file's offset is within.
+  const u64be = (b, i) => u32be(b, i) * 2 ** 32 + u32be(b, i + 4);
   const u64le = (b, i) => (BigInt(u32le(b, i + 4)) << 32n) | BigInt(u32le(b, i));
   const hex = b => Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
   // Each byte as the character of the same number, as Node's latin1 reads it.
@@ -269,16 +273,83 @@
     return { titleId: id, version, kind, baseTitleId: b.toString(16).toUpperCase().padStart(16, '0') };
   }
 
-  async function wiiuMeta(drive, folder) {
-    const xml = await drive.text(join(folder, 'meta', 'meta.xml'), 'utf8');
-    if (xml == null) return {};
+  // A Wii U title's `meta/meta.xml`, as a folder game holds it and a .wua packs it.
+  const metaOf = xml => {
     const tag = t => xml.match(new RegExp(`<${t}[^>]*>([^<]*)</${t}>`))?.[1]?.trim();
     return { titleId: tag('title_id'), version: Number(tag('title_version') ?? 0), productCode: tag('product_code') };
+  };
+
+  async function wiiuMeta(drive, folder) {
+    const xml = await drive.text(join(folder, 'meta', 'meta.xml'), 'utf8');
+    return xml == null ? {} : metaOf(xml);
+  }
+
+  // A .wua is Cemu's ZArchive: a 144-byte footer at the end names six
+  // sections by big-endian offset and size, of which the file tree, its
+  // names and the offsets of the data's 64 KiB blocks are read here. Each
+  // top-level folder is one title, base game, update or add-on, holding its
+  // own `meta/meta.xml`; its name is `<title ID>_v<version>`, but some packers
+  // write zeros there, so the title ID is read from that file. The title is
+  // the base game's, at the newest version its update brings.
+  async function wua(drive, f, size) {
+    const ft = await drive.read(f, size - 144, 144);
+    if (u32be(ft, 140) !== 0x169f52d6) return { header: 'not ZArchive' };
+    if (!drive.unzstd) return {};
+    const section = n => drive.read(f, u64be(ft, n * 16), u64be(ft, n * 16 + 8));
+    const [offsets, names, tree] = await Promise.all([section(1), section(2), section(3)]);
+    // An entry is 16 bytes: a word whose top bit marks a file and whose rest
+    // is its name's offset, then a folder's first child and count, or a
+    // file's offset and size, each 32 low bits and 16 high.
+    const entry = i => {
+      const w = u32be(tree, i * 16);
+      const o = w & 0x7fffffff;
+      // A name is one length byte and its text; a longer one, flagged by the
+      // top bit, is none of the names looked for here.
+      const name = names[o] & 0x80 ? null : latin1(names.subarray(o + 1, o + 1 + names[o])).toLowerCase();
+      const a = u32be(tree, i * 16 + 4), b = u32be(tree, i * 16 + 8);
+      return w >>> 31
+        ? { name, at: a + u16be(tree, i * 16 + 14) * 2 ** 32, size: b + u16be(tree, i * 16 + 12) * 2 ** 32 }
+        : { name, first: a, count: b };
+    };
+    const child = (dir, name) => {
+      for (let i = dir.first; i < dir.first + dir.count; i++) { const e = entry(i); if (e.name === name) return e; }
+      return null;
+    };
+    // Block n is at its record's base offset plus the sizes before it in its
+    // group of sixteen, each kept less one; a block of the full 64 KiB is stored as is.
+    const block = async n => {
+      const r = Math.floor(n / 16) * 40;
+      let at = u64be(offsets, r);
+      for (let j = 0; j < n % 16; j++) at += u16be(offsets, r + 8 + j * 2) + 1;
+      const len = u16be(offsets, r + 8 + (n % 16) * 2) + 1;
+      const raw = await drive.read(f, at, len);
+      return len === 0x10000 ? raw : drive.unzstd(raw);
+    };
+    const text = async file => {
+      const parts = [];
+      for (let n = Math.floor(file.at / 0x10000); n * 0x10000 < file.at + file.size; n++) parts.push(await block(n));
+      const all = new Uint8Array(parts.reduce((s, p) => s + p.length, 0));
+      parts.reduce((s, p) => (all.set(p, s), s + p.length), 0);
+      const from = file.at % 0x10000;
+      return new TextDecoder().decode(all.subarray(from, from + file.size));
+    };
+    const root = entry(0);
+    const titles = [];
+    for (let i = root.first; i < root.first + root.count; i++) {
+      const top = entry(i);
+      const meta = top.count != null && child(top, 'meta');
+      const xml = meta && child(meta, 'meta.xml');
+      if (xml?.size != null) titles.push(metaOf(await text(xml)));
+    }
+    const game = titles.find(t => /^00050000/i.test(t.titleId ?? ''));
+    if (!game) return { header: 'no base game' };
+    const same = titles.filter(t => /^0005000[0e]/i.test(t.titleId) && t.titleId.slice(8).toLowerCase() === game.titleId.slice(8).toLowerCase());
+    return { titleId: game.titleId, titleVersion: Math.max(...same.map(t => t.version)), productCode: game.productCode };
   }
 
   const READERS = {
     nes, gb: gameboy, gbc: gameboy, gba, nds, z64: n64, v64: n64, n64,
-    sfc: snes, smc: snes, '3ds': n3ds, cci: n3ds, rvz, chd,
+    sfc: snes, smc: snes, '3ds': n3ds, cci: n3ds, rvz, chd, wua,
   };
 
   async function headerOf(drive, f, ext, size) {
@@ -613,8 +684,14 @@
         Object.assign(game, await wiiuMeta(drive, e.path));
         for (const f of await walk(e.path)) game.files.push(await fileRecord(f));
       } else {
-        game.files.push(await fileRecord(e.path));
+        const rec = await fileRecord(e.path);
+        game.files.push(rec);
         if (e.system === 'switch') Object.assign(game, switchName(b));
+        // A .wua packs the meta.xml a folder game holds, so it names the game the same way.
+        if (rec.header.titleId && ext.toLowerCase() === 'wua') {
+          const { titleId, titleVersion: version, productCode } = rec.header;
+          Object.assign(game, { titleId, version, productCode });
+        }
       }
     }
 

@@ -111,6 +111,7 @@ const drive = {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
   },
+  unzstd(bytes) { return zlib.zstdDecompressSync(bytes); },
   progress(read, total) {
     if (Date.now() - lastReport < 5000) return;
     lastReport = Date.now();

@@ -192,17 +192,18 @@
               <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
               <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
             </ul>
-            <!-- The chosen game: its screenshot; beside it its name; the
+            <!-- The chosen game: its name across the top; under it its
+                 screenshot and beside that the
                  facts libretro has, then when it was last played, its
                  region and size; its description; its save, a list opening
                  down from it, and beside it the one next move; the game's
                  menu opens from a right-click on its cover. -->
             <div class="emu-chosen" id="emu-chosen" role="group" aria-labelledby="emu-chosen-name">
+              <h2 class="emu-chosen__name" id="emu-chosen-name"><span class="rux--skeleton__text emu-skel-name" aria-hidden="true"></span></h2>
               <div class="emu-chosen__frame"><div class="emu-chosen__art" id="emu-chosen-art"></div></div>
               <div class="emu-chosen__main">
-                <div class="emu-chosen__skeleton" aria-hidden="true"><span class="rux--skeleton__text emu-skel-name"></span><span class="rux--skeleton__text emu-skel-line"></span><span class="rux--skeleton__text emu-skel-line emu-skel-line--short"></span></div>
+                <div class="emu-chosen__skeleton" aria-hidden="true"><span class="rux--skeleton__text emu-skel-line"></span><span class="rux--skeleton__text emu-skel-line emu-skel-line--short"></span></div>
                 <div class="emu-chosen__game">
-                  <h2 class="emu-chosen__name" id="emu-chosen-name"></h2>
                   <p class="emu-row__sub" id="emu-chosen-facts" hidden></p>
                   <p class="emu-row__sub" id="emu-chosen-sub"></p>
                   <p class="emu-chosen__about" id="emu-chosen-about" hidden></p>

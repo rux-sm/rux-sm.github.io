@@ -213,13 +213,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    beside it, so the words beside it stand still from game to game; a
    picture of another shape fills it from the top, which shows a 3DS's top
    screen where both were taken; empty where libretro has none and faded
-   where this Mac lacks the game; beside it, from one left
-   edge and the frame's top, the name, the facts, and at its foot Save and
-   Play. */
-.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
+   where this Mac lacks the game; its name on one line across the top of
+   the tile; beside the screenshot, from one left edge and the frame's top,
+   the facts, and at its foot Save and Play. */
+.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "name name" "art main"; align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 /* LOADING: the four tiles stand from the first paint, Carbon's skeletons
-   in the shapes of what fills them: console rows, the game's name and two
-   lines beside its black screen, four player boxes, the wordmark, Installed
+   in the shapes of what fills them: console rows, the game's name, and two
+   lines beside its black screen under it, four player boxes, the wordmark, Installed
    or All games, and covers in the box shape of the console the page
    last opened on.
    Save and Play keep their place unseen until the game is known. */
@@ -227,7 +227,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-library--loading .emu-chosen__picks { visibility: hidden; }
 .emu-library:not(.emu-library--loading) .emu-chosen__skeleton { display: none; }
 .emu-chosen__skeleton { display: grid; gap: var(--rux-spacing-03); }
-.emu-skel-name { inline-size: 60%; block-size: 2rem; margin: 0 0 var(--rux-spacing-02); }
+.emu-skel-name { display: block; inline-size: 60%; block-size: 2rem; margin: 0; }
 .emu-skel-line { inline-size: 100%; margin: 0; }
 .emu-skel-line--short { inline-size: 60%; }
 .emu-skel-kit { display: flex; align-items: center; gap: var(--rux-spacing-04); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-02) var(--rux-spacing-05); }
@@ -241,14 +241,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-library:not(.emu-library--loading) .emu-skel-where { display: none; }
 .emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
-.emu-chosen__frame { inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
+.emu-chosen__frame { grid-area: art; inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
 .emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
 .emu-chosen__art--away img { opacity: .45; }
-.emu-chosen__main { min-inline-size: 0; align-self: stretch; display: flex; flex-direction: column; }
+.emu-chosen__main { grid-area: main; min-inline-size: 0; align-self: stretch; display: flex; flex-direction: column; }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
-.emu-chosen__name { font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.emu-chosen__name { grid-area: name; min-inline-size: 0; font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 /* Save and the move beside it, their feet on one line with the screenshot's. */
 .emu-chosen__picks { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--rux-spacing-05); padding-block-start: var(--rux-spacing-05); margin-block-start: auto; }
 /* A description is three lines at most, whole when the pointer rests on it. */

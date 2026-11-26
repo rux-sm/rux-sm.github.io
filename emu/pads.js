@@ -125,20 +125,23 @@
         const s = JSON.parse(f['settings.json']);
         const port = s[system === 'nes' ? 'Nes' : 'Snes']?.[`Port${player}`];
         // Apple's GameController, by position, numbered from 0x1000 for the
-        // first controller and 0x100 on for each next; 16 to 23 are the
-        // sticks' directions.
-        const base = 0x1000 + (player - 1) * 0x100;
+        // first controller to connect and 0x100 on for each next; 16 to 23
+        // are the sticks' directions. A port is bound to the controller its
+        // codes name.
         const APPLE = ['south', 'east', 'west', 'north', 'l', 'r', 'plus', 'minus', 'up', 'down', 'left', 'right', 'zl', 'zr', 'l3', 'r3',
           'ls', 'ls', 'ls', 'ls', 'rs', 'rs', 'rs', 'rs'];
         const pairs = [];
+        let index = null;
         for (const k of ['Mapping1', 'Mapping2', 'Mapping3', 'Mapping4']) {
           for (const [button, code] of Object.entries(port?.[k] ?? {})) {
-            if (typeof code !== 'number' || code < base || code > base + 0xff) continue;
+            if (typeof code !== 'number' || code < 0x1000 || code >= 0x1000 + MESEN_PADS * 0x100) continue;
             const does = { Up: 'D-pad', Down: 'D-pad', Left: 'D-pad', Right: 'D-pad' }[button] ?? button;
-            if (['A', 'B', 'X', 'Y', 'L', 'R', 'Start', 'Select', 'Up', 'Down', 'Left', 'Right'].includes(button)) pairs.push([APPLE[code - base], does]);
+            if (!['A', 'B', 'X', 'Y', 'L', 'R', 'Start', 'Select', 'Up', 'Down', 'Left', 'Right'].includes(button)) continue;
+            index ??= (code - 0x1000) >> 8;
+            pairs.push([APPLE[(code - 0x1000) & 0xff], does]);
           }
         }
-        return { bound: pairs.length ? { index: player - 1 } : null, map: mapOf(pairs) };
+        return { bound: pairs.length ? { index } : null, map: mapOf(pairs) };
       },
     },
     mGBA: {
@@ -812,8 +815,14 @@
       const g = pad.sdl2;
       const swap = h => h.match(/../g).reverse().join('');
       const id = `0-0000${swap(g.slice(0, 8)).slice(4)}-${swap(g.slice(8, 12))}-${swap(g.slice(12, 16))}-${g.slice(16, 20)}-${g.slice(20)}`;
-      // Ryujinx names SDL 2's buttons, which on a Nintendo pad count by label.
-      const name = k => ({ zl: 'LeftTrigger', zr: 'RightTrigger' }[L[k]] ?? RYU_NAME[sdl2At(L[k], pad.family)]);
+      // Ryujinx names SDL 2's buttons, which on a Nintendo pad count by label;
+      // − and + keep the names the file already gives them, Back and Start
+      // in older versions, Minus and Plus in newer.
+      const newer = /"(Minus|Plus)"/.test(f['Config.json']);
+      const name = k => {
+        const n = { zl: 'LeftTrigger', zr: 'RightTrigger' }[L[k]] ?? RYU_NAME[sdl2At(L[k], pad.family)];
+        return newer ? { Back: 'Minus', Start: 'Plus' }[n] ?? n : n;
+      };
       const entry = {
         left_joycon_stick: { joystick: 'Left', invert_stick_x: false, invert_stick_y: false, rotate90_cw: false, stick_button: 'LeftStick' },
         right_joycon_stick: { joystick: 'Right', invert_stick_x: false, invert_stick_y: false, rotate90_cw: false, stick_button: 'RightStick' },
@@ -868,16 +877,63 @@
     return { emulator, files: Object.fromEntries(Object.entries(out).map(([rel, after]) => [rel, [raw[rel] ?? null, after]])) };
   }
 
-  // Before a game starts. Gopher64 binds a player to its controller's SDL
-  // path, which changes each time the controller connects again, so each
-  // player Emu set, its profile named for its controller, is pointed at that
-  // controller's path now; two of one model take their paths in turn.
+  // BEFORE A GAME STARTS, each connected controller plays as the player it
+  // keeps with the account, in an emulator that names the controller: a
+  // player bound to another is set up again for the kept one, with the
+  // buttons that controller had where it was. Mesen 2, PCSX2 and DuckStation
+  // count controllers in an order SDL itself does not keep from one start
+  // to the next, so they are left as they are. Gopher64 also binds by SDL
+  // path, which changes each time a controller connects, so its paths are
+  // brought up to date last.
+  const ORDERED = new Set(['Mesen 2', 'PCSX2', 'DuckStation']);
+  const MESEN_PADS = 20;
+  // A console's layout as a map has it: Emu's, with each button the map
+  // moves where the map has it.
+  function layoutFrom(system, map) {
+    const L = LAYOUTS[system];
+    if (!L) return undefined;
+    const out = { ...L };
+    for (const [control, does] of Object.entries(map ?? {})) for (const d of does.split(' · ')) if (d in L) out[d] = control;
+    return out;
+  }
   async function beforePlay(system, helper) {
     const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
-    if (emulator !== 'Gopher64' || !helper.controllers) return;
+    const reader = READERS[emulator];
+    if (!reader || !helper.controllers) return;
     const report = await helper.controllers();
-    if (!report) return;
-    const c = JSON.parse(text(await helper.setting(emulator, 'config.json')));
+    if (!report?.length) return;
+    const list = [...report].sort((a, b) => (a.sdl3Index ?? 0) - (b.sdl3Index ?? 0));
+    // Each player's kept controller among those connected.
+    const rows = await (R.data?.controllers?.() ?? Promise.resolve([])).catch(() => []);
+    const kept = new Map(), used = new Set();
+    for (const row of rows) {
+      const p = row.details?.player;
+      if (!p || p > (reader.players ?? 1) || kept.has(p)) continue;
+      const [vendor, product] = String(row.id).split(':');
+      const c = list.find(c => !used.has(c) && c.vendor === vendor && c.product === product);
+      if (c) { kept.set(p, c); used.add(c); }
+    }
+    const put = async files => {
+      for (const [rel, after] of Object.entries(files)) await helper.putSetting(emulator, rel, new TextEncoder().encode(after));
+    };
+    if (kept.size && WRITERS[emulator] && !ORDERED.has(emulator)) {
+      for (const [p, c] of kept) {
+        const family = FAMILY[c.vendor] ?? 'xbox';
+        const now = await read(system, helper, family);
+        const place = list.indexOf(c);
+        if (now.players.some(x => x.player === p && bindsTo(x.bound, c, place))) continue;
+        const was = now.players.find(x => bindsTo(x.bound, c, place));
+        const out = await setUp(system, helper, p, { family, ...c }, layoutFrom(system, was?.map));
+        if (out.files) await put(Object.fromEntries(Object.entries(out.files).map(([rel, [, after]]) => [rel, after])));
+      }
+    }
+    if (emulator === 'Gopher64') await pointGopher(helper, report);
+  }
+  // Gopher64's players Emu set, each profile named for its controller,
+  // pointed at that controller's SDL path now; two of one model take their
+  // paths in turn.
+  async function pointGopher(helper, report) {
+    const c = JSON.parse(text(await helper.setting('Gopher64', 'config.json')));
     const input = c.input;
     const taken = new Map();
     let changed = false;
@@ -889,8 +945,8 @@
       const found = report.filter(r => r.vendor === m[1] && r.product === m[2])[n];
       if (found?.path && input.controller_assignment[i] !== found.path) { input.controller_assignment[i] = found.path; changed = true; }
     });
-    if (changed) await helper.putSetting(emulator, 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
+    if (changed) await helper.putSetting('Gopher64', 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, identify, read, playerOf, beforePlay, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

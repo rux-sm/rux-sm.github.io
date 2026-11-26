@@ -880,8 +880,9 @@
       const name = info.get(h.pad.id)?.name ?? h.pad.name;
       const read = reads[h.pad.family];
       const [kind, words, one] = h.state ?? ['ok', 'Connected', null];
-      // The player the emulator has it as, where that is not the one it keeps.
-      const elsewhere = kind === 'ok' && one && one.player !== player ? `${read.emulator} has it as player ${one.player}` : null;
+      // The player the emulator has it as, where that is not the one it keeps;
+      // one that counts controllers in an order of its own cannot say.
+      const elsewhere = kind === 'ok' && one && one.player !== player && !R.pads.ORDERED.has(read.emulator) ? `${read.emulator} has it as player ${one.player}` : null;
       const said = past ?? elsewhere ?? (kind === 'ok' ? `Set up for ${consoleName}` : words);
       const li = padSlot(player, indicator(past ? 'info' : elsewhere ? 'warn' : kind, `${name} · ${said}`), past ? 'off' : 'held', () => openPadMap(h.pad, system, read, h.pad.place));
       li.dataset.pad = String(h.pad.index);

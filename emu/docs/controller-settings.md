@@ -41,7 +41,7 @@ mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
 | PCSX2 | `inis/PCSX2.ini`, `[Pad1]` | `SDL-0` | SDL names, `SDL-0/FaceSouth` |
 | Dolphin | `Config/GCPadNew.ini` `[GCPad1]`, `Config/WiimoteNew.ini` `[Wiimote1]` | `Device = SDL/0/<name>` | SDL names in backticks; GameCube port 1 needs `SIDevice0 = 6` in `Config/Dolphin.ini` |
 | Cemu | `controllerProfiles/controller0.xml` | `uuid`, `<index>_<SDL 3 GUID>` | SDL 3; 38–49 are axes, 42 and 43 ZL and ZR |
-| Ryujinx | Config.json, `input_config` for `Player1` | `id`, the GUID as a .NET Guid with its first four characters zeroed | SDL 2 controller names; it writes − and + as `Back` and `Start` |
+| Ryujinx | Config.json, `input_config` for `Player1` | `id`, the GUID as a .NET Guid with its first four characters zeroed | SDL 2 controller names; − and + are `Back` and `Start` in older versions, `Minus` and `Plus` in newer |
 | xemu | `xemu.toml`, `[input.bindings] port1` | an SDL 3 GUID | its own layout, by position: White on LB, Black on RB |
 
 ## Players 2 to 4
@@ -55,9 +55,12 @@ Wii Remotes 2 to 4 are off unless set, Cemu in `controller1.xml` as a
 `Wii U Pro Controller`, Ryujinx in `Player2` and xemu in `port2`. Gopher64
 binds each player to the controller's SDL path, which changes whenever the
 controller connects again, so Emu points it at the path again before an N64
-game starts. Mesen 2, PCSX2 and DuckStation number controllers in the
-order they connect, so player 2 is whichever controller connected second;
-turn the controllers on in player order.
+game starts. Before a game starts, Emu sets each player
+up again in the emulators that name the controller, so each controller plays
+as the player it keeps with the account. Mesen 2, PCSX2 and DuckStation
+number controllers in an order of their own, Apple's or SDL's, which SDL
+does not keep from one start to the next with the same controllers
+connected, so Emu leaves them as they are.
 Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.

@@ -38,7 +38,7 @@
   // own saves without bringing them, and still carries them back after.
   async function play(g, say = () => {}, { anyway = false } = {}) {
     const carried = anyway ? Boolean(R.carry) : await R.carry?.before(g.system, say);
-    // An emulator that binds a controller by where it is connected is told where it is now.
+    // Each connected controller is made the player it keeps, in the emulator about to run.
     await R.pads?.beforePlay(g.system, H).catch(error => console.error(error));
     await H.play(g);
     say('Playing.');

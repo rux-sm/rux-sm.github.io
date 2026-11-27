@@ -840,17 +840,23 @@
   // line of its own, what that controller is, or a line saying why none is;
   // one with a controller is a button opening its map, and `action`, such
   // as Fix it, sits beside it.
-  function padSlot(player, sub, kind, open, action) {
+  // A player's box in two lines: the player's number on the controller
+  // drawing, then the controller playing, or No controller, over its status.
+  function padSlot(player, first, sub, kind, open, action) {
     const li = el('li', `emu-slot emu-slot--${kind}`);
     const icon = iconOf('#i-game--console');
     icon.setAttribute('width', '20');
     icon.setAttribute('height', '20');
     icon.setAttribute('class', 'emu-slot__icon');
+    const mark = el('span', 'emu-slot__mark');
+    const number = el('span', 'emu-slot__number');
+    number.append(el('span', 'rux--visually-hidden', 'Player '), String(player));
+    mark.append(icon, number);
     const main = el('span', 'emu-row__main');
-    main.append(el('span', 'emu-slot__player', `Player ${player}`), ...[sub].flat());
+    main.append(el('span', 'emu-slot__player', first), sub);
     const box = open ? el('button', 'emu-slot__box') : el('span', 'emu-slot__box');
     if (open) { box.type = 'button'; box.addEventListener('click', open); }
-    box.append(icon, main);
+    box.append(mark, main);
     li.append(box);
     if (action) li.append(action);
     return li;
@@ -938,7 +944,7 @@
     $('emu-pad-list').replaceChildren(...held.map((h, i) => {
       const player = i + 1;
       const past = player > most ? `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}` : null;
-      if (!h) return padSlot(player, el('span', 'emu-row__sub', past ?? 'Press a button to join'), past ? 'off' : 'none');
+      if (!h) return padSlot(player, 'No controller', el('span', 'emu-row__sub', past ?? 'Press a button to join'), past ? 'off' : 'none');
       const fixer = h.status.fix ? el('button', 'rux--btn rux--btn--tertiary rux--btn--sm emu-slot__fix', 'Fix it') : null;
       if (fixer) {
         fixer.type = 'button';
@@ -947,7 +953,7 @@
       }
       const status = padIndicator(h.status.kind, h.status.words);
       status.classList.add('emu-row__sub');
-      const li = padSlot(player, [el('span', 'emu-row__sub emu-slot__name', h.name), status], past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
+      const li = padSlot(player, h.name, status, past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
       li.dataset.pad = String(h.pad.index);
       if (!h.kept) keepPlayer(h.pad, h.name, info.get(h.pad.id)?.details, player);
       return li;

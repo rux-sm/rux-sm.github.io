@@ -834,10 +834,13 @@
     return li;
   }
   // Which player a controller is on the chosen console, at its place among
-  // the connected controllers, and what to say: [kind, words, player].
-  function padState(read, pad, consoleName, place) {
+  // the connected controllers, and what to say: [kind, words, player]. In an
+  // emulator that counts controllers by place, one that keeps a player is
+  // that player, since Play puts them in that order.
+  function padState(read, pad, consoleName, place, kept) {
     if (!read) return null;
-    const one = R.pads.playerOf(read, pad, place);
+    const one = kept && R.pads.byPlace(read.emulator, [pad.found ?? {}]) ? read.players.find(x => x.player === kept) ?? null
+      : R.pads.playerOf(read, pad, place);
     const problem = read.problem ?? one?.problem;
     if (problem) return ['warn', problem, one];
     if (one && Object.keys(one.map).length) return ['ok', `Player ${one.player} · Set up for ${consoleName}`, one];
@@ -882,8 +885,8 @@
     const held = Array(SLOTS).fill(null);
     const loose = [];
     for (const pad of pads) {
-      const state = padState(reads[pad.family], pad, consoleName, pad.place);
       const kept = info.get(pad.id)?.details?.player;
+      const state = padState(reads[pad.family], pad, consoleName, pad.place, kept);
       const at = (kept ?? (state?.[0] === 'ok' ? state[2].player : 0)) - 1;
       if (at >= 0 && at < SLOTS && !held[at]) held[at] = { pad, state, kept }; else loose.push({ pad, state, kept });
     }
@@ -988,7 +991,7 @@
     const consoleName = padConsoleName(system);
     const known = (await padInfoNow()).get(pad.id);
     const mine = { name: known?.name ?? pad.name, details: { ...(known?.details ?? {}) } };
-    const state = padState(read, pad, consoleName, place);
+    const state = padState(read, pad, consoleName, place, known?.details?.player);
     const one = state[2];
     const map = state[0] === 'ok' ? one.map : {};
     const select = $('emu-padmap-model');

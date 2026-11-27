@@ -1,20 +1,19 @@
 /* ==========================================================================
    library.js — the Library, Emu's front page
    --------------------------------------------------------------------------
-   Four tiles: every console with games down the side, each its drawing and
-   name; beside them the chosen game, its screenshot, its name and facts, its
-   save and the one next move beside it; the controller
-   beside that; and under both the chosen console's games, a wall of covers
-   under its wordmark. The wall's title row holds the strip, then
-   Installed or All games and Sound. Installed shows only the games this Mac holds or is
-   fetching, and only their consoles. Without Rux Emu Helper, such as on a
-   phone, there is no strip, switch, chosen game or controller, and pressing a game opens its side panel,
-   game-panel.js.
+   Three tiles: the chosen game, its screenshot, its name and facts, its
+   save and the one next move beside it; the controller beside that; and
+   under both every game of the chosen console, a wall of covers under its
+   drawing and wordmark, which open the list of every console with games.
+   The wall's title row holds the strip, right after the count of games,
+   then Sound. Without Rux Emu Helper, such as on a phone, there is no
+   strip, chosen game or controller, and pressing a game opens its side
+   panel, game-panel.js.
 
    One console and one game are chosen, always, and everything follows them.
-   The page opens on the game last played that this Mac holds, on Installed,
-   else on All games, and choosing a console chooses its last played game
-   shown, else its first. Nothing about the page is kept.
+   The page opens on the game last played that this Mac holds, and choosing
+   a console chooses its last played game, else its first. Nothing about
+   the page is kept.
 
    Which consoles are set up, and which games this Mac holds, are read from
    the helper. What this Mac lacks is faded, a console
@@ -70,9 +69,7 @@
   let keeps = false;
   // The bytes this Mac has free for games, or null where no helper says.
   let free = null;
-  // Which games show, 'mac' for Installed or 'all', and the console and the
-  // game chosen.
-  let where = 'all';
+  // The console and the game chosen.
   let chosen = null;
   let game = null;
   // The last scan's row, for when the server last scanned, and the version
@@ -110,12 +107,10 @@
   const playedAt = g => g.notes?.played_at ?? '';
   // A console's games as the wall lists them: those here first, then the
   // server's, favourites leading each, then A to Z, as `games` is sorted.
-  const inOrder = system => gamesOf(system).filter(g => where === 'all' || isHere(g)).sort((a, b) => Number(isHere(b)) - Number(isHere(a))
+  const inOrder = system => gamesOf(system).sort((a, b) => Number(isHere(b)) - Number(isHere(a))
     || Number(Boolean(b.notes?.favourite)) - Number(Boolean(a.notes?.favourite)));
   const lastPlayed = list => list.filter(playedAt).sort((a, b) => playedAt(b).localeCompare(playedAt(a)))[0] ?? null;
   const firstOf = system => lastPlayed(inOrder(system)) ?? inOrder(system)[0];
-  // The consoles down the side: on Installed, only those with a game here.
-  const shown = () => consoles().filter(sys => where === 'all' || gamesOf(sys).some(isHere));
   const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const list = words => (words.length < 2 ? words.join('') : `${words.slice(0, -1).join(', ')} and ${words.at(-1)}`);
 
@@ -310,7 +305,7 @@
     return spot;
   }
   function renderConsoles() {
-    redraw($('emu-consoles'), ...shown().map(system => {
+    redraw($('emu-consoles'), ...consoles().map(system => {
       const state = stateOf(system);
       const b = el('button', `emu-kit emu-kit--${state}${system === chosen ? ' emu-kit--chosen' : ''}`);
       b.type = 'button';
@@ -348,27 +343,12 @@
     b.replaceChildren(spotOf(chosen), markOf(chosen) ?? el('span', 'emu-picker__name', R.systemName(chosen)), chevron);
   }
 
-  // INSTALLED OR ALL GAMES. Installed is off while this Mac holds no game.
-  // Where the chosen console has none to show, the first that has is chosen.
-  function renderWhere() {
-    const mine = $('emu-where').querySelector('[data-where="mac"]');
-    mine.disabled = !games.some(isHere);
-    if (mine.disabled) where = 'all';
-    window.Rux.contentSwitcher.select($('emu-where'), $('emu-where').querySelector(`[data-where="${where}"]`), { focus: false, silent: true });
-  }
+  // A console is always chosen, the first where none is yet.
   function keepShown() {
-    if (shown().includes(chosen) && inOrder(chosen).includes(game)) return;
-    chosen = shown().includes(chosen) ? chosen : shown()[0];
+    if (consoles().includes(chosen)) return;
+    chosen = consoles()[0];
     game = firstOf(chosen);
   }
-  $('emu-where').addEventListener('rux:content-switcher-selected', e => {
-    where = e.detail.option.dataset.where;
-    keepShown();
-    renderConsoles();
-    renderGames();
-    showChosen();
-    renderChosen();
-  });
 
   // A CONSOLE'S MENU, Design's, from a right click on a console, which
   // chooses it: Set up or Remove, which the
@@ -1266,9 +1246,9 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-pad', 'emu-where-row']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-pad']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
-    if (mac) { renderStrip(); renderWhere(); }
+    if (mac) renderStrip();
     keepShown();
     renderConsoles();
     renderGames();
@@ -1816,7 +1796,6 @@
     game = asked ?? lastPlayed(games.filter(g => stands(g).state === 'held' && plays(g.system))) ?? firstOf(consoles().find(plays) ?? consoles()[0]);
     chosen = game.system;
     try { localStorage.setItem(OPENS, chosen); } catch { /* the skeleton keeps the usual shape */ }
-    where = isHere(game) ? 'mac' : 'all';
     renderSound();
     render();
     showChosen();

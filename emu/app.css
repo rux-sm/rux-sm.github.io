@@ -115,15 +115,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-library[hidden] { display: none; }
 .emu-library--mac { block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
 /* THE STRIP: the page's one place for words, in the wall's title row.
-   At rest it is this Mac's facts as Carbon's icon indicators, on one line at
-   its end; while a move runs or after one it is what that move says, with a
+   At rest it is this Mac's facts as Carbon's icon indicators, on one line
+   from its start; while a move runs or after one it is what that move says, with a
    question's answers beside it, from its start, its words wrapping so a
    question is read whole before it is answered. It gives
    up its width before the buttons do, and in a narrow window the facts give
    way to one, the worst, or Ready. */
 .emu-strip[hidden], #emu-sound[hidden] { display: none; }
-.emu-strip { flex: 1 1 auto; min-inline-size: 0; display: flex; align-items: center; justify-content: flex-end; overflow: hidden; white-space: nowrap; contain: inline-size; }
-.emu-strip--said { justify-content: flex-start; white-space: normal; }
+.emu-strip { flex: 1 1 auto; min-inline-size: 0; display: flex; align-items: center; overflow: hidden; white-space: nowrap; contain: inline-size; }
+.emu-strip--said { white-space: normal; }
 .emu-strip__facts { list-style: none; display: flex; align-items: center; gap: var(--rux-spacing-06); min-inline-size: 0; overflow: hidden; }
 .emu-strip svg { flex: none; }
 .emu-strip__facts .rux--link { white-space: nowrap; }
@@ -179,18 +179,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-games { grid-area: games; min-inline-size: 0; min-block-size: 0; display: flex; flex-direction: column; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-07); }
 /* The wall's title row, still over the wall: the wordmark and its count of
-   games, the strip, then Installed or All games with Sound beside it at the
-   row's end, one group of the wall's controls. Under 42rem the strip's words
-   take a row of their own under it. */
+   games, the strip right after them, then Sound at the row's end. Under
+   42rem the strip's words take a row of their own under it. */
 .emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-04) var(--rux-spacing-05); padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
 @media (max-width: 41.98rem) { .emu-strip--said { order: 1; flex-basis: 100%; } }
 .emu-games__count { flex: none; color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
-.emu-games__where { flex: none; display: grid; grid-template-columns: 14rem auto; align-items: center; gap: var(--rux-spacing-03); margin-inline-start: auto; }
 /* The row stands over the wall, so the list of consoles opens over the
-   covers, and its switch's own stacking stays in it, so a list opened from
-   Save above covers it. */
-.emu-games__head { position: relative; z-index: 1; isolation: isolate; }
-.emu-games__where[hidden] { display: none; }
+   covers; a list opened from Save above still covers it. */
+.emu-games__head { position: relative; z-index: 1; }
 .emu-games__list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(8.75rem, 40%), 1fr)); gap: var(--rux-spacing-05); }
 /* A cover's tile stands a layer up from the wall, so one with no art shows. */
 .emu-games__list .emu-cover-art { background: var(--rux-layer-02); }
@@ -216,11 +212,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    the tile; beside the screenshot, from one left edge and the frame's top,
    the facts, and at its foot Save and Play. */
 .emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "name name" "art main" "picks picks"; align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
-/* LOADING: the four tiles stand from the first paint, Carbon's skeletons
+/* LOADING: the three tiles stand from the first paint, Carbon's skeletons
    in the shapes of what fills them: console rows, the game's name, and two
-   lines beside its black screen under it, four player boxes, the wordmark, Installed
-   or All games, and covers in the box shape of the console the page
-   last opened on.
+   lines beside its black screen under it, four player boxes, the wordmark,
+   and covers in the box shape of the console the page last opened on.
    Save and Play keep their place unseen until the game is known. */
 .emu-library--loading .emu-chosen__game { display: none; }
 .emu-library--loading .emu-chosen__picks { visibility: hidden; }
@@ -233,8 +228,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-skel-pad__icon { flex: none; inline-size: 20px; block-size: 20px; }
 .emu-skel-pad__lines { flex: 1; display: grid; gap: var(--rux-spacing-03); }
 .emu-skel-title { inline-size: 8rem; block-size: 1.5rem; margin: 0; }
-.emu-skel-where { flex: none; inline-size: 14rem; block-size: var(--rux-layout-size-height-md); margin-inline-start: auto; }
-.emu-library:not(.emu-library--loading) .emu-skel-where { display: none; }
 .emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen__frame { grid-area: art; inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }

@@ -815,9 +815,10 @@
     line.append(icon, text);
     return line;
   }
-  // A player's box: its number over the controller playing it and what that
-  // controller is, or a line saying why none is; one with a controller is a
-  // button opening its map, and `action`, such as Fix it, sits beside it.
+  // A player's box: its number over the controller playing it and, on a
+  // line of its own, what that controller is, or a line saying why none is;
+  // one with a controller is a button opening its map, and `action`, such
+  // as Fix it, sits beside it.
   function padSlot(player, sub, kind, open, action) {
     const li = el('li', `emu-slot emu-slot--${kind}`);
     const icon = iconOf('#i-game--console');
@@ -825,7 +826,7 @@
     icon.setAttribute('height', '20');
     icon.setAttribute('class', 'emu-slot__icon');
     const main = el('span', 'emu-row__main');
-    main.append(el('span', 'emu-slot__player', `Player ${player}`), sub);
+    main.append(el('span', 'emu-slot__player', `Player ${player}`), ...[sub].flat());
     const box = open ? el('button', 'emu-slot__box') : el('span', 'emu-slot__box');
     if (open) { box.type = 'button'; box.addEventListener('click', open); }
     box.append(icon, main);
@@ -923,7 +924,9 @@
         fixer.setAttribute('aria-label', `Fix ${h.name} as player ${player}`);
         fixer.addEventListener('click', () => fixPads(system, [[player, h]]));
       }
-      const li = padSlot(player, indicator(h.status.kind, `${h.name} · ${h.status.words}`), past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
+      const status = indicator(h.status.kind, h.status.words);
+      status.classList.add('emu-row__sub');
+      const li = padSlot(player, [el('span', 'emu-row__sub emu-slot__name', h.name), status], past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
       li.dataset.pad = String(h.pad.index);
       if (!h.kept) keepPlayer(h.pad, h.name, info.get(h.pad.id)?.details, player);
       return li;

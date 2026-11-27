@@ -315,6 +315,7 @@ button.emu-slot__box:focus-visible { outline: 2px solid var(--rux-focus); outlin
 .emu-slot__player { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); color: var(--rux-text-primary); }
 .emu-slot--off .emu-slot__player, .emu-slot--off .emu-row__sub { color: var(--rux-text-disabled); }
 .emu-slot .rux--icon-indicator { min-inline-size: 0; }
+.emu-slot__name { color: var(--rux-text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The map: the controller drawn in lines, each control labelled as printed
    in a chip, and what it does beside it; a control the console leaves
    unused is dashed. */

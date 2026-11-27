@@ -814,8 +814,8 @@
   }
   // A player's box: its number over the controller playing it and what that
   // controller is, or a line saying why none is; one with a controller is a
-  // button opening its map.
-  function padSlot(player, sub, kind, open) {
+  // button opening its map, and `action`, such as Fix it, sits beside it.
+  function padSlot(player, sub, kind, open, action) {
     const li = el('li', `emu-slot emu-slot--${kind}`);
     const icon = iconOf('#i-game--console');
     icon.setAttribute('width', '20');
@@ -827,6 +827,7 @@
     if (open) { box.type = 'button'; box.addEventListener('click', open); }
     box.append(icon, main);
     li.append(box);
+    if (action) li.append(action);
     return li;
   }
   // Which player a controller is on the chosen console, at its place among
@@ -839,6 +840,24 @@
     if (one && Object.keys(one.map).length) return ['ok', `Player ${one.player} · Set up for ${consoleName}`, one];
     return [read.most === 1 && read.players[0]?.bound ? 'info' : 'warn', read.most === 1 && read.players[0]?.bound ? `${consoleName} has one player` : `Not set up for ${consoleName}`, null];
   }
+  // A box's one word: Ready, where the emulator has the controller set up as
+  // the box's player, else Needs a fix, and why for the strip at Play. An emulator that counts
+  // controllers by place is Ready when that player's buttons are set, since
+  // the order is made at Play. Past the console's own players there is
+  // nothing to fix.
+  function padStatus(h, player, most, read, consoleName) {
+    if (player > most) return { kind: 'info', words: `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}`, fix: false };
+    const ready = { kind: 'ok', words: 'Ready', fix: false };
+    const needs = why => ({ kind: 'warn', words: 'Needs a fix', why, fix: true });
+    const [kind, words, one] = h.state ?? ['warn', `Not set up for ${consoleName}`, null];
+    if (read.problem) return needs(read.problem.replace(/\.$/, ''));
+    if (R.pads.ORDERED.has(read.emulator)) {
+      return read.players.some(x => x.player === player && Object.keys(x.map).length) ? ready : needs(`not set up as player ${player}`);
+    }
+    if (kind === 'ok' && one.player === player) return ready;
+    if (kind === 'ok') return needs(`${read.emulator} has it as player ${one.player}`);
+    return needs(kind === 'info' ? `not set up for ${consoleName}` : words.replace(/\.$/, '').replace(/^Not/, 'not'));
+  }
   // Four players, as many as any console here has. Each controller keeps
   // its player with the account, the same on every console and Mac, and
   // takes that box; one with none takes the player its emulator has it as,
@@ -848,18 +867,11 @@
   // next free box.
   const SLOTS = 4;
   const joined = new Set();
-  // Each redraw is numbered, and one overtaken by a later, as when consoles
-  // are chosen quickly, draws nothing.
-  let padTurn = 0;
-  async function renderPad() {
-    if (!helper) return;
-    const turn = ++padTurn;
+  // The four boxes for a console: each null or { pad, state, kept, status }.
+  async function padBoxes(system) {
     const pads = await padsKnown();
-    const system = game?.system ?? chosen;
-    if (!system) return;
     const consoleName = R.systemName(system);
     const [info, reads] = await Promise.all([padInfoNow(), readPads(system, pads.length ? pads : [{ family: 'xbox' }])]);
-    if (turn !== padTurn) return;
     const most = Object.values(reads)[0]?.most ?? SLOTS;
     const held = Array(SLOTS).fill(null);
     const loose = [];
@@ -873,23 +885,55 @@
       const at = held.findIndex(h => !h);
       if (at >= 0) held[at] = one;
     }
+    held.forEach((h, i) => {
+      if (!h) return;
+      h.name = info.get(h.pad.id)?.name ?? h.pad.name;
+      h.read = reads[h.pad.family];
+      h.status = padStatus(h, i + 1, most, h.read, consoleName);
+    });
+    return { held, most, consoleName, info };
+  }
+  // Each redraw is numbered, and one overtaken by a later, as when consoles
+  // are chosen quickly, draws nothing.
+  let padTurn = 0;
+  async function renderPad() {
+    if (!helper) return;
+    const turn = ++padTurn;
+    const system = game?.system ?? chosen;
+    if (!system) return;
+    const { held, most, consoleName, info } = await padBoxes(system);
+    if (turn !== padTurn) return;
     $('emu-pad-list').replaceChildren(...held.map((h, i) => {
       const player = i + 1;
       const past = player > most ? `${consoleName} has ${most === 1 ? 'one player' : `${most} players`}` : null;
       if (!h) return padSlot(player, el('span', 'emu-row__sub', past ?? 'Press a button to join'), past ? 'off' : 'none');
-      const name = info.get(h.pad.id)?.name ?? h.pad.name;
-      const read = reads[h.pad.family];
-      const [kind, words, one] = h.state ?? ['ok', 'Connected', null];
-      // The player the emulator has it as, where that is not the one it keeps;
-      // one that counts controllers in an order of its own cannot say.
-      const elsewhere = kind === 'ok' && one && one.player !== player && !R.pads.ORDERED.has(read.emulator) ? `${read.emulator} has it as player ${one.player}` : null;
-      const said = past ?? elsewhere ?? (kind === 'ok' ? `Set up for ${consoleName}` : words);
-      const li = padSlot(player, indicator(past ? 'info' : elsewhere ? 'warn' : kind, `${name} · ${said}`), past ? 'off' : 'held', () => openPadMap(h.pad, system, read, h.pad.place));
+      const fixer = h.status.fix ? el('button', 'rux--btn rux--btn--tertiary rux--btn--sm emu-slot__fix', 'Fix it') : null;
+      if (fixer) {
+        fixer.type = 'button';
+        fixer.setAttribute('aria-label', `Fix ${h.name} as player ${player}`);
+        fixer.addEventListener('click', () => fixPads(system, [[player, h]]));
+      }
+      const li = padSlot(player, indicator(h.status.kind, `${h.name} · ${h.status.words}`), past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
       li.dataset.pad = String(h.pad.index);
-      if (!h.kept) keepPlayer(h.pad, name, info.get(h.pad.id)?.details, player);
+      if (!h.kept) keepPlayer(h.pad, h.name, info.get(h.pad.id)?.details, player);
       return li;
     }));
     watchPresses();
+  }
+  // Fix it: each [player, box] set up now in the console's emulator, and the
+  // tile read again. Says what stopped it; true when every one was set up.
+  async function fixPads(system, fixes) {
+    try {
+      for (const [player, h] of fixes) {
+        if (!h.pad.found) throw new Error(`Rux Emu Helper does not see the ${h.name}. Press a button on it, then try again.`);
+        const out = await R.pads.fix(system, R.helper, player, { family: h.pad.family, ...h.pad.found });
+        if (out.open) { say(`${out.emulator} is open. Choose the ${h.name} for player ${player} there.`, { ms: LONG }); return false; }
+      }
+    } catch (error) { sayNo(error.message); return false; }
+    padReading = null;
+    renderPad();
+    say(fixes.length > 1 ? 'Fixed.' : `The ${fixes[0][1].name} is ready as player ${fixes[0][0]}.`);
+    return true;
   }
   // A controller's player kept with the account, once per controller.
   async function keepPlayer(pad, name, details, player) {
@@ -1335,27 +1379,100 @@
     }
     sfx.insert();
   }
-  // PLAY, the one way a game starts. Saves that cannot be brought stop it, and
-  // the strip asks: Try again, or Play anyway on this Mac's own saves.
-  async function play(g, anyway = false) {
+  // PLAY, the one way a game starts. A connected controller that needs a fix
+  // stops it first, and the strip offers Fix it or Play anyway. An emulator
+  // that counts controllers by place has every controller after player 1's
+  // turned off before the game opens and on again once it has, so they
+  // connect in player order. Saves that cannot be brought stop it, and the
+  // strip asks: Try again, or Play anyway on this Mac's own saves. `how`
+  // holds what rux already chose: { anyway, padsAnyway, orderAnyway }.
+  async function play(g, how = {}) {
     if (starting) return;
     if (g !== game) choose(g.system, g);
     starting = keyOf(g);
     renderGo();
     try {
+      if (!how.padsAnyway) {
+        const needs = (await padBoxes(g.system)).held.map((h, i) => [i + 1, h]).filter(([, h]) => h?.status.fix);
+        if (needs.length) {
+          const [player, h] = needs[0];
+          sfx.no();
+          say(`${needs.length > 1 ? `${needs.length} controllers need` : `The ${h.name} needs`} a fix for ${R.systemName(g.system)}: ${needs.length > 1 ? 'see the players' : `player ${player}, ${h.status.why}`}.`, { ms: LONG, answers: [
+            ['Fix it', async () => { if (await fixPads(g.system, needs)) play(g, how); }],
+            ['Play anyway', () => play(g, { ...how, padsAnyway: true })]] });
+          return;
+        }
+      }
+      let late = how.orderAnyway ? [] : await lateControllers(g.system);
+      if (late.length) {
+        const names = late.map(c => `the ${c.name}`).join(' and ');
+        const them = late.length > 1 ? 'them' : 'it';
+        const told = { skipped: false };
+        say(`Turn off ${names}. The game opens once ${late.length > 1 ? 'they are' : 'it is'} off; then turn ${them} on again${late.length > 1 ? ', in that order' : ''}.`,
+          { ms: LONG, answers: [['Play anyway', () => { told.skipped = true; }]] });
+        const off = await until(async () => told.skipped || !(await connectedKeys()).some(k => late.some(c => c.key === k)), 180000);
+        if (!off) { sayNo(`Play stopped: ${names} stayed on.`); return; }
+        if (told.skipped) late = [];
+        say();
+      }
       if (stateOf(g.system) === 'on') await insert(g);
       say('Starting…', { ms: 60000 });
-      await R.thisMac.play(g, mutter, { anyway });
+      await R.thisMac.play(g, mutter, { anyway: how.anyway });
+      holdWhilePlaying(g.system);
       sfx.start();
-      say(`Playing ${nameOf(g)}.`);
+      say(late.length ? `Playing ${nameOf(g)}. Turn ${late.map(c => `the ${c.name}`).join(', then ')} on again now.` : `Playing ${nameOf(g)}.`, { ms: late.length ? 20000 : 4000 });
     } catch (error) {
       sfx.no();
-      if (error.notBrought) say(error.message, { ms: 30000, bad: true, answers: [['Try again', () => play(g)], ['Play anyway', () => play(g, true)]] });
+      if (error.notBrought) say(error.message, { ms: 30000, bad: true, answers: [['Try again', () => play(g, how)], ['Play anyway', () => play(g, { ...how, anyway: true })]] });
       else sayNo(error.message);
+    } finally {
+      starting = null;
+      cards.at = 0;
+      renderChosen();
     }
-    starting = null;
-    cards.at = 0;
-    renderChosen();
+  }
+  // While a game Emu started is open, its controllers play it and move
+  // nothing here; asked of the helper every three seconds, as the saves'
+  // carrying asks, and let go once the emulator has quit or never showed.
+  async function holdWhilePlaying(system) {
+    const name = emulatorOf(system);
+    if (!name || !R.helper?.carry) return;
+    R.pauseMoves(true, 'game');
+    const started = Date.now();
+    let seen = false;
+    for (;;) {
+      await new Promise(r => setTimeout(r, 3000));
+      const running = (await R.helper.carry(name).catch(() => null))?.running;
+      if (running) seen = true;
+      else if (seen || Date.now() - started > 20000) break;
+    }
+    R.pauseMoves(false, 'game');
+  }
+  // The controllers to turn off before a game opens in an emulator that
+  // counts them by place: with two or more connected, every one after the
+  // first by kept player, up to the console's own players, as
+  // { key, name } in player order. None where the emulator names them.
+  async function lateControllers(system) {
+    const emulator = emulatorOf(system);
+    if (!R.pads.ORDERED.has(emulator) || !R.helper?.controllers) return [];
+    const report = await R.helper.controllers().catch(() => null);
+    if (!report || report.length < 2) return [];
+    const info = await padInfoNow();
+    const most = R.pads._readers[emulator]?.players ?? 1;
+    const keyOfPad = c => `${c.vendor}:${c.product}`;
+    const rank = c => info.get(keyOfPad(c))?.details?.player ?? SLOTS + 1;
+    return [...report].sort((a, b) => rank(a) - rank(b)).slice(1, most).map(c => ({ key: keyOfPad(c), name: info.get(keyOfPad(c))?.name ?? c.name }));
+  }
+  const connectedKeys = async () => ((await R.helper.controllers().catch(() => null)) ?? []).map(c => `${c.vendor}:${c.product}`);
+  // Waits, asking again every second and a half, until `done` says so or
+  // `ms` pass; whether it did.
+  async function until(done, ms) {
+    const end = Date.now() + ms;
+    while (!(await done())) {
+      if (Date.now() > end) return false;
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    return true;
   }
   // A console that will not have it now shakes its head and buzzes, and the strip says why.
   function refuse(system, text) {

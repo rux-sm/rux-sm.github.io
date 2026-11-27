@@ -45,9 +45,5 @@ None.
       the controller instead of `SDL-N`; DuckStation's log gives each a
       persistent identifier, its SDL GUID and serial, which may be one. One
       that has it follows the kept player like the others and needs no step.
-- [ ] Show Ready or Needs a fix in each box, with Fix it.
-- [ ] Check before Play, with Fix it and Play anyway.
-- [ ] Show the step at Play for the emulators that number controllers by
-      place.
 - [ ] Play a two-player game in each kind of emulator with both controllers
       to see the players in the game itself.

@@ -299,8 +299,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    controller is a button opening its map, hovered as a layer-02 control. */
 .emu-pad { grid-area: pad; min-inline-size: 0; display: flex; flex-direction: column; padding: var(--rux-spacing-05); }
 .emu-pad__list { flex: 1; list-style: none; display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); gap: var(--rux-spacing-03); }
-.emu-slot { display: flex; min-block-size: 0; }
-.emu-slot__box { flex: 1; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-04); padding: var(--rux-spacing-03) var(--rux-spacing-05); background: var(--rux-layer-02); border: 0; border-radius: var(--emu-kit-radius, 0); color: inherit; font: inherit; text-align: start; }
+/* A box and, where it needs one, its Fix it button share the box's background. */
+.emu-slot { display: flex; align-items: center; min-block-size: 0; background: var(--rux-layer-02); border-radius: var(--emu-kit-radius, 0); }
+.emu-slot__fix { flex: none; margin-inline-end: var(--rux-spacing-03); }
+.emu-slot__box { flex: 1; align-self: stretch; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-04); padding: var(--rux-spacing-03) var(--rux-spacing-05); background: transparent; border: 0; border-radius: var(--emu-kit-radius, 0); color: inherit; font: inherit; text-align: start; }
 button.emu-slot__box { cursor: pointer; transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 button.emu-slot__box:hover { background: var(--rux-layer-hover-02); }
 button.emu-slot__box:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }

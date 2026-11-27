@@ -896,6 +896,20 @@
     for (const [control, does] of Object.entries(map ?? {})) for (const d of does.split(' · ')) if (d in L) out[d] = control;
     return out;
   }
+  // A player set up now for controller `c`, a helper report entry with its
+  // family, in the chosen console's emulator: with the buttons the controller
+  // has where the emulator names it, or, in one that counts by place, the
+  // buttons that player has. Throws what stops it; { open } where only the
+  // emulator itself can bind it.
+  async function fix(system, helper, player, c) {
+    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+    const now = await read(system, helper, c.family);
+    const was = ORDERED.has(emulator) ? now.players.find(x => x.player === player) : now.players.find(x => bindsTo(x.bound, c, -1));
+    const out = await setUp(system, helper, player, c, layoutFrom(system, was?.map));
+    if (out.problem) throw new Error(out.problem);
+    for (const [rel, [, after]] of Object.entries(out.files ?? {})) await helper.putSetting(emulator, rel, new TextEncoder().encode(after));
+    return out;
+  }
   async function beforePlay(system, helper) {
     const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
     const reader = READERS[emulator];
@@ -913,18 +927,12 @@
       const c = list.find(c => !used.has(c) && c.vendor === vendor && c.product === product);
       if (c) { kept.set(p, c); used.add(c); }
     }
-    const put = async files => {
-      for (const [rel, after] of Object.entries(files)) await helper.putSetting(emulator, rel, new TextEncoder().encode(after));
-    };
     if (kept.size && WRITERS[emulator] && !ORDERED.has(emulator)) {
       for (const [p, c] of kept) {
         const family = FAMILY[c.vendor] ?? 'xbox';
         const now = await read(system, helper, family);
-        const place = list.indexOf(c);
-        if (now.players.some(x => x.player === p && bindsTo(x.bound, c, place))) continue;
-        const was = now.players.find(x => bindsTo(x.bound, c, place));
-        const out = await setUp(system, helper, p, { family, ...c }, layoutFrom(system, was?.map));
-        if (out.files) await put(Object.fromEntries(Object.entries(out.files).map(([rel, [, after]]) => [rel, after])));
+        if (now.players.some(x => x.player === p && bindsTo(x.bound, c, list.indexOf(c)))) continue;
+        await fix(system, helper, p, { family, ...c });
       }
     }
     if (emulator === 'Gopher64') await pointGopher(helper, report);
@@ -948,5 +956,5 @@
     if (changed) await helper.putSetting('Gopher64', 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, identify, read, playerOf, beforePlay, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, fix, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

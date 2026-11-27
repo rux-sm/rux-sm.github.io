@@ -9,7 +9,7 @@
    Chrome names a controller by its maker's number, Nintendo's 057e. A held
    direction repeats after 400ms, then every 120ms; a face button counts once
    per press. Moves are told only while the page has focus, and not while
-   `R.pauseMoves(true)` holds them. `R.onPad(fn)` hears them.
+   `R.pauseMoves(true, why)` holds them for any reason. `R.onPad(fn)` hears them.
    ========================================================================== */
 (() => {
   'use strict';
@@ -38,12 +38,14 @@
   }
   const nintendo = pad => /vendor: ?057e/i.test(pad.id);
   // Moves wait while a page learns which button a press is, so that press
-  // does not also choose or close something.
-  let paused = false;
-  const tell = move => { if (!paused && document.hasFocus()) for (const fn of listeners) fn(move); };
+  // does not also choose or close something, and while a game Emu started
+  // is open, so its controllers play the game and move nothing here. Each
+  // holder says why, and moves come back when none holds them.
+  const holds = new Set();
+  const tell = move => { if (!holds.size && document.hasFocus()) for (const fn of listeners) fn(move); };
   const listen = () => { if (!frame) frame = requestAnimationFrame(read); };
   window.addEventListener('gamepadconnected', listen);
   listen();
 
-  window.Emu = Object.assign(window.Emu || {}, { onPad: fn => { listeners.add(fn); listen(); }, pauseMoves: on => { paused = on; } });
+  window.Emu = Object.assign(window.Emu || {}, { onPad: fn => { listeners.add(fn); listen(); }, pauseMoves: (on, why = 'press') => { if (on) holds.add(why); else holds.delete(why); } });
 })();

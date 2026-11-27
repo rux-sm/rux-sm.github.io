@@ -60,7 +60,10 @@ up again in the emulators that name the controller, so each controller plays
 as the player it keeps with the account. Mesen 2, PCSX2 and DuckStation
 number controllers in an order of their own, Apple's or SDL's, which SDL
 does not keep from one start to the next with the same controllers
-connected, so Emu leaves them as they are.
+connected. A controller that connects while they run comes after the ones
+they found at start, so Play has every controller after player 1's turned
+off before the game opens and on again once it has. macOS can take most of
+a minute to drop a controller that was turned off.
 Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.

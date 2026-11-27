@@ -178,6 +178,16 @@
     },
     "gc": {
       "emulator": "Dolphin",
+      "controllers": [
+        {
+          "id": "gc",
+          "name": "GameCube controller"
+        },
+        {
+          "id": "gc-gba",
+          "name": "Game Boy Advance"
+        }
+      ],
       "why": "The only mature GameCube emulator; it reads RVZ.",
       "saves": "discId",
       "saveWord": "Memory card",
@@ -194,6 +204,24 @@
     },
     "wii": {
       "emulator": "Dolphin",
+      "controllers": [
+        {
+          "id": "wii",
+          "name": "Wii Remote and Nunchuk"
+        },
+        {
+          "id": "wii-remote",
+          "name": "Wii Remote, sideways"
+        },
+        {
+          "id": "wii-classic",
+          "name": "Classic Controller"
+        },
+        {
+          "id": "wii-gc",
+          "name": "GameCube controller"
+        }
+      ],
       "why": "The only mature Wii emulator; it reads RVZ.",
       "saves": "discId",
       "saveWord": "Save data",

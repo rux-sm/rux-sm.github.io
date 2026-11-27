@@ -24,12 +24,22 @@
 
   const R = window.Emu;
 
-  // A GameCube game played with Game Boy Advances, rux's mark on it, is a
-  // console of its own here, 'gc-gba': Dolphin's integrated GBA, whose
-  // buttons Dolphin keeps in Config/GBA.ini.
+  // A game played with another of its console's controllers, the type kept
+  // in its notes, is a console of its own here, named for the console and
+  // the type: 'gc-gba', Dolphin's integrated GBA, whose buttons are in
+  // Config/GBA.ini; 'wii-remote', the Wii Remote alone held sideways, and
+  // 'wii-classic', the Classic Controller, each a profile Emu writes in
+  // Config/Profiles/Wiimote/ for each player; and 'wii-gc', the GameCube
+  // controller in a Wii game, with the GameCube's buttons. Dolphin's file for
+  // the game says which, before Play.
   const GBA_MODE = 'gc-gba';
-  const modeOf = (system, game) => (system === 'gc' && game?.notes?.gba ? GBA_MODE : system);
-  const emulatorFor = async system => (await R.emulators?.())?.systems?.[system === GBA_MODE ? 'gc' : system]?.emulator;
+  const baseOf = mode => String(mode).split('-')[0];
+  const modeOf = (system, game) => {
+    const type = game?.notes?.controller;
+    return type && baseOf(type) === system && LAYOUTS[type] ? type : system;
+  };
+  const emulatorFor = async system => (await R.emulators?.())?.systems?.[baseOf(system)]?.emulator;
+  const profileOf = (mode, player) => `Config/Profiles/Wiimote/emu-${mode.slice(4)}-${player}.ini`;
 
   // A controller's family from its maker: Nintendo's 057e, Microsoft's 045e,
   // Sony's 054c; any other is drawn and labelled as an Xbox pad, the layout
@@ -233,13 +243,27 @@
     DuckStation: { files: ['settings.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['settings.ini'])[`Pad${player}`]) },
     PCSX2: { files: ['inis/PCSX2.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['inis/PCSX2.ini'])[`Pad${player}`]) },
     Dolphin: {
-      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini', 'Config/GBA.ini'], players: 4,
+      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini', 'Config/GBA.ini',
+        ...[1, 2, 3, 4].flatMap(n => ['wii-remote', 'wii-classic'].map(mode => profileOf(mode, n)))], players: 4,
       read(f, system, family, player) {
         if (system === GBA_MODE) {
           return dolphin(ini(f['Config/GBA.ini'] ?? '')[`GBA${player}`] ?? {}, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/L': 'L', 'Buttons/R': 'R',
             'Buttons/SELECT': 'Select', 'Buttons/START': 'Start', 'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad' });
         }
-        if (system === 'gc') {
+        if (system === 'wii-remote' || system === 'wii-classic') {
+          const profile = ini(f[profileOf(system, player)] ?? '').Profile;
+          if (!profile) return { bound: null, map: {} };
+          const dpad = { 'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad' };
+          if (system === 'wii-remote') {
+            return dolphin(profile, { 'Buttons/1': '1', 'Buttons/2': '2', 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/-': '−', 'Buttons/+': '+',
+              'Buttons/Home': 'Home', ...dpad, 'Shake/X': 'Shake' });
+          }
+          return dolphin(profile, { 'Classic/Buttons/A': 'A', 'Classic/Buttons/B': 'B', 'Classic/Buttons/X': 'X', 'Classic/Buttons/Y': 'Y',
+            'Classic/Triggers/L': 'L', 'Classic/Triggers/R': 'R', 'Classic/Buttons/ZL': 'ZL', 'Classic/Buttons/ZR': 'ZR', 'Classic/Buttons/-': '−',
+            'Classic/Buttons/+': '+', 'Classic/Buttons/Home': 'Home', ...Object.fromEntries(Object.entries(dpad).map(([k, v]) => [`Classic/${k}`, v])),
+            'Classic/Left Stick/Up': 'Left stick', 'Classic/Right Stick/Up': 'Right stick' });
+        }
+        if (system === 'gc' || system === 'wii-gc') {
           const port = ini(f['Config/Dolphin.ini']).Core?.[`SIDevice${player - 1}`];
           if (port == null || port === '0') return { bound: null, map: {} };
           const pad = ini(f['Config/GCPadNew.ini'])[`GCPad${player}`] ?? {};
@@ -569,6 +593,13 @@
       spots: { 'D-pad': [1047, 232, 56], A: [1003, 335, 35], '−': [902, 438, 20], Home: [955, 457, 20], '+': [1010, 470, 20], 1: [880, 637, 26], 2: [855, 702, 26],
         'Nunchuk stick': [508, 155, 56, 36], 'Nunchuk C': [642, 232, 13, 22], 'Nunchuk Z': [622, 330, 22, 40] },
       hidden: ['B', 'Shake', 'Pointer'] },
+    'wii-remote': { photo: 'wii-remote.jpg', size: [1280, 974], view: [40, 20, 1240, 700], file: 'Wii Remote Image.jpg', by: 'Greyson Orlando, public domain',
+      spots: { 'D-pad': [805, 100, 48], A: [710, 158, 34], '−': [540, 186, 14], Home: [585, 215, 16], '+': [640, 240, 14], 1: [377, 322, 26], 2: [295, 358, 26] },
+      hidden: ['B', 'Shake'] },
+    'wii-classic': { photo: 'wii-classic.jpg', size: [1280, 710], view: [40, 50, 1240, 640], file: 'Wii-Classic-Controller-White.jpg', by: EVAN,
+      spots: { 'D-pad': [285, 270, 68], '−': [552, 270, 20], Home: [637, 270, 22], '+': [722, 270, 20], X: [990, 185, 38], Y: [877, 268, 38],
+        A: [1100, 275, 38], B: [990, 357, 38], 'Left stick': [482, 445, 70], 'Right stick': [795, 445, 70] },
+      hidden: ['L', 'R', 'ZL', 'ZR'] },
     wiiu: { photo: 'wiiu.png', size: [1280, 692], file: 'Wii U Gamepad schwarz transparent.png', by: 'Mariofan13, CC BY-SA 4.0',
       spots: { 'Left stick': [130, 155, 62], 'Right stick': [1150, 155, 62], 'D-pad': [180, 290, 66], X: [1105, 242, 27], Y: [1053, 293, 27], A: [1160, 293, 27], B: [1108, 341, 27],
         '+': [1057, 422, 22], '−': [1057, 488, 22], Home: [640, 600, 29], 'Show screen': [907, 602, 20], 'Blow mic': [568, 602, 14] },
@@ -594,6 +625,7 @@
   };
   ORIGINALS.gbc = ORIGINALS.gb;
   ORIGINALS[GBA_MODE] = ORIGINALS.gba;
+  ORIGINALS['wii-gc'] = ORIGINALS.gc;
   // A stick pressed in is named Press on the Wii U, Switch and Xbox, so its
   // spot is the stick's own, found from which stick was pressed.
   const PRESS = { l3: 'Left stick', r3: 'Right stick' };
@@ -645,6 +677,12 @@
     wiiu: SWITCHLIKE, switch: SWITCHLIKE,
   };
   LAYOUTS.gbc = LAYOUTS.gba = LAYOUTS[GBA_MODE] = LAYOUTS.gb;
+  // The Wii Remote held sideways is a NES pad: 2 on the right face button, 1
+  // on the bottom, A and B above them, and a shake on a shoulder. The Classic
+  // Controller is laid out as a Switch pad is, by its labels.
+  LAYOUTS['wii-remote'] = { 2: 'east', 1: 'south', A: 'north', B: 'west', '−': 'minus', '+': 'plus', Home: 'home', Shake: 'r' };
+  LAYOUTS['wii-classic'] = { ...SWITCHLIKE };
+  LAYOUTS['wii-gc'] = LAYOUTS.gc;
   // The controls a layout may use on an emulator that reads buttons only by
   // their number, where the triggers are axes.
   const BUTTONS_ONLY = new Set(['mGBA', 'melonDS']);
@@ -800,7 +838,27 @@
         for (const [k, c] of Object.entries(L)) keys[GBA_KEY[k]] = DOLPHIN_NAME[c];
         return { 'Config/GBA.ini': setSection(f['Config/GBA.ini'] ?? '', `GBA${player}`, keys) };
       }
-      if (system === 'gc') {
+      // The Wii Remote alone or the Classic Controller, a profile for this
+      // player that Dolphin's file for the game names.
+      if (system === 'wii-remote' || system === 'wii-classic') {
+        const keys = { Device: device };
+        if (system === 'wii-remote') {
+          const REMOTE_KEY = { 1: 'Buttons/1', 2: 'Buttons/2', A: 'Buttons/A', B: 'Buttons/B', '−': 'Buttons/-', '+': 'Buttons/+', Home: 'Buttons/Home' };
+          Object.assign(keys, dpad, { 'Options/Sideways Wiimote': 'True', Extension: 'None' });
+          for (const [k, c] of Object.entries(L)) {
+            if (k === 'Shake') for (const axis of ['X', 'Y', 'Z']) keys[`Shake/${axis}`] = DOLPHIN_NAME[c];
+            else keys[REMOTE_KEY[k]] = DOLPHIN_NAME[c];
+          }
+        } else {
+          Object.assign(keys, { Extension: 'Classic', ...Object.fromEntries(Object.entries(dpad).map(([k, v]) => [`Classic/${k}`, v])),
+            ...stick('Classic/Left Stick', 'Left'), ...stick('Classic/Right Stick', 'Right') });
+          for (const [k, c] of Object.entries(L)) {
+            if (k === 'L' || k === 'R') { keys[`Classic/Triggers/${k}`] = DOLPHIN_NAME[c]; keys[`Classic/Triggers/${k}-Analog`] = DOLPHIN_NAME[c]; } else keys[`Classic/Buttons/${k === '−' ? '-' : k}`] = DOLPHIN_NAME[c];
+          }
+        }
+        return { [profileOf(system, player)]: setSection('', 'Profile', keys).replace(/^\n+/, '') };
+      }
+      if (system === 'gc' || system === 'wii-gc') {
         const keys = { Device: device, ...stick('Main Stick', 'Left'), ...stick('C-Stick', 'Right'), ...dpad };
         for (const [k, c] of Object.entries(L)) {
           if (k === 'L' || k === 'R') { keys[`Triggers/${k}`] = DOLPHIN_NAME[c]; keys[`Triggers/${k}-Analog`] = DOLPHIN_NAME[c]; } else keys[`Buttons/${k}`] = DOLPHIN_NAME[c];
@@ -942,30 +1000,44 @@
     return out;
   }
   // Dolphin's file for one game, GameSettings/<game ID>.ini, read over its
-  // own: a game played with Game Boy Advances has a GBA (Integrated) port,
-  // 13, for each player a controller keeps or each one connected, whichever
-  // is more, so one asleep at Play still has its GBA, and none past them;
-  // any other has no ports there, so Dolphin's own, a GameCube controller,
-  // apply. Its other lines stay. The ID is the one the scan read from the
+  // own, set for the game's controller type, for each player a controller
+  // keeps or each one connected, whichever is more, so one asleep at Play
+  // still has its controller, and none past them: the Game Boy Advance a GBA
+  // (Integrated) port, 13; the Wii Remote alone or the Classic Controller
+  // its player's profile and the Remote on; the GameCube controller in a Wii
+  // game every Wii Remote off and a GameCube port, 6. A game on its
+  // console's own controller has none of these lines, so Dolphin's own setup
+  // applies. Its other lines stay. The ID is the one the scan read from the
   // disc's header.
-  async function gbaPorts(helper, game, on) {
+  const PORTS = ['SIDevice0', 'SIDevice1', 'SIDevice2', 'SIDevice3'];
+  const PROFILES = ['WiimoteProfile1', 'WiimoteProfile2', 'WiimoteProfile3', 'WiimoteProfile4'];
+  const SOURCES = ['WiimoteSource0', 'WiimoteSource1', 'WiimoteSource2', 'WiimoteSource3'];
+  async function dolphinGame(helper, game, mode) {
     const id = (game?.files ?? []).map(f => f.header?.discId).find(Boolean);
     if (!id || !/^[A-Z0-9]{6}$/.test(id)) return;
     const rel = `GameSettings/${id}.ini`;
     let was = null;
     try { was = text(await helper.setting('Dolphin', rel)); } catch { /* none yet */ }
-    if (!on && !was) return;
-    const keys = ['SIDevice0', 'SIDevice1', 'SIDevice2', 'SIDevice3'];
-    let after;
-    if (on) {
+    if (mode === baseOf(mode) && !was) return;
+    let after = dropKeys(dropKeys(was ?? '', 'Core', PORTS), 'Controls', [...PROFILES, ...SOURCES]);
+    if (mode !== baseOf(mode)) {
       const connected = ((await helper.controllers?.()) ?? []).length;
       const kept = Math.max(0, ...(await (R.data?.controllers?.() ?? Promise.resolve([])).catch(() => [])).map(r => r.details?.player ?? 0));
       const count = Math.min(4, Math.max(1, connected, kept));
-      after = setSection(was ?? '', 'Core', Object.fromEntries(keys.map((k, i) => [k, i < count ? 13 : 0])));
-    } else {
-      after = dropKeys(was, 'Core', keys);
+      const each = (keys, on, off) => Object.fromEntries(keys.map((k, i) => [k, i < count ? on(i) : off]));
+      if (mode === GBA_MODE) after = setSection(after, 'Core', each(PORTS, () => 13, 0));
+      if (mode === 'wii-gc') {
+        after = setSection(after, 'Core', each(PORTS, () => 6, 0));
+        after = setSection(after, 'Controls', Object.fromEntries(SOURCES.map(k => [k, 0])));
+      }
+      if (mode === 'wii-remote' || mode === 'wii-classic') {
+        const players = PROFILES.slice(0, count).map((k, i) => [k, `emu-${mode.slice(4)}-${i + 1}`]);
+        after = setSection(after, 'Controls', Object.fromEntries([...players, ...SOURCES.slice(0, count).map(k => [k, 1])]));
+      }
     }
-    if (after !== was) await helper.putSetting('Dolphin', rel, new TextEncoder().encode(after));
+    // Sections left empty go, so a game back on its own controller leaves no trace.
+    after = after.replace(/^\[(Core|Controls)\]\n(?=\n*(\[|$))/gm, '').replace(/\n{3,}/g, '\n\n').replace(/^\n+/, '');
+    if (after !== (was ?? '')) await helper.putSetting('Dolphin', rel, new TextEncoder().encode(after));
   }
   // A section of a `key = value` file without `keys`, every other line kept.
   function dropKeys(body, name, keys) {
@@ -978,7 +1050,7 @@
   async function beforePlay(console_, helper, game) {
     const system = modeOf(console_, game);
     const emulator = await emulatorFor(system);
-    if (emulator === 'Dolphin' && console_ === 'gc') await gbaPorts(helper, game, system === GBA_MODE);
+    if (emulator === 'Dolphin' && game) await dolphinGame(helper, game, system);
     const reader = READERS[emulator];
     if (!reader || !helper.controllers) return;
     const report = await helper.controllers();

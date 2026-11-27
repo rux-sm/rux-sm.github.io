@@ -318,6 +318,9 @@ button.emu-slot__box:hover { --emu-slot-fill: var(--rux-layer-hover-02); }
    in a chip, and what it does beside it; a control the console leaves
    unused is dashed. */
 .emu-padmap-body { display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
+/* The controller type stands at its own width, its label beside its value. */
+.emu-padmap-type { align-self: flex-start; }
+.emu-padmap-type[hidden] { display: none; }
 .emu-padmap-note { color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); }
 .emu-padmap-art { background: var(--rux-layer-02); }
 /* The console's own controller: a photo taken on white, so its box is white in every theme. */

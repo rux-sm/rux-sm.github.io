@@ -319,6 +319,18 @@
     </div>
     <div class="rux--modal-content emu-padmap-body">
       <p class="emu-padmap-note" id="emu-padmap-note" role="status"></p>
+      <!-- The game's controller type, where its console has more than one,
+           which library.js fills. -->
+      <div class="rux--list-box__wrapper rux--dropdown__wrapper--inline rux--list-box__wrapper--inline emu-padmap-type" id="emu-pad-type" hidden>
+        <label class="rux--label" id="emu-pad-type-label">Controller type</label>
+        <div class="rux--dropdown rux--list-box rux--dropdown--inline rux--layout--size-md" id="emu-pad-type-box">
+          <button type="button" class="rux--list-box__field" id="emu-pad-type-pick" role="combobox" aria-labelledby="emu-pad-type-label emu-pad-type-pick" aria-expanded="false" aria-haspopup="listbox" aria-controls="emu-pad-types">
+            <span class="rux--list-box__label"></span>
+            <div class="rux--list-box__menu-icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+          </button>
+          <ul class="rux--list-box__menu" id="emu-pad-types" role="listbox" aria-labelledby="emu-pad-type-label" hidden></ul>
+        </div>
+      </div>
       <section class="emu-original" id="emu-original" aria-labelledby="emu-original-h">
         <h3 class="rux--label rux--visually-hidden" id="emu-original-h">The console's own controller</h3>
         <div class="emu-original__art" id="emu-original-art"></div>

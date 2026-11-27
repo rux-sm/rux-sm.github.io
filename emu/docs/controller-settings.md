@@ -69,11 +69,23 @@ connected. A controller that connects while they run comes after the ones
 they found at start, so Play has every controller after player 1's turned
 off before the game opens and on again once it has. macOS can take most of
 a minute to drop a controller that was turned off.
-A GameCube game played with Game Boy Advances has its ports in Dolphin's
-file for that game, `GameSettings/<disc ID>.ini`, `[Core] SIDevice0 = 13`,
-GBA (Integrated), for each player, which Dolphin reads over `Dolphin.ini`;
-each GBA's buttons are in `Config/GBA.ini`, `[GBA1]` to `[GBA4]`, as
-`GCPadNew.ini` names them, with `Buttons/SELECT` and `Buttons/START`.
+A GameCube or Wii game played with another of its console's controllers
+says so in Dolphin's file for that game, `GameSettings/<disc ID>.ini`,
+which Dolphin reads over its own files, for each player in play, and has
+none of these lines on its console's own controller. Game Boy Advances are
+`[Core] SIDevice0 = 13`, GBA (Integrated), and so on, their buttons in
+`Config/GBA.ini`, `[GBA1]` to `[GBA4]`, as `GCPadNew.ini` names them, with
+`Buttons/SELECT` and `Buttons/START`. The Wii Remote held sideways and the
+Classic Controller are a profile for each player,
+`Config/Profiles/Wiimote/emu-remote-1.ini` or `emu-classic-1.ini` and so
+on, one `[Profile]` section with the player's device, `Extension = None`
+and `Options/Sideways Wiimote = True`, or `Extension = Classic` and its
+`Classic/Buttons/A`, `Classic/Triggers/L` and `Classic/Left Stick/Up` lines,
+which the game's file names by `[Controls] WiimoteProfile1 =` with
+`WiimoteSource0 = 1`. The GameCube controller in a Wii game turns every
+Remote off, `WiimoteSource0 = 0` to `3`, and sets each player's
+`SIDevice` to 6. A profile with no Nunchuk and the Remotes turned off were
+each proven by launching Super Mario Galaxy.
 Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.

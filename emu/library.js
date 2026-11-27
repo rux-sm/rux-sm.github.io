@@ -558,7 +558,7 @@
   async function keepNotes(g, change) {
     const n = g.notes ?? {};
     const row = { system: g.system, title: g.title, note: n.note ?? null, played: Boolean(n.played), finished: Boolean(n.finished),
-      favourite: Boolean(n.favourite), plays: Boolean(n.plays), gba: Boolean(n.gba), ...change };
+      favourite: Boolean(n.favourite), plays: Boolean(n.plays), controller: n.controller ?? null, ...change };
     try {
       await R.data.saveNotes(row);
     } catch (error) {
@@ -575,12 +575,10 @@
     if (!await keepNotes(g, { [key]: !g.notes?.[key] })) return;
     if (key === 'favourite') renderGames();
     if (g === game) renderChosen();
-    if (key === 'gba') { padReading = null; renderPad(); }
   }
 
   // A GAME'S MENU, from a right-click on its cover:
-  // Favourite and Finished, ticked while on; for a GameCube game, Play with
-  // Game Boy Advances, its controllers as Dolphin's integrated GBAs; About this copy, which opens the
+  // Favourite and Finished, ticked while on; About this copy, which opens the
   // panel on what the scan read of the game; and, where any of it is here,
   // Remove from this Mac, which takes it off.
   function openGameMenu(g, trigger) {
@@ -592,7 +590,6 @@
     menu.replaceChildren(
       menuItem(menu, 'Favourite', () => mark(g, 'favourite'), { checked: Boolean(n.favourite) }),
       menuItem(menu, 'Finished', () => mark(g, 'finished'), { checked: Boolean(n.finished) }),
-      ...(g.system === 'gc' ? [menuItem(menu, 'Play with Game Boy Advances', () => mark(g, 'gba'), { checked: Boolean(n.gba) })] : []),
       menuItem(menu, 'About this copy', () => openGame(g, trigger, { about: true })));
     if (keeps && s.state !== 'arriving' && (s.state === 'held' || s.done)) {
       const line = el('li', 'rux--menu-item-divider');
@@ -901,9 +898,14 @@
   // next free box.
   const SLOTS = 4;
   const joined = new Set();
-  // A console's name as the boxes and the map say it; a GameCube game played
-  // with Game Boy Advances is played on those.
-  const padConsoleName = system => (system === R.pads.GBA_MODE ? 'Game Boy Advance' : R.systemName(system));
+  // A console's controller types, from emulators.json, the first its own.
+  const typesOf = system => emulators?.systems?.[system]?.controllers ?? [];
+  // A console's name as the boxes and the map say it, or the name of the
+  // controller type a game is played with, such as Game Boy Advance.
+  const padConsoleName = mode => {
+    const base = mode.split('-')[0];
+    return mode === base ? R.systemName(mode) : typesOf(base).find(t => t.id === mode)?.name ?? R.systemName(base);
+  };
   // The four boxes for a console, or a game's mode of it: each null or { pad, state, kept, status }.
   async function padBoxes(system) {
     const pads = await padsKnown();
@@ -927,10 +929,45 @@
       h.name = info.get(h.pad.id)?.name ?? h.pad.name;
       h.read = reads[h.pad.family];
       h.status = padStatus(h, i + 1, most, h.read, consoleName);
-      if (system === R.pads.GBA_MODE && h.status.kind === 'ok') h.status = { ...h.status, words: 'Ready · Game Boy Advance' };
     });
     return { held, most, consoleName, info };
   }
+  // THE CONTROLLER TYPE, Carbon's inline dropdown in a controller's Buttons
+  // window, where the chosen game's console has more than one: its options
+  // the console's types, the chosen one the type kept with the game, else
+  // the console's own controller. Choosing one keeps it with the game, its
+  // own controller as none, and opens the window again on that type, the
+  // boxes read again for it.
+  function renderPadType(mode) {
+    const base = mode.split('-')[0];
+    const types = game ? typesOf(base) : [];
+    $('emu-pad-type').hidden = types.length < 2;
+    if (types.length < 2) return;
+    const chosenType = types.find(t => t.id === mode) ?? types[0];
+    $('emu-pad-type-pick').querySelector('.rux--list-box__label').textContent = chosenType.name;
+    $('emu-pad-types').replaceChildren(...types.map(t => {
+      const li = el('li', `rux--list-box__menu-item${t === chosenType ? ' rux--list-box__menu-item--active' : ''}`);
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(t === chosenType));
+      li.dataset.type = t.id;
+      li.append(el('div', 'rux--list-box__menu-item__option', t.name));
+      return li;
+    }));
+  }
+  let padMapOn = null;
+  $('emu-pad-type-box').addEventListener('rux:listbox-selected', async e => {
+    const id = e.detail.option?.dataset.type;
+    const g = game;
+    if (!id || !g) return;
+    const controller = id === g.system ? null : id;
+    if ((g.notes?.controller ?? null) !== controller && !await keepNotes(g, { controller })) return;
+    padReading = null;
+    renderPad();
+    if (!padMapOn) return;
+    const mode = R.pads.modeOf(g.system, g);
+    const reads = await readPads(mode, await padsKnown());
+    await openPadMap(padMapOn.pad, mode, reads[padMapOn.pad.family], padMapOn.place);
+  });
   // Each redraw is numbered, and one overtaken by a later, as when consoles
   // are chosen quickly, draws nothing.
   let padTurn = 0;
@@ -1205,6 +1242,8 @@
       await reopen(`Put back as it was in ${emulator}.`);
     };
     $('emu-padmap-h').textContent = `${consoleName} buttons`;
+    padMapOn = { pad, place };
+    renderPadType(system);
     $('emu-padmap-note').textContent = said();
     $('emu-padmap-learn-note').textContent = '';
     $('emu-padmap-input').value = mine.name;

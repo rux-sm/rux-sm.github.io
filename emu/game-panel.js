@@ -17,9 +17,10 @@
   const $ = id => document.getElementById(id);
   const { el, tag } = R;
 
-  // `top` is put first, as the Library puts the game's art there, and `mac` is
-  // this-mac.js's options.
-  function open(g, { saves = [], onSaved = () => {}, top = [], mac = {}, about: only = false } = {}) {
+  // `top` is put first, as the Library puts the game's art there, `mac` is
+  // this-mac.js's options, and `info` is the game's looked-up facts and
+  // description.
+  function open(g, { saves = [], onSaved = () => {}, top = [], mac = {}, info = null, about: only = false } = {}) {
     $('emu-panel-label').textContent = R.systemName(g.system);
     $('emu-panel-title').textContent = R.nameOf(g);
     const body = $('emu-panel-body');
@@ -35,6 +36,13 @@
       }
       return dl;
     };
+    // ABOUT THIS GAME: what was looked up about it and when rux last played
+    // it, first, as the whole of what the Library's game tile shortens to a line.
+    const f = info?.facts ?? {};
+    const game = facts([['Genre', f.genre], ['Players', f.players], ['Year', f.year], ['Developer', f.developer],
+      ['Publisher', f.publisher], ['Last played', g.notes?.played_at ? R.date(g.notes.played_at) : 'Not yet']]);
+    body.append(el('h3', 'rux--type-heading-02', 'About this game'), game);
+    if (info?.description) body.append(el('p', '', info.description));
     const problems = R.problemsOf(g);
     if (problems.length) {
       const status = el('div');

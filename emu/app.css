@@ -245,7 +245,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* The facts under the name in body-compact-01, the size Carbon pairs with
    its large buttons. */
 .emu-chosen__game > .emu-row__sub { font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
-.emu-chosen__about { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 /* The one next move beside Save, at the line's end as the move it leads to. */
 .emu-chosen__row { flex: none; display: flex; align-items: center; gap: var(--rux-spacing-03); }
 /* SAVE, as Carbon's dropdown stands on a layer: its

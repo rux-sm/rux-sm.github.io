@@ -471,10 +471,10 @@
     renderChosen();
   }
 
-  // THE CHOSEN GAME, over the wall: its screenshot, faded where this Mac lacks
-  // it, fetched again only when the game changes, in its console's screen
-  // shape; its name
-  // over its facts, then when it was last played, its region and size; its
+  // THE CHOSEN GAME, over the wall: its name; its screenshot, faded where
+  // this Mac lacks it, fetched again only when the game changes, in its
+  // console's screen shape; one line of what helps choose it, its genre,
+  // players and when it was last played, the rest in About this game; its
   // save; and the one next move.
   const playedOf = g => {
     if (!playedAt(g)) return 'Not played yet';
@@ -498,15 +498,8 @@
     $('emu-chosen-name').textContent = $('emu-chosen-name').title = nameOf(game);
     const lead = stateOf(game.system) === 'away' && !isHere(game) ? `Download sets up the ${R.systemName(game.system)} too`
       : stands(game).state === 'failed' ? stands(game).error : playedOf(game);
-    $('emu-chosen-sub').textContent = [lead, game.region, R.size(game.size)].filter(Boolean).join(' · ');
-    const { facts, description } = info.get(keyOf(game)) ?? {};
-    // The console is not said: its wordmark heads the wall.
-    $('emu-chosen-facts').textContent = [facts?.genre, facts?.year, facts?.developer ?? facts?.publisher,
-      facts?.players && `${facts.players} ${facts.players === 1 ? 'player' : 'players'}`].filter(Boolean).join(' · ');
-    $('emu-chosen-facts').hidden = !$('emu-chosen-facts').textContent;
-    $('emu-chosen-about').textContent = description ?? '';
-    $('emu-chosen-about').title = description ?? '';
-    $('emu-chosen-about').hidden = !description;
+    const { facts } = info.get(keyOf(game)) ?? {};
+    $('emu-chosen-facts').textContent = [facts?.genre, R.playersOf(facts), lead].filter(Boolean).join(' · ');
     renderSave();
     renderPad();
     renderGo();
@@ -1719,7 +1712,7 @@
   let opener = null;
   const openGame = (g, from, { about = false } = {}) => {
     opener = from;
-    R.gamePanel.open(g, { saves, onSaved: render, about, top: about ? [] : [cover(g, 'emu-panel-art')],
+    R.gamePanel.open(g, { saves, onSaved: render, about, info: info.get(keyOf(g)), top: about ? [] : [cover(g, 'emu-panel-art')],
       mac: { focus: true, onChanged: readMac, play: helper ? () => { closeGame(); play(g); } : null } });
   };
   // The panel's own close and Escape, heard first, so the page shows what the

@@ -116,6 +116,8 @@
   const ORDER = Object.keys(STATUS);
   const statusOf = game => problemsOf(game)[0]?.[0] ?? 'good';
 
+  // A game's players as words, from its looked-up facts.
+  const playersOf = facts => (facts?.players ? `${facts.players} ${facts.players === 1 ? 'player' : 'players'}` : '');
   const size = bytes => {
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     let n = Number(bytes) || 0, i = 0;
@@ -258,6 +260,6 @@
 
   window.Emu = Object.assign(window.Emu || {}, {
     SYSTEMS, systemName, PREFERRED, BOX, SCREEN, nameOf, cover, shot, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
-    size, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
+    size, playersOf, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

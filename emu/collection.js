@@ -22,6 +22,8 @@
 
   let games = [];
   let saves = [];
+  // Each game's looked-up facts and description, by system and title.
+  let info = new Map();
   // What the helper says of this Mac: whether it keeps a library, how each
   // game stands in it, and how many bytes are free.
   let keeps = false;
@@ -129,12 +131,13 @@
   }
 
   // The panel downloads and removes too, so this Mac is read again after it does.
-  const openGame = g => R.gamePanel.open(g, { saves, onSaved: render, mac: { onChanged: async () => { await readMac(); render(); } } });
+  const openGame = g => R.gamePanel.open(g, { saves, onSaved: render, info: info.get(`${g.system}/${g.title}`), mac: { onChanged: async () => { await readMac(); render(); } } });
 
   async function load() {
     try {
-      const [rows, notes, savesRead] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves()]);
+      const [rows, notes, savesRead, infoRead] = await Promise.all([R.data.games(), R.data.notes(), R.data.saves(), R.data.info()]);
       saves = savesRead;
+      info = new Map(infoRead.map(r => [`${r.system}/${r.title}`, r]));
       games = R.withNotes(rows, notes).map(g => ({ ...g, status: R.statusOf(g) }));
     } catch (error) {
       console.error(error);

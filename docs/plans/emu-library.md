@@ -192,8 +192,6 @@ None.
 - [ ] See the Library in Safari.
 - [ ] Give Rux Emu Helper a call that says whether the home server answers, and
       show it on the strip.
-- [ ] Have Rux Emu Helper say which game runs and take a quit request, so the
-      strip names active play and removing a console stops its game first.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on the
       3DS, Wii U, Switch, Xbox, GameCube and Wii, once which files are one
       game's alone is proven.

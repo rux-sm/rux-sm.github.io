@@ -1296,11 +1296,12 @@
   let saidFor = 0;
   // How long a move with no known end is said: until something else is.
   const LONG = 600000;
-  // Words in the strip for `ms`, or until answered where `ms` is null.
-  function say(text = '', { ms = 4000, bad = false, answers = [] } = {}) {
+  // Words in the strip for `ms`, or until answered where `ms` is null; with
+  // answers they wear a warning, unless `plain`.
+  function say(text = '', { ms = 4000, bad = false, answers = [], plain = false } = {}) {
     clearTimeout(saidFor);
     const words = $('emu-said');
-    if (text && (bad || answers.length)) {
+    if (text && (bad || (answers.length && !plain))) {
       const svg = iconOf(bad ? '#i-error--filled' : '#i-warning--alt-inverted--filled');
       svg.setAttribute('class', bad ? 'rux--icon-indicator--failed' : 'rux--icon-indicator--caution-major');
       words.className = 'rux--icon-indicator emu-strip__words';
@@ -1435,9 +1436,10 @@
       if (stateOf(g.system) === 'on') await insert(g);
       say('Starting…', { ms: 60000 });
       await R.thisMac.play(g, mutter, { anyway: how.anyway });
-      holdWhilePlaying(g.system);
       sfx.start();
-      say(late.length ? `Playing ${nameOf(g)}. Turn ${late.map(c => `the ${c.name}`).join(', then ')} on again now.` : `Playing ${nameOf(g)}.`, { ms: late.length ? 20000 : 4000 });
+      sayPlaying({ emulator: emulatorOf(g.system), system: g.system, file: R.helper.fileOf(g) },
+        late.length ? ` Turn ${late.map(c => `the ${c.name}`).join(', then ')} on again now.` : '', late.length ? 20000 : null);
+      watchPlay(g);
     } catch (error) {
       sfx.no();
       if (error.notBrought) say(error.message, { ms: 30000, bad: true, answers: [['Try again', () => play(g, how)], ['Play anyway', () => play(g, { ...how, anyway: true })]] });
@@ -1448,22 +1450,66 @@
       renderChosen();
     }
   }
-  // While a game Emu started is open, its controllers play it and move
-  // nothing here; asked of the helper every three seconds, as the saves'
-  // carrying asks, and let go once the emulator has quit or never showed.
-  async function holdWhilePlaying(system) {
-    const name = emulatorOf(system);
-    if (!name || !R.helper?.carry) return;
-    R.pauseMoves(true, 'game');
-    const started = Date.now();
-    let seen = false;
-    for (;;) {
-      await new Promise(r => setTimeout(r, 3000));
-      const running = (await R.helper.carry(name).catch(() => null))?.running;
-      if (running) seen = true;
-      else if (seen || Date.now() - started > 20000) break;
+  // WHILE A GAME PLAYS, its controllers play it and move nothing here, and
+  // the strip names it with Stop whenever nothing else is said. The helper
+  // is asked every three seconds, and it is let go once the emulator has
+  // quit or, after Play, never showed. A game already playing when the page
+  // opens is found the same way; a helper too old to say what plays is
+  // asked only whether Play's emulator runs.
+  let playingNow = null;
+  let watching = false;
+  let playSaid = '';
+  // The name of the game playing, or null where Play did not open it.
+  const playName = now => {
+    const g = now?.system ? games.find(x => x.system === now.system && R.helper.fileOf(x) === now.file) : null;
+    return g ? nameOf(g) : null;
+  };
+  function sayPlaying(now, extra = '', ms = null) {
+    const name = playName(now);
+    playSaid = `${name ? `Playing ${name}` : `${now.emulator} is open`}.${extra}`;
+    say(playSaid, { ms, plain: true, answers: [['Stop', () => stopPlaying(now.emulator)]] });
+  }
+  async function stopPlaying(emulator) {
+    playSaid = 'Stopping…';
+    say(playSaid, { ms: LONG });
+    try { await R.helper.quit(emulator); } catch (error) { sayNo(error.message); }
+  }
+  // A watch already running takes over a Play pressed meanwhile, which it
+  // waits up to twenty seconds for, so no game goes unwatched.
+  let played = null;
+  let held = false;
+  const hold = on => { if (on !== held) { R.pauseMoves(on, 'game'); held = on; } };
+  async function watchPlay(g = null) {
+    if (g) { played = { g, at: Date.now() }; hold(true); }
+    if (watching || !R.helper) return;
+    watching = true;
+    let misses = 0;
+    for (let first = true; ; first = false) {
+      if (played || !first) await new Promise(r => setTimeout(r, 3000));
+      // An answer that does not come says nothing, so the next one is asked
+      // for; ten in a row, and the helper is gone.
+      let now = await R.helper.playing().catch(() => undefined);
+      if (now === undefined) { if (++misses >= 10) break; continue; }
+      misses = 0;
+      const last = played?.g ?? (playingNow?.system ? { system: playingNow.system, file: playingNow.file } : null);
+      if (now === null && last) {
+        const emulator = emulatorOf(last.system);
+        now = (await R.helper.carry(emulator).catch(() => null))?.running
+          ? { emulator, system: last.system, file: last.file ?? R.helper.fileOf(last) } : {};
+      }
+      if (now?.emulator) {
+        playingNow = now;
+        played = null;
+        hold(true);
+        if (!$('emu-strip').classList.contains('emu-strip--said')) sayPlaying(now);
+      } else if (!played || Date.now() - played.at > 20000) break;
     }
-    R.pauseMoves(false, 'game');
+    hold(false);
+    if (playSaid && $('emu-said').textContent === playSaid) say();
+    playSaid = '';
+    playingNow = null;
+    played = null;
+    watching = false;
   }
   // The controllers to turn off before a game opens in an emulator that
   // counts them by place: with two or more connected, every one after the
@@ -1509,12 +1555,20 @@
     if (stateOf(system) !== 'on') return;
     const emulator = emulatorOf(system);
     const going = playedBy(emulator).map(R.systemName);
-    say(`Remove ${emulator}? The ${list(going)} ${going.length > 1 ? 'go' : 'goes'} with it. Your saves are kept.`,
+    const stops = playingNow?.emulator === emulator ? `${playName(playingNow) ?? 'Its game'} stops, and the ` : 'The ';
+    say(`Remove ${emulator}? ${stops}${list(going)} ${going.length > 1 ? 'go' : 'goes'} with it. Your saves are kept.`,
       { ms: 20000, answers: [['Remove', () => remove(system)], ['Keep']] });
   }
   async function remove(system) {
     const emulator = emulatorOf(system);
     const going = playedBy(emulator);
+    // A game playing in it is stopped first, so its saves are written before they are kept.
+    const runs = async () => (await R.helper.carry(emulator).catch(() => null))?.running;
+    if (await runs()) {
+      say(`Stopping ${emulator}…`, { ms: LONG });
+      await R.helper.quit(emulator).catch(() => null);
+      if (!(await until(async () => !(await runs()), 30000))) { sayNo(`${emulator} did not quit, so it stays.`); return; }
+    }
     for (const sys of going) keeping.add(sys);
     render();
     say(`Keeping ${emulator}'s saves and settings…`, { ms: LONG });
@@ -1737,6 +1791,7 @@
     renderSound();
     render();
     showChosen();
+    if (helper) watchPlay();
     if (asked && (details || !helper)) openGame(asked, coverOf(asked));
   }
 

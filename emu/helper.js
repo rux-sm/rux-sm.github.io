@@ -14,7 +14,9 @@
    the Trash, or null from a helper too old to, and `uninstall` that done;
    `removeCarried` a carried save moved to the Trash, as a card pulled out
    of its game is, or null from a helper too old to;
-   and `play` opens one game. `call` is any of its
+   and `play` opens one game; `playing` is the emulator playing now and the
+   game Play opened in it, {} for none, or null from a helper too old to
+   say, and `quit` asks an emulator to quit. `call` is any of its
    calls: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
    its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
@@ -141,6 +143,11 @@
     return out;
   }
 
+  // Asked every few seconds, so an answer that does not come is given up on.
+  const playing = async () => { const r = await call('/playing', { signal: AbortSignal.timeout(5000) }); return r ? r.json() : null; };
+  const quit = async emulator => (await call('/quit', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emulator }) }, true)).json();
+
   // A game's files as the helper fetches them: each name within its system's
   // folder, its size and SHA-1 from the scan; a Switch game's update and
   // add-ons with it.
@@ -206,7 +213,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, install, update, settings, setting, putSetting, manage, controllers, open, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, fileOf, filesOf,
+    call, status, mac, install, update, settings, setting, putSetting, manage, controllers, open, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, playing, quit, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

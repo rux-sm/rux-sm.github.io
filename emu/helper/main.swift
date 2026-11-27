@@ -8,6 +8,10 @@
 //   POST   /play           { "system": "n64", "file": "<file in roms/n64/>" }
 //                          opens that one game from this Mac's library in its
 //                          system's emulator
+//   GET    /playing        the emulator playing now, and the system and file
+//                          of the game Emu opened in it, else {}
+//   POST   /quit           { "emulator" }, that emulator asked to quit, as
+//                          the controllers' quit does
 //   GET    /mac            how this Mac stands, read now: each app and its
 //                          version, and each place an emulator saves to
 //   POST   /update         { "url", "name", "size", "sha1", "version" }, a
@@ -124,7 +128,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "38"
+let version = "39"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -182,6 +186,31 @@ func gameFile(_ roms: URL, _ system: String, _ file: String) -> URL? {
   return target
 }
 
+// The last game Play opened, by its system, file and emulator, so the site
+// can name it while that emulator plays.
+var opened: (system: String, file: String, emulator: String)?
+// The emulator emulators.json gives an app.
+func emulatorOf(_ app: String) -> String? { savers().first { appsOf($0.rule).contains(app) }?.name }
+
+// The emulator playing now, the game Play opened where it is that one's.
+func nowPlaying() -> [String: Any] {
+  guard let e = savers().first(where: { playing($0.rule) }) else { return [:] }
+  let mine = opened?.emulator == e.name ? opened : nil
+  return ["emulator": e.name, "system": orNull(mine?.system), "file": orNull(mine?.file)]
+}
+
+// An emulator asked to quit, as the controllers' quit asks it.
+func quitPlaying(_ body: Data) -> (Int, [String: Any]) {
+  guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
+        let name = req["emulator"] as? String, let e = saver(name) else { return (400, ["error": "Send an emulator Emu knows."]) }
+  let apps = appsOf(e.rule)
+  guard let target = NSWorkspace.shared.runningApplications.first(where: { apps.contains($0.bundleURL?.lastPathComponent ?? "") }) else {
+    return (200, ["quitting": false])
+  }
+  quitEmulator(target)
+  return (200, ["quitting": true])
+}
+
 func play(_ body: Data) -> (Int, [String: Any]) {
   guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
         let system = req["system"] as? String, let file = req["file"] as? String else { return (400, ["error": "Send a system and a file."]) }
@@ -192,6 +221,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
     return (404, ["error": "That game is not on this Mac. Download it first."])
   }
   if launch.open {
+    opened = emulatorOf(launch.app).map { (system, file, $0) }
     let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     let config = NSWorkspace.OpenConfiguration()
     config.activates = true
@@ -206,6 +236,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   // Its saves are compared with their last carry once it quits.
   p.terminationHandler = { _ in showWaiting() }
   do { try p.run() } catch { return (500, ["error": "\(launch.app) did not start."]) }
+  opened = emulatorOf(launch.app).map { (system, file, $0) }
   // The emulator comes to the front once its window is up.
   DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
     NSRunningApplication(processIdentifier: p.processIdentifier)?.activate()
@@ -1628,6 +1659,8 @@ final class Server {
     switch (req.method, req.path) {
     case ("GET", "/status"): send(c, .json(200, status()), origin: origin)
     case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
+    case ("GET", "/playing"): send(c, .json(200, nowPlaying()), origin: origin)
+    case ("POST", "/quit"): let (code, out) = quitPlaying(body); send(c, .json(code, out), origin: origin)
     case ("POST", "/download"): let (code, out) = download(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/downloads"): send(c, .list(200, Downloads.shared.list()), origin: origin)
     case ("GET", "/controllers"): off { .list(200, controllersNow()) }
@@ -1779,6 +1812,12 @@ func quitEmulatorInFront() {
     comboLog.log("no emulator to quit; in front: \(NSWorkspace.shared.frontmostApplication?.executableURL?.lastPathComponent ?? "nothing", privacy: .public)")
     return
   }
+  quitEmulator(target)
+}
+
+// An emulator asked to quit, then told again and at last forced, so a game
+// that ignores the first still ends.
+func quitEmulator(_ target: NSRunningApplication) {
   comboLog.log("quitting \(target.executableURL?.lastPathComponent ?? "?", privacy: .public)")
   // An emulator whose rule says `quit: force` ignores a quit request and
   // writes a save a second after the game does, as Gopher64 does, so the

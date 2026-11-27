@@ -134,10 +134,12 @@
       ?? names.find(n => /\.(wua|rpx)$/i.test(n)) ?? names.sort()[0] ?? null;
   };
 
-  async function play(game) {
+  // `full` opens it full screen, or in a window where false; left out, the
+  // emulator opens as it last did.
+  async function play(game, { full } = {}) {
     const r = await fetch(`${BASE}/play`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: game.system, file: fileOf(game) }),
+      body: JSON.stringify({ system: game.system, file: fileOf(game), ...(full === undefined ? {} : { full }) }),
     });
     const out = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(out.error ?? 'The helper did not start the game.');

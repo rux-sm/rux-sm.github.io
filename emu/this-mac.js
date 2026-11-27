@@ -40,7 +40,9 @@
     const carried = anyway ? Boolean(R.carry) : await R.carry?.before(g.system, say);
     // Each connected controller is made the player it keeps, in the emulator about to run.
     await R.pads?.beforePlay(g.system, H, g).catch(error => console.error(error));
-    await H.play(g);
+    // Full screen or a window, as the account keeps it, full screen where it keeps nothing.
+    const full = await (R.data?.pref?.('full_screen') ?? Promise.resolve(undefined)).catch(() => undefined);
+    await H.play(g, { full: full ?? true });
     say('Playing.');
     if (carried) R.carry.after(g.system, say);
     try { g.notes = { ...g.notes, system: g.system, title: g.title, played_at: await R.data.markPlayed(g) }; }

@@ -140,6 +140,12 @@
     async setController(id, name, details) {
       fail((await client.from('emu_controllers').upsert({ id, name, details, updated_at: new Date().toISOString() })).error);
     },
+    // One of the account's Emu choices, such as full_screen, or undefined
+    // where it has none, and one set.
+    pref: async key => (await client.from('emu_prefs').select('value').eq('key', key).maybeSingle()).data?.value,
+    async setPref(key, value) {
+      fail((await client.from('emu_prefs').upsert({ key, value, updated_at: new Date().toISOString() })).error);
+    },
     // A file taken out of Supabase, as scan-save.js takes one out.
     dropFile: path => window.Emu.scanSave.dropFile(data.db(), path),
     // Each emulator's settings as Supabase keeps them, under

@@ -169,6 +169,24 @@
     $('emu-sound').setAttribute('aria-pressed', String(loud));
     $('emu-sound').querySelector('use').setAttribute('href', loud ? '#m-volume_up' : '#m-volume_off');
   }
+  // FULL SCREEN OR A WINDOW, kept with the account, which Play hands the
+  // helper each time: pressed is full screen, as every game starts until it
+  // is changed.
+  let full = true;
+  async function readFull() {
+    full = (await R.data.pref('full_screen').catch(() => undefined)) ?? true;
+    renderFull();
+  }
+  function renderFull() {
+    $('emu-full').setAttribute('aria-pressed', String(full));
+    $('emu-full').querySelector('use').setAttribute('href', full ? '#m-open_in_full' : '#m-close_fullscreen');
+  }
+  $('emu-full').addEventListener('click', async () => {
+    full = !full;
+    renderFull();
+    sfx.pick();
+    try { await R.data.setPref('full_screen', full); } catch (error) { console.error(error); full = !full; renderFull(); sayNo('That did not save. Try again.'); }
+  });
 
   // A MENU ITEM, Design's: its label, whether it can be pressed, and, where
   // `checked` is given, a box ticked while it is on.
@@ -1307,7 +1325,7 @@
 
   function render() {
     const mac = Boolean(helper);
-    for (const id of ['emu-strip', 'emu-sound', 'emu-chosen', 'emu-pad']) $(id).hidden = !mac;
+    for (const id of ['emu-strip', 'emu-sound', 'emu-full', 'emu-chosen', 'emu-pad']) $(id).hidden = !mac;
     $('emu-library').classList.toggle('emu-library--mac', mac);
     if (mac) renderStrip();
     keepShown();
@@ -1866,7 +1884,7 @@
     renderSound();
     render();
     showChosen();
-    if (helper) { watchPlay(); askServer(); }
+    if (helper) { watchPlay(); askServer(); readFull(); }
     if (asked && (details || !helper)) openGame(asked, coverOf(asked));
   }
 

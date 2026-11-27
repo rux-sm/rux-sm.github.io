@@ -5,9 +5,10 @@
 //
 //   GET    /status         this Mac's library folder, and each system whose
 //                          emulator is installed
-//   POST   /play           { "system": "n64", "file": "<file in roms/n64/>" }
-//                          opens that one game from this Mac's library in its
-//                          system's emulator
+//   POST   /play           { "system": "n64", "file": "<file in roms/n64/>",
+//                          "full": true }, that one game opened from this
+//                          Mac's library in its system's emulator, full
+//                          screen or, where full is false, in a window
 //   GET    /playing        the emulator playing now, and the system and file
 //                          of the game Emu opened in it, else {}
 //   POST   /quit           { "emulator" }, that emulator asked to quit, as
@@ -131,7 +132,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "41"
+let version = "42"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -143,7 +144,10 @@ let collectionLinks = "https://udnmqhayzhrbltxzzhjw.supabase.co/storage/v1/objec
 // How a system's emulator starts a game: its app and arguments, or, for an
 // emulator in Apple's sandbox, by opening the game with the app as the
 // Finder does, since the sandbox refuses a game handed to it as an argument.
-struct Launch { let app: String; let args: [String]; let open: Bool }
+// How a system's emulator opens a game: its arguments, the ones it starts
+// full screen or in a window with where it has them, or opened as the Finder
+// opens a file.
+struct Launch { let app: String; let args: [String]; let full: [String]; let window: [String]; let open: Bool }
 
 // The site's emulators.json, inside the app.
 let rules: [String: Any] = {
@@ -158,7 +162,8 @@ let launches: [String: Launch] = {
   for (system, value) in rules["systems"] as? [String: Any] ?? [:] {
     guard let s = value as? [String: Any], let l = s["launch"] as? [String: Any],
           let app = l["app"] as? String else { continue }
-    out[system] = Launch(app: app, args: l["args"] as? [String] ?? [], open: l["open"] as? Bool ?? false)
+    out[system] = Launch(app: app, args: l["args"] as? [String] ?? [], full: l["full"] as? [String] ?? [],
+                         window: l["window"] as? [String] ?? [], open: l["open"] as? Bool ?? false)
   }
   return out
 }()
@@ -202,6 +207,17 @@ func nowPlaying() -> [String: Any] {
   return ["emulator": e.name, "system": orNull(mine?.system), "file": orNull(mine?.file)]
 }
 
+// An emulator's start-full-screen setting set, in the file and key
+// emulators.json names for it, left alone while it runs, since it writes its
+// settings as it quits.
+func setFullScreen(_ name: String, _ full: Bool) {
+  guard let e = saver(name), let fs = e.rule["fullScreen"] as? [String: String], let rel = fs["file"], let format = fs["format"],
+        let key = fs["key"], let value = full ? fs["on"] : fs["off"], !running(appsOf(e.rule)),
+        let data = settingBytes(name, rel), let text = String(data: data, encoding: .utf8),
+        let changed = withSetting(text, format, key, value), changed != text else { return }
+  _ = writeSetting(name, rel, Data(changed.utf8))
+}
+
 // An emulator asked to quit, as the controllers' quit asks it.
 func quitPlaying(_ body: Data) -> (Int, [String: Any]) {
   guard let req = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
@@ -223,6 +239,12 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   guard let target = gameFile(URL(fileURLWithPath: library), system, file) else {
     return (404, ["error": "That game is not on this Mac. Download it first."])
   }
+  // Full screen or a window, where the site says which: the emulator's own
+  // setting written first, where emulators.json names one and it is not
+  // running, and its start arguments for either.
+  let full = req["full"] as? Bool
+  if let full, let name = emulatorOf(launch.app) { setFullScreen(name, full) }
+  let chosen = full.map { $0 ? launch.full : launch.window } ?? []
   if launch.open {
     opened = emulatorOf(launch.app).map { (system, file, $0) }
     let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -233,7 +255,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   }
   let p = Process()
   p.executableURL = exe
-  p.arguments = launch.args.map { $0 == "{file}" ? target.path : $0 }
+  p.arguments = chosen + launch.args.map { $0 == "{file}" ? target.path : $0 }
   p.standardOutput = FileHandle.nullDevice
   p.standardError = FileHandle.nullDevice
   // Its saves are compared with their last carry once it quits.

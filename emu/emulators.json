@@ -10,6 +10,9 @@
         "app": "Mesen.app",
         "args": [
           "{file}"
+        ],
+        "full": [
+          "--fullscreen"
         ]
       },
       "needs": []
@@ -24,6 +27,9 @@
         "app": "Mesen.app",
         "args": [
           "{file}"
+        ],
+        "full": [
+          "--fullscreen"
         ]
       },
       "needs": []
@@ -49,7 +55,6 @@
       "launch": {
         "app": "mGBA.app",
         "args": [
-          "-f",
           "{file}"
         ]
       },
@@ -64,7 +69,6 @@
       "launch": {
         "app": "mGBA.app",
         "args": [
-          "-f",
           "{file}"
         ]
       },
@@ -79,7 +83,6 @@
       "launch": {
         "app": "mGBA.app",
         "args": [
-          "-f",
           "{file}"
         ]
       },
@@ -100,8 +103,10 @@
       "launch": {
         "app": "melonDS.app",
         "args": [
-          "-f",
           "{file}"
+        ],
+        "full": [
+          "-f"
         ]
       },
       "needs": [
@@ -131,6 +136,12 @@
         "app": "Azahar.app",
         "args": [
           "{file}"
+        ],
+        "full": [
+          "-f"
+        ],
+        "window": [
+          "-w"
         ]
       },
       "needs": []
@@ -425,6 +436,13 @@
         "file": "config.ini",
         "format": "ini"
       },
+      "fullScreen": {
+        "file": "config.ini",
+        "format": "ini",
+        "key": "ports.qt/fullscreen",
+        "on": "1",
+        "off": "0"
+      },
       "besideGame": true,
       "places": [
         {
@@ -511,6 +529,13 @@
       "config": {
         "file": "config.json",
         "format": "json"
+      },
+      "fullScreen": {
+        "file": "config.json",
+        "format": "json",
+        "key": "video.fullscreen",
+        "on": "true",
+        "off": "false"
       },
       "gameProcess": "gopher64-cli",
       "quit": "force",
@@ -756,6 +781,13 @@
         "file": "settings.ini",
         "format": "ini"
       },
+      "fullScreen": {
+        "file": "settings.ini",
+        "format": "ini",
+        "key": "Main/StartFullscreen",
+        "on": "true",
+        "off": "false"
+      },
       "places": [
         {
           "path": "memcards",
@@ -881,6 +913,13 @@
         "file": "inis/PCSX2.ini",
         "format": "ini"
       },
+      "fullScreen": {
+        "file": "inis/PCSX2.ini",
+        "format": "ini",
+        "key": "UI/StartFullscreen",
+        "on": "true",
+        "off": "false"
+      },
       "places": [
         {
           "path": "memcards",
@@ -1004,6 +1043,13 @@
         "file": "Config/Dolphin.ini",
         "format": "ini"
       },
+      "fullScreen": {
+        "file": "Config/Dolphin.ini",
+        "format": "ini",
+        "key": "Display/Fullscreen",
+        "on": "True",
+        "off": "False"
+      },
       "places": [
         {
           "path": "GC",
@@ -1102,6 +1148,13 @@
         "file": "settings.xml",
         "format": "xml"
       },
+      "fullScreen": {
+        "file": "settings.xml",
+        "format": "xml",
+        "key": "fullscreen",
+        "on": "true",
+        "off": "false"
+      },
       "places": [
         {
           "path": "mlc01",
@@ -1183,6 +1236,13 @@
       "config": {
         "file": "Config.json",
         "format": "json"
+      },
+      "fullScreen": {
+        "file": "Config.json",
+        "format": "json",
+        "key": "start_fullscreen",
+        "on": "true",
+        "off": "false"
       },
       "places": [
         {
@@ -1293,6 +1353,13 @@
       "config": {
         "file": "xemu.toml",
         "format": "toml"
+      },
+      "fullScreen": {
+        "file": "xemu.toml",
+        "format": "toml",
+        "key": "display.window.fullscreen_on_startup",
+        "on": "true",
+        "off": "false"
       },
       "places": [
         {

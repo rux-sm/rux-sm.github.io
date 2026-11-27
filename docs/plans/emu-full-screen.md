@@ -21,37 +21,26 @@ a window. Play's settings step is `emu/pads.js` `beforePlay`; Sound is
 - **Emu writes the emulator's own start-full-screen setting before Play,**
   through Rux Emu Helper's settings write, as the controller types do, and
   never while the emulator runs.
-- **Each emulator's setting is in `emu/emulators.json`,** its file, its key
-  and its two values, so Play reads one list:
-  - Dolphin: `Config/Dolphin.ini`, `[Display] Fullscreen = True`
-  - DuckStation: `settings.ini`, `[Main] StartFullscreen = true`
-  - PCSX2: `inis/PCSX2.ini`, `[UI] StartFullscreen = true`
-  - Cemu: `settings.xml`, `<fullscreen>true</fullscreen>`
-  - Ryujinx: `Config.json`, `"start_fullscreen": true`
-  - Gopher64: `config.json`, `"fullscreen": true`
-  - mGBA: `config.ini`, `fullscreen=1`
-  - Mesen 2, melonDS, Azahar and xemu: found by launching each.
+- **Each emulator's setting is in `emu/emulators.json`:** its file, key and
+  two values under `fullScreen`, which the helper writes before Play, for
+  Dolphin, DuckStation, PCSX2, Cemu, Ryujinx, Gopher64, xemu and mGBA; or,
+  for Mesen 2, melonDS and Azahar, which keep no such setting, the start
+  options its launch adds, under `full` and `window`.
 - **A game's own setting wins:** Dolphin's file for Four Swords keeps it in
   a window, where its Game Boy Advance screens open beside it, so Emu
   leaves a game's file alone.
+- **One choice for the account, the same on every Mac,** kept with the
+  account's settings; a Mac of its own can come later if it is wanted.
+- **Full screen at first,** since a game is played on the whole screen.
 - **Quitting stays the controller's + and −,** which works full screen too.
 
 ## Questions
 
-- **One choice for the account, or one for each Mac?** A Mac on a TV may
-  want full screen where a laptop wants a window. Recommended: one for the
-  account, the same on every Mac, kept with the account's settings; a Mac
-  can be added later if it is ever wanted.
-- **On or off at first?** Recommended: on, full screen, since a game is
-  played on the whole screen.
+None.
 
 ## Tasks
 
-- [ ] Find and prove Mesen 2's, melonDS's, Azahar's and xemu's
-      start-full-screen settings by launching each, and prove the seven
-      known ones the same way.
-- [ ] Add each emulator's setting to `emu/emulators.json`.
-- [ ] Keep the choice with the account.
-- [ ] Put the full screen switch beside Sound.
-- [ ] Have Play write the emulator's setting for the choice.
-- [ ] Play one game in each emulator with the switch on and off.
+- [ ] Put Rux Emu Helper 42 on the games share, for Supabase and the other
+      Macs; this Mac runs it.
+- [ ] Play a Wii U and a Switch game with the switch on and off, since
+      Cemu's and Ryujinx's settings are not yet proven by launching.

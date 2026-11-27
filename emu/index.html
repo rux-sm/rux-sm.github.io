@@ -179,19 +179,10 @@
              first paint with Carbon's skeletons in them until library.js has
              read the collection and this Mac. -->
         <div class="emu-library emu-library--mac emu-library--loading" id="emu-library" aria-busy="true">
-          <!-- The body: every console with games down the side, each its
-               drawing and name; beside them the chosen game and the
-               controller, over the chosen console's games under its
-               wordmark. -->
+          <!-- The body: the chosen game and the controller over the chosen
+               console's games, under its wordmark, which opens the list of
+               consoles. -->
           <div class="emu-body">
-            <ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles">
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-              <li class="emu-skel-kit" aria-hidden="true"><span class="rux--skeleton__placeholder emu-skel-kit__icon"></span><span class="rux--skeleton__text emu-skel-kit__name"></span></li>
-            </ul>
             <!-- The chosen game: its name across the top; under it its
                  screenshot and beside that the
                  facts libretro has, then when it was last played, its
@@ -238,12 +229,16 @@
               </ul>
             </section>
             <section class="emu-games" aria-labelledby="emu-games-h">
-              <!-- The wall's title row: the chosen console's wordmark and how
-                   many games it has; the strip, the page's one place for
+              <!-- The wall's title row: the chosen console's drawing and
+                   wordmark, which opens the list of consoles, and how many
+                   games it has; the strip, the page's one place for
                    words; and Installed or All games with Sound. It does not
                    scroll. -->
               <div class="emu-games__head">
-                <h2 class="emu-games__title" id="emu-games-h"><span class="rux--skeleton__text emu-skel-title" aria-hidden="true"></span></h2>
+                <div class="emu-games__pick">
+                  <h2 class="emu-games__title" id="emu-games-h"><button type="button" class="emu-picker" id="emu-consoles-pick" aria-expanded="false" aria-controls="emu-consoles-pick-list"><span class="rux--skeleton__text emu-skel-title" aria-hidden="true"></span></button></h2>
+                  <div class="emu-pop rux--layer-two emu-picker__list" id="emu-consoles-pick-list" hidden><ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul></div>
+                </div>
                 <p class="emu-games__count" id="emu-games-count"></p>
                 <div class="emu-strip" id="emu-strip" hidden>
                   <ul class="emu-strip__facts" role="list" id="emu-strip-facts" aria-label="This Mac"></ul>

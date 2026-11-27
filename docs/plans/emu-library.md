@@ -6,9 +6,9 @@ type: plan
 
 ## Goal
 
-The Library, Emu's front page, is four tiles: every
-console down the side, the chosen console's games beside them as a wall
-of covers, and over the wall the chosen game, its screenshot and facts, its
+The Library, Emu's front page, is three tiles: the chosen console's games
+as a wall of covers under its drawing and wordmark, which open the list of
+consoles, and over the wall the chosen game, its screenshot and facts, its
 save and Play, with the controller beside it. The wall's title row holds the strip, Installed or All games and Sound.
 It opens on the game last played. Choose a console and its games fill the
 wall, press a game and it stands over the wall, press Play. A game this Mac lacks stands in the same wall,
@@ -39,16 +39,19 @@ The page:
 - **The consoles are pixel art at one CSS pixel to an art pixel,** never
   stretched, and Carbon lays out everything else.
 - **Motion follows Carbon's curves,** and every move makes its small sound.
-- **A controller moves over the consoles and the covers,** A to choose and then
-  to play, B to close what is open.
-- **Every move works without dragging,** and a game dropped on its console
-  plays, as an extra; the word under the pointer says what letting go will do.
+- **A controller moves over the covers and the wall's title,** A to choose and
+  then to play, A on the title to open the list of consoles and move in it, B
+  to close what is open.
+- **Every move works without dragging,** and a game dropped on its console's
+  drawing in the title plays, as an extra; the word under the pointer says
+  what letting go will do.
 
 The consoles:
 
-- **The consoles are a list down the side,** in the collection's order, each
-  its drawing and its name, scrolling on their own where they do not fit.
-  Under 42rem they are a row over the wall, scrolling sideways.
+- **The chosen console's drawing and wordmark are the wall's title, a button
+  opening the list of consoles,** in the collection's order, each its drawing
+  and its name, down over the wall, because the whole list on screen took a
+  tile for one choice. Under 53rem the tiles are rows.
 - **There is no taking out and no putting away,** because playing a game
   never needed it.
 - **One console is chosen, always,** on Carbon's selected layer in the list.
@@ -57,8 +60,8 @@ The consoles:
 - **A console not set up is faded,** as a game not on
   this Mac is, so away looks the same everywhere. Its games still fill the
   wall, and Download on one sets its console up first.
-- **A console's menu is a right click on it,** which chooses it: Set up, or
-  Remove. So no control is drawn on a console.
+- **A console's menu is a right click on it,** in the list or on the title,
+  which chooses it: Set up, or Remove. So no control is drawn on a console.
 - **Removing asks first and names every console that goes,** such as "Remove
   Mesen 2? The NES and SNES go too. Your saves are kept.", since one emulator
   plays several. Its saves and settings are kept in Supabase and checked
@@ -179,8 +182,8 @@ The side panel:
 - **On the phone a game opens the whole panel:** its saves, rux's marks and
   note, and that fold, shut.
 
-- **Without the helper, as on the phone, the page is the consoles and the
-  wall alone, with no strip, switch, Sound or chosen game,** with no Save, controller, Play or Download, and a game pressed opens
+- **Without the helper, as on the phone, the page is the wall alone, its
+  title still opening the consoles, with no strip, switch, Sound or chosen game,** with no Save, controller, Play or Download, and a game pressed opens
   its panel.
 
 ## Questions

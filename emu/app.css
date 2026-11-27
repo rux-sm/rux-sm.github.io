@@ -168,10 +168,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
 .emu-games { grid-area: games; min-inline-size: 0; min-block-size: 0; display: flex; flex-direction: column; }
 .emu-games__scroll { flex: 1; min-block-size: 0; overflow-y: auto; overscroll-behavior-y: contain; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-07); }
-/* The wall's title row, still over the wall: the wordmark and its count of
-   games, the strip right after them, then Sound at the row's end. Under
-   42rem the strip's words take a row of their own under it. */
-.emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-04) var(--rux-spacing-05); padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
+/* The wall's title row, still over the wall, a bar as the scheduler's
+   toolbar and Carbon's table toolbar are: no padding and no gaps, its
+   controls 40px and edge to edge at the tile's top, the words between them
+   16px in from either side. The console dropdown, then its count of games,
+   the strip right after them, then Sound at the row's end. Under 42rem the
+   strip's words take a row of their own under it. */
+.emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; min-block-size: var(--rux-layout-size-height-md); }
+.emu-games__count, .emu-strip { padding-inline: var(--rux-spacing-05); }
 @media (max-width: 41.98rem) { .emu-strip--said { order: 1; flex-basis: 100%; } }
 .emu-games__count { flex: none; color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* The row stands over the wall, so the list of consoles opens over the

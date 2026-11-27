@@ -28,3 +28,10 @@
    leaves it room. */
 .emu-pop .rux--contained-list-item__content { display: flex; align-items: center; }
 .emu-pop .rux--contained-list-item--with-action .rux--contained-list-item__content { padding-inline-end: var(--rux-spacing-09); }
+
+/* The wall's title row is a bar, so its dropdown and Sound are square,
+   except where they meet the tile's top corners, which they follow inside
+   its edge. */
+.emu-games__head .rux--dropdown--inline { border-radius: 0; border-start-start-radius: max(0px, var(--emu-tile-radius, 0px) - 1px); }
+.emu-games__head .rux--btn { border-radius: 0; }
+.emu-games__head > :last-child .rux--btn { border-start-end-radius: max(0px, var(--emu-tile-radius, 0px) - 1px); }

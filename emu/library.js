@@ -1296,6 +1296,7 @@
   let saidFor = 0;
   // How long a move with no known end is said: until something else is.
   const LONG = 600000;
+  // Words in the strip for `ms`, or until answered where `ms` is null.
   function say(text = '', { ms = 4000, bad = false, answers = [] } = {}) {
     clearTimeout(saidFor);
     const words = $('emu-said');
@@ -1316,7 +1317,7 @@
       return b;
     }));
     holding = answers.length > 0 || ms === LONG;
-    if (text) saidFor = setTimeout(say, ms);
+    if (text && ms != null) saidFor = setTimeout(say, ms);
     else if (untold) { const told = untold; untold = null; say(told); }
   }
   // What a game's saves say as they are carried, which may come long after
@@ -1422,7 +1423,12 @@
         say(`Turn off ${names}. The game opens once ${late.length > 1 ? 'they are' : 'it is'} off; then turn ${them} on again${late.length > 1 ? ', in that order' : ''}.`,
           { ms: LONG, answers: [['Play anyway', () => { told.skipped = true; }]] });
         const off = await until(async () => told.skipped || !(await connectedKeys()).some(k => late.some(c => c.key === k)), 180000);
-        if (!off) { sayNo(`Play stopped: ${names} stayed on.`); return; }
+        // It stays until answered, so it is still there after a few minutes away.
+        if (!off) {
+          sfx.no();
+          say(`Play stopped: ${names} stayed on.`, { ms: null, bad: true, answers: [['Try again', () => play(g, how)], ['Close']] });
+          return;
+        }
         if (told.skipped) late = [];
         say();
       }

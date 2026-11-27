@@ -41,13 +41,23 @@ reading and writing `emu/pads.js`.
   each controller's serial, from SDL 3, beside its GUID.
 - **PCSX2 has no such binding,** only `SDL-N`, so it keeps the step with
   Mesen 2.
+- **A GameCube game played with Game Boy Advances sets its ports in
+  Dolphin's file for that game alone,** `GameSettings/<game ID>.ini`,
+  `[Core] SIDevice0 = 13` for each player, while `Config/Dolphin.ini` keeps 6,
+  a GameCube controller, for every other game. Dolphin reads the game's file
+  over its own, as Four Swords Adventures and Pikmin showed on this Mac.
+- **Which games use Game Boy Advances is kept with the account,** in the
+  game's `emu_notes`, as Play with Game Boy Advances in the game's menu, and
+  written into Dolphin's file for the game before Play, keeping its other
+  lines, so it is the same on every Mac. Four Swords Adventures starts on.
+- **A game played with Game Boy Advances reads and sets each player's
+  buttons in `Config/GBA.ini`,** `[GBA1]` to `[GBA4]`, which names the
+  controller as `GCPadNew.ini` does, and its boxes say Ready · Game Boy
+  Advance.
 
 ## Questions
 
-- **Are Dolphin's GameCube ports 1 and 2 set to GBA (Integrated) on
-  purpose?** That is type 13, for The Legend of Zelda: Four Swords
-  Adventures played with Game Boy Advances; Fix it would set them back to a
-  GameCube controller, type 6, which every other GameCube game needs.
+None.
 
 ## Tasks
 
@@ -56,5 +66,12 @@ reading and writing `emu/pads.js`.
 - [ ] Write DuckStation's bindings with the persistent identifier, move it
       out of the emulators that count by place, and prove it with both
       controllers turned on in both orders.
+- [ ] Read each GameCube game's ID from its disc header when the folder is
+      scanned, for Dolphin's file for that game.
+- [ ] Add Play with Game Boy Advances to a GameCube game's menu, kept in
+      `emu_notes`, and write the game's ports into Dolphin's file for it
+      before Play.
+- [ ] Read and set a Game Boy Advance game's buttons in `Config/GBA.ini` in
+      the boxes, the map and Fix it.
 - [ ] Play a two-player game in each kind of emulator with both controllers
       to see the players in the game itself.

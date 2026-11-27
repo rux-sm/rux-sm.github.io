@@ -37,7 +37,7 @@ mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
 | melonDS | `melonDS.toml`, `[Instance0.Joystick]` | `JoystickID`, an index | SDL 2 buttons; a hat has `0x100` set, an axis `0x10000` |
 | Azahar | `config/qt-config.ini`, `[Controls]` profile `profile`+1 | `guid:` in each value | SDL 2; `api:controller` names the controller's button |
 | Gopher64 | config.json, `input` | the profile in `input_profile_binding[0]` | SDL 3 when `dinput`; its slots as its `input_profile.rs` orders them |
-| DuckStation | `settings.ini`, `[Pad1]` | `SDL-0` | SDL names, `SDL-0/A` |
+| DuckStation | `settings.ini`, `[Pad1]` | `SDL-<SDL 3 GUID>-<serial>`, else `SDL-0` | SDL names, `SDL-0/A` |
 | PCSX2 | `inis/PCSX2.ini`, `[Pad1]` | `SDL-0` | SDL names, `SDL-0/FaceSouth` |
 | Dolphin | `Config/GCPadNew.ini` `[GCPad1]`, `Config/WiimoteNew.ini` `[Wiimote1]` | `Device = SDL/0/<name>` | SDL names in backticks; GameCube port 1 needs `SIDevice0 = 6` in `Config/Dolphin.ini` |
 | Cemu | `controllerProfiles/controller0.xml` | `uuid`, `<index>_<SDL 3 GUID>` | SDL 3; 38–49 are axes, 42 and 43 ZL and ZR |
@@ -48,6 +48,7 @@ mode is maker `057e` and product `2009`, Nintendo's own Pro Controller.
 
 Each emulator keeps the next players beside player 1: Mesen 2 in `Port2`
 with codes from `0x1100`, PCSX2 and DuckStation in `[Pad2]` on `SDL-1`,
+or in DuckStation on that controller's own name,
 Gopher64 at the next place of each list in `input`, its profile named
 `Emu <maker>:<product>` where Emu wrote it, Dolphin in `[GCPad2]`
 with `SIDevice1 = 6` and in `[Wiimote2]` with `Source = 1`, since its
@@ -57,8 +58,12 @@ binds each player to the controller's SDL path, which changes whenever the
 controller connects again, so Emu points it at the path again before an N64
 game starts. Before a game starts, Emu sets each player
 up again in the emulators that name the controller, so each controller plays
-as the player it keeps with the account. Mesen 2, PCSX2 and DuckStation
-number controllers in an order of their own, Apple's or SDL's, which SDL
+as the player it keeps with the account. DuckStation names a controller
+by its SDL 3 GUID and the serial Rux Emu Helper reads, where the serial is
+plain letters, digits and hyphens, and accepts that name whatever its
+`SDLUsePersistentDeviceIdentifiers` says. Mesen 2, PCSX2, and DuckStation
+for a controller with no such serial, number controllers in an order of
+their own, Apple's or SDL's, which SDL
 does not keep from one start to the next with the same controllers
 connected. A controller that connects while they run comes after the ones
 they found at start, so Play has every controller after player 1's turned
@@ -75,7 +80,8 @@ mGBA, melonDS and Azahar play one player.
 
 Set up changes only the lines that bind the controller: Cemu's profile
 name, Ryujinx's light and Azahar's own button names stay, and Ryujinx's
-− and + are written as `Back` and `Start`, as it writes them.
+− and + keep the names its file already uses, `Minus` and `Plus` or `Back`
+and `Start`.
 
 Ryujinx rewrites its Config.json when it quits, and Cemu rewrites
 `controller0.xml` when its input settings close, so either file is changed

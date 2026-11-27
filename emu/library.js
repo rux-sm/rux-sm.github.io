@@ -854,7 +854,7 @@
     const needs = why => ({ kind: 'warn', words: 'Needs a fix', why, fix: true });
     const [kind, words, one] = h.state ?? ['warn', `Not set up for ${consoleName}`, null];
     if (read.problem) return needs(read.problem.replace(/\.$/, ''));
-    if (R.pads.ORDERED.has(read.emulator)) {
+    if (R.pads.byPlace(read.emulator, [h.pad.found ?? {}])) {
       return read.players.some(x => x.player === player && Object.keys(x.map).length) ? ready : needs(`not set up as player ${player}`);
     }
     if (kind === 'ok' && one.player === player) return ready;
@@ -1462,9 +1462,9 @@
   // { key, name } in player order. None where the emulator names them.
   async function lateControllers(system) {
     const emulator = emulatorOf(system);
-    if (!R.pads.ORDERED.has(emulator) || !R.helper?.controllers) return [];
+    if (!R.helper?.controllers) return [];
     const report = await R.helper.controllers().catch(() => null);
-    if (!report || report.length < 2) return [];
+    if (!report || report.length < 2 || !R.pads.byPlace(emulator, report)) return [];
     const info = await padInfoNow();
     const most = R.pads._readers[emulator]?.players ?? 1;
     const keyOfPad = c => `${c.vendor}:${c.product}`;

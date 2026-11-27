@@ -25,21 +25,17 @@ reading and writing `emu/pads.js`.
   game.
 - **Play checks first:** a connected controller not set up for the console
   stops Play with the same Needs a fix and Fix it, and Play anyway.
-- **Mesen 2, PCSX2 and DuckStation get one step at Play** when two or more
+- **Mesen 2 and PCSX2 get one step at Play** when two or more
   controllers are on: every controller after player 1's is turned off before
   the game opens and on again, in player order, once it has, because these
   emulators number a controller that connects while they run after the ones
-  they found at start, as all three did with both controllers. The step names
+  they found at start, as both did with both controllers. DuckStation gets
+  it too when a connected controller has no serial. The step names
   each controller: "Turn off the Xbox controller. Turn it on again once the
   game opens."
 - **Emu cannot see the order those emulators chose,** so the step is shown
   every time, not only when the order is wrong.
-- **DuckStation names a controller after all, and leaves the step:** with
-  `[InputSources] SDLUsePersistentDeviceIdentifiers`, on by default, a binding
-  may name `SDL-<SDL 3 GUID>-<serial>` instead of `SDL-N`, so Emu writes that
-  and DuckStation follows the kept player like Cemu. Rux Emu Helper reports
-  each controller's serial, from SDL 3, beside its GUID.
-- **PCSX2 has no such binding,** only `SDL-N`, so it keeps the step with
+- **PCSX2 has no binding by name,** only `SDL-N`, so it keeps the step with
   Mesen 2.
 
 ## Questions
@@ -48,10 +44,5 @@ None.
 
 ## Tasks
 
-- [ ] Have Rux Emu Helper report each controller's SDL 3 serial, and build
-      and install that helper.
-- [ ] Write DuckStation's bindings with the persistent identifier, move it
-      out of the emulators that count by place, and prove it with both
-      controllers turned on in both orders.
 - [ ] Play a two-player game in each kind of emulator with both controllers
       to see the players in the game itself.

@@ -326,20 +326,22 @@
     },
   };
 
-  // PCSX2's and DuckStation's player 1, each button an SDL name on the first
-  // controller, `SDL-0/FaceSouth` or `SDL-0/A`.
+  // PCSX2's and DuckStation's player, each button an SDL name on a
+  // controller by its place, `SDL-0/FaceSouth`, or in DuckStation by its own
+  // name, `SDL-<GUID>-<serial>/A`.
   function sdlPad(pad = {}) {
     const PS = { Cross: '✕', Circle: '○', Square: '□', Triangle: '△', L1: 'L1', R1: 'R1', L2: 'L2', R2: 'R2', L3: 'L3', R3: 'R3', Select: 'Select', Start: 'Start',
       Up: 'D-pad', Down: 'D-pad', Left: 'D-pad', Right: 'D-pad', LUp: 'Left stick', RUp: 'Right stick', Analog: 'Analog' };
     const pairs = [];
     let index = null;
     for (const [key, does] of Object.entries(PS)) {
-      const m = String(pad[key] ?? '').match(/^SDL-(\d+)\/(.+)$/);
+      const m = String(pad[key] ?? '').match(/^SDL-([^/]+)\/(.+)$/);
       if (!m) continue;
-      index ??= Number(m[1]);
+      index ??= m[1];
       pairs.push([named(m[2]), does]);
     }
-    return { bound: index == null ? null : { index }, map: mapOf(pairs) };
+    const bound = index == null ? null : /^\d+$/.test(index) ? { index: Number(index) } : { sdl: index };
+    return { bound, map: mapOf(pairs) };
   }
 
   // Dolphin's player 1: its device by name, and each input an SDL name in
@@ -395,7 +397,12 @@
   // one bound to its place among the connected controllers, counted from 0
   // as the emulator counts them. Null where none.
   const bindsTo = (bound, pad, place) => Boolean(bound && ((bound.vendor && bound.vendor === pad.vendor && (!bound.product || !pad.product || bound.product === pad.product))
+    || (bound.sdl && bound.sdl === duckId(pad.found ?? pad))
     || (bound.index != null && bound.index === place)));
+  // DuckStation's name for a controller, its SDL 3 GUID and serial, where
+  // the serial is plain letters, digits and hyphens, as DuckStation writes
+  // it; null where it has none, and DuckStation counts it by place.
+  const duckId = c => (c?.sdl3 && /^[A-Za-z0-9-]+$/.test(c.serial ?? '') ? `${c.sdl3}-${c.serial}` : null);
   // Chrome's controllers matched to the ones Rux Emu Helper reports, which
   // it lists in the order the emulators count them. Chrome names some
   // controllers without their maker and product, an Xbox one on a Mac
@@ -424,7 +431,7 @@
       return { ...p, vendor: c.vendor, product: c.product, id: `${c.vendor}:${c.product}`, family: FAMILY[c.vendor] ?? p.family, found: c, place: list.indexOf(c) };
     });
   }
-  const playerOf = (read, pad, place) => read?.players.find(p => p.bound?.vendor && bindsTo(p.bound, pad, place))
+  const playerOf = (read, pad, place) => read?.players.find(p => (p.bound?.vendor || p.bound?.sdl) && bindsTo(p.bound, pad, place))
     ?? read?.players.find(p => bindsTo(p.bound, pad, place)) ?? null;
 
   // THE DRAWING. The front: a Pro or Xbox pad has its left stick high and
@@ -764,7 +771,8 @@
       return { 'config.json': JSON.stringify(c, null, 2) };
     },
     DuckStation: (f, system, player, pad, L) => {
-      const at = `SDL-${player - 1}/`; // numbered in the order controllers connect, so player N is the Nth
+      // The controller by its own name, else by place, numbered in the order controllers connect.
+      const at = `SDL-${duckId(pad) ?? player - 1}/`;
       const keys = { Type: 'AnalogController' };
       for (const [k, c] of Object.entries(L)) keys[PS_KEY[k] ?? k] = at + (DUCK_FACE[c] ?? SDL_NAME[c]);
       for (const d of DIRS) keys[d[0].toUpperCase() + d.slice(1)] = at + SDL_NAME[d];
@@ -899,12 +907,16 @@
   // BEFORE A GAME STARTS, each connected controller plays as the player it
   // keeps with the account, in an emulator that names the controller: a
   // player bound to another is set up again for the kept one, with the
-  // buttons that controller had where it was. Mesen 2, PCSX2 and DuckStation
-  // count controllers in an order SDL itself does not keep from one start
-  // to the next, so they are left as they are. Gopher64 also binds by SDL
+  // buttons that controller had where it was. Mesen 2 and PCSX2 count
+  // controllers in an order SDL itself does not keep from one start to the
+  // next, and DuckStation counts one with no serial so, so they are left as
+  // they are. Gopher64 also binds by SDL
   // path, which changes each time a controller connects, so its paths are
   // brought up to date last.
-  const ORDERED = new Set(['Mesen 2', 'PCSX2', 'DuckStation']);
+  const ORDERED = new Set(['Mesen 2', 'PCSX2']);
+  // Whether an emulator counts these connected controllers, helper report
+  // entries, by place.
+  const byPlace = (emulator, report) => ORDERED.has(emulator) || (emulator === 'DuckStation' && (report ?? []).some(c => !duckId(c)));
   const MESEN_PADS = 20;
   // A console's layout as a map has it: Emu's, with each button the map
   // moves where the map has it.
@@ -923,7 +935,7 @@
   async function fix(system, helper, player, c) {
     const emulator = await emulatorFor(system);
     const now = await read(system, helper, c.family);
-    const was = ORDERED.has(emulator) ? now.players.find(x => x.player === player) : now.players.find(x => bindsTo(x.bound, c, -1));
+    const was = byPlace(emulator, [c]) ? now.players.find(x => x.player === player) : now.players.find(x => bindsTo(x.bound, c, -1));
     const out = await setUp(system, helper, player, c, layoutFrom(system, was?.map));
     if (out.problem) throw new Error(out.problem);
     for (const [rel, [, after]] of Object.entries(out.files ?? {})) await helper.putSetting(emulator, rel, new TextEncoder().encode(after));
@@ -982,11 +994,11 @@
       const c = list.find(c => !used.has(c) && c.vendor === vendor && c.product === product);
       if (c) { kept.set(p, c); used.add(c); }
     }
-    if (kept.size && WRITERS[emulator] && !ORDERED.has(emulator)) {
+    if (kept.size && WRITERS[emulator] && !byPlace(emulator, report)) {
       for (const [p, c] of kept) {
         const family = FAMILY[c.vendor] ?? 'xbox';
         const now = await read(system, helper, family);
-        if (now.players.some(x => x.player === p && bindsTo(x.bound, c, list.indexOf(c)))) continue;
+        if (now.players.some(x => x.player === p && bindsTo(x.bound, c, -1))) continue;
         await fix(system, helper, p, { family, ...c });
       }
     }
@@ -1011,5 +1023,5 @@
     if (changed) await helper.putSetting('Gopher64', 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, identify, read, playerOf, beforePlay, fix, modeOf, GBA_MODE, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, fix, modeOf, GBA_MODE, byPlace, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

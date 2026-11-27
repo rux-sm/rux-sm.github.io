@@ -58,9 +58,9 @@
 //                          Mac's library, its download stopped
 //   GET    /controllers    each connected controller as the emulators' SDL
 //                          sees it: its name, maker, product, SDL 2 and
-//                          SDL 3 GUIDs, its place in each SDL's count and
-//                          its SDL 3 path, read in a process of its own run
-//                          as `--controllers`
+//                          SDL 3 GUIDs, its place in each SDL's count, its
+//                          SDL 3 path and serial, read in a process of its
+//                          own run as `--controllers`
 //   POST   /mac/open       { "emulator" }, that emulator opened with no game,
 //                          to change its buttons
 //
@@ -124,7 +124,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "37"
+let version = "38"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1890,19 +1890,24 @@ func sdlRead(_ paths: [String], three: Bool) -> [[String: Any]] {
     typealias Text = @convention(c) (UInt32) -> UnsafePointer<CChar>?
     typealias Mapping = @convention(c) (UInt32) -> UnsafeMutablePointer<CChar>?
     typealias Number = @convention(c) (UInt32) -> UInt16
+    typealias Open = @convention(c) (UInt32) -> OpaquePointer?
+    typealias Serial = @convention(c) (OpaquePointer?) -> UnsafePointer<CChar>?
     guard let start = fn("SDL_Init", Init.self), let update = fn("SDL_UpdateJoysticks", Void0.self),
           let list = fn("SDL_GetJoysticks", List.self), let name = fn("SDL_GetJoystickNameForID", Text.self),
           let path = fn("SDL_GetJoystickPathForID", Text.self), let mapping = fn("SDL_GetGamepadMappingForID", Mapping.self),
           let vendor = fn("SDL_GetJoystickVendorForID", Number.self), let product = fn("SDL_GetJoystickProductForID", Number.self),
+          let open = fn("SDL_OpenJoystick", Open.self), let serial = fn("SDL_GetJoystickSerial", Serial.self),
           start(0x200 | 0x2000) else { return [] }
     for _ in 0..<15 { update(); usleep(100_000) }
     var count: Int32 = 0
     if let ids = list(&count) {
       for i in 0..<Int(count) {
         let id = ids[i]
+        // Its serial is read from the opened controller, as DuckStation reads it to name one.
+        let said = serial(open(id)).map { String(cString: $0) }.flatMap { $0.isEmpty ? nil : $0 }
         out.append(["name": orNull(name(id).map { String(cString: $0) }), "vendor": String(format: "%04x", vendor(id)),
                     "product": String(format: "%04x", product(id)), "sdl3": orNull(guid(mapping(id))), "sdl3Index": i,
-                    "path": orNull(path(id).map { String(cString: $0) })])
+                    "path": orNull(path(id).map { String(cString: $0) }), "serial": orNull(said)])
       }
       free(ids)
     }

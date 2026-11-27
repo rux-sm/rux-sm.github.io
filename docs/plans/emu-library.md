@@ -191,9 +191,6 @@ None.
 
 ## Tasks
 
-- [ ] See the Library in Safari.
-- [ ] Give Rux Emu Helper a call that says whether the home server answers, and
-      show it on the strip.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on the
       3DS, Wii U, Switch, Xbox, GameCube and Wii, once which files are one
       game's alone is proven.

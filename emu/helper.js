@@ -16,7 +16,8 @@
    of its game is, or null from a helper too old to;
    and `play` opens one game; `playing` is the emulator playing now and the
    game Play opened in it, {} for none, or null from a helper too old to
-   say, and `quit` asks an emulator to quit. `call` is any of its
+   say, and `quit` asks an emulator to quit; `server` is whether the home
+   server answers at home and from outside. `call` is any of its
    calls: a missing thing is null, and any other refusal,
    or one where `must` is set, an error saying why. A game's file is the one
    its emulator opens: a multi-disc game's playlist, a disc's cue sheet, a
@@ -144,6 +145,8 @@
   }
 
   // Asked every few seconds, so an answer that does not come is given up on.
+  // Whether the home server answers at home and from outside, or null from a helper too old to say.
+  const server = async () => { const r = await call('/server', { signal: AbortSignal.timeout(8000) }); return r ? r.json() : null; };
   const playing = async () => { const r = await call('/playing', { signal: AbortSignal.timeout(5000) }); return r ? r.json() : null; };
   const quit = async emulator => (await call('/quit', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ emulator }) }, true)).json();
@@ -213,7 +216,7 @@
   }
 
   window.Emu = Object.assign(window.Emu || {}, { helper: {
-    call, status, mac, install, update, settings, setting, putSetting, manage, controllers, open, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, playing, quit, fileOf, filesOf,
+    call, status, mac, install, update, settings, setting, putSetting, manage, controllers, open, carry, carried, putCarried, markCarried, removeCarried, given, putGiven, removal, uninstall, macSaves, macSave, play, playing, quit, server, fileOf, filesOf,
     download, downloads, library, space, remove, standings, onMac, start, wake,
   } });
 })();

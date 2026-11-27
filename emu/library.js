@@ -241,9 +241,11 @@
   // THE STRIP AT REST says only what is wrong, as Carbon's icon indicators:
   // "Update the helper" where Supabase holds a newer one, how much room this
   // Mac has free once it is under LOW, a failure where a current helper keeps
-  // no library, and "Needs sync" once the server's nightly scan is more than
-  // STALE days old, one missed night's grace. Each opens Status. In a narrow
-  // window only the worst shows.
+  // no library, "Needs sync" once the server's nightly scan is more than
+  // STALE days old, one missed night's grace, and "Home server not
+  // answering" where it answers at neither its home address nor its public
+  // name, asked as the page opens, comes back into view, and every two
+  // minutes. Each opens Status. In a narrow window only the worst shows.
   const LOW = 10e9;
   const STALE = 2;
   const INDICATOR = { warn: ['rux--icon-indicator--caution-minor', '#i-warning--alt--filled'], bad: ['rux--icon-indicator--caution-major', '#i-warning--alt-inverted--filled'] };
@@ -259,6 +261,16 @@
     return li;
   }
   let stripSaid = '';
+  // What the helper last said of the home server, { home, public }, each
+  // true, false or null where it has no such address; null where unasked or
+  // from a helper too old to say.
+  let server = null;
+  async function askServer() {
+    if (!helper || !R.helper.server) return;
+    server = await R.helper.server().catch(() => null);
+    renderStrip();
+  }
+  setInterval(() => { if (document.visibilityState === 'visible') askServer(); }, 120000);
   function renderStrip() {
     const behind = newestHelper != null && Number(helper.version) < Number(newestHelper);
     const days = driveRow?.scanned_at ? (Date.now() - new Date(driveRow.scanned_at)) / 864e5 : null;
@@ -267,6 +279,8 @@
       !helper.library && !behind ? ['bad', 'No library on this Mac'] : null,
       free != null && free < LOW ? ['warn', `${R.size(free)} free`] : null,
       days == null || days > STALE ? ['warn', 'Needs sync', days == null ? 'The server has never scanned' : `The server's scan is late: last scanned ${R.when(driveRow.scanned_at)}`] : null,
+      server && (server.home ?? server.public) != null && !server.home && !server.public
+        ? ['warn', 'Home server not answering', 'Downloads wait until it answers, at home or from outside'] : null,
     ].filter(Boolean);
     // Drawn again only when what it says has changed.
     const said = JSON.stringify(facts);
@@ -813,7 +827,9 @@
   let padReading = null;
   const readPads = (system, pads) => (padReading?.system === system ? padReading
     : (padReading = { system, read: Promise.all([...new Set(pads.map(p => p.family))].map(async family => [family, await R.pads.read(system, R.helper, family)])).then(Object.fromEntries) })).read;
-  function indicator(kind, text) {
+  // A player's status as Carbon's icon indicator, apart from the strip's,
+  // which are links to Status.
+  function padIndicator(kind, text) {
     const line = el('span', 'rux--icon-indicator');
     const ICONS = { ok: ['#i-checkmark--filled', 'rux--icon-indicator--succeeded'], warn: ['#i-warning--alt--filled', 'rux--icon-indicator--caution-minor'],
       info: ['#i-information--filled', 'rux--icon-indicator--informative'] };
@@ -931,7 +947,7 @@
         fixer.setAttribute('aria-label', `Fix ${h.name} as player ${player}`);
         fixer.addEventListener('click', () => fixPads(system, [[player, h]]));
       }
-      const status = indicator(h.status.kind, h.status.words);
+      const status = padIndicator(h.status.kind, h.status.words);
       status.classList.add('emu-row__sub');
       const li = padSlot(player, [el('span', 'emu-row__sub emu-slot__name', h.name), status], past ? 'off' : 'held', () => openPadMap(h.pad, system, h.read, h.pad.place), fixer);
       li.dataset.pad = String(h.pad.index);
@@ -1807,7 +1823,7 @@
     renderSound();
     render();
     showChosen();
-    if (helper) watchPlay();
+    if (helper) { watchPlay(); askServer(); }
     if (asked && (details || !helper)) openGame(asked, coverOf(asked));
   }
 
@@ -1818,6 +1834,7 @@
   // The nightly scan may have saved while the page was away, so when it
   // last did is read again too, and the strip redrawn.
   window.addEventListener('focus', async () => {
+    askServer();
     const row = await R.data.lastScan().catch(() => driveRow);
     if (row?.scanned_at === driveRow?.scanned_at) return;
     driveRow = row;

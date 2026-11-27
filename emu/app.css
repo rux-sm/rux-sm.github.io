@@ -173,10 +173,15 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    controls 40px and edge to edge at the tile's top, the words between them
    16px in from either side. The console dropdown, then its count of games,
    the strip right after them, then Sound at the row's end. Under 42rem the
-   strip's words take a row of their own under it. */
+   strip takes a row of its own under them, where beside them it would have
+   no room. */
 .emu-games__head { flex: none; display: flex; flex-wrap: wrap; align-items: center; min-block-size: var(--rux-layout-size-height-md); }
 .emu-games__count, .emu-strip { padding-inline: var(--rux-spacing-05); }
-@media (max-width: 41.98rem) { .emu-strip--said { order: 1; flex-basis: 100%; } }
+@media (max-width: 41.98rem) {
+  .emu-strip { order: 1; flex-basis: 100%; }
+  .emu-strip:is(.emu-strip--said, :has(.emu-strip__facts > li)) { padding-block-start: var(--rux-spacing-03); }
+}
+.emu-games__end { margin-inline-start: auto; }
 .emu-games__count { flex: none; color: var(--rux-text-secondary); font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 /* The row stands over the wall, so the list of consoles opens over the
    covers; a list opened from Save above still covers it. */

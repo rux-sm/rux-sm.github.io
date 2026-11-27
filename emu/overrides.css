@@ -34,4 +34,4 @@
    its edge. */
 .emu-games__head .rux--dropdown--inline { border-radius: 0; border-start-start-radius: max(0px, var(--emu-tile-radius, 0px) - 1px); }
 .emu-games__head .rux--btn { border-radius: 0; }
-.emu-games__head > :last-child .rux--btn { border-start-end-radius: max(0px, var(--emu-tile-radius, 0px) - 1px); }
+.emu-games__end .rux--btn { border-start-end-radius: max(0px, var(--emu-tile-radius, 0px) - 1px); }

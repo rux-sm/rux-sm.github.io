@@ -67,6 +67,9 @@
 //                          own run as `--controllers`
 //   POST   /mac/open       { "emulator" }, that emulator opened with no game,
 //                          to change its buttons
+//   GET    /server         whether the home server answers at its home
+//                          address and at its public name, each true, false,
+//                          or null where this helper was built without it
 //
 // A download comes from the home server's address inside the home when it
 // answers, since the router loops the public name back slowly, and from the
@@ -128,7 +131,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "40"
+let version = "41"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -1297,6 +1300,30 @@ let servers: (home: String?, public: String?) = {
   return (json["home"], json["public"])
 }()
 
+// Whether the server answers `ok` at an address within `wait` seconds, or
+// nil where there is no address.
+func answering(_ base: String?, within wait: Double) -> Bool? {
+  guard let base, let url = URL(string: base + "/") else { return nil }
+  var req = URLRequest(url: url, timeoutInterval: wait)
+  req.cachePolicy = .reloadIgnoringLocalCacheData
+  let done = DispatchSemaphore(value: 0)
+  var ok = false
+  URLSession.shared.dataTask(with: req) { _, r, _ in ok = (r as? HTTPURLResponse)?.statusCode == 200; done.signal() }.resume()
+  done.wait()
+  return ok
+}
+
+// Both addresses asked at once: home within a second and a half, as a
+// download asks it, the public name within five.
+func serverNow() -> [String: Any] {
+  var home: Bool?, outside: Bool?
+  let both = DispatchGroup()
+  DispatchQueue.global().async(group: both) { home = answering(servers.home, within: 1.5) }
+  DispatchQueue.global().async(group: both) { outside = answering(servers.public, within: 5) }
+  both.wait()
+  return ["home": orNull(home), "public": orNull(outside)]
+}
+
 // A system's folder name and a file's path within it: plain names only, so
 // nothing the site sends can write outside the library.
 func plainSystem(_ s: String) -> Bool { s.range(of: "^[a-z0-9]+$", options: .regularExpression) != nil }
@@ -1403,15 +1430,7 @@ final class Downloads: NSObject, URLSessionDataDelegate {
 
   // The home address when it answers within a second and a half, else the public name.
   private func base() -> (url: String, from: String)? {
-    if let h = servers.home, let url = URL(string: h + "/") {
-      var req = URLRequest(url: url, timeoutInterval: 1.5)
-      req.cachePolicy = .reloadIgnoringLocalCacheData
-      let done = DispatchSemaphore(value: 0)
-      var ok = false
-      URLSession.shared.dataTask(with: req) { _, r, _ in ok = (r as? HTTPURLResponse)?.statusCode == 200; done.signal() }.resume()
-      done.wait()
-      if ok { return (h, "home") }
-    }
+    if let h = servers.home, answering(h, within: 1.5) == true { return (h, "home") }
     return servers.public.map { ($0, "public") }
   }
 
@@ -1657,6 +1676,7 @@ final class Server {
     case ("POST", "/download"): let (code, out) = download(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/downloads"): send(c, .list(200, Downloads.shared.list()), origin: origin)
     case ("GET", "/controllers"): off { .list(200, controllersNow()) }
+    case ("GET", "/server"): off { .json(200, serverNow()) }
     case ("POST", "/mac/open"): let (code, out) = openEmulator(body); send(c, .json(code, out), origin: origin)
     case ("GET", "/library"): off { .list(200, libraryFiles()) }
     case ("GET", "/library/space"): off { .json(200, librarySpace()) }

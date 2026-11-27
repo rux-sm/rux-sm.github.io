@@ -73,6 +73,9 @@ step('emu scan save', process.execPath, ['emu/tools/scan-save.test.mjs']);
 // THE PARSE RULE. Every tracked script, and every script written into a page,
 // parses the way it is loaded; the flag lets Node parse a module unrun.
 step('scripts', process.execPath, ['--experimental-vm-modules', '--no-warnings', 'tools/check-scripts.mjs']);
+// THE SHADOW RULES. No call reaches a local hiding a function of its file's
+// own level, and no function is declared twice in one scope.
+step('shadow', process.execPath, ['tools/check-shadow.mjs']);
 
 // THE DOCUMENT RULES from AGENTS.md "Documents", then the fixtures that prove
 // each rule still fires.

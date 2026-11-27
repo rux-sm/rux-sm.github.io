@@ -80,10 +80,10 @@
 
   /* A SWITCH. `label` names it: above it where `shown`, and otherwise for a
      screen reader only, since what is beside it says what is switched.
-     `text` puts On or Off beside it. `flip` is given the new state; where
+     `text` puts On or Off beside it. `change` is given the new state; where
      it throws the switch is put back and the page says `failed`, or what
      the error carries as `said`. */
-  const toggle = (id, label, on, flip, { shown = false, text = true, failed } = {}) => {
+  const toggle = (id, label, on, change, { shown = false, text = true, failed } = {}) => {
     const root = document.createElement('div');
     root.className = 'rux--toggle';
     const button = document.createElement('button');
@@ -114,7 +114,7 @@
     root.addEventListener('rux:toggle', async e => {
       if (undoing) return;
       try {
-        await flip(e.detail.on);
+        await change(e.detail.on);
         fine();
       } catch (error) {
         undoing = true;

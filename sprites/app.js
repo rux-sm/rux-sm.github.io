@@ -562,9 +562,9 @@
   function setPal(next, from = pal) {
     palettes.set(next.id, next);
     if (from && from !== next) {
-      const move = carry(from, next);
-      colour = move(colour) ?? -1;
-      recent = recent.map(move).filter(v => v !== null && v !== -1 && !next.has(v));
+      const shift = carry(from, next);
+      colour = shift(colour) ?? -1;
+      recent = recent.map(shift).filter(v => v !== null && v !== -1 && !next.has(v));
     }
     pal = next;
     $('sprites-palette').value = pal.id;

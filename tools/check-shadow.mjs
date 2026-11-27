@@ -1,13 +1,18 @@
-// The shadow rule. A scheduler script is one scope: its helpers are declared
+// The shadow rules. A site script is one scope: its helpers are declared
 // once, at the top of the file's wrapper, and called from everywhere under
 // it. A local that takes a helper's name hides it for the rest of its block,
 // so a call written for the helper reaches the local instead, and fails as
-// "is not a function" or, worse, runs something else. Nothing else in the
-// check runs that line, so it reaches the site.
+// "is not a function" or, worse, runs something else. A function declared
+// twice in one scope is the same fault from the other side: the later one
+// takes the name everywhere in that scope, the earlier one's own calls
+// included, and nothing fails, as Emu's strip once drew every notice with
+// its player boxes' indicator. Nothing else in the check runs either line,
+// so each reaches the site.
 //
-// The rule: in any scheduler script, a call must not reach a local that has
-// the name of a function declared at the file's own level. A finding is
-// fixed by renaming the local. There is no list of excused names.
+// The rules, in every tracked script of the site: a call must not reach a
+// local that has the name of a function declared at the file's own level;
+// and a function declaration must not take a name already declared in its
+// scope. A finding is fixed by renaming. There is no list of excused names.
 //
 // It reads the scripts itself, with no parser to install: a tokenizer, the
 // brackets matched, and the scopes a brace, a parameter list, a loop's head
@@ -15,14 +20,13 @@
 // first runs a sample that must fail and one that must pass, so a change
 // that blinds it is caught here and not by a quiet pass.
 //
-//   node scheduler/tools/check-shadow.mjs [file ...]
-import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+//   node tools/check-shadow.mjs [file ...]
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const SCHEDULER = resolve(HERE, '..');
-const ROOT = resolve(SCHEDULER, '..');
+const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 
 class Lost extends Error {}
 const lost = (line, why) => { throw new Lost(`line ${line}: ${why}`); };
@@ -239,8 +243,14 @@ function analyse(src) {
   const stack = [root];
   // Scopes waiting for a brace: the names a parameter list or a loop's head gives the block that follows.
   const waiting = new Map();
-  const declare = (scope, list, fn = false) => {
-    for (const d of list) if (!scope.decls.has(d.name)) scope.decls.set(d.name, { line: d.line, fn });
+  // `named` marks a function declaration, which may not take a name its scope already has, nor give one up.
+  const twice = [];
+  const declare = (scope, list, fn = false, named = false) => {
+    for (const d of list) {
+      const was = scope.decls.get(d.name);
+      if (was && (named || was.named)) twice.push({ name: d.name, line: d.line, first: was.line });
+      if (!was) scope.decls.set(d.name, { line: d.line, fn, named });
+    }
   };
   const open = (kind, list = [], until = null) => {
     const parent = stack.at(-1);
@@ -304,7 +314,7 @@ function analyse(src) {
       const declared = named >= 0 && (!prev || (prev.type === 'punct' && [';', '{', '}', ')'].includes(prev.value))
         || (prev.type === 'name' && ['async', 'export', 'default', 'else', 'do'].includes(prev.value)
           && !(prev.value === 'async' && is(k - 2, '='))));
-      if (declared) declare(stack.at(-1), [{ name: t[named].value, line: t[named].line }], true);
+      if (declared) declare(stack.at(-1), [{ name: t[named].value, line: t[named].line }], true, true);
       waiting.set(body, { kind: 'function', list: names(p + 1, match[p]) });
       k = p;   // on to the parameter list, whose defaults may call
       continue;
@@ -390,7 +400,7 @@ function analyse(src) {
       if (local) { found.push({ name: c.name, line: c.line, local: local.line, helper: helpers.get(c.name) }); break; }
     }
   }
-  return { found, helpers: helpers.size, calls: calls.length };
+  return { found, twice, helpers: helpers.size, calls: calls.length };
 }
 
 // ── its own two samples ─────────────────────────────────────────────────────
@@ -420,7 +430,24 @@ const SAMPLE_GOOD = `(() => {
   function five(o) { const { tell: said } = o; return said ? draw([said]) : tell('none'); }
 })();`;
 
+const SAMPLE_TWICE = `(() => {
+  'use strict';
+  function indicator(kind, text, cls) { return [kind, text, cls]; }
+  const draw = rows => rows.map(r => indicator('ok', r, 'row'));
+  function indicator(kind, text) { return [kind, text]; }
+  function list(rows) { function draw() { return rows; } return draw(); }
+  function lone(seen) { function seen() { return 1; } return seen(); }
+})();`;
+
 function selfTest() {
+  const twice = analyse(SAMPLE_TWICE).twice.map(f => `${f.name}:${f.line}`);
+  const twiceWant = ['indicator:5', 'seen:7'];
+  const cleanTwice = analyse(SAMPLE_GOOD).twice.length + analyse(SAMPLE_BAD).twice.length;
+  if (twiceWant.some(w => !twice.includes(w)) || twice.some(f => !twiceWant.includes(f)) || cleanTwice) {
+    console.log('  FAIL  the rule\'s own samples');
+    console.log(`        a function declared twice: wanted ${twiceWant.join(', ')}, saw ${twice.join(', ') || 'none'}${cleanTwice ? ', and faults in the samples that have none' : ''}`);
+    return false;
+  }
   const bad = analyse(SAMPLE_BAD).found.map(f => `${f.name}:${f.line}`);
   const want = ['tell:6', 'draw:7', 'sum:8', 'draw:9', 'tell:10', 'sum:11', 'tell:12', 'tell:13'];
   const good = analyse(SAMPLE_GOOD).found;
@@ -437,10 +464,10 @@ function selfTest() {
 }
 
 // ── the run ─────────────────────────────────────────────────────────────────
-const scripts = dir => readdirSync(dir, { withFileTypes: true })
-  .filter(e => e.isFile() && e.name.endsWith('.js')).map(e => join(dir, e.name));
-const files = process.argv.length > 2 ? process.argv.slice(2).map(f => resolve(f))
-  : [...scripts(SCHEDULER), ...scripts(join(SCHEDULER, 'share'))];
+// Every script git tracks that a page loads, each app's and the shared ones.
+const tracked = () => (spawnSync('git', ['ls-files', '*.js'], { cwd: ROOT, encoding: 'utf8' }).stdout ?? '')
+  .split('\n').filter(Boolean).map(f => resolve(ROOT, f));
+const files = process.argv.length > 2 ? process.argv.slice(2).map(f => resolve(f)) : tracked();
 
 let failed = !selfTest();
 let helpers = 0, calls = 0;
@@ -454,12 +481,16 @@ for (const file of files) {
       failed = true;
       console.log(`  FAIL  ${name}:${f.line}  ${f.name}() reaches the local on line ${f.local}, not the function on line ${f.helper}`);
     }
+    for (const f of r.twice) {
+      failed = true;
+      console.log(`  FAIL  ${name}:${f.line}  ${f.name} is declared again, after line ${f.first}, and takes the name from it`);
+    }
   } catch (e) {
     if (!(e instanceof Lost)) throw e;
     failed = true;
     console.log(`  FAIL  ${name}  could not be followed: ${e.message}`);
   }
 }
-console.log(failed ? '\n  shadow: rename each local above, or mend the rule where it lost its way'
-  : `   ok   shadow  ${files.length} scripts, ${calls} calls, none reaching a local that hides one of ${helpers} functions`);
+console.log(failed ? '\n  shadow: rename each name above, or mend the rule where it lost its way'
+  : `   ok   shadow  ${files.length} scripts, ${calls} calls, none reaching a local that hides one of ${helpers} functions, and no function declared twice`);
 process.exit(failed ? 1 : 0);

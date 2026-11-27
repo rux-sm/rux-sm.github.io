@@ -337,11 +337,11 @@
   const worn = found => (found >= 5 ? ['helmet'] : []);
   const piece = name => HERO[name];
   const layers = (wear = [], gear) => {
-    const tone = (name, ink) => (INK.has(ink) ? HERO[name].replace(/[^.]/g, ink) : HERO[name]);
+    const inked = (name, ink) => (INK.has(ink) ? HERO[name].replace(/[^.]/g, ink) : HERO[name]);
     // A drawing counts only where it is the piece's own squares and no other.
     const own = name => (gear?.[name]?.length === 225 && [...gear[name]].every((s, i) => (s === '.') === (HERO[name][i] === '.')) ? gear[name] : HERO[name]);
     const head = wear.includes('helmet') ? 'helmet' : 'hair';
-    return [['skin', tone('skin', gear?.skin)], ['eyes', tone('eyes', gear?.eyes)], [head, head === 'helmet' ? own('helmet') : HERO.hair],
+    return [['skin', inked('skin', gear?.skin)], ['eyes', inked('eyes', gear?.eyes)], [head, head === 'helmet' ? own('helmet') : HERO.hair],
       ['body', HERO.body], ['ends', HERO.ends], ['shield', HERO.shield], ['sword', HERO.sword]];
   };
   const hero = (wear, gear) => {
@@ -515,8 +515,8 @@
       for (let x = 0; x < W; x++) {
         // A stronger line round the edge, and a warm one after every fifth
         // square inside it.
-        const side = (n, last, first, end) => (n === last ? ` ${end}` : `${n ? '' : ` ${first}`}${(n + 1) % 5 ? '' : ` is-fifth-${end.slice(3)}`}`);
-        const s = part(`pixels-cell${side(x, W - 1, 'is-west', 'is-east')}${side(y, H - 1, 'is-north', 'is-south')}`, squares);
+        const edge = (n, last, first, end) => (n === last ? ` ${end}` : `${n ? '' : ` ${first}`}${(n + 1) % 5 ? '' : ` is-fifth-${end.slice(3)}`}`);
+        const s = part(`pixels-cell${edge(x, W - 1, 'is-west', 'is-east')}${edge(y, H - 1, 'is-north', 'is-south')}`, squares);
         s.dataset.x = x;
         s.dataset.y = y;
         // The finished picture fills in along its diagonals.
@@ -590,7 +590,7 @@
      After a pinch nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
      the host are what app.css sizes and slides the board by. `reset()`
      takes the board back to its whole. */
-  const drag = (host, { start, paint, hover, reach, free = false, right = false, zoom = () => false }) => {
+  const drag = (host, { start, paint: fill, hover, reach, free = false, right = false, zoom = () => false }) => {
     let from = null, axis = null, last = null, pen = null;
     const FINE = 32, SETTLE = 80;
     const fingers = new Map();
@@ -682,13 +682,13 @@
       }
       if (!from) { if (p && e.pointerType === 'mouse') hover?.(...p); return; }
       if (!p || (p[0] === last[0] && p[1] === last[1])) return;
-      if (free) { last = p; paint(...p); return; }
+      if (free) { last = p; fill(...p); return; }
       if (!axis) axis = p[0] === from[0] ? 'row' : 'col';
       // A fast finger skips squares between two moves; paint every one.
       const i = axis === 'row' ? 1 : 0, to = p[i];
       for (let n = last[i]; n !== to;) {
         n += Math.sign(to - n);
-        paint(axis === 'row' ? from[0] : n, axis === 'row' ? n : from[1]);
+        fill(axis === 'row' ? from[0] : n, axis === 'row' ? n : from[1]);
       }
       last = axis === 'row' ? [from[0], to] : [to, from[1]];
       reach?.(...last, Math.abs(to - from[i]) + 1);

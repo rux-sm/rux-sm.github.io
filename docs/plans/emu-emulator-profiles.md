@@ -118,8 +118,7 @@ Versions:
   and saves it with the drive's row: GitHub's latest release for Mesen 2,
   mGBA, ares, melonDS, Azahar and xemu; the commits from `0.1` to the
   `latest` tag for DuckStation; `api.pcsx2.net` for PCSX2; the greatest tag
-  for Dolphin; `update.ryujinx.app` for Ryujinx; and `updates.es-de.org` for
-  ES-DE.
+  for Dolphin; and `update.ryujinx.app` for Ryujinx.
 - **A newer one out is a to-do to put it in Supabase,** never an update on
   one Mac alone, so a save state made on one Mac opens on another. The drive
   is the way in: Update puts into Supabase each BIOS, key, firmware and
@@ -160,7 +159,6 @@ What each emulator's source and the installers on the drive say:
 | Cemu | build b487cb7 | 2.6, Intel only | Apple Silicon, not notarized | `~/Library/Application Support/Cemu/settings.xml` | keys, shader cache, graphic packs, per-game profiles, screenshots |
 | Ryujinx | 1.3.3 | 1.3.3 | universal, not notarized | `~/Library/Application Support/Ryujinx/Config.json` | everything, which moves only as one folder |
 | xemu | 0.8.139 | 0.8.139 | universal | `~/Library/Application Support/xemu/xemu/xemu.toml` | shader cache |
-| ES-DE | 3.5.0 | 3.5.0 | Apple Silicon | `~/ES-DE/settings/es_settings.xml` | gamelists, collections |
 
 - **Mesen 2** writes a battery save only when the game stops, and a save
   state every five minutes as slot 11.
@@ -180,7 +178,7 @@ What each emulator's source and the installers on the drive say:
   its saves and that index are carried together and never one by one.
 - **xemu** keeps saves and save states inside the disk image, and makes a
   new EEPROM where it finds none.
-- **Dolphin, PCSX2, DuckStation, Ryujinx, Cemu, xemu and ES-DE** each offer
+- **Dolphin, PCSX2, DuckStation, Ryujinx, Cemu and xemu** each offer
   to update themselves.
 
 ## Questions

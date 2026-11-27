@@ -163,7 +163,7 @@ const [games, saves, [row], held] = await Promise.all([
   db.rows('emu_games', 'system,title,size'), db.rows('emu_saves', 'system,name,kind,location'), db.rows('emu_scan', 'newest'),
   db.rows('emu_files_now', 'path,size,saved_at,sha1')]);
 
-const feeds = [...Object.entries(rules.macSaves), [rules.frontend.name, rules.frontend]].filter(([, r]) => r.feed);
+const feeds = Object.entries(rules.macSaves).filter(([, r]) => r.feed);
 const answers = await Promise.all(feeds.map(async ([name, r]) => [name, await newestOf(r.feed)]));
 // Each emulator still followed, by its answer now, else its last; a retired one drops out.
 const newest = Object.fromEntries(answers.map(([name, v]) => [name, v ?? row?.newest?.[name]]).filter(([, v]) => v));
@@ -177,7 +177,7 @@ await scanSave.putGiven(db, given, {
   sha1Of: (rel) => sha1Of(abs(rel)),
   bytesOf: async (rel) => fs.readFileSync(abs(rel)),
   mac: 'home server',
-  names: [...Object.keys(rules.macSaves), rules.frontend.name, 'Rux Emu Helper'],
+  names: [...Object.keys(rules.macSaves), 'Rux Emu Helper'],
 });
 
 const change = scanSave.changes(scan, games, saves);

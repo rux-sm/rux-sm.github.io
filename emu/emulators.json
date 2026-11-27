@@ -1,61 +1,4 @@
 {
-  "frontend": {
-    "name": "ES-DE",
-    "why": "It launches each system's emulator from one list of every game, and reads the drive's roms folders as they are named.",
-    "settings": "~/ES-DE",
-    "apps": [
-      "ES-DE.app"
-    ],
-    "config": "settings/es_settings.xml",
-    "files": [
-      {
-        "kind": "Settings and controls",
-        "class": "own",
-        "path": "settings"
-      },
-      {
-        "kind": "Gamelists, with play counts and favourites",
-        "class": "own",
-        "path": "gamelists"
-      },
-      {
-        "kind": "Collections",
-        "class": "own",
-        "path": "collections"
-      },
-      {
-        "kind": "Scraped pictures and videos",
-        "class": "local",
-        "path": "downloaded_media",
-        "key": "MediaDirectory"
-      },
-      {
-        "kind": "Themes",
-        "class": "local",
-        "path": "themes",
-        "key": "UserThemeDirectory"
-      },
-      {
-        "kind": "Logs",
-        "class": "local",
-        "path": "logs"
-      }
-    ],
-    "manages": [
-      {
-        "key": "ApplicationUpdaterFrequency",
-        "value": "never",
-        "why": "The installer on the drive is the version every Mac has."
-      }
-    ],
-    "notes": [
-      "It finds Ryujinx and xemu only in /Applications."
-    ],
-    "feed": {
-      "url": "https://updates.es-de.org/latest_release.json",
-      "path": "stable.version"
-    }
-  },
   "systems": {
     "nes": {
       "emulator": "Mesen 2",
@@ -1468,6 +1411,15 @@
           "path": "Save States"
         }
       ]
+    },
+    "ES-DE": {
+      "apps": [
+        "ES-DE.app"
+      ],
+      "homes": [
+        "~/ES-DE"
+      ],
+      "places": []
     }
   }
 }

@@ -27,8 +27,8 @@ server. The site's other plans are `docs/plans/emu-app.md`,
   answers only requests from the Rux Emu site; Chrome asks once whether the
   site may reach this Mac, and Allow keeps it.
 - **It opens only a game file inside a `roms/` folder, this Mac's library's
-  or a plugged-in drive's, in that system's emulator,** with the same command
-  ES-DE uses, so nothing the site sends can open anything else.
+  or a plugged-in drive's, in that system's emulator,** with the command
+  `emu/emulators.json` gives it, so nothing the site sends can open anything else.
 - **The collection is wherever it is found:** the T7 plugged in or the home
   server's share mounted, and the helper tells the site which.
 - **Set up this Mac follows `emu/docs/emulator-setup.md`:** it installs each
@@ -46,7 +46,7 @@ server. The site's other plans are `docs/plans/emu-app.md`,
   emulator whose systems have games is missing or older than the installer
   Supabase holds: it installs each, then starts each from the preferred
   settings and brings its BIOS, keys and firmware, as a first Play does, so
-  the first game played opens with its saves. ES-DE is not installed.
+  the first game played opens with its saves.
 - **The helper updates itself on a press,** on the Status page while
   Supabase holds a newer one: it fetches its own zip by a link the site
   signs, checks it, takes it only if signed as itself, puts it in its place

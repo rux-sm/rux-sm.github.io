@@ -129,9 +129,8 @@ naming the latest, because the older ones are not worth getting.
 
 Emulators, chosen fresh rather than kept from what is installed:
 
-- **ES-DE is the one library,** launching each system's emulator, because it
-  reads the drive's `emulation/roms/<system>/` folders as they are named
-  and runs on macOS.
+- **Emu's Library is the one library,** Play opening each system's emulator
+  through Rux Emu Helper, because the site already lists every game.
 - **Each system runs its best standalone emulator, and RetroArch goes,**
   because each standalone is the most accurate for its system and keeps its
   saves as plain files, at the cost of RetroArch's shared shaders, rewind

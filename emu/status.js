@@ -9,9 +9,8 @@
    live from Rux Emu Helper, helper.js, when it is running here, and every
    other Mac as it was last saved there, folded shut below it so the page
    is about the Mac in hand. Each Mac lists its emulators in
-   emulators.json's order: ES-DE reading this Mac's library, each emulator
-   saving into its own folder, and each retired app still there or still
-   holding files. Installing an app is what
+   emulators.json's order: each emulator saving into its own folder, and
+   each retired app still there or still holding files. Installing an app is what
    says a Mac plays with it, so one that is not installed is only said, unless
    its old folder still holds saves. An emulator whose systems have no games
    yet is not needed yet. Each emulator's line opens its profile on the
@@ -148,15 +147,6 @@
   // One Mac, from its last gathering.
   function macRows(mac, emulators, used, held) {
     const rows = [];
-    const f = mac.frontend ?? {};
-    const reads = f.romDirectory && /\/Emulation\/roms\/?$/.test(f.romDirectory);
-    rows.push({ what: `${f.name ?? 'ES-DE'}, the library`, href: profile(f.name ?? 'ES-DE'),
-      state: !f.app ? ABSENT : reads ? DONE : TODO,
-      detail: !f.app ? absent(held, f.name ?? 'ES-DE')
-        : reads ? `${f.app.version ?? 'Installed'} · reads ${f.romDirectory}`
-        : f.romDirectory ? `Reads ${f.romDirectory}: point it at this Mac's library, ~/Emulation/roms`
-        : 'Open it once and point its ROM folder at this Mac\'s library, ~/Emulation/roms' });
-
     for (const e of (mac.emulators ?? []).filter(x => !x.retired)) {
       const systems = (e.systems ?? []).map(R.systemName).join(', ');
       const what = `${e.emulator}: ${systems}`;
@@ -248,7 +238,7 @@
   const canon = v => Array.isArray(v) ? v.map(canon)
     : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
   // How a Mac stands, its emulators by name, since the helper lists them in no set order.
-  const standing = m => JSON.stringify(canon({ macos: m.macos ?? null, chip: m.chip ?? null, frontend: m.frontend ?? null,
+  const standing = m => JSON.stringify(canon({ macos: m.macos ?? null, chip: m.chip ?? null,
     emulators: [...(m.emulators ?? [])].sort((a, b) => a.emulator.localeCompare(b.emulator)) }));
   const fileKey = f => `${f.from}/${f.rel ?? f.name}|${Number(f.size)}|${f.saved}`;
   let saving = false;
@@ -291,7 +281,7 @@
       out.append(el('p', 'rux--type-body-01', 'No scan yet. The server scans every night.'));
     }
     // This Mac, read now, stands in for its last report.
-    const here = live && { name: live.mac, macos: live.macos, frontend: live.frontend, emulators: live.emulators, live: true };
+    const here = live && { name: live.mac, macos: live.macos, emulators: live.emulators, live: true };
     const rowsOf = mac => macRows(ordered(mac, emulators), emulators, used, held);
     const macSection = (mac, rows) => section(`${mac.name} · macOS ${mac.macos ?? '?'}${mac.live ? ' · this Mac' : ''}`,
       mac.live

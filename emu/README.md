@@ -44,8 +44,7 @@ system with games needs and each emulator's installer, which Supabase holds,
 whether its project has a newer one out, and saves on the server still in a
 folder from before each emulator had its own. For this Mac live from the
 helper, and each other as it was last saved, folded shut below it until
-opened: ES-DE reading this Mac's library, each emulator saving into its own
-folder, and each retired app in `emulators.json` still there or still holding
+opened: each emulator saving into its own folder, and each retired app in `emulators.json` still there or still holding
 files. Installing an app is what says a Mac plays with it, so one not
 installed is grey, and red only when its old folder still holds saves. An
 emulator whose systems have no games is not needed yet.

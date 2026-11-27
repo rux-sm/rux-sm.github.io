@@ -12,7 +12,7 @@
    what is worth knowing. On this Mac, through the helper, its settings are
    backed up, a backup put back, the set here kept as preferred, and the
    preferred set taken: what is here is backed up first, and the settings
-   Emu manages are written over what arrives. ES-DE, the library, is the last profile.
+   Emu manages are written over what arrives.
    A profile is addressed as #<name>, as Status links to it, and opens there.
    Each Mac is as Update last saved it, and this one live from Rux Emu
    Helper when it runs here. A version is the one the helper's receipt names
@@ -352,7 +352,7 @@
     } catch (error) { console.error(error); R.notice('Emu could not read the emulators. Try again.'); return; }
     $('emu-empty').hidden = Boolean(drive);
     // This Mac, read now, stands in for its last report.
-    const here = live && { name: live.mac, frontend: live.frontend, emulators: live.emulators, live: true };
+    const here = live && { name: live.mac, emulators: live.emulators, live: true };
     const macs = [...saved.filter(m => m.name !== here?.name), ...(here ? [here] : [])].sort((a, b) => a.name.localeCompare(b.name));
     const count = new Map();
     for (const g of games) count.set(g.system, (count.get(g.system) ?? 0) + 1);
@@ -373,11 +373,6 @@
         on: mac => mac.emulators?.find(e => e.emulator === name)?.app ?? null,
       }, all);
     });
-    const f = emulators.frontend;
-    items.push(profile({
-      name: f.name, rule: { ...f, homes: [f.settings] }, systems: [], why: [f.why], saves: null, needs: [],
-      on: mac => mac.frontend?.app ?? null, installs: false,
-    }, all));
     $('emu-profiles').replaceChildren(R.folds(items));
     show();
   }

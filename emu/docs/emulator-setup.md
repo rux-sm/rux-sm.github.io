@@ -65,16 +65,6 @@ Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
   `<share>/bios/switch/` as `prod.keys` and `title.keys`.
 - **A Wii U game** plays as one `.wua` file: make it from the game's folder
   in Cemu's Tools, Title Manager.
-- **ES-DE** reads the games from the folder Status names. At its first start,
-  point its ROM directory there, and for each system choose the emulator in
-  `emu/emulators.json` under Other settings, Alternative emulators. ES-DE
-  on macOS offers Mesen only as a RetroArch core, so copy the `nes` and
-  `snes` systems from
-  `ES-DE.app/Contents/Resources/resources/systems/macos/es_systems.xml` into
-  `~/ES-DE/custom_systems/es_systems.xml`, inside one `<systemList>`, and add
-  as each one's first command:
-
-      <command label="Mesen 2 (Standalone)">/Applications/Mesen.app/Contents/MacOS/Mesen %ROM%</command>
 
 ## Playing
 

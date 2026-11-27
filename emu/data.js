@@ -234,7 +234,7 @@
       const { mac, made } = manifest;
       fail((await client.from('emu_macs').upsert({
         name: mac, gathered_at: made, macos: manifest.macos ?? null, chip: manifest.chip ?? null,
-        frontend: manifest.frontend ?? null, emulators: manifest.emulators ?? [],
+        emulators: manifest.emulators ?? [],
       }, { onConflict: 'name' })).error);
       const folder = `macs/${mac}/${made.slice(0, 10)}`;
       for (const f of files) {

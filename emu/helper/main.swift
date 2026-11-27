@@ -128,7 +128,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "39"
+let version = "40"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -246,8 +246,8 @@ func play(_ body: Data) -> (Int, [String: Any]) {
 
 // MARK: This Mac
 
-// How this Mac stands: its macOS, ES-DE's and each emulator's app and
-// version, the folder ES-DE reads games from, each place an emulator saves
+// How this Mac stands: its macOS, each emulator's app and version, each
+// place an emulator saves
 // to with how many files it holds, and how many files each retired app still
 // holds; and each save it keeps itself rather than carrying it. Where each
 // emulator keeps saves is `macSaves` in emulators.json: its folder in
@@ -423,12 +423,6 @@ func saves(in place: Place) -> [(rel: String, path: String, size: Int)] {
 }
 
 func macReport() -> [String: Any] {
-  let frontend = rules["frontend"] as? [String: Any] ?? [:]
-
-  // The folder ES-DE reads games from, from its own settings file.
-  let esde = expand(frontend["settings"] as? String ?? "") + "/" + (frontend["config"] as? String ?? "")
-  let roms = (try? String(contentsOfFile: esde, encoding: .utf8)).flatMap { first("<string name=\"ROMDirectory\" value=\"([^\"]*)\"", $0) }
-
   var emulators: [[String: Any]] = []
   // Every folder an emulator saves to, so a retired app's folder holding them is not counted twice.
   var gathered: [String] = []
@@ -481,7 +475,6 @@ func macReport() -> [String: Any] {
     "made": iso.string(from: Date()),
     "macos": "\(v.majorVersion).\(v.minorVersion)" + (v.patchVersion > 0 ? ".\(v.patchVersion)" : ""),
     "chip": chip,
-    "frontend": ["name": frontend["name"] as? String ?? "ES-DE", "app": orNull(appOf(appsOf(frontend))), "romDirectory": orNull(roms.map(tilde))],
     "emulators": emulators,
   ]
 }

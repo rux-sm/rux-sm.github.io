@@ -34,16 +34,27 @@ reading and writing `emu/pads.js`.
   game opens."
 - **Emu cannot see the order those emulators chose,** so the step is shown
   every time, not only when the order is wrong.
+- **DuckStation names a controller after all, and leaves the step:** with
+  `[InputSources] SDLUsePersistentDeviceIdentifiers`, on by default, a binding
+  may name `SDL-<SDL 3 GUID>-<serial>` instead of `SDL-N`, so Emu writes that
+  and DuckStation follows the kept player like Cemu. Rux Emu Helper reports
+  each controller's serial, from SDL 3, beside its GUID.
+- **PCSX2 has no such binding,** only `SDL-N`, so it keeps the step with
+  Mesen 2.
 
 ## Questions
 
-None.
+- **Are Dolphin's GameCube ports 1 and 2 set to GBA (Integrated) on
+  purpose?** That is type 13, for The Legend of Zelda: Four Swords
+  Adventures played with Game Boy Advances; Fix it would set them back to a
+  GameCube controller, type 6, which every other GameCube game needs.
 
 ## Tasks
 
-- [ ] Look up PCSX2's and DuckStation's controller binding for a way to name
-      the controller instead of `SDL-N`; DuckStation's log gives each a
-      persistent identifier, its SDL GUID and serial, which may be one. One
-      that has it follows the kept player like the others and needs no step.
+- [ ] Have Rux Emu Helper report each controller's SDL 3 serial, and build
+      and install that helper.
+- [ ] Write DuckStation's bindings with the persistent identifier, move it
+      out of the emulators that count by place, and prove it with both
+      controllers turned on in both orders.
 - [ ] Play a two-player game in each kind of emulator with both controllers
       to see the players in the game itself.

@@ -276,12 +276,13 @@
     $('emu-strip-facts').replaceChildren(...facts.map(([kind, text, title]) => indicator(kind, text, '', title)),
       ...(worst ? [indicator(worst[0], worst[1], 'emu-strip__sum', worst[2])] : []));
   }
-  // THE CONSOLES: the chosen one's drawing and wordmark over its games, a
-  // button opening the list of every console, each its drawing and its name,
-  // the chosen one on Carbon's selected layer. One not set up is faded. The
-  // power light, on the drawing, is lit while it is set up and flashes while
-  // it is set up or removed. The chosen console's drawing is where a game
-  // goes in, shakes and is dropped.
+  // THE CONSOLES, Carbon's inline dropdown, which Design's list-box.js opens
+  // and moves in: its field the chosen console's drawing and wordmark over
+  // its games, its options every console, each its drawing and its name, the
+  // chosen one selected. One not set up is faded. The power light, on the
+  // drawing, is lit while it is set up and flashes while it is set up or
+  // removed. The field's drawing is where a game goes in, shakes and is
+  // dropped.
   // Where each console's power light is on its drawing, in art pixels from
   // its top-left, how many pixels it covers, and its colour as the real
   // console's light: error is red, success green, warning orange, info blue.
@@ -292,7 +293,6 @@
     psx: [4, 14, 3, 1, 'success'], ps2: [32, 17, 1, 1, 'success'], xbox: [17, 18, 2, 2, 'success'],
   };
   const kitOf = system => (system === chosen ? $('emu-consoles-pick') : null);
-  const listed = system => $('emu-consoles').querySelector(`[data-console="${system}"]`);
   function spotOf(system) {
     const spot = el('span', 'emu-kit__spot');
     spot.append(consoleOf(system));
@@ -304,44 +304,59 @@
     }
     return spot;
   }
+  // A console's drawing, centred in one width so the names line up.
+  const iconBox = system => { const box = el('span', 'emu-option__icon'); box.append(spotOf(system)); return box; };
   function renderConsoles() {
     redraw($('emu-consoles'), ...consoles().map(system => {
       const state = stateOf(system);
-      const b = el('button', `emu-kit emu-kit--${state}${system === chosen ? ' emu-kit--chosen' : ''}`);
-      b.type = 'button';
-      b.dataset.console = system;
-      b.setAttribute('aria-pressed', String(system === chosen));
-      b.title = BUSY[state]?.(system) ?? R.systemName(system);
-      if (state === 'away') b.setAttribute('aria-label', `${R.systemName(system)}, not set up`);
-      const icon = el('span', 'emu-kit__icon');
-      icon.append(spotOf(system));
-      b.append(icon, el('span', 'emu-kit__name', R.systemName(system)));
-      b.addEventListener('click', () => { choose(system); consolesPick.close({ restoreFocus: true }); });
-      b.addEventListener('contextmenu', e => {
+      const li = el('li', `rux--list-box__menu-item emu-kit--${state}${system === chosen ? ' rux--list-box__menu-item--active' : ''}`);
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(system === chosen));
+      li.dataset.console = system;
+      li.dataset.ruxText = R.systemName(system);
+      li.title = BUSY[state]?.(system) ?? '';
+      const line = el('span', 'emu-option');
+      line.append(iconBox(system), el('span', 'emu-option__name', R.systemName(system)));
+      if (state === 'away') line.append(el('span', 'rux--visually-hidden', ', not set up'));
+      const option = el('div', 'rux--list-box__menu-item__option');
+      option.append(line);
+      li.append(option);
+      li.addEventListener('contextmenu', e => {
         if (!helper) return;
         e.preventDefault();
+        window.Rux.listBox.close($('emu-consoles-box'));
         choose(system);
-        consolesPick.close({ restoreFocus: true });
         openMenu($('emu-consoles-pick'));
       });
-      const li = el('li');
-      li.append(b);
       return li;
     }));
     renderPicker();
   }
+  // The field: the chosen console's drawing, its wordmark or name, and its
+  // name for a screen reader, which the wall's heading carries too.
   function renderPicker() {
-    const b = $('emu-consoles-pick');
     if (!chosen) return;
+    const field = $('emu-consoles-pick');
     const state = stateOf(chosen);
-    b.className = `emu-picker emu-kit--${state}`;
-    b.dataset.console = chosen;
-    b.title = BUSY[state]?.(chosen) ?? '';
-    b.setAttribute('aria-label', `${R.systemName(chosen)}${state === 'away' ? ', not set up' : ''}`);
-    const chevron = iconOf('#i-chevron--down');
-    chevron.setAttribute('class', 'emu-picker__chevron');
-    b.replaceChildren(spotOf(chosen), markOf(chosen) ?? el('span', 'emu-picker__name', R.systemName(chosen)), chevron);
+    field.className = `rux--list-box__field emu-kit--chosen emu-kit--${state}`;
+    field.dataset.console = chosen;
+    field.title = BUSY[state]?.(chosen) ?? '';
+    const name = R.systemName(chosen);
+    const line = el('span', 'emu-option emu-option--field');
+    line.append(iconBox(chosen), markOf(chosen) ?? el('span', 'emu-option__name', name));
+    if (markOf(chosen)) line.append(el('span', 'rux--visually-hidden', name));
+    if (state === 'away') line.append(el('span', 'rux--visually-hidden', ', not set up'));
+    field.querySelector('.rux--list-box__label').replaceChildren(line);
+    $('emu-games-h').textContent = name;
   }
+  // A console chosen from the list, or the chosen one again, which Design's
+  // list-box.js wrote over the field as text.
+  $('emu-consoles-box').addEventListener('rux:listbox-selected', e => {
+    const system = e.detail.option?.dataset.console;
+    if (system) choose(system);
+    renderPicker();
+  });
+  $('emu-consoles-pick').addEventListener('contextmenu', e => { if (!helper || !chosen) return; e.preventDefault(); openMenu(e.currentTarget); });
 
   // A console is always chosen, the first where none is yet.
   function keepShown() {
@@ -453,9 +468,9 @@
     const other = system !== chosen;
     chosen = system;
     game = g ?? firstOf(system);
-    if (other) for (const b of $('emu-consoles').querySelectorAll('[data-console]')) {
-      b.classList.toggle('emu-kit--chosen', b.dataset.console === system);
-      b.setAttribute('aria-pressed', String(b.dataset.console === system));
+    if (other) for (const o of $('emu-consoles').querySelectorAll('[data-console]')) {
+      o.classList.toggle('rux--list-box__menu-item--active', o.dataset.console === system);
+      o.setAttribute('aria-selected', String(o.dataset.console === system));
     }
     renderGames();
     showChosen();
@@ -580,9 +595,7 @@
   }
 
   // SAVE is a button of three lines, what it is, what will be used and a
-  // note, over a list that opens down from it. `fill` draws the list and
-  // returns what takes the focus, scrolled into the list's view, else the
-  // list's first control takes it.
+  // note, over a list that opens down from it.
   function pickOf(id, fill) {
     const button = $(id);
     const pop = $(`${id}-list`);
@@ -595,12 +608,11 @@
       if (restoreFocus) button.focus({ preventScroll: true });
     };
     const open = () => {
-      const first = fill(pop, close);
+      fill(pop, close);
       pop.hidden = false;
       button.setAttribute('aria-expanded', 'true');
       held = window.Rux.overlay.register({ element: pop, anchor: button, close });
-      (first ?? window.Rux.overlay.focusables(pop)[0])?.focus({ preventScroll: true });
-      first?.scrollIntoView({ block: 'nearest' });
+      window.Rux.overlay.focusables(pop)[0]?.focus({ preventScroll: true });
     };
     button.addEventListener('click', () => (held ? close({ restoreFocus: true }) : open()));
     return {
@@ -667,9 +679,6 @@
     return last ? `Saved ${R.date(last)}` : `Save kept in ${emulatorOf(g.system)}`;
   };
   const savePick = pickOf('emu-chosen-save', fillSave);
-  // The list of consoles opens on the chosen one.
-  const consolesPick = pickOf('emu-consoles-pick', () => { renderConsoles(); return listed(chosen); });
-  $('emu-consoles-pick').addEventListener('contextmenu', e => { if (!helper || !chosen) return; e.preventDefault(); openMenu(e.currentTarget); });
   function writeSave() {
     const g = game;
     if (stateOf(g.system) === 'away' || stateOf(g.system) === 'setting') { savePick.write({ hidden: true }); return; }
@@ -1736,8 +1745,14 @@
     const at = document.activeElement;
     if (move === 'b') { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return; }
     if (panelOpen() || document.querySelector('.rux--modal.is-visible')) { if (move === 'a' && at?.matches('button')) at.click(); return; }
-    // While the list of consoles is open, moves go among its consoles alone.
-    const places = $('emu-consoles-pick').getAttribute('aria-expanded') === 'true' ? '#emu-consoles .emu-kit' : '#emu-consoles-pick, #emu-games .emu-cover';
+    // While the list of consoles is open, the moves are its keys: the field
+    // keeps the focus and Design's list-box.js moves the cursor.
+    if (window.Rux.listBox.isOpen($('emu-consoles-box'))) {
+      const key = { up: 'ArrowUp', down: 'ArrowDown', a: 'Enter' }[move];
+      if (key) $('emu-consoles-pick').dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+      return;
+    }
+    const places = '#emu-consoles-pick, #emu-games .emu-cover';
     if (!at?.matches(places)) { coverOf(game)?.focus(); return; }
     if (move === 'a') { if (at.dataset.game === keyOf(game)) $('emu-chosen-go').click(); else at.click(); return; }
     const middle = n => { const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };

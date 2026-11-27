@@ -111,7 +111,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    and lined as the theme's tiles are (theme.css), as the scheduler's board
    and roster are, 16px apart, Carbon's narrow gutter. */
 .emu-library { display: flex; flex-direction: column; }
-.emu-consoles, .emu-chosen, .emu-pad, .emu-games { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
+.emu-chosen, .emu-pad, .emu-games { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
 .emu-library[hidden] { display: none; }
 .emu-library--mac { block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
 /* THE STRIP: the page's one place for words, in the wall's title row.
@@ -149,30 +149,20 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @media (max-width: 52.98rem) {
   .emu-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "chosen" "pad" "games"; }
 }
-/* THE CONSOLES. The wall's title is a button: the chosen console's drawing,
-   one CSS pixel to the art pixel, its wordmark and a chevron, hovered as a
-   layer-01 control. It opens the list of consoles down over the wall, each
-   its drawing, centred in one width, and its name; the chosen one stands
-   on Carbon's selected layer, and one not set up is faded, as a game on the
-   server is. */
-.emu-games__pick { position: relative; flex: none; min-inline-size: 0; }
-.emu-picker { --emu-px: 1px; display: flex; align-items: center; gap: var(--rux-spacing-04); min-inline-size: 0; appearance: none; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; padding: var(--rux-spacing-02) var(--rux-spacing-03); margin: calc(-1 * var(--rux-spacing-02)) calc(-1 * var(--rux-spacing-03)); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-picker:hover { background: var(--rux-layer-hover-01); }
-.emu-picker:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-picker__chevron { flex: none; transition: rotate 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-picker[aria-expanded="true"] .emu-picker__chevron { rotate: 180deg; }
-.emu-picker__list { inline-size: 16rem; }
-.emu-consoles { --emu-px: 1px; list-style: none; padding-block: var(--rux-spacing-03); }
-.emu-consoles > li { display: flex; }
-.emu-kit { position: relative; flex: 1; min-inline-size: 0; appearance: none; border: 0; background: none; font: inherit; color: var(--rux-text-secondary); text-align: start; cursor: pointer; display: flex; align-items: center; gap: var(--rux-spacing-04); min-block-size: var(--rux-layout-size-height-lg); padding: var(--rux-spacing-02) var(--rux-spacing-05); border-radius: var(--emu-kit-radius, 0); transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
-.emu-kit:hover { background: var(--rux-layer-hover-02); color: var(--rux-text-primary); }
-.emu-kit:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-.emu-kit--chosen, .emu-kit--chosen:hover { background: var(--rux-layer-selected-02); color: var(--rux-text-primary); }
-.emu-kit__icon { flex: none; inline-size: 36px; display: flex; justify-content: center; }
-.emu-kit__name { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: var(--rux-body-compact-01-font-size); line-height: var(--rux-body-compact-01-line-height); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
+/* THE CONSOLES, Carbon's inline dropdown at its 40px size, starting at the
+   row's edge: its field the chosen console's drawing, one CSS pixel to the
+   art pixel, and its wordmark at 1.25rem, or its name in heading-03,
+   smaller than the chosen game's name; its options each console's drawing,
+   centred in one width, and its name. One not set up is faded, as a game
+   on the server is. */
+.emu-option { --emu-px: 1px; display: flex; align-items: center; gap: var(--rux-spacing-04); min-inline-size: 0; }
+.emu-option__icon { flex: none; inline-size: 36px; display: flex; justify-content: center; }
+.emu-option__name { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emu-option--field { color: var(--rux-text-primary); }
+.emu-option--field .emu-mark { block-size: calc(1.25rem * var(--emu-mark-scale, 1)); max-inline-size: 12rem; }
+.emu-option--field > .emu-option__name { font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); }
 .emu-kit__spot { position: relative; display: block; }
 .emu-kit--away .emu-kit__spot { opacity: .45; }
-@media (prefers-reduced-motion: reduce) { .emu-picker__chevron { transition: none; } }
 
 /* THE WALL, the one part that scrolls. Every
    cover is its column's width, all one shape: eight across, or six where boxes are wider than tall. */
@@ -192,10 +182,6 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-games__list .emu-cover-art { background: var(--rux-layer-02); }
 .emu-games__list .emu-cover:hover .emu-cover-art { background: var(--rux-layer-hover-02); }
 .emu-games__list--wide { grid-template-columns: repeat(auto-fill, minmax(min(11.5rem, 40%), 1fr)); }
-/* The wall's title, the chosen console's wordmark at 1.25rem, or its name in
-   heading-03, smaller than the chosen game's name, which leads. */
-.emu-games__title { display: flex; align-items: center; min-block-size: 2rem; font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); color: var(--rux-text-primary); }
-.emu-games__title .emu-mark { block-size: calc(1.25rem * var(--emu-mark-scale, 1)); max-inline-size: 12rem; }
 /* A console's wordmark: one height for every console, grown by
    --emu-mark-scale where a mark's letters sit small in its shape, its width
    its own, in the text colour. */
@@ -274,7 +260,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @media (max-width: 41.98rem) {
   .emu-chosen { gap: var(--rux-spacing-05); }
   .emu-chosen__name { font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); }
-  .emu-games__title .emu-mark { block-size: calc(1rem * var(--emu-mark-scale, 1)); }
+  .emu-option--field .emu-mark { block-size: calc(1rem * var(--emu-mark-scale, 1)); }
 }
 @media (prefers-reduced-motion: reduce) { .emu-pick__chevron { transition: none; } }
 /* THE CONTROLLER TILE: four players, each a box on Carbon's next layer
@@ -383,8 +369,8 @@ button.emu-slot__box:focus-visible { outline: 2px solid var(--rux-focus); outlin
 .emu-held { opacity: .25; }
 .emu-word { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9001; pointer-events: none; padding: var(--rux-spacing-02) var(--rux-spacing-03); background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); font-weight: 600; white-space: nowrap; }
 .emu-word--no { background: var(--rux-support-error); color: var(--rux-text-on-color); }
-.emu-kit:is(.emu-lit, .emu-no) { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; }
-.emu-kit.emu-no { outline-color: var(--rux-support-error); }
+.emu-lit, .emu-no { outline: 2px dashed var(--rux-border-interactive); outline-offset: -2px; }
+.emu-no { outline-color: var(--rux-support-error); }
 
 /* THE REFUSAL AND THE GAME GOING IN. The wrong console shakes its head; a
    cartridge drops into its slot and a disc slides onto a tray that opens and

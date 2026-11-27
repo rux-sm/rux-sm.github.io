@@ -232,9 +232,16 @@
                    games it has; the strip, the page's one place for
                    words; and Sound. It does not scroll. -->
               <div class="emu-games__head">
-                <div class="emu-games__pick">
-                  <h2 class="emu-games__title" id="emu-games-h"><button type="button" class="emu-picker" id="emu-consoles-pick" aria-expanded="false" aria-controls="emu-consoles-pick-list"><span class="rux--skeleton__text emu-skel-title" aria-hidden="true"></span></button></h2>
-                  <div class="emu-pop rux--layer-two emu-picker__list" id="emu-consoles-pick-list" hidden><ul class="emu-consoles" role="list" id="emu-consoles" aria-label="Consoles"></ul></div>
+                <h2 class="rux--visually-hidden" id="emu-games-h">Games</h2>
+                <div class="rux--list-box__wrapper rux--dropdown__wrapper--inline rux--list-box__wrapper--inline">
+                  <label class="rux--label rux--visually-hidden" id="emu-consoles-label">Console</label>
+                  <div class="rux--dropdown rux--list-box rux--dropdown--inline rux--layout--size-md" id="emu-consoles-box">
+                    <button type="button" class="rux--list-box__field" id="emu-consoles-pick" role="combobox" aria-labelledby="emu-consoles-label emu-consoles-pick" aria-expanded="false" aria-haspopup="listbox" aria-controls="emu-consoles">
+                      <span class="rux--list-box__label"><span class="rux--skeleton__text emu-skel-title" aria-hidden="true"></span></span>
+                      <div class="rux--list-box__menu-icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg></div>
+                    </button>
+                    <ul class="rux--list-box__menu" id="emu-consoles" role="listbox" aria-labelledby="emu-consoles-label" hidden></ul>
+                  </div>
                 </div>
                 <p class="emu-games__count" id="emu-games-count"></p>
                 <div class="emu-strip" id="emu-strip" hidden>
@@ -407,6 +414,7 @@
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/accordion.js"></script>
 <script src="/design/js/popover.js"></script>
+<script src="/design/js/list-box.js"></script>
 <script src="/design/js/menu.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>

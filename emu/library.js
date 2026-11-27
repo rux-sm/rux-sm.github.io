@@ -539,7 +539,7 @@
   async function keepNotes(g, change) {
     const n = g.notes ?? {};
     const row = { system: g.system, title: g.title, note: n.note ?? null, played: Boolean(n.played), finished: Boolean(n.finished),
-      favourite: Boolean(n.favourite), plays: Boolean(n.plays), ...change };
+      favourite: Boolean(n.favourite), plays: Boolean(n.plays), gba: Boolean(n.gba), ...change };
     try {
       await R.data.saveNotes(row);
     } catch (error) {
@@ -556,10 +556,12 @@
     if (!await keepNotes(g, { [key]: !g.notes?.[key] })) return;
     if (key === 'favourite') renderGames();
     if (g === game) renderChosen();
+    if (key === 'gba') { padReading = null; renderPad(); }
   }
 
   // A GAME'S MENU, from a right-click on its cover:
-  // Favourite and Finished, ticked while on; About this copy, which opens the
+  // Favourite and Finished, ticked while on; for a GameCube game, Play with
+  // Game Boy Advances, its controllers as Dolphin's integrated GBAs; About this copy, which opens the
   // panel on what the scan read of the game; and, where any of it is here,
   // Remove from this Mac, which takes it off.
   function openGameMenu(g, trigger) {
@@ -571,6 +573,7 @@
     menu.replaceChildren(
       menuItem(menu, 'Favourite', () => mark(g, 'favourite'), { checked: Boolean(n.favourite) }),
       menuItem(menu, 'Finished', () => mark(g, 'finished'), { checked: Boolean(n.finished) }),
+      ...(g.system === 'gc' ? [menuItem(menu, 'Play with Game Boy Advances', () => mark(g, 'gba'), { checked: Boolean(n.gba) })] : []),
       menuItem(menu, 'About this copy', () => openGame(g, trigger, { about: true })));
     if (keeps && s.state !== 'arriving' && (s.state === 'held' || s.done)) {
       const line = el('li', 'rux--menu-item-divider');
@@ -867,10 +870,13 @@
   // next free box.
   const SLOTS = 4;
   const joined = new Set();
-  // The four boxes for a console: each null or { pad, state, kept, status }.
+  // A console's name as the boxes and the map say it; a GameCube game played
+  // with Game Boy Advances is played on those.
+  const padConsoleName = system => (system === R.pads.GBA_MODE ? 'Game Boy Advance' : R.systemName(system));
+  // The four boxes for a console, or a game's mode of it: each null or { pad, state, kept, status }.
   async function padBoxes(system) {
     const pads = await padsKnown();
-    const consoleName = R.systemName(system);
+    const consoleName = padConsoleName(system);
     const [info, reads] = await Promise.all([padInfoNow(), readPads(system, pads.length ? pads : [{ family: 'xbox' }])]);
     const most = Object.values(reads)[0]?.most ?? SLOTS;
     const held = Array(SLOTS).fill(null);
@@ -890,6 +896,7 @@
       h.name = info.get(h.pad.id)?.name ?? h.pad.name;
       h.read = reads[h.pad.family];
       h.status = padStatus(h, i + 1, most, h.read, consoleName);
+      if (system === R.pads.GBA_MODE && h.status.kind === 'ok') h.status = { ...h.status, words: 'Ready · Game Boy Advance' };
     });
     return { held, most, consoleName, info };
   }
@@ -899,7 +906,7 @@
   async function renderPad() {
     if (!helper) return;
     const turn = ++padTurn;
-    const system = game?.system ?? chosen;
+    const system = R.pads.modeOf(game?.system ?? chosen, game);
     if (!system) return;
     const { held, most, consoleName, info } = await padBoxes(system);
     if (turn !== padTurn) return;
@@ -978,7 +985,7 @@
   let padUndo = null;
   document.getElementById('emu-padmap-modal')?.addEventListener('rux:modal-closed', () => { padUndo = null; });
   async function openPadMap(pad, system, read, place) {
-    const consoleName = R.systemName(system);
+    const consoleName = padConsoleName(system);
     const known = (await padInfoNow()).get(pad.id);
     const mine = { name: known?.name ?? pad.name, details: { ...(known?.details ?? {}) } };
     const state = padState(read, pad, consoleName, place);
@@ -1393,12 +1400,13 @@
     renderGo();
     try {
       if (!how.padsAnyway) {
-        const needs = (await padBoxes(g.system)).held.map((h, i) => [i + 1, h]).filter(([, h]) => h?.status.fix);
+        const mode = R.pads.modeOf(g.system, g);
+        const needs = (await padBoxes(mode)).held.map((h, i) => [i + 1, h]).filter(([, h]) => h?.status.fix);
         if (needs.length) {
           const [player, h] = needs[0];
           sfx.no();
           say(`${needs.length > 1 ? `${needs.length} controllers need` : `The ${h.name} needs`} a fix for ${R.systemName(g.system)}: ${needs.length > 1 ? 'see the players' : `player ${player}, ${h.status.why}`}.`, { ms: LONG, answers: [
-            ['Fix it', async () => { if (await fixPads(g.system, needs)) play(g, how); }],
+            ['Fix it', async () => { if (await fixPads(mode, needs)) play(g, how); }],
             ['Play anyway', () => play(g, { ...how, padsAnyway: true })]] });
           return;
         }

@@ -64,6 +64,11 @@ connected. A controller that connects while they run comes after the ones
 they found at start, so Play has every controller after player 1's turned
 off before the game opens and on again once it has. macOS can take most of
 a minute to drop a controller that was turned off.
+A GameCube game played with Game Boy Advances has its ports in Dolphin's
+file for that game, `GameSettings/<disc ID>.ini`, `[Core] SIDevice0 = 13`,
+GBA (Integrated), for each player, which Dolphin reads over `Dolphin.ini`;
+each GBA's buttons are in `Config/GBA.ini`, `[GBA1]` to `[GBA4]`, as
+`GCPadNew.ini` names them, with `Buttons/SELECT` and `Buttons/START`.
 Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.

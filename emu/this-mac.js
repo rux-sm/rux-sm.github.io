@@ -39,7 +39,7 @@
   async function play(g, say = () => {}, { anyway = false } = {}) {
     const carried = anyway ? Boolean(R.carry) : await R.carry?.before(g.system, say);
     // Each connected controller is made the player it keeps, in the emulator about to run.
-    await R.pads?.beforePlay(g.system, H).catch(error => console.error(error));
+    await R.pads?.beforePlay(g.system, H, g).catch(error => console.error(error));
     await H.play(g);
     say('Playing.');
     if (carried) R.carry.after(g.system, say);

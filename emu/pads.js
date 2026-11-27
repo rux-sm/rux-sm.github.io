@@ -24,6 +24,13 @@
 
   const R = window.Emu;
 
+  // A GameCube game played with Game Boy Advances, rux's mark on it, is a
+  // console of its own here, 'gc-gba': Dolphin's integrated GBA, whose
+  // buttons Dolphin keeps in Config/GBA.ini.
+  const GBA_MODE = 'gc-gba';
+  const modeOf = (system, game) => (system === 'gc' && game?.notes?.gba ? GBA_MODE : system);
+  const emulatorFor = async system => (await R.emulators?.())?.systems?.[system === GBA_MODE ? 'gc' : system]?.emulator;
+
   // A controller's family from its maker: Nintendo's 057e, Microsoft's 045e,
   // Sony's 054c; any other is drawn and labelled as an Xbox pad, the layout
   // most makers copy.
@@ -226,8 +233,12 @@
     DuckStation: { files: ['settings.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['settings.ini'])[`Pad${player}`]) },
     PCSX2: { files: ['inis/PCSX2.ini'], players: 2, read: (f, system, family, player) => sdlPad(ini(f['inis/PCSX2.ini'])[`Pad${player}`]) },
     Dolphin: {
-      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini'], players: 4,
+      files: ['Config/Dolphin.ini', 'Config/GCPadNew.ini', 'Config/WiimoteNew.ini', 'Config/GBA.ini'], players: 4,
       read(f, system, family, player) {
+        if (system === GBA_MODE) {
+          return dolphin(ini(f['Config/GBA.ini'] ?? '')[`GBA${player}`] ?? {}, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/L': 'L', 'Buttons/R': 'R',
+            'Buttons/SELECT': 'Select', 'Buttons/START': 'Start', 'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad' });
+        }
         if (system === 'gc') {
           const port = ini(f['Config/Dolphin.ini']).Core?.[`SIDevice${player - 1}`];
           if (port == null || port === '0') return { bound: null, map: {} };
@@ -357,7 +368,7 @@
   // file it has not written yet, such as Cemu's for a second controller, is
   // left out.
   async function read(system, helper, family) {
-    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+    const emulator = await emulatorFor(system);
     const reader = READERS[emulator];
     if (!reader || !helper) return null;
     const f = {};
@@ -575,6 +586,7 @@
       hidden: ['Left trigger', 'Right trigger'] },
   };
   ORIGINALS.gbc = ORIGINALS.gb;
+  ORIGINALS[GBA_MODE] = ORIGINALS.gba;
   // A stick pressed in is named Press on the Wii U, Switch and Xbox, so its
   // spot is the stick's own, found from which stick was pressed.
   const PRESS = { l3: 'Left stick', r3: 'Right stick' };
@@ -625,7 +637,7 @@
     wii: { A: 'east', B: 'south', 1: 'r', 2: 'zr', '−': 'minus', '+': 'plus', Home: 'home', 'Nunchuk C': 'l', 'Nunchuk Z': 'zl', Shake: 'west' },
     wiiu: SWITCHLIKE, switch: SWITCHLIKE,
   };
-  LAYOUTS.gbc = LAYOUTS.gba = LAYOUTS.gb;
+  LAYOUTS.gbc = LAYOUTS.gba = LAYOUTS[GBA_MODE] = LAYOUTS.gb;
   // The controls a layout may use on an emulator that reads buttons only by
   // their number, where the triggers are axes.
   const BUTTONS_ONLY = new Set(['mGBA', 'melonDS']);
@@ -773,6 +785,13 @@
       const device = `SDL/0/${pad.name}`;
       const stick = (prefix, side) => ({ [`${prefix}/Up`]: `\`${side} Y+\``, [`${prefix}/Down`]: `\`${side} Y-\``, [`${prefix}/Left`]: `\`${side} X-\``, [`${prefix}/Right`]: `\`${side} X+\`` });
       const dpad = Object.fromEntries(DIRS.map(d => [`D-Pad/${d[0].toUpperCase() + d.slice(1)}`, DOLPHIN_NAME[d]]));
+      // The integrated GBA's buttons; its port is set in Dolphin's file for the game, before Play.
+      if (system === GBA_MODE) {
+        const GBA_KEY = { A: 'Buttons/A', B: 'Buttons/B', L: 'Buttons/L', R: 'Buttons/R', Select: 'Buttons/SELECT', Start: 'Buttons/START' };
+        const keys = { Device: device, ...dpad };
+        for (const [k, c] of Object.entries(L)) keys[GBA_KEY[k]] = DOLPHIN_NAME[c];
+        return { 'Config/GBA.ini': setSection(f['Config/GBA.ini'] ?? '', `GBA${player}`, keys) };
+      }
       if (system === 'gc') {
         const keys = { Device: device, ...stick('Main Stick', 'Left'), ...stick('C-Stick', 'Right'), ...dpad };
         for (const [k, c] of Object.entries(L)) {
@@ -862,7 +881,7 @@
   // emulator Emu opens instead, or { emulator, files: { rel: [bytes before,
   // text after] } }, or { problem }.
   async function setUp(system, helper, player, pad, layout = LAYOUTS[system]) {
-    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+    const emulator = await emulatorFor(system);
     const writer = WRITERS[emulator], reader = READERS[emulator];
     if (!writer) return { problem: `Emu cannot set up ${emulator ?? 'this console'} yet.` };
     if (player > (reader.players ?? 1)) return { problem: `${emulator} plays ${reader.players ?? 1} player${(reader.players ?? 1) > 1 ? 's' : ''}.` };
@@ -902,7 +921,7 @@
   // buttons that player has. Throws what stops it; { open } where only the
   // emulator itself can bind it.
   async function fix(system, helper, player, c) {
-    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+    const emulator = await emulatorFor(system);
     const now = await read(system, helper, c.family);
     const was = ORDERED.has(emulator) ? now.players.find(x => x.player === player) : now.players.find(x => bindsTo(x.bound, c, -1));
     const out = await setUp(system, helper, player, c, layoutFrom(system, was?.map));
@@ -910,8 +929,44 @@
     for (const [rel, [, after]] of Object.entries(out.files ?? {})) await helper.putSetting(emulator, rel, new TextEncoder().encode(after));
     return out;
   }
-  async function beforePlay(system, helper) {
-    const emulator = (await R.emulators?.())?.systems?.[system]?.emulator;
+  // Dolphin's file for one game, GameSettings/<game ID>.ini, read over its
+  // own: a game played with Game Boy Advances has a GBA (Integrated) port,
+  // 13, for each player a controller keeps or each one connected, whichever
+  // is more, so one asleep at Play still has its GBA, and none past them;
+  // any other has no ports there, so Dolphin's own, a GameCube controller,
+  // apply. Its other lines stay. The ID is the one the scan read from the
+  // disc's header.
+  async function gbaPorts(helper, game, on) {
+    const id = (game?.files ?? []).map(f => f.header?.discId).find(Boolean);
+    if (!id || !/^[A-Z0-9]{6}$/.test(id)) return;
+    const rel = `GameSettings/${id}.ini`;
+    let was = null;
+    try { was = text(await helper.setting('Dolphin', rel)); } catch { /* none yet */ }
+    if (!on && !was) return;
+    const keys = ['SIDevice0', 'SIDevice1', 'SIDevice2', 'SIDevice3'];
+    let after;
+    if (on) {
+      const connected = ((await helper.controllers?.()) ?? []).length;
+      const kept = Math.max(0, ...(await (R.data?.controllers?.() ?? Promise.resolve([])).catch(() => [])).map(r => r.details?.player ?? 0));
+      const count = Math.min(4, Math.max(1, connected, kept));
+      after = setSection(was ?? '', 'Core', Object.fromEntries(keys.map((k, i) => [k, i < count ? 13 : 0])));
+    } else {
+      after = dropKeys(was, 'Core', keys);
+    }
+    if (after !== was) await helper.putSetting('Dolphin', rel, new TextEncoder().encode(after));
+  }
+  // A section of a `key = value` file without `keys`, every other line kept.
+  function dropKeys(body, name, keys) {
+    let inside = false;
+    return body.replace(/\r\n/g, '\n').split('\n').filter(line => {
+      if (/^\[.+\]\s*$/.test(line)) { inside = line.trim() === `[${name}]`; return true; }
+      return !(inside && keys.includes(line.slice(0, line.indexOf('=')).trim()));
+    }).join('\n');
+  }
+  async function beforePlay(console_, helper, game) {
+    const system = modeOf(console_, game);
+    const emulator = await emulatorFor(system);
+    if (emulator === 'Dolphin' && console_ === 'gc') await gbaPorts(helper, game, system === GBA_MODE);
     const reader = READERS[emulator];
     if (!reader || !helper.controllers) return;
     const report = await helper.controllers();
@@ -956,5 +1011,5 @@
     if (changed) await helper.putSetting('Gopher64', 'config.json', new TextEncoder().encode(JSON.stringify(c, null, 2)));
   }
 
-  R.pads = { of, identify, read, playerOf, beforePlay, fix, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
+  R.pads = { of, identify, read, playerOf, beforePlay, fix, modeOf, GBA_MODE, ORDERED, draw, drawBack, drawOriginal, lit, ORIGINALS, MODELS, CHROME, PRINTED, setUp, LAYOUTS, usable, _readers: READERS, _writers: WRITERS };
 })();

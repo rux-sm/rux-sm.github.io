@@ -32,8 +32,7 @@ both Dolphin; Play with Game Boy Advances, in a GameCube game's menu, is
   each with its name, its photo and how the emulator is told, so the
   dropdown, the Buttons window and Play read one list.
 - **The choice is kept in `emu_notes` as one text column, `controller`,**
-  holding the type's id, in place of the `gba` switch; Four Swords keeps its
-  Game Boy Advances. The change is SQL shown to rux first.
+  holding the type's id, none on the console's own controller.
 - **Dolphin is told in its file for the game, `GameSettings/<disc ID>.ini`,**
   which it reads over its own, as the Game Boy Advances are now: a GameCube
   type sets each player's port, `SIDevice0` to `SIDevice3`; a Wii type
@@ -63,7 +62,6 @@ None.
 
 ## Tasks
 
-- [ ] Drop `emu_notes.gba` once the published site no longer reads it.
 - [ ] Play Four Swords on Game Boy Advances, then on GameCube controllers,
       and Super Mario Galaxy with the Nunchuk, the Remote sideways and the
       GameCube controller, and a Classic Controller game, and see each in

@@ -167,7 +167,7 @@ in a window under 66rem:
   drawings, the back buttons under them, and the name and model folded away.
 - **A controller is set up from its map,** Emu's layout written into the
   emulator's own file for the chosen player, as
-  `docs/plans/emu-controller-setup.md` decides.
+  `emu/docs/controller-settings.md` describes.
 - **Button layouts travel with the account** as
   `docs/plans/emu-emulator-profiles.md` carries them.
 
@@ -192,8 +192,6 @@ None.
 - [ ] See the Library in Safari.
 - [ ] Give Rux Emu Helper a call that says whether the home server answers, and
       show it on the strip.
-- [ ] Update each Mac to Rux Emu Helper 35 or later, which takes a carried save
-      off a Mac to the Trash on `removeCarried`.
 - [ ] Have Rux Emu Helper say which game runs and take a quit request, so the
       strip names active play and removing a console stops its game first.
 - [ ] Move a card where a save is a folder under a title or disc ID, as on the

@@ -143,8 +143,8 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 @media (min-width: 66rem) { .emu-strip__sum { display: none; } }
 /* THE BODY lays the tiles out: the consoles 15rem wide down the whole side;
    the chosen game, taking what is left, then the controller 24rem wide, room
-   for its longest line, a name over "Player 2 · Set up for Game Boy
-   Advance", along the top; the wall under both. Under 70rem, where the
+   for a controller's name and "Ready · Game Boy Advance" beside Fix it,
+   along the top; the wall under both. Under 70rem, where the
    chosen game would have under 26rem, the controller goes under it, and
    under 42rem every tile is a row, the consoles first. */
 .emu-body { flex: 1; min-block-size: 0; display: grid; gap: var(--rux-spacing-05); grid-template-columns: var(--emu-side) minmax(0, 1fr) 24rem; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "consoles chosen pad" "consoles games games"; }
@@ -293,12 +293,18 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 }
 @media (prefers-reduced-motion: reduce) { .emu-pick__chevron { transition: none; } }
 /* THE CONTROLLER TILE: four players, each a box on Carbon's next layer
-   sharing the tile's height, its number over the controller playing it,
-   on Carbon's icon indicator, or No controller with the drawing faded;
-   a player past the console's own is faded whole. A box holding a
-   controller is a button opening its map, hovered as a layer-02 control. */
+   sharing the tile's height, its number over the controller playing it and
+   its status on Carbon's icon indicator, or why none is with the drawing
+   faded; a player past the console's own is faded whole. A box holding a
+   controller is a button opening its map, hovered as a layer-02 control.
+   Where the tile goes under the chosen game and is as wide, the players
+   stand two by two, back to one column under 40rem, where two would wrap
+   a status. */
 .emu-pad { grid-area: pad; min-inline-size: 0; display: flex; flex-direction: column; padding: var(--rux-spacing-05); }
 .emu-pad__list { flex: 1; list-style: none; display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); gap: var(--rux-spacing-03); }
+@media (max-width: 69.98rem) and (min-width: 40rem) {
+  .emu-pad__list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+}
 /* A box and, where it needs one, its Fix it button share the box's background. */
 .emu-slot { display: flex; align-items: center; min-block-size: 0; background: var(--rux-layer-02); border-radius: var(--emu-kit-radius, 0); }
 .emu-slot__fix { flex: none; margin-inline-end: var(--rux-spacing-03); }

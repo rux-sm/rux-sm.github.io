@@ -79,8 +79,11 @@ the next reads only files that are new or changed. Key files among the BIOS are
 listed by name and never read.
 
 When the games folder holds a lists folder, every game is matched against the
-No-Intro and Redump lists as libretro publishes them, and every Switch game
-against titledb's versions list; `scan.js` says how. A CHD is matched by the
+No-Intro and Redump lists as libretro publishes them, every Switch game
+against titledb's versions list, and every Wii U game against WiiUBrew's title
+database, its raw page saved there as wiiu-titles.txt,
+`https://wiiubrew.org/w/index.php?title=Title_database&action=raw`; `scan.js`
+says how. A CHD is matched by the
 tracks inside it, which the organize tool keeps when it makes the CHD, or
 chdman extracts once.
 

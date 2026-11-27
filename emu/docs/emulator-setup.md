@@ -63,8 +63,8 @@ Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
   Mac's `~/Library/Application Support/Ryujinx/bis/system/Contents/registered`
   to `<share>/bios/switch/Contents/`; the nightly scan takes it. Its keys go in
   `<share>/bios/switch/` as `prod.keys` and `title.keys`.
-- **A Wii U game** plays as one `.wua` file: make it from the game's folder
-  in Cemu's Tools, Title Manager.
+- **A Wii U game** plays as one `.wua` file holding the game, its update and
+  its add-on: make it in Cemu's Tools, Title Manager, with all three there.
 
 ## Playing
 

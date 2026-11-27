@@ -88,7 +88,7 @@ What the scan records for every game:
 | files, format, size | the file system | all |
 | CRC32, MD5, SHA-1 | read from the whole file | cartridge and handheld systems, BIN and ISO, BIOS |
 | list match | the fingerprint looked up in No-Intro or Redump, a CHD by the tracks inside it, GameCube and Wii by disc ID | all but Switch and Wii U |
-| latest update | titledb's versions list | Switch |
+| latest update | titledb's versions list, WiiUBrew's title database | Switch, Wii U |
 | internal title, game code, version byte | the cartridge header | GB, GBC, GBA, N64, NDS |
 | header kind | the first bytes: iNES or NES 2.0, a copier header on SNES, N64 byte order | NES, SNES, N64 |
 | header checksum | recomputed and compared | GB, GBC, GBA, SNES, N64 |
@@ -98,7 +98,7 @@ What the scan records for every game:
 | tracks, and whether every track the CUE names is there | the CUE sheet | PS1 BIN and CUE |
 | CHD version and stored SHA-1 | the CHD header | PS1, PS2 |
 | title ID, version, kind (game, update, add-on) | the file name's brackets, then the NSP or XCI header | Switch |
-| title ID, version | `meta.xml` in the game's folder | Wii U |
+| title ID, version, and the update and add-on a `.wua` packs | each title's `meta.xml`, in the game's folder or the `.wua` | Wii U |
 | save file, save state, memory card | `emulation/saves/`, matched by each emulator's rule below | all |
 
 The problems the app flags:

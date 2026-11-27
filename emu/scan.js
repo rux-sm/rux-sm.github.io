@@ -289,8 +289,9 @@
   // names and the offsets of the data's 64 KiB blocks are read here. Each
   // top-level folder is one title, base game, update or add-on, holding its
   // own `meta/meta.xml`; its name is `<title ID>_v<version>`, but some packers
-  // write zeros there, so the title ID is read from that file. The title is
-  // the base game's, at the newest version its update brings.
+  // write zeros there, so the title ID is read from that file. The title ID
+  // and version are the base game's, and the update and add-on it packs are
+  // listed beside them.
   async function wua(drive, f, size) {
     const ft = await drive.read(f, size - 144, 144);
     if (u32be(ft, 140) !== 0x169f52d6) return { header: 'not ZArchive' };
@@ -343,8 +344,10 @@
     }
     const game = titles.find(t => /^00050000/i.test(t.titleId ?? ''));
     if (!game) return { header: 'no base game' };
-    const same = titles.filter(t => /^0005000[0e]/i.test(t.titleId) && t.titleId.slice(8).toLowerCase() === game.titleId.slice(8).toLowerCase());
-    return { titleId: game.titleId, titleVersion: Math.max(...same.map(t => t.version)), productCode: game.productCode };
+    const own = id => id.slice(8).toUpperCase() === game.titleId.slice(8).toUpperCase();
+    const packed = titles.filter(t => /^0005000[ce]/i.test(t.titleId ?? '') && own(t.titleId))
+      .map(t => ({ kind: /^0005000e/i.test(t.titleId) ? 'update' : 'add-on', titleId: t.titleId.toUpperCase(), version: t.version }));
+    return { titleId: game.titleId.toUpperCase(), titleVersion: game.version, productCode: game.productCode, packed };
   }
 
   const READERS = {
@@ -521,19 +524,47 @@
     };
   }
 
-  // A Switch game against blawar's titledb versions list, `switch-versions.json`
-  // in the lists folder: a game the list knows is listed, and an update newer
-  // than the one beside it on the server is a newer version.
+  // A Switch or Wii U game is matched by its title ID against a list of every
+  // game and the versions of its update, each `{ title ID: { version: date } }`
+  // in lowercase: a game the list knows is listed, and an update newer than
+  // the one the server has is a newer version.
+
+  // The Switch's is blawar's titledb versions list, `switch-versions.json` in
+  // the lists folder.
   async function loadSwitchVersions(drive) {
     const text = await drive.text('lists/switch-versions.json', 'utf8');
     return text == null ? null : JSON.parse(text);
   }
 
-  function matchSwitch(game, versions) {
+  // The Wii U's is WiiUBrew's title database page as its wikitext,
+  // `wiiu-titles.txt` in the lists folder: every game, and every update a
+  // console could download, leaving out those only Nintendo's developer
+  // servers held.
+  async function loadWiiuVersions(drive) {
+    const text = await drive.text('lists/wiiu-titles.txt', 'utf8');
+    if (text == null) return null;
+    const section = high => text.split(/^==\s*/m).find(s => s.startsWith(`${high}:`)) ?? '';
+    // A row is the lines after `|-`, one cell each: title ID, name, product
+    // code, versions, region, notes.
+    const rows = high => section(high).split(/^\|-/m).slice(1).map(r => r.split('\n')
+      .filter(l => l.startsWith('|') && !l.startsWith('|}')).map(l => l.slice(1).replace(/'{2,3}/g, '').trim()));
+    const out = {};
+    const id = cell => cell?.match(/^([0-9A-F]{8})-([0-9A-F]{8})$/i)?.[2]?.toLowerCase();
+    for (const [cell] of rows('00050000')) if (id(cell)) out[`00050000${id(cell)}`] ??= {};
+    for (const [cell, , , versions = '', , notes = ''] of rows('0005000E')) {
+      if (!id(cell) || /CDN Only|never released/i.test(notes)) continue;
+      const known = (out[`00050000${id(cell)}`] ??= {});
+      for (const v of versions.matchAll(/v(\d+)/g)) known[v[1]] = null;
+    }
+    return out;
+  }
+
+  function matchUpdates(game, versions) {
     if (!versions || !game.titleId) return null;
     const known = versions[game.titleId.toLowerCase()];
     const have = Math.max(0, ...(game.extras ?? []).filter(x => x.kind === 'update').map(x => x.version));
     const latest = known ? Math.max(0, ...Object.keys(known).map(Number)) : 0;
+    const dated = latest && known[latest] ? ` (${known[latest]})` : '';
     return {
       listed: Boolean(known),
       names: known ? [game.title] : [],
@@ -541,7 +572,7 @@
       serials: [],
       unmatched: known ? [] : game.files.map(f => f.name),
       renames: [],
-      better: latest > have ? [`Update v${latest} (${known[latest]}), the server has ${have ? `v${have}` : 'no update'}`] : [],
+      better: latest > have ? [`Update v${latest}${dated}, the server has ${have ? `v${have}` : 'no update'}`] : [],
       missingDiscs: [],
     };
   }
@@ -687,10 +718,13 @@
         const rec = await fileRecord(e.path);
         game.files.push(rec);
         if (e.system === 'switch') Object.assign(game, switchName(b));
-        // A .wua packs the meta.xml a folder game holds, so it names the game the same way.
+        // A .wua packs the meta.xml a folder game holds, so it names the game
+        // the same way; the update and add-on it packs are the game's extras,
+        // as a Switch game's files beside it are.
         if (rec.header.titleId && ext.toLowerCase() === 'wua') {
-          const { titleId, titleVersion: version, productCode } = rec.header;
+          const { titleId, titleVersion: version, productCode, packed = [] } = rec.header;
           Object.assign(game, { titleId, version, productCode });
+          if (packed.length) game.extras = packed.map(x => ({ system: e.system, ...x, baseTitleId: titleId }));
         }
       }
     }
@@ -715,8 +749,8 @@
 
     // ---- each game against the lists, where the drive holds them
     const lists = await loadLists(drive);
-    const switchVersions = await loadSwitchVersions(drive);
-    const matchOf = g => (g.system === 'switch' ? matchSwitch(g, switchVersions) : matchGame(g, lists));
+    const versions = { switch: await loadSwitchVersions(drive), wiiu: await loadWiiuVersions(drive) };
+    const matchOf = g => (g.system in versions ? matchUpdates(g, versions[g.system]) : matchGame(g, lists));
     for (const g of out) g.match = matchOf(g);
     // Discs whose files carry no disc number, like a set named by edition, are
     // one game once the list names them as discs of one set.

@@ -260,7 +260,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* The one next move beside Save, at the line's end as the move it leads to. */
 .emu-chosen__row { flex: none; display: flex; align-items: center; gap: var(--rux-spacing-03); }
 /* SAVE, as Carbon's dropdown stands on a layer: its
-   label over a 48px field, the large size Carbon pairs with large buttons,
+   label read aloud only, every value saying it is a save, a 48px field, the large size Carbon pairs with large buttons,
    the field holding the value with its note beside it in the secondary
    colour and a chevron, and a warning, where there is one, on a line under
    it. The list opens down from the field's foot, a layer up under the menu

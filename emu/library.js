@@ -671,22 +671,24 @@
   // of the game's save, or kept in its emulator.
   const unsaid = g => {
     const last = saves.filter(s => s.system === g.system && s.game === g.title).map(s => s.saved_at ?? '').sort().at(-1);
-    return last ? R.date(last) : `Kept in ${emulatorOf(g.system)}`;
+    return last ? `Saved ${R.date(last)}` : `Save kept in ${emulatorOf(g.system)}`;
   };
   const savePick = pickOf('emu-chosen-save', fillSave);
   function writeSave() {
     const g = game;
     if (stateOf(g.system) === 'away' || stateOf(g.system) === 'setting') { savePick.write({ hidden: true }); return; }
-    if (cards.system !== g.system) { savePick.write({ value: 'Reading…', off: true }); return; }
-    if (cards.error) { savePick.write({ value: 'Could not be read', off: true }); return; }
-    if (!cards.read) { savePick.write({ value: 'On this Mac', note: 'Not kept in Supabase', off: true }); return; }
+    if (cards.system !== g.system) { savePick.write({ value: 'Reading saves…', off: true }); return; }
+    if (cards.error) { savePick.write({ value: 'Saves could not be read', off: true }); return; }
+    if (!cards.read) { savePick.write({ value: 'Saves on this Mac', note: 'Not kept in Supabase', off: true }); return; }
     const mine = mineOf(g);
     const two = aside?.key === keyOf(g) && aside.other.length > 0;
     if (!mine.in && !cards.read.moves) { savePick.write({ value: unsaid(g), off: true }); return; }
-    // A card with no name of its own is said by when it was saved, since the
-    // field's label already says Save.
+    // The field has no label shown, so every value says it is a save: a card
+    // with no name of its own is said by when it was saved, and a named one
+    // has Saved and its date beside it.
     const [value, note] = !mine.in ? ['New save', mine.out.length ? `${mine.out.length} put away` : 'Starts when you play']
-      : mine.in.name ? [mine.in.name, cardNote(mine.in)] : [R.date(mine.in.saved) || wordOf(g.system), states(mine.in.states)];
+      : mine.in.name ? [mine.in.name, [mine.in.saved ? `Saved ${R.date(mine.in.saved)}` : wordOf(g.system), states(mine.in.states)].filter(Boolean).join(' · ')]
+      : [mine.in.saved ? `Saved ${R.date(mine.in.saved)}` : wordOf(g.system), states(mine.in.states)];
     savePick.write({ value, note: two ? 'Two saves found' : note, warn: two,
       // A list opens only where there is something to choose or change.
       off: moving || !(two || (cards.read.moves && mine.in) || mine.out.length) });

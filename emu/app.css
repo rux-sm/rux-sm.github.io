@@ -110,7 +110,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    Without the helper it is the wall alone, as tall as its games. Each tile is a surface a layer up from the page, square or rounded
    and lined as the theme's tiles are (theme.css), as the scheduler's board
    and roster are, 16px apart, Carbon's narrow gutter. */
-.emu-library { display: flex; flex-direction: column; }
+/* THE ROW: the chosen game and the controllers side by side share one
+   grid, rows of Carbon's large height with a 16px gap, so the name, its
+   facts, Save and Play stand level with players 1 to 4 at every width. */
+.emu-library { display: flex; flex-direction: column; --emu-row: var(--rux-layout-size-height-lg); --emu-row-gap: var(--rux-spacing-05); }
 .emu-chosen, .emu-pad, .emu-games { background: var(--rux-layer-01); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-tile-radius, 0); }
 .emu-library[hidden] { display: none; }
 .emu-library--mac { block-size: max(28rem, 100dvh - var(--emu-header, 3rem) - 4rem - var(--frame-safe-bottom)); }
@@ -206,7 +209,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    where this Mac lacks the game; its name on one line across the top of
    the tile; beside the screenshot, from one left edge and the frame's top,
    the facts, and at its foot Save and Play. */
-.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "name name" "art main" "art picks"; align-items: start; container-type: inline-size; gap: var(--rux-spacing-05) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
+.emu-chosen { grid-area: chosen; min-inline-size: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: repeat(4, var(--emu-row)); grid-template-areas: "name name" "art main" "art picks" "art picks"; align-items: center; container-type: inline-size; gap: var(--emu-row-gap) var(--rux-spacing-06); padding: var(--rux-spacing-05); }
 /* LOADING: the three tiles stand from the first paint, Carbon's skeletons
    in the shapes of what fills them: console rows, the game's name, and two
    lines beside its black screen under it, four player boxes, the wordmark,
@@ -219,13 +222,13 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-skel-name { display: block; inline-size: 60%; block-size: 2rem; margin: 0; }
 .emu-skel-line { inline-size: 100%; margin: 0; }
 .emu-skel-line--short { inline-size: 60%; }
-.emu-skel-pad { display: flex; align-items: center; gap: var(--rux-spacing-04); padding: var(--rux-spacing-03) var(--rux-spacing-05); background: var(--rux-layer-02); border-radius: var(--emu-kit-radius, 0); }
+.emu-skel-pad { display: flex; align-items: center; gap: var(--rux-spacing-04); padding: 0 var(--rux-spacing-05); background: var(--rux-layer-02); border-radius: var(--emu-kit-radius, 0); }
 .emu-skel-pad__icon { flex: none; inline-size: 20px; block-size: 20px; }
 .emu-skel-pad__lines { flex: 1; display: grid; gap: var(--rux-spacing-03); }
 .emu-skel-title { inline-size: 8rem; block-size: 1.5rem; margin: 0; }
 .emu-skel-cover { display: block; inline-size: 100%; block-size: auto; aspect-ratio: var(--emu-box, 3 / 4); }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
-.emu-chosen__frame { grid-area: art; inline-size: clamp(6rem, 35cqi, 15rem); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
+.emu-chosen__frame { grid-area: art; align-self: start; inline-size: calc(var(--emu-row) * 3 + var(--emu-row-gap) * 2); aspect-ratio: 1; display: grid; place-items: center; container-type: size; overflow: hidden; background: var(--emu-screen); border-radius: var(--emu-kit-radius, 0); }
 .emu-chosen__art { display: grid; place-items: center; inline-size: min(100cqi, calc(100cqb * var(--emu-shot, 4 / 3))); aspect-ratio: var(--emu-shot, 4 / 3); overflow: hidden; }
 .emu-chosen__art img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top; }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
@@ -233,9 +236,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen__main { grid-area: main; min-inline-size: 0; }
 .emu-chosen__game { display: grid; gap: var(--rux-spacing-02); }
 .emu-chosen__name { grid-area: name; min-inline-size: 0; font-size: var(--rux-heading-04-font-size); font-weight: var(--rux-heading-04-font-weight); line-height: var(--rux-heading-04-line-height); letter-spacing: var(--rux-heading-04-letter-spacing); color: var(--rux-text-primary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-/* Save over the move, beside the screenshot under the facts, their feet on
-   the screenshot's; under 42rem one row across the tile, under both. */
-.emu-chosen__picks { grid-area: picks; align-self: end; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
+/* Save over the move, beside the screenshot under the facts, a row each;
+   under 42rem one row across the tile, under both. */
+.emu-chosen__picks { grid-area: picks; align-self: stretch; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--emu-row-gap); }
 /* A description is three lines at most, whole when the pointer rests on it. */
 /* The facts under the name in body-compact-01, the size Carbon pairs with
    its large buttons. */
@@ -246,8 +249,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 /* SAVE, as Carbon's dropdown stands on a layer: its
    label read aloud only, every value saying it is a save, a 48px field, the large size Carbon pairs with large buttons,
    the field holding the value with its note beside it in the secondary
-   colour and a chevron, and a warning, where there is one, on a line under
-   it. The list opens down from the field's foot, a layer up under the menu
+   colour, or the error colour where it warns, and a chevron. The list opens down from the field's foot, a layer up under the menu
    shadow; open, the field takes the list's layer, so the two are one
    surface. */
 .emu-pick { flex: 1 1 auto; min-inline-size: 0; display: flex; flex-direction: column; }
@@ -261,14 +263,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-pick__button > span { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .emu-pick__value { flex: none; max-inline-size: 100%; font-size: var(--rux-body-compact-01-font-size); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-pick__note { flex: 0 1 auto; font-size: var(--rux-label-01-font-size); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
-.emu-pick__warn { margin-block-start: var(--rux-spacing-02); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-error); }
-.emu-pick__warn[hidden] { display: none; }
+.emu-pick__note--warn { color: var(--rux-text-error); }
 .emu-pick__chevron { position: absolute; inset-inline-end: var(--rux-spacing-05); inset-block-start: calc(50% - 8px); rotate: 180deg; transition: rotate 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 .emu-pick__button[aria-expanded="true"] .emu-pick__chevron { rotate: 0deg; }
 .emu-pop { position: absolute; z-index: 3; inset-inline-start: 0; inset-block-start: calc(100% + var(--emu-drawer-inset, 0px)); inline-size: 22rem; max-inline-size: calc(100vw - 2rem); max-block-size: min(24rem, 60dvh); overflow-y: auto; background: var(--rux-layer-02); border: var(--emu-tile-edge, 0 solid transparent); border-radius: var(--emu-pop-radius, 0); box-shadow: 0 2px 6px var(--rux-shadow); }
 .emu-pop__note { padding: var(--rux-spacing-04) var(--rux-spacing-05); font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
 @media (max-width: 41.98rem) {
-  .emu-chosen { gap: var(--rux-spacing-05); grid-template-rows: none; grid-template-areas: "name name" "art main" "picks picks"; }
+  .emu-chosen { grid-template-rows: none; grid-template-areas: "name name" "art main" "picks picks"; align-items: start; }
+  .emu-chosen__frame { inline-size: clamp(6rem, 35cqi, 15rem); }
   .emu-chosen__picks { flex-direction: row; align-items: flex-end; }
   .emu-chosen__row > .rux--btn--primary { flex: none; }
   .emu-chosen__name { font-size: var(--rux-heading-03-font-size); font-weight: var(--rux-heading-03-font-weight); line-height: var(--rux-heading-03-line-height); letter-spacing: var(--rux-heading-03-letter-spacing); }
@@ -284,14 +286,14 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    stand two by two, back to one column under 40rem, where two would wrap
    a status. */
 .emu-pad { grid-area: pad; min-inline-size: 0; display: flex; flex-direction: column; padding: var(--rux-spacing-05); }
-.emu-pad__list { flex: 1; list-style: none; display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); gap: var(--rux-spacing-03); }
+.emu-pad__list { list-style: none; display: grid; grid-template-rows: repeat(4, var(--emu-row)); gap: var(--emu-row-gap); }
 @media (max-width: 52.98rem) and (min-width: 40rem) {
-  .emu-pad__list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+  .emu-pad__list { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, var(--emu-row)); }
 }
 /* A box and, where it needs one, its Fix it button share the box's background. */
 .emu-slot { display: flex; align-items: center; min-block-size: 0; background: var(--rux-layer-02); border-radius: var(--emu-kit-radius, 0); }
 .emu-slot__fix { flex: none; margin-inline-end: var(--rux-spacing-03); }
-.emu-slot__box { flex: 1; align-self: stretch; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-04); padding: var(--rux-spacing-03) var(--rux-spacing-05); background: transparent; border: 0; border-radius: var(--emu-kit-radius, 0); color: inherit; font: inherit; text-align: start; }
+.emu-slot__box { flex: 1; align-self: stretch; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-04); padding: 0 var(--rux-spacing-05); background: transparent; border: 0; border-radius: var(--emu-kit-radius, 0); color: inherit; font: inherit; text-align: start; }
 button.emu-slot__box { cursor: pointer; transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
 button.emu-slot__box:hover { background: var(--rux-layer-hover-02); }
 button.emu-slot__box:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }

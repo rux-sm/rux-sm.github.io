@@ -632,17 +632,15 @@
     return {
       close,
       refill: () => { if (held) fill(pop, close); },
-      // The value in the field with its note beside it, or, where the note
-      // warns, the note on its own line under the field, as Carbon puts a
-      // field's warning.
+      // The value in the field with its note beside it, in the error colour
+      // where it warns, so the field keeps its one row.
       write: ({ value, note = '', warn = false, off = false, hidden = false }) => {
         const box = button.closest('.emu-pick');
         box.hidden = hidden;
         button.querySelector('.emu-pick__value').textContent = value ?? '';
-        button.querySelector('.emu-pick__note').textContent = warn ? '' : note;
-        const line = box.querySelector('.emu-pick__warn');
-        line.textContent = warn ? note : '';
-        line.hidden = !warn;
+        const said = button.querySelector('.emu-pick__note');
+        said.textContent = note;
+        said.classList.toggle('emu-pick__note--warn', warn);
         button.disabled = off;
         if (off || hidden) close();
       },

@@ -45,6 +45,8 @@ first, then the others one at a time.
 - **Gopher64 first, because its source shows how it behaves:** it reads
   `config.json` when its window opens, and writes the window's values when a
   game starts and when it quits (`src/ui/gui.rs`, version 1.2.2).
+- **Dolphin second, then the rest in the order they are played,** each
+  emulator's list shown to rux before it is built.
 - **Smoothing waits for Gopher64 1.2.2,** because 1.2.1 draws SSAA with
   integer scaling too small.
 - **Per-game settings and cheats, such as a game's 60 fps cheat, are left
@@ -52,9 +54,7 @@ first, then the others one at a time.
 
 ## Questions
 
-- Which emulators after Gopher64? The recommendation is Dolphin, then the
-  rest in the order they are played, each list shown to rux before it is
-  built.
+None.
 
 ## Tasks
 
@@ -72,5 +72,5 @@ first, then the others one at a time.
 - [ ] Change the decisions in `docs/plans/emu-emulator-profiles.md` that
   say every other setting is the Mac's own, Gopher64's note in
   `emu/emulators.json`, and `emu/README.md`, to say what choices do.
-- [ ] Name the choices for each other emulator, one at a time, as the second
-  question settles.
+- [ ] Name Dolphin's choices, shown to rux first, then each other
+  emulator's, one at a time.

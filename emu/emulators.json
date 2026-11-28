@@ -1275,7 +1275,7 @@
       "notes": [
         "Its console storage holds installed updates and add-ons beside the saves; only usr/save/ is a save.",
         "The build on the drive is a development build, since the last release is for Intel, and says version 0.0.0.",
-        "Player 1 is the Wii U GamePad and players 2 to 4 Pro Controllers, so a game that asks which to use, as Wind Waker HD does, is answered GamePad when one plays."
+        "Player 1 is the Wii U GamePad and players 2 to 4 Pro Controllers, so a game that asks which to use, as Wind Waker HD does, is answered GamePad when one plays; Capture switches to the GamePad's screen and back."
       ]
     },
     "Ryujinx": {

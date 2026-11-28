@@ -301,7 +301,7 @@
         const names = type === 'Wii U Pro Controller' ? PRO : GAMEPAD;
         // Cemu's controls: SDL 3's buttons, then its D-pad again, then each
         // axis's two directions.
-        const control = b => b < 15 ? sdl3(b) : b >= 34 && b <= 37 ? ['up', 'down', 'left', 'right'][b - 34]
+        const control = b => b < 16 ? sdl3(b) : b >= 34 && b <= 37 ? ['up', 'down', 'left', 'right'][b - 34]
           : b >= 38 ? ['ls', 'ls', 'rs', 'rs', 'zl', 'zr'][(b - 38) % 6] : null;
         const pairs = [...doc.querySelectorAll('mappings > entry')].map(e => [control(Number(e.querySelector('button')?.textContent)),
           names[Number(e.querySelector('mapping')?.textContent)]]);
@@ -674,7 +674,8 @@
     psx: PS, ps2: PS,
     gc: { A: 'south', B: 'west', X: 'north', Y: 'east', Z: 'r', Start: 'plus', L: 'zl', R: 'zr' },
     wii: { A: 'east', B: 'south', 1: 'r', 2: 'zr', '−': 'minus', '+': 'plus', Home: 'home', 'Nunchuk C': 'l', 'Nunchuk Z': 'zl', Shake: 'west' },
-    wiiu: SWITCHLIKE, switch: SWITCHLIKE,
+    // The GamePad's screen, Cemu's Show screen, on Capture, which no Wii U game uses.
+    wiiu: { ...SWITCHLIKE, 'Show screen': 'capture' }, switch: SWITCHLIKE,
   };
   LAYOUTS.gbc = LAYOUTS.gba = LAYOUTS[GBA_MODE] = LAYOUTS.gb;
   // The Wii Remote held sideways is a NES pad: 2 on the right face button, 1
@@ -892,14 +893,17 @@
       // directions, 42 and 43 the triggers; and its buttons in its order.
       const AXES = { lsUp: 45, lsDown: 39, lsLeft: 44, lsRight: 38, rsUp: 47, rsDown: 41, rsLeft: 46, rsRight: 40 };
       const order = pro ? ['A', 'B', 'X', 'Y', 'L', 'R', 'ZL', 'ZR', '+', '−', 'Home', 'up', 'down', 'left', 'right', 'l3', 'r3', 'lsUp', 'lsDown', 'lsLeft', 'lsRight', 'rsUp', 'rsDown', 'rsLeft', 'rsRight']
-        : ['A', 'B', 'X', 'Y', 'L', 'R', 'ZL', 'ZR', '+', '−', 'up', 'down', 'left', 'right', 'l3', 'r3', 'lsUp', 'lsDown', 'lsLeft', 'lsRight', 'rsUp', 'rsDown', 'rsLeft', 'rsRight', null, null, 'Home'];
+        : ['A', 'B', 'X', 'Y', 'L', 'R', 'ZL', 'ZR', '+', '−', 'up', 'down', 'left', 'right', 'l3', 'r3', 'lsUp', 'lsDown', 'lsLeft', 'lsRight', 'rsUp', 'rsDown', 'rsLeft', 'rsRight', null, 'Show screen', 'Home'];
       const control = k => L[k] ?? k;
       const code = k => AXES[k] ?? (control(k) === 'zl' ? 42 : control(k) === 'zr' ? 43 : sdl3At(control(k)));
       const entries = order.map((k, i) => k && `\t\t\t<entry>\n\t\t\t\t<mapping>${i + 1}</mapping>\n\t\t\t\t<button>${code(k)}</button>\n\t\t\t</entry>`).filter(Boolean).join('\n');
-      // Cemu's own lines beside the controller, its profile's name and display toggle, stay.
+      // Cemu's own line beside the controller, its profile's name, stays. The
+      // GamePad's Show screen switches screens at each press, toggle_display
+      // 1, rather than while held.
       const was = f[`controllerProfiles/controller${player - 1}.xml`] ?? '';
-      const own = ['profile', 'toggle_display'].map(t => was.match(new RegExp(`^\\t<${t}>.*</${t}>$`, 'm'))?.[0]).filter(Boolean).map(l => `${l}\n`).join('');
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<emulated_controller>\n\t<type>${pro ? 'Wii U Pro Controller' : 'Wii U GamePad'}</type>\n${own}\t<controller>\n`
+      const own = was.match(/^\t<profile>.*<\/profile>$/m)?.[0];
+      const lines = [own, pro ? null : '\t<toggle_display>1</toggle_display>'].filter(Boolean).map(l => `${l}\n`).join('');
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<emulated_controller>\n\t<type>${pro ? 'Wii U Pro Controller' : 'Wii U GamePad'}</type>\n${lines}\t<controller>\n`
         + `\t\t<api>SDLController</api>\n\t\t<uuid>0_${pad.sdl3}</uuid>\n\t\t<display_name>${escape(pad.name ?? 'Controller')}</display_name>\n\t\t<motion>${hasGyro(pad.family)}</motion>\n\t\t<rumble>0</rumble>\n`
         + `\t\t<axis>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</axis>\n\t\t<rotation>\n\t\t\t<deadzone>0.15</deadzone>\n\t\t\t<range>1</range>\n\t\t</rotation>\n`
         + `\t\t<trigger>\n\t\t\t<deadzone>0.25</deadzone>\n\t\t\t<range>1</range>\n\t\t</trigger>\n\t\t<mappings>\n${entries}\n\t\t</mappings>\n\t</controller>\n</emulated_controller>\n`;

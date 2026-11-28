@@ -94,6 +94,9 @@ Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.
 
+Cemu's player 1, the GamePad, has Show screen on Capture, switching to the
+GamePad's screen and back at each press, `toggle_display` 1.
+
 Set up changes only the lines that bind the controller: Cemu's profile
 name, Ryujinx's light and Azahar's own button names stay, and Ryujinx's
 − and + keep the names its file already uses, `Minus` and `Plus` or `Back`

@@ -256,4 +256,6 @@ None open.
 
 ## Tasks
 
-- [ ] Convert the Wii U game to `.wua` in Cemu's Title Manager.
+- [ ] Put the twelve Wii U games, each a `.wua` in `~/Desktop/Wii U/`, in
+      the server's `roms/wiiu/`, and move Wind Waker HD's folder copy there
+      to `emulation/to-delete/`.

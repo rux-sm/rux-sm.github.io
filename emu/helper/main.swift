@@ -6,9 +6,10 @@
 //   GET    /status         this Mac's library folder, and each system whose
 //                          emulator is installed
 //   POST   /play           { "system": "n64", "file": "<file in roms/n64/>",
-//                          "full": true }, that one game opened from this
-//                          Mac's library in its system's emulator, full
-//                          screen or, where full is false, in a window
+//                          "full": true, "choices": { key: value } }, that
+//                          one game opened from this Mac's library in its
+//                          system's emulator, full screen or, where full is
+//                          false, in a window, with the choices written first
 //   GET    /playing        the emulator playing now, and the system and file
 //                          of the game Emu opened in it, else {}
 //   POST   /quit           { "emulator" }, that emulator asked to quit, as
@@ -132,7 +133,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "43"
+let version = "44"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -207,15 +208,47 @@ func nowPlaying() -> [String: Any] {
   return ["emulator": e.name, "system": orNull(mine?.system), "file": orNull(mine?.file)]
 }
 
-// An emulator's start-full-screen setting set, in the file and key
-// emulators.json names for it, left alone while it runs, since it writes its
-// settings as it quits.
-func setFullScreen(_ name: String, _ full: Bool) {
-  guard let e = saver(name), let fs = e.rule["fullScreen"] as? [String: String], let rel = fs["file"], let format = fs["format"],
-        let key = fs["key"], let value = full ? fs["on"] : fs["off"], !running(appsOf(e.rule)),
-        let data = settingBytes(name, rel), let text = String(data: data, encoding: .utf8),
-        let changed = withSetting(text, format, key, value), changed != text else { return }
-  _ = writeSetting(name, rel, Data(changed.utf8))
+// Whether nothing of an emulator runs, once a window it left open with no
+// game is quit and waited for, up to five seconds: Gopher64's window stays
+// open after a game and writes its own values back when it starts the next
+// one or quits. An emulator that names no game process cannot be told idle,
+// so a running one is left alone.
+func closedIfIdle(_ rule: [String: Any]) -> Bool {
+  let apps = appsOf(rule)
+  let open = NSWorkspace.shared.runningApplications.filter { apps.contains($0.bundleURL?.lastPathComponent ?? "") }
+  if open.isEmpty { return true }
+  guard rule["gameProcess"] is String, !playing(rule) else { return false }
+  for app in open { app.terminate() }
+  let ids = open.map(\.processIdentifier)
+  for _ in 0..<50 {
+    if ids.allSatisfy({ kill($0, 0) != 0 }) { return true }
+    usleep(100_000)
+  }
+  return false
+}
+
+// An emulator's own settings set before Play, in the files and keys
+// emulators.json names: its start-full-screen setting where the site says
+// which, and each of its choices the site sends with a value that choice
+// lists. Each file is read and written once, and never while it runs.
+func setBeforePlay(_ name: String, full: Bool?, choices: [String: String]) {
+  guard let e = saver(name) else { return }
+  var pairs: [(file: String, format: String, key: String, value: String)] = []
+  if let full, let fs = e.rule["fullScreen"] as? [String: String], let file = fs["file"], let format = fs["format"],
+     let key = fs["key"], let value = full ? fs["on"] : fs["off"] {
+    pairs.append((file, format, key, value))
+  }
+  for c in e.rule["choices"] as? [[String: Any]] ?? [] {
+    guard let file = c["file"] as? String, let format = c["format"] as? String, let key = c["key"] as? String,
+          let value = choices[key], (c["values"] as? [[String]] ?? []).contains(where: { $0.first == value }) else { continue }
+    pairs.append((file, format, key, value))
+  }
+  guard !pairs.isEmpty, closedIfIdle(e.rule) else { return }
+  for file in Set(pairs.map(\.file)) {
+    guard let data = settingBytes(name, file), let before = String(data: data, encoding: .utf8) else { continue }
+    let after = pairs.filter { $0.file == file }.reduce(before) { text, p in withSetting(text, p.format, p.key, p.value) ?? text }
+    if after != before { _ = writeSetting(name, file, Data(after.utf8)) }
+  }
 }
 
 // An emulator asked to quit, as the controllers' quit asks it.
@@ -239,18 +272,18 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   guard let target = gameFile(URL(fileURLWithPath: library), system, file) else {
     return (404, ["error": "That game is not on this Mac. Download it first."])
   }
-  // Full screen or a window, where the site says which: the emulator's own
-  // setting written first, where emulators.json names one and it is not
-  // running, and its start arguments for either.
+  // Full screen or a window, where the site says which, and the account's
+  // choices: the emulator's own settings written first, where emulators.json
+  // names them, and its start arguments for either.
   let full = req["full"] as? Bool
-  if let full, let name = emulatorOf(launch.app) { setFullScreen(name, full) }
+  if let name = emulatorOf(launch.app) { setBeforePlay(name, full: full, choices: req["choices"] as? [String: String] ?? [:]) }
   let chosen = full.map { $0 ? launch.full : launch.window } ?? []
   let arguments = chosen + launch.args.map { $0 == "{file}" ? target.path : $0 }
   // An emulator macOS must open as an app, as the Finder does: with its
   // arguments, a new copy of it, as Azahar wants; with none, the game handed
   // to it as a file, as Gopher64 takes it in Apple's sandbox.
   if launch.open {
-    opened = emulatorOf(launch.app).map { (system, file, $0) }
+    DispatchQueue.main.sync { opened = emulatorOf(launch.app).map { (system, file, $0) } }
     let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     let config = NSWorkspace.OpenConfiguration()
     config.activates = true
@@ -271,7 +304,7 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   // Its saves are compared with their last carry once it quits.
   p.terminationHandler = { _ in showWaiting() }
   do { try p.run() } catch { return (500, ["error": "\(launch.app) did not start."]) }
-  opened = emulatorOf(launch.app).map { (system, file, $0) }
+  DispatchQueue.main.sync { opened = emulatorOf(launch.app).map { (system, file, $0) } }
   // The emulator comes to the front once its window is up.
   DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
     NSRunningApplication(processIdentifier: p.processIdentifier)?.activate()
@@ -1702,7 +1735,8 @@ final class Server {
     }
     switch (req.method, req.path) {
     case ("GET", "/status"): send(c, .json(200, status()), origin: origin)
-    case ("POST", "/play"): let (code, out) = play(body); send(c, .json(code, out), origin: origin)
+    // Off the main thread, since Play may wait for an idle window to quit.
+    case ("POST", "/play"): off { let (code, out) = play(body); return .json(code, out) }
     case ("GET", "/playing"): send(c, .json(200, nowPlaying()), origin: origin)
     case ("POST", "/quit"): let (code, out) = quitPlaying(body); send(c, .json(code, out), origin: origin)
     case ("POST", "/download"): let (code, out) = download(body); send(c, .json(code, out), origin: origin)

@@ -538,6 +538,57 @@
         "on": "true",
         "off": "false"
       },
+      "choices": [
+        {
+          "words": "Resolution",
+          "file": "config.json",
+          "format": "json",
+          "key": "video.upscale",
+          "values": [["1", "Native"], ["2", "2×"], ["4", "4×"], ["8", "8×"]]
+        },
+        {
+          "words": "Smoothing (SSAA)",
+          "file": "config.json",
+          "format": "json",
+          "key": "video.ssaa",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Integer scaling",
+          "file": "config.json",
+          "format": "json",
+          "key": "video.integer_scaling",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Widescreen",
+          "file": "config.json",
+          "format": "json",
+          "key": "video.widescreen",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "CRT filter",
+          "file": "config.json",
+          "format": "json",
+          "key": "video.crt",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Overclock",
+          "file": "config.json",
+          "format": "json",
+          "key": "emulation.overclock",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Rewind",
+          "file": "config.json",
+          "format": "json",
+          "key": "emulation.rewind",
+          "values": [["true", "On"], ["false", "Off"]]
+        }
+      ],
       "gameProcess": "gopher64-cli",
       "quit": "force",
       "places": [
@@ -567,7 +618,7 @@
       "manages": [],
       "notes": [
         "It runs in Apple's sandbox, so a game is opened with it as the Finder does, and its folder is inside its container.",
-        "Its window writes its settings whenever it starts a game, so Emu manages none of them.",
+        "Its window writes its own values back when it starts a game or quits, so Emu quits a window left open with no game before writing its choices.",
         "It runs each game in a second process, gopher64-cli, which ignores a quit request; it writes a save a second after the game does.",
         "It names a save by the game's header title and the SHA-256 of its file."
       ],

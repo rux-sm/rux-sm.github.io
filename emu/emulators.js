@@ -7,8 +7,9 @@
    Mac's, with Install where this Mac lacks that version, which Rux Emu
    Helper does from Supabase, and Remove where this Mac has it, which keeps
    its saves and settings in Supabase and moves it to the Trash; each file it needs and whether Supabase holds it; every kind of file it writes, where that sits on a Mac, the
-   setting that moves it and what becomes of it; the settings to have, with
-   each Mac's backups of its settings in Supabase and the preferred set; and
+   setting that moves it and what becomes of it; its choices, the settings
+   the account keeps and every Mac takes before Play; the settings to have,
+   with each Mac's backups of its settings in Supabase and the preferred set; and
    what is worth knowing. On this Mac, through the helper, its settings are
    backed up, a backup put back, the set here kept as preferred, and the
    preferred set taken: what is here is backed up first, and the settings
@@ -115,6 +116,124 @@
     for (const [rel, bytes] of files) await R.helper.putSetting(name, rel, bytes);
     const { left } = await R.helper.manage(name);
     return left.length ? ` The helper could not place these in ${name}'s settings file, so set them by hand: ${left.join(', ')}.` : '';
+  }
+
+  // One setting's value in a settings file's text, by the key emulators.json
+  // names it by: a dotted path in JSON, a section and key in INI.
+  function valueIn(text, format, key) {
+    if (format === 'json') {
+      const v = key.split('.').reduce((o, k) => o?.[k], JSON.parse(text));
+      return v === undefined || v === null ? undefined : String(v);
+    }
+    if (format === 'ini') {
+      const [section, name] = key.split('/');
+      let inside = false;
+      for (const raw of text.split(/\r?\n/)) {
+        const line = raw.trim();
+        const head = line.match(/^\[(.+)\]$/);
+        if (head) { inside = head[1] === section; continue; }
+        const eq = line.indexOf('=');
+        if (inside && eq > 0 && line.slice(0, eq).trim() === name) return line.slice(eq + 1).trim();
+      }
+    }
+    return undefined;
+  }
+  // This Mac's value of each of an emulator's choices, read through the
+  // helper, or null off this Mac.
+  async function choicesHere(name, choices) {
+    const out = {};
+    for (const file of new Set(choices.map(c => c.file))) {
+      const bytes = await R.helper.setting(name, file).catch(() => null);
+      if (!bytes) continue;
+      const text = new TextDecoder().decode(bytes).replace(/^﻿/, '');
+      for (const c of choices.filter(c => c.file === file)) {
+        try { out[c.key] = valueIn(text, c.format, c.key); } catch { /* a file it cannot read gives no values */ }
+      }
+    }
+    return out;
+  }
+  const wordsOf = (c, value) => c.values.find(([v]) => v === value)?.[1] ?? value;
+  const isSwitch = c => c.values.length === 2 && c.values.every(([v]) => v === 'true' || v === 'false');
+
+  // An emulator's choices, in its profile: each as a Carbon toggle or
+  // select, showing the account's value, else this Mac's. A change keeps
+  // every choice as shown for the account, which each Mac takes before its
+  // next Play, and a line says where this Mac differs until then.
+  function choicesPart(name, choices, live) {
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    const said = el('p', 'rux--type-body-01');
+    said.setAttribute('role', 'status');
+    const id = R.slug(name);
+    let kept = null, here = null;
+    const shown = () => Object.fromEntries(choices.map(c => [c.key, kept?.[c.key] ?? here?.[c.key]]).filter(([, v]) => v !== undefined));
+    const differs = () => here && kept ? choices.filter(c => here[c.key] !== undefined && kept[c.key] !== undefined && here[c.key] !== kept[c.key]) : [];
+    const sayDiffers = () => {
+      const list = differs();
+      said.textContent = list.length ? `This Mac has ${list.map(c => `${c.words} ${wordsOf(c, here[c.key])}`).join(', ')} until its next Play.` : '';
+    };
+    async function save(key, value) {
+      const next = { ...shown(), [key]: value };
+      try {
+        await R.data.setPref(R.choicesKey(name), next);
+        kept = next;
+        sayDiffers();
+        if (!said.textContent) said.textContent = 'Kept. Every Mac takes it at its next Play.';
+      } catch (error) { console.error(error); said.textContent = 'Emu could not keep that. Try again.'; }
+    }
+    const controls = choices.map((c, i) => {
+      const cid = `${id}-choice-${i}`;
+      if (isSwitch(c)) {
+        const root = el('div', 'rux--toggle');
+        const button = el('button', 'rux--toggle__button');
+        Object.assign(button, { id: cid, type: 'button', disabled: true });
+        button.setAttribute('role', 'switch');
+        button.setAttribute('aria-labelledby', `${cid}-l`);
+        const label = el('label', 'rux--toggle__label');
+        label.htmlFor = cid;
+        label.id = `${cid}-l`;
+        const look = el('div', 'rux--toggle__appearance');
+        const text = el('span', 'rux--toggle__text');
+        text.setAttribute('aria-hidden', 'true');
+        look.append(el('div', 'rux--toggle__switch'), text);
+        label.append(el('span', 'rux--toggle__label-text', c.words), look);
+        root.append(button, label);
+        root.addEventListener('rux:toggle', e => save(c.key, String(e.detail.on)));
+        // Set without Design's toggle, whose event would keep the value again.
+        return { c, root, set: v => {
+          button.disabled = false;
+          button.setAttribute('aria-checked', String(v === 'true'));
+          look.firstChild.classList.toggle('rux--toggle__switch--checked', v === 'true');
+          text.textContent = v === 'true' ? 'On' : 'Off';
+        } };
+      }
+      const item = el('div', 'rux--form-item');
+      const sel = el('div', 'rux--select');
+      const label = el('label', 'rux--label', c.words);
+      label.htmlFor = cid;
+      const wrap = el('div', 'rux--select-input__wrapper');
+      const select = el('select', 'rux--select-input');
+      Object.assign(select, { id: cid, disabled: true });
+      for (const [v, words] of c.values) { const o = R.option(v, words); o.className = 'rux--select-option'; select.append(o); }
+      wrap.append(select);
+      wrap.insertAdjacentHTML('beforeend', '<svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>');
+      sel.append(label, wrap);
+      item.append(sel);
+      select.addEventListener('change', () => save(c.key, select.value));
+      return { c, root: item, set: v => { select.disabled = false; select.value = v; } };
+    });
+    box.append(...controls.map(x => x.root), said);
+    (async () => {
+      [kept, here] = await Promise.all([
+        R.data.pref(R.choicesKey(name)).catch(() => null),
+        live ? choicesHere(name, choices) : null,
+      ]);
+      for (const { c, set } of controls) {
+        const v = kept?.[c.key] ?? here?.[c.key];
+        if (v !== undefined) set(v);
+      }
+      sayDiffers();
+    })();
+    return box;
   }
 
   // An emulator's settings in Supabase, in its profile: when each Mac last
@@ -322,6 +441,7 @@
     const manages = rule.manages ?? [];
     parts.push(part('Settings',
       facts([['Its settings file', config ? `${home}/${config}` : home ?? 'None']]),
+      ...(rule.choices?.length ? [choicesPart(name, rule.choices, Boolean(macs.find(m => m.live)))] : []),
       ...(manages.length ? [rows(manages.map(m => [`${m.key} = ${m.value === '' ? 'empty' : m.value.replace('{home}', home ?? '')}`, m.why]))] : []),
       ...(installs ? backups(name, macs) : [])));
 

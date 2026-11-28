@@ -135,11 +135,12 @@
   };
 
   // `full` opens it full screen, or in a window where false; left out, the
-  // emulator opens as it last did.
-  async function play(game, { full } = {}) {
+  // emulator opens as it last did. `choices` are settings the emulator's
+  // entry in emulators.json names, by key, written before it opens.
+  async function play(game, { full, choices } = {}) {
     const r = await fetch(`${BASE}/play`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ system: game.system, file: fileOf(game), ...(full === undefined ? {} : { full }) }),
+      body: JSON.stringify({ system: game.system, file: fileOf(game), ...(full === undefined ? {} : { full }), ...(choices ? { choices } : {}) }),
     });
     const out = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(out.error ?? 'The helper did not start the game.');

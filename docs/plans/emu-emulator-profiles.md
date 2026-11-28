@@ -75,7 +75,8 @@ One rule for every emulator:
   Play and shown on its profile: its save folders inside its own home where
   the default is beside the game, as mGBA's, ares's and melonDS's is; its own
   updater off; DuckStation's one card per game and PCSX2's folder cards; and
-  xemu's welcome screen off. Every other setting is the Mac's own.
+  xemu's welcome screen off. Every other setting is the Mac's own, apart
+  from its choices, which the account keeps for every Mac.
 - **Each Mac's settings are backed up after a session that changed them,**
   into `settings/<mac>/<emulator>/` with the last five copies kept, and the
   profile backs them up when asked and puts any copy back on that Mac, what
@@ -87,8 +88,8 @@ One rule for every emulator:
   written over it.
 - **A console's controls travel with the account, as its saves do,** so a
   button layout set on one Mac is there on the next with the same
-  controller, while the rest of an emulator's settings, such as its window
-  and graphics, stay each Mac's own. Where an emulator keeps controls in
+  controller, while the rest of an emulator's settings, such as its window,
+  stay each Mac's own, apart from its choices. Where an emulator keeps controls in
   files of their own, as DuckStation's and PCSX2's `inputprofiles` and
   Cemu's `controllerProfiles` are, those files are shared; where they are
   lines in its settings file, as in Gopher64's `config.json`, the helper

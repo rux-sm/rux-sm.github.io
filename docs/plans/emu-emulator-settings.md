@@ -23,18 +23,19 @@ first, then the others one at a time.
 - **Full screen keeps its own switch,** as `docs/plans/emu-full-screen.md`
   has it, and the buttons and stick deadzone stay in the controller map.
 - **Each choice is named in `emu/emulators.json` under `choices`:** its
-  words on the page, its file, format and key, each value with its words, and
-  the value to start from, as `fullScreen` is named. It holds nothing
-  private.
+  words on the page, its file, format and key, and each value with its
+  words, as `fullScreen` is named. It holds nothing private.
 - **One set of choices for the account, the same on every Mac,** kept in
-  `emu_prefs` under `settings/<emulator>`, as the full screen choice is
-  kept, so no database change is needed.
+  `emu_prefs` under `choices_<emulator>`, as the full screen choice is
+  kept, so no database change is needed. Until the account keeps a set,
+  each Mac keeps its own; the first change keeps every choice as this Mac
+  shows it.
 - **Rux Emu Helper writes the choices before Play,** beside full screen and
   the settings Emu manages, never while a game runs.
 - **An emulator window open with no game is quit first,** since Gopher64
-  writes its window's own values back when it starts a game or quits.
-  Today the helper skips its write while the window is open, so full screen
-  is skipped there too, and this fixes both.
+  writes its window's own values back when it starts a game or quits; full
+  screen is written there the same way. An emulator that names no game
+  process cannot be told idle, so a running one is left alone.
 - **Emu wins:** a choice changed in the emulator's own window is put back
   to Emu's value at the next Play, so Emu is the one place to set it.
 - **Every setting Emu does not choose stays the Mac's own,** and a new Mac
@@ -60,17 +61,11 @@ None.
 
 - [ ] Put Gopher64 1.2.2 in the games share's `emulators` folder, from its
   releases page, for Supabase and both Macs; this needs the home network.
-- [ ] Name Gopher64's choices in `emu/emulators.json`.
-- [ ] Have the helper quit an emulator window open with no game, and write
-  the choices before Play; build it and put it on the games share.
-- [ ] Show and change the choices on the profile's Settings part, kept in
-  `emu_prefs`.
+- [ ] Put Rux Emu Helper 44 on the games share, for Supabase and the other
+  Mac; this Mac runs it.
 - [ ] Prove it on this Mac in Chrome on :8641: change the resolution in
   Emu, play Ocarina of Time with Gopher64's window closed and then left
   open, and read `config.json` and a screenshot of the game each time.
 - [ ] Prove it on the other Mac at its first Play.
-- [ ] Change the decisions in `docs/plans/emu-emulator-profiles.md` that
-  say every other setting is the Mac's own, Gopher64's note in
-  `emu/emulators.json`, and `emu/README.md`, to say what choices do.
 - [ ] Name Dolphin's choices, shown to rux first, then each other
   emulator's, one at a time.

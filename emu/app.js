@@ -200,6 +200,8 @@
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };
   // A name as lowercase letters and digits: how an installer is matched to its app, and an emulator's profile is addressed.
   const slug = name => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // The account's key for an emulator's choices, the settings Emu writes before each Play.
+  const choicesKey = name => `choices_${slug(name)}`;
   // An emulator's versions. `installerOf` is its installer among the files
   // Supabase holds, by its name, and `keptVersion` the version in that file's name, before its
   // `-macOS`: numbers, or a build's seven letters. `plainVersion` is a
@@ -260,6 +262,6 @@
 
   window.Emu = Object.assign(window.Emu || {}, {
     SYSTEMS, systemName, PREFERRED, BOX, SCREEN, nameOf, cover, shot, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
-    size, playersOf, date, when, el, tag, option, slug, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
+    size, playersOf, date, when, el, tag, option, slug, choicesKey, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

@@ -278,7 +278,7 @@
         const nunchuk = mote.Extension === 'Nunchuk';
         const motion = Object.keys(mote).some(k => /^IMU(Gyroscope|Accelerometer)\//.test(k) && mote[k]);
         return { ...dolphin(mote, { 'Buttons/A': 'A', 'Buttons/B': 'B', 'Buttons/1': '1', 'Buttons/2': '2', 'Buttons/-': '−', 'Buttons/+': '+', 'Buttons/Home': 'Home',
-          'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad', 'IR/Up': 'Pointer', 'Shake/X': 'Shake',
+          'D-Pad/Up': 'D-pad', 'D-Pad/Down': 'D-pad', 'D-Pad/Left': 'D-pad', 'D-Pad/Right': 'D-pad', 'IR/Up': 'Pointer', 'IR/Recenter': 'Recenter', 'Shake/X': 'Shake',
           ...(nunchuk ? { 'Nunchuk/Buttons/C': 'Nunchuk C', 'Nunchuk/Buttons/Z': 'Nunchuk Z', 'Nunchuk/Stick/Up': 'Nunchuk stick' } : {}) }), motion };
       },
     },
@@ -592,7 +592,7 @@
     wii: { photo: 'wii.jpg', size: [1280, 1185], view: [100, 90, 1120, 820], file: 'Nintendo-Wii-Remote-wNunchuk.jpg', by: EVAN,
       spots: { 'D-pad': [1047, 232, 56], A: [1003, 335, 35], '−': [902, 438, 20], Home: [955, 457, 20], '+': [1010, 470, 20], 1: [880, 637, 26], 2: [855, 702, 26],
         'Nunchuk stick': [508, 155, 56, 36], 'Nunchuk C': [642, 232, 13, 22], 'Nunchuk Z': [622, 330, 22, 40] },
-      hidden: ['B', 'Shake', 'Pointer'] },
+      hidden: ['B', 'Shake', 'Pointer', 'Recenter'] },
     'wii-remote': { photo: 'wii-remote.jpg', size: [1280, 974], view: [40, 20, 1240, 700], file: 'Wii Remote Image.jpg', by: 'Greyson Orlando, public domain',
       spots: { 'D-pad': [805, 100, 48], A: [710, 158, 34], '−': [540, 186, 14], Home: [585, 215, 16], '+': [640, 240, 14], 1: [377, 322, 26], 2: [295, 358, 26] },
       hidden: ['B', 'Shake'] },
@@ -867,7 +867,18 @@
           'Config/Dolphin.ini': setSection(f['Config/Dolphin.ini'], 'Core', { [`SIDevice${player - 1}`]: 6 }) };
       }
       const WII_KEY = { A: 'Buttons/A', B: 'Buttons/B', 1: 'Buttons/1', 2: 'Buttons/2', '−': 'Buttons/-', '+': 'Buttons/+', Home: 'Buttons/Home', 'Nunchuk C': 'Nunchuk/Buttons/C', 'Nunchuk Z': 'Nunchuk/Buttons/Z' };
+      // The pointer moves by the right stick as a mouse does, so it reaches
+      // every edge and stays, and by the controller's motion where it has a
+      // gyro, as a Wii Remote is aimed; pressing the right stick recentres
+      // both.
+      const motion = hasGyro(pad.family) ? {
+        'IMUAccelerometer/Up': '`Accel Up`', 'IMUAccelerometer/Down': '`Accel Down`', 'IMUAccelerometer/Left': '`Accel Left`',
+        'IMUAccelerometer/Right': '`Accel Right`', 'IMUAccelerometer/Forward': '`Accel Forward`', 'IMUAccelerometer/Backward': '`Accel Backward`',
+        'IMUGyroscope/Pitch Up': '`Gyro Pitch Up`', 'IMUGyroscope/Pitch Down': '`Gyro Pitch Down`', 'IMUGyroscope/Roll Left': '`Gyro Roll Left`',
+        'IMUGyroscope/Roll Right': '`Gyro Roll Right`', 'IMUGyroscope/Yaw Left': '`Gyro Yaw Left`', 'IMUGyroscope/Yaw Right': '`Gyro Yaw Right`',
+      } : {};
       const keys = { Source: 1, Device: device, ...dpad, 'IR/Up': '`Right Y+`', 'IR/Down': '`Right Y-`', 'IR/Left': '`Right X-`', 'IR/Right': '`Right X+`',
+        'IR/Relative Input': 'True', 'IR/Recenter': DOLPHIN_NAME.r3, 'IMUIR/Recenter': DOLPHIN_NAME.r3, ...motion,
         Extension: 'Nunchuk', ...stick('Nunchuk/Stick', 'Left') };
       for (const [k, c] of Object.entries(L)) {
         if (k === 'Shake') for (const axis of ['X', 'Y', 'Z']) keys[`Shake/${axis}`] = DOLPHIN_NAME[c];
@@ -1000,9 +1011,9 @@
     return out;
   }
   // Dolphin's file for one game, GameSettings/<game ID>.ini, read over its
-  // own, set for the game's controller type, for each player a controller
-  // keeps or each one connected, whichever is more, so one asleep at Play
-  // still has its controller, and none past them: the Game Boy Advance a GBA
+  // own, set for the game's controller type, for each controller turned on
+  // at Play, at least one, and none past them, so one player alone has one
+  // Game Boy Advance: the Game Boy Advance a GBA
   // (Integrated) port, 13; the Wii Remote alone or the Classic Controller
   // its player's profile and the Remote on; the GameCube controller in a Wii
   // game every Wii Remote off and a GameCube port, 6. A game on its
@@ -1022,8 +1033,7 @@
     let after = dropKeys(dropKeys(was ?? '', 'Core', PORTS), 'Controls', [...PROFILES, ...SOURCES]);
     if (mode !== baseOf(mode)) {
       const connected = ((await helper.controllers?.()) ?? []).length;
-      const kept = Math.max(0, ...(await (R.data?.controllers?.() ?? Promise.resolve([])).catch(() => [])).map(r => r.details?.player ?? 0));
-      const count = Math.min(4, Math.max(1, connected, kept));
+      const count = Math.min(4, Math.max(1, connected));
       const each = (keys, on, off) => Object.fromEntries(keys.map((k, i) => [k, i < count ? on(i) : off]));
       if (mode === GBA_MODE) after = setSection(after, 'Core', each(PORTS, () => 13, 0));
       if (mode === 'wii-gc') {

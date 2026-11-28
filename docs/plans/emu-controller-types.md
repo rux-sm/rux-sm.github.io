@@ -62,7 +62,5 @@ None.
 
 ## Tasks
 
-- [ ] Play Four Swords on Game Boy Advances, then on GameCube controllers,
-      and Super Mario Galaxy with the Nunchuk, the Remote sideways and the
-      GameCube controller, and a Classic Controller game, and see each in
-      the game and in the Buttons window.
+- [ ] Play a Classic Controller game, such as Mario Kart Wii, once one is in
+      the collection, and see it in the game and in the Buttons window.

@@ -86,6 +86,10 @@ which the game's file names by `[Controls] WiimoteProfile1 =` with
 Remote off, `WiimoteSource0 = 0` to `3`, and sets each player's
 `SIDevice` to 6. A profile with no Nunchuk and the Remotes turned off were
 each proven by launching Super Mario Galaxy.
+A Wii Remote's pointer moves by the right stick as a mouse does,
+`IR/Relative Input = True`, so it reaches every edge, and by the
+controller's gyro where it has one; pressing the right stick recentres
+both, `IR/Recenter` and `IMUIR/Recenter`.
 Cemu and Ryujinx have motion on only for a Nintendo or PlayStation
 controller, since an Xbox controller has no gyro.
 mGBA, melonDS and Azahar play one player.

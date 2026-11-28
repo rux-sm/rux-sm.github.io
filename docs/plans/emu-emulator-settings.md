@@ -63,9 +63,6 @@ None.
   releases page, for Supabase and both Macs; this needs the home network.
 - [ ] Put Rux Emu Helper 44 on the games share, for Supabase and the other
   Mac; this Mac runs it.
-- [ ] Prove it on this Mac in Chrome on :8641: change the resolution in
-  Emu, play Ocarina of Time with Gopher64's window closed and then left
-  open, and read `config.json` and a screenshot of the game each time.
 - [ ] Prove it on the other Mac at its first Play.
 - [ ] Name Dolphin's choices, shown to rux first, then each other
   emulator's, one at a time.

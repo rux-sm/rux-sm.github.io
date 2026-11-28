@@ -8,9 +8,9 @@
    server holds that Supabase lacks or holds another copy of, and `putGiven`
    puts them there, an installer in place of its emulator's older one;
    `putFile` and `dropFile` are one file in and out of Supabase. `fetchArt`
-   is a game's cover from libretro's thumbnails, `artChanged` says which
-   covers the server keeps that Supabase lacks or no longer needs, and
-   `putArt` puts and removes them. `putInfo` looks up each game `emu_info`
+   is one of a game's pictures from libretro's thumbnails, its cover or its
+   screenshot, `artChanged` says which pictures the server keeps that
+   Supabase lacks or no longer needs, and `putArt` puts and removes them. `putInfo` looks up each game `emu_info`
    lacks in libretro's database, `fetchFacts` and `factsOf`, and keeps its
    facts and description there.
 
@@ -176,8 +176,13 @@
   };
   const ART_AT = 'https://raw.githubusercontent.com/libretro-thumbnails';
   const ART_LIST = 'https://api.github.com/repos/libretro-thumbnails';
-  // A game's cover in Supabase is `art/<system>/<title>` and its picture's ending.
-  const artKey = g => `art/${g.system}/${g.title}`;
+  // The pictures kept of each game, by their folder in Supabase, the cache
+  // and the games folder: its cover, and its screenshot, a moment in play
+  // else its title screen; each the libretro folders asked, in order.
+  const PICTURES = { art: ['Named_Boxarts'], shot: ['Named_Snaps', 'Named_Titles'] };
+  // A game's picture in Supabase is `<folder>/<system>/<title>` and its
+  // picture's ending; its cover's folder is art.
+  const artKey = (g, folder = 'art') => `${folder}/${g.system}/${g.title}`;
   const PICTURE = /\.(png|jpe?g|webp)$/i;
   // The names a game's cover may have there: its list names, then its title,
   // then its title less the disc, so a multi-disc game finds one cover. Then
@@ -210,45 +215,52 @@
   }
   const isPng = b => b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
 
-  // A game's cover from libretro's thumbnails as bytes, or null when they
-  // have none. Each picture is named after the game's list name with
+  // A game's picture from libretro's thumbnails as bytes, from the first of
+  // `folders` that has one, its cover where none are given, or null when
+  // they have none. Each picture is named after the game's list name with
   // &*/:`<>?\| as _. GitHub sends a picture that is a link to another as the
   // other's file name in text, so that one is fetched in its place. Anything
   // but an answer or a 404 is an error, so a night GitHub is down is not
   // taken for a game with no cover. `lists` keeps each system's names between
   // calls, read once where a game is not found by name.
-  async function fetchArt(game, fetch = globalThis.fetch, lists = new Map()) {
+  async function fetchArt(game, fetch = globalThis.fetch, lists = new Map(), folders = PICTURES.art) {
     const set = ART[game.system];
     if (!set) return null;
-    const listOf = async name => {
-      if (!lists.has(name)) {
-        const res = await fetch(`${ART_LIST}/${encodeURIComponent(name.replaceAll(' ', '_'))}/git/trees/HEAD:Named_Boxarts`);
-        if (!res.ok && res.status !== 404) throw new Error(`GitHub answered ${res.status}.`);
-        lists.set(name, res.ok ? (await res.json()).tree.map(f => f.path) : []);
+    const repo = encodeURIComponent(set.replaceAll(' ', '_'));
+    for (const folder of folders) {
+      const listOf = async () => {
+        const at = `${set}/${folder}`;
+        if (!lists.has(at)) {
+          const res = await fetch(`${ART_LIST}/${repo}/git/trees/HEAD:${folder}`);
+          if (!res.ok && res.status !== 404) throw new Error(`GitHub answered ${res.status}.`);
+          lists.set(at, res.ok ? (await res.json()).tree.map(f => f.path) : []);
+        }
+        return lists.get(at);
+      };
+      const get = async file => {
+        const res = await fetch(`${ART_AT}/${repo}/HEAD/${folder}/${encodeURIComponent(file)}`);
+        if (res.status === 404) return null;
+        if (!res.ok) throw new Error(`libretro's thumbnails: ${res.status}`);
+        return new Uint8Array(await res.arrayBuffer());
+      };
+      const picture = async file => {
+        let bytes = await get(file);
+        if (bytes && !isPng(bytes)) {
+          const to = bytes.length < 512 ? new TextDecoder().decode(bytes).trim() : '';
+          bytes = /^[^/\\\0\n]+\.png$/.test(to) ? await get(to) : null;
+        }
+        return bytes && isPng(bytes) ? bytes : null;
+      };
+      for (const name of artNames(game)) {
+        const bytes = await picture(`${name.replace(/[&*/:`<>?\\|]/g, '_')}.png`);
+        if (bytes) return bytes;
       }
-      return lists.get(name);
-    };
-    const get = async file => {
-      const res = await fetch(`${ART_AT}/${encodeURIComponent(set.replaceAll(' ', '_'))}/HEAD/Named_Boxarts/${encodeURIComponent(file)}`);
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error(`libretro's thumbnails: ${res.status}`);
-      return new Uint8Array(await res.arrayBuffer());
-    };
-    const picture = async file => {
-      let bytes = await get(file);
-      if (bytes && !isPng(bytes)) {
-        const to = bytes.length < 512 ? new TextDecoder().decode(bytes).trim() : '';
-        bytes = /^[^/\\\0\n]+\.png$/.test(to) ? await get(to) : null;
-      }
-      return bytes && isPng(bytes) ? bytes : null;
-    };
-    for (const name of artNames(game)) {
-      const bytes = await picture(`${name.replace(/[&*/:`<>?\\|]/g, '_')}.png`);
+      // Named some other way, it is found among every name the folder has.
+      const near = artNear(game, await listOf());
+      const bytes = near ? await picture(near) : null;
       if (bytes) return bytes;
     }
-    // Named some other way, it is found among every name the system has.
-    const near = artNear(game, await listOf(set));
-    return near ? picture(near) : null;
+    return null;
   }
 
   // A game's facts in libretro's database, its `metadat` files, a folder a
@@ -313,10 +325,11 @@
     return rows.length;
   }
 
-  // What the covers the server keeps change in Supabase. `covers` is each
-  // game's, as { path, size, mtimeMs }; `held` is emu_files_now's rows under
-  // art/. One Supabase lacks or holds another copy of is put, and one held
-  // for a game or a picture no longer there is gone.
+  // What the pictures of one folder the server keeps change in Supabase.
+  // `covers` is each game's, as { path, size, mtimeMs }; `held` is
+  // emu_files_now's rows under that folder. One Supabase lacks or holds
+  // another copy of is put, and one held for a game or a picture no longer
+  // there is gone.
   function artChanged(covers, held) {
     const have = new Map(held.map(f => [f.path, f]));
     const wanted = new Set(covers.map(c => c.path));
@@ -325,7 +338,7 @@
       gone: held.map(f => f.path).filter(p => !wanted.has(p)),
     };
   }
-  // Those changes made: a cover gone is taken out, and one put takes the
+  // Those changes made: a picture gone is taken out, and one put takes the
   // place of the copy held, so Supabase keeps one copy of each.
   async function putArt(db, { put, gone }, { sha1Of, bytesOf, mac }) {
     for (const path of gone) await dropFile(db, path);
@@ -394,7 +407,7 @@
   }
 
   const api = { DRIVE, rowOf, saveRowOf, changes, rowsOf, save, putFile, dropFile, givenChanged, installs, putGiven,
-    ART, ART_AT, ART_ASKING, PICTURE, artKey, artNames, fetchArt, artChanged, putArt,
+    ART, ART_AT, ART_ASKING, PICTURE, PICTURES, artKey, artNames, fetchArt, artChanged, putArt,
     FACTS_AT, INFO_ASKING, readDat, fetchFacts, factsOf, putInfo, clientDb, restDb };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.Emu = Object.assign(root.Emu || {}, { scanSave: api });

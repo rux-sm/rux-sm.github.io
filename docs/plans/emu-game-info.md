@@ -28,20 +28,21 @@ itself. A game's facts and description stand under its name on the Library.
   game, and the facts for the 3DS, GameCube, Wii, Wii U, Xbox and Switch. A game
   is asked by the fingerprints the scan already holds, in English.
 - **Pictures are kept as covers are,** in the `emu-collection` bucket: the
-  cover under `art/`, the screenshot under `shot/` and the title screen under
-  `title/`, each from libretro's thumbnails, else ScreenScraper's.
+  cover under `art/` and the screenshot under `shot/`, a moment in play else
+  the title screen, since the Library shows one; each from libretro's
+  thumbnails, else ScreenScraper's.
 - **The Library shows the kept picture first** and libretro's live address
   only where none is kept yet.
 
+- **ScreenScraper is asked with a developer login and rux's own,** both kept
+  on the scan's server as the Supabase key is: every call needs the
+  developer's, and rux's raises how many calls a day it answers.
+
 ## Questions
 
-- ScreenScraper answers a program only with a developer login, asked for on
-  its forum, beside rux's own account: will rux make both, so the scan's
-  server holds them as it holds the Supabase key?
+None.
 
 ## Tasks
 
-- [ ] Ask ScreenScraper for what libretro lacks, once its logins are on the
-      server.
-- [ ] Keep each game's screenshot and title screen in Supabase, and show the
-      kept one first.
+- [ ] Ask ScreenScraper for what libretro lacks, once rux's account and the
+      developer login asked for on its forum are on the server.

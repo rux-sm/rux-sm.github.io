@@ -69,8 +69,8 @@ runs it. It runs `scan.js`, which reads every game in the server's roms folder
 and the BIOS in its bios folder, and saves the scan to Supabase: every game and
 save, leaving rux's notes, moving the notes of a game the organize tool renamed,
 removing what is no longer there, and each BIOS, key, firmware and installer
-Supabase lacks. It keeps each game's cover, rux's own picture from the games
-folder's `art` folder or libretro's fetched once, and puts it in Supabase. Each game `emu_info` lacks it looks up in libretro's database for its year, genre, developer, publisher, players and, for the PlayStation and PS2, its description. It
+Supabase lacks. It keeps each game's cover and screenshot, rux's own picture from the games
+folder's `art` or `shot` folder or libretro's fetched once, and puts them in Supabase. Each game `emu_info` lacks it looks up in libretro's database for its year, genre, developer, publisher, players and, for the PlayStation and PS2, its description. It
 keeps its fingerprints, the scan and the fetched covers in its cache folder and
 never writes beside the games. Each save is matched to its game the way its
 emulator names it, by file name, title ID, disc ID or serial, as

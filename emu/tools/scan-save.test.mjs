@@ -158,7 +158,7 @@ const scan = {
   check('the older installer\'s bytes go with it', !w.objects.has('c'.repeat(40)));
 }
 
-// A game's cover from libretro's thumbnails, by its names, a link followed.
+// A game's cover and screenshot from libretro's thumbnails, by its names, a link followed.
 {
   const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1]);
   const text = t => new TextEncoder().encode(t);
@@ -199,6 +199,15 @@ const scan = {
   let threw = false;
   try { await cover('Broken Night'); } catch { threw = true; }
   check('a night GitHub fails is an error, not a missing cover', threw);
+  // A screenshot is a moment in play, else the title screen.
+  const snaps = at.replace('Named_Boxarts', 'Named_Snaps'), titles = at.replace('Named_Boxarts', 'Named_Titles');
+  const big = new Uint8Array([...png, 2, 3]);
+  shelf[`${snaps}${encodeURIComponent('Plain Game (World).png')}`] = big;
+  shelf[`${titles}${encodeURIComponent('Title Only (USA).png')}`] = big;
+  const shot = title => scanSave.fetchArt({ system: 'gb', title }, fetch, new Map(), scanSave.PICTURES.shot);
+  check('a screenshot is a moment in play', (await shot('Plain Game (World)'))?.length === big.length);
+  check('a game with no moment in play gives its title screen', (await shot('Title Only (USA)'))?.length === big.length);
+  check('a game with neither has no screenshot', (await shot('Nobody Has This')) === null);
 }
 
 // The covers the server keeps: which differ, and putting them in Supabase.

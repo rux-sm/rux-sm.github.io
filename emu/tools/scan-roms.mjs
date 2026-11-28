@@ -10,12 +10,14 @@
 // the scan for the organize tool, and it takes the organize tool's
 // `renames.json` from there. It says what changed in one line.
 //
-// Each game's cover is kept too, in CACHE's `art` folder, fetched once from
-// libretro's thumbnails, and put in Supabase for the pages. A picture rux
-// puts in the games folder at `art/<system>/<title>.png`, or .jpg or .webp,
-// is the game's cover in place of libretro's. A game libretro has no cover
-// for is asked about again after a week, as `art/missing.json` keeps, or at
-// once where how a cover is looked for has changed.
+// Each game's cover and screenshot are kept too, in CACHE's `art` and `shot`
+// folders, fetched once from libretro's thumbnails, and put in Supabase for
+// the pages. A picture rux puts in the games folder at
+// `art/<system>/<title>.png` or `shot/<system>/<title>.png`, or .jpg or
+// .webp, is the game's in place of libretro's. A game libretro has no
+// picture for is asked about again after a week, as each folder's
+// `missing.json` keeps, or at once where how a picture is looked for has
+// changed.
 //
 //   CACHE=/cache SUPABASE_KEY=<secret key> node scan-roms.mjs /games --save
 //
@@ -182,68 +184,77 @@ await scanSave.putGiven(db, given, {
 
 const change = scanSave.changes(scan, games, saves);
 await scanSave.save(db, scanSave.rowsOf(scan, change, { newest }));
-// The covers. Each game's is rux's own picture in the games folder, else the
-// one kept in the cache, fetched now where the cache has none. Three answers
-// in a row that are neither a picture nor a 404 end the asking for the night.
-const artDir = path.join(cacheDir, 'art');
-const missingPath = path.join(artDir, 'missing.json');
-const missingKept = readJson(missingPath, {});
-const missing = missingKept.asking === scanSave.ART_ASKING ? missingKept.games : {};
+// The pictures: each game's cover and screenshot, each folder of
+// scanSave.PICTURES in turn. Each is rux's own picture in the games
+// folder's folder of that name, else the one kept in the cache, fetched now
+// where the cache has none. Three answers in a row that are neither a
+// picture nor a 404 end the asking for the night.
+const WORDS = { art: ['cover', 'covers'], shot: ['screenshot', 'screenshots'] };
+const wordsOf = (folder, n) => `${n} ${WORDS[folder][n === 1 ? 0 : 1]}`;
 const artLists = new Map();
 const WEEK = 7 * 864e5;
-const coversOf = (n) => `${n} ${n === 1 ? 'cover' : 'covers'}`;
-const covers = [];
-const keptFiles = new Set();
-let fetched = 0;
 let refused = 0;
 let unasked = 0;
-for (const g of scan.games) {
-  const key = scanSave.artKey(g);
-  let file = ['.png', '.jpg', '.jpeg', '.webp'].map((ext) => abs(`${key}${ext}`)).find((f) => fs.existsSync(f));
-  if (!file) {
-    const kept = path.join(artDir, g.system, `${g.title}.png`);
-    const askedAt = missing[key] ? Date.parse(missing[key]) : -Infinity;
-    if (!fs.existsSync(kept) && scanSave.ART[g.system] && Date.now() - askedAt > WEEK) {
-      if (refused >= 3) unasked += 1;
-      else {
-        try {
-          const bytes = await scanSave.fetchArt(g, (to) => fetch(to, { headers: { 'user-agent': 'rux-emu-scan' }, signal: AbortSignal.timeout(30000) }), artLists);
-          refused = 0;
-          if (bytes) {
-            fs.mkdirSync(path.dirname(kept), { recursive: true });
-            fs.writeFileSync(`${kept}.part`, bytes);
-            fs.renameSync(`${kept}.part`, kept);
-            delete missing[key];
-            fetched += 1;
-          } else missing[key] = new Date().toISOString();
-        } catch { refused += 1; unasked += 1; }
+const pictures = [];
+for (const [folder, from] of Object.entries(scanSave.PICTURES)) {
+  const dir = path.join(cacheDir, folder);
+  const missingPath = path.join(dir, 'missing.json');
+  const missingKept = readJson(missingPath, {});
+  const missing = missingKept.asking === scanSave.ART_ASKING ? missingKept.games : {};
+  const found = [];
+  const keptFiles = new Set();
+  let fetched = 0;
+  for (const g of scan.games) {
+    const key = scanSave.artKey(g, folder);
+    let file = ['.png', '.jpg', '.jpeg', '.webp'].map((ext) => abs(`${key}${ext}`)).find((f) => fs.existsSync(f));
+    if (!file) {
+      const kept = path.join(dir, g.system, `${g.title}.png`);
+      const askedAt = missing[key] ? Date.parse(missing[key]) : -Infinity;
+      if (!fs.existsSync(kept) && scanSave.ART[g.system] && Date.now() - askedAt > WEEK) {
+        if (refused >= 3) unasked += 1;
+        else {
+          try {
+            const bytes = await scanSave.fetchArt(g, (to) => fetch(to, { headers: { 'user-agent': 'rux-emu-scan' }, signal: AbortSignal.timeout(30000) }), artLists, from);
+            refused = 0;
+            if (bytes) {
+              fs.mkdirSync(path.dirname(kept), { recursive: true });
+              fs.writeFileSync(`${kept}.part`, bytes);
+              fs.renameSync(`${kept}.part`, kept);
+              delete missing[key];
+              fetched += 1;
+            } else missing[key] = new Date().toISOString();
+          } catch { refused += 1; unasked += 1; }
+        }
       }
+      if (fs.existsSync(kept)) { file = kept; keptFiles.add(kept); }
     }
-    if (fs.existsSync(kept)) { file = kept; keptFiles.add(kept); }
+    if (!file) continue;
+    const st = fs.statSync(file);
+    found.push({ path: `${key}${path.extname(file).toLowerCase()}`, size: st.size, mtimeMs: st.mtimeMs, file });
   }
-  if (!file) continue;
-  const st = fs.statSync(file);
-  covers.push({ path: `${key}${path.extname(file).toLowerCase()}`, size: st.size, mtimeMs: st.mtimeMs, file });
-}
-// A kept cover whose game is gone, or that rux's own picture replaced, leaves the cache.
-for (const system of fs.existsSync(artDir) ? fs.readdirSync(artDir, { withFileTypes: true }).filter((d) => d.isDirectory()) : []) {
-  for (const name of fs.readdirSync(path.join(artDir, system.name))) {
-    const f = path.join(artDir, system.name, name);
-    if (!keptFiles.has(f)) fs.rmSync(f);
+  // A kept picture whose game is gone, or that rux's own replaced, leaves the cache.
+  for (const system of fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()) : []) {
+    for (const name of fs.readdirSync(path.join(dir, system.name))) {
+      const f = path.join(dir, system.name, name);
+      if (!keptFiles.has(f)) fs.rmSync(f);
+    }
   }
-}
-const titles = new Set(scan.games.map(scanSave.artKey));
-for (const key of Object.keys(missing)) if (!titles.has(key)) delete missing[key];
-fs.mkdirSync(artDir, { recursive: true });
-fs.writeFileSync(missingPath, JSON.stringify({ asking: scanSave.ART_ASKING, games: missing }, null, 1));
+  const titles = new Set(scan.games.map((g) => scanSave.artKey(g, folder)));
+  for (const key of Object.keys(missing)) if (!titles.has(key)) delete missing[key];
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(missingPath, JSON.stringify({ asking: scanSave.ART_ASKING, games: missing }, null, 1));
 
-const art = scanSave.artChanged(covers, held.filter((f) => f.sha1 && f.path.startsWith('art/')));
-const coverAt = new Map(covers.map((c) => [c.path, c.file]));
-await scanSave.putArt(db, art, {
-  sha1Of: (p) => sha1Of(coverAt.get(p)),
-  bytesOf: async (p) => fs.readFileSync(coverAt.get(p)),
-  mac: 'home server',
-});
+  const change = scanSave.artChanged(found, held.filter((f) => f.sha1 && f.path.startsWith(`${folder}/`)));
+  const fileAt = new Map(found.map((c) => [c.path, c.file]));
+  await scanSave.putArt(db, change, {
+    sha1Of: (p) => sha1Of(fileAt.get(p)),
+    bytesOf: async (p) => fs.readFileSync(fileAt.get(p)),
+    mac: 'home server',
+  });
+  pictures.push(...(fetched ? [`${wordsOf(folder, fetched)} fetched`] : []),
+    ...(change.put.length ? [`${wordsOf(folder, change.put.length)} put in Supabase`] : []),
+    ...(change.gone.length ? [`${wordsOf(folder, change.gone.length)} removed`] : []));
+}
 
 // The facts: each game emu_info lacks, looked up in libretro's database. A
 // night libretro does not answer, they wait for tomorrow.
@@ -255,11 +266,9 @@ try {
 
 const counts = [...Object.entries(change).filter(([, list]) => list.length).map(([k, list]) => `${list.length} ${k}`),
   ...(given.length ? [`${given.length} files every Mac is given put in Supabase`] : []),
-  ...(fetched ? [`${coversOf(fetched)} fetched`] : []),
-  ...(art.put.length ? [`${coversOf(art.put.length)} put in Supabase`] : []),
-  ...(art.gone.length ? [`${coversOf(art.gone.length)} removed`] : []),
+  ...pictures,
   ...(looked ? [`${looked} ${looked === 1 ? 'game' : 'games'} looked up in libretro's database`] : [])];
 console.log(`${new Date().toISOString()} ${scan.games.length} games, ${scan.saves.length} saves on the server; ${counts.join(', ') || 'nothing changed'}`
   + (unanswered.length ? `; no newest version from ${unanswered.join(', ')}` : '')
-  + (unasked ? `; libretro's thumbnails did not answer, so ${coversOf(unasked)} ${unasked === 1 ? 'waits' : 'wait'} for tomorrow` : '')
+  + (unasked ? `; libretro's thumbnails did not answer, so ${unasked} ${unasked === 1 ? 'picture waits' : 'pictures wait'} for tomorrow` : '')
   + (factsLate ? "; libretro's database did not answer, so the facts wait for tomorrow" : ''));

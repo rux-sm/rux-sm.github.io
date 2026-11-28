@@ -140,6 +140,13 @@
   // Zelda: A Link to the Past".
   const nameOf = g => (g.title.replace(/\s*[([][^)\]]*[)\]]/g, '').trim() || g.title)
     .replace(/^(.*?), (The|An|A)(?= - |$)/, '$2 $1').replace(' - ', ': ');
+  // A game's picture of one folder the server keeps in Supabase, as an
+  // address, else null.
+  async function kept(g, folder) {
+    const data = window.Emu.data;
+    const sha1 = (await data?.pictures(folder).catch(() => null))?.get(window.Emu.scanSave.artKey(g, folder));
+    return sha1 ? data.pictureUrl(sha1).catch(error => { console.error(error); return null; }) : null;
+  }
   // A game's cover, fetched as it comes near the view from those the server
   // keeps in Supabase, else `none()`.
   const near = new IntersectionObserver(seen => {
@@ -156,9 +163,7 @@
     const gone = () => { img.remove(); none(); };
     img.addEventListener('error', gone);
     img.addEventListener('emu-near', async () => {
-      const data = window.Emu.data;
-      const sha1 = (await data?.covers().catch(() => null))?.get(window.Emu.scanSave.artKey(g));
-      const own = sha1 ? await data.coverUrl(sha1).catch(error => { console.error(error); return null; }) : null;
+      const own = await kept(g, 'art');
       if (own) img.src = own; else gone();
     });
     near.observe(img);
@@ -183,7 +188,8 @@
     return box;
   }
   // A game's screenshot: a moment in play, else its title screen, else none,
-  // the picture taken away.
+  // the picture taken away; the one the server keeps, else libretro's live
+  // where the scan has not kept one yet.
   function shot(g) {
     const img = el('img');
     img.alt = '';
@@ -191,7 +197,7 @@
     const urls = [...artOf(g, 'Named_Snaps'), ...artOf(g, 'Named_Titles')];
     const next = () => { const url = urls.shift(); if (url) img.src = url; else img.remove(); };
     img.addEventListener('error', next);
-    next();
+    kept(g, 'shot').then(own => { if (own) urls.unshift(own); next(); });
     return img;
   }
   const tag = ([label, cls], small) => { const t = el('span', `rux--tag ${small ? 'rux--tag--sm ' : ''}${cls}`); t.append(el('span', 'rux--tag__label', label)); return t; };

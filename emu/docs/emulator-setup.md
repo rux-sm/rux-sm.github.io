@@ -52,7 +52,8 @@ as a `.p12` file and import it there.
 5. For a game that shows its title in place of a cover, put a picture at
    `<share>/art/<system>/<title>.png`, or `.jpg` or `.webp`, named as the
    Collection names the game; the next scan takes it. A picture put there
-   for a game that has a cover takes that cover's place.
+   for a game that has a cover takes that cover's place. A screenshot goes
+   the same way in `<share>/shot/<system>/`.
 
 Each Mac takes a new BIOS or installer on its next Play or Set up this Mac.
 

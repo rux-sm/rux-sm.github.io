@@ -203,8 +203,9 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
    the top, the facts under it, and at its foot Save and Play, all in the
    tile's first 60%; behind them, its screenshot at the tile's height
    against its end, so the whole picture shows, at most 75% of the tile
-   wide, past which its sides are trimmed; its left side fading into the
-   tile towards the words,
+   wide, past which its sides are trimmed; fading into the tile towards
+   the words, slowly at first, since a straight fade shows a dark band
+   where a bright picture begins,
    as a store page shows a game; none where libretro has none, and faded
    where this Mac lacks the game. The tile stacks its picture between its
    own background and its words, and over the wall's title, so Save's list
@@ -230,7 +231,7 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-chosen[hidden], .emu-pad[hidden], .emu-pick[hidden], .emu-pop[hidden] { display: none; }
 .emu-chosen__frame { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .emu-chosen__art { position: absolute; inset-block: 0; inset-inline-end: 0; display: flex; }
-.emu-chosen__art img { display: block; block-size: 100%; inline-size: auto; max-inline-size: 75cqi; object-fit: cover; object-position: top; mask-image: linear-gradient(to right, transparent, #000 45%); }
+.emu-chosen__art img { display: block; block-size: 100%; inline-size: auto; max-inline-size: 75cqi; object-fit: cover; object-position: top; mask-image: linear-gradient(to right, transparent, rgb(0 0 0 / .03) 12%, rgb(0 0 0 / .12) 28%, rgb(0 0 0 / .32) 45%, rgb(0 0 0 / .62) 62%, rgb(0 0 0 / .88) 80%, #000 92%); }
 .emu-chosen__art img:not([src]) { visibility: hidden; }
 .emu-chosen__art--away img { opacity: .45; }
 .emu-chosen__main { grid-area: main; min-inline-size: 0; }

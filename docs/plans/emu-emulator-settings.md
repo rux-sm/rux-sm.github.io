@@ -19,12 +19,17 @@ first, then the others one at a time.
 - **A short list per emulator, called its choices:** only settings that
   change the picture, the speed or the feel. Gopher64's are resolution
   (native, 2×, 4×, 8×), smoothing (SSAA), integer scaling, widescreen, the
-  CRT filter, overclock and rewind.
+  CRT filter, overclock and rewind. Dolphin's are resolution, smoothing
+  (MSAA), texture sharpness, the widescreen hack, aspect ratio, the stutter
+  fix (hybrid ubershaders) and Show FPS; its speed and overclock are left
+  out, since they break games.
 - **Full screen keeps its own switch,** as `docs/plans/emu-full-screen.md`
   has it, and the buttons and stick deadzone stay in the controller map.
 - **Each choice is named in `emu/emulators.json` under `choices`:** its
-  words on the page, its file, format and key, and each value with its
-  words, as `fullScreen` is named. It holds nothing private.
+  words on the page, its file, format and key, the emulator's default where
+  its file can leave the key out, as Dolphin's does, and each value with its
+  words, as `fullScreen` is named; a choice worded On and Off is a switch. It
+  holds nothing private.
 - **One set of choices for the account, the same on every Mac,** kept in
   `emu_prefs` under `choices_<emulator>`, as the full screen choice is
   kept, so no database change is needed. Until the account keeps a set,
@@ -61,8 +66,7 @@ None.
 
 - [ ] Put Gopher64 1.2.2 in the games share's `emulators` folder, from its
   releases page, for Supabase and both Macs; this needs the home network.
-- [ ] Put Rux Emu Helper 44 on the games share, for Supabase and the other
+- [ ] Put Rux Emu Helper 45 on the games share, for Supabase and the other
   Mac; this Mac runs it.
 - [ ] Prove it on the other Mac at its first Play.
-- [ ] Name Dolphin's choices, shown to rux first, then each other
-  emulator's, one at a time.
+- [ ] Name each other emulator's choices, shown to rux first, one at a time.

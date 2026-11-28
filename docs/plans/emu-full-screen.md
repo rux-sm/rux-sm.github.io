@@ -40,7 +40,7 @@ None.
 
 ## Tasks
 
-- [ ] Put Rux Emu Helper 43 on the games share, for Supabase and the other
+- [ ] Put Rux Emu Helper 45 on the games share, for Supabase and the other
       Macs; this Mac runs it.
 - [ ] Play a Switch game with the switch on and off, since Ryujinx's
       setting is not yet proven by launching.

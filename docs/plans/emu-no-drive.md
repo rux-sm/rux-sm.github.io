@@ -67,5 +67,5 @@ None open.
 
 - [ ] Run `emu/tools/organize-roms.mjs` on the server where the scan's
       `scan-cache` volume is, as `emu/docs/home-server.md` should then say.
-- [ ] Once the nightly scan has put Rux Emu Helper 43 in Supabase, update
+- [ ] Once the nightly scan has put Rux Emu Helper 45 in Supabase, update
       each Mac to it from Status and play a downloaded game on each.

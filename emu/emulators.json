@@ -1102,6 +1102,64 @@
         "on": "True",
         "off": "False"
       },
+      "choices": [
+        {
+          "words": "Resolution",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/InternalResolution",
+          "default": "1",
+          "values": [["1", "Native"], ["2", "2× (720p)"], ["3", "3× (1080p)"], ["4", "4× (1440p)"], ["6", "6× (4K)"]]
+        },
+        {
+          "words": "Smoothing (anti-aliasing)",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/MSAA",
+          "default": "0x00000001",
+          "values": [["0x00000001", "Off"], ["0x00000002", "2×"], ["0x00000004", "4×"], ["0x00000008", "8×"]]
+        },
+        {
+          "words": "Texture sharpness",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Enhancements/MaxAnisotropy",
+          "default": "0",
+          "values": [["0", "1×"], ["1", "2×"], ["2", "4×"], ["3", "8×"], ["4", "16×"]]
+        },
+        {
+          "words": "Widescreen hack",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/wideScreenHack",
+          "default": "False",
+          "values": [["True", "On"], ["False", "Off"]]
+        },
+        {
+          "words": "Aspect ratio",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/AspectRatio",
+          "default": "0",
+          "values": [["0", "Auto"], ["1", "16:9"], ["2", "4:3"], ["3", "Stretch to window"]]
+        },
+        {
+          "words": "Stutter fix",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/ShaderCompilationMode",
+          "default": "0",
+          "values": [["2", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Show FPS",
+          "file": "Config/GFX.ini",
+          "format": "ini",
+          "key": "Settings/ShowFPS",
+          "default": "False",
+          "values": [["True", "On"], ["False", "Off"]]
+        }
+      ],
       "places": [
         {
           "path": "GC",

@@ -139,7 +139,8 @@
     return undefined;
   }
   // This Mac's value of each of an emulator's choices, read through the
-  // helper, or null off this Mac.
+  // helper, or null off this Mac; a key the file leaves out is at the
+  // emulator's default, as Dolphin leaves out every setting it holds there.
   async function choicesHere(name, choices) {
     const out = {};
     for (const file of new Set(choices.map(c => c.file))) {
@@ -147,13 +148,15 @@
       if (!bytes) continue;
       const text = new TextDecoder().decode(bytes).replace(/^﻿/, '');
       for (const c of choices.filter(c => c.file === file)) {
-        try { out[c.key] = valueIn(text, c.format, c.key); } catch { /* a file it cannot read gives no values */ }
+        try { out[c.key] = valueIn(text, c.format, c.key) ?? c.default; } catch { /* a file it cannot read gives no values */ }
       }
     }
     return out;
   }
   const wordsOf = (c, value) => c.values.find(([v]) => v === value)?.[1] ?? value;
-  const isSwitch = c => c.values.length === 2 && c.values.every(([v]) => v === 'true' || v === 'false');
+  // A choice of On and Off is a switch, whatever its file writes for each.
+  const onOf = c => c.values.length === 2 && c.values.some(([, w]) => w === 'Off') ? c.values.find(([, w]) => w === 'On')?.[0] : undefined;
+  const offOf = c => c.values.find(([, w]) => w === 'Off')?.[0];
 
   // An emulator's choices, in its profile: each as a Carbon toggle or
   // select, showing the account's value, else this Mac's. A change keeps
@@ -182,7 +185,8 @@
     }
     const controls = choices.map((c, i) => {
       const cid = `${id}-choice-${i}`;
-      if (isSwitch(c)) {
+      const on = onOf(c);
+      if (on !== undefined) {
         const root = el('div', 'rux--toggle');
         const button = el('button', 'rux--toggle__button');
         Object.assign(button, { id: cid, type: 'button', disabled: true });
@@ -197,13 +201,13 @@
         look.append(el('div', 'rux--toggle__switch'), text);
         label.append(el('span', 'rux--toggle__label-text', c.words), look);
         root.append(button, label);
-        root.addEventListener('rux:toggle', e => save(c.key, String(e.detail.on)));
+        root.addEventListener('rux:toggle', e => save(c.key, e.detail.on ? on : offOf(c)));
         // Set without Design's toggle, whose event would keep the value again.
         return { c, root, set: v => {
           button.disabled = false;
-          button.setAttribute('aria-checked', String(v === 'true'));
-          look.firstChild.classList.toggle('rux--toggle__switch--checked', v === 'true');
-          text.textContent = v === 'true' ? 'On' : 'Off';
+          button.setAttribute('aria-checked', String(v === on));
+          look.firstChild.classList.toggle('rux--toggle__switch--checked', v === on);
+          text.textContent = v === on ? 'On' : 'Off';
         } };
       }
       const item = el('div', 'rux--form-item');

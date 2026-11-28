@@ -850,6 +850,65 @@
         "file": "config/qt-config.ini",
         "format": "ini"
       },
+      "defaultMark": "\\default",
+      "choices": [
+        {
+          "words": "Resolution",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Renderer/resolution_factor",
+          "values": [["1", "Native"], ["2", "2×"], ["3", "3×"], ["4", "4×"], ["6", "6×"]]
+        },
+        {
+          "words": "Screen layout",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Layout/layout_option",
+          "values": [["0", "Top over bottom"], ["2", "Large top with small bottom"], ["3", "Side by side"], ["1", "Top screen only"]]
+        },
+        {
+          "words": "Swap screens",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Layout/swap_screen",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Smooth textures",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Renderer/texture_filter",
+          "values": [["0", "Off"], ["3", "ScaleForce"], ["4", "xBRZ"]]
+        },
+        {
+          "words": "Smoothing",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Layout/filter_mode",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Integer scaling",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Renderer/use_integer_scaling",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Stutter fix",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Renderer/async_shader_compilation",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "V-Sync",
+          "file": "config/qt-config.ini",
+          "format": "ini",
+          "key": "Renderer/use_vsync",
+          "values": [["true", "On"], ["false", "Off"]]
+        }
+      ],
       "places": [
         {
           "path": "sdmc",
@@ -928,17 +987,13 @@
           "why": "Its console storage sits in its own folder too."
         },
         {
-          "key": "Miscellaneous/check_for_update_on_start\\default",
-          "value": "false",
-          "why": "Azahar reads a setting only when its default mark is off."
-        },
-        {
           "key": "Miscellaneous/check_for_update_on_start",
           "value": "false",
           "why": "The installer on the drive is the version every Mac has."
         }
       ],
       "notes": [
+        "It reads a setting only when the default mark beside it is off, so Emu turns that mark off beside each setting it writes.",
         "Opened with a storage folder missing, it puts its own back into its settings and saves there from then on.",
         "Its SD card and console storage folders count only with use_custom_storage on.",
         "It writes a save as the game does."

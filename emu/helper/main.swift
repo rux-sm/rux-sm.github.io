@@ -133,7 +133,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "48"
+let version = "49"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -227,6 +227,14 @@ func closedIfIdle(_ rule: [String: Any]) -> Bool {
   return false
 }
 
+// A setting as the pairs to write: the setting, and beside it, for an
+// emulator that names a default mark as Azahar names `\default`, that mark
+// turned off, since Azahar reads a setting only with its mark off.
+func withMark(_ rule: [String: Any], _ key: String, _ value: String) -> [(key: String, value: String)] {
+  guard let mark = rule["defaultMark"] as? String else { return [(key, value)] }
+  return [(key, value), (key + mark, "false")]
+}
+
 // An emulator's own settings set before Play, in the files and keys
 // emulators.json names: its start-full-screen setting where the site says
 // which, and each of its choices the site sends with a value that choice
@@ -236,12 +244,12 @@ func setBeforePlay(_ name: String, full: Bool?, choices: [String: String]) {
   var pairs: [(file: String, format: String, key: String, value: String)] = []
   if let full, let fs = e.rule["fullScreen"] as? [String: String], let file = fs["file"], let format = fs["format"],
      let key = fs["key"], let value = full ? fs["on"] : fs["off"] {
-    pairs.append((file, format, key, value))
+    pairs += withMark(e.rule, key, value).map { (file, format, $0.key, $0.value) }
   }
   for c in e.rule["choices"] as? [[String: Any]] ?? [] {
     guard let file = c["file"] as? String, let format = c["format"] as? String, let key = c["key"] as? String,
           let value = choices[key], (c["values"] as? [[String]] ?? []).contains(where: { $0.first == value }) else { continue }
-    pairs.append((file, format, key, value))
+    pairs += withMark(e.rule, key, value).map { (file, format, $0.key, $0.value) }
   }
   guard !pairs.isEmpty, closedIfIdle(e.rule) else { return }
   for file in Set(pairs.map(\.file)) {
@@ -906,7 +914,8 @@ func manage(_ body: Data) -> (Int, [String: Any]) {
       let folder = (value as NSString).pathExtension.isEmpty ? value : (value as NSString).deletingLastPathComponent
       try? files.createDirectory(atPath: folder, withIntermediateDirectories: true)
     }
-    if let next = withSetting(text, format, key, value) { text = next; set.append(key) } else { left.append(key) }
+    let next = withMark(e.rule, key, value).reduce(Optional(text)) { t, p in t.flatMap { withSetting($0, format, p.key, p.value) } }
+    if let next { text = next; set.append(key) } else { left.append(key) }
   }
   guard (try? ((marked ? mark : Data()) + Data(text.utf8)).write(to: URL(fileURLWithPath: file), options: .atomic)) != nil else {
     return (500, ["error": "The helper could not write \(app)'s settings file."])

@@ -133,7 +133,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "46"
+let version = "47"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -739,10 +739,70 @@ func quoted(_ v: String) -> String {
   (try? JSONSerialization.data(withJSONObject: v, options: [.fragmentsAllowed, .withoutEscapingSlashes])).flatMap { String(data: $0, encoding: .utf8) } ?? "\"\""
 }
 
+// Where each text, number, yes or no and null sits in a JSON text, by its
+// path of keys from the top, an array's items numbered; empty where the text
+// is not JSON. A byte order mark before it is passed over.
+func jsonValues(_ b: [UInt8]) -> [[String]: Range<Int>] {
+  var out: [[String]: Range<Int>] = [:]
+  var i = b.starts(with: [0xEF, 0xBB, 0xBF]) ? 3 : 0
+  let space: Set<UInt8> = [0x20, 0x09, 0x0A, 0x0D]
+  let quote = UInt8(ascii: "\""), slash = UInt8(ascii: "\\")
+  func skip() { while i < b.count, space.contains(b[i]) { i += 1 } }
+  func string() -> String? {
+    guard i < b.count, b[i] == quote else { return nil }
+    let start = i + 1
+    i += 1
+    while i < b.count, b[i] != quote { i += b[i] == slash ? 2 : 1 }
+    guard i < b.count else { return nil }
+    i += 1
+    return (try? JSONSerialization.jsonObject(with: Data(b[(start - 1)..<i]), options: .fragmentsAllowed)) as? String
+  }
+  func value(_ path: [String]) -> Bool {
+    skip()
+    guard i < b.count else { return false }
+    let open = b[i]
+    if open == UInt8(ascii: "{") || open == UInt8(ascii: "[") {
+      let close = open == UInt8(ascii: "{") ? UInt8(ascii: "}") : UInt8(ascii: "]")
+      i += 1
+      skip()
+      if i < b.count, b[i] == close { i += 1; return true }
+      var n = 0
+      while true {
+        var name = String(n)
+        if open == UInt8(ascii: "{") {
+          skip()
+          guard let k = string() else { return false }
+          skip()
+          guard i < b.count, b[i] == UInt8(ascii: ":") else { return false }
+          i += 1
+          name = k
+        }
+        guard value(path + [name]) else { return false }
+        n += 1
+        skip()
+        guard i < b.count else { return false }
+        if b[i] == UInt8(ascii: ",") { i += 1; continue }
+        if b[i] == close { i += 1; return true }
+        return false
+      }
+    }
+    let start = i
+    if open == quote {
+      guard string() != nil else { return false }
+    } else {
+      while i < b.count, !space.contains(b[i]), ![UInt8(ascii: ","), UInt8(ascii: "}"), UInt8(ascii: "]")].contains(b[i]) { i += 1 }
+      guard i > start else { return false }
+    }
+    out[path] = start..<i
+    return true
+  }
+  return value([]) ? out : [:]
+}
+
 // A settings text with one setting given a value, by the key setting() reads
 // it by, or nil where the helper cannot place it: an INI section and key; a
-// JSON key that the file holds once, its value a text, a number or a yes or
-// no; a TOML key the file holds once, or one under its table; a BML name
+// JSON key by its full path from the top, its value a text, a number or a
+// yes or no; a TOML key the file holds once, or one under its table; a BML name
 // under its heading; an XML tag the file holds once. A value stays the kind
 // it was, so a text stays quoted.
 func withSetting(_ text: String, _ format: String, _ key: String, _ value: String) -> String? {
@@ -752,10 +812,13 @@ func withSetting(_ text: String, _ format: String, _ key: String, _ value: Strin
     let parts = key.components(separatedBy: "/")
     return parts.count == 2 ? iniSet(text, parts[0], parts[1], value) : nil
   case "json":
-    guard let last = key.components(separatedBy: ".").last else { return nil }
-    return replacedOnce(text, "(\"\(name(last))\"\\s*:\\s*)(\"(?:[^\"\\\\]|\\\\.)*\"|true|false|null|-?[0-9][0-9.eE+-]*)") { g in
-      g[1] + (g[2].hasPrefix("\"") ? quoted(value) : value)
-    }
+    // By the whole path, as Mesen 2 holds VideoFilter both under Video and
+    // under each console's overrides.
+    let bytes = Array(text.utf8)
+    guard let range = jsonValues(bytes)[key.components(separatedBy: ".")] else { return nil }
+    let old = bytes[range]
+    let written = old.first == UInt8(ascii: "\"") ? quoted(value) : value
+    return String(decoding: bytes[..<range.lowerBound], as: UTF8.self) + written + String(decoding: bytes[range.upperBound...], as: UTF8.self)
   case "toml":
     // A bare key is wherever the file holds it once; a dotted one is the
     // last name under the table the rest names, added there where missing.

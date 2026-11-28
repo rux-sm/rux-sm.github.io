@@ -330,6 +330,64 @@
         "file": "settings.json",
         "format": "json"
       },
+      "choices": [
+        {
+          "words": "Filter",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Video.VideoFilter",
+          "values": [["None", "Sharp pixels"], ["NtscBlargg", "TV look (NTSC)"], ["xBRZ4x", "Smoothed (xBRZ)"]]
+        },
+        {
+          "words": "Shape",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Video.AspectRatio",
+          "values": [["NoStretching", "Square pixels"], ["Auto", "TV shape"], ["Widescreen", "Stretch to 16:9"]]
+        },
+        {
+          "words": "Scanlines",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Video.ScanlineIntensity",
+          "values": [["0", "Off"], ["25", "Light"], ["50", "Strong"]]
+        },
+        {
+          "words": "Integer scaling",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Video.FullscreenForceIntegerScale",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Less input lag",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Emulation.RunAheadFrames",
+          "values": [["0", "Off"], ["1", "1 frame"], ["2", "2 frames"]]
+        },
+        {
+          "words": "Less sprite flicker (NES)",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Nes.RemoveSpriteLimit",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Rewind",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Preferences.EnableRewind",
+          "values": [["true", "On"], ["false", "Off"]]
+        },
+        {
+          "words": "Show frame rate",
+          "file": "settings.json",
+          "format": "json",
+          "key": "Preferences.ShowFps",
+          "values": [["true", "On"], ["false", "Off"]]
+        }
+      ],
       "places": [
         {
           "path": "Saves",

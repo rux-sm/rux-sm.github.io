@@ -502,6 +502,73 @@
         "on": "1",
         "off": "0"
       },
+      "choices": [
+        {
+          "words": "Look",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/shader",
+          "default": "",
+          "values": [["", "Plain"], ["/Applications/mGBA.app/Contents/Resources/shaders/gba-color.shader", "Real-screen colours"], ["/Applications/mGBA.app/Contents/Resources/shaders/lcd.shader", "LCD grid"], ["/Applications/mGBA.app/Contents/Resources/shaders/xbr-lv2.shader", "Smoothed (xBR)"]]
+        },
+        {
+          "words": "Colours for original Game Boy games",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/gb.colors",
+          "default": "1",
+          "values": [["0", "Grey-green"], ["1", "Game Boy Color colours"], ["2", "Super Game Boy colours"], ["3", "Super Game Boy, else Game Boy Color"]]
+        },
+        {
+          "words": "Shape",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/lockAspectRatio",
+          "values": [["1", "Keep the shape"], ["0", "Stretch to fill"]]
+        },
+        {
+          "words": "Integer scaling",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/lockIntegerScaling",
+          "values": [["1", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Smoothing",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/resampleVideo",
+          "values": [["1", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Blend frames (fixes flicker effects)",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/interframeBlending",
+          "values": [["1", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Rewind",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/rewindEnable",
+          "values": [["1", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Skip the boot logo",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/skipBios",
+          "values": [["1", "On"], ["0", "Off"]]
+        },
+        {
+          "words": "Show frame rate",
+          "file": "config.ini",
+          "format": "ini",
+          "key": "ports.qt/showFps",
+          "values": [["1", "On"], ["0", "Off"]]
+        }
+      ],
       "besideGame": true,
       "places": [
         {

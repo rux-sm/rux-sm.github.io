@@ -28,7 +28,11 @@ first, then the others one at a time.
   NES and SNES alike, are the filter, shape, scanlines, integer scaling,
   less input lag (run-ahead), less NES sprite flicker, rewind and the frame
   rate; its bilinear smoothing, V-Sync, speed, region, accuracy options,
-  sound and timed save state are left out.
+  sound and timed save state are left out. mGBA's, for every Game Boy, are
+  the look (none, real-screen colours, LCD grid or xBR), the colours of
+  original Game Boy games, shape, integer scaling, smoothing, frame blending,
+  rewind, skipping the boot logo and the frame rate; its sync, speed, model,
+  Super Game Boy borders, sound, cheats and BIOS switch are left out.
 - **Full screen keeps its own switch,** as `docs/plans/emu-full-screen.md`
   has it, and the buttons and stick deadzone stay in the controller map.
 - **Each choice is named in `emu/emulators.json` under `choices`:** its
@@ -72,7 +76,7 @@ None.
 
 - [ ] Put Gopher64 1.2.2 in the games share's `emulators` folder, from its
   releases page, for Supabase and both Macs; this needs the home network.
-- [ ] Put Rux Emu Helper 47 on the games share, for Supabase and the other
+- [ ] Put Rux Emu Helper 48 on the games share, for Supabase and the other
   Mac; this Mac runs it.
 - [ ] Prove it on the other Mac at its first Play.
 - [ ] Name each other emulator's choices, shown to rux first, one at a time.

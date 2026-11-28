@@ -518,9 +518,9 @@
     renderChosen();
   }
 
-  // THE CHOSEN GAME, over the wall: its name; its screenshot, faded where
-  // this Mac lacks it, fetched again only when the game changes, in its
-  // console's screen shape; one line of what helps choose it, its genre,
+  // THE CHOSEN GAME, over the wall: its name; its screenshot behind it,
+  // faded where this Mac lacks it, fetched again only when the game changes;
+  // one line of what helps choose it, its genre,
   // players and when it was last played, the rest in About this game; its
   // save; and the one next move.
   const playedOf = g => {
@@ -537,7 +537,6 @@
     const art = $('emu-chosen-art');
     if (artFor !== game) {
       artFor = game;
-      art.style.setProperty('--emu-shot', R.SCREEN[game.system] ?? 4 / 3);
       art.replaceChildren(R.shot(game));
     }
     art.classList.toggle('emu-chosen__art--away', !isHere(game));

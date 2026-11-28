@@ -35,9 +35,6 @@
   };
   // Each system's box, its width over its height, as its covers measure.
   const BOX = { nes: 0.7, snes: 1.4, n64: 1.37, gb: 1, gbc: 1, gba: 1, nds: 1.115, n3ds: 1.12, gc: 0.705, wii: 0.714, wiiu: 0.714, switch: 0.62, psx: 1, ps2: 0.705, xbox: 0.714 };
-  // Each system's screen, its width over its height, as libretro's screenshots
-  // of it measure: a DS's two screens stacked, a 3DS's top screen alone.
-  const SCREEN = { nes: 16 / 15, snes: 8 / 7, n64: 4 / 3, gb: 10 / 9, gbc: 10 / 9, gba: 3 / 2, nds: 2 / 3, n3ds: 5 / 3, gc: 4 / 3, wii: 4 / 3, wiiu: 16 / 9, switch: 16 / 9, psx: 4 / 3, ps2: 4 / 3, xbox: 4 / 3 };
 
   // Each system's emulator, why, how it names a save and what it needs, from
   // emulators.json, which the scan reads too.
@@ -261,7 +258,7 @@
   };
 
   window.Emu = Object.assign(window.Emu || {}, {
-    SYSTEMS, systemName, PREFERRED, BOX, SCREEN, nameOf, cover, shot, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
+    SYSTEMS, systemName, PREFERRED, BOX, nameOf, cover, shot, saveKind, emulators, needsOf, problemsOf, STATUS, statusOf, withNotes,
     size, playersOf, date, when, el, tag, option, slug, choicesKey, plainVersion, installs, installerOf, keptVersion, newerOut, fold, folds, notice,
   });
 })();

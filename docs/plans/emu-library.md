@@ -84,15 +84,14 @@ The wall:
 
 The chosen game, its own tile over the wall:
 
-- **It is a screenshot of the game, 171px wide, beside its name, its console
-  and the facts libretro has, when it was last played, its
-  region and its size, over Save, and under them all a row
-  of one button and About this copy, as Carbon starts an in-page form's
-  buttons with the primary, and Remove from this Mac at the row's end,** so
+- **It is the game's name, the facts libretro has and when it was last
+  played, over Save and the one next move, in the tile's first 60%, with a
+  screenshot of the game behind them at the tile's height against its end,
+  fading into the tile towards the words, as a store page shows a game,** so
   what will play and with what shows before Play is pressed, and changing
   nothing keeps Play one press. The screenshot is libretro's, a moment in
-  play, else the title screen, else an empty screen, so the box shows only in
-  the wall; it is faded where this Mac lacks the game.
+  play, else the title screen, else none, so the box shows only in the
+  wall; it is faded where this Mac lacks the game.
 - **Favourite and Finished are icons beside the name,** each saved as it
   changes; Played is the date Play keeps. rux's note is written in the
   phone's panel.

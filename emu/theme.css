@@ -34,5 +34,3 @@
   --emu-pop-radius: var(--emu-tile-radius, 0);
 }
 
-/* A game's screenshot sits on black in every theme, as a screen shows it. */
-[data-theme] { --emu-screen: #000; }

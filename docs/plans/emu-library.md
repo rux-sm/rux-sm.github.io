@@ -195,4 +195,3 @@ None.
       game's alone is proven.
 - [ ] Offer a game's other card in Save's list as a card, in place of the copy
       `carry.js` sets aside in this browser.
-- [ ] Draw a card in pixel art, for Save's list.

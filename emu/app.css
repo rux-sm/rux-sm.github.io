@@ -262,6 +262,10 @@ th.emu-size .rux--table-header-label { justify-content: flex-end; }
 .emu-pick__button:disabled .emu-pick__chevron { visibility: hidden; }
 .emu-pick__button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .emu-pick__button > span { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* A console's kind of save in pixels, two CSS pixels to one as its consoles
+   are drawn, beside each save in Save's field and list. */
+.emu-save-pic { flex: none; align-self: center; block-size: 28px; inline-size: auto; image-rendering: pixelated; }
+.emu-save-pic + .emu-row__main { flex: 1 1 auto; }
 .emu-pick__value { flex: none; max-inline-size: 100%; font-size: var(--rux-body-compact-01-font-size); letter-spacing: var(--rux-body-compact-01-letter-spacing); }
 .emu-pick__note { flex: 0 1 auto; font-size: var(--rux-label-01-font-size); letter-spacing: var(--rux-label-01-letter-spacing); color: var(--rux-text-secondary); }
 .emu-pick__note--warn { color: var(--rux-text-error); }

@@ -17,5 +17,8 @@
   "emu/brand/controllers/snes.png": "sprites/art/snes-controller.png",
   "emu/brand/logos/n64.png": "sprites/art/n64-logo.png",
   "emu/brand/logos/nes.png": "sprites/art/nes-logo.png",
-  "emu/brand/logos/snes.png": "sprites/art/snes-logo.png"
+  "emu/brand/logos/snes.png": "sprites/art/snes-logo.png",
+  "emu/brand/saves/cartridge-save.png": "sprites/art/cartridge-save-icon.png",
+  "emu/brand/saves/memory-card.png": "sprites/art/memory-card-icon.png",
+  "emu/brand/saves/save-data.png": "sprites/art/save-data-icon.png"
 }

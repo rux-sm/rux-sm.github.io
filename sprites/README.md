@@ -57,13 +57,15 @@ colours beside it, with Gallery to go back.
   other file. Every picture there is drawn at one size, 2× to 8× from the
   bar, so drawings compare at their true sizes; 2× is Emu's Library.
 - **Emu's elements:** under the drawings no element shows, the gallery
-  lists Emu's three sets, one element for each of Emu's systems, its file
-  named for the system: `emu/brand/consoles/`, which
+  lists Emu's four sets: one element for each of Emu's systems, its file
+  named for the system, in `emu/brand/consoles/`, which
   `emu/docs/drawing-consoles.md` says how to draw,
-  `emu/brand/logos/` and `emu/brand/controllers/`. Each tile is the
+  `emu/brand/logos/` and `emu/brand/controllers/`; and one for each kind
+  of save in `emu/brand/saves/`, named for the word a system calls its
+  save, such as `cartridge-save.png`. Each tile is the
   element's drawing, or an empty tile that starts a new drawing assigned to
-  it on its first save. The systems are the ones `emu/emulators.json`
-  names.
+  it on its first save. The systems and their words are the ones
+  `emu/emulators.json` names.
 
 The drawing as it stands is kept in this browser, so a reload loses
 nothing, and it stands in the gallery as Not saved until a file holds it. A

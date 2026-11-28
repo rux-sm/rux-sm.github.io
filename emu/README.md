@@ -57,7 +57,7 @@ Mac takes before Play, such as Gopher64's resolution; the settings to have, with
 is how each is set up on a Mac, `docs/home-server.md` how the home server sends a game, and
 `docs/drawing-consoles.md` how a console is drawn in pixels for the Library. `docs/controller-settings.md` is where each emulator keeps its controller's buttons, which the controller map reads. `brand/logos/`
 and `brand/controllers/` hold each system's logo and controller, named as its console is; no
-page shows them. Sprites writes all three folders from the drawings in `sprites/art/`. `brand/originals/` holds a photo of each console's own controller from Wikimedia Commons, which `pads.js` credits and marks each button on.
+page shows them. `brand/saves/` holds each kind of save, named for the word a console calls its save, which Save's field and list show beside each save. Sprites writes all four folders from the drawings in `sprites/art/`. `brand/originals/` holds a photo of each console's own controller from Wikimedia Commons, which `pads.js` credits and marks each button on.
 `brand/marks.svg` holds each console's wordmark in one colour, which the Library shows over its games.
 
 ## The scan

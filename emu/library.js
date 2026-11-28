@@ -673,10 +673,11 @@
   }
   // A row: its name over a note, pressed where `run` is given, the one in use
   // with a tick, and a control of its own at its end.
-  function popRow(name, note, { run = null, on = false, end = null } = {}) {
+  function popRow(name, note, { run = null, on = false, end = null, pic = null } = {}) {
     const li = el('li', `rux--contained-list-item${run ? ' rux--contained-list-item--clickable' : ''}${end ? ' rux--contained-list-item--with-action' : ''}`);
     const content = el(run ? 'button' : 'div', 'rux--contained-list-item__content emu-row');
     if (run) { content.type = 'button'; content.addEventListener('click', run); }
+    if (pic) content.append(pic);
     const main = el('span', 'emu-row__main');
     main.append(typeof name === 'string' ? el('span', '', name) : name);
     if (note) main.append(el('span', 'emu-row__sub', note));
@@ -696,6 +697,19 @@
   const states = n => (n ? `${n} save ${n === 1 ? 'state' : 'states'}` : '');
   const cardNote = c => [R.date(c.saved), states(c.states)].filter(Boolean).join(' · ');
   const wordOf = system => emulators?.systems?.[system]?.saveWord ?? 'Save';
+  // A console's kind of save drawn in pixels, as Sprites writes it from the
+  // word the console calls its save: brand/saves/cartridge-save.png.
+  const cardSrc = system => {
+    const word = emulators?.systems?.[system]?.saveWord;
+    return word ? `brand/saves/${word.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png` : null;
+  };
+  const cardPic = system => {
+    const src = cardSrc(system);
+    if (!src) return null;
+    const img = el('img', 'emu-save-pic');
+    Object.assign(img, { src, alt: '', decoding: 'async' });
+    return img;
+  };
   const mineOf = g => (cards.system === g.system ? cards.read?.games.get(g.title) : null) ?? { in: null, out: [] };
   // Where a console's cards cannot move, its files may not say which game
   // each is, so one not found is never called new: it is what the scan knows
@@ -707,6 +721,10 @@
   const savePick = pickOf('emu-chosen-save', fillSave);
   function writeSave() {
     const g = game;
+    const pic = $('emu-chosen-save-pic');
+    const src = cardSrc(g.system);
+    pic.hidden = !src;
+    if (src && pic.getAttribute('src') !== src) pic.src = src;
     if (stateOf(g.system) === 'away' || stateOf(g.system) === 'setting') { savePick.write({ hidden: true }); return; }
     if (cards.system !== g.system) { savePick.write({ value: 'Reading saves…', off: true }); return; }
     if (cards.error) { savePick.write({ value: 'Saves could not be read', off: true }); return; }
@@ -792,9 +810,9 @@
       return b;
     };
     const rows = [];
-    if (mine.in) rows.push(popRow(mine.in.name ?? wordOf(g.system), cardNote(mine.in), { on: true, end: read.moves ? renames(mine.in) : null }));
+    if (mine.in) rows.push(popRow(mine.in.name ?? wordOf(g.system), cardNote(mine.in), { on: true, end: read.moves ? renames(mine.in) : null, pic: cardPic(g.system) }));
     for (const c of mine.out) {
-      rows.push(popRow(c.name, cardNote(c), { end: renames(c),
+      rows.push(popRow(c.name, cardNote(c), { end: renames(c), pic: cardPic(g.system),
         run: can ? () => moveCard('Putting the save in…', `${nameOf(g)} will play ${c.name}.`, () => R.carry.putIn(g, games, c.id)) : null }));
     }
     if (!mine.in) rows.unshift(read.moves ? popRow('New save', 'Starts when you play', { on: true }) : popRow(wordOf(g.system), unsaid(g), { on: true }));

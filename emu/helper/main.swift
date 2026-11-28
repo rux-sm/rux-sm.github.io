@@ -132,7 +132,7 @@ import ServiceManagement
 import SystemConfiguration
 import zlib
 
-let version = "42"
+let version = "43"
 let port: NWEndpoint.Port = 47647
 let site = URL(string: "https://rux-sm.github.io/emu/")!
 let allowedOrigins: Set<String> = ["https://rux-sm.github.io", "http://localhost:8641"]
@@ -245,17 +245,27 @@ func play(_ body: Data) -> (Int, [String: Any]) {
   let full = req["full"] as? Bool
   if let full, let name = emulatorOf(launch.app) { setFullScreen(name, full) }
   let chosen = full.map { $0 ? launch.full : launch.window } ?? []
+  let arguments = chosen + launch.args.map { $0 == "{file}" ? target.path : $0 }
+  // An emulator macOS must open as an app, as the Finder does: with its
+  // arguments, a new copy of it, as Azahar wants; with none, the game handed
+  // to it as a file, as Gopher64 takes it in Apple's sandbox.
   if launch.open {
     opened = emulatorOf(launch.app).map { (system, file, $0) }
     let app = exe.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     let config = NSWorkspace.OpenConfiguration()
     config.activates = true
-    NSWorkspace.shared.open([target], withApplicationAt: app, configuration: config) { _, _ in }
+    if launch.args.isEmpty {
+      NSWorkspace.shared.open([target], withApplicationAt: app, configuration: config) { _, _ in }
+    } else {
+      config.arguments = arguments
+      config.createsNewApplicationInstance = true
+      NSWorkspace.shared.openApplication(at: app, configuration: config) { _, _ in }
+    }
     return (200, ["playing": target.lastPathComponent, "with": launch.app])
   }
   let p = Process()
   p.executableURL = exe
-  p.arguments = chosen + launch.args.map { $0 == "{file}" ? target.path : $0 }
+  p.arguments = arguments
   p.standardOutput = FileHandle.nullDevice
   p.standardError = FileHandle.nullDevice
   // Its saves are compared with their last carry once it quits.

@@ -40,7 +40,7 @@ None.
 
 ## Tasks
 
-- [ ] Put Rux Emu Helper 42 on the games share, for Supabase and the other
+- [ ] Put Rux Emu Helper 43 on the games share, for Supabase and the other
       Macs; this Mac runs it.
 - [ ] Play a Wii U and a Switch game with the switch on and off, since
       Cemu's and Ryujinx's settings are not yet proven by launching.

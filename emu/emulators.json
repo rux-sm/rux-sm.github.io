@@ -142,7 +142,8 @@
         ],
         "window": [
           "-w"
-        ]
+        ],
+        "open": true
       },
       "needs": []
     },

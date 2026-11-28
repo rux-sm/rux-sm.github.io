@@ -35,6 +35,8 @@ first, then the others one at a time.
   writes its window's own values back when it starts a game or quits.
   Today the helper skips its write while the window is open, so full screen
   is skipped there too, and this fixes both.
+- **Emu wins:** a choice changed in the emulator's own window is put back
+  to Emu's value at the next Play, so Emu is the one place to set it.
 - **Every setting Emu does not choose stays the Mac's own,** and a new Mac
   still starts from the preferred set, with the choices written over it.
 - **The profile's Settings part shows each choice** as a Carbon dropdown or
@@ -50,10 +52,6 @@ first, then the others one at a time.
 
 ## Questions
 
-- A choice changed in the emulator's own window: should Emu put its own
-  value back at the next Play, or take the change as the new choice for every
-  Mac? Putting it back keeps Emu the one place to set things, and is the
-  recommendation.
 - Which emulators after Gopher64? The recommendation is Dolphin, then the
   rest in the order they are played, each list shown to rux before it is
   built.
